@@ -9,7 +9,7 @@
     android:background="@drawable/bg_play_chat_form"
     app:layout_goneMarginEnd="@dimen/spacing_lvl4"
     tools:layout_width="match_parent"
-    tools:background="@color/Neutral_N700_32"
+    tools:background="@color/play_dms_N700_32"
     >
 
     <com.tokopedia.play_common.view.PlayNoImageEditText
@@ -27,8 +27,8 @@
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingRight="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N0"
-        android:textColorHint="@color/play_chat_text"
+        android:textColor="@color/Unify_Static_White"
+        android:textColorHint="@color/play_dms_chat_text"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"

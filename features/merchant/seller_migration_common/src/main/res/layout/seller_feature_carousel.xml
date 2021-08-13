@@ -11,7 +11,7 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:background="@color/light_N50"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography

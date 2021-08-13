@@ -8,8 +8,5 @@
         android:label="Cart Test"
         tools:replace="android:label">
 
-        <activity
-            android:name=".InstrumentTestCartActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

@@ -6,7 +6,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,17 +25,25 @@ class RemoteConfigEditorDialog : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.dialog_remote_config_editor, container, false)
-        val editedKeyView: AppCompatTextView = view.findViewById(R.id.edited_key)
+        val editedKeyView: AppCompatEditText = view.findViewById(R.id.edited_key)
         val editorSendButton: FrameLayout = view.findViewById(R.id.save_button)
         val editorValueInput: AppCompatEditText = view.findViewById(R.id.new_config_value)
 
-        val selectedKey = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_KEY) ?: "-"
-        val selectedValue  = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_VALUE) ?: ""
-        editedKeyView.text = selectedKey
+        val selectedKey = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_KEY) ?: ""
+        val selectedValue = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_VALUE) ?: ""
+        if (selectedKey.isEmpty()){
+            editedKeyView.setText("")
+            editedKeyView.isEnabled = true
+        } else {
+            editedKeyView.setText(selectedKey)
+            editedKeyView.isEnabled = false
+        }
         editorValueInput.setText(selectedValue)
 
         editorSendButton.setOnClickListener {
-            listener.onEditorSaveButtonClick(selectedKey, editorValueInput.text.toString().trim())
+            listener.onEditorSaveButtonClick(
+                    editedKeyView.text.toString().trim(),
+                    editorValueInput.text.toString().trim())
             dismiss()
         }
 

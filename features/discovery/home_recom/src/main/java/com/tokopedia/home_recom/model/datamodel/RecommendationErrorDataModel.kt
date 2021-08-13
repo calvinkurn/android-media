@@ -19,5 +19,6 @@ data class RecommendationErrorDataModel(
     }
 }
 interface RecommendationErrorListener{
-    fun refresh()
+    fun onRefreshRecommendation()
+    fun onCloseRecommendation()
 }

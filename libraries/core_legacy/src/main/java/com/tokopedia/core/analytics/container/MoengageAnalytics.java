@@ -3,15 +3,14 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.moe.pushlibrary.MoEHelper;
-import com.moe.pushlibrary.PayloadBuilder;
-import com.moengage.core.Logger;
-import com.moengage.core.MoEngage;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
@@ -20,28 +19,21 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
-import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
-import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
-import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
-
 public class MoengageAnalytics extends ContextAnalytics {
+    private final MoengageInteractor moengageInteractor;
+
     public MoengageAnalytics(Context context) {
         super(context);
+        //pass data to moengageWrapper
+        moengageInteractor = MoengageInteractor.INSTANCE;
+        moengageInteractor.initInteractor(getContext(), Keys.getMoengageKey(getContext()),
+                R.drawable.ic_status_bar_notif_customerapp, R.drawable.ic_big_notif_customerapp);
     }
 
     @Override
@@ -51,45 +43,39 @@ public class MoengageAnalytics extends ContextAnalytics {
         /*
           Mandatory to set small/Large notification icon while initialising sdk
           */
-        MoEngage moEngage =
-                new MoEngage.Builder(getContext(),
-                        getContext().getResources().getString(R.string.key_moengage))
-                        .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
-                        .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
-                        .optOutTokenRegistration()
-                        .build();
-        MoEngage.initialise(moEngage);
-        executeInstallTrackingAsync();
+        boolean isInitialized = moengageInteractor.initialiseMoengage();
+        if (isInitialized)
+            executeInstallTrackingAsync();
     }
 
-    private void executeInstallTrackingAsync(){
-        WeaveInterface installTrackingWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return sendExistingUserAndInstallTrackingEvent();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
+    private void executeInstallTrackingAsync() {
+        try {
+            //added the try catch for this issue https://github.com/Kotlin/kotlinx.coroutines/issues/490
+            WeaveInterface installTrackingWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    return sendExistingUserAndInstallTrackingEvent();
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
+        } catch(Exception ex){
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "error");
+            messageMap.put("name", ex.getMessage());
+            ServerLogger.log(Priority.P2, "INIT_MOENGAGE", messageMap);
+        }
     }
 
     @Override
     public void setMoEUserAttributesLogin(String userId, String name, String email, String phoneNumber, boolean isGoldMerchant, String shopName, String shopId, boolean hasShop, String loginMethod) {
-        Map<String, Object> value = new HashMap<>();
-        value.put(USER_ATTRIBUTE_UNIQUE_ID, userId);
-        value.put(USER_ATTRIBUTE_USER_NAME, name);
-        value.put(USER_ATTRIBUTE_USER_EMAIL, email);
-        value.put(IS_GOLD_MERCHANT, isGoldMerchant);
-        value.put(SHOP_NAME, shopName);
-        value.put(SHOP_ID, shopId);
-        value.put(USER_ATTRIBUTE_USER_MOBILE, phoneNumber);
-        setUserData(value, "LOGIN");
+        moengageInteractor.setUserDataLogin(userId, name, email, phoneNumber, isGoldMerchant, shopName, shopId);
 
         Map<String, Object> loginValue = new HashMap<>();
         loginValue.put(AppEventTracking.MOENGAGE.USER_ID, userId);
         loginValue.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
         loginValue.put(AppEventTracking.MOENGAGE.EMAIL, email);
-        if(!TextUtils.isEmpty(phoneNumber)) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
             loginValue.put(AppEventTracking.MOENGAGE.MOBILE_NUM, phoneNumber);
         }
         sendTrackEvent(loginValue, AppEventTracking.EventMoEngage.LOGIN);
@@ -127,18 +113,14 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
-        PayloadBuilder builder = new PayloadBuilder();
-        for (Map.Entry<String, Object> entry : eventValue.entrySet()) {
-            builder.putAttrString(entry.getKey(), entry.getValue().toString());
-        }
-        sendTrackEvent(builder.build(), eventName);
+        moengageInteractor.sendTrackEvent(eventName, eventValue);
     }
 
     @NotNull
     private boolean sendExistingUserAndInstallTrackingEvent() {
         if (getContext() != null) {
             UserSessionInterface userSession = new UserSession(getContext());
-            MoEHelper.getInstance(getContext()).setExistingUser(userSession.isLoggedIn());
+            moengageInteractor.sendExistingUserAndInstallTrackingEvent(userSession.isLoggedIn());
         }
         return true;
     }
@@ -146,6 +128,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     /**
      * will be eliminate soon
      * refer to setUserProfile(String... customerWrapper)
+     *
      * @param customerWrapper
      */
     @Deprecated
@@ -155,19 +138,7 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     @SuppressWarnings("RestrictedApi")
     public void setMoengageUserProfile(String... customerWrapper) {
-        if (customerWrapper.length != 3) {
-            return;
-        }
-        final String customerId = customerWrapper[0];
-        final String fullName = customerWrapper[1];
-        final String emailAddress = customerWrapper[2];
-
-        Timber.d("MoEngage check user " + customerId);
-
-        MoEHelper helper = MoEHelper.getInstance(getContext());
-        helper.setFullName(fullName);
-        helper.setUniqueId(customerId);
-        helper.setEmail(emailAddress);
+        moengageInteractor.setMoengageUserProfile(customerWrapper);
     }
 
     @Override
@@ -177,110 +148,34 @@ public class MoengageAnalytics extends ContextAnalytics {
         sendTrackEvent(map, AppEventTracking.EventMoEngage.REG_START);
     }
 
-    public void sendMoengageRegisterEvent(String fullName, String userID, String email, String loginMethod, String phoneNumber,boolean isGoldMerchant,String shopId,String shopName) {
+    public void sendMoengageRegisterEvent(String fullName, String userID, String email, String loginMethod, String phoneNumber, boolean isGoldMerchant, String shopId, String shopName) {
         Timber.d("MoEngage check user " + fullName);
 
-        Map<String, Object> value = new HashMap<>();
-        value.put(USER_ATTRIBUTE_UNIQUE_ID, userID);
-        value.put(USER_ATTRIBUTE_USER_NAME, fullName);
-        value.put(USER_ATTRIBUTE_USER_EMAIL, email);
-        value.put(USER_ATTRIBUTE_USER_MOBILE, phoneNumber);
-        value.put(IS_GOLD_MERCHANT, isGoldMerchant);
-        value.put(SHOP_NAME, shopName);
-        value.put(SHOP_ID, shopId);
-        setUserData(value, "Registration_Completed");
+        moengageInteractor.setUserDataRegister(userID, fullName, email, phoneNumber, isGoldMerchant, shopName, shopId);
 
         Map<String, Object> map = new HashMap<>();
         map.put(AppEventTracking.MOENGAGE.NAME, fullName);
         map.put(AppEventTracking.MOENGAGE.EMAIL, email);
         map.put(AppEventTracking.MOENGAGE.MOBILE_NUM, phoneNumber);
-        map.put(AppEventTracking.MOENGAGE.MEDIUM,loginMethod);
+        map.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
         sendTrackEvent(map, AppEventTracking.EventMoEngage.REG_COMPL);
 
     }
 
     public void setUserData(Map<String, Object> value, final String source) {
-        MoEHelper helper = MoEHelper.getInstance(getContext());
-
-        if (checkNull(value.get(USER_ATTRIBUTE_USER_NAME)))
-            helper.setFullName((String) value.get(USER_ATTRIBUTE_USER_NAME));
-
-        if (checkNull(value.get(USER_ATTRIBUTE_USER_FIRST_NAME)))
-            helper.setFirstName((String) value.get(USER_ATTRIBUTE_USER_FIRST_NAME));
-
-        if (checkNull(value.get(USER_ATTRIBUTE_UNIQUE_ID)))
-            helper.setUniqueId((String) value.get(USER_ATTRIBUTE_UNIQUE_ID));
-
-        if (checkNull(value.get(USER_ATTRIBUTE_USER_EMAIL)))
-            helper.setEmail((String) value.get(USER_ATTRIBUTE_USER_EMAIL));
-
-        if (checkNull(value.get(USER_ATTRIBUTE_USER_MOBILE))) {
-            String number=(String) value.get(USER_ATTRIBUTE_USER_MOBILE);
-            number= TrackingUtils.normalizePhoneNumber(number);
-            helper.setNumber(number);
-        }
-
-        if (!TextUtils.isEmpty((String) value.get(USER_ATTRIBUTE_USER_BDAY))) {
-            helper.setBirthDate((String) value.get(USER_ATTRIBUTE_USER_BDAY));
-        }
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.get(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT)));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_ID)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, (String) value.get(AppEventTracking.MOENGAGE.SHOP_ID));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_NAME)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, (String) value.get(AppEventTracking.MOENGAGE.SHOP_NAME));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, (String) value.get(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.TOPADS_AMT)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, (String) value.get(AppEventTracking.MOENGAGE.TOPADS_AMT));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, (boolean) value.get(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, (String) value.get(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE));
-
-        if (checkNull(value.get(AppEventTracking.MOENGAGE.SHOP_SCORE)))
-            helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, (String) value.get(AppEventTracking.MOENGAGE.SHOP_SCORE));
-
-        if (checkNull(value.get(USER_ATTRIBUTE_USER_GENDER)))
-            helper.setGender(value.get(USER_ATTRIBUTE_USER_GENDER).equals("1") ? "male" : "female");
+        moengageInteractor.setUserData(value);
     }
 
     public void setPushPreference(boolean status) {
-        MoEHelper.getInstance(getContext()).setUserAttribute(AppEventTracking.EventMoEngage.PUSH_PREFERENCE, status);
+        moengageInteractor.setPushPreference(status);
     }
 
     public void setNewsletterEmailPref(boolean status) {
-        MoEHelper.getInstance(getContext()).setUserAttribute(AppEventTracking.EventMoEngage.EMAIL_PREFERENCE, status);
-    }
-
-    private void sendTrackEvent(JSONObject data, final String eventName) {
-        MoEHelper.getInstance(getContext()).trackEvent(eventName, data);
+        moengageInteractor.setNewsletterEmailPref(status);
     }
 
     public void sendTrackEvent(Map<String, Object> data, final String eventName) {
-        PayloadBuilder builder = new PayloadBuilder();
-        if (data.isEmpty()) {
-            return;
-        }
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-            Object value = entry.getValue();
-
-            if (value instanceof JSONArray) {
-                builder.putAttrJSONArray(entry.getKey(), (JSONArray) entry.getValue());
-            } else {
-                builder.putAttrString(entry.getKey(), String.valueOf(entry.getValue()));
-            }
-        }
-        builder.putAttrString(AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
-        builder.putAttrString(AppEventTracking.MOENGAGE.PLATFORM, "android");
-        sendTrackEvent(builder.build(), eventName);
+        moengageInteractor.sendTrackEventWithAppInfo(data, eventName, String.valueOf(GlobalConfig.VERSION_CODE));
     }
 
     //just aliasing
@@ -299,6 +194,7 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void logoutEvent() {
-        MoEHelper.getInstance(context).logoutUser();
+        moengageInteractor.logoutEvent();
     }
+
 }

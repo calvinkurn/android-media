@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.adapter.viewhol
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter.Companion.CHECKLIST_FILTER_PAYLOAD
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistWidget
@@ -23,5 +24,15 @@ class CheckListViewHolder(view: View, private val checklistClickListener: Checkl
             checklistWidget.checklist.isChecked = !checklistWidget.checklist.isChecked
         }
         checklistWidget.bind(element, checklistClickListener)
+    }
+
+    override fun bind(element: ChecklistUiModel?, payloads: MutableList<Any>) {
+        if(element == null || payloads.isNullOrEmpty()) return
+
+        when (payloads.getOrNull(0) as? Int) {
+            CHECKLIST_FILTER_PAYLOAD -> {
+                checklistWidget.updateChecklist(element, checklistClickListener)
+            }
+        }
     }
 }

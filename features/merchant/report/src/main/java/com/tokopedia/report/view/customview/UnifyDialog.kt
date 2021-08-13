@@ -79,18 +79,18 @@ class UnifyDialog(private val activity: Activity,
             val imageLp = imageHeader?.layoutParams
             val topMargin: Int = activity.resources.getDimensionPixelSize(when(headerType){
                 ICON_HEADER -> {
-                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8).toFloat()
-                    imageLp?.width = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_80)
-                    imageLp?.height = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_80)
-                    com.tokopedia.design.R.dimen.dp_16
+                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toFloat()
+                    imageLp?.width = activity.resources.getDimensionPixelSize(R.dimen.dp_80)
+                    imageLp?.height = activity.resources.getDimensionPixelSize(R.dimen.dp_80)
+                    com.tokopedia.unifyprinciples.R.dimen.unify_space_16
                 }
                 IMAGE_HEADER -> {
-                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10).toFloat()
-                    imageLp?.width = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
-                    imageLp?.height = activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
-                    com.tokopedia.design.R.dimen.dp_0
+                    dialogImageHeader?.radius = activity.resources.getDimensionPixelSize(R.dimen.dp_10).toFloat()
+                    imageLp?.width = activity.resources.getDimensionPixelSize(R.dimen.dp_180)
+                    imageLp?.height = activity.resources.getDimensionPixelSize(R.dimen.dp_180)
+                    com.tokopedia.unifyprinciples.R.dimen.unify_space_0
                 }
-                else -> com.tokopedia.design.R.dimen.dp_24
+                else -> com.tokopedia.unifyprinciples.R.dimen.unify_space_24
             })
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 layoutParams.setMargins(layoutParams.marginStart, topMargin,

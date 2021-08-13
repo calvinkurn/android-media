@@ -23,9 +23,11 @@ import kotlinx.android.synthetic.main.ent_search_location_suggestion.view.*
 import timber.log.Timber
 import java.util.*
 
-class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) : SearchEventViewHolder<SearchLocationModel>(view) {
+class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
+                                   val listener: SearchLocationListener
+) : SearchEventViewHolder<SearchLocationModel>(view) {
 
-    val locationListAdapter = LocationAdapter()
+    val locationListAdapter = LocationAdapter(listener)
 
     init {
         with(itemView) {
@@ -64,7 +66,8 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             val imageUrl: String
     ) : ImpressHolder()
 
-    class LocationAdapter : RecyclerView.Adapter<LocationViewHolder>() {
+    class LocationAdapter(val listener: SearchLocationListener) :
+            RecyclerView.Adapter<LocationViewHolder>() {
 
         lateinit var listLocation: List<LocationSuggestion>
         lateinit var searchQuery: String
@@ -84,13 +87,13 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             holder.view.loc_type.text = location.type
 
             holder.view.setOnClickListener {
-                EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
+                listener.clickLocationEvent(location,
                         listLocation.get(position), position)
                 goToDetail(holder, location.city, location.id_city)
             }
 
             holder.view.addOnImpressionListener(location, {
-                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation.get(position),position)
+                listener.impressionLocationEvent(listLocation.get(position),position)
             })
         }
 
@@ -122,5 +125,11 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
 
     class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
+    interface SearchLocationListener{
+        fun impressionLocationEvent(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int)
+        fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion,
+                               listsLocation: SearchLocationListViewHolder.LocationSuggestion,
+                               position: Int)
+    }
 
 }

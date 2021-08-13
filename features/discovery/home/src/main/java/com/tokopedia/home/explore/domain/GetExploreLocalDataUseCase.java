@@ -1,7 +1,7 @@
 package com.tokopedia.home.explore.domain;
 
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by errysuprayogi on 2/5/18.
  */
 
-public class GetExploreLocalDataUseCase extends UseCase<List<ExploreSectionViewModel>> {
+public class GetExploreLocalDataUseCase extends UseCase<List<ExploreSectionDataModel>> {
 
     private final ExploreRepositoryImpl repository;
 
@@ -22,7 +22,7 @@ public class GetExploreLocalDataUseCase extends UseCase<List<ExploreSectionViewM
     }
 
     @Override
-    public Observable<List<ExploreSectionViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<ExploreSectionDataModel>> createObservable(RequestParams requestParams) {
         return repository.getExploreDataCache();
     }
 

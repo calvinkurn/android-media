@@ -3,8 +3,8 @@ package com.tokopedia.manageaddress.domain.model.addressoptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
 
 import java.util.List;
 

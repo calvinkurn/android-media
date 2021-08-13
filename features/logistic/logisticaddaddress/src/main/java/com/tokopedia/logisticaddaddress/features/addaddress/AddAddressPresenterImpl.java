@@ -5,13 +5,13 @@ import android.text.TextUtils;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.domain.param.EditAddressParam;
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase;
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.logisticCommon.data.entity.address.Destination;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -45,25 +45,19 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private static final String PARAM_RECEIVER_PHONE = "receiver_phone";
     private static final String PARAM_LATITUDE = "latitude";
     private static final String PARAM_LONGITUDE = "longitude";
-    private static final String DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi";
-    private static final double MONAS_LATITUDE = -6.175794;
-    private static final double MONAS_LONGITUDE = 106.826457;
 
     private AddAddressContract.View mView;
     private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
     private RevGeocodeUseCase revGeocodeUseCase;
-    private EditAddressUseCase editAddressUseCase;
 
     @Inject
     public AddAddressPresenterImpl(UserSessionInterface userSession,
                                    AddressRepository addressRepository,
-                                   RevGeocodeUseCase revGeocodeUseCase,
-                                   EditAddressUseCase editAddressUseCase) {
+                                   RevGeocodeUseCase revGeocodeUseCase) {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
         this.revGeocodeUseCase = revGeocodeUseCase;
-        this.editAddressUseCase = editAddressUseCase;
     }
 
     @Override
@@ -94,6 +88,8 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     public void requestReverseGeoCode(Context context, Destination destination) {
         String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
         revGeocodeUseCase.execute(keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<KeroMapsAutofill>() {
                     @Override
                     public void onCompleted() {
@@ -111,89 +107,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                                 keroMapsAutofill.getData().getFormattedAddress());
                     }
                 });
-    }
-
-    @Override
-    public void editAddressPinPoint(Destination address, String locationText) {
-        LocationPass locationPass = new LocationPass();
-        RequestParams requestParams = generatePinpointRequest(address);
-        editAddressUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.showErrorToaster(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(String stringResponse) {
-                        JSONObject response = null;
-                        String messageError = null;
-                        boolean statusSuccess;
-                        try {
-                            response = new JSONObject(stringResponse);
-                            int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                    .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
-                            statusSuccess = statusCode == 1;
-                            if (!statusSuccess) {
-                                messageError = response.getJSONArray("message_error").getString(0);
-                            }
-                        } catch (JSONException e) {
-                            Timber.d(e);
-                            statusSuccess = false;
-                        }
-
-                        if (response != null && statusSuccess) {
-                            if (!TextUtils.isEmpty(address.getLatitude())
-                                    && !TextUtils.isEmpty(address.getLongitude())
-                                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
-                                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
-                                locationPass.setLatitude(address.getLatitude());
-                                locationPass.setLongitude(address.getLongitude());
-                                locationPass.setGeneratedAddress(locationText);
-                            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
-                                locationPass.setDistrictName(address.getDistrictName());
-                                locationPass.setCityName(address.getCityName());
-                            } else {
-                                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
-                                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
-                            }
-                            mView.goToGeolocationActivity(locationPass);
-                        } else {
-                            if (messageError.isEmpty()) {
-                                messageError = DEFAULT_ERROR_MESSAGE;
-                            }
-                            mView.showErrorToaster(messageError);
-                        }
-                    }
-                });
-
-    }
-
-    private RequestParams generatePinpointRequest(Destination address) {
-        Map<String, String> params = AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>());
-        params.put(EditAddressParam.ADDRESS_ID, address.getAddressId());
-        params.put(EditAddressParam.ADDRESS_NAME, address.getAddressName());
-        params.put(EditAddressParam.ADDRESS_STREET, address.getAddressStreet());
-        params.put(EditAddressParam.POSTAL_CODE, address.getPostalCode());
-        params.put(EditAddressParam.DISTRICT_ID, address.getDistrictId());
-        params.put(EditAddressParam.CITY_ID, address.getCityId());
-        params.put(EditAddressParam.PROVINCE_ID, address.getProvinceId());
-        params.put(EditAddressParam.LATITUDE, address.getLatitude());
-        params.put(EditAddressParam.LONGITUDE, address.getLongitude());
-        params.put(EditAddressParam.RECEIVER_NAME, address.getReceiverName());
-        params.put(EditAddressParam.RECEIVER_PHONE, address.getReceiverPhone());
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAllString(params);
-        return requestParams;
     }
 
     private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {
@@ -268,7 +181,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
         param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
         param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
-        if (address.getLatitude() != null && address.getLongitude() != null) {
+        if (address.getLatitude() != null && address.getLongitude() != null && !address.getLatitude().equals("0.0") && !address.getLongitude().equals("0.0")) {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
         }

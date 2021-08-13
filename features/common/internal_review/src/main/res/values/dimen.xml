@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sah_large_widget_height">320dp</dimen>
+    <dimen name="sah_medium_widget_height">180dp</dimen>
+    <dimen name="sah_status_bar_height">24dp</dimen>
+    <dimen name="sah_status_bar_elevation">4dp</dimen>
+    <dimen name="sah_dimen_1dp">1dp</dimen>
+    <dimen name="sah_dimen_4dp">4dp</dimen>
+    <dimen name="sah_dimen_5dp">5dp</dimen>
+    <dimen name="sah_dimen_10dp">10dp</dimen>
+    <dimen name="sah_dimen_12dp">12dp</dimen>
+    <dimen name="sah_dimen_14dp">14dp</dimen>
+    <dimen name="sah_dimen_17dp">17dp</dimen>
+    <dimen name="sah_dimen_19dp">19dp</dimen>
+    <dimen name="sah_dimen_20dp">20dp</dimen>
+    <dimen name="sah_dimen_26dp">26dp</dimen>
+    <dimen name="sah_dimen_28dp">28dp</dimen>
+    <dimen name="sah_dimen_80dp">80dp</dimen>
+    <dimen name="sah_dimen_110dp">110dp</dimen>
+    <dimen name="sah_dimen_156dp">156dp</dimen>
+    <dimen name="sah_dimen_210dp">210dp</dimen>
+    <dimen name="sah_dimen_280dp">280dp</dimen>
+</resources>

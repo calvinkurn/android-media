@@ -8,8 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -22,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.searchbar.SearchBarConstant.HOME_SCREEN_NAME
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
@@ -32,7 +31,6 @@ import java.net.URLEncoder
 import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
-
 
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
@@ -64,7 +62,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var searchMagnifierIcon: Drawable
 
-    private lateinit var afterInflationCallable: Callable<Any?>
+    private var afterInflationCallable: Callable<Any?>? = null
 
     private lateinit var animationJob: Job
 
@@ -77,6 +75,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setViewAttributesAfterInflation(){
+        this.screenName = HOME_SCREEN_NAME
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -102,12 +101,12 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
         searchMagnifierIcon = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_search_bar)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_normal_24)
         inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
 
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
@@ -148,12 +147,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             shadowApplied = false
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            pT = ViewHelper.getStatusBarHeight(context)
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -163,11 +160,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             shadowApplied = true
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            pT = ViewHelper.getStatusBarHeight(context)
             val pR = toolbar.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
             toolbar!!.setPadding(pL, pT, pR, pB)
@@ -177,11 +172,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     override fun inflateResource(context: Context) {
 
         val asyncLayoutInflater = AsyncLayoutInflater(context)
-        val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
+        val inflateFinishCallBack = OnInflateFinishedListener { view, resid, parent ->
             viewHomeMainToolBar = view
             actionAfterInflation(context, view)
             setViewAttributesAfterInflation()
-            afterInflationCallable.call()
+            afterInflationCallable?.call()
             this@HomeMainToolbar.addView(view)
         }
         if (inflateFinishCallBack != null) {
@@ -201,9 +196,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
+            wishlistCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            notifCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            inboxCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
 
             toolbarType = TOOLBAR_DARK_TYPE
         } else if (!crossfaderIsInitialized()) {
@@ -218,21 +213,16 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     && ::inboxCrossfader.isInitialized
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as Drawable
-        } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
+        return BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
     private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
         var drawable = ContextCompat.getDrawable(context, drawableId)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable!!).mutate()
-        }
 
         val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
                 drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
 
         return bitmap
@@ -240,9 +230,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     fun switchToLightToolbar() {
         if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
+            wishlistCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            notifCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            inboxCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
 
             toolbarType = TOOLBAR_LIGHT_TYPE
         } else if (!crossfaderIsInitialized()) {
@@ -287,7 +277,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             while (true) {
                 var hint = context.getString(R.string.search_tokopedia)
                 var keyword = ""
-                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.search_bar_slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
                 slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
@@ -364,7 +354,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-
+        private const val DEFAULT_TRANSITION_DURATION = 200
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }

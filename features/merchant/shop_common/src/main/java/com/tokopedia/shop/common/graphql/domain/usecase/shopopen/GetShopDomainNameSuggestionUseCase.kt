@@ -1,13 +1,12 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.shopopen
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetShopDomainNameSuggestionUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase

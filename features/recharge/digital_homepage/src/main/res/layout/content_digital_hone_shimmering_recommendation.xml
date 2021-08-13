@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="150dp"
+        android:layout_width="@dimen/shimmering_text_view_width"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:corners="@integer/section_shimmering_corner" />
 
     <LinearLayout
@@ -23,37 +23,18 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_8">
+            android:layout_marginRight="@dimen/spacing_lvl3">
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_100"
-                android:layout_marginTop="@dimen/dp_16"
-                app:corners="@integer/section_shimmering_corner" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_8"
-                app:corners="@integer/section_shimmering_corner" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_100"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl9"
+                android:layout_height="@dimen/layout_lvl8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
@@ -61,18 +42,18 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_8">
+            android:layout_marginRight="@dimen/spacing_lvl3">
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_100"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl9"
+                android:layout_height="@dimen/layout_lvl8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
@@ -80,18 +61,37 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_8">
+            android:layout_marginRight="@dimen/spacing_lvl3">
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_100"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl9"
+                android:layout_height="@dimen/layout_lvl8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:corners="@integer/section_shimmering_corner" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl3">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                app:corners="@integer/section_shimmering_corner" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/layout_lvl9"
+                android:layout_height="@dimen/layout_lvl8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>

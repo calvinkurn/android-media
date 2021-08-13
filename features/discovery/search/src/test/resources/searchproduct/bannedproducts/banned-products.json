@@ -1,0 +1,36 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 0,
+      "totalDataText": "",
+      "defaultView": 0,
+      "responseCode": 8,
+      "errorMessage": "Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.",
+      "additionalParams": "",
+      "keywordProcess": ""
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "products": []
+    }
+  }
+}

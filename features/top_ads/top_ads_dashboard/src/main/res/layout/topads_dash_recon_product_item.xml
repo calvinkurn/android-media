@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_product_recom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@id/img_folder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_folder" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_folder"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toEndOf="@id/cb_product_recom"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="@id/img_folder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_folder"
+        app:layout_constraintTop_toTopOf="@id/img_folder"
+        app:typographyType="body_3"
+        tools:text="Kemeja Polos Pria Lengan  Pendek Slimfit Kerja Cowok - Pink, M" />
+
+    <ImageView
+        android:id="@+id/search_icon"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:contentDescription="@string/topads_dash_cd_search"
+        app:layout_constraintBottom_toBottomOf="@id/totalSearch"
+        app:layout_constraintStart_toStartOf="@id/img_folder"
+        app:layout_constraintTop_toTopOf="@id/total_search"
+        app:srcCompat="@drawable/topads_search" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/total_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="@string/topads_common_total_search"
+        android:textColor="@color/topads_common_select_color_unchecked"
+        app:layout_constraintStart_toEndOf="@id/search_icon"
+        app:layout_constraintTop_toBottomOf="@id/img_folder"
+        app:typographyType="body_3" />
+
+    <ImageView
+        android:id="@+id/up_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/topads_dash_cd_up_icon"
+        app:layout_constraintBottom_toBottomOf="@id/totalSearch"
+        app:layout_constraintStart_toStartOf="@id/total_search"
+        app:layout_constraintTop_toBottomOf="@id/total_search"
+        app:layout_constraintTop_toTopOf="@id/totalSearch"
+        app:srcCompat="@drawable/topads_up" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/totalSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintStart_toEndOf="@id/up_icon"
+        app:layout_constraintTop_toBottomOf="@id/total_search"
+        tools:text="Rp10000" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="@dimen/dp_2"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintEnd_toStartOf="@id/speaker_icon"
+        app:layout_constraintStart_toEndOf="@id/total_search"
+        app:layout_constraintTop_toTopOf="@id/speaker_icon" />
+
+    <ImageView
+        android:id="@+id/speaker_icon"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:contentDescription="@string/topads_dash_cd_saldo"
+        app:layout_constraintBottom_toBottomOf="@id/recommendedBid"
+        app:layout_constraintEnd_toStartOf="@id/recommended_bid_text"
+        app:layout_constraintTop_toTopOf="@id/recommended_bid_text"
+        app:srcCompat="@drawable/topads_rp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/recommended_bid_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_common_recommended_budget"
+        android:textColor="@color/topads_common_select_color_unchecked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/total_search"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/recommendedBid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="@id/recommended_bid_text"
+        app:layout_constraintTop_toBottomOf="@id/recommended_bid_text"
+        tools:text="Rp100000" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/editBudget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/search_icon"
+        app:layout_constraintTop_toBottomOf="@id/totalSearch"
+        app:text_field_append_text="@string/topads_common_klik_"
+        app:text_field_input_type="number"
+        app:text_field_label="@string/topads_biaya_iklan"
+        app:text_field_label_static="true"
+        app:text_field_prepend_text="Rp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

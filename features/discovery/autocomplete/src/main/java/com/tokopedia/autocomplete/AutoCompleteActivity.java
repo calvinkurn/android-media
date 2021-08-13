@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -24,7 +24,9 @@ import com.tokopedia.autocomplete.searchbar.SearchBarView;
 import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
 import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.utils.UrlParamUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -32,8 +34,10 @@ import com.tokopedia.user.session.UserSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.OnQueryTextListener,
@@ -52,6 +56,8 @@ public class AutoCompleteActivity extends BaseActivity
     protected SuggestionFragment suggestionFragment;
     protected InitialStateFragment initialStateFragment;
 
+    private String baseSRPApplink = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(0, 0);
@@ -65,11 +71,16 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0, null));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!isDarkMode(this)) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 
@@ -97,12 +108,22 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void handleIntent(Intent intent) {
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
+        baseSRPApplink = getBaseSRPApplink(searchParameter);
+        removeBaseSRPApplink(searchParameter);
 
         handleIntentAutoComplete(searchParameter);
 
         if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             autocompleteTracking.eventSearchShortcut();
         }
+    }
+
+    private String getBaseSRPApplink(SearchParameter searchParameter) {
+        return searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
+    }
+
+    private void removeBaseSRPApplink(SearchParameter searchParameter) {
+        searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -152,11 +173,20 @@ public class AutoCompleteActivity extends BaseActivity
         this.searchParameter = new SearchParameter(searchParameter);
 
         String query = searchParameter.getSearchQuery();
-        AutocompleteTracking.eventClickSubmit(query);
+        sendTrackingSubmitQuery(searchParameter, query);
 
         clearFocusSearchView();
         moveToSearchPage();
         return true;
+    }
+
+    private void sendTrackingSubmitQuery(@NotNull SearchParameter searchParameter, String query) {
+        Map<String, String> mapParameter = searchParameter.getSearchParameterHashMap();
+
+        if (UrlParamUtils.isTokoNow(mapParameter))
+            AutocompleteTracking.eventClickSubmitTokoNow(query);
+        else
+            AutocompleteTracking.eventClickSubmit(query);
     }
 
     private void clearFocusSearchView() {
@@ -171,9 +201,16 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private String createSearchResultApplink() {
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT
-                + "?"
-                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        if (baseSRPApplink.isEmpty()) {
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                    + "?"
+                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        }
+        else {
+            return baseSRPApplink
+                    + "?"
+                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        }
     }
 
     private void sendVoiceSearchGTM(String keyword) {

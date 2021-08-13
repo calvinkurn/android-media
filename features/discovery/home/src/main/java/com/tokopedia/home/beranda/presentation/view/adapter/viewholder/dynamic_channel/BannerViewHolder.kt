@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
@@ -38,7 +39,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
-        seeAllPromo.setLabelType("#31353b")
+        val labelColorHexString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.home_dms_color_banner_label_type))}"
+        seeAllPromo.setLabelType(labelColorHexString)
         seeAllPromo.opacityLevel = 0.9f
     }
 

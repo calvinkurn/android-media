@@ -1,11 +1,10 @@
 package com.tokopedia.cart.view
 
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -14,11 +13,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 interface ActionListener {
 
+    fun getFragment(): Fragment
+
     fun onClickShopNow()
 
     fun getDefaultCartErrorMessage(): String
 
-    fun onCartShopNameClicked(shopId: String?, shopName: String?)
+    fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 
@@ -79,4 +80,14 @@ interface ActionListener {
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+
+    fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
+
+    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
+
+    fun onGlobalDeleteClicked()
+
+    fun onNeedToGoneLocalizingAddressWidget()
+
+    fun onLocalizingAddressUpdatedFromWidget()
 }

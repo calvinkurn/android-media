@@ -3,9 +3,9 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 class GetSocketCredentialUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<GetSocketCredentialResponse.SocketCredential>() {
+) : UseCase<GetSocketCredentialResponse.SocketCredential>() {
 
     private val query = """
         query GetSocketCredential{
@@ -31,12 +31,14 @@ class GetSocketCredentialUseCase @Inject constructor(
         """
 
     override suspend fun executeOnBackground(): GetSocketCredentialResponse.SocketCredential {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetSocketCredentialResponse::class.java, emptyMap(), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = GetSocketCredentialResponse::class.java,
+                params = emptyMap(),
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<GetSocketCredentialResponse>(GetSocketCredentialResponse::class.java)
-        if (response?.socketCredential != null) {
-            return response.socketCredential
-        }
-        throw DefaultErrorThrowable()
+        return response.socketCredential
     }
 }

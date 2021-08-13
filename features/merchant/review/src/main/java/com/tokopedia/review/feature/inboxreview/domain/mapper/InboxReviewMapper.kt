@@ -50,24 +50,25 @@ object InboxReviewMapper {
                     FeedbackInboxUiModel(
                             attachments = mapAttachment,
                             isAutoReply = it.isAutoReply ?: false,
-                            feedbackId = it.feedbackID.orZero(),
+                            feedbackId = it.feedbackID,
                             rating = it.rating.orZero(),
                             replyText = it.replyText.orEmpty(),
                             replyTime = it.replyTime.orEmpty(),
                             reviewText = it.reviewText.orEmpty(),
                             isMoreReply = it.replyText?.length.orZero() >= 150,
                             reviewTime = it.reviewTime.orEmpty(),
-                            userID = it.user.userID.orZero(),
+                            userID = it.user.userID,
                             username = it.user.userName.orEmpty(),
-                            productID = it.product.productID.orZero(),
+                            productID = it.product.productID,
                             productName = it.product.productName.orEmpty(),
                             productImageUrl = it.product.productImageURL.orEmpty(),
-                            variantID = it.product.productVariant.variantID.orZero(),
+                            variantID = it.product.productVariant.variantID,
                             variantName = it.product.productVariant.variantName.orEmpty(),
                             invoiceID = it.invoiceID.orEmpty(),
                             sellerUser = userSession.name,
                             isReplied = inboxReviewResponse.filterBy?.getStatusFilter(prefixStatus)?.isAnswered
-                                    ?: false
+                                    ?: false,
+                            isKejarUlasan = it.isKejarUlasan
                     )
             )
         }
@@ -149,7 +150,8 @@ object InboxReviewMapper {
                 reviewTime = data.reviewTime,
                 reviewerName = data.username,
                 variantName = data.variantName,
-                sellerUser = data.sellerUser
+                sellerUser = data.sellerUser,
+                isKejarUlasan = data.isKejarUlasan
         )
     }
 

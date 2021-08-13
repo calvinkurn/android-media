@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/talk_unified_inbox_chips_loading"
+        android:layout_width="@dimen/layout_lvl9"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_14"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/talk_unified_inbox_chips_loading_1"
+        android:layout_width="@dimen/layout_lvl9"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/talk_unified_inbox_chips_loading"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50" />
+
+    <include layout="@layout/item_talk_unified_inbox_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/talk_inbox_shimmer_item"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/talk_unified_inbox_chips_loading"/>
+    <include layout="@layout/item_talk_unified_inbox_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/talk_inbox_shimmer_item_2"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_item"/>
+    <include layout="@layout/item_talk_unified_inbox_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/talk_inbox_shimmer_item_3"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_item_2"/>
+    <include layout="@layout/item_talk_unified_inbox_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/talk_inbox_shimmer_item_4"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_item_3"/>
+    <include layout="@layout/item_talk_unified_inbox_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/talk_inbox_shimmer_item_5"
+        app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_item_4"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

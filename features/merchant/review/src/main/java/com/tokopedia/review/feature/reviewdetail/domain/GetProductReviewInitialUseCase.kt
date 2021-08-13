@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 28/04/20
  */
+@GqlQuery(GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME, GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY)
 class GetProductReviewInitialUseCase @Inject constructor(
         private val graphQlRepository: GraphqlRepository
 ) : UseCase<ProductReviewInitialDataResponse>() {
@@ -27,8 +28,8 @@ class GetProductReviewInitialUseCase @Inject constructor(
         private const val TIME_FILTER = "timeFilter"
         const val GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME = "ProductFeedbackFilter"
         const val GET_PRODUCT_FEEDBACK_FILTER_QUERY = """
-        query get_product_feedback_detail(${'$'}productID: Int!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
-          productrevFeedbackDataPerProduct(productID: ${'$'}productID, sortBy: ${'$'}sortBy,
+        query get_product_feedback_detail(${'$'}productID: String!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
+          productrevFeedbackDataPerProductV2(productID: ${'$'}productID, sortBy: ${'$'}sortBy,
             filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
               topics {
                   title
@@ -43,10 +44,21 @@ class GetProductReviewInitialUseCase @Inject constructor(
             }
         }
         """
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME = "ReviewDetailOverall"
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY = """
+        query get_product_review_detail_overall(${'$'}productID: String!, ${'$'}filterBy: String!) {
+             productrevGetReviewAggregateByProductV2(productID: ${'$'}productID, filterBy: ${'$'}filterBy) {
+               productName
+               ratingAverage
+               ratingCount
+               period
+            }
+        }
+        """
 
         @JvmStatic
-        fun createParams(productID: Int, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
-            putInt(PRODUCT_ID, productID)
+        fun createParams(productID: String, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
+            putString(PRODUCT_ID, productID)
             putString(FILTER_BY, filterBy)
             putString(SORT_BY, sortBy)
             putInt(PAGE, page)
@@ -60,7 +72,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ProductReviewInitialDataResponse {
         val productReviewInitialResponse = ProductReviewInitialDataResponse()
 
-        val productId = requestParams.getInt(PRODUCT_ID, 0)
+        val productId = requestParams.getString(PRODUCT_ID, "")
         val filterBy = requestParams.getString(FILTER_BY, "")
         val sortBy = requestParams.getString(SORT_BY, "")
         val page = requestParams.getInt(PAGE, 0)

@@ -1,0 +1,12 @@
+{
+  "VerifyQR": {
+    "success": false,
+    "message": "error qr token invalid\n",
+    "errorMessage": "QR token not found",
+    "Imglink": "https://images.tokopedia.net/img/qrcode/invalid_token.png",
+    "MessageTitle": "Kode QR tidak berlaku",
+    "MessageBody": "Coba scan lagi untuk lanjut login",
+    "ButtonType": "Scan Kembali",
+    "Status": "errorqrtokeninvalid"
+  }
+}

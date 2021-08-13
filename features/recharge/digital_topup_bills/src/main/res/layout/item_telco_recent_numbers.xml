@@ -35,7 +35,7 @@
         android:layout_alignTop="@+id/telco_recent_img_layout"
         android:layout_alignBottom="@+id/telco_recent_img_layout"
         android:gravity="center_vertical"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         tools:text="081322867354" />
 

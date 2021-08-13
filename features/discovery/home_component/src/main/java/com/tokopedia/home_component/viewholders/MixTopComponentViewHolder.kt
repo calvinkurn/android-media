@@ -19,6 +19,7 @@ import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelCtaData
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -26,20 +27,21 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselPr
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.ConstantABTesting
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_header
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_header_view
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -82,6 +84,7 @@ class MixTopComponentViewHolder(
         isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
+        setChannelDivider(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
                 mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
@@ -108,6 +111,14 @@ class MixTopComponentViewHolder(
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
 
+    }
+
+    private fun setChannelDivider(element: MixTopDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun mappingView(channel: ChannelModel) {
@@ -215,9 +226,9 @@ class MixTopComponentViewHolder(
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.setPrimaryClip(clipData)
 
-        Toaster.make(view.parent as ViewGroup,
+        Toaster.build(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG).show()
     }
 
     private fun valuateRecyclerViewDecoration() {
@@ -247,32 +258,7 @@ class MixTopComponentViewHolder(
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.slashedPrice,
-                            productName = element.name,
-                            formattedPrice = element.price,
-                            productImageUrl = element.imageUrl,
-                            discountPercentage = element.discount,
-                            pdpViewCount = element.productViewCountFormatted,
-                            stockBarLabel = element.label,
-                            isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage,
-                            labelGroupList = element.labelGroup.map {
-                                ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type
-                                )
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    element.isFreeOngkirActive,
-                                    element.freeOngkirImageUrl
-                            ),
-                            isOutOfStock = element.isOutOfStock,
-                            ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
-                            reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
-                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat else ""
-                    ),
+                    ChannelModelMapper.mapToProductCardModel(element),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,

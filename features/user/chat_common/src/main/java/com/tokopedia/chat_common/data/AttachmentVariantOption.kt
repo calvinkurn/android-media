@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class AttachmentVariantOption(
         @SerializedName("id") // ex:23454
         @Expose
-        val id: Int = -1,
+        val id: Long = -1L,
 
         @SerializedName("value")
         @Expose
@@ -14,7 +14,7 @@ class AttachmentVariantOption(
 
         @SerializedName("hex")
         @Expose
-        val hex: String = ""// ex:#ff3303
+        val hex: String = ""// ex: # ff3303
 ) {
     fun isColor(): Boolean {
         return hex.isNotEmpty()

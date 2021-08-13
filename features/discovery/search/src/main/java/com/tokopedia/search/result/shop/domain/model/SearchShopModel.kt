@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.shop.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
@@ -24,14 +25,22 @@ internal data class SearchShopModel(
 
     fun getQuickFilterList() = quickFilter.data.filter
 
+    fun getTreatmentType() = aceSearchShop.header.keywordProcess
+
+    fun getResponseCode() = aceSearchShop.header.responseCode
+
     data class AceSearchShop(
+            @SerializedName("header")
+            @Expose
+            val header: Header = Header(),
+
             @SerializedName("source")
             @Expose
             val source: String = "",
 
             @SerializedName("total_shop")
             @Expose
-            val totalShop: Int = 0,
+            val totalShop: Long = 0,
 
             @SerializedName("search_url")
             @Expose
@@ -45,14 +54,28 @@ internal data class SearchShopModel(
             @Expose
             val tabName: String = "",
 
+            @SerializedName("suggestion")
+            @Expose
+            val suggestion: Suggestion = Suggestion(),
+
             @SerializedName("shops")
             @Expose
             val shopList: List<ShopItem> = listOf(),
 
             @SerializedName("top_shop")
             @Expose
-            val topShopList: List<ShopItem> = listOf()
+            val topShopList: List<ShopItem> = listOf(),
     ) {
+
+        data class Header(
+                @SerializedName("response_code")
+                @Expose
+                val responseCode: String = "0",
+
+                @SerializedName("keyword_process")
+                @Expose
+                val keywordProcess: String = "0",
+        )
 
         data class Paging(
                 @SerializedName("uri_next")
@@ -62,6 +85,20 @@ internal data class SearchShopModel(
                 @SerializedName("uri_previous")
                 @Expose
                 val uriPrevious: String = ""
+        )
+
+        data class Suggestion(
+                @SerializedName("currentKeyword")
+                @Expose
+                val currentKeyword: String = "",
+
+                @SerializedName("query")
+                @Expose
+                val query: String = "",
+
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
         )
 
         data class ShopItem(
@@ -163,10 +200,15 @@ internal data class SearchShopModel(
 
                 @SerializedName("ga_key")
                 @Expose
-                val gaKey: String = ""
+                val gaKey: String = "",
+
+                @SerializedName("is_pm_pro")
+                @Expose
+                val isPMPro: Boolean = false,
         ) {
 
             data class ShopItemProduct(
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("id")
                     @Expose
                     val id: Int = 0,
@@ -183,6 +225,7 @@ internal data class SearchShopModel(
                     @Expose
                     val applink: String = "",
 
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("price")
                     @Expose
                     val price: Int = 0,

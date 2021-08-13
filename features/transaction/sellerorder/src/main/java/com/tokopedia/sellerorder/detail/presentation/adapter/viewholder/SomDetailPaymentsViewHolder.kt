@@ -1,84 +1,52 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.gone
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailPayments
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailDynamicPriceAdapter
 import kotlinx.android.synthetic.main.detail_payments_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-07.
  */
 class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    @SuppressLint("SetTextI18n")
+
+    private var somDetailDynamicPriceAdapter: SomDetailDynamicPriceAdapter? = null
+
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailPayments) {
-            itemView.product_price_label.text = "${itemView.context.getString(R.string.product_price_label)} (${item.dataObject.totalProducts} Barang)"
-            itemView.product_price_value.text = item.dataObject.productsPriceText
-            itemView.shipping_price_label.text = "${itemView.context.getString(R.string.shipping_price_label)} (${item.dataObject.totalWeight})"
-            itemView.shipping_price_value.text = item.dataObject.shippingPriceText
+            val somDetailPayments = item.dataObject
+            with(itemView) {
 
-            if (item.dataObject.insurancePriceValue > 0) {
-                itemView.insurance_price_label.visibility = View.VISIBLE
-                itemView.insurance_price_value.visibility = View.VISIBLE
-                itemView.insurance_price_value.text = item.dataObject.insurancePriceText
-            } else {
-                itemView.insurance_price_label.visibility = View.GONE
-                itemView.insurance_price_value.visibility = View.GONE
-            }
-
-            if (item.dataObject.additionalPriceValue > 0) {
-                itemView.additional_price_label.visibility = View.VISIBLE
-                itemView.additional_price_value.visibility = View.VISIBLE
-                itemView.additional_price_value.text = item.dataObject.additionalPriceText
-            } else {
-                itemView.additional_price_label.visibility = View.GONE
-                itemView.additional_price_value.visibility = View.GONE
-            }
-
-            if (item.dataObject.totalPurchaseProtectionFee > 0) {
-                itemView.tvPurchaseProtectionFeeLabel.apply {
-                    text = context.getString(R.string.purchase_protection_fee_label, item.dataObject.totalPurchaseProtectionQuantity)
-                    show()
+                if(somDetailPayments.paymentMethodUiModel.isNotEmpty()) {
+                    payments_method_label.text = somDetailPayments.paymentMethodUiModel.firstOrNull()?.label
+                    val paymentMethodValue = somDetailPayments.paymentMethodUiModel.firstOrNull()?.value
+                    payments_method_value.text = paymentMethodValue
+                    payments_method_label.show()
+                    payments_method_value.show()
+                } else {
+                    payments_method_label.hide()
+                    payments_method_value.hide()
                 }
-                itemView.tvPurchaseProtectionFeeValue.apply {
-                    text = item.dataObject.totalPurchaseProtectionFeeText
-                    show()
-                }
-            } else {
-                itemView.tvPurchaseProtectionFeeLabel.gone()
-                itemView.tvPurchaseProtectionFeeValue.gone()
-            }
 
-            if (item.dataObject.totalReadinessInsuranceFee > 0) {
-                itemView.tvReadinessInsuranceFeeLabel.apply {
-                    text = context.getString(R.string.readiness_insurance_fee_label, item.dataObject.totalReadinessInsuranceQuantity)
-                    show()
+                rvDynamicPrice.apply {
+                    somDetailDynamicPriceAdapter = SomDetailDynamicPriceAdapter(somDetailPayments.pricingData)
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = somDetailDynamicPriceAdapter
                 }
-                itemView.tvReadinessInsuranceFeeValue.apply {
-                    text = item.dataObject.totalReadinessInsuranceFeeText
-                    show()
-                }
-            } else {
-                itemView.tvReadinessInsuranceFeeLabel.gone()
-                itemView.tvReadinessInsuranceFeeValue.gone()
-            }
 
-            if (item.dataObject.codFee > 0) {
-                itemView.tvCodFeeValue.apply {
-                    text = item.dataObject.codFeeText
-                    show()
+                total_price_value.text = somDetailPayments.paymentDataUiModel.value
+                total_price_label.text = somDetailPayments.paymentDataUiModel.label
+                if(somDetailPayments.paymentDataUiModel.textColor.isNotBlank()) {
+                    total_price_label.setTextColor(Color.parseColor(somDetailPayments.paymentDataUiModel.textColor))
+                    total_price_value.setTextColor(Color.parseColor(somDetailPayments.paymentDataUiModel.textColor))
                 }
-            } else {
-                itemView.tvCodFeeLabel.gone()
-                itemView.tvCodFeeValue.gone()
             }
-
-            itemView.total_price_value.text = item.dataObject.totalPriceText
         }
     }
 }

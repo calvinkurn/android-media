@@ -93,7 +93,7 @@ class InterestPickAdapter(private val listener: InterestPickItemListener, val so
                 ImageHandler.LoadImage(itemView.iv_onboarding_item, item.image)
             } else {
                 itemView.bg_selected.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.bg_onboarding_see_all))
-                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
+                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 itemView.iv_onboarding_item.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.ip_com_ic_chevron_right_green_24dp))
                 itemView.iv_onboarding_item.maxHeight = convertDpToPixel()
                 itemView.iv_onboarding_item.maxWidth = convertDpToPixel()
@@ -118,10 +118,10 @@ class InterestPickAdapter(private val listener: InterestPickItemListener, val so
         private fun setBackgroundColor(item: InterestPickDataViewModel) {
             if (item.isSelected) {
                 itemView.bg_selected.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_interespick_selected)
-                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
+                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
             } else {
-                itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.white))
-                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Neutral_N700))
+                itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
             }
         }
 

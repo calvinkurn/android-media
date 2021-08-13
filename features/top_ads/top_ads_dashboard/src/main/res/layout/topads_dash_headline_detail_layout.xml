@@ -1,0 +1,101 @@
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPagerHeadline"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/dp_4">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:contentScrim="@color/white"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <com.tokopedia.header.HeaderUnify
+                    android:id="@+id/header_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:unify_header_is_show_back_button="true"
+                    app:unify_header_is_show_shadow="false"
+                    app:unify_header_title="@string/topads_headline_detail_title" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifycomponents.DividerUnify
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/hari_ini"
+                        layout="@layout/topads_dash_layout_hari_ini"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                    <include
+                        android:id="@+id/widget"
+                        layout="@layout/topads_dash_headline_detail_view_widget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_12"
+                        app:layout_constraintTop_toBottomOf="@id/hari_ini" />
+
+                    <com.tokopedia.unifycomponents.CardUnify
+                        android:id="@+id/graph_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_12"
+                        android:padding="@dimen/dp_8"
+                        app:layout_constraintTop_toBottomOf="@id/widget">
+
+                        <LinearLayout
+                            android:id="@+id/topads_dashboard_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <include layout="@layout/partial_top_ads_dashboard_statistics" />
+
+                        </LinearLayout>
+
+                    </com.tokopedia.unifycomponents.CardUnify>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/tab_layout"
+                android:layout_gravity="fill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.appbar.AppBarLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

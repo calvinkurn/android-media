@@ -23,13 +23,11 @@ data class Patch(
 
     @Throws(CloneNotSupportedException::class)
     override fun clone(): Any {
-        var clone: Patch? = null
-        clone = try {
+        try {
             return super.clone()
         } catch (e: CloneNotSupportedException) {
             throw e
         }
-        return clone
     }
 
 }

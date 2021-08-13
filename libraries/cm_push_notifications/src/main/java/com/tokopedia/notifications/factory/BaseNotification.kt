@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND = 10L
 
 interface BaseNotificationContract {
     fun defaultIcon(): Bitmap
@@ -80,7 +80,7 @@ abstract class BaseNotification internal constructor(
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     createNotificationChannel()
-                    builder.setBadgeIconType(BADGE_ICON_SMALL)
+                    builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                     builder.setNumber(NOTIFICATION_NUMBER)
                 } else {
                     setNotificationSound(builder)
@@ -125,7 +125,7 @@ abstract class BaseNotification internal constructor(
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     createNotificationChannel()
-                    builder.setBadgeIconType(BADGE_ICON_SMALL)
+                    builder.setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                     builder.setNumber(1)
                 } else {
                     setNotificationSound(builder)
@@ -138,23 +138,23 @@ abstract class BaseNotification internal constructor(
 
     internal val drawableIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.mipmap.ic_statusbar_notif_seller
+            com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller
         else
             R.mipmap.ic_statusbar_notif_customer
 
     private val drawableLargeIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.mipmap.ic_big_notif_seller
+            com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp
         else
             com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
-    internal val bitmapLargeIcon : Bitmap
-    get() = createBitmap()
+    internal val bitmapLargeIcon: Bitmap
+        get() = createBitmap()
 
     override fun defaultIcon(): Bitmap {
         return bitmapLargeIcon
     }
 
-    private fun createBitmap() : Bitmap {
+    private fun createBitmap(): Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val drawable = context.resources.getDrawable(drawableLargeIcon)
             val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -203,7 +203,7 @@ abstract class BaseNotification internal constructor(
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun silentChannel() {
-        val importance = NotificationManager.IMPORTANCE_MAX
+        val importance = NotificationManager.IMPORTANCE_HIGH
         val notificationManager = context.getSystemService(NotificationManager::class.java)
         val notificationChannel = NotificationChannel(CMConstant.NotificationChannel.Channel_DefaultSilent_Id,
                 CMConstant.NotificationChannel.Channel_DefaultSilent_Name,
@@ -219,7 +219,7 @@ abstract class BaseNotification internal constructor(
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun createNotificationChannel() {
         if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-            val importance = NotificationManager.IMPORTANCE_MAX
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(baseNotificationModel.channelName,
                     baseNotificationModel.channelName, importance)
             channel.description = CMConstant.NotificationChannel.CHANNEL_DESCRIPTION
@@ -244,7 +244,7 @@ abstract class BaseNotification internal constructor(
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun createDefaultChannel() {
-        val importance = NotificationManager.IMPORTANCE_MAX
+        val importance = NotificationManager.IMPORTANCE_HIGH
         val notificationManager = context.getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(CMConstant.NotificationChannel.CHANNEL_ID,
                 CMConstant.NotificationChannel.CHANNEL,
@@ -271,12 +271,42 @@ abstract class BaseNotification internal constructor(
         builder.setVibrate(vibratePattern)
     }
 
+    fun loadBitmap(url: String?) : Bitmap?{
+        return try {
+            Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .submit(imageWidth, imageHeight)
+                .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+        }catch (e : Exception){
+            null
+        }
+    }
+
     override fun getBitmap(url: String?): Bitmap {
         return try {
             Glide.with(context)
                     .asBitmap()
                     .load(url)
                     .into(imageWidth, imageHeight)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+        } catch (e: InterruptedException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: ExecutionException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: TimeoutException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: IllegalArgumentException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        }
+    }
+
+    internal fun getBitmap(url: String?, width: Int, height: Int): Bitmap {
+        return try {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .into(width, height)
                     .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
@@ -326,7 +356,6 @@ abstract class BaseNotification internal constructor(
     internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
         var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
-        intent.putExtras(getBundle(baseNotificationModel))
         intent = updateIntentWithCouponCode(baseNotificationModel, intent)
         return getPendingIntent(context, intent, reqCode)
     }
@@ -346,41 +375,7 @@ abstract class BaseNotification internal constructor(
             intent.putExtra(CMConstant.EXTRA_BASE_MODEL,baseNotificationModel)
             intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
             intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-            intent.putExtras(getBundle(baseNotificationModel))
             return intent
-        }
-
-        /**
-         * getBundle will return a Bundle
-         * it bill create Bundle only if VideoPushModel or CustomValues
-         *
-         **/
-        private fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
-            var bundle = Bundle()
-            baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
-            }
-            baseNotificationModel.customValues?.let {
-                if (it.isNotEmpty())
-                    bundle = jsonToBundle(bundle, JSONObject(it))
-            }
-            return bundle
-        }
-
-        /**
-         *
-         *
-         * */
-        private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
-            jsonObject?.let {
-                val iterator = it.keys()
-                while (iterator.hasNext()) {
-                    val key = iterator.next() as String
-                    val value = it.getString(key)
-                    bundle.putString(key, value)
-                }
-            }
-            return bundle
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
@@ -394,8 +389,14 @@ abstract class BaseNotification internal constructor(
         fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
             baseNotificationModel.customValues?.let {
                 if (it.isNotEmpty()) {
-                    intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
-                            (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+                    val couponCode = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE)
+                    val gratificationId = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.GRATIFICATION_ID)
+                    if (!couponCode.isNullOrEmpty()) {
+                        intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, couponCode)
+                    }
+                    if (!gratificationId.isNullOrEmpty()) {
+                        intent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID, gratificationId)
+                    }
                 }
             }
             return intent

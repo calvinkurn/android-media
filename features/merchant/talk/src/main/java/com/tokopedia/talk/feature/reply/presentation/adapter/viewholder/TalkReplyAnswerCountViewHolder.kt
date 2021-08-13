@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.item_talk_reply_answer_count.view.*
 
 class TalkReplyAnswerCountViewHolder(view: View) : AbstractViewHolder<TalkReplyAnswerCountModel>(view) {

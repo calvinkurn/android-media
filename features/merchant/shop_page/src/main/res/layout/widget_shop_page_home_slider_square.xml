@@ -20,7 +20,7 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:ellipsize="end"
         android:singleLine="true"
         tools:text="Title" />

@@ -1,6 +1,7 @@
 package com.tokopedia.additional_check.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
@@ -14,7 +15,6 @@ import dagger.multibindings.StringKey
  * ade.hadian@tokopedia.com
  */
 
-@AdditionalCheckScope
 @Module
 class AdditionalCheckQueryModules {
 
@@ -22,7 +22,7 @@ class AdditionalCheckQueryModules {
     @Provides
     @IntoMap
     @StringKey(AdditionalCheckConstants.QUERY_CHECK_BOTTOM_SHEET)
-    fun provideRawQueryStatusPin(@AdditionalCheckContext context: Context): String =
+    fun provideRawQueryStatusPin(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_show_interrupt)
 
 }

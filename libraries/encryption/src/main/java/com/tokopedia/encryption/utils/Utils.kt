@@ -25,6 +25,10 @@ object Utils {
         return bytes
     }
 
+    fun decodeDecimalToText(keys: IntArray): String {
+        return keys.joinToString(separator = "") { it.toChar().toString() }
+    }
+
     private fun hexToByte(hexString: String): Byte {
         val firstDigit = toDigit(hexString[0])
         val secondDigit =
@@ -37,5 +41,6 @@ object Utils {
         require(digit != -1) { "Invalid Hexadecimal Character: $hexChar" }
         return digit
     }
+
 }
 

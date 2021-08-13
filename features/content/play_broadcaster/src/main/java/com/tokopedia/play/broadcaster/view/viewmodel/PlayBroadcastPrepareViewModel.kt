@@ -12,7 +12,10 @@ import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.error.PlayErrorCode
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -23,7 +26,7 @@ import javax.inject.Inject
 class PlayBroadcastPrepareViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface,
@@ -35,9 +38,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
-
-    val title: String
-        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
 
     val maxDurationDesc: String
         get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
@@ -92,13 +92,15 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private suspend fun doCreateLiveStream(channelId: String) = withContext(dispatcher.io) {
         return@withContext try {
             NetworkResult.Success(createLiveStreamChannelUseCase.apply {
-                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw IllegalStateException("Cover is not set")
+                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw ClientException(PlayErrorCode.Play001)
                 val coverImage =
-                        if (cover.croppedCover !is CoverSetupState.Cropped) throw IllegalStateException("Cover image is not set")
+                        if (cover.croppedCover !is CoverSetupState.Cropped) throw ClientException(PlayErrorCode.Play001)
                         else cover.croppedCover.coverImage
+                val titleModel = mDataStore.getSetupDataStore().getTitle()
+                val title = if (titleModel is PlayTitleUiModel.HasTitle) titleModel.title else throw ClientException(PlayErrorCode.Play002)
                 params = CreateLiveStreamChannelUseCase.createParams(
                         channelId = channelId,
-                        title = cover.title,
+                        title = title,
                         thumbnail = coverImage.toString()
                 )
             }.executeOnBackground())

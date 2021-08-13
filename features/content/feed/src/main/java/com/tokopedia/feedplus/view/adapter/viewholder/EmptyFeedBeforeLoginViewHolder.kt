@@ -38,7 +38,7 @@ class EmptyFeedBeforeLoginViewHolder(itemView: View, listener: EmptyFeedBeforeLo
         val button = itemView.findViewById<Button>(R.id.btn_login)
         button.setOnClickListener { view -> listener.onGoToLogin() }
         val imageView = itemView.findViewById<ImageView>(R.id.iv_image)
-        ImageHandler.loadImage2(imageView, imageUrl, R.drawable.ic_loading_image)
+        ImageHandler.loadImage2(imageView, imageUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
     }
 
     override fun bind(element: EmptyFeedBeforeLoginModel) {}

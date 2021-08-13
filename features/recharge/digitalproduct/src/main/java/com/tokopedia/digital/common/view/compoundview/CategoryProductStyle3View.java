@@ -27,6 +27,7 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -44,7 +45,7 @@ public class CategoryProductStyle3View extends
     private LinearLayout holderChooserProduct;
     private LinearLayout holderAdditionalInfoProduct;
     private LinearLayout holderPriceInfoProduct;
-    private TextView btnBuyDigital;
+    private UnifyButton btnBuyDigital;
     private CheckBox cbInstantCheckout;
     private RelativeLayout layoutCheckout;
     private ImageView tooltipInstantCheckout;
@@ -140,6 +141,11 @@ public class CategoryProductStyle3View extends
     @Override
     public boolean isInstantCheckoutChecked() {
         return cbInstantCheckout.isChecked();
+    }
+
+    @Override
+    public void onBuyButtonLoading(Boolean showLoading) {
+        btnBuyDigital.setLoading(showLoading);
     }
 
     @Override
@@ -290,12 +296,6 @@ public class CategoryProductStyle3View extends
             cbInstantCheckout.setChecked(false);
             layoutCheckout.setVisibility(GONE);
         }
-        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomSheetView.show();
-            }
-        });
     }
 
     private void setBtnBuyDigitalText(String buttonText) {

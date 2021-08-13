@@ -2,6 +2,7 @@ package com.tokopedia.attachproduct.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import android.annotation.SuppressLint;
 
 /**
  * Created by Hendri on 08/03/18.
@@ -17,19 +18,34 @@ public class DataProductResponse {
     private String productName;
     @SerializedName("id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("image_url_700")
     @Expose
     private String productImageFull;
     @SerializedName("image_url")
     @Expose
     private String productImage;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     private String productPrice;
+    @SerializedName("original_price")
+    @Expose
+    private String originalPrice;
+    @SerializedName("discount_percentage")
+    @Expose
+    private String discountPercentage;
     @SerializedName("shop")
     @Expose
     private DataShopResponse shop;
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public String getDiscountPercentage() {
+        return discountPercentage;
+    }
 
     public String getProductUrl() {
         return productUrl;
@@ -47,11 +63,11 @@ public class DataProductResponse {
         this.productName = productName;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

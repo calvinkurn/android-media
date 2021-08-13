@@ -53,46 +53,42 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
     }
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (!isAlreadyInjected) {
-                // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
-                context?.let { GraphqlClient.init(it) }
-                injectDependencies()
-                presenter.attachView(this)
-                isAlreadyInjected = true
-            }
+        if (!isAlreadyInjected) {
+            // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
+            context?.let { GraphqlClient.init(it) }
+            injectDependencies()
+            presenter.attachView(this)
+            isAlreadyInjected = true
+        }
 
-            if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER)) {
-                context?.let {
-                    return SellerFailureSlice(it, sliceUri).getSlice()
-                }
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER)) {
+            context?.let {
+                return SellerFailureSlice(it, sliceUri).getSlice()
             }
+        }
 
-            // Returning slice if the uri has been called/bind before
-            // This will avoid infinite gql call loop in certain cases
-            sliceHashMap[sliceUri]?.let {
-                return it.getSlice()
-            }
+        // Returning slice if the uri has been called/bind before
+        // This will avoid infinite gql call loop in certain cases
+        sliceHashMap[sliceUri]?.let {
+            return it.getSlice()
+        }
 
-            if (userSession.isLoggedIn) {
-                when(sliceUri.path) {
-                    SellerActionConst.Deeplink.ORDER -> {
-                        val date = sliceUri.getDateFromOrderUri()
-                        val canLoadData = (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) && !isLoading
-                        if (canLoadData) {
-                            isLoading = true
-                            presenter.getOrderList(sliceUri, date, sliceHashMap)
-                        }
+        if (userSession.isLoggedIn) {
+            when(sliceUri.path) {
+                SellerActionConst.Deeplink.ORDER -> {
+                    val date = sliceUri.getDateFromOrderUri()
+                    val canLoadData = (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) && !isLoading
+                    if (canLoadData) {
+                        isLoading = true
+                        presenter.getOrderList(sliceUri, date, sliceHashMap)
                     }
                 }
-            } else {
-                mainOrderStatus = SellerActionStatus.NotLogin
-                sendTrackingByStatus()
             }
-            return createNewSlice(sliceUri, isLoading)?.getSlice()
         } else {
-            return null
+            mainOrderStatus = SellerActionStatus.NotLogin
+            sendTrackingByStatus()
         }
+        return createNewSlice(sliceUri, isLoading)?.getSlice()
     }
 
     override fun onSuccessGetOrderList(sliceUri: Uri, orderList: List<Order>) {

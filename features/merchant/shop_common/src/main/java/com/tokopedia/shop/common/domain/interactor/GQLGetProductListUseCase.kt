@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListData
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -27,11 +28,20 @@ class GQLGetProductListUseCase @Inject constructor(
 
     suspend fun execute(requestParams: RequestParams): ProductListData {
         setRequestParams(requestParams.parameters)
-        return executeOnBackground()
+        val response = executeOnBackground()
+        val header = response.productList?.header
+        val errorCode = header?.errorCode
+
+        if(errorCode?.isNotEmpty() == true) {
+            throw MessageErrorException()
+        }
+
+        return response
     }
 
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_FILTER = "filter"
         private const val PARAM_SORT = "sort"
         private const val PARAM_EXTRA_INFO = "extraInfo"
@@ -49,6 +59,7 @@ class GQLGetProductListUseCase @Inject constructor(
          * GQLGetProductListUseCase.createRequestParams(shopId, filterParams, sortParam)
          *
          * @param shopId required, get product list by shopId.
+         * @param warehouseId optional, locationId of selected warehouse.
          * @param filterOptions optional, support multiple values.
          * @param sortOption optional, support only single value.
          * @param extraInfoOptions optional, support multiple values.
@@ -57,12 +68,17 @@ class GQLGetProductListUseCase @Inject constructor(
          */
         fun createRequestParams(
             shopId: String,
+            warehouseId: String? = null,
             filterOptions: List<FilterOption>? = null,
             sortOption: SortOption? = null,
             extraInfoOptions: List<ExtraInfo>? = null
         ): RequestParams {
             return RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
+
+                warehouseId?.let {
+                    putString(PARAM_WAREHOUSE_ID, it)
+                }
 
                 filterOptions?.let {
                     val filterParams = FilterMapper.mapToRequestParam(it)

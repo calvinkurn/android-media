@@ -1,0 +1,37 @@
+{
+  "searchByName": {
+    "contact": {
+      "hasNext": false,
+      "count": "",
+      "data": []
+    }
+  },
+  "searchByReply": {
+    "replies": {
+      "data": [
+        {
+          "contact": {
+            "id": 9494468,
+            "role": "shop",
+            "attributes": {
+              "domain": "tokotestkelvin5",
+              "name": "toko test kelvin 5",
+              "tag": "",
+              "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/9494468/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 7977933,
+          "createTimeStr": "1607342957000",
+          "lastMessage": "\u003cb\u003eTesting789\u003c/b\u003e bluetooth headset tokopedia 11",
+          "msgId": 1305675375,
+          "oppositeId": 9494468,
+          "oppositeType": 2,
+          "replyId": 1,
+          "roomId": "",
+          "productId": "1227791782"
+        }
+      ],
+      "hasNext": false
+    }
+  }
+}

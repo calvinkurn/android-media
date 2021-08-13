@@ -4,23 +4,23 @@
   "query": [
     {
       "pageType": "/shoppage",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "shopId": "{{.+}}",
-      "shopType": "{{.+}}",
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "shopType": ".+",
       "event": "clickShopPage",
       "eventAction": "click sort",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel":""
     },
     {
       "pageType": "/shoppage",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "shopId": "{{.+}}",
-      "shopType": "{{.+}}",
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "shopType": ".+",
       "event": "clickShopPage",
       "eventAction": "sort product",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     }
   ]
 }

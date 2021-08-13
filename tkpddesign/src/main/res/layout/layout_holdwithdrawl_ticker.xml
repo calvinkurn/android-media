@@ -10,7 +10,7 @@
         android:id="@+id/view_hold_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
-        android:background="@color/bg_saldolock_ticker"
+        android:background="@color/Unify_Y100"
         app:layout_constraintBottom_toBottomOf="@+id/tv_desc_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_title_info" />
@@ -43,7 +43,7 @@
         android:layout_marginRight="@dimen/dp_8"
         android:padding="@dimen/dp_8"
         app:srcCompat="@drawable/ic_action_x"
-        android:tint="@color/black_36"
+        android:tint="@color/Unify_N700_32"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,7 +56,7 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:paddingTop="@dimen/dp_8"
         android:text="@string/saldolock_tickerTitle"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,7 @@
         android:lineSpacingExtra="3sp"
         android:paddingBottom="@dimen/dp_8"
         android:text="@string/saldolock_tickerDescription"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_info" />

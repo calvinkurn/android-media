@@ -11,6 +11,7 @@ import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -27,7 +28,7 @@ import javax.inject.Named
  * Created by Lukas on 2019-07-31
  */
 
-@Module(includes = [TopAdsWishlistModule::class])
+@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class])
 class GlobalNavModule {
     @Provides
     fun provideMainParentPresenter(getNotificationUseCase: GetBottomNavNotificationUseCase, userSession: UserSessionInterface): MainParentPresenter {
@@ -58,19 +59,6 @@ class GlobalNavModule {
 
     @Provides
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
-
-    @Provides
-    fun provideGetRecomendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                                graphqlUseCase: GraphqlUseCase,
-                                                userSession: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
-    }
-
-    @Provides
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-    }
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

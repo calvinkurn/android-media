@@ -1,13 +1,13 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListSellerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +26,7 @@ import org.junit.Test
 class ShopShowcasePickerViewModelTest {
 
     @RelaxedMockK
-    lateinit var getSellerShowcaseList: GetShopShowcaseListSellerUseCase
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
     lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
@@ -43,10 +43,10 @@ class ShopShowcasePickerViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopShowcasePickerViewModel(
-                getSellerShowcaseList,
+                getShopEtalaseUseCase,
                 getShopShowcaseTotalProductUseCase,
                 createShopShowcaseUseCase,
-                TestCoroutineDispatchers()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -54,13 +54,13 @@ class ShopShowcasePickerViewModelTest {
     fun `given showcase list as a seller`() {
         runBlocking {
             coEvery {
-                getSellerShowcaseList.executeOnBackground()
+                getShopEtalaseUseCase.executeOnBackground()
             } returns ShopShowcaseListSellerResponse()
 
             viewModel.getShopShowcaseListAsSeller()
 
             coVerify {
-                getSellerShowcaseList.executeOnBackground()
+                getShopEtalaseUseCase.executeOnBackground()
             }
 
             val expectedResponse = Success(ShopShowcaseListSellerResponse())

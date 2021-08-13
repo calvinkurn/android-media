@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.search_result_shop_cpm_layout.view.*
 internal class ShopCpmViewHolder(
         itemView: View,
         val bannerAdsListener: BannerAdsListener?
-): AbstractViewHolder<ShopCpmViewModel>(itemView) {
+): AbstractViewHolder<ShopCpmDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -39,13 +39,13 @@ internal class ShopCpmViewHolder(
         }
     }
 
-    override fun bind(shopCpmViewModel: ShopCpmViewModel?) {
-        if (shopCpmViewModel == null) return
+    override fun bind(shopCpmDataView: ShopCpmDataView?) {
+        if (shopCpmDataView == null) return
 
-        initCpmModel(shopCpmViewModel)
+        initCpmModel(shopCpmDataView)
     }
 
-    private fun initCpmModel(shopCpmViewModel: ShopCpmViewModel) {
-        itemView.adsBannerViewSearchShop?.displayAds(shopCpmViewModel.cpmModel)
+    private fun initCpmModel(shopCpmDataView: ShopCpmDataView) {
+        itemView.adsBannerViewSearchShop?.displayAds(shopCpmDataView.cpmModel)
     }
 }

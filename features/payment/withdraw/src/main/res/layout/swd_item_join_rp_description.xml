@@ -4,6 +4,6 @@
     android:id="@+id/tvJoinRekeningDescription"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/Neutral_N700_68"
+    android:textColor="@color/Unify_N700_68"
     app:typographyType="body_2" />
 

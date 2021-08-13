@@ -9,8 +9,14 @@
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
+        </activity>
+
+        <activity android:name=".ui.shippingeditor.ShippingEditorActivity"
+            android:label="@string/title_shipping_editor"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -20,6 +26,26 @@
                     android:path="@string/path_shop_setting_shipping"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.shopeditaddress.ShopEditAddressActivity"
+            android:label="@string/title_activity_shop_edit_address"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_logistic"
+                    android:pathPattern="@string/path_edit_shop_address"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
+
 
 </manifest>

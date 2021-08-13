@@ -1,5 +1,9 @@
 package com.tokopedia.play.broadcaster.di.broadcast
 
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalyticImpl
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -31,6 +35,22 @@ abstract class PlayBroadcastBindModule {
     @PlayBroadcastScope
     abstract fun bindCoverDataSource(dataStore: CoverDataStoreImpl): CoverDataStore
 
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindTitleDataSource(dataStore: TitleDataStoreImpl): TitleDataStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindTagsDataSource(dataStore: TagsDataStoreImpl): TagsDataStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindBroadcastScheduleDataSource(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindInteractiveDataSource(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
+
     /**
      * Config
      */
@@ -44,7 +64,11 @@ abstract class PlayBroadcastBindModule {
 
     @Binds
     @PlayBroadcastScope
-    abstract fun bindCoverConfigStore(configStore: CoverConfigStoreImpl): CoverConfigStore
+    abstract fun bindTitleConfigStore(configStore: TitleConfigStoreImpl): TitleConfigStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindBroadcastScheduleConfigStore(configStore: BroadcastScheduleConfigStoreImpl): BroadcastScheduleConfigStore
 
     @Binds
     @PlayBroadcastScope
@@ -63,4 +87,15 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+
+    /**
+     * Analytic
+     */
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindContentTaggingAnalytic(contentTaggingAnalytic: PlayBroadcastContentTaggingAnalyticImpl): PlayBroadcastContentTaggingAnalytic
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindnteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
 }

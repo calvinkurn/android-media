@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -26,9 +26,9 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/Neutral_N0"
+                app:contentScrim="@color/Unify_N0"
                 app:layout_scrollFlags="scroll|enterAlways">
 
                 <include
@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:background="@color/Neutral_N700_68"
+            tools:background="@color/Unify_N700_68"
             />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

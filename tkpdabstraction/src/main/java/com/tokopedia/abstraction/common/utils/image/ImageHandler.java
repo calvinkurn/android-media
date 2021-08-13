@@ -641,8 +641,8 @@ public class ImageHandler {
     }
 
     public static void loadImageBlurWithViewTarget(final Context context,
-                                     String imageUrl,
-                                     CustomTarget<Bitmap> simpleTarget) {
+                                                   String imageUrl,
+                                                   CustomTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .asBitmap()

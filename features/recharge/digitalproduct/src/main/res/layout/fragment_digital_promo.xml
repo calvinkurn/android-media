@@ -3,4 +3,4 @@
     android:id="@+id/rv_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/digital_padding_16" />
+    android:layout_marginBottom="@dimen/layout_lvl2" />

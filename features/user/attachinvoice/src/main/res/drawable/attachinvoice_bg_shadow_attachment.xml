@@ -3,6 +3,6 @@
     android:shape="rectangle">
     <gradient
         android:angle="-90"
-        android:endColor="@color/attachinvoice_shadow_attachment"
+        android:endColor="@color/Unify_N700_20"
         android:startColor="@color/transparent" />
 </shape>

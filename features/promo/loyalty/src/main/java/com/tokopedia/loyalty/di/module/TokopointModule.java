@@ -10,7 +10,6 @@ import dagger.Provides;
 /**
  * Created by meta on 17/07/18.
  */
-@LoyaltyScope
 @Module(includes = {ServiceApiModule.class})
 public class TokopointModule {
 

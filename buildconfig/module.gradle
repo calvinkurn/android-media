@@ -69,6 +69,8 @@ android {
 
 dependencies {
 
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7
@@ -89,15 +91,11 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.powerMock
-    testImplementation rootProject.ext.testDependencies.powerMockJUnit
-    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.testDependencies.powerMockXstream
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'

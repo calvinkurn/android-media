@@ -15,5 +15,5 @@
         android:id="@+id/onGoingPromoLayoutDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/Neutral_N50" />
+        android:background="@color/Unify_N50" />
 </merge>

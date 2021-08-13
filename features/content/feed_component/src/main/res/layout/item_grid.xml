@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_10"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -30,7 +30,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:adjustViewBounds="true"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -48,7 +48,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="@id/productImage"
@@ -57,7 +57,7 @@
             app:layout_constraintVertical_bias="0.0"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:background="@color/black_38"
+            tools:background="@color/Unify_N700_32"
             tools:text="+220 Produk Lainnya" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -81,7 +81,7 @@
         app:typographyWeight="bold"
         tools:background="@drawable/cashback_text_background"
         tools:text="Cashback 100%"
-        tools:textColor="@color/feed_color_green_60"
+        tools:textColor="@color/Unify_G500"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -94,7 +94,7 @@
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
         android:gravity="center_vertical"
-        android:textColor="#6631353b"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_10"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tagTypeText"
@@ -113,7 +113,7 @@
         android:gravity="bottom"
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
-        android:textColor="@color/feed_color_black_68"
+        android:textColor="@color/Unify_N700"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"

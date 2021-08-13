@@ -1,6 +1,0 @@
-mutation registerKyc($projectID: Int) {
-  kycRegister(projectID: $projectID) {
-    isSuccess
-    error
-  }
-}

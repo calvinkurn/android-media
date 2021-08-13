@@ -3,7 +3,7 @@
 
     <item>
         <shape>
-            <solid android:color="@color/bg_button_green_border_outline" />
+            <solid android:color="@color/Unify_G500" />
             <corners android:radius="8dp" />
         </shape>
     </item>

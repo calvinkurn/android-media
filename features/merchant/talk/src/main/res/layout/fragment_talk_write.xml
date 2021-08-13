@@ -3,7 +3,7 @@
     android:id="@+id/talkWriteScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true"
     android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,11 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/headerTalkWrite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="false"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.tokopedia.talk.feature.write.presentation.widget.TalkWriteHeaderWidget
             android:id="@+id/talkWriteHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/headerTalkWrite" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/write_category_header"
@@ -82,7 +90,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_32"
+            android:textColor="@color/Unify_N700_32"
             app:layout_constraintTop_toBottomOf="@id/empty_view"
             app:typographyType="small"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
@@ -113,11 +121,13 @@
         <include
             android:id="@+id/talkWriteLoading"
             layout="@layout/partial_talk_write_shimmering"
+            app:layout_constraintTop_toBottomOf="@id/headerTalkWrite"
             android:visibility="gone"/>
 
         <include
             android:id="@+id/talkWriteError"
             layout="@layout/partial_talk_connection_error"
+            app:layout_constraintTop_toBottomOf="@id/headerTalkWrite"
             android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

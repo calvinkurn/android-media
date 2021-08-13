@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_10"
     android:paddingRight="@dimen/dp_10"
@@ -15,7 +15,8 @@
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_centerVertical="true"
-        tools:src="@color/black"/>
+        android:contentDescription="@null"
+        tools:src="@color/Unify_N700"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,18 +26,20 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/Unify_N700_96"
             android:ellipsize="end"
             android:lineSpacingExtra="2sp"
             android:maxLines="2"
-            style="@style/TextView.Small.Bold"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="Yellow Rose Bomber Biar panjaang Jacket Bordir - Not all roses are red" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/empty_review_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,8 +47,9 @@
             android:layout_marginTop="@dimen/dp_5"
             android:lineSpacingExtra="6sp"
             android:text="@string/not_reviewed"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:textColor="@color/Unify_N700_44"
             android:visibility="gone"
+            app:typographyType="body_3"
             tools:visibility="visible"/>
     </LinearLayout>
 

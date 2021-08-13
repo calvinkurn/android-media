@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.view.fragment.EditTemplateChatFragment;
@@ -28,6 +29,7 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
             String message = getIntent().getExtras().getString(InboxMessageConstant.PARAM_MESSAGE);
             setToolbarTitle(message == null);
         }
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     @Override

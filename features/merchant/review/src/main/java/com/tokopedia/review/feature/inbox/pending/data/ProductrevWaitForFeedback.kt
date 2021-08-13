@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.review.feature.inbox.common.data.common.ProductrevTimestamp
 
 data class ProductrevWaitForFeedback(
-        @SerializedName("reputationID")
+        @SerializedName("reputationIDStr")
         @Expose
-        val reputationId: Int = 0,
-        @SerializedName("inboxReviewID")
+        val reputationIDStr: String = "",
+        @SerializedName("inboxReviewIDStr")
         @Expose
-        val inboxReviewId: Int = 0,
+        val inboxReviewIDStr: String = "",
         @SerializedName("product")
         @Expose
         val product: ProductrevWaitForFeedbackProduct = ProductrevWaitForFeedbackProduct(),

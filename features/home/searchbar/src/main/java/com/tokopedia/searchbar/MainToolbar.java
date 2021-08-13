@@ -3,21 +3,22 @@ package com.tokopedia.searchbar;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.searchbar.deprecated.component.badge.BadgeView;
 import com.tokopedia.searchbar.util.NotifAnalytics;
 import com.tokopedia.searchbar.util.NotifPreference;
 import com.tokopedia.user.session.UserSession;
@@ -28,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
+    private static final String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
     private boolean wishlistNewPage = false;
     protected ImageView btnNotification;
     protected ImageView btnWishlist;

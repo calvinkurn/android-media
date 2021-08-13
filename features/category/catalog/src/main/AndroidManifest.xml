@@ -4,10 +4,10 @@
     <application>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:label="@string/title_activity_catalog"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -16,8 +16,8 @@
                     android:host="@string/catalog_host"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -30,6 +30,11 @@
         </activity>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogGalleryActivity"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.CatalogYoutubePlayerActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="landscape"
+            />
     </application>
 </manifest>

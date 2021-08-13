@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants"
@@ -18,6 +19,7 @@
         android:padding="@dimen/dp_10">
 
         <ImageView
+            android:contentDescription="@string/content_desc_custom_search_magnify_icon"
             android:id="@+id/image_view_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,9 +46,11 @@
             android:inputType="text"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_44"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            tools:ignore="ContentDescription" />
 
         <ImageButton
+            android:contentDescription="@string/content_desc_close_text_search"
             android:id="@+id/image_button_close"
             android:layout_width="@dimen/dp_22"
             android:layout_height="@dimen/dp_22"
@@ -74,7 +78,7 @@
         android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/label_manage"
-        android:textColor="@color/GeneralLightGreenText"
+        android:textColor="@color/Unify_G500"
         app:typographyType="heading_6" />
 
 </LinearLayout>

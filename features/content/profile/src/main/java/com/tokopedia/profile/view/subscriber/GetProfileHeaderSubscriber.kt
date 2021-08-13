@@ -1,20 +1,19 @@
 package com.tokopedia.profile.view.subscriber
 
-import android.text.TextUtils
+import android.content.Intent
+import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profile.R
-import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
-import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import rx.Subscriber
-import android.content.Intent
-import android.net.Uri
 
 
 /**
@@ -34,7 +33,7 @@ class GetProfileHeaderSubscriber constructor(
             onError(RuntimeException())
             return
         }
-        if (TextUtils.isEmpty(data.bymeProfileHeader.profileHeaderError.message).not()) {
+        if (data.bymeProfileHeader.profileHeaderError.message.isNotEmpty()) {
             onError(MessageErrorException(data.bymeProfileHeader.profileHeaderError.message))
             return
         }

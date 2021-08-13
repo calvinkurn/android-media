@@ -22,12 +22,15 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
-        val provider: ResourceProvider, coroutineDispatcher: CoroutineDispatcher
+        val provider: ResourceProvider,
+        private val userSession: UserSessionInterface,
+        coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
 
     var productInputModel = MutableLiveData<ProductInputModel>()
@@ -45,6 +48,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
+    var isMultiLocationShop: Boolean = false
+        private set
 
     private val mErrorCounter = MutableLiveData(0)
     val errorCounter: LiveData<Int> get() = mErrorCounter
@@ -367,7 +372,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage() ?: ""
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) ?: ""
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -395,7 +400,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage().orEmpty()
+                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT).orEmpty()
             }
             else -> ""
         }
@@ -435,6 +440,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
                 combination = combination)
+    }
+
+    fun setupMultiLocationValue() {
+        isMultiLocationShop = userSession.run {
+            isMultiLocationShop && (isShopAdmin || isShopOwner)
+        }
     }
 
     private fun refreshCollapsedVariantDetailField() {

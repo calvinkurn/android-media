@@ -33,7 +33,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
-        val TAG: String = MoreMenuBottomSheet::class.java.simpleName
+        const val TAG: String = "MoreMenuBottomSheet"
 
         private const val IS_ACTIVE = "is_active"
     }

@@ -1,22 +1,32 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
-import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
+import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
+import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
+import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
+import com.tokopedia.discovery2.TRANSPARENT_BLACK
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
+import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
+private const val TERJUAL_HABIS = "Terjual Habis"
 
 class DiscoveryDataMapper {
 
@@ -24,7 +34,9 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int, design: String = ""): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
+                                   parentComponentName: String?,
+                                   position: Int, design: String = "", compId : String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
@@ -33,6 +45,7 @@ class DiscoveryDataMapper {
                 componentsItem.name = subComponentName
                 componentsItem.id = id
                 componentsItem.design = design
+                componentsItem.parentComponentId = compId
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -87,6 +100,15 @@ class DiscoveryDataMapper {
                 }
             }
         }
+    }
+
+    fun mapProductListToCircularModel(listItem: List<DataItem>) : ArrayList<CircularModel> {
+        val bannerList = ArrayList<CircularModel>()
+        listItem.forEachIndexed { index, it ->
+            val circularModel = CircularModel(index, it.imageUrlDynamicMobile ?: "")
+            bannerList.add(circularModel)
+        }
+        return bannerList
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
@@ -153,49 +175,124 @@ class DiscoveryDataMapper {
         return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
     }
 
-    fun mapDataItemToProductCardModel(dataItem: DataItem): ProductCardModel {
+    fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {
+        val productName: String
+        val slashedPrice: String
+        val formattedPrice: String
+        val isOutOfStock: Boolean
+        val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
+
+        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
+                || componentName == ComponentNames.ProductCardSprintSale.componentName) {
+            productName = dataItem.title ?: ""
+            slashedPrice = setSlashPrice(dataItem)
+            formattedPrice = setFormattedPrice(dataItem)
+            isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
+        } else {
+            productName = dataItem.name ?: ""
+            slashedPrice = dataItem.discountedPrice ?: ""
+            formattedPrice = dataItem.price ?: ""
+            isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
+        }
         return ProductCardModel(
-                productName = dataItem.name ?: "",
-                slashedPrice = dataItem.discountedPrice ?: "",
-                formattedPrice = dataItem.price ?: "",
+                productImageUrl = dataItem.imageUrlMobile ?: "",
+                productName = productName,
+                slashedPrice = slashedPrice,
+                formattedPrice = formattedPrice,
                 discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
                     "${dataItem.discountPercentage}%"
                 } else {
                     ""
                 },
                 countSoldRating = dataItem.averageRating,
-                productImageUrl = dataItem.imageUrlMobile ?: "",
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
-                pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
-                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                pdpViewCount = getPDPViewCount(dataItem.pdpView),
+                labelGroupList = labelGroupList.apply {
+                    dataItem.labelsGroupList?.forEach {
+                        add(ProductCardModel.LabelGroup(it.position,
+                                it.title,
+                                it.type,
+                                it.url))
+                    }
                 },
                 shopLocation = getShopLocation(dataItem),
-                shopBadgeList = getShopBadgeList(dataItem)
+                shopBadgeList = getShopBadgeList(dataItem.badges),
+                stockBarPercentage = setStockProgress(dataItem),
+                stockBarLabel = dataItem.stockWording?.title ?: "",
+                stockBarLabelColor = dataItem.stockWording?.color ?: "",
+                isOutOfStock = isOutOfStock,
+                hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
+                hasThreeDots = dataItem.hasThreeDots
         )
     }
 
-    private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
+    private fun setSlashPrice(dataItem: DataItem): String {
+        if(dataItem.discountedPrice.isNullOrEmpty()){
+            return ""
+        }else if(dataItem.discountedPrice == dataItem.price){
+            return ""
+        }
+        return dataItem.price ?: ""
+    }
+
+    private fun setFormattedPrice(dataItem: DataItem): String {
+        if (dataItem.discountedPrice.isNullOrEmpty()) {
+            return dataItem.price ?: ""
+        }
+        return dataItem.discountedPrice ?: ""
+    }
+
+    private fun getPDPViewCount(pdpView: String): String {
+        val pdpViewData = pdpView.toDoubleOrZero()
+        return if (pdpViewData >= PDP_VIEW_THRESHOLD) {
+            Utils.getCountView(pdpViewData)
+        } else {
+            ""
+        }
+    }
+
+    private fun setStockProgress(dataItem: DataItem): Int {
+        val stockSoldPercentage = dataItem.stockSoldPercentage
+        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+            dataItem.stockWording?.title = ""
+        } else {
+            if (stockSoldPercentage.toIntOrZero() !in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+                dataItem.stockWording?.title = ""
+            }
+        }
+        return stockSoldPercentage.toIntOrZero()
+    }
+
+    private fun outOfStockLabelStatus(productStock: String?, saleStockValidation: Int = 0): Boolean {
+        return when (saleStockValidation) {
+            productStock?.toIntOrNull() -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+    private fun getShopBadgeList(showBadges: List<Badges?>?): List<ProductCardModel.ShopBadge> {
         return ArrayList<ProductCardModel.ShopBadge>().apply {
-            when {
-                dataItem.goldMerchant == true && dataItem.officialStore == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-                dataItem.goldMerchant == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = POWER_MERCHANT_URL))
-                dataItem.officialStore == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-                else -> add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
+            showBadges?.firstOrNull()?.let {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = it.image_url))
             }
         }
     }
 
     private fun getShopLocation(dataItem: DataItem): String {
         return if (!dataItem.shopLocation.isNullOrEmpty()) {
-            dataItem.shopLocation
+            dataItem.shopLocation!!
         } else if (!dataItem.shopName.isNullOrEmpty()) {
-            dataItem.shopName
+            dataItem.shopName!!
         } else {
             ""
         }

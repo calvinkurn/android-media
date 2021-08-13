@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground"
-    android:paddingLeft="@dimen/dp_9"
+    android:paddingStart="@dimen/dp_9"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <CheckBox
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_donation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
         android:paddingTop="@dimen/dp_6"
+        android:paddingEnd="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_6"
-        android:paddingRight="@dimen/dp_4"
-        android:button="@drawable/ic_cart_check_box" />
+        app:layout_flexShrink="0" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_donation_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:drawableRight="@drawable/info_icon"
-        android:drawablePadding="@dimen/dp_8"
-        tools:text="TopDonasi100 donasi " />
+        android:gravity="center_vertical"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="TopDonasi100 donasi" />
 
-</LinearLayout>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/img_donation_info"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        app:icon_name="INFORMATION"
+        app:layout_flexShrink="0" />
+
+</com.google.android.flexbox.FlexboxLayout>

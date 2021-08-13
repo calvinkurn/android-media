@@ -15,7 +15,6 @@
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:paddingTop="@dimen/layout_lvl4"
         android:paddingBottom="@dimen/layout_lvl3"
         app:layout_constraintTop_toBottomOf="@id/quickEditPriceTextField">

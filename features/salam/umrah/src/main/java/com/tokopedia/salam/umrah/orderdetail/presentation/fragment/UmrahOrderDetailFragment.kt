@@ -86,8 +86,8 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                     val data = it.throwable
                     view?.let {
                         pb_umrah_order_detail.visibility = View.GONE
-                        Toaster.showErrorWithAction(it, data.message
-                                ?: "", Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
+                        Toaster.build(it, data.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                                View.OnClickListener { })
                     }
                 }
             }

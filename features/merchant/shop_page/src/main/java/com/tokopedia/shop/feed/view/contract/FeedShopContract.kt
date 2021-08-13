@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -33,7 +33,7 @@ interface FeedShopContract {
 
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
 
-        fun onWhitelistClicked(element: WhitelistViewModel)
+        fun onWhitelistClicked(element: WhitelistUiModel)
 
         fun onEmptyFeedButtonClicked()
 
@@ -49,7 +49,7 @@ interface FeedShopContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getFeedFirstPage(shopId: String, isPullToRefresh: Boolean)
+        fun getFeedFirstPage(shopId: String, isPullToRefresh: Boolean, authorListEmpty: Boolean)
 
         fun getFeed(shopId: String)
 

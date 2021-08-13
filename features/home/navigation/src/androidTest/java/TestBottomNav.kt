@@ -26,22 +26,16 @@ class TestBottomNav {
     val POSITION_HOME = 0
     val POSITION_FEED = 1
     val POSITION_OS = 2
-    val POSITION_CART = 3
-    val POSITION_ACCOUNT = 4
 
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_CART))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_ACCOUNT))).check(matches(isDisplayed()))
 
         onView(withTagStringValue(getTitleTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_OS))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getTitleTextViewId(POSITION_CART))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getTitleTextViewId(POSITION_ACCOUNT))).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.notification_badge),
                 withTagStringValue(getBadgeTextViewId(POSITION_HOME)))).check(matches(not(isDisplayed())))
@@ -49,16 +43,12 @@ class TestBottomNav {
                 withTagStringValue(getBadgeTextViewId(POSITION_FEED)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
                 withTagStringValue(getBadgeTextViewId(POSITION_OS)))).check(matches(not(isDisplayed())))
-        onView(allOf(withId(R.id.notification_badge),
-                withTagStringValue(getBadgeTextViewId(POSITION_CART)))).check(matches(not(isDisplayed())))
-        onView(allOf(withId(R.id.notification_badge),
-                withTagStringValue(getBadgeTextViewId(POSITION_ACCOUNT)))).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun testWhenSelectAnItem_theLastSelectedWillFadeOut_andTheCurrentSelectedWillFadeIn() {
         val currentSelectedTag = getLottieAnimationViewId(POSITION_OS)
-        val newSelectedTag = getLottieAnimationViewId(POSITION_CART)
+        val newSelectedTag = getLottieAnimationViewId(POSITION_FEED)
 
         onView(withTagStringValue(currentSelectedTag)).perform(click())
         onView(withTagStringValue(newSelectedTag)).perform(click())

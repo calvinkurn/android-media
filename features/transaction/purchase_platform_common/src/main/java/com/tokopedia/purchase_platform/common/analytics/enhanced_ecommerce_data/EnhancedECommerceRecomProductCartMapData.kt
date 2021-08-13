@@ -5,26 +5,28 @@ import java.util.*
 
 class EnhancedECommerceRecomProductCartMapData {
 
+    companion object {
+        const val KEY_NAME = "name"
+        const val KEY_ID = "id"
+        const val KEY_PRICE = "price"
+        const val KEY_BRAND = "brand"
+        const val KEY_CAT = "category"
+        const val KEY_VARIANT = "variant"
+        const val KEY_QTY = "quantity"
+        const val KEY_SHOP_ID = "shop_id"
+        const val KEY_SHOP_TYPE = "shop_type"
+        const val KEY_SHOP_NAME = "shop_name"
+        const val KEY_CATEGORY_ID = "category_id"
+        const val KEY_DIMENSION_40 = "dimension40"
+        const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_53 = "dimension53"
+        const val KEY_DIMENSION_83 = "dimension83"
+
+        val DEFAULT_VALUE_NONE_OTHER = "none/other"
+        val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    }
+
     private val Product = HashMap<String, Any>()
-
-    private val KEY_NAME = "name"
-    private val KEY_ID = "id"
-    private val KEY_PRICE = "price"
-    private val KEY_BRAND = "brand"
-    private val KEY_CAT = "category"
-    private val KEY_VARIANT = "variant"
-    private val KEY_QTY = "quantity"
-    private val KEY_SHOP_ID = "shop_id"
-    private val KEY_SHOP_TYPE = "shop_type"
-    private val KEY_SHOP_NAME = "shop_name"
-    private val KEY_CATEGORY_ID = "category_id"
-    private val KEY_DIMENSION_40 = "dimension40"
-    private val KEY_DIMENSION_45 = "dimension45"
-    private val KEY_DIMENSION_53 = "dimension53"
-    private val KEY_DIMENSION_83 = "dimension83"
-
-    val DEFAULT_VALUE_NONE_OTHER = "none/other"
-    val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
     fun setProductName(name: String) {
         Product[KEY_NAME] = if (name.isNotBlank()) name else DEFAULT_VALUE_NONE_OTHER

@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
+import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity
 import com.tokopedia.config.GlobalConfig
 
@@ -101,7 +102,7 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
         fun getInstance(context: Context): ApplinkLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
-                    instance = ApplinkLogger(context)
+                    instance = ApplinkLogger(context.applicationContext)
                 } else {
                     instance = emptyInstance()
                 }

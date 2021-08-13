@@ -5,21 +5,21 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author normansyahputa on 3/20/17.
  */
 
-public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
+public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationUiModel> {
 
     LinearLayout reputationBadgeListener;
-    TextView reputationPoints;
+    Typography reputationPoints;
     @LayoutRes
     private int defaultLayoutId;
 
@@ -29,28 +29,18 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
         LayoutInflater.from(context).inflate(defaultLayoutId, this);
 
         reputationBadgeListener = (LinearLayout) findViewById(R.id.reputation_badge_listener);
-        reputationPoints = (TextView) findViewById(R.id.reputation_points);
-    }
-
-    private String separate(String layoutName) {
-        return layoutName.split("/")[2].replace(".xml", "");
-    }
-
-    private int getLayoutByName(String layoutName) {
-        String packageName = getContext().getPackageName();
-        int resId = getResources().getIdentifier(layoutName, "layout", packageName);
-        return resId;
+        reputationPoints = (Typography) findViewById(R.id.reputation_points);
     }
 
     @Override
-    public void init(ReputationViewModel data) {
+    public void init(ReputationUiModel data) {
 
         ReputationLevelUtils.setReputationMedalsWithoutDialog(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
 
         reputationPoints.setText(String.format("%s %s", data.stats.shopReputationScore, getContext().getString(R.string.point)));
     }
 
-    public static class ReputationViewModel {
+    public static class ReputationUiModel {
         public int typeMedal;
         public int levelMedal;
         public String reputationPoints;

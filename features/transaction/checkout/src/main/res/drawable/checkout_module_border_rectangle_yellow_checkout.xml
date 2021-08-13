@@ -3,7 +3,7 @@
     android:id="@+id/listview_background_shape">
     <stroke
         android:width="0.5dp"
-        android:color="#fde18e" />
+        android:color="@color/Unify_Y200" />
     <corners android:radius="1dp" />
-    <solid android:color="#fefcf5" />
+    <solid android:color="@color/Unify_N0" />
 </shape>

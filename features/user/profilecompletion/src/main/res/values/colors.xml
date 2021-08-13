@@ -12,12 +12,12 @@
     <color name="medium_green">#42b549</color>
 
     <array name="green_indicator">
-        <item>@color/green_50</item>
-        <item>@color/green_60</item>
-        <item>@color/green_70</item>
-        <item>@color/green_80</item>
-        <item>@color/green_90</item>
-        <item>@color/green_100</item>
+        <item>@color/Unify_G100</item>
+        <item>@color/Unify_G400</item>
+        <item>@color/Unify_G400</item>
+        <item>@color/Unify_G600</item>
+        <item>@color/Unify_G600</item>
+        <item>@color/Unify_G700</item>
     </array>
 
     <color name="green_50">#afd564</color>

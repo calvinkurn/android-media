@@ -6,24 +6,37 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
+import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by jegul on 02/06/20
  */
-class PlayBroadcastUiMapper : PlayBroadcastMapper {
+class PlayBroadcastUiMapper(
+        private val textTransformer: HtmlTextTransformer
+) : PlayBroadcastMapper {
 
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
         val type = EtalaseType.getByType(it.type, it.id)
@@ -44,8 +57,8 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
         ProductContentUiModel(
                 id = it.id.toLong(),
                 name = it.name,
-                imageUrl = it.pictures.first().urlThumbnail,
-                originalImageUrl = it.pictures.first().urlThumbnail,
+                imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+                originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
@@ -75,7 +88,7 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
     ) : FollowerDataUiModel {
         val totalRetrievedFollowers = response.shopFollowerList.data.size
         return FollowerDataUiModel(
-                followersList = List(3) {
+                followersList = List(TOTAL_FOLLOWERS) {
                     if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
                     else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
                 },
@@ -90,13 +103,13 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                     streamUrl = media.streamUrl)
 
     override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
-                TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
-                TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
-                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop),
-                TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
-                TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
-                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
-                TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, metrics.paymentVerified)
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
         )
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
@@ -132,10 +145,10 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                 config.completeDraft
         )
 
-        val maxDuration = config.maxDuration * 1000
+        val maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration)
         val remainingTime = when(channelStatus.second) {
-            ChannelType.Active -> config.activeChannelRemainingDuration*1000
-            ChannelType.Pause -> config.pausedChannelRemainingDuration*1000
+            ChannelType.Active -> TimeUnit.SECONDS.toMillis(config.activeChannelRemainingDuration)
+            ChannelType.Pause -> TimeUnit.SECONDS.toMillis(config.pausedChannelRemainingDuration)
             else -> maxDuration
         }
 
@@ -144,11 +157,10 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                 channelId = channelStatus.first,
                 channelType =  channelStatus.second,
                 remainingTime = remainingTime,
-                timeElapsed = (maxDuration - remainingTime).convertMillisToMinuteSecond(),
                 durationConfig = DurationConfigUiModel(
                         duration = maxDuration,
                         maxDurationDesc = config.maxDurationDesc,
-                        pauseDuration = config.maxPauseDuration * 1000,
+                        pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(
                         maxProduct = config.maxTaggedProduct,
@@ -159,7 +171,12 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = config.maxTitleLength
                 ),
-                countDown = config.countdownSec
+                countDown = config.countdownSec,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
+                )
         )
     }
 
@@ -169,7 +186,7 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
-            status = PlayChannelStatus.getByValue(channel.basic.status.id)
+            status = PlayChannelStatusType.getByValue(channel.basic.status.id)
     )
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
@@ -182,7 +199,18 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+        else {
+            val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
+            BroadcastScheduleUiModel.Scheduled(
+                    time = scheduleDate,
+                    formattedTime = scheduleDate.toFormattedString(DATE_FORMAT_BROADCAST_SCHEDULE, Locale("id", "ID"))
+            )
+        }
+    }
+
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel {
         val prevSource = when (val prevCover = setupCover?.croppedCover) {
             is CoverSetupState.Cropped -> prevCover.coverSource
             else -> null
@@ -195,7 +223,6 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                         coverSource = prevSource ?: CoverSource.None
                 ),
                 state = SetupDataState.Uploaded,
-                title = coverTitle
         )
     }
 
@@ -204,15 +231,13 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             title = channel.share.metaTitle,
             description = channel.share.metaDescription,
             imageUrl = channel.basic.coverUrl,
-            textContent = channel.share.text,
+            textContent = textTransformer.transform(channel.share.text),
             redirectUrl = channel.share.redirectURL,
             shortenUrl = channel.share.useShortURL
     )
 
-    override fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
-            duration = duration.duration,
-            remaining = duration.remaining * 1000,
-            maxDuration = duration.maxDuration
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel = LiveDurationUiModel(
+            duration = duration
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
@@ -238,4 +263,39 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             message = bannedEvent.reason,
             buttonTitle = bannedEvent.btnText
     )
+
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+        val interactiveDuration = response.interactiveConfig.config.interactiveDuration
+
+        return InteractiveConfigUiModel(
+            isActive = response.interactiveConfig.config.isActive,
+            nameGuidelineHeader = response.interactiveConfig.config.interactiveNamingGuidelineHeader,
+            nameGuidelineDetail = response.interactiveConfig.config.interactiveNamingGuidelineDetail,
+            timeGuidelineHeader = response.interactiveConfig.config.interactiveTimeGuidelineHeader,
+            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail
+                .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
+            durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
+            availableStartTimeInMs = response.interactiveConfig.config.countdownPickerTime.map {
+                TimeUnit.SECONDS.toMillis(it.toLong())
+            },
+        )
+    }
+
+    override fun mapInteractiveSession(
+        response: PostInteractiveCreateSessionResponse,
+        title: String,
+        durationInMs: Long
+    ): InteractiveSessionUiModel {
+        return InteractiveSessionUiModel(
+            response.interactiveSellerCreateSession.data.interactiveId,
+            title,
+            durationInMs
+        )
+    }
+
+    companion object {
+        private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
+
+        private const val TOTAL_FOLLOWERS = 3
+    }
 }

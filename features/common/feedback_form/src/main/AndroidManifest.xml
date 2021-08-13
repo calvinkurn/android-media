@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.feedback_form">
+
+    <application>
+        <activity
+            android:name=".feedbackpage.ui.feedbackpage.FeedbackPageActivity"
+            android:label="@string/create_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:scheme="@string/internal_scheme"
+                    android:pathPattern="@string/path_internal_feedback"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".drawonpicture.presentation.activity.DrawOnPictureActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/draw_on_picture_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+    </application>
+
+</manifest>

@@ -26,11 +26,11 @@ object DealsUtils {
 
     fun getLabelColor(context: Context, label: String): ProductCategoryDataView {
         val color =  when(label){
-            getString(context, R.string.deals_homepage_popular_tag) -> com.tokopedia.unifyprinciples.R.color.Yellow_Y400
-            getString(context, R.string.deals_homepage_new_deals_tag) -> com.tokopedia.unifyprinciples.R.color.Blue_B500
-            getString(context, R.string.deals_homepage_new_halal_tag) -> com.tokopedia.unifyprinciples.R.color.Green_G500
-            getString(context, R.string.deals_homepage_new_hot_deals_tag) -> com.tokopedia.unifyprinciples.R.color.Red_R500
-            else -> com.tokopedia.unifyprinciples.R.color.light_N700_68
+            getString(context, R.string.deals_homepage_popular_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_Y400
+            getString(context, R.string.deals_homepage_new_deals_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_B500
+            getString(context, R.string.deals_homepage_new_halal_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_G500
+            getString(context, R.string.deals_homepage_new_hot_deals_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_R500
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
         }
 
         return ProductCategoryDataView(label, color)

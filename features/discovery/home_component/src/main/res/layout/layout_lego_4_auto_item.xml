@@ -19,7 +19,7 @@
         app:typographyType="heading_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/item_image"
+        app:layout_constraintRight_toLeftOf="@+id/item_frame_image"
         tools:text="TITLE"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,19 +34,34 @@
         app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/item_name"
-        app:layout_constraintRight_toLeftOf="@+id/item_image"
+        app:layout_constraintRight_toLeftOf="@+id/item_frame_image"
         tools:text="test"/>
 
-    <ImageView
-        android:id="@+id/item_image"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_frame_image"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_10"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardElevation="0dp"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+    </androidx.cardview.widget.CardView>
+
 
     <View
         android:background="@color/Unify_N700"

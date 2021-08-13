@@ -1,42 +1,43 @@
 {
   "readme": "Search Product Sort & Filter Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "clickSearchResult",
       "eventCategory": "sort by",
       "eventAction": "sort by - Search result - Product tab",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "filter product",
       "eventAction": "quick filter",
-      "eventLabel": "{{.* - .* - true|false}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}"
+      "eventLabel": ".* - .* - true|false",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "event" : "clickSearchResult",
       "eventCategory" : "search result page - filter product",
       "eventAction" : "apply filter - Search result - Product tab",
-      "eventLabel" : "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel" : ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "search result page - filter product",
       "eventAction": "click filter",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event" : "clickFilter",
       "eventCategory" : "filter journey",
-      "eventAction" : "{{click - Price Pills: \\d*&\\d* - \\d* - outside lihat semua}}",
-      "eventLabel" : "{{true|false}}",
-      "sessionIris": "{{.*}}"
+      "eventAction" : "click - Price Pills: \\d*&\\d* - \\d* - outside lihat semua",
+      "eventLabel" : "true|false",
+      "sessionIris": ".*"
     }
   ]
 }

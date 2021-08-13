@@ -13,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_8"
@@ -32,12 +32,13 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_5"
-                    android:layout_marginRight="@dimen/dp_5"
+                    android:contentDescription="@string/content_description_like"
                     app:srcCompat="@drawable/ic_like_normal" />
 
                 <TextView
                     android:id="@+id/text_counter_like"
                     style="@style/TextView.Micro.BlackDisabled"
+                    android:textColor="@color/Unify_N700_44"
                     android:layout_gravity="center_vertical"
                     tools:text="Anda dan 2 orang terbantu" />
             </LinearLayout>
@@ -57,6 +58,7 @@
                     android:id="@+id/see_reply_button"
                     style="@style/TextView.Micro.BlackSecondary.Bold"
                     android:layout_gravity="center"
+                    android:textColor="@color/Unify_N700_68"
                     android:text="@string/see_reply" />
 
                 <ImageView
@@ -64,8 +66,9 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:contentDescription="@string/content_description_reply_chevron"
                     app:srcCompat="@drawable/ic_arrow_down_grey" />
             </LinearLayout>
 
@@ -77,14 +80,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:visibility="gone"
             tools:visibility="visible">
 
             <LinearLayout
-                android:layout_toLeftOf="@+id/reply_overflow"
+                android:layout_toStartOf="@+id/reply_overflow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -96,13 +99,15 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:textColor="@color/Unify_N700_68"
                         style="@style/TextView.Small.BlackSecondary"
-                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_marginEnd="@dimen/dp_5"
                         android:text="@string/product_review_label_by" />
 
                     <TextView
                         android:id="@+id/seller_reply_name"
                         style="@style/TextView.Small.Bold"
+                        android:textColor="@color/Unify_N700_96"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Pretty Sugar Shop" />
@@ -120,8 +125,7 @@
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.Green.Bold"
                         android:layout_marginEnd="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:background="@drawable/label_seller"
+                        android:background="@drawable/label_seller_review_product"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
                         android:paddingLeft="@dimen/dp_10"
@@ -134,6 +138,7 @@
                     <TextView
                         android:id="@+id/seller_reply_time"
                         style="@style/TextView.Micro.BlackDisabled"
+                        android:textColor="@color/Unify_N700_44"
                         android:textSize="@dimen/sp_12"
                         tools:text="31 Jul 2016, pukul 11:48" />
                 </LinearLayout>
@@ -148,6 +153,7 @@
                     android:fontFamily="sans-serif"
                     android:longClickable="true"
                     android:textIsSelectable="true"
+                    android:textColor="@color/Unify_N700_68"
                     tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami." />
             </LinearLayout>
 
@@ -155,10 +161,10 @@
                 android:id="@+id/reply_overflow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/content_description_reply_overflow"
                 app:srcCompat="@drawable/reputation_ic_more_vert_grey" />
         </RelativeLayout>
     </LinearLayout>

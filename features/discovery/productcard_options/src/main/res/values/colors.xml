@@ -3,7 +3,4 @@
     
     <color name="product_card_options_bottomsheet_transparent">#ae31353b</color>
 
-    <color name="product_card_options_item_title">#f531353b</color>
-    <color name="product_card_options_item_divider">#e5e7e9</color>
-
 </resources>

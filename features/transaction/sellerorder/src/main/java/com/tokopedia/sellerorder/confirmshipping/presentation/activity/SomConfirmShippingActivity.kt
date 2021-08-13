@@ -7,6 +7,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.confirmshipping.di.DaggerSomConfirmShippingComponent
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class SomConfirmShippingActivity: BaseSimpleActivity(), HasComponent<SomConfirmShippingComponent> {
+class SomConfirmShippingActivity: BaseSomActivity(), HasComponent<SomConfirmShippingComponent> {
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {

@@ -26,6 +26,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
+import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
@@ -33,22 +34,28 @@ import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.TradeinConstants.Deeplink.TRADEIN_DISCOVERY_INFO_URL
 import com.tokopedia.tradein.di.DaggerTradeInComponent
-import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInFinalPriceFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
-import com.tokopedia.tradein.viewmodel.HomeResult
-import com.tokopedia.tradein.viewmodel.HomeResult.PriceState
+import com.tokopedia.common_tradein.model.HomeResult
+import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.android.synthetic.main.tradein_home_activity.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
+const val APP_SETTINGS = 9988
+const val LOGIN_REQUEST = 514
+const val MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123
+const val TRADEIN_EXCHANGE = "exchange"
+
+class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -117,7 +124,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
     private fun setObservers() {
         viewModel.askUserLogin.observe(this, Observer {
             if (it != null && it == TradeinConstants.LOGIN_REQUIRED) {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), BaseTradeInActivity.LOGIN_REQUEST)
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
             } else {
                 intent?.data?.lastPathSegment?.let { last ->
                     if (last == FINAL_PRICE) {
@@ -154,7 +161,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
 
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is GoToCheckout -> {
                     goToCheckout(it.deviceId, it.price)
                 }
@@ -165,7 +172,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
     }
 
-    private fun setNotElligible(message: String){
+    private fun setNotElligible(message: String) {
         isEligibleForTradein = false
         maxPrice = "-"
         notEligibleMessage = message
@@ -175,7 +182,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         isEligibleForTradein = true
         maxPrice = homeResult.displayMessage
         minPrice = homeResult.minPrice?.toString() ?: "-"
-        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
+        sendIrisEvent(homeResult.maxPrice ?: 0,homeResult.minPrice ?: 0)
         intent?.data?.lastPathSegment?.let { last ->
             if (last == TRADEIN_INITIAL_PRICE) {
                 deviceDisplayName = homeResult.deviceDisplayName
@@ -191,7 +198,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         isEligibleForTradein = true
         maxPrice = homeResult.displayMessage
         minPrice = homeResult.minPrice?.toString() ?: "-"
-        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
+        sendIrisEvent(homeResult.maxPrice ?: 0, homeResult.minPrice ?: 0)
         if (inputImei) {
             laku6TradeIn.startGUITest()
         }
@@ -204,9 +211,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA,
                     Manifest.permission.VIBRATE),
-                    BaseTradeInActivity.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
-            viewModel.getMaxPrice(laku6TradeIn, TRADEIN_OFFLINE)
+            viewModel.getMaxPrice(laku6TradeIn, 0)
         }
     }
 
@@ -222,7 +229,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                                 .commit()
                     }
                     else -> {
-                        if(currentFragment is TradeInInitialPriceFragment){
+                        if (currentFragment is TradeInInitialPriceFragment) {
                             (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
                         } else {
                             currentFragment = TradeInInitialPriceFragment
@@ -285,9 +292,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     private fun init() {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
-        if (TradeinConstants.LAKU6_BASEURL == TradeinConstants.LAKU6_BASEURL_STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
@@ -297,6 +304,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
             if (it == TRADEIN_SELLER_CHECK)
                 tradeInAnalytics.clickEducationalTradeIn()
         }
+
+        //init sessionid
+        viewModel.initSessionId(laku6TradeIn)
     }
 
     private fun getTradeInParams() {
@@ -307,9 +317,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BaseTradeInActivity.APP_SETTINGS) {
+        if (requestCode == APP_SETTINGS) {
             askPermissions()
-        } else if (requestCode == BaseTradeInActivity.LOGIN_REQUEST) {
+        } else if (requestCode == LOGIN_REQUEST) {
             if (resultCode == RESULT_OK)
                 viewModel.checkLogin()
             else
@@ -318,7 +328,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
-        if (requestCode == BaseTradeInActivity.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
             if (grantResults.isNotEmpty() && permissions.size == grantResults.size) {
                 for (i in permissions.indices) {
                     val result = grantResults[i]
@@ -331,7 +341,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                                 intent.addCategory(Intent.CATEGORY_DEFAULT)
                                 intent.data = Uri.parse("package:" + this.packageName)
-                                this.startActivityForResult(intent, BaseTradeInActivity.APP_SETTINGS)
+                                this.startActivityForResult(intent, APP_SETTINGS)
                             })
                         } else {
                             showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
@@ -340,9 +350,10 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                         return
                     }
                 }
-                viewModel.getMaxPrice(laku6TradeIn, TRADEIN_OFFLINE)
+                viewModel.getMaxPrice(laku6TradeIn, 0)
             } else {
-                askPermissions()
+                showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
+                        getString(R.string.tradein_ok)) { askPermissions() }
             }
         }
     }
@@ -426,7 +437,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
-            if(currentFragment is TradeInInitialPriceFragment)
+            if (currentFragment is TradeInInitialPriceFragment)
                 tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
             else if (currentFragment is TradeInFinalPriceFragment)
                 tradeInAnalytics.clickFinalPriceBack()

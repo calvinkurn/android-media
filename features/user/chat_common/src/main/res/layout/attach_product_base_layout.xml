@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -11,10 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
         android:padding="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_action_x"
@@ -26,10 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:layout_toStartOf="@id/delete_button"
-        android:layout_toLeftOf="@id/delete_button"
-        android:minWidth="@dimen/attachproduct_270dp"
+        android:minWidth="@dimen/chatcommon_270dp"
         android:paddingStart="@dimen/spacing_lvl3"
-        android:paddingLeft="@dimen/spacing_lvl3"
         android:paddingTop="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -45,11 +42,9 @@
             android:id="@+id/name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/attachproduct_10dp"
-            android:layout_marginLeft="@dimen/attachproduct_10dp"
+            android:layout_marginStart="@dimen/chatcommon_10dp"
             android:layout_toEndOf="@id/attach_product_chat_image"
-            android:layout_toRightOf="@id/attach_product_chat_image"
-            android:maxWidth="@dimen/attachproduct_172dp">
+            android:maxWidth="@dimen/chatcommon_172dp">
 
             <LinearLayout
                 android:id="@+id/ll_variant"
@@ -57,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:orientation="horizontal"
                 android:visibility="gone"
@@ -66,9 +60,8 @@
                 <LinearLayout
                     android:id="@+id/ll_variant_color"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/attachproduct_20dp"
+                    android:layout_height="@dimen/chatcommon_20dp"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
-                    android:layout_marginRight="@dimen/spacing_lvl2"
                     android:background="@drawable/bg_attach_product_variant"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/spacing_lvl3"
@@ -76,11 +69,10 @@
 
                     <ImageView
                         android:id="@+id/iv_variant_color"
-                        android:layout_width="@dimen/attachproduct_6dp"
-                        android:layout_height="@dimen/attachproduct_6dp"
+                        android:layout_width="@dimen/chatcommon_6dp"
+                        android:layout_height="@dimen/chatcommon_6dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/spacing_lvl2"
-                        android:layout_marginRight="@dimen/spacing_lvl2"
                         tools:background="@color/Unify_N700" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -100,7 +92,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:layout_marginRight="@dimen/spacing_lvl3"
                     android:background="@drawable/bg_attach_product_variant"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/spacing_lvl3"
@@ -125,12 +116,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_variant"
-                android:layout_marginEnd="@dimen/attachproduct_19dp"
-                android:layout_marginRight="@dimen/attachproduct_19dp"
+                android:layout_marginEnd="@dimen/chatcommon_19dp"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:lineSpacingExtra="4sp"
-                android:maxWidth="@dimen/attachproduct_172dp"
+                android:maxWidth="@dimen/chatcommon_172dp"
                 android:maxLines="1"
                 android:textColor="@color/Unify_N700"
                 app:typographyType="heading_5"
@@ -144,9 +134,7 @@
                 android:layout_alignTop="@+id/discount"
                 android:layout_alignBottom="@+id/discount"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:layout_toEndOf="@+id/discount"
-                android:layout_toRightOf="@+id/discount"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N700_44"
                 android:visibility="gone"
@@ -168,7 +156,7 @@
             <ImageView
                 android:id="@+id/iv_free_shipping"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/attachproduct_20dp"
+                android:layout_height="@dimen/chatcommon_20dp"
                 android:layout_below="@+id/attach_product_chat_price"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:scaleType="fitStart"
@@ -179,12 +167,12 @@
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/discount"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/attachproduct_20dp"
+                android:layout_height="@dimen/chatcommon_20dp"
                 android:layout_below="@id/attach_product_chat_name"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:visibility="gone"
                 app:labelType="general_light_red"
-                app:lineHeight="@dimen/attachproduct_20dp"
+                app:lineHeight="@dimen/chatcommon_20dp"
                 tools:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
@@ -195,9 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_product_attach"
         android:layout_alignEnd="@+id/main_product_attach"
-        android:layout_alignRight="@+id/main_product_attach"
-        android:layout_marginEnd="@dimen/attachproduct_12dp"
-        android:layout_marginRight="@dimen/attachproduct_12dp"
+        android:layout_marginEnd="@dimen/chatcommon_12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/spacing_lvl3"
@@ -206,12 +192,12 @@
 
         <ImageView
             android:id="@+id/ic_add_to_wishlist"
-            android:layout_width="@dimen/attachproduct_40dp"
+            android:layout_width="@dimen/chatcommon_40dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:paddingStart="@dimen/attachproduct_11dp"
+            android:paddingStart="@dimen/chatcommon_11dp"
             android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/attachproduct_11dp"
+            android:paddingEnd="@dimen/chatcommon_11dp"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:visibility="gone"
             tools:srcCompat="@drawable/ic_attachproduct_wishlist"
@@ -219,10 +205,9 @@
 
         <ImageView
             android:id="@+id/ic_add_to_cart"
-            android:layout_width="@dimen/attachproduct_40dp"
+            android:layout_width="@dimen/chatcommon_40dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
             android:gravity="center"
             android:paddingStart="@dimen/spacing_lvl3"
             android:paddingTop="@dimen/spacing_lvl1"
@@ -236,9 +221,9 @@
             android:id="@+id/tv_buy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="@dimen/attachproduct_80dp"
-            android:paddingStart="@dimen/attachproduct_30dp"
-            android:paddingEnd="@dimen/attachproduct_30dp"
+            android:minWidth="@dimen/chatcommon_80dp"
+            android:paddingStart="@dimen/chatcommon_30dp"
+            android:paddingEnd="@dimen/chatcommon_30dp"
             android:text="@string/action_buy"
             android:textAllCaps="false"
             android:visibility="gone"
@@ -253,20 +238,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/footer_layout"
         android:layout_alignEnd="@+id/main_product_attach"
-        android:layout_alignRight="@+id/main_product_attach"
-        android:layout_marginEnd="@dimen/attachproduct_12dp"
-        android:layout_marginRight="@dimen/attachproduct_12dp"
+        android:layout_marginEnd="@dimen/chatcommon_12dp"
         android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         tools:visibility="visible">
 
         <ImageView
             android:id="@+id/chat_status"
-            android:layout_width="@dimen/attachproduct_14dp"
-            android:layout_height="@dimen/attachproduct_14dp"
+            android:layout_width="@dimen/chatcommon_14dp"
+            android:layout_height="@dimen/chatcommon_14dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl1"
             tools:srcCompat="@drawable/ic_check" />
 
         <com.tokopedia.unifyprinciples.Typography

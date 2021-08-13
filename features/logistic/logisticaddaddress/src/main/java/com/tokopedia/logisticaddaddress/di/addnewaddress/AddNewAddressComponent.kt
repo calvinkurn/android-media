@@ -10,7 +10,9 @@ import dagger.Component
  * Created by fwidjaja on 2019-05-09.
  */
 @AddNewAddressScope
-@Component(modules = [AddNewAddressModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [
+    AddNewAddressModule::class,
+    AutoCompleteBottomSheetViewModelsModule::class], dependencies = [BaseAppComponent::class])
 interface AddNewAddressComponent {
     fun inject(pinpointMapFragment: PinpointMapFragment)
     fun inject(autoCompleteBottomSheetFragment: AutocompleteBottomSheetFragment)

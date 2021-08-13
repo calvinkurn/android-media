@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 @Keep
 open class WebsocketAttachmentContract (
@@ -13,7 +14,7 @@ open class WebsocketAttachmentContract (
 
 @Keep
 open class WebsocketAttachmentData (
-        val message_id: Int,
+        val message_id: Long,
         val message: String,
         val source: String,
         val attachment_type: Int,
@@ -28,7 +29,7 @@ open class WebsocketAttachmentData (
             if (attachment is SendableProductPreview) {
                 val product = JsonObject().apply {
                     addProperty("url", attachment.productUrl)
-                    addProperty("product_id", attachment.productId.toInt())
+                    addProperty("product_id", attachment.productId.toLongOrZero())
                 }
                 extrasProducts.add(product)
             }

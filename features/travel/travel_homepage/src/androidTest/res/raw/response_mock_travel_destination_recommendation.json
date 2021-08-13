@@ -1,0 +1,26 @@
+[
+  {
+    "data": {
+      "TravelCollectiveRecommendation": {
+        "items": [
+          {
+            "product": "HOTEL",
+            "title": "Hotel di Jakarta",
+            "subtitle": "",
+            "prefix": "",
+            "prefixStyling": "",
+            "value": "",
+            "webURL": "https://www.tokopedia.com/hotel/search?id=57&name=Jakarta&room=1&adult=1&type=city&page=1&sort=popularity",
+            "appURL": "tokopedia://hotel/dashboard?city_id=357&city_name=Jakarta",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/4/28/8966428/8966428_713f2c0f-1c34-4d5a-9d04-b77f70d93ba8.png"
+          }
+        ],
+        "meta": {
+          "title": "Yuk, explore Jakarta!",
+          "webURL": "",
+          "appURL": "tokopedia://hotel/dashboard"
+        }
+      }
+    }
+  }
+]

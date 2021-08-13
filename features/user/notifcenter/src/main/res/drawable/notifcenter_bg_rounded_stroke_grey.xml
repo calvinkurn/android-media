@@ -4,7 +4,7 @@
 
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/divider_color" />
+        android:color="@color/Unify_N75" />
     <corners android:radius="@dimen/dp_4" />
 
 </shape>

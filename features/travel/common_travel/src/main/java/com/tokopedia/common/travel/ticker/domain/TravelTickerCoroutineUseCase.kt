@@ -1,6 +1,7 @@
 package com.tokopedia.common.travel.ticker.domain
 
 import com.tokopedia.common.travel.data.TravelTickerGQLQuery
+import com.tokopedia.common.travel.ticker.data.TravelTickerRequest
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -25,9 +26,7 @@ class TravelTickerCoroutineUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(
-                PARAM_DID to ANDROID_DEVICE_ID,
-                PARAM_INSTANCE_NAME to instanceName,
-                PARAM_PAGE to pageName
+                PARAM_TICKER_REQUEST to TravelTickerRequest(pageName, instanceName, ANDROID_DEVICE_ID)
         )
         return try {
             val query = TravelTickerGQLQuery.TRAVEL_TICKER
@@ -57,9 +56,7 @@ class TravelTickerCoroutineUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_INSTANCE_NAME = "instanceName"
-        private const val PARAM_PAGE = "tickerPage"
-        private const val PARAM_DID = "did"
-        private const val ANDROID_DEVICE_ID = "5"
+        private const val PARAM_TICKER_REQUEST = "tickerRequest"
+        private const val ANDROID_DEVICE_ID = 5
     }
 }

@@ -49,7 +49,7 @@ class RecentViewUseCase (
 
     fun getParam(loginID: String) {
         params.parameters.clear()
-        params.putInt(PARAM_USER_ID, loginID.toInt())
+        params.putInt(PARAM_USER_ID, loginID.toIntOrNull() ?: 0)
     }
 
 }

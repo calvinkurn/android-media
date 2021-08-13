@@ -32,7 +32,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     protected open fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(R.layout.header_chat, null)
+        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         toolbar.removeAllViews()
         toolbar.addView(mCustomView)
         setSupportActionBar(toolbar)
@@ -68,6 +68,8 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             (findViewById<TextView>(R.id.subtitle)).visibility = View.GONE
         }
     }
+
+    open fun getChatHeaderLayout(): Int = R.layout.header_chat
 
     override fun getNewFragment(): Fragment {
         return Fragment()

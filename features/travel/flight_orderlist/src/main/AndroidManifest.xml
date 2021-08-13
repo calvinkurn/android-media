@@ -1,5 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.flight.orderlist">
 
     <application>
@@ -7,6 +6,7 @@
             android:name=".view.FlightOrderListActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

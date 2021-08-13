@@ -30,6 +30,9 @@ data class LineGraphDataModel(
         @SerializedName("error")
         val error: String?,
         @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean?,
+        @Expose
         @SerializedName("header")
         val header: String?,
         @Expose

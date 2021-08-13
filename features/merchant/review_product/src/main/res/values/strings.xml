@@ -18,4 +18,8 @@
     <string name="product_review_label_by">Oleh</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="content_description_like">Like</string>
+    <string name="content_description_reply_chevron">Reply Chevron</string>
+    <string name="content_description_reply_overflow">Reply Overflow</string>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 </resources>

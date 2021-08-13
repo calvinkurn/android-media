@@ -1,7 +1,0 @@
-query {
-	kycInfo() {
-		Fullname
-		IsVerified
-		IsExist
-	}
-}

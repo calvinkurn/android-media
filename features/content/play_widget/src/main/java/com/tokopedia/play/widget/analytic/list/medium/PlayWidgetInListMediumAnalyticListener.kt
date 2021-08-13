@@ -12,21 +12,24 @@ interface PlayWidgetInListMediumAnalyticListener {
 
     fun onClickViewAll(
             view: PlayWidgetMediumView,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onImpressOverlayCard(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumOverlayUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickOverlayCard(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumOverlayUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -34,7 +37,8 @@ interface PlayWidgetInListMediumAnalyticListener {
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -42,7 +46,24 @@ interface PlayWidgetInListMediumAnalyticListener {
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isRemindMe: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
+    ) {}
+
+    fun onClickMoreActionChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
+    ) {}
+
+    fun onClickDeleteChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int,
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onImpressChannelCard(
@@ -50,13 +71,15 @@ interface PlayWidgetInListMediumAnalyticListener {
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumBannerUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 }

@@ -99,6 +99,40 @@ object EventQuery {
         }
     }"""
 
+    fun mutationEventCheckoutInstant()="""
+        mutation checkout_general_v2_instant(${'$'}params: CheckoutGeneralV2InstantParams) {
+            checkout_general_v2_instant(params: ${'$'}params){
+                header {
+                    process_time
+                    reason
+                    messages
+                    error_code
+                 }
+                data {
+                    success
+                    error
+                    error_state
+                    message
+                    data {
+                        redirect_url
+                        method
+                        content_type
+                        payload
+                    }
+                }
+                status
+                error_reporter {
+                eligible
+                texts {
+                submit_title
+                submit_description
+                submit_button
+                cancel_button
+                  }
+             }
+             }
+        }"""
+
     fun mutationVerifyV2()="""
         mutation verify_v2(${'$'}eventVerify: VerifyRequest!) {
         event_verify(verifyRequestParam: ${'$'}eventVerify)
@@ -208,6 +242,7 @@ object EventQuery {
                     }
                 }
             }
+            gateway_code
         }
     }"""
 
@@ -372,6 +407,7 @@ object EventQuery {
                     forms_package {
                         id
                         product_id
+                        options
                         name
                         title
                         value
@@ -409,6 +445,7 @@ object EventQuery {
                         forms_item {
                            id
                            product_id
+                           options
                             name
                            title
                            value
@@ -436,6 +473,7 @@ object EventQuery {
                 forms {
                     id
                     product_id
+                    options
                     name
                     title
                     value

@@ -48,6 +48,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -82,6 +83,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
     private var detailId: String = ""
+    private var shopId: String = ""
+    private var activityId: String = ""
     private lateinit var shareData: LinkerData
 
     companion object {
@@ -129,11 +132,25 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
+        if (shopId.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SHOP_ID)?.let {
+                    shopId = it
+                }
+            }
+        }
+        if (activityId.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_ACTIVITY_ID)?.let {
+                    activityId = it
+                }
+            }
+        }
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
         adapter = DetailFeedAdapter(typeFactory)
-        GraphqlClient.init(context!!)
+        GraphqlClient.init(requireContext())
         pagingHandler = PagingHandler()
     }
 
@@ -143,7 +160,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!adapter.isLoading && pagingHandler.CheckNextPage()) {
                     pagingHandler.nextPage()
-                    presenter.getFeedDetail(detailId, pagingHandler.page)
+                    presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
                 }
             }
         }
@@ -191,7 +208,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpObservers()
-        presenter.getFeedDetail(detailId, pagingHandler.page)
+        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
     }
 
     private fun setUpObservers() {
@@ -276,7 +293,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         dismissLoading()
         footer.hide()
         NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(context, error)) {
-            presenter.getFeedDetail(detailId, pagingHandler.page)
+            presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
         }
     }
 
@@ -301,7 +318,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 header.shopName,
                 header.shopAvatar,
                 header.shareLinkDescription))
-        seeShopButton.setOnClickListener(onGoToShopDetailFromButton(header.shopId))
+        seeShopButton.setOnClickListener(onGoToShopDetailFromButton(header.shopId.toIntOrZero()))
         pagingHandler.setHasNext(listDetail.size > 1 && hasNextPage)
         adapter.notifyDataSetChanged()
         trackImpression(listDetail)
@@ -311,32 +328,19 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
             val shopNameString = MethodChecker.fromHtml(header.shopName).toString()
             ImageHandler.LoadImage(shopAvatar, header.shopAvatar)
-            when {
-                header.isOfficialStore -> {
-                    goldMerchant.hide()
-                    officialStore.show()
-                }
-                header.isGoldMerchant -> {
-                    goldMerchant.show()
-                    officialStore.hide()
-                }
-                else -> {
-                    goldMerchant.hide()
-                    officialStore.hide()
-                }
-            }
+            officialStore.setImageUrl(header.badgeUrl)
             shopName.text = shopNameString
             shopName.movementMethod = LinkMovementMethod.getInstance()
             if (header.actionText.isNotEmpty()) {
                 shopSlogan.text = String.format(
-                        getString(R.string.feed_header_time_format),
+                        getString(com.tokopedia.feedcomponent.R.string.feed_header_time_format),
                         TimeConverter.generateTime(shopSlogan.context, header.time),
                         header.actionText)
             } else {
                 shopSlogan.text = TimeConverter.generateTime(shopSlogan.context, header.time)
             }
-            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
-            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
+            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
+            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
             show()
         }
     }
@@ -391,7 +395,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                             feedDetailViewModel.name,
                             feedDetailViewModel.price,
                             adapterPosition),
-                    userSession.userId?.toIntOrNull() ?: 0
+                    userSession.userId?.toIntOrNull() ?: 0,
+                feedDetailViewModel.shopId,
+                feedDetailViewModel.activityId
             )
         }
     }

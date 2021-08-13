@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.mvcwidget.views.MvcView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/merchantVoucherListWidget"
+    android:id="@+id/merchantVoucherWidget"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_minus4"
-    android:layout_marginLeft="@dimen/dp_minus4"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
-    android:clipChildren="false"
+    android:layout_height="@dimen/dp_64"
+    app:mvlwTitleString="@string/merchant_voucher"
     android:clipToPadding="false"
-    app:mvlwTitleString="@string/merchant_voucher" />
+    android:clipChildren="false"/>

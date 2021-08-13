@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.List;
@@ -63,10 +62,6 @@ public interface HomeContract {
 
         boolean hasGeolocationPermission();
 
-        void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
-
-        void hideStickyLogin();
-
         boolean needToShowGeolocationComponent();
 
         TrackingQueue getTrackingQueue();
@@ -109,8 +104,6 @@ public interface HomeContract {
         void updateKeywordSearch(KeywordSearchData keywordSearchData);
 
         void getFeedTabData();
-
-        void getStickyContent();
 
         void onCloseGeolocation();
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical"
+    android:padding="@dimen/unify_space_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDigitalCheckoutInputPriceLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:text="@string/digital_cart_user_price_info"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:padding="@dimen/spacing_lvl4">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/etDigitalCheckoutInputPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text_field_input_type="number"
+                app:text_field_label="@string/digital_cart_hint_input_price"
+                app:text_field_label_static="false"
+                app:text_field_prepend_text="Rp"
+                tools:layout_height="@dimen/spacing_lvl6" />
+        </FrameLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</LinearLayout>

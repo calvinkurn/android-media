@@ -69,6 +69,10 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
         btn_recharge_checkout_next.text = label
     }
 
+    fun onBuyButtonLoading(isLoading: Boolean) {
+        btn_recharge_checkout_next.isLoading = isLoading
+    }
+
     interface ActionListener {
         fun onClickNextBuyButton()
     }

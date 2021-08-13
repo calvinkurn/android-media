@@ -9,10 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.os.PersistableBundle
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.trackingoptimizer.constant.Constant
-import com.tokopedia.trackingoptimizer.repository.NewTrackingRepository
-import com.tokopedia.trackingoptimizer.repository.TrackingRepository
+import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
@@ -22,12 +19,8 @@ import kotlin.coroutines.CoroutineContext
  */
 class SendTrackQueueService : Service(), CoroutineScope {
 
-    private val trackingRepository: TrackingRepository by lazy {
-        TrackingRepository(this)
-    }
-
-    private val newTrackingRepository: NewTrackingRepository by lazy {
-        NewTrackingRepository(this)
+    private val trackRepository: TrackRepository by lazy {
+        TrackRepository(this)
     }
 
 
@@ -69,15 +62,8 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val remoteConfig = FirebaseRemoteConfigImpl(this)
-        if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
-            sendTrackNew(this, newTrackingRepository) {
-                stopSelf()
-            }
-        } else {
-            sendTrack(this, trackingRepository) {
-                stopSelf()
-            }
+        sendTrack(this, trackRepository) {
+            stopSelf()
         }
         return Service.START_NOT_STICKY
     }

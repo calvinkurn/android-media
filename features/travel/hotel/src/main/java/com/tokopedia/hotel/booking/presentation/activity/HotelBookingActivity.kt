@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.booking.presentation.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -15,6 +15,9 @@ import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 
 class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingComponent> {
+
+    var cartId: String = ""
+
     override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
@@ -24,14 +27,18 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
                 .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                 .build()
 
-    override fun getNewFragment(): Fragment =
-            HotelBookingFragment.getInstance(
-                    intent.getStringExtra(HotelBookingFragment.ARG_CART_ID),
-                    intent.getStringExtra(HotelBookingFragment.ARG_DESTINATION_TYPE),
-                    intent.getStringExtra(HotelBookingFragment.ARG_DESTINATION_NAME),
-                    intent.getIntExtra(HotelBookingFragment.ARG_ROOM_COUNT, 0),
-                    intent.getIntExtra(HotelBookingFragment.ARG_GUEST_COUNT, 0)
-            )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val uri = intent.data
+        if (uri != null) {
+            cartId = uri.lastPathSegment ?: ""
+        } else if (intent.extras?.containsKey(HotelBookingFragment.ARG_CART_ID) == true) {
+            cartId = intent.getStringExtra(HotelBookingFragment.ARG_CART_ID) ?: ""
+        }
+
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun getNewFragment(): Fragment = HotelBookingFragment.getInstance(cartId)
 
     override fun shouldShowOptionMenu(): Boolean = false
 
@@ -54,15 +61,10 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
     override fun getScreenName(): String = HOTEL_BOOKING_SCREEN_NAME
 
     companion object {
-
         const val HOTEL_BOOKING_SCREEN_NAME = "/hotel/bookingroom"
         
-        fun getCallingIntent(context: Context, cartId: String, destinationType: String, destinationName: String, roomCount: Int, guestCount: Int): Intent =
+        fun getCallingIntent(context: Context, cartId: String): Intent =
                 Intent(context, HotelBookingActivity::class.java)
                         .putExtra(HotelBookingFragment.ARG_CART_ID, cartId)
-                        .putExtra(HotelBookingFragment.ARG_DESTINATION_TYPE, destinationType)
-                        .putExtra(HotelBookingFragment.ARG_DESTINATION_NAME, destinationName)
-                        .putExtra(HotelBookingFragment.ARG_ROOM_COUNT, roomCount)
-                        .putExtra(HotelBookingFragment.ARG_GUEST_COUNT, guestCount)
     }
 }

@@ -8,16 +8,16 @@ import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.digital.R;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-public class DigitalCartCheckoutHolderView extends BaseCustomView {
+public class DigitalCartCheckoutHolderView extends FrameLayout {
 
     private TickerCheckoutView promoTickerView;
     private AppCompatTextView totalPaymentTextView;

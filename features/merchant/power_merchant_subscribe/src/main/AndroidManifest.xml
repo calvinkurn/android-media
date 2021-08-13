@@ -4,14 +4,14 @@
 
     <application>
         <activity
-            android:name=".view.activity.PowerMerchantSubscribeActivity"
+            android:name=".view.activity.SubscriptionActivity"
             android:label="@string/pm_title_activity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -22,22 +22,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".view.activity.TransitionPeriodPmActivity"
-            android:label="@string/pm_title_activity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.PowerMerchantTermsActivity"
-            android:label="@string/pm_title_tnc"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.PMCancellationQuestionnaireActivity"
-            android:label="@string/pm_title_cancellation_questionnaire"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
     </application>
-
 </manifest>

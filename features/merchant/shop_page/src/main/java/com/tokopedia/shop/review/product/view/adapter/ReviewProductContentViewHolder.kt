@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentViewModel
+import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 import com.tokopedia.shop.review.shop.view.uimodel.ImageUpload
 import com.tokopedia.shop.review.util.TimeUtil
 import java.util.*
@@ -113,7 +113,7 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         }
     }
 
-    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentViewModel?>?): ArrayList<ImageUpload> {
+    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentUiModel?>?): ArrayList<ImageUpload> {
         val list = ArrayList<ImageUpload>()
         for (vm in reviewAttachment!!) {
             list.add(ImageUpload(
@@ -185,10 +185,11 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
 
     private fun getReview(review: String?): Spanned {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
+            val moreDescription = "<font color='#${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400) + 0x00ffffff)}'>Selengkapnya</font>"
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
             MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION)
+                            + moreDescription)
         } else {
             MethodChecker.fromHtml(review)
         }
@@ -243,7 +244,6 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
     companion object {
         val LAYOUT = R.layout.item_product_review_shop_page
         private const val MAX_CHAR = 50
-        private const val MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>"
         const val UNLIKE_STATUS = 3
         const val LIKE_STATUS_ACTIVE = 1
         const val WIB = "WIB"

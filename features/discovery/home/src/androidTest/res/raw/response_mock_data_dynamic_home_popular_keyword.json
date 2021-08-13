@@ -1,0 +1,40 @@
+[{
+    "data": {
+        "popular_keywords": {
+            "keywords": [
+                {
+                    "url": "https://www.tokopedia.com/find/meja-kantor?source=homepage.popular_widget_home.0.0",
+                    "image_url": "https://images.tokopedia.net/img/cache/240/attachment/2021/4/21/5511917/5511917_e199f930-2753-4784-afb0-2bdc560e4f23.png",
+                    "keyword": "Meja Kantor",
+                    "mobile_url": "https://m.tokopedia.com/find/meja-kantor?source=homepage.popular_widget_home.0.0",
+                    "product_count": 70170,
+                    "product_count_formatted": "70.1rb Produk"
+                },
+                {
+                    "url": "https://www.tokopedia.com/find/realme-narzo?source=homepage.popular_widget_home.0.0",
+                    "image_url": "https://images.tokopedia.net/img/cache/240/attachment/2021/4/21/5511917/5511917_e199f930-2753-4784-afb0-2bdc560e4f23.png",
+                    "keyword": "Realme Narzo",
+                    "mobile_url": "https://m.tokopedia.com/find/realme-narzo?source=homepage.popular_widget_home.0.0",
+                    "product_count": 60481,
+                    "product_count_formatted": "60.4rb Produk"
+                },
+                {
+                    "url": "https://www.tokopedia.com/find/sepatu-vans?source=homepage.popular_widget_home.0.0",
+                    "image_url": "https://images.tokopedia.net/img/cache/240/attachment/2021/4/21/5511917/5511917_e199f930-2753-4784-afb0-2bdc560e4f23.png",
+                    "keyword": "Sepatu Vans",
+                    "mobile_url": "https://m.tokopedia.com/find/sepatu-vans?source=homepage.popular_widget_home.0.0",
+                    "product_count": 230542,
+                    "product_count_formatted": "230.5rb Produk"
+                },
+                {
+                    "url": "https://www.tokopedia.com/find/sony-a6000?source=homepage.popular_widget_home.0.0",
+                    "image_url": "https://images.tokopedia.net/img/cache/240/attachment/2021/4/21/5511917/5511917_e199f930-2753-4784-afb0-2bdc560e4f23.png",
+                    "keyword": "Sony A6000",
+                    "mobile_url": "https://m.tokopedia.com/find/sony-a6000?source=homepage.popular_widget_home.0.0",
+                    "product_count": 27136,
+                    "product_count_formatted": "27.1rb Produk"
+                }
+            ]
+        }
+    }
+}]

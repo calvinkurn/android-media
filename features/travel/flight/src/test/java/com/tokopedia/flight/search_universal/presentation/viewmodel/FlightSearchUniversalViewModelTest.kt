@@ -1,10 +1,11 @@
 package com.tokopedia.flight.search_universal.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,17 +23,16 @@ class FlightSearchUniversalViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FlightSearchUniversalViewModel(TravelTestDispatcherProvider())
+        viewModel = FlightSearchUniversalViewModel(CoroutineTestDispatchersProvider)
     }
 
     @Test
     fun generatePairOfMinMaxDateForDeparture_shouldReturnPairOfMinMaxForDeparture() {
         // given
-        val minDate = FlightDateUtil.getCurrentDate()
-        val maxDate = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val minDate = DateUtil.getCurrentDate()
+        val maxDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
 
         // when
         val pairOfDeparture = viewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -48,11 +48,10 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun generatePairOfMinMaxDateForReturn_shouldReturnPairOfMinMaxForReturn() {
         // given
-        val departureDate = FlightDateUtil.getCurrentDate()
-        val maxDate = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val departureDate = DateUtil.getCurrentDate()
+        val maxDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
 
         // when
         val pairOfDeparture = viewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
@@ -68,7 +67,8 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateDepartureDate_withValidDepartureDate_shouldSuccess() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
 
         // when
         val validation = viewModel.validateDepartureDate(departureDate)
@@ -80,7 +80,8 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateDepartureDate_withDepartureDateMoreThanYear_shouldFailed() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 10)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 10)
 
         // when
         val validation = viewModel.validateDepartureDate(departureDate)
@@ -92,7 +93,8 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateDepartureDate_withDepartureDateBeforeToday_shouldFailed() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
 
         // when
         val validation = viewModel.validateDepartureDate(departureDate)
@@ -104,8 +106,10 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateReturnDate_withValidReturnDate_shouldSuccess() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val validation = viewModel.validateReturnDate(departureDate, returnDate)
@@ -117,8 +121,10 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateReturnDate_withReturnDateMoreThanYear_shouldFailed() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 10)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 10)
 
         // when
         val validation = viewModel.validateReturnDate(departureDate, returnDate)
@@ -130,8 +136,10 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun validateReturnDate_withReturnDateBeforeDeparture_shouldFailed() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
 
         // when
         val validation = viewModel.validateReturnDate(departureDate, returnDate)

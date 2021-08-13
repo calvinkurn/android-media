@@ -5,27 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="12dp">
+    android:layout_marginBottom="@dimen/unify_space_12">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        app:cardCornerRadius="@dimen/dp_5"
-        app:cardElevation="@dimen/dp_2">
+        android:layout_marginBottom="@dimen/voucher_game_dp_10"
+        app:cardCornerRadius="@dimen/voucher_game_dp_5"
+        app:cardElevation="@dimen/unify_space_2">
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_96"
+            android:layout_height="@dimen/unify_space_96"
             app:use_gradient="true"/>
 
     </androidx.cardview.widget.CardView>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_75"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_14"
+        android:layout_width="@dimen/voucher_game_dp_75"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/voucher_game_dp_14"
         android:layout_gravity="right"
         app:use_gradient="true"
         app:corners="8"

@@ -10,7 +10,10 @@ import androidx.core.app.NotificationCompat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD_ERROR
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.MESSAGE_NOTIF_PRODUCT_UPLOAD_SUCCESS
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.TITLE_NOTIF_PRODUCT_UPLOAD
 import java.util.*
 
 /**
@@ -18,7 +21,6 @@ import java.util.*
  */
 abstract class AddEditProductNotificationManager(
         private val maxCount: Int,
-        private val notificationManager: NotificationManager,
         protected val context: Context) {
 
     companion object {
@@ -29,30 +31,21 @@ abstract class AddEditProductNotificationManager(
 
     private val id: Int = Random().nextInt()
     private var currentProgress = 0
+    private val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle(context.getString(com.tokopedia.product.addedit.R.string.title_notif_product_upload))
-        setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
+        setContentTitle(TITLE_NOTIF_PRODUCT_UPLOAD)
+        setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
+        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         priority = NotificationCompat.PRIORITY_MAX
-    }
-    
-    fun onSuccessUpload() {
-        val text = context.getString(R.string.message_notif_product_upload_success)
-        val notification = notificationBuilder.setContentText(text)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                .setProgress(0, 0, false)
-                .setContentIntent(getSuccessIntent())
-                .setOngoing(false)
-                .setShowWhen(true)
-                .build()
-        notificationManager.notify(TAG, id, notification)
+        currentProgress = 0
     }
 
     fun onStartUpload(primaryImagePathOrUrl: String) {
-        val text = context.getString(R.string.message_notif_product_upload)
+        val text = MESSAGE_NOTIF_PRODUCT_UPLOAD
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, true)
@@ -66,29 +59,40 @@ abstract class AddEditProductNotificationManager(
 
     fun onAddProgress() {
         currentProgress++
-        val text = context.getString(R.string.message_notif_product_upload)
+        val text = MESSAGE_NOTIF_PRODUCT_UPLOAD
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(maxCount, currentProgress, false)
-                .setOngoing(true)
-                .setShowWhen(true)
                 .build()
 
         notificationManager.notify(TAG, id, notification)
     }
 
+    fun onSuccessUpload() {
+        val text = MESSAGE_NOTIF_PRODUCT_UPLOAD_SUCCESS
+        val notification = notificationBuilder.setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+                .setProgress(0, 0, false)
+                .setContentIntent(getSuccessIntent())
+                .setOngoing(false)
+                .setShowWhen(true)
+                .build()
+
+        notificationManager.cancel(TAG, id)
+        notificationManager.notify(TAG, id, notification)
+    }
+
     fun onFailedUpload(errorMessage: String) {
-        val text = context.getString(R.string.message_notif_product_upload_error)
+        val text = MESSAGE_NOTIF_PRODUCT_UPLOAD_ERROR
         val notification = notificationBuilder
                 .setContentTitle(text)
                 .setContentText(errorMessage)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage))
                 .setProgress(0, 0, false)
                 .setContentIntent(getFailedIntent(errorMessage))
-                .setOngoing(false)
-                .setShowWhen(true)
                 .build()
 
+        notificationManager.cancel(TAG, id)
         notificationManager.notify(TAG, id, notification)
     }
 

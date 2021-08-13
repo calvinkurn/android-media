@@ -120,9 +120,9 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     public void setTextAmountRight(@NonNull String text, boolean isImportant) {
         if (isImportant) {
-            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } else {
-            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
 
         this.textAmountRight.setText(text);

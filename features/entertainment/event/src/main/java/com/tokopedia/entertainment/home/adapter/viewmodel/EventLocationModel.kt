@@ -7,8 +7,9 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventLocationModel(var loc: EventHomeDataResponse.Data.EventLocationSearch)
-    : HomeEventItem<HomeTypeFactory> {
+class EventLocationModel(var loc: EventHomeDataResponse.Data.EventLocationSearch =
+                EventHomeDataResponse.Data.EventLocationSearch())
+    : HomeEventItem() {
 
     var items: MutableList<EventItemLocationModel> = mutableListOf()
 

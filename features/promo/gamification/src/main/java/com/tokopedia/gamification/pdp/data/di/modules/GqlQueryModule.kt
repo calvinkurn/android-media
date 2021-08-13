@@ -18,16 +18,7 @@ class GqlQueryModule {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
     }
 
-    @GamificationPdpScope
-    @Provides
-    @Named(GAMING_RECOMMENDATION_PARAM_QUERY)
-    fun provideGamingRecommendationParamRawQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.gamification.R.raw.gami_recommend_params)
-    }
-
-
     companion object {
         const val RECOMMENDATION_QUERY = "recQuery"
-        const val GAMING_RECOMMENDATION_PARAM_QUERY = "gamingRecQuery"
     }
 }

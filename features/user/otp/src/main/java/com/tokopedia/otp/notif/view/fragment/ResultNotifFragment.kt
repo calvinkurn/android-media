@@ -2,11 +2,14 @@ package com.tokopedia.otp.notif.view.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.view.viewbinding.ResultNotifViewBinding
@@ -16,7 +19,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
+class ResultNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -28,6 +31,8 @@ class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
     private var status: String = ""
 
     override val viewBound = ResultNotifViewBinding()
+
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
     override fun getScreenName(): String = ""
 
@@ -64,6 +69,7 @@ class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel_grey_otp)
         viewBound.mainImage?.setImageUrl(imglink)
         viewBound.title?.text = messageTitle
         viewBound.subtitle?.text = messageBody

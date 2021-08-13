@@ -2,8 +2,6 @@ package com.tokopedia.sellerorder.requestpickup.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.list.data.model.SomListOrder
-import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.usecase.coroutines.Fail

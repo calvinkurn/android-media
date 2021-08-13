@@ -44,7 +44,7 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
             val rv = getRecyclerView(view)
             (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.courier_title))
             super.renderList(shopShipments, false)
-            rv.addItemDecoration(DividerItemDecoration(activity))
+            rv?.addItemDecoration(DividerItemDecoration(activity))
         }
     }
 

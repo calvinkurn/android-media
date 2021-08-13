@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:id="@+id/tv_titlepopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             tools:text="tittlr" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:textColor="#000000"
+            android:textColor="@color/Unify_N700"
             android:id="@+id/tv_contentpopup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/bg_button_orange"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

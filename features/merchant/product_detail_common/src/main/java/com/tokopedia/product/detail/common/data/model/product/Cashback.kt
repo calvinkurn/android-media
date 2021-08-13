@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
 
 data class Cashback(
         @SerializedName("percentage")
@@ -21,9 +20,9 @@ data class PreOrder(
         @Expose
         val isActive: Boolean = false,
 
-        @SerializedName("timeUnit")
+        @SerializedName("preorderInDays")
         @Expose
-        val timeUnit: String = TimeUnitTypeDef.UNKNOWN
+        val preorderInDays: Long = 0L
 ) {
     fun isPreOrderActive(): Boolean {
         return (isActive && duration > 0)
@@ -38,16 +37,16 @@ data class Wholesale(
 
         @SerializedName("price")
         @Expose
-        val price: Float = 0f
+        val price: Double = 0.0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readFloat()) {
+        parcel.readDouble()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(minQty)
-        parcel.writeFloat(price)
+        parcel.writeDouble(price)
     }
 
     override fun describeContents(): Int {

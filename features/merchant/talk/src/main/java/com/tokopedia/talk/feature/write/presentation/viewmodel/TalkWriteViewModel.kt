@@ -7,7 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.talk.feature.write.data.mapper.TalkWriteMapper
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.data.model.DiscussionSubmitForm
@@ -19,7 +19,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
@@ -32,7 +31,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
     var isVariantSelected = false
     var availableVariants = ""
 
-    private val productId = MutableLiveData<Int>()
+    private val productId = MutableLiveData<String>()
     val writeFormData: LiveData<Result<DiscussionGetWritingForm>> = Transformations.switchMap(productId) {
         getWriteFormData(it)
     }
@@ -76,7 +75,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         }
     }
 
-    private fun getWriteFormData(productId: Int) : LiveData<Result<DiscussionGetWritingForm>> {
+    private fun getWriteFormData(productId: String) : LiveData<Result<DiscussionGetWritingForm>> {
         val result = MutableLiveData<Result<DiscussionGetWritingForm>>()
         launchCatchError(block = {
             discussionGetWritingFormUseCase.setParams(productId)
@@ -119,7 +118,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     fun submitForm(text: String) {
         launchCatchError(block = {
-            discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value.orZero())
+            discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value ?: "")
             val response = discussionSubmitFormUseCase.executeOnBackground()
             _submitFormResult.postValue(Success(response.discussionSubmitForm))
         }) {
@@ -131,11 +130,11 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         isTextNotEmpty.value = isTextNotEmptyData
     }
 
-    fun setProductId(productId: Int) {
+    fun setProductId(productId: String) {
         this.productId.value = productId
     }
 
-    fun getProductId(): Int?{
+    fun getProductId(): String? {
         return productId.value
     }
 

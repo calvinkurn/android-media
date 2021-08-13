@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.i
 
 import android.content.Context;
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -10,40 +9,44 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.TimeConverter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ReviewResponseViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
+import com.tokopedia.unifycomponents.HtmlLinkHelper;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.iconunify.IconUnifyHelperKt.getIconUnifyDrawable;
 
 /**
  * @author by nisie on 8/19/17.
  */
 
 public class InboxReputationDetailItemViewHolder extends
-        AbstractViewHolder<InboxReputationDetailItemViewModel> {
+        AbstractViewHolder<InboxReputationDetailItemUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
     private static final int MAX_CHAR = 50;
-    private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     private static final String BY = "Oleh";
 
     private static final int MENU_EDIT = 101;
@@ -54,15 +57,15 @@ public class InboxReputationDetailItemViewHolder extends
     private final InboxReputationDetail.View viewListener;
     boolean isReplyOpened = false;
 
-    TextView productName;
+    Typography productName;
     ImageView productAvatar;
-    TextView emptyReviewText;
+    Typography emptyReviewText;
     View viewReview;
-    TextView reviewerName;
-    TextView reviewTime;
+    Typography reviewerName;
+    Typography reviewTime;
     RecyclerView reviewAttachment;
     ImageView reviewOverflow;
-    TextView review;
+    Typography review;
     RatingBar reviewStar;
     View giveReview;
     Context context;
@@ -70,13 +73,13 @@ public class InboxReputationDetailItemViewHolder extends
 
     View replyReviewLayout;
     View seeReplyLayout;
-    TextView seeReplyText;
+    Typography seeReplyText;
     ImageView replyArrow;
 
     View sellerReplyLayout;
-    TextView sellerName;
-    TextView sellerReplyTime;
-    TextView sellerReply;
+    Typography sellerName;
+    Typography sellerReplyTime;
+    Typography sellerReply;
     ImageView replyOverflow;
 
     View sellerAddReplyLayout;
@@ -88,15 +91,15 @@ public class InboxReputationDetailItemViewHolder extends
         super(itemView);
         context = itemView.getContext();
         this.viewListener = viewListener;
-        productName = (TextView) itemView.findViewById(R.id.product_name);
+        productName = (Typography) itemView.findViewById(R.id.product_name);
         productAvatar = (ImageView) itemView.findViewById(R.id.product_image);
-        emptyReviewText = (TextView) itemView.findViewById(R.id.empty_review_text);
+        emptyReviewText = (Typography) itemView.findViewById(R.id.empty_review_text);
         viewReview = itemView.findViewById(R.id.review_layout);
-        reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
-        reviewTime = (TextView) itemView.findViewById(R.id.review_time);
+        reviewerName = (Typography) itemView.findViewById(R.id.reviewer_name);
+        reviewTime = (Typography) itemView.findViewById(R.id.review_time);
         reviewAttachment = (RecyclerView) itemView.findViewById(R.id.product_review_image);
         reviewOverflow = (ImageView) itemView.findViewById(R.id.review_overflow);
-        review = (TextView) itemView.findViewById(R.id.review);
+        review = (Typography) itemView.findViewById(R.id.review);
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         giveReview = itemView.findViewById(R.id.add_review_layout);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
@@ -108,13 +111,13 @@ public class InboxReputationDetailItemViewHolder extends
 
         sellerReplyLayout = itemView.findViewById(R.id.seller_reply_layout);
         seeReplyLayout = itemView.findViewById(R.id.see_reply_layout);
-        seeReplyText = (TextView) seeReplyLayout.findViewById(R.id.see_reply_button);
+        seeReplyText = (Typography) seeReplyLayout.findViewById(R.id.see_reply_button);
         replyArrow = (ImageView) seeReplyLayout.findViewById(R.id.reply_chevron);
 
         replyReviewLayout = itemView.findViewById(R.id.reply_review_layout);
-        sellerName = (TextView) itemView.findViewById(R.id.seller_reply_name);
-        sellerReplyTime = (TextView) itemView.findViewById(R.id.seller_reply_time);
-        sellerReply = (TextView) itemView.findViewById(R.id.seller_reply);
+        sellerName = (Typography) itemView.findViewById(R.id.seller_reply_name);
+        sellerReplyTime = (Typography) itemView.findViewById(R.id.seller_reply_time);
+        sellerReply = (Typography) itemView.findViewById(R.id.seller_reply);
         replyOverflow = (ImageView) itemView.findViewById(R.id.reply_overflow);
 
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);
@@ -170,7 +173,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     @Override
-    public void bind(final InboxReputationDetailItemViewModel element) {
+    public void bind(final InboxReputationDetailItemUiModel element) {
         if (element.isProductDeleted()) {
             productName.setText(
                     context.getString(R.string.product_is_deleted));
@@ -247,6 +250,8 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
 
+            setChevronDownImage();
+
             if (canShowOverflow(element)) {
                 reviewOverflow.setVisibility(View.VISIBLE);
                 reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
@@ -254,8 +259,8 @@ public class InboxReputationDetailItemViewHolder extends
                 reviewOverflow.setVisibility(View.GONE);
             }
 
-            if (element.getReviewResponseViewModel() != null
-                    && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
+            if (element.getReviewResponseUiModel() != null
+                    && !TextUtils.isEmpty(element.getReviewResponseUiModel().getResponseMessage())) {
                 setSellerReply(element);
             } else {
                 seeReplyText.setVisibility(View.GONE);
@@ -283,7 +288,7 @@ public class InboxReputationDetailItemViewHolder extends
         });
     }
 
-    private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
+    private void showOrHideGiveReviewLayout(InboxReputationDetailItemUiModel element) {
         if (element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW
                 || element.isReviewSkipped()
                 || isOwnProduct(element)
@@ -294,7 +299,7 @@ public class InboxReputationDetailItemViewHolder extends
         }
     }
 
-    private void setSellerReply(final InboxReputationDetailItemViewModel element) {
+    private void setSellerReply(final InboxReputationDetailItemUiModel element) {
         sellerAddReplyLayout.setVisibility(View.GONE);
         sellerReplyLayout.setVisibility(View.VISIBLE);
         seeReplyLayout.setVisibility(View.VISIBLE);
@@ -315,8 +320,8 @@ public class InboxReputationDetailItemViewHolder extends
             }
         });
 
-        ReviewResponseViewModel reviewResponseViewModel = element.getReviewResponseViewModel();
-        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseViewModel
+        ReviewResponseUiModel reviewResponseUiModel = element.getReviewResponseUiModel();
+        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseUiModel
                 .getResponseBy())));
         sellerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,8 +329,8 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onGoToShopInfo(element.getShopId());
             }
         });
-        sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
-        sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
+        sellerReplyTime.setText(getFormattedTime(reviewResponseUiModel.getResponseCreateTime()));
+        sellerReply.setText(MethodChecker.fromHtml(reviewResponseUiModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
         if (element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
             seeReplyLayout.setVisibility(View.VISIBLE);
@@ -381,20 +386,19 @@ public class InboxReputationDetailItemViewHolder extends
         return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""));
     }
 
-    private Spanned getReview(String review) {
+    private CharSequence getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
-            return MethodChecker
-                    .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + MORE_DESCRIPTION);
+            return new HtmlLinkHelper(context, subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                    + context.getString(R.string.review_expand)).getSpannedString();
         } else {
             return MethodChecker.fromHtml(review);
         }
     }
 
-    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {
+    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentUiModel> reviewAttachment) {
         ArrayList<ImageUpload> list = new ArrayList<>();
-        for (ImageAttachmentViewModel vm : reviewAttachment) {
+        for (ImageAttachmentUiModel vm : reviewAttachment) {
             list.add(new ImageUpload(
                     vm.getUriThumbnail(),
                     vm.getUriLarge(),
@@ -404,7 +408,7 @@ public class InboxReputationDetailItemViewHolder extends
         return list;
     }
 
-    private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
+    private String getReviewerNameText(InboxReputationDetailItemUiModel element) {
         if (element.isReviewIsAnonymous()
                 && element.getTab() != ReviewInboxConstants.TAB_BUYER_REVIEW) {
             return getAnonymousName(element.getReviewerName());
@@ -420,19 +424,19 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
 
-    private boolean canShowOverflow(InboxReputationDetailItemViewModel element) {
+    private boolean canShowOverflow(InboxReputationDetailItemUiModel element) {
         return element.isReviewIsEditable()
                 || element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW
                 || !TextUtils.isEmpty(element.getProductName());
     }
 
-    private boolean isOwnProduct(InboxReputationDetailItemViewModel element) {
+    private boolean isOwnProduct(InboxReputationDetailItemUiModel element) {
         return viewListener.getUserSession()
                 .getShopId()
                 .equals(String.valueOf(element.getShopId()));
     }
 
-    private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemViewModel element) {
+    private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemUiModel element) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -474,5 +478,9 @@ public class InboxReputationDetailItemViewHolder extends
 
             }
         };
+    }
+
+    private void setChevronDownImage() {
+        replyArrow.setImageDrawable(getIconUnifyDrawable(context, IconUnify.CHEVRON_DOWN, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)));
     }
 }

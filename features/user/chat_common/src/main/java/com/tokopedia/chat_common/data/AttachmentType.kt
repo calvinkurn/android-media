@@ -12,6 +12,7 @@ class AttachmentType {
         const val TYPE_PRODUCT_ATTACHMENT = "3"
         const val TYPE_VOUCHER_ATTACHMENT = 11
         const val TYPE_STICKER = 21
+        const val TYPE_REVIEW_REMINDER = "24"
 
         //TOPCHAT
         const val TYPE_IMAGE_DUAL_ANNOUNCEMENT = "4"

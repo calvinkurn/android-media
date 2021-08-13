@@ -1,9 +1,11 @@
 package com.tokopedia.sellerorder.confirmshipping.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -14,6 +16,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -26,6 +29,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIP
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
@@ -47,10 +51,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var currOrderId = ""
-    private var currShipmentId = 0
-    private var currShipmentName = ""
+    private var currShipmentId = 0L
     private var currShipmentProductId = "0"
-    private var currShipmentProductName = ""
     private var currIsChangeShipping = false
     private var confirmShippingResponseMsg = ""
     private var courierListResponse = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
@@ -60,6 +62,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private val somConfirmShippingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmShippingViewModel::class.java]
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            view.hideKeyboard()
+        }
+        false
     }
 
     companion object {
@@ -127,6 +137,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             switch_change_courier?.isChecked = false
             setBtnToConfirmShipping()
         }
+        view?.setOnTouchListener(hideKeyboardTouchListener)
     }
 
     private fun setupListeners() {
@@ -201,7 +212,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingConfirmShipping() {
-        somConfirmShippingViewModel.confirmShippingResult.observe(this, Observer {
+        somConfirmShippingViewModel.confirmShippingResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickKonfirmasi(true)
@@ -225,13 +236,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingCourierList() {
-        somConfirmShippingViewModel.courierListResult.observe(this, Observer {
+        somConfirmShippingViewModel.courierListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     courierListResponse = it.data
 
                     if (courierListResponse.isNotEmpty()) {
-                        currShipmentId = courierListResponse.first().shipmentId
+                        currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
                         label_choosen_courier?.text = courierListResponse.first().shipmentName
 
                         val listServiceCourier = courierListResponse.first().listShipmentPackage
@@ -241,8 +252,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                         }
                     }
 
-                    label_choosen_courier?.setOnClickListener { showBottomSheetCourier(false) }
-                    iv_choose_courier?.setOnClickListener { showBottomSheetCourier(false) }
+                    label_choosen_courier?.setOnClickListener {
+                        view.hideKeyboard()
+                        showBottomSheetCourier(false)
+                    }
+                    iv_choose_courier?.setOnClickListener {
+                        view.hideKeyboard()
+                        showBottomSheetCourier(false)
+                    }
 
                     label_choosen_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
                     iv_choose_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
@@ -256,7 +273,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingChangeCourier() {
-        somConfirmShippingViewModel.changeCourierResult.observe(this, Observer {
+        somConfirmShippingViewModel.changeCourierResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
@@ -296,10 +313,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
     }
 
-    private fun setCourierServiceListData(shipmentId: Int) {
+    private fun setCourierServiceListData(shipmentId: Long) {
         bottomSheetUnify.setTitle(SomConsts.TITLE_JENIS_LAYANAN)
         courierListResponse.forEach {
-            if (it.shipmentId == shipmentId) {
+            if (it.shipmentId.toLongOrZero() == shipmentId) {
                 somBottomSheetCourierListAdapter.listCourierService = it.listShipmentPackage.toMutableList()
                 somBottomSheetCourierListAdapter.isServiceCourier = true
                 somBottomSheetCourierListAdapter.notifyDataSetChanged()
@@ -314,12 +331,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         somBottomSheetCourierListAdapter.notifyDataSetChanged()
     }
 
-    override fun onChooseCourierAgent(shipmentId: Int, courierName: String) {
+    override fun onChooseCourierAgent(shipmentId: Long, courierName: String) {
         bottomSheetUnify.dismiss()
         currShipmentId = shipmentId
         label_choosen_courier?.text = courierName
         courierListResponse.forEach {
-            if (it.shipmentId == shipmentId) {
+            if (it.shipmentId.toLongOrZero() == shipmentId) {
                 label_choosen_courier_service?.text = it.listShipmentPackage.first().name
                 currShipmentProductId = it.listShipmentPackage.first().spId
             }

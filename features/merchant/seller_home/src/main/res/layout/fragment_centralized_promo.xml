@@ -22,8 +22,6 @@
 
             <include layout="@layout/centralized_promo_partial_promo_creation" />
 
-            <include layout="@layout/centralized_promo_partial_post" />
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

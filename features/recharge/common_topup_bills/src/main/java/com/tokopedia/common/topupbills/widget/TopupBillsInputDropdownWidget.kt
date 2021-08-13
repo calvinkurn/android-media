@@ -45,19 +45,17 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
 
         vg_input_dropdown_search_view.searchBarTextField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(text: Editable?) {
-
+                text?.let {
+                    displayData = initialData.filter { item -> item.label.contains(it, true) }
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                text?.let {
-                    var filteredData = initialData.filter { item -> item.label.contains(it, true) }
-                    if (filteredData.isEmpty()) filteredData = listOf(TopupBillsInputDropdownData(it.toString()))
-                    displayData = filteredData
-                }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
             }
 
         })

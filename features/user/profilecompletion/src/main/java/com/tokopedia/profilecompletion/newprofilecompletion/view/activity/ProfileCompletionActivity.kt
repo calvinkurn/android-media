@@ -36,8 +36,8 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
     }
 
     private fun initView() {
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, R.color.color_white)))
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N500))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
         }
@@ -45,7 +45,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
 
         val upArrow = ContextCompat.getDrawable(this, R.drawable.profilecompletion_ic_action_back)
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP)
+            upArrow.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N500), PorterDuff.Mode.SRC_ATOP)
             supportActionBar?.setHomeAsUpIndicator(upArrow)
         }
     }

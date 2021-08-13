@@ -11,21 +11,21 @@
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:layout_weight="1"
             android:text="@string/flight_search_filter_ticket_price_label"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_4" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icFlightFoldableArrow"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+            app:icon_name="CHEVRON_UP" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
 
         <com.tokopedia.flight.filter.presentation.widget.FlightPriceEditText
             android:id="@+id/etFlightLowestPrice"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:tag="@string/flight_rupiah_label"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -63,7 +63,7 @@
 
         <com.tokopedia.flight.filter.presentation.widget.FlightPriceEditText
             android:id="@+id/etFlightHighestPrice"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -74,7 +74,7 @@
 
         <com.tokopedia.unifycomponents.RangeSliderUnify
             android:id="@+id/rsuFlightFilterPrice"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintLeft_toLeftOf="@id/etFlightLowestPrice"
@@ -86,8 +86,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/flight_dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Neutral_N75" />
+        android:background="@color/Unify_N75" />
 
 </LinearLayout>

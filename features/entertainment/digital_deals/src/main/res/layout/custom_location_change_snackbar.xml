@@ -4,14 +4,14 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/green_toast_color"
+    android:background="@color/Unify_G100"
     android:orientation="vertical">
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/green_1100" />
+        android:background="@color/Unify_G300" />
 
 
     <TextView
@@ -38,5 +38,5 @@
         android:layout_marginRight="@dimen/dp_24"
         android:padding="@dimen/dp_8"
         android:text="@string/title_ok"
-        android:textColor="@color/black_39" />
+        android:textColor="@color/Unify_N700_68" />
 </RelativeLayout>

@@ -1,10 +1,10 @@
 package com.tokopedia.loginregister.common.data
 
 import com.facebook.AccessToken
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import rx.Subscriber
-import java.lang.Exception
 
 /**
  * Created by Ade Fulki on 2019-10-15.
@@ -13,9 +13,9 @@ import java.lang.Exception
 
 object ResponseConverter{
 
-    fun <T : kotlin.Any> resultUsecaseCoroutineToSubscriber(
-            onSuccessResult: (T) -> kotlin.Unit,
-            onErrorResult: (kotlin.Throwable) -> kotlin.Unit
+    fun <T : Any> resultUsecaseCoroutineToSubscriber(
+            onSuccessResult: (T) -> Unit,
+            onErrorResult: (Throwable) -> Unit
     ): Subscriber<T> {
 
         return object : Subscriber<T>(){
@@ -29,19 +29,27 @@ object ResponseConverter{
     }
 
     fun resultUsecaseCoroutineToFacebookCredentialListener(
-            onSuccessEmailResult: (FacebookCredentialData) -> kotlin.Unit,
-            onSuccessPhoneResult: (FacebookCredentialData) -> kotlin.Unit,
-            onErrorResult: (kotlin.Throwable) -> kotlin.Unit
+            onSuccessEmailResult: (FacebookCredentialData) -> Unit,
+            onSuccessPhoneResult: (FacebookCredentialData) -> Unit,
+            onErrorResult: (Throwable) -> Unit
     ): GetFacebookCredentialSubscriber.GetFacebookCredentialListener{
 
         return object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener{
-            override fun onErrorGetFacebookCredential(errorMessage: Exception) = onErrorResult(errorMessage)
+            override fun onErrorGetFacebookCredential(errorMessage: Exception?) {
+                if(errorMessage != null) onErrorResult(errorMessage)
+            }
 
-            override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken, email: String)
-                    = onSuccessEmailResult(FacebookCredentialData(accessToken, email, ""))
+            override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken?, email: String?) {
+                LetUtil.ifLet(accessToken, email) { (accessToken, email) ->
+                    onSuccessEmailResult(FacebookCredentialData(accessToken as AccessToken, email as String, ""))
+                }
+            }
 
-            override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken, phone: String)
-                    = onSuccessPhoneResult(FacebookCredentialData(accessToken, "", phone))
+            override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken?, phone: String?) {
+                LetUtil.ifLet(accessToken, phone) { (accessToken, phone) ->
+                    onSuccessPhoneResult(FacebookCredentialData(accessToken as AccessToken, "", phone as String))
+                }
+            }
         }
     }
 }

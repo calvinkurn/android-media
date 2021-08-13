@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingDividerUiModel
 import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingTitleUiModel
 
-class ChatSettingListAdapter(
+class ChatSettingListAdapter constructor(
         baseListAdapterTypeFactory: ChatSettingTypeFactory?
 ) : BaseListAdapter<Visitable<*>, ChatSettingTypeFactory>(baseListAdapterTypeFactory) {
 

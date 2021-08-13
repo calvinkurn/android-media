@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_sel
 import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
-        private val multipleVariantEditListener: MultipleVariantEditListener? = null
+        private val multipleVariantEditListener: MultipleVariantEditListener? = null,
+        private val couldShowMultiLocationTicker: Boolean = false
 ): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener,
         MultipleVariantEditSelectAdapter.OnSelectionsDataListener {
 
@@ -120,7 +121,7 @@ class MultipleVariantEditSelectBottomSheet(
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
             val multipleVariantEditSelectBottomSheet =
-                    MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
+                    MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, couldShowMultiLocationTicker, this)
             multipleVariantEditSelectBottomSheet.isKeyboardOverlap = false
             multipleVariantEditSelectBottomSheet.setTrackerShopId(trackerShopId)
             multipleVariantEditSelectBottomSheet.setTrackerIsEditMode(trackerIsEditMode)

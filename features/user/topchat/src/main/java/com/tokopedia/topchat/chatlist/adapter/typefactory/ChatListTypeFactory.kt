@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
+import com.tokopedia.topchat.chatlist.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 
@@ -21,6 +22,8 @@ interface ChatListTypeFactory {
     fun type(chatItemListViewModel: ItemChatListPojo): Int
 
     fun type(emptyChatItemListViewModel: EmptyChatModel): Int
+
+    fun type(chatAdminNoAccessUiModel: ChatAdminNoAccessUiModel): Int
 
     fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*>
 }

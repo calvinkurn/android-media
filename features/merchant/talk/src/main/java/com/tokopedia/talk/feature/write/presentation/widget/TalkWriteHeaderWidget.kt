@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteHeaderModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_write_header.view.*
 

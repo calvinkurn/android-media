@@ -17,6 +17,9 @@ object TalkInboxTrackingConstants {
     const val EVENT_LABEL_LAZY_LOAD = "count page load:%s; count unread messages:%s; count read messages:%s; shop id:%s;"
     const val FILTER_READ = "sudah dibaca"
     const val FILTER_UNREAD = "belum dibaca"
+    const val FILTER_PROBLEM = "bermasalah"
+    const val FILTER_UNRESPONDED = "belum direspon"
+    const val FILTER_AUTOREPLIED = "dibalas otomatis"
     const val EVENT_ACTION_CLICK_TAB = "${TalkTrackingConstants.EVENT_ACTION_CLICK} %s tab"
     const val EVENT_LABEL_CLICK_TAB = "shop id:%s;count unread messages:%s;"
     const val TAB_SELLER = "seller"
@@ -24,4 +27,7 @@ object TalkInboxTrackingConstants {
     const val EVENT_PROMO_VIEW = "promoView"
     const val EVENT_ACTION_IMPRESS_ITEM = "view - talk on inbox talk"
     const val CREATIVE_MESSAGE_STATUS = "message status:%s"
+    const val EE_NAME = "inbox-talk/%s"
+    const val EVENT_ACTION_CLICK_SETTINGS = "${TalkTrackingConstants.EVENT_ACTION_CLICK} diskusi settings"
+    const val EVENT_LABEL_CLICK_SELLER_FILTER = "filter value:%s; filter status:%s; shop id:%s; count unread messages:%s;"
 }

@@ -4,10 +4,10 @@
 
     <gradient
         android:angle="135"
-        android:centerColor="#00eeeeee"
+        android:centerColor="@color/topchat_dms_image_upload_overlay"
         android:centerX="30%"
-        android:endColor="#00eeeeee"
-        android:startColor="#50000000"
+        android:endColor="@color/topchat_dms_image_upload_overlay"
+        android:startColor="@color/topchat_dms_image_upload_overlay_start_color"
         android:type="linear" />
 
     <corners android:radius="@dimen/spacing_lvl3" />

@@ -5,7 +5,7 @@
     android:id="@+id/tvShopName"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textColor="@color/Neutral_N700_96"
+    android:textColor="@color/Unify_N700_96"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:typographyType="heading_6"

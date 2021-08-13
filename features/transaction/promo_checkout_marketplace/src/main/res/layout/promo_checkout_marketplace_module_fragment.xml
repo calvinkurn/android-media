@@ -14,7 +14,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:elevation="@dimen/dp_0">
 
@@ -34,8 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/container_action_bottom"
-            android:layout_below="@+id/app_bar_layout"
-            android:background="@color/checkout_module_color_background">
+            android:layout_below="@+id/app_bar_layout">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
@@ -60,7 +59,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/dp_16"
                     android:paddingRight="@dimen/dp_16"
@@ -70,6 +69,7 @@
                         android:id="@+id/section_image_promo_list_header"
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
+                        android:contentDescription="@string/content_description_image_coupon_sub_section"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -103,6 +103,7 @@
                         android:id="@+id/section_image_chevron"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/content_description_image_arrow_coupon_sub_section"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -133,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="horizontal"
             android:padding="@dimen/dp_16"
             android:visibility="gone"
@@ -146,7 +147,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:gravity="center_vertical"
                 android:text="@string/label_promo_page_summary_benefit_title"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
@@ -157,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_4"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="heading_4"
@@ -193,7 +194,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/app_bar_layout"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:gravity="center"
             android:visibility="gone"
             tools:visibility="gone" />

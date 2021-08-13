@@ -2,9 +2,9 @@ package com.tokopedia.hotel.evoucher.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import androidx.fragment.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
@@ -65,11 +65,15 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     }
 
     override fun onShareAsImageClicked() {
-        if (::fragment.isInitialized) fragment.takeScreenshot()
+        if (::fragment.isInitialized) fragment.takeScreenshot(isShare = true)
     }
 
     override fun onShareAsPdfClicked() {
         if (::fragment.isInitialized) fragment.shareAsPdf()
+    }
+
+    override fun onSaveImageClicked() {
+        if (::fragment.isInitialized) fragment.takeScreenshot(isShare = false)
     }
 
     override fun getComponent(): HotelEVoucherComponent =

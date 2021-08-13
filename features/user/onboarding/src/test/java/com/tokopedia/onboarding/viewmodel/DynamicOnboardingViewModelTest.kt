@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
-import com.tokopedia.onboarding.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -13,6 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,22 +24,28 @@ class DynamicOnboardingViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @ExperimentalCoroutinesApi
-    val dispatcher = TestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
 
     private val onboardingUseCase = mockk<DynamicOnboardingUseCase>(relaxed = true)
     private val observer = mockk<Observer<Result<ConfigDataModel>>>(relaxed = true)
 
-    lateinit var viewmodel : DynamicOnboardingViewModel
+    lateinit var viewModel : DynamicOnboardingViewModel
 
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        viewmodel = DynamicOnboardingViewModel(dispatcher, onboardingUseCase)
-        viewmodel.configData.observeForever(observer)
+        viewModel = DynamicOnboardingViewModel(dispatcher, onboardingUseCase)
+        viewModel.configData.observeForever(observer)
+    }
+
+    @After
+    fun tearDown() {
+        viewModel.onCleared()
+        viewModel.configData.removeObserver(observer)
     }
 
     @Test
-    fun `get data config - success`() {
+    fun `get data config - success`() {989
         val mockkResponse = ConfigDataModel()
         val successValue = Success(mockkResponse)
 
@@ -48,11 +55,11 @@ class DynamicOnboardingViewModelTest {
             firstArg<(ConfigDataModel) -> Unit>().invoke(mockkResponse)
         }
 
-        viewmodel.getData()
+        viewModel.getData()
 
         verify {
             observer.onChanged((Success(mockkResponse)))
-            assert(viewmodel.configData.value == successValue)
+            assert(viewModel.configData.value == successValue)
         }
     }
 
@@ -67,11 +74,11 @@ class DynamicOnboardingViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewmodel.getData()
+        viewModel.getData()
 
         verify {
             observer.onChanged((Fail(mockThrowable)))
-            assert(viewmodel.configData.value == errorValue)
+            assert(viewModel.configData.value == errorValue)
         }
     }
 }

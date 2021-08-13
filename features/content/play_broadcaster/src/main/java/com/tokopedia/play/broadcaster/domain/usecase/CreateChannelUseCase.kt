@@ -3,10 +3,11 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.ChannelId
+import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -15,7 +16,7 @@ import javax.inject.Inject
  */
 class CreateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<ChannelId>() {
+) : UseCase<ChannelId>() {
 
     private val query = """
            mutation createChannel(${'$'}authorId: String!, ${'$'}authorType: Int!, ${'$'}status: Int!){
@@ -32,13 +33,15 @@ class CreateChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): ChannelId {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateChannelBroadcastResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = CreateChannelBroadcastResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
-        if (response?.getChannelId != null) {
-            return response.getChannelId
-        }
-        throw DefaultErrorThrowable()
+        return response.getChannelId
     }
 
     companion object {
@@ -52,7 +55,7 @@ class CreateChannelUseCase @Inject constructor(
         fun createParams(
                 authorId: String,
                 authorType: Int = VALUE_SHOP_TYPE,
-                status: PlayChannelStatus  = PlayChannelStatus.Draft
+                status: PlayChannelStatusType = PlayChannelStatusType.Draft
         ): Map<String, Any> = mapOf(
                 PARAMS_AUTHOR_ID to authorId,
                 PARAMS_AUTHOR_TYPE to authorType,

@@ -16,9 +16,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dropoff.R
 import com.tokopedia.dropoff.di.DaggerDropoffPickerComponent
-import com.tokopedia.logisticdata.domain.model.AutoCompleteVisitable
-import com.tokopedia.logisticdata.domain.model.SavedAddress
-import com.tokopedia.logisticdata.domain.model.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.model.AutoCompleteVisitable
+import com.tokopedia.logisticCommon.domain.model.SavedAddress
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.dropoff.ui.dropoff_picker.DropOffAnalytics
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.network.exception.MessageErrorException

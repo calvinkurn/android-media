@@ -15,6 +15,7 @@ import com.tokopedia.utils.R;
 
 public class DoubleTextView extends LinearLayout {
     private LinearLayout layout = null;
+    private LinearLayout mainLayout = null;
     private TextView topTextView = null;
     private TextView bottomTextView = null;
     private LinearLayout llBottomTextView = null;
@@ -32,6 +33,7 @@ public class DoubleTextView extends LinearLayout {
             layoutId = R.layout.custom_horizontal_text_view_layout;
         }
         layout = (LinearLayout) li.inflate(layoutId, this, true);
+        mainLayout = (LinearLayout) layout.findViewById(R.id.main_layout);
         topTextView = (TextView) layout.findViewById(R.id.top_text);
         bottomTextView = (TextView) layout.findViewById(R.id.bottom_text);
         llBottomTextView = layout.findViewById(R.id.ll_bottom_text);
@@ -122,6 +124,20 @@ public class DoubleTextView extends LinearLayout {
         if(this.llBottomTextView != null) {
             this.llBottomTextView.setGravity(gravity);
         }
+    }
+
+    public void setBottomLinearLayoutWeight(float layoutWeight){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.weight = layoutWeight;
+        llBottomTextView.setLayoutParams(params);
+    }
+
+    public void setMainLayoutTopMargin(int topMargin){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, topMargin, 0, 0);
+        mainLayout.setLayoutParams(params);
     }
 
     public void setBottomTextBackgroundColor(int s) {

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="carousel_product_card_grid_width">132dp</dimen>
-    <dimen name="carousel_product_card_list_width">248dp</dimen>
-</resources>

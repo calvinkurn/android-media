@@ -14,4 +14,15 @@
     <dimen name="padding_vvs">3dp</dimen>
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_xl">45dp</dimen>
+
+    <dimen name="btn_height">44dp</dimen>
+    <dimen name="phoneverification_dp_3">3dp</dimen>
+    <dimen name="phoneverification_dp_5">5dp</dimen>
+    <dimen name="phoneverification_dp_10">10dp</dimen>
+    <dimen name="phoneverification_dp_12">12dp</dimen>
+    <dimen name="phoneverification_dp_15">15dp</dimen>
+    <dimen name="phoneverification_dp_20">20dp</dimen>
+    <dimen name="phoneverification_dp_25">25dp</dimen>
+    <dimen name="phoneverification_dp_30">30dp</dimen>
+    <dimen name="phoneverification_dp_40">40dp</dimen>
 </resources>

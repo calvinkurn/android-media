@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/headerSortDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_alignParentEnd="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSomFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:layout_below="@+id/headerSortDivider"
+        android:layout_above="@+id/btnShowOrder"
+        android:layout_alignParentStart="true"
+        tools:listitem="@layout/item_som_filter_list"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnShowOrder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_show_order_height"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:text="@string/btn_show_order" />
+
+</RelativeLayout>

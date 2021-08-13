@@ -39,9 +39,9 @@ public class DialogForceLogout {
                         TrackApp.getInstance().getGTM().sendGeneralEvent(
                                 "clickLogout",
                                 "force logout",
-                                screen,
-                                "get session expired pop up"
-                        );
+                                "get session expired pop up",
+                                screen
+                                );
 
                     }
                 });

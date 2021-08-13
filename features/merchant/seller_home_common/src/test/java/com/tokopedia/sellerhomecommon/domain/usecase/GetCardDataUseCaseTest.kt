@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,7 +40,7 @@ class GetCardDataUseCaseTest {
     lateinit var mapper: CardMapper
 
     private val getCardDataUseCase by lazy {
-        GetCardDataUseCase(gqlRepository, mapper)
+        GetCardDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetCardDataUseCase.getRequestParams(

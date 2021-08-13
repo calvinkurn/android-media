@@ -1,9 +1,7 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
 
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 
 import java.util.Map;
 
@@ -22,7 +20,7 @@ public interface RetrofitInteractor {
     IMapsRepository getMapRepository();
 
     interface GenerateLatLongListener {
-        void onSuccess(CoordinateViewModel model);
+        void onSuccess(CoordinateUiModel model);
 
         void onError(String errorMessage);
     }

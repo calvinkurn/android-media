@@ -32,7 +32,7 @@ object MockChannelGrid {
                 hasBuyButton = true,
                 rating = 5,
                 countReview = 1000,
-                backColor = "#123456",
+                backColor = "",
                 benefit = ChannelBenefit(
                         type = "Mulai Dari",
                         value = "Rp 50k"

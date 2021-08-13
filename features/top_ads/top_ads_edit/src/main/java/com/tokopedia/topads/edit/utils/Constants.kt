@@ -6,7 +6,7 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
-    const val COUNT = 50
+    const val GROUP_STRATEGY = "groupStrategy"
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"
@@ -26,11 +26,13 @@ object Constants {
     const val NEGATIVE_KEYWORD_ALL = "editedAllNegativeKeyword"
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
+    const val STRATEGIES = "strategies"
     const val GROUP_NAME = "group_name"
     const val PRICE_BID = "price_bid"
     const val DAILY_BUDGET = "daily_budget"
     const val NAME_EDIT = "isNameEdit"
     const val MULTIPLIER = 40
+    const val MAXIMUM_LIMIT = "10.000.000"
     const val PRODUCT = "product"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val KEYWORD_EXISTS = 1
@@ -41,10 +43,6 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val PRODUK_NAME = " Produk"
-    const val KATA_KUNCI = " Kata Kunci"
-    const val ATUR_NAME = " Atur"
-    const val REGEX = "^[A-Za-z0-9 ]*\$"
     const val EDIT_SOURCE = "dashboard_edit_group_app"
     const val ACTION_EDIT = "edit"
     const val ACTION_ADD = "add"
@@ -52,7 +50,7 @@ object Constants {
     const val ACTION_CREATE = "create"
     const val ACTION_DELETE = "delete"
     const val PUBLISHED = "published"
-    const val POSTIVE_PHRASE = "positive_phrase"
+    const val POSITIVE_PHRASE = "positive_phrase"
     const val POSITIVE_SPECIFIC = "positive_exact"
     const val NEGATIVE_PHRASE = "negative_phrase"
     const val NEGATIVE_SPECIFIC = "negative_exact"
@@ -60,7 +58,7 @@ object Constants {
     const val KEYWORD_SOURCE = "es"
     const val INPUT = "input"
     const val DEBOUNCE_CONST: Long = 200
-    const val MULTIPLY_CONST = 50
+    const val MULTIPLY_CONST = "50"
     const val groupId = "groupId"
     const val priceBid = "price_bid"
     const val groupName = "groupName"
@@ -75,5 +73,9 @@ object Constants {
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
     const val IS_DATA_CHANGE = "dataChange"
+    const val PRODUK_NAME = " Produk"
+    const val KATA_KUNCI = " Kata Kunci"
+    const val ATUR_NAME = " Atur"
+    const val LAINNYA_NAME = " Lainnya"
 
 }

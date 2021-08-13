@@ -2,7 +2,7 @@ package com.tokopedia.hotel.evoucher.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -23,9 +23,9 @@ import javax.inject.Inject
  * @author by furqan on 23/05/19
  */
 class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 private val dispatcher: TravelDispatcherProvider,
+                                                 private val dispatcher: CoroutineDispatchers,
                                                  private val useCase: GetHotelOrderDetailUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.io) {
 
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val sharePdfData = MutableLiveData<Result<SharePdfDataResponse>>()
@@ -43,7 +43,7 @@ class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: 
         val sharePdfParams = mapOf(PARAM_HOTEL_PDF_PARAM to requestParams)
 
         launchCatchError(block = {
-            val response = withContext(dispatcher.ui()) {
+            val response = withContext(dispatcher.main) {
                 val sharePdfRequest = GraphqlRequest(rawQuery, TYPE_SHARE_PDF, sharePdfParams)
                 graphqlRepository.getReseponse(listOf(sharePdfRequest))
             }.getSuccessData<SharePdfDataResponse>()

@@ -6,19 +6,21 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
-class SellableStockProductViewHolder(itemView: View?,
+class SellableStockProductViewHolder (itemView: View?,
                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
-                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
+                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
+                                     private val source: String,
+                                     private val shopId: String
+): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
     private var stockEditTextWatcher: TextWatcher? = null
 
@@ -27,6 +29,7 @@ class SellableStockProductViewHolder(itemView: View?,
         val LAYOUT_RES = R.layout.item_campaign_stock_variant_editor
 
         private const val MAXIMUM_LENGTH = 7
+        private const val MINIMUM_INPUT = 0
     }
 
     override fun onViewRecycled() {
@@ -38,28 +41,31 @@ class SellableStockProductViewHolder(itemView: View?,
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
-            if (element.isActive) {
-                label_campaign_stock_inactive?.visibility = View.INVISIBLE
-            } else {
-                label_campaign_stock_inactive?.visible()
-            }
+            label_campaign_stock_inactive.showWithCondition(!element.isActive)
+            label_campaign_stock.showWithCondition(element.isCampaign)
             switch_campaign_stock_variant_editor?.run {
                 isChecked = element.isActive
                 setOnCheckedChangeListener { _, isChecked ->
                     element.isActive = isChecked
-                    val status =
-                            if (isChecked) {
-                                this@with.label_campaign_stock_inactive?.visibility = View.INVISIBLE
-                                ProductStatus.ACTIVE
-                            } else {
-                                this@with.label_campaign_stock_inactive?.visible()
-                                ProductStatus.INACTIVE
-                            }
+                    val status = if (isChecked) {
+                        ProductStatus.ACTIVE
+                    } else {
+                        ProductStatus.INACTIVE
+                    }
+                    this@with.label_campaign_stock_inactive.showWithCondition(!isChecked)
                     onVariantStatusChanged(element.productId, status)
-                    ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
+                    ProductManageTracking.eventClickAllocationProductStatus(
+                        isVariant = true,
+                        isOn = isChecked,
+                        source = source,
+                        productId = element.productId,
+                        shopId = shopId
+                    )
                 }
             }
+            switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
+        showHideStockInfo(element)
     }
 
     private fun QuantityEditorUnify.setElement(element: SellableStockProductUIModel) {
@@ -71,12 +77,13 @@ class SellableStockProductViewHolder(itemView: View?,
         setValue(element.stock.toIntOrZero())
 
         stockEditTextWatcher = getStockTextChangeListener {
-            val input = it
-            val stock = if(input.isNotEmpty()) {
-                input.toInt()
+            val stock = if(it.isNotEmpty()) {
+                getValue()
             } else {
+                editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
                 EditProductConstant.MINIMUM_STOCK
             }
+            showHideStockInfo(element)
             toggleQuantityEditorBtn(stock)
             element.stock = stock.toString()
             onVariantStockChanged(element.productId, stock)
@@ -90,10 +97,42 @@ class SellableStockProductViewHolder(itemView: View?,
         }
 
         setAddClickListener {
-            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = true)
+            ProductManageTracking.eventClickAllocationIncreaseStock(
+                isVariant = true,
+                source = source,
+                productId = element.productId,
+                shopId = shopId
+            )
         }
         setSubstractListener {
-            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true)
+            ProductManageTracking.eventClickAllocationDecreaseStock(
+                isVariant = true,
+                source = source,
+                productId = element.productId,
+                shopId = shopId
+            )
+        }
+
+        setupStockEditor(element)
+    }
+
+    private fun showHideStockInfo(element: SellableStockProductUIModel) {
+        val stock = getCurrentStockInput()
+        val shouldShow = stock == 0 && !element.isAllStockEmpty
+        itemView.emptyStockInfo.showWithCondition(shouldShow)
+    }
+
+    private fun setupStockEditor(element: SellableStockProductUIModel) {
+        val canEditStock = element.access.editStock
+
+        if(canEditStock) {
+            itemView.qte_campaign_stock_variant_editor.show()
+            itemView.textStock.hide()
+        } else {
+
+            itemView.qte_campaign_stock_variant_editor.hide()
+            itemView.textStock.show()
+            itemView.textStock.text = element.stock
         }
     }
 
@@ -125,7 +164,14 @@ class SellableStockProductViewHolder(itemView: View?,
         }
     }
 
-    private fun String.toInt(): Int {
-        return replace(".", "").toIntOrZero()
+    private fun getCurrentStockInput(): Int {
+        val stockEditor = itemView.qte_campaign_stock_variant_editor
+        val input = stockEditor?.editText?.text.toString()
+
+        return if(input.isNotEmpty()) {
+            stockEditor.getValue()
+        } else {
+            MINIMUM_INPUT
+        }
     }
 }

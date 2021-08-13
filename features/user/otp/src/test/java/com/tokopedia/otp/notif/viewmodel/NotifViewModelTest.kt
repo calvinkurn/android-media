@@ -6,8 +6,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.otp.notif.domain.pojo.*
 import com.tokopedia.otp.notif.domain.usecase.ChangeStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.DeviceStatusPushNotifUseCase
+import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifExpUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifUseCase
-import com.tokopedia.otp.verification.DispatcherProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,13 +35,17 @@ class NotifViewModelTest {
     @RelaxedMockK
     lateinit var verifyPushNotifUseCase: VerifyPushNotifUseCase
     @RelaxedMockK
+    lateinit var verifyPushNotifExpUseCase: VerifyPushNotifExpUseCase
+    @RelaxedMockK
     lateinit var changeStatusPushNotifResultObserver: Observer<Result<ChangeStatusPushNotifData>>
     @RelaxedMockK
     lateinit var deviceStatusPushNotifResultObserver: Observer<Result<DeviceStatusPushNotifData>>
     @RelaxedMockK
     lateinit var verifyPushNotifResultObserver: Observer<Result<VerifyPushNotifData>>
+    @RelaxedMockK
+    lateinit var verifyPushNotifExpResultObserver: Observer<Result<VerifyPushNotifExpData>>
 
-    private val dispatcherProviderTest = DispatcherProviderTest()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: NotifViewModel
 
@@ -51,6 +56,7 @@ class NotifViewModelTest {
                 changeStatusPushNotifUseCase,
                 deviceStatusPushNotifUseCase,
                 verifyPushNotifUseCase,
+                verifyPushNotifExpUseCase,
                 dispatcherProviderTest
         )
     }
@@ -139,6 +145,34 @@ class NotifViewModelTest {
         assertEquals(throwable, result.throwable)
     }
 
+    @Test
+    fun `Success verify push notif expiration`() {
+        viewmodel.verifyPushNotifExpResult.observeForever(verifyPushNotifExpResultObserver)
+        coEvery { verifyPushNotifExpUseCase.getData(any()) } returns successVerifyPushNotifExpResponse
+
+        viewmodel.verifyPushNotifExp("", "", "")
+
+        verify { verifyPushNotifExpResultObserver.onChanged(any<Success<VerifyPushNotifExpData>>()) }
+        assert(viewmodel.verifyPushNotifExpResult.value is Success)
+
+        val result = viewmodel.verifyPushNotifExpResult.value as Success<VerifyPushNotifExpData>
+        assert(result.data == successVerifyPushNotifExpResponse.data)
+    }
+
+    @Test
+    fun `Failed verify push notif expiration`() {
+        viewmodel.verifyPushNotifExpResult.observeForever(verifyPushNotifExpResultObserver)
+        coEvery { verifyPushNotifExpUseCase.getData(any()) } coAnswers { throw throwable }
+
+        viewmodel.verifyPushNotifExp("", "", "")
+
+        verify { verifyPushNotifExpResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyPushNotifExpResult.value is Fail)
+
+        val result = viewmodel.verifyPushNotifExpResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
     companion object {
         private val successChangeStatusPushNotifResponse: ChangeStatusPushNotifPojo = FileUtil.parse(
                 "/success_change_otp_push_notif.json",
@@ -151,6 +185,10 @@ class NotifViewModelTest {
         private val successVerifyPushNotifResponse: VerifyPushNotifPojo = FileUtil.parse(
                 "/success_verify_push_notif.json",
                 VerifyPushNotifPojo::class.java
+        )
+        private val successVerifyPushNotifExpResponse: VerifyPushNotifExpPojo = FileUtil.parse(
+                "/success_verify_push_notif_exp.json",
+                VerifyPushNotifExpPojo::class.java
         )
         private val throwable = Throwable()
     }

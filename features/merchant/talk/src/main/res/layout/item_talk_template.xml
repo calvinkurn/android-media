@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_12"
+    android:layout_marginStart="@dimen/dp_12"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginEnd="@dimen/dp_12"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/talkTemplateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkTemplate"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/talkMoveTemplateIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/talkMoveTemplateIcon"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/talkEditTemplateIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_talk_template_list_move_item" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/talkEditTemplateIcon"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            app:icon_name="EDIT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

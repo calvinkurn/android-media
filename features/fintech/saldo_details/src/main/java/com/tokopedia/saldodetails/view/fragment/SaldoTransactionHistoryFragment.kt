@@ -4,41 +4,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL
+import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
+import com.tokopedia.unifycomponents.TabsUnify
 import java.util.*
 import javax.inject.Inject
 
 class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContract.View, BaseEmptyViewHolder.Callback {
 
-    private var startDateLayout: RelativeLayout? = null
-    private var endDateLayout: RelativeLayout? = null
+    private var startDateLayout: ConstraintLayout? = null
+    private var endDateLayout: ConstraintLayout? = null
     private var tabSeparator: View? = null
     private var depositHistoryViewPager: HeightWrappingViewPager? = null
-    private var depositHistoryTabLayout: TabLayout? = null
+    private var depositHistoryTabLayout: TabsUnify? = null
 
     private var startDateTV: TextView? = null
     private var endDateTV: TextView? = null
@@ -46,7 +44,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val saldoHistoryViewModel: SaldoHistoryViewModel by  lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
+    private val saldoHistoryViewModel: SaldoHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
 
     private var datePicker: SaldoDatePickerUtil? = null
 
@@ -71,11 +69,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
     private fun addObserver() {
-        saldoHistoryViewModel.errors.observe(this, androidx.lifecycle.Observer {
+        saldoHistoryViewModel.errors.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
-                if (it is ErrorType<*>){
+                if (it is ErrorType<*>) {
                     val message = if (it.data is Int) getString(it.data) else it.data.toString()
-                    when(it.type){
+                    when (it.type) {
                         NORMAL -> showErrorMessage(message)
                         IN_VALID_DATE_ERROR -> showInvalidDateError(message)
                     }
@@ -86,10 +84,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        getInitialdata()
+        getInitialData()
     }
 
-    private fun getInitialdata() {
+    private fun getInitialData() {
         setActionsEnabled(false)
         saldoHistoryViewModel.setFirstDateParameter(this)
         saldoHistoryViewModel.getSummaryDeposit()
@@ -99,10 +97,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout)
         endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout)
         startDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_tv)
-        startDateTV!!.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null, null)
         endDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_tv)
-        endDateTV!!.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null, null)
-
         depositHistoryViewPager = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_view_pager)
         depositHistoryTabLayout = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_layout)
         tabSeparator = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_view_separator)
@@ -113,11 +108,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         loadMultipleTabItem()
         val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
-        depositHistoryViewPager!!.offscreenPageLimit = 2
-        depositHistoryViewPager!!.adapter = saldoHistoryPagerAdapter
-        depositHistoryTabLayout!!.setupWithViewPager(depositHistoryViewPager)
+        depositHistoryViewPager?.offscreenPageLimit = 2
+        depositHistoryViewPager?.adapter = saldoHistoryPagerAdapter
+        depositHistoryTabLayout?.setupWithViewPager(depositHistoryViewPager!!)
 
-        datePicker = SaldoDatePickerUtil(activity)
+        datePicker = activity?.let { SaldoDatePickerUtil(it) }
     }
 
     private fun loadMultipleTabItem() {
@@ -126,7 +121,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
         allSaldoHistoryTabItem = SaldoHistoryTabItem()
         allSaldoHistoryTabItem!!.title = "Semua"
-        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel,this)
+        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel, this)
 
         saldoTabItems.add(allSaldoHistoryTabItem!!)
 
@@ -141,7 +136,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         sellerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(sellerSaldoHistoryTabItem!!)
-
+        depositHistoryTabLayout?.run {
+            getUnifyTabLayout().removeAllTabs()
+            for(tabItem in saldoTabItems)
+                addNewTab(tabItem.title!!)
+        }
         depositHistoryTabLayout!!.visibility = View.VISIBLE
         tabSeparator!!.visibility = View.VISIBLE
 
@@ -149,7 +148,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     private fun initListeners() {
 
-        depositHistoryViewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        depositHistoryViewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (activePosition != position) {
                     activePosition = position
@@ -167,7 +166,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
             }
         })
         startDateLayout!!.setOnClickListener {
-            saldoHistoryViewModel.onStartDateClicked(datePicker!!,this)
+            saldoHistoryViewModel.onStartDateClicked(datePicker!!, this)
         }
         endDateLayout!!.setOnClickListener {
             saldoHistoryViewModel.onEndDateClicked(datePicker!!, this)
@@ -175,9 +174,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     }
 
-    override fun onEmptyContentItemTextClicked() {
-
-    }
+    override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -193,9 +190,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
 
-    override fun refresh() {
-
-    }
+    override fun refresh() {}
 
     override fun showEmptyState() {
         setActionsEnabled(false)
@@ -227,13 +222,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         endDateTV!!.text = date
     }
 
-    override fun getStartDate(): String {
-        return startDateTV!!.text.toString()
-    }
+    override fun getStartDate() = startDateTV!!.text.toString()
 
-    override fun getEndDate(): String {
-        return endDateTV!!.text.toString()
-    }
+    override fun getEndDate() = endDateTV!!.text.toString()
 
     override fun showErrorMessage(s: String) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, s)

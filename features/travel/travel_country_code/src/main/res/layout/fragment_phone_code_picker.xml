@@ -5,14 +5,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@color/Unify_N0">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_scrollFlags="scroll|snap|enterAlways"
-        app:siv_search_hint="@string/travel_phone_code_label_search_hint" />
+        app:search_bar_show_icon="false"
+        app:search_bar_placeholder="@string/travel_phone_code_label_search_hint"
+        android:layout_margin="@dimen/spacing_lvl4"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

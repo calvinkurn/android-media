@@ -1,6 +1,8 @@
 package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.*
@@ -20,8 +22,10 @@ class ProductImageDownloader(
                     baseNotificationModel.status = NotificationStatus.COMPLETED
                     baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                     baseNotificationModel.productInfoList.clear()
-                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
-                    baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "validation", "reason" to "image_download",
+                                    "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                            ))
                     return
                 }
             }

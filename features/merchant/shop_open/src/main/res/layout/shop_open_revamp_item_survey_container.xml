@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_question_title_quisioner_page"
         android:text="@string/text_default_title_quisionaire"
-        android:textColor="@color/title_text"
+        android:textColor="@color/Unify_N700_96"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_39"
-        android:textStyle="bold"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:textSize="@dimen/sp_16"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:typographyWeight="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_choice_list"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_width="fill_parent"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>

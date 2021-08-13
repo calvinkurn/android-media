@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class ColorPojo (
         @SerializedName("hex")
         @Expose
-        val hex:String = "#000000",
+        val hex:String = "",
 
         @SerializedName("opacity")
         @Expose

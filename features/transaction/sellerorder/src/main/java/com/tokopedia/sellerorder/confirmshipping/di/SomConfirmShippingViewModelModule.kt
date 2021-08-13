@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * Created by fwidjaja on 2019-11-15.
  */
 @Module
-@SomConfirmShippingScope
 abstract class SomConfirmShippingViewModelModule {
     @SomConfirmShippingScope
     @Binds

@@ -9,6 +9,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -18,39 +19,25 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.screenRecorder)
-    implementation project(rootProject.ext.libraries.screenshot_observer)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.imagePreview)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.screenRecorder)
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
-    } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
-    }
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.blockCanary)
-    } else {
-        implementation rootProject.ext.libraries.blockCanaryNoOp
-    }
-    implementation project(rootProject.ext.libraries.pushNotification)
-    implementation project(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    implementation projectOrAar(rootProject.ext.libraries.pushNotification)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -63,12 +50,9 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
 
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.firebase.messaging
     
-    implementation project(rootProject.ext.libraries.translator)
+    implementation projectOrAar(rootProject.ext.libraries.translator)
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
@@ -78,11 +62,6 @@ dependencies {
         transitive = true
     }
 
-    // test dependencies
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {

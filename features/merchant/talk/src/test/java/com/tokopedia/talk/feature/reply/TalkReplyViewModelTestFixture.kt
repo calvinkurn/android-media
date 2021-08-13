@@ -1,16 +1,13 @@
 package com.tokopedia.talk.feature.reply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import com.tokopedia.talk.coroutines.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.GetAllTemplatesUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
@@ -44,6 +41,9 @@ abstract class TalkReplyViewModelTestFixture {
     lateinit var talkReportCommentUseCase: TalkReportCommentUseCase
 
     @RelaxedMockK
+    lateinit var getAllTemplatesUseCase: GetAllTemplatesUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -63,8 +63,9 @@ abstract class TalkReplyViewModelTestFixture {
                 talkMarkCommentNotFraudUseCase,
                 talkReportTalkUseCase,
                 talkReportCommentUseCase,
+                getAllTemplatesUseCase,
                 userSession,
-                TestCoroutineDispatchers)
+                CoroutineTestDispatchersProvider)
     }
 
 }

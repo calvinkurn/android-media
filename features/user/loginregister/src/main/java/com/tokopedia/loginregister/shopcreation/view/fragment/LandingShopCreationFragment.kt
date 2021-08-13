@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -32,6 +33,7 @@ import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -49,7 +51,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private lateinit var toolbarShopCreation: Toolbar
     private lateinit var buttonOpenShop: UnifyButton
-    private lateinit var landingImage: ImageView
+    private lateinit var landingImage: ImageUnify
     private lateinit var loading: LoaderUnify
     private lateinit var mainView: View
     private lateinit var baseView: View
@@ -314,7 +316,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

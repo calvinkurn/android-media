@@ -12,6 +12,8 @@ import com.tkpd.remoteresourcerequest.task.DeferredResourceTask
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
 import com.tkpd.remoteresourcerequest.type.ImageTypeMapper
 import com.tkpd.remoteresourcerequest.type.RequestedResourceType
+import com.tkpd.remoteresourcerequest.utils.Constants.REQUIRE_COMPLETE_URL_ERROR_MSG
+import com.tkpd.remoteresourcerequest.utils.Constants.URL_SEPARATOR
 
 
 /**
@@ -20,6 +22,7 @@ import com.tkpd.remoteresourcerequest.type.RequestedResourceType
 class DeferredImageView : AppCompatImageView {
     var mRemoteFileName: String = ""
     var dpiSupportType = ImageDensityType.SUPPORT_MULTIPLE_DPI
+    var mCompleteUrl = ""
 
     private var task: DeferredResourceTask? = null
 
@@ -59,11 +62,12 @@ class DeferredImageView : AppCompatImageView {
         val typedArray = context.obtainStyledAttributes(
                 attrs, R.styleable.DeferredImageView, defStyle, 0
         )
-        mRemoteFileName = typedArray.getString(
-                R.styleable.DeferredImageView_remoteFileName
+        mRemoteFileName = typedArray.getString(R.styleable.DeferredImageView_remoteFileName
         ) ?: mRemoteFileName
         dpiSupportType =
                 typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, dpiSupportType)
+        mCompleteUrl =
+                typedArray.getString(R.styleable.DeferredImageView_completeUrl) ?: mCompleteUrl
         typedArray.recycle()
         downloadAndSetResource()
     }
@@ -95,8 +99,16 @@ class DeferredImageView : AppCompatImageView {
      * if a condition satisfies then display one image and if condition fails then another image.
      * @param name denotes name of the file to be downloaded and set to this ImageView.
      * **/
-    fun loadRemoteImageDrawable(name: String) {
-        mRemoteFileName = name
+    fun loadRemoteImageDrawable(name: String, completeUrl: String = "") {
+        mCompleteUrl = completeUrl
+        mRemoteFileName = if (name.isEmpty()) {
+            require(completeUrl.isNotEmpty() &&
+                    completeUrl.lastIndexOf(URL_SEPARATOR) != -1) {
+                REQUIRE_COMPLETE_URL_ERROR_MSG
+            }
+
+            completeUrl.substring(completeUrl.lastIndexOf(URL_SEPARATOR) + 1)
+        } else name
         downloadAndSetResource()
     }
 

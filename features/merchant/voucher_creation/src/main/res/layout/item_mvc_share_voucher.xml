@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_dimen_14dp"
         android:layout_marginBottom="@dimen/mvc_dimen_14dp"
+        android:contentDescription="@string/mvc_ic_social_media_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,16 +19,35 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcSocmed"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icMvcSocmed"
         app:layout_constraintTop_toTopOf="@+id/icMvcSocmed"
         app:typographyType="heading_4"
         tools:text="Instagram" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_mvc_quota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/tvMvcSocmed"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcSocmed"
+        app:typographyType="body_3"
+        tools:text="Untuk 600 calon pembeli" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_mvc_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcSocmed"
+        app:layout_constraintStart_toEndOf="@+id/tvMvcSocmed"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcSocmed"
+        app:srcCompat="@drawable/ic_mvc_gratis" />
 
     <View
         android:id="@+id/vMvcHorLine"

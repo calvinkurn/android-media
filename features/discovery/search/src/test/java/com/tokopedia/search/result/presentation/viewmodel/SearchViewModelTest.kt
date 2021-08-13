@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.search.result.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.search.shouldBe
 import org.junit.Rule
 import org.junit.Test
@@ -11,7 +11,7 @@ internal class SearchViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val searchViewModel = SearchViewModel(TestDispatcherProvider())
+    private val searchViewModel = SearchViewModel(CoroutineTestDispatchersProvider)
 
     @Test
     fun `handle show auto complete view`() {

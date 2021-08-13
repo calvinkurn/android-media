@@ -1,10 +1,10 @@
 package com.tokopedia.shop.common.domain.interactor
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

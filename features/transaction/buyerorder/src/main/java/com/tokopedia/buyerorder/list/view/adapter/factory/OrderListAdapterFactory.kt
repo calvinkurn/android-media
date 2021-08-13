@@ -10,35 +10,34 @@ import com.tokopedia.buyerorder.list.view.adapter.viewmodel.*
 
 class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var listener: OrderListViewHolder.OnMenuItemListener?,
                               var cartListener: OrderListRecomListViewHolder.ActionListener,
-                              var filterListener: EmptyStateMarketPlaceFilterViewHolder.ActionListener,
-                              var buttonListener: OrderListViewHolder.OnActionButtonListener?) : BaseAdapterTypeFactory(), OrderListTypeFactory {
-    override fun type(viewModel: OrderListViewModel): Int {
+                              var filterListener: EmptyStateMarketPlaceFilterViewHolder.ActionListener) : BaseAdapterTypeFactory(), OrderListTypeFactory {
+    override fun type(uiModel: OrderListUiModel): Int {
         return OrderListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: OrderListRecomTitleViewModel): Int {
+    override fun type(uiModel: OrderListRecomTitleUiModel): Int {
         return OrderListRecomTitleViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateOrderListViewModel): Int {
+    override fun type(uiModel: EmptyStateOrderListUiModel): Int {
         return EmptyStateOrderListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateMarketPlaceFilterViewModel): Int {
+    override fun type(uiModel: EmptyStateMarketPlaceFilterUiModel): Int {
         return EmptyStateMarketPlaceFilterViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateMarketplaceViewModel): Int {
+    override fun type(uiModel: EmptyStateMarketplaceUiModel): Int {
         return EmptyStateMarketplaceViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: OrderListRecomViewModel): Int {
+    override fun type(uiModel: OrderListRecomUiModel): Int {
         return OrderListRecomListViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            OrderListViewHolder.LAYOUT -> OrderListViewHolder(parent, orderListAnalytics, listener, buttonListener)
+            OrderListViewHolder.LAYOUT -> OrderListViewHolder(parent, orderListAnalytics, listener)
             OrderListRecomListViewHolder.LAYOUT -> OrderListRecomListViewHolder(parent, orderListAnalytics, cartListener)
             OrderListRecomTitleViewHolder.LAYOUT -> OrderListRecomTitleViewHolder(parent)
             EmptyStateMarketplaceViewHolder.LAYOUT -> EmptyStateMarketplaceViewHolder(parent)

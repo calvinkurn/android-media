@@ -3,5 +3,5 @@
     android:shape="rectangle">
     <size
         android:height="1dp" />
-    <solid android:color="@color/product_manage_campaign_stock_divider_color" />
+    <solid android:color="@color/Unify_N100" />
 </shape>

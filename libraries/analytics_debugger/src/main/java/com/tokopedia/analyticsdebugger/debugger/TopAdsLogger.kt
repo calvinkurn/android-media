@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.TopAdsLogModel
+import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.TopAdsDebuggerActivity
 import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
@@ -84,7 +85,7 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
         fun getInstance(context: Context) : TopAdsLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
-                    instance = TopAdsLogger(context)
+                    instance = TopAdsLogger(context.applicationContext)
                 } else {
                     instance = emptyInstance()
                 }

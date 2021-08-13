@@ -1,14 +1,14 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.cart.data.model.response.recentview.GqlRecentViewResponse
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import rx.Subscriber
 
 /**
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<GqlRecentViewResponse>() {
+class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<List<RecommendationWidget>>() {
 
     override fun onCompleted() {
 
@@ -20,10 +20,11 @@ class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<Gql
         view?.stopAllCartPerformanceTrace()
     }
 
-    override fun onNext(response: GqlRecentViewResponse?) {
+    override fun onNext(recommendationModels: List<RecommendationWidget>) {
         view?.let {
-            if (response?.gqlRecentView?.recentViewList?.size ?: 0 > 0) {
-                it.renderRecentView(response?.gqlRecentView?.recentViewList)
+            it.hideItemLoading()
+            if (recommendationModels.firstOrNull()?.recommendationItemList?.isNotEmpty() == true) {
+                it.renderRecentView(recommendationModels[0])
             }
             it.setHasTriedToLoadRecentView()
             it.stopAllCartPerformanceTrace()

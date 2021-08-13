@@ -2,27 +2,31 @@ package com.tokopedia.gallery
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
-import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
 import com.tokopedia.gallery.domain.GetImageReviewUseCase
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl
+import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import java.util.*
 
-import java.util.ArrayList
+class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSliderCallback, GalleryView {
 
-class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSlider.Callback, GalleryView {
+    companion object {
+        fun createInstance(): Fragment {
+            return ImageReviewGalleryFragment()
+        }
+    }
 
-    private var presenter: ReviewGalleryPresenter? = null
+    private var presenter: ReviewGalleryPresenterContract? = null
     private var activity: ImageReviewGalleryActivity? = null
 
     override val isAllowLoadMore: Boolean
@@ -34,7 +38,14 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_review_gallery_pdp, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        activity?.let {
+            it.bottomSheetImageReviewSlider?.setup(this, it.shouldShowSeeAllButton)
+        }
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -43,9 +54,10 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     private fun setupBottomSheet() {
-        activity!!.bottomSheetImageReviewSlider!!.setup(this)
-        if (activity!!.isImageListPreloaded) {
-            activity!!.bottomSheetImageReviewSlider!!.displayImage(activity!!.defaultPosition)
+        activity?.let {
+            if (it.isImageListPreloaded) {
+                it.bottomSheetImageReviewSlider?.displayImage(it.defaultPosition)
+            }
         }
     }
 
@@ -54,15 +66,15 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun loadData(page: Int) {
-
-        if (activity!!.isImageListPreloaded) {
-            val imageUrlList = activity!!.imageUrlList
-            handleItemResult(convertToImageReviewItemList(imageUrlList!!), false)
-            return
+        activity?.let {
+            if (it.isImageListPreloaded) {
+                val imageUrlList = it.imageUrlList
+                handleItemResult(convertToImageReviewItemList(imageUrlList ?: arrayListOf()), false)
+                return
+            }
+            it.bottomSheetImageReviewSlider?.onLoadingData()
+            presenter?.loadData(it.productId.toLongOrNull() ?: 0L, page)
         }
-
-        activity!!.bottomSheetImageReviewSlider!!.onLoadingData()
-        presenter!!.loadData(activity!!.productId, page)
     }
 
     private fun convertToImageReviewItemList(imageUrlList: ArrayList<String>): List<ImageReviewItem> {
@@ -71,6 +83,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
             val imageReviewItem = ImageReviewItem()
             imageReviewItem.imageUrlThumbnail = imageUrl
             imageReviewItem.imageUrlLarge = imageUrl
+            imageReviewItem.imageCount = activity?.imageCount ?: ""
             imageReviewItemList.add(imageReviewItem)
         }
         return imageReviewItemList
@@ -85,7 +98,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun initInjector() {
-        presenter = ReviewGalleryPresenterImpl(
+        presenter = ReviewGalleryPresenter(
                 GetImageReviewUseCase(context, GraphqlUseCase()),
                 this)
     }
@@ -95,38 +108,47 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun onGalleryItemClicked(position: Int) {
-        activity!!.bottomSheetImageReviewSlider!!.displayImage(position)
-        ImageReviewGalleryTracking.eventClickReviewGalleryItem(getActivity()!!,
-                Integer.toString(activity!!.productId))
+        activity?.let {
+            it.bottomSheetImageReviewSlider?.displayImage(position)
+            ImageReviewGalleryTracking.eventClickReviewGalleryItem(it, activity?.productId ?: "")
+        }
     }
 
     override fun handleItemResult(imageReviewItemList: List<ImageReviewItem>, isHasNextPage: Boolean) {
         renderList(imageReviewItemList, isHasNextPage)
-        activity!!.bottomSheetImageReviewSlider!!.onLoadDataSuccess(imageReviewItemList, isHasNextPage)
+        activity?.let { it.bottomSheetImageReviewSlider?.onLoadDataSuccess(imageReviewItemList, isHasNextPage) }
     }
 
     override fun handleErrorResult(e: Throwable) {
         showGetListError(e)
-        activity!!.bottomSheetImageReviewSlider!!.onLoadDataFailed()
+        activity?.let { it.bottomSheetImageReviewSlider?.onLoadDataFailed() }
     }
 
     override fun onButtonBackPressed() {
-        activity!!.onBackPressed()
+        activity?.let { it.onBackPressed() }
     }
 
     override fun onRequestLoadMore(page: Int) {
         loadData(page)
     }
 
+    override fun onSeeAllButtonClicked() {
+        activity?.let {
+            it.finish()
+            ImageReviewGalleryActivity.moveTo(it, it.productId)
+        }
+    }
+
     override fun loadInitialData() {
-        activity!!.bottomSheetImageReviewSlider!!.resetState()
+        activity?.let { it.bottomSheetImageReviewSlider?.resetState() }
         super.loadInitialData()
     }
 
-    companion object {
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.image_review_gallery_recycler_view
+    }
 
-        fun createInstance(): Fragment {
-            return ImageReviewGalleryFragment()
-        }
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.image_review_gallery_swipe_refresh_layout
     }
 }

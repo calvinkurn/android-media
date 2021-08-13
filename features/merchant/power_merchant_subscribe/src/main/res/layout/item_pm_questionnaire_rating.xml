@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmDeactivationRatingQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pm_label_rating_power_merchant_experience"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+        android:id="@+id/ratingPmDeactivation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:star_height="@dimen/pm_spacing_28dp"
+        app:star_width="@dimen/pm_spacing_28dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmRatingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        tools:text="Kurang" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75" />
+</LinearLayout>

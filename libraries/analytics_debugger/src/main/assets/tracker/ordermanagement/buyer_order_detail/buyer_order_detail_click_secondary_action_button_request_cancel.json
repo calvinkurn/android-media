@@ -1,0 +1,15 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on secondary action button \"Batalkan Pesanan\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPurchaseList",
+      "eventAction": "click on secondary button - cancel order",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Seller Order Management",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

@@ -7,11 +7,19 @@
     android:focusableInTouchMode="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerTalkReply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/replySwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         app:layout_constraintBottom_toTopOf="@id/replyAttachedProductContainer">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -28,9 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/Neutral_N50"
+        android:background="@color/Unify_N50"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/replyTextBox">
+        app:layout_constraintBottom_toTopOf="@id/replyTemplateContainer">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/replyAttachedProductReview"
@@ -47,6 +55,31 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/replyTemplateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/replyTextBox">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/replyTemplates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingTop="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/layout_lvl1"
+            android:background="@android:color/transparent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </FrameLayout>
+
     <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyTextbox
         android:id="@+id/replyTextBox"
         android:layout_width="match_parent"
@@ -56,11 +89,13 @@
     <include
         android:id="@+id/pageLoading"
         layout="@layout/partial_talk_reply_shimmering"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         android:visibility="gone"/>
 
     <include
         android:id="@+id/pageError"
         layout="@layout/partial_talk_connection_error"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

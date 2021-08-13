@@ -1,0 +1,11 @@
+query{
+  GetUserPageAssetConfig{
+    error_message
+    is_success
+    config {
+      asset_type
+      enable
+      order
+    }
+  }
+}

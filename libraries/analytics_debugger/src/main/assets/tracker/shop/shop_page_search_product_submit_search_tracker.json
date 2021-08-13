@@ -4,13 +4,13 @@
   "query": [
     {
       "pageType": "/shoppage",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "shopId": "{{.+}}",
-      "shopType": "{{.+}}",
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "shopType": ".+",
       "event": "clickShopPage",
-      "eventAction": "{{search( - no result|$)}}",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "eventAction": "search( - no result|$)",
+      "sessionIris": ".+",
+      "eventLabel":".+"
     }
   ]
 }

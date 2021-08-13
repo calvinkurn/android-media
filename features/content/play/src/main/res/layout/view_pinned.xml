@@ -19,7 +19,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        app:layout_constraintBottom_toTopOf="@id/ll_pinned_product"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_pinned_action"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -55,43 +55,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_pinned_product"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/play_product_pinned_lottie_bottom_margin"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/cl_pinned_content"
-        app:layout_constraintStart_toStartOf="@id/cl_pinned_content"
-        app:layout_constraintTop_toBottomOf="@id/cl_pinned_content"
-        >
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation_product"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_gravity="center_vertical"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_pinned_product_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:textColor="@color/dark_N700_96"
-            app:typographyType="body_3"
-            tools:text="Ayo belanja barang pilihan kami sebelum kehabisan"
-            />
-
-    </LinearLayout>
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_pinned_action"
         android:layout_width="wrap_content"
@@ -101,7 +64,7 @@
         android:paddingStart="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/spacing_lvl3"
         android:text="@string/play_action_view"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

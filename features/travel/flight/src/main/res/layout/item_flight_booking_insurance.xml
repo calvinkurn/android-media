@@ -8,20 +8,20 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="#f3f4f5"
+        android:layout_height="@dimen/layout_lvl1"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@+id/rv_insurance_list" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16">
+        android:padding="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_title"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@+id/cb_insurance"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/cb_insurance"
@@ -34,7 +34,7 @@
             android:id="@+id/tv_insurance_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toBottomOf="@+id/tv_insurance_title"
             app:typographyType="body_3"
             tools:text="Rp30.000/orang" />
@@ -56,26 +56,26 @@
             <View
                 android:id="@+id/seperator_1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/flight_dp_1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_insurance"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_1" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_insurance_highlight"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:textColor="@color/Neutral_N700_96"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/iv_insurance"
                 app:layout_constraintRight_toRightOf="parent"
@@ -86,12 +86,12 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_insurance_highlight_detail"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
-                android:lineSpacingExtra="@dimen/dp_1"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:lineSpacingExtra="@dimen/flight_dp_1"
                 android:minLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/iv_insurance"
@@ -104,16 +104,16 @@
             <View
                 android:id="@+id/seperator_2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/flight_dp_1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/tv_insurance_highlight_detail" />
 
             <LinearLayout
                 android:id="@+id/layout_insurance_highlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_2">
@@ -123,28 +123,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:padding="@dimen/dp_2"
-                    android:textColor="@color/Green_G500"
+                    android:padding="@dimen/spacing_lvl1"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
                     tools:text="Termasuk 5 Perlindungan" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_insurance_highlight_see_more_arrow"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/spacing_lvl4"
+                    android:layout_height="@dimen/spacing_lvl4"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24" />
+                    app:icon_name="CHEVRON_DOWN"
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"/>
             </LinearLayout>
 
             <View
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:background="#f3f4f5"
+                android:layout_height="@dimen/flight_dp_1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_N50"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/layout_insurance_highlight" />
 
@@ -152,7 +154,7 @@
                 android:id="@+id/rv_more_benefits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>

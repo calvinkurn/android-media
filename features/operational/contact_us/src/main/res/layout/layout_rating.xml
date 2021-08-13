@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    style="@style/Theme.White.Background">
 
     <View
         android:id="@+id/divider"
@@ -14,7 +14,7 @@
         android:background="@color/grey_300"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_help_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,9 +40,10 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         app:srcCompat="@drawable/rating_inactive_1"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_2"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,9 +56,10 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         app:srcCompat="@drawable/rating_inactive_2"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_1"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_3"
@@ -70,9 +72,10 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         app:srcCompat="@drawable/rating_inactive_3"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_2"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_4"
@@ -85,9 +88,10 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         app:srcCompat="@drawable/rating_inactive_4"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_3"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_5"
@@ -102,9 +106,10 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         app:srcCompat="@drawable/rating_inactive_5"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_4"

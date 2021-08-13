@@ -2,10 +2,10 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottomsheet_getdistrict"
+    android:id="@+id/bottom_sheet_get_district"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     app:behavior_hideable="false"
     app:behavior_peekHeight="600dp"
@@ -36,7 +36,7 @@
         android:id="@+id/getdistrict_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
@@ -58,15 +58,16 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/dp_18">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_getdistrict"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/title_search_location_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
+                app:typographyType="body_1"
                 tools:text="Jalan Taman Siswa" />
 
             <ImageView
@@ -86,75 +87,85 @@
 
         </RelativeLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_getdistrict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
+            app:typographyType="body_3"
             tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/et_detail_address_layout"
-            style="@style/HintTextInputLayout"
+        <LinearLayout
+            android:id="@+id/detail_address_layout"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:hint="@string/detail_alamat">
+            android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_detail_address"
-                android:contentDescription="@string/content_desc_et_detail_address"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/et_detail_address_layout"
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="true"
-                android:focusable="true"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLength="60"
-                android:maxLines="1"
-                android:overScrollMode="always"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                android:textColor="#ae31353b"
-                android:textSize="@dimen/sp_15" />
+                android:hint="@string/detail_alamat">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_detail_address"
+                    android:contentDescription="@string/content_desc_et_detail_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="60"
+                    android:maxLines="1"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/sp_15" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/tv_detail_address_info"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:paddingStart="2dp"
-                android:paddingLeft="2dp"
-                android:paddingEnd="2dp"
-                android:paddingRight="2dp"
-                android:text="@string/tv_detail_address_placeholder"
-                android:textColor="@color/label_grey"
-                android:textSize="@dimen/sp_12" />
+                android:layout_marginTop="@dimen/dp_4">
 
-            <TextView
-                android:id="@+id/tv_detail_address_counter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:paddingStart="2dp"
-                android:paddingLeft="2dp"
-                android:paddingEnd="2dp"
-                android:paddingRight="2dp"
-                android:textColor="@color/label_grey"
-                android:textSize="@dimen/sp_12" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_detail_address_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:paddingStart="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingRight="2dp"
+                    android:text="@string/tv_detail_address_placeholder"
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/sp_12"
+                    app:typographyType="body_3" />
 
-        </RelativeLayout>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_detail_address_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:paddingStart="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingRight="2dp"
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/sp_12" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_choose_location"
@@ -196,7 +207,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/title_search_location_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 tools:text="@string/invalid_title" />
@@ -223,7 +234,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             tools:text="Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail..." />
 

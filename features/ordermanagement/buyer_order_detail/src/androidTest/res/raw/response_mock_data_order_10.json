@@ -1,0 +1,150 @@
+[
+  {
+    "data": {
+      "mp_bom_detail": {
+        "order_id": 166843121,
+        "invoice": "INV/20210608/MPL/20534853",
+        "invoice_url": "https://staging.tokopedia.com/invoice.pl?id=166843121&pdf=Invoice-825707-478945-20210608142647-dXV1dXV1dXU4",
+        "payment_date": "08 Juni 2021, 14:26 WIB",
+        "cashback_info": "",
+        "order_status": {
+          "id": 10,
+          "status_name": "Dibatalkan",
+          "indicator_color": "#B5BBC5"
+        },
+        "ticker_info": {
+          "text": "",
+          "type": "",
+          "action_text": "",
+          "action_key": "",
+          "action_url": ""
+        },
+        "preorder": {
+          "is_preorder": false,
+          "label": "",
+          "value": ""
+        },
+        "deadline": {
+          "label": "",
+          "value": "",
+          "color": ""
+        },
+        "shop": {
+          "shop_id": 478945,
+          "shop_name": "Umbra|Penumbra",
+          "shop_type": 0,
+          "badge_url": ""
+        },
+        "products": [
+          {
+            "product_id": 2147827287,
+            "order_detail_id": 20534854,
+            "product_name": "T3ST ID64INT",
+            "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/6/7/2986b0bb-a697-45b0-ad34-39e5fd1d15bd.jpg",
+            "price": 100000,
+            "price_text": "Rp100.000",
+            "quantity": 1,
+            "total_price": 100000,
+            "total_price_text": "Rp100.000",
+            "notes": "automation order: kurir toko",
+            "category": "Film &  Musik > Musik > CD & DVD Musik",
+            "category_id": 1517,
+            "button": {
+              "key": "see_similar_products",
+              "display_name": "Lihat Produk Serupa",
+              "type": "main",
+              "variant": "ghost",
+              "url": "tokopedia://rekomendasi/2147827287?ref=bom_cancelled",
+              "popup": {
+                "title": "",
+                "body": "",
+                "action_button": []
+              }
+            }
+          }
+        ],
+        "shipment": {
+          "shipping_name": "JNE",
+          "shipping_product_name": "Reguler",
+          "shipping_display_name": "JNE - Reguler",
+          "shipping_ref_num": "",
+          "eta": "",
+          "receiver": {
+            "name": "laras jogja",
+            "phone": "62893829525323",
+            "street": "jalan kraton yogyakarta nomor 12",
+            "postal": "55131",
+            "district": "Kraton",
+            "city": "Kota Yogyakarta",
+            "province": "D.I. Yogyakarta"
+          },
+          "driver": {
+            "name": "",
+            "phone": "",
+            "photo_url": "",
+            "license_number": ""
+          },
+          "shipping_info": {
+            "text": "",
+            "type": "",
+            "action_key": "",
+            "action_url": "",
+            "action_text": ""
+          }
+        },
+        "payment": {
+          "payment_method": {
+            "label": "Metode Pembayaran",
+            "value": "Saldo"
+          },
+          "payment_details": [
+            {
+              "label": "Total Harga (1 barang)",
+              "value": "Rp100.000"
+            },
+            {
+              "label": "Total Ongkos Kirim (0.40 kg)",
+              "value": "Rp6.000"
+            },
+            {
+              "label": "Biaya Asuransi",
+              "value": "Rp500"
+            }
+          ],
+          "payment_amount": {
+            "label": "Total Bayar",
+            "value": "Rp106.500"
+          }
+        },
+        "button": {
+          "key": "ask_seller",
+          "display_name": "Chat Penjual",
+          "type": "main",
+          "variant": "filled",
+          "url": "tokopedia://topchat/askseller/478945?invoiceUrl=https%3A%2F%2Fstaging.tokopedia.com%2Finvoice.pl%3Fid%3D166843121%26pdf%3DInvoice-825707-478945-20210608142647-dXV1dXV1dXU4",
+          "popup": {
+            "title": "",
+            "body": "",
+            "action_button": []
+          }
+        },
+        "dot_menus": [
+          {
+            "key": "help",
+            "display_name": "Bantuan",
+            "url": "https://staging.tokopedia.com/help/reference-article?invoice_type_id=1&refnum=INV%2F20210608%2FMPL%2F20534853&refnum_id=166843121&transaction_type_id=2&uoh=true",
+            "popup": {
+              "title": "",
+              "body": "",
+              "action_button": []
+            }
+          }
+        ],
+        "meta": {
+          "is_bo": false,
+          "bo_image_url": ""
+        }
+      }
+    }
+  }
+]

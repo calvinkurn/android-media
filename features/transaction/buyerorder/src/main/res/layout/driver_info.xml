@@ -9,7 +9,7 @@
     android:id="@+id/driverLayout"
     android:visibility="gone"
     tools:visibility="visible"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/Unify_N0"
     app:cardCornerRadius="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout

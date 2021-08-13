@@ -1,0 +1,13 @@
+{
+  "readme": "Discovery Sort & Filter impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventAction": "click chips filter",
+      "event": "clickDiscovery",
+      "eventLabel": ".*"
+    }
+  ]
+}

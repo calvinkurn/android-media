@@ -9,7 +9,7 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
+import com.tokopedia.imagepicker.common.model.MimeType;
 
 public class Item implements Parcelable {
     public static final Creator<Item> CREATOR = new Creator<Item>() {

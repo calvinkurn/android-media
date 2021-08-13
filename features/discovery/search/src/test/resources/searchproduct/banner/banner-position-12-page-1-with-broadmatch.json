@@ -1,0 +1,1220 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 16,
+      "totalDataText": "16",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=thematic&q=hampers&srp_page_id=332&srp_page_title=",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 12,
+        "otherRelated": [
+          {
+            "keyword": "baju kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "12345",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_UhHAJF6_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_ja6AJRo_HObm-srcHi6syFHmFiqfuNPfYagVY2gmUE6AJaHs1NoaFiy3zwrfo5rM1i6sURHZd7HAjfHpUho_1doAe7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1H7P7N1Z_V-q9P2yM7NPujau3Bvq1jh_jPqq77aZ_CoepCN_BzmQ1h11_V68Bu7_7zVoVB_HAu6qj2033OzPOB1ypuozJB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12agJyNPfVUZMxsHBu2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BRZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32s8Jhk19PvuVBE_32VH1N1gpC6zVJaZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUjYC19o5epVtH72uqSyfPcWuuMheuu4711B1uM-2HVYEqO2b9fWcuRVxZjeh39zj8SCW3SxF3MOyy1WIPJB38Mgjgs-A3MgCr7P5_1YI_9Be1pBvHuYsH_PzP7xFe_BWzOgs9O2d1IVH6cKpb9gMPOKd1RjOHfVigcNvQIVHQMKfUiFiy3hSUstiqRzwrcxay9oBUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6AKDH_Ka6u7DUMNwyfVXgcBjy9zB9fVjraUEosnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&src=search&ob=23&t=android&management_type=1&page=1&is_search=1&keywords=bju+batik&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fodzaclassic%2Fodza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m%3Fsrc%3Dtopads",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_UhHAJF6_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_ja6AJRo_HObm-srcHi6syFHmFiqfuNPfYagVY2gmUE6AJaHs1NoaFiy3zwrfo5rM1i6sURHZd7HAjfHpUho_1doAe7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1H7P7N1Z_V-q9P2yM7NPujau3Bvq1jh_jPqq77aZ_CoepCN_BzmQ1h11_V68Bu7_7zVoVB_HAu6qj2033OzPOB1ypuozJB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12agJyNPfVUZMxsHBu2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BRZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32s8Jhk19PvuVBE_32VH1N1gpC6zVJaZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUjYC19o5epVtH72uqSyfPcWuuMheuu4711B1uM-2HVYEqO2b9fWcuRVxZjeh39zj8SCW3SxF3MOyy1WIPJB38Mgjgs-A3MgCr7P5_1YI_9Be1pBvHuYsH_PzP7xFe_BWzOgs9O2d1IVH6cKpb9gMPOKd1RjOHfVigcNvQIVHQMKfUiFiy3hSUstiqRzwrcxay9oBUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6AKDH_Ka6u7DUMNwyfVXgcBjy9zB9fVjraUEosnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?management_type=1&keywords=bju+batik&product_id=780480504&sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&r=https%3A%2F%2Fwww.tokopedia.com%2Fodzaclassic%2Fodza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m%3Fsrc%3Dtopads&uid=0&ob=23&is_search=1&page=1&dv=android&src=search&t=android",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aH_nhHAjRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_1NHsKhop1poZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpe5H_J5oAJ76_jpos15oAJ76_jposuwypVMy_eNocUWH31Fom77opHFb3VB6AyWo_HhH_oM6_1Ogszj9pUFoAxwHsn76mUDUMWB89P5rMzwq3ei6sKhHsUO6_rDUMVj9RosQR-BUstaopJXoAnNosHaH_1O6Ae7oAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BN_c2uq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAoIP6uJjhZ3BRq3-W69ugHBu2_fB-H1NI3MWoHjjF_1HF81N1eMOHuVJh_S2uPJYJz_zg1pnO_M2GqOBW19PgucHO_1z-q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGrMzc69PxZJ2typ-uq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkyRxHqBVR_Ozg8jOkz_V6ucrF_jzzHjBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-veuVpQ7HhqAoGu32foSz0uugD1VuwoVV-uVgiq_Cw8MWqZOY0zBPhy12JHuB7gI2FQu2drV2W3cVbzRz-uS2MgcyaeO2Me9oIQ7Ovz7ON1VHN_pVwypJR19PUrJJNQ1P3yOYq8VCh_AxtHaOfgSPy6VoNo_oxyMzX_fhh_cNtoiUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6syFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?keywords=bju+batik&ob=23&sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&page=1&src=search&management_type=1&dv=android&is_search=1&t=android"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "price_str": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "ads": {
+                  "id": "12345",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_UhHAJF6_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_ja6AJRo_HObm-srcHi6syFHmFiqfuNPfYagVY2gmUE6AJaHs1NoaFiy3zwrfo5rM1i6sURHZd7HAjfHpUho_1doAe7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1H7P7N1Z_V-q9P2yM7NPujau3Bvq1jh_jPqq77aZ_CoepCN_BzmQ1h11_V68Bu7_7zVoVB_HAu6qj2033OzPOB1ypuozJB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12agJyNPfVUZMxsHBu2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BRZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32s8Jhk19PvuVBE_32VH1N1gpC6zVJaZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUjYC19o5epVtH72uqSyfPcWuuMheuu4711B1uM-2HVYEqO2b9fWcuRVxZjeh39zj8SCW3SxF3MOyy1WIPJB38Mgjgs-A3MgCr7P5_1YI_9Be1pBvHuYsH_PzP7xFe_BWzOgs9O2d1IVH6cKpb9gMPOKd1RjOHfVigcNvQIVHQMKfUiFiy3hSUstiqRzwrcxay9oBUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6AKDH_Ka6u7DUMNwyfVXgcBjy9zB9fVjraUEosnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&src=search&ob=23&t=android&management_type=1&page=1&is_search=1&keywords=bju+batik&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fodzaclassic%2Fodza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m%3Fsrc%3Dtopads",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_UhHAJF6_rDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_ja6AJRo_HObm-srcHi6syFHmFiqfuNPfYagVY2gmUE6AJaHs1NoaFiy3zwrfo5rM1i6sURHZd7HAjfHpUho_1doAe7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1H7P7N1Z_V-q9P2yM7NPujau3Bvq1jh_jPqq77aZ_CoepCN_BzmQ1h11_V68Bu7_7zVoVB_HAu6qj2033OzPOB1ypuozJB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12agJyNPfVUZMxsHBu2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BRZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32s8Jhk19PvuVBE_32VH1N1gpC6zVJaZ3dFvZUDUSupg9-wq3ei6iUFUiFirfuprfB5QBY2gmUEUjYC19o5epVtH72uqSyfPcWuuMheuu4711B1uM-2HVYEqO2b9fWcuRVxZjeh39zj8SCW3SxF3MOyy1WIPJB38Mgjgs-A3MgCr7P5_1YI_9Be1pBvHuYsH_PzP7xFe_BWzOgs9O2d1IVH6cKpb9gMPOKd1RjOHfVigcNvQIVHQMKfUiFiy3hSUstiqRzwrcxay9oBUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDhop1NbAJR6AKDH_Ka6u7DUMNwyfVXgcBjy9zB9fVjraUEosnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?management_type=1&keywords=bju+batik&product_id=780480504&sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&r=https%3A%2F%2Fwww.tokopedia.com%2Fodzaclassic%2Fodza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m%3Fsrc%3Dtopads&uid=0&ob=23&is_search=1&page=1&dv=android&src=search&t=android",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aH_nhHAjRbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_1NHsKhop1poZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpe5H_J5oAJ76_jpos15oAJ76_jposuwypVMy_eNocUWH31Fom77opHFb3VB6AyWo_HhH_oM6_1Ogszj9pUFoAxwHsn76mUDUMWB89P5rMzwq3ei6sKhHsUO6_rDUMVj9RosQR-BUstaopJXoAnNosHaH_1O6Ae7oAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BN_c2uq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAoIP6uJjhZ3BRq3-W69ugHBu2_fB-H1NI3MWoHjjF_1HF81N1eMOHuVJh_S2uPJYJz_zg1pnO_M2GqOBW19PgucHO_1z-q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGrMzc69PxZJ2typ-uq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkyRxHqBVR_Ozg8jOkz_V6ucrF_jzzHjBXHA7ibm-Orfua9fBjUstiHmUDUSoBrRo2QfNwq3ei6i-veuVpQ7HhqAoGu32foSz0uugD1VuwoVV-uVgiq_Cw8MWqZOY0zBPhy12JHuB7gI2FQu2drV2W3cVbzRz-uS2MgcyaeO2Me9oIQ7Ovz7ON1VHN_pVwypJR19PUrJJNQ1P3yOYq8VCh_AxtHaOfgSPy6VoNo_oxyMzX_fhh_cNtoiUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6syFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUh6AUNUiFiH_rNom-Pwe?keywords=bju+batik&ob=23&sid=OAQsoC1h3JUjv6tkUVlPU_4QITVbi0_zkZK_kFWqaJD1YtdzpmZxpZmXaKGtIVzfdf2CZfAsGoMOGMyPS9O1_c17QwHpA9mGVc_ZxPqL8h3-vfwX8Sy53abdnOlqLnh6&page=1&src=search&management_type=1&dv=android&is_search=1&t=android"
+                }
+              },
+              {
+                "id": 15302003,
+                "name": "liquid vape gratis baju anak",
+                "price": 123,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/liquid-vape-gratis-baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D36_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15302003?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15213541,
+                "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
+                "price": 125000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2144_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15213541?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15213547,
+                "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
+                "price": 108750,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2144_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15213547?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "baju kaos",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "baju anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "<strong>\"baju kaos anak balapan\"</strong> nggak ditemukan. Mau cek rekomendasi kami?",
+        "query": "q=baju kaos anak balapan&rf=true"
+      },
+      "banner": {
+        "position": 12,
+        "text": "Parsel Ramadan",
+        "applink": "tokopedia://discovery/parsel",
+        "imageUrl": "https://images.tokopedia.net/img/QoeoWz/2021/3/29/6d474b47-5a6b-444c-a1d7-0861fe5ba911.png"
+      },
+      "products": [
+        {
+          "id": 1435343142,
+          "name": "KADO HADIAH HAMPERS PERNIKAHAN ANNIVERSARY WEDDING GIFT",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/9a6986db-4581-4e97-b8ef-d2cd82f2ae9f.jpg",
+          "price": "Rp95.000",
+          "priceInt": 95000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/kado-hadiah-hampers-pernikahan-anniversary-wedding-gift-mewah?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 624",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1446606972,
+          "name": "HAMPERS KADO ULANGTAHUN/PENGANTIN MUKENA SHABBY FREE TASBIH&GIFT CARD",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/1/4/74ee3ea8-fc89-44c6-8ebc-5d39da68ae6d.png",
+          "price": "Rp124.000",
+          "priceInt": 124000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-ulangtahun-pengantin-mukena-shabby-free-tasbih-gift-card?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 459",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1442646699,
+          "name": "HAMPERS / BIRTHDAY GIFT / HAMPERS ULTAH / HAMPERS HIJAB / KADO PACAR",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2281114,
+            "name": "jaya hebat",
+            "city": "Bandung",
+            "url": "https://www.tokopedia.com/jayahebat",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_b2ca612b-4008-4d7e-b6dd-16cede818da7.jpg",
+          "price": "Rp120.000",
+          "priceInt": 120000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/jayahebat/hampers-birthday-gift-hampers-ultah-hampers-hijab-kado-pacar-xl-d02b?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 96",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274728471,
+          "name": "HAMPERS KADO PENGANTIN/WEDDING MUKENA SARUNG FREE TASBIH &KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/21/44e3a425-cba5-4cab-967c-f6004d0d174a.png",
+          "price": "Rp179.000",
+          "priceInt": 179000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-pengantin-wedding-mukena-sarung-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 42",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1439979343,
+          "name": "HAMPERS KADO MUKENA KHADIJAH SERRIES FREE TASBIH&KARTU UCAPAN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1010876,
+            "name": "Mazaya Mukena",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/mazaya85",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/22/a6abe4b2-a128-4197-9d27-55c7a7d17c61.jpg",
+          "price": "Rp215.000",
+          "priceInt": 215000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/mazaya85/hampers-kado-mukena-khadijah-serries-free-tasbih-kartu-ucapan?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 23",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1274008926,
+          "name": "Hampers Kayu Set / Kado Pernikahan / Hampers Set Alat Makan Kayu",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 9472759,
+            "name": "AishaWoodArt",
+            "city": "Kab. Malang",
+            "url": "https://www.tokopedia.com/aishawoodart",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_c0e393ff-ee0e-4b6d-929f-8d9a6a8c63e0.jpg",
+          "price": "Rp115.000",
+          "priceInt": 115000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/aishawoodart/hampers-kayu-set-kado-pernikahan-hampers-set-alat-makan-kayu?whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 61",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 1208014976,
+          "name": "hampers new normal kit",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1076498,
+            "name": "Surya Sinergy",
+            "city": "Semarang",
+            "url": "https://www.tokopedia.com/suryasinergy",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/attachment/2021/4/5/74993926/74993926_a960907f-8b02-4607-821f-bb862ddf4e74.jpg",
+          "price": "Rp28.000",
+          "priceInt": 28000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/suryasinergy/hampers-new-normal-kit-paket-1?whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 783",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        },
+        {
+          "id": 846478974,
+          "name": "Hampers Lebaran Begreen Honey B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 3368587,
+            "name": "Begreen Honey",
+            "city": "Kab. Sidoarjo",
+            "url": "https://www.tokopedia.com/begreenhoney",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/5/21/1f8666b9-5220-4b4d-8837-1fe080f4c6f5.jpg",
+          "price": "Rp145.000",
+          "priceInt": 145000,
+          "priceRange": "",
+          "categoryId": 54,
+          "categoryName": "Perlengkapan Pesta & Craft",
+          "categoryBreadcrumb": "perlengkapan-pesta-craft/hadiah/hampers",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/begreenhoney/hampers-lebaran-begreen-honey-b?whid=0",
+          "labelGroups": [
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 56",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}

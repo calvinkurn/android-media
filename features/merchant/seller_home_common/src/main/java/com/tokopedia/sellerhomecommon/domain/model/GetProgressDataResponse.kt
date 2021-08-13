@@ -54,5 +54,9 @@ data class ProgressDataModel(
 
         @Expose
         @SerializedName("errorMsg")
-        val errorMessage: String?
+        val errorMessage: String?,
+
+        @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean?
 )

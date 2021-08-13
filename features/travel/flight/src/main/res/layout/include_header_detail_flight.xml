@@ -2,10 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
@@ -18,11 +16,11 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/airline_icon"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/layout_lvl5"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_5" />
+            android:layout_marginRight="@dimen/spacing_lvl2" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -38,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:textSize="14sp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_5"
                 tools:text="Cathay Pacific" />
 
@@ -49,7 +47,7 @@
                 android:layout_below="@+id/airline_name"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3"
                 tools:text="CP - 321" />
 
@@ -60,7 +58,7 @@
                 android:layout_below="@+id/airline_code"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 tools:text="Dioperasikan oleh Garuda Indonesia"
@@ -76,18 +74,17 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="small"
+                android:textColor="@color/Unify_N700_68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/airline_refundable_info"
-                style="@style/TextView.Micro.BlackSecondary"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
                 android:paddingLeft="@dimen/padding_16"
-                android:paddingTop="@dimen/dp_8"
+                android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingRight="@dimen/padding_16"
-                android:paddingBottom="@dimen/dp_8"
-                android:textSize="10sp"
+                android:paddingBottom="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 tools:text="Refundable"
                 tools:visibility="visible" />
@@ -95,13 +92,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-
     <LinearLayout
         android:id="@+id/container_pnr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/container_header"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/flight_dp_10"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/padding_16"
@@ -112,28 +108,28 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
             android:text="@string/flight_label_booking_code_pnr"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pnr_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
-            android:textColor="@color/tkpd_main_green"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="323088926194" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/copy_pnr"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            app:srcCompat="@drawable/flight_ic_copy_order" />
+            app:icon_name="COPY" />
     </LinearLayout>
 
     <View
@@ -141,5 +137,5 @@
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
         android:layout_marginTop="@dimen/margin_8"
-        android:background="@color/flight_search_list_background" />
+        android:background="@color/Unify_N75" />
 </RelativeLayout>

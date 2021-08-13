@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
@@ -30,11 +31,15 @@ class WaitingPaymentOrderAdapter(
         })
     }
 
-    fun updateProducts(items: List<Visitable<WaitingPaymentOrderAdapterTypeFactory>>) {
+    fun updateProducts(items: List<Visitable<*>>) {
         val diffCallback = WaitingPaymentOrderDiffCallback(visitables, items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(items)
+    }
+
+    fun showEmpty() {
+        updateProducts(listOf(EmptyModel()))
     }
 }

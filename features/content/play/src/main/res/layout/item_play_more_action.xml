@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_18"
         android:layout_marginLeft="@dimen/dp_18"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"

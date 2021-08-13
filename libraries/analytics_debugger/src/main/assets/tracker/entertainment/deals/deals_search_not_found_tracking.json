@@ -5,13 +5,13 @@
       "event" : "viewDealsIris",
       "eventCategory" : "digital - deals",
       "eventAction" : "impression on search results",
-      "eventLabel" : "{{deals - .+ - .+ - result not found}}",
+      "eventLabel" : "deals - .+ - .+ - result not found",
       "screenName" : "/deals/",
       "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{.+}}",
-      "userId" : "{{.*}}",
+      "clientId" : ".+",
+      "sessionIris" : ".+",
+      "userId" : ".*",
       "businessUnit": "travel & entertainment"
     }
   ]

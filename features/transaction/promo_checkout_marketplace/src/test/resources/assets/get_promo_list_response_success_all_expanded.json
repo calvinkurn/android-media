@@ -14,7 +14,8 @@
       "promo_recommendation": {
         "codes": [
           "THIRX598GSA7MADK2X7",
-          "POMA3A96FB"
+          "POMA3A96FB",
+          "AATHIRX598GSA7MADK2X7"
         ],
         "message": "Kamu bisa hemat Rp168.100"
       },
@@ -48,6 +49,25 @@
                   "shop_id": 0,
                   "tag_image_urls": [],
                   "benefit_amount": 42930,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [],
+                  "currency_details_str": "(20.000 TokoPoints)"
+                },
+                {
+                  "code": "AATHIRX598GSA7MADK2X7",
+                  "title": "Cashback Rp21.930",
+                  "message": "",
+                  "expiry_info": "Berakhir 2 hari lagi!",
+                  "expiry_count_down": 1593363599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [],
+                  "benefit_amount": 21930,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,

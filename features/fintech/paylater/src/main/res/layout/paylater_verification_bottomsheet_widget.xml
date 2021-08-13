@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_24">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivPartner"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_paylater_application_status_background"
+        app:layout_constraintDimensionRatio="H,4:3"
+        app:layout_constraintEnd_toStartOf="@+id/imageGuideLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPopUpDetail"
+        app:unify_image_corner_radius="0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/imageGuideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.26" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPopUpDetail"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivPartner"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Pengajuanmu masih dalam proses verifikasi. Tunggu kabar selanjutnya dari kami, ya." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAdditionalInfo"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="@+id/tvPopUpDetail"
+        app:layout_constraintStart_toStartOf="@+id/tvPopUpDetail"
+        app:layout_constraintTop_toBottomOf="@+id/tvPopUpDetail"
+        app:layout_goneMarginBottom="@dimen/unify_space_24"
+        app:typographyType="body_2"
+        tools:text="Verifikasi hingga: 24 Sept 2020" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ivPhone"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:icon_color_light_disabled="@color/Unify_N400"
+        app:icon_color_light_enable="@color/Unify_N400"
+        app:icon_color_night_disabled="@color/Unify_N400"
+        app:icon_color_night_enable="@color/Unify_N400"
+        app:icon_name="CALL"
+        app:layout_constraintStart_toStartOf="@+id/tvPopUpDetail"
+        app:layout_constraintTop_toBottomOf="@+id/tvAdditionalInfo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPhone"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintBottom_toBottomOf="@+id/ivPhone"
+        app:layout_constraintEnd_toEndOf="@+id/tvPopUpDetail"
+        app:layout_constraintStart_toEndOf="@+id/ivPhone"
+        app:layout_constraintTop_toTopOf="@+id/ivPhone"
+        app:typographyType="body_2"
+        tools:text="0807-1-573348" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ivEmail"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:icon_color_light_disabled="@color/Unify_N400"
+        app:icon_color_light_enable="@color/Unify_N400"
+        app:icon_color_night_disabled="@color/Unify_N400"
+        app:icon_color_night_enable="@color/Unify_N400"
+        app:icon_name="MESSAGE"
+        app:layout_constraintStart_toStartOf="@+id/tvPopUpDetail"
+        app:layout_constraintTop_toBottomOf="@+id/ivPhone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvEmail"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintBottom_toBottomOf="@+id/ivEmail"
+        app:layout_constraintEnd_toEndOf="@+id/tvPopUpDetail"
+        app:layout_constraintStart_toEndOf="@+id/ivEmail"
+        app:layout_constraintTop_toTopOf="@+id/ivEmail"
+        app:typographyType="body_2"
+        tools:text="support@kredivo.com" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

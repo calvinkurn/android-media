@@ -1,0 +1,45 @@
+{
+  "data": {
+    "getNotification": {
+      "notificationID": 4,
+      "promoCode": "TOPEDTEST",
+      "notificationStatus": 20,
+      "eventID": 8,
+      "wordingActive": {
+        "titleId": "Kupon Special Buatmu",
+        "titleEn": "Kupon Special Buatmu",
+        "subtitle1Id": "Hai topers, kamu dapat kupon dari transaksi pertamamu!",
+        "subtitle1En": "Hai topers, kamu dapat kupon dari transaksi pertamamu!",
+        "subtitle2Id": "Kamu bisa langsung pakai kuponnya buat belanja, lho.",
+        "subtitle2En": "Kamu bisa langsung pakai kuponnya buat belanja, lho."
+      },
+      "wordingExpired": {
+        "titleId": "",
+        "titleEn": "",
+        "subtitle1Id": "Kupon ini tidak berlaku lagi",
+        "subtitle1En": "Kupon ini tidak berlaku lagi",
+        "subtitle2Id": "Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!",
+        "subtitle2En": "Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!"
+      },
+      "wordingUsed": {
+        "titleId": "",
+        "titleEn": "",
+        "subtitle1Id": "Kamu sudah pakai kupon ini",
+        "subtitle1En": "Kamu sudah pakai kupon ini",
+        "subtitle2Id": "Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!",
+        "subtitle2En": "Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!"
+      },
+      "button": {
+        "text": "Coupon gratis",
+        "url": "https://tokopedia.com/coupon",
+        "appLink": "https://tokopedia.com/coupon",
+        "isShown": true
+      },
+      "resultStatus": {
+        "code": "200000",
+        "reason": "",
+        "message": []
+      }
+    }
+  }
+}

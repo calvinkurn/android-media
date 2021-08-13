@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.White" parent="Base.Theme">
+        <item name="toolbarTheme">@style/Toolbar.White</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
+    </style>
+
+    <style name="Base.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="Theme.White.PopupTransparent">
+        <item name="popupTheme">@style/TransparentPopupTheme</item>
+    </style>
+
+    <style name="TransparentPopupTheme">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Toolbar.White" parent="Base.Toolbar.Theme">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/tkpdabstraction_green_600</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="actionModeBackground">@android:color/white</item>
+        <item name="android:actionModeBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
+        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
+    </style>
+
+    <style name="Base.Toolbar.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:itemTextAppearance">@style/TextAppearance</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="subtitleTextAppearance">@style/SubTitleTextAppearance</item>
+    </style>
+
+    <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">@dimen/fontSize_lvl2</item>
+    </style>
+
+    <style name="TitleTextAppearance.White">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+
+    <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/fontSize_lvl5</item>
+    </style>
+
+    <style name="TextAppearance">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+</resources>

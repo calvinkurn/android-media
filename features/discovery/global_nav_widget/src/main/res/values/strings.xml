@@ -8,4 +8,7 @@
     <string name="single_global_nav_title">Temukan tempat nginap di sini!</string>
     <string name="single_global_nav_subtitle">Mulai dari</string>
     <string name="single_global_nav_info">Rp 866.100</string>
+
+    <string name="content_desc_globalNavCardItemBackground">global nav card background</string>
+    <string name="content_desc_globalNavCardItemLogo">global nav card logo</string>
 </resources>

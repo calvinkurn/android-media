@@ -1,0 +1,15 @@
+package com.tokopedia.topads.sdk.utils
+
+const val PARAM_DEVICE = "device"
+const val PARAM_PAGE = "page"
+const val PARAM_EP = "ep"
+const val PARAM_HEADLINE_PRODUCT_COUNT = "headline_product_count"
+const val PARAM_ITEM = "item"
+const val PARAM_SRC = "src"
+const val PARAM_TEMPLATE_ID = "template_id"
+const val PARAM_USER_ID = "user_id"
+const val VALUE_DEVICE = "android"
+const val VALUE_EP = "headline"
+const val VALUE_HEADLINE_PRODUCT_COUNT = "3"
+const val VALUE_ITEM = "1"
+const val VALUE_TEMPLATE_ID = "3"

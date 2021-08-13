@@ -6,7 +6,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
 
-@TalkInboxScope
 @Module
 class TalkInboxModule {
 

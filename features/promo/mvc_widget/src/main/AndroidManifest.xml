@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.mvcwidget">
+
+    <application>
+        <activity
+            android:name=".views.activities.TransParentActivity"
+            android:theme="@style/Theme.AppCompat.Translucent">
+        </activity>
+    </application>
+</manifest>
+

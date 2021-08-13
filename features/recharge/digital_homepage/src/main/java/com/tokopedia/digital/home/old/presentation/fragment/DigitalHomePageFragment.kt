@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.old.presentation.fragment
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,17 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
+import com.tokopedia.common_digital.common.util.CommonDigitalGqlQuery
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
@@ -45,7 +46,9 @@ import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingA
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
+import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
 
@@ -61,8 +64,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
+    private var sliceOpenApp: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.view_recharge_home, container, false)
@@ -73,8 +80,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
+        }
+
+        arguments?.let {
+            sliceOpenApp = it.getBoolean(RechargeHomepageFragment.RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
         searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
@@ -87,12 +98,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
-        with(getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
+                    getRecyclerView(view)?.computeVerticalScrollOffset()?.let {
+                        calculateToolbarView(it)
+                    }
                 }
             })
         }
@@ -100,30 +113,34 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_order_list.setOnClickListener {
             onClickOrderList()
         }
+
+        if(sliceOpenApp){
+            trackingUtil.sliceOpenApp(userSession.userId)
+            trackingUtil.onOpenPageFromSlice()
+        }
     }
 
     private fun hideStatusBar() {
         digital_homepage_container.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            digital_homepage_container.requestApplyInsets()
-        }
+        digital_homepage_container.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = digital_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.run {
+                activity?.window?.statusBarColor =
+                        androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
@@ -134,18 +151,20 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     private fun calculateToolbarView(offset: Int) {
 
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / searchBarTransitionRange * (offset)
+        var offsetAlpha = OFFSET_ALPHA / searchBarTransitionRange * (offset)
         //2.5 is maximum
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
 
         val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= 255) {
+        if (offsetAlpha >= OFFSET_ALPHA) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
             context?.run {
+                digital_homepage_order_list.setColorFilter(
+                        ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
+                )
                 searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
             }
@@ -207,10 +226,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         showLoading()
 
         val queryList = mapOf(
-                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+                QUERY_BANNER to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeBanner,
+                QUERY_CATEGORY to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeCategory,
+                QUERY_SECTIONS to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeSection,
+                QUERY_RECOMMENDATION to CommonDigitalGqlQuery.rechargeFavoriteRecommendationList
         )
         viewModel.initialize(queryList)
         viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
@@ -302,7 +321,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     companion object {
-        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
+        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+
+        private const val OFFSET_ALPHA = 255f
 
         val initialImpressionTrackingConst = mapOf(
                 DYNAMIC_ICON_IMPRESSION to true,
@@ -313,6 +335,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 SUBHOME_WIDGET_IMPRESSION to true
         )
 
-        fun getInstance() = DigitalHomePageFragment()
+        fun getInstance(sliceOpenApp: Boolean = false): DigitalHomePageFragment {
+            val bundle = Bundle()
+            val fragment = DigitalHomePageFragment()
+            bundle.putBoolean(RECHARGE_HOME_PAGE_EXTRA, sliceOpenApp)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

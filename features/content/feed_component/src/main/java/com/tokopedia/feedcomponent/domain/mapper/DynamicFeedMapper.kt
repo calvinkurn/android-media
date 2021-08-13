@@ -32,7 +32,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -49,6 +50,7 @@ private const val TYPE_CARDPOST = "cardpost"
 private const val TYPE_CARDBANNER = "cardbanner"
 private const val TYPE_CARDHIGHLIGHT = "cardhighlight"
 private const val TYPE_CARDPLAYCAROUSEL = "cardplaycarousel"
+private const val TYPE_CARD_HEADLINE = "cardheadline"
 
 private const val CONTENT_IMAGE = "image"
 private const val CONTENT_YOUTUBE = "youtube"
@@ -59,6 +61,7 @@ private const val CONTENT_MULTIMEDIA = "mediagrid"
 
 private const val ACTIVITY_TOPADS = "topads"
 private const val ACTIVITY_TOPADS_BANNER = "topads_banner"
+private const val ACTIVITY_TOPADS_HEADLINE = "topads_headline"
 private const val AUTHOR_TOPADS_SHOP = "topads shop"
 
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
@@ -111,6 +114,11 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             mapCardCarousel(posts)
                         }
                     }
+                    TYPE_CARD_HEADLINE -> {
+                        if(feed.activity == ACTIVITY_TOPADS_HEADLINE) {
+                            mapCardHeadline(posts, templateData.template)
+                        }
+                    }
                 }
             }
 
@@ -125,6 +133,11 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 firstPageCursor,
                 hasNext
         )
+    }
+
+    private fun mapCardHeadline(posts: MutableList<Visitable<*>>, template: Template) {
+        val topadsHeadlineUiModel = TopadsHeadlineUiModel(template = template, topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        posts.add(topadsHeadlineUiModel)
     }
 
     private fun mapTopAdsBannerData(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
@@ -208,7 +221,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             }
 
             posts.add(
-                    TopadsShopViewModel(
+                    TopadsShopUiModel(
                             feed.content.cardRecommendation.title,
                             topAdsShopList,
                             template,
@@ -529,4 +542,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
         posts.add(CarouselPlayCardViewModel())
     }
+}
+
+object TopAdsHeadlineActivityCounter {
+    var page: Int = 1
 }

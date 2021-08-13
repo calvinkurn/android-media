@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -15,6 +14,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import javax.inject.Inject
 
 class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
@@ -36,7 +36,7 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
     override fun loadData() {
@@ -45,7 +45,9 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID)
+        context?.run {
+            promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,com.tokopedia.unifyprinciples.R.color.Unify_G200))
+        }
     }
 
     override fun onClickCancel() {

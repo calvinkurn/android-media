@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ccBankCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clAvailableBank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivBank"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="@+id/imageGuideLine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuideLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <LinearLayout
+            android:id="@+id/llBenefits"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginEnd="@dimen/credit_card_dp_10"
+            app:layout_constraintBottom_toTopOf="@+id/tvInstallments"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageGuideLine"
+            app:layout_constraintTop_toTopOf="@+id/ivBank"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/benefitLabel1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:labelTitle="Diskon 10%"
+                app:labelType="general_light_green"
+                tools:textSize="@dimen/credit_card_offer_label_sp_10" />
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/benefitLabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                app:labelTitle="Kupon 20rb"
+                app:labelType="general_light_green"
+                app:layout_constraintStart_toEndOf="@+id/benefitLabel1"
+                app:layout_constraintTop_toTopOf="@+id/ivBank"
+                tools:textSize="@dimen/credit_card_offer_label_sp_10" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvInstallments"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginEnd="@dimen/credit_card_dp_10"
+            app:layout_constraintBottom_toBottomOf="@+id/ivBank"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/llBenefits"
+            app:layout_constraintTop_toBottomOf="@+id/llBenefits"
+            app:typographyType="body_3"
+            tools:text="Cicilan 3, 6, 12, 18, 24 bulan"
+            tools:textColor="@color/Unify_N700_68" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
+

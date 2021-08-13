@@ -24,6 +24,7 @@
         android:id="@+id/link_featured_shop"
         android:textColor="@color/Unify_P600"
         android:textSize="13sp"
+        android:text="@string/os_featured_shop_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"

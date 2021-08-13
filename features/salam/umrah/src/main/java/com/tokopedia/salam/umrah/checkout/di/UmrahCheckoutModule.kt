@@ -7,5 +7,4 @@ import dagger.Module
  */
 
 @Module
-@UmrahCheckoutScope
 class UmrahCheckoutModule

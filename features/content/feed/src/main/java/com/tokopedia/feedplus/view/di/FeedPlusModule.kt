@@ -25,16 +25,9 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
-import com.tokopedia.play.widget.analytic.impression.ImpressionValidator
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource
-import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.di.VoteModule
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -56,7 +49,7 @@ private const val NET_WRITE_TIMEOUT = 60
 private const val NET_CONNECT_TIMEOUT = 60
 private const val NET_RETRY = 1
 
-@Module(includes = [VoteModule::class])
+@Module
 class FeedPlusModule {
     @FeedPlusScope
     @Provides
@@ -129,40 +122,6 @@ class FeedPlusModule {
     }
 
     @FeedPlusScope
-    @Named("TOME")
-    @Provides
-    fun provideTomeRetrofitDomain(okHttpClient: OkHttpClient,
-                                  retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(FeedUrl.TOME_DOMAIN)
-                .client(okHttpClient)
-                .build()
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonApi(@Named("TOME") retrofit: Retrofit): ShopCommonApi {
-        return retrofit.create(ShopCommonApi::class.java)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonDataSource(shopInfoCloudDataSource: ShopCommonCloudDataSource): ShopCommonDataSource {
-        return ShopCommonDataSource(shopInfoCloudDataSource)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonRepository(shopInfoDataSource: ShopCommonDataSource): ShopCommonRepository {
-        return ShopCommonRepositoryImpl(shopInfoDataSource)
-    }
-
-    @FeedPlusScope
     @Provides
     fun provideToggleFavouriteShopUseCase(@ApplicationContext context: Context): ToggleFavouriteShopUseCase {
         return ToggleFavouriteShopUseCase(GraphqlUseCase(), context.resources)
@@ -172,13 +131,6 @@ class FeedPlusModule {
     @Provides
     fun provideTopAdsApi(@Named("WS") retrofit: Retrofit): TopAdsApi {
         return retrofit.create(TopAdsApi::class.java)
-    }
-
-    @Provides
-    @FeedPlusScope
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
     }
 
     @FeedPlusScope
@@ -192,12 +144,6 @@ class FeedPlusModule {
     @FeedPlusScope
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @Provides
-    @FeedPlusScope
-    fun provideFeedDispatcherProvider(): FeedDispatcherProvider {
-        return FeedProductionDispatcherProvider()
     }
 
     @FeedPlusScope

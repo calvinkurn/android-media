@@ -17,6 +17,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
@@ -34,8 +36,7 @@ import javax.inject.Inject
 
 class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
-    companion object {
-        @JvmStatic
+    companion object {@JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
                            context: Context,
@@ -47,6 +48,8 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         }
 
         private const val TICKER_INDEX_POSITION = 0
+
+        private const val ERROR_MESSAGE = "Error validate free delivery voucher"
     }
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
     private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = {}
@@ -122,7 +125,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private val nextButtonUiModel by lazy {
-        NextButtonUiModel(::validateValues)
+        NextButtonUiModel(::validateValues, true)
     }
 
     private val promotionExpenseEstimationUiModel =
@@ -184,6 +187,11 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(GeneralExpensesInfoBottomSheetFragment.TAG)
+    }
+
     private fun setupView() {
         renderList(freeDeliveryTypeUiList)
     }
@@ -241,6 +249,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     adapter.notifyDataSetChanged()
@@ -268,7 +277,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private fun onTooltipClicked() {
-        freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+        freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     private fun validateValues() {

@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetAnnouncementDataResponse
@@ -14,21 +16,26 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetAnnouncementDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: AnnouncementMapper
-) : BaseGqlUseCase<List<AnnouncementDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: AnnouncementMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetAnnouncementDataResponse, List<AnnouncementDataUiModel>>(
+        gqlRepository, mapper, dispatchers, GetAnnouncementDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<AnnouncementDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetAnnouncementDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetAnnouncementDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<GetAnnouncementDataResponse>()
-            val announcementData = response.fetchAnnouncementWidgetData?.data.orEmpty()
-            return mapper.mapRemoteModelToUiModel(announcementData, cacheStrategy.type == CacheType.CACHE_ONLY)
+            return mapper.mapRemoteDataToUiData(response, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 
@@ -54,6 +61,7 @@ class GetAnnouncementDataUseCase(
                   dataKey
                   errorMsg
                   title
+                  showWidget
                   subtitle
                   imageUrl
                   button {

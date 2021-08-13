@@ -14,6 +14,6 @@ data class CampaignTimerUi(
         var timerExpired: String = "",
         var timerExpiredDuration: Int = 0,
         var timerServer: String = "",
-        var gtmProductId: Int = 0,
+        var gtmProductId: Long = 0,
         var gtmUserId: String = ""
 ) : Parcelable

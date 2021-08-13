@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_view"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,11 +12,17 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <com.tokopedia.design.quickfilter.QuickSingleFilterView
+        <com.tokopedia.sortfilter.SortFilter
             android:id="@+id/quick_filter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical"
+            app:sort_filter_type="quick"
+            app:sort_filter_relationship="OR"
+            android:layout_marginVertical="@dimen/spacing_lvl3"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:clipToPadding="false"/>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"

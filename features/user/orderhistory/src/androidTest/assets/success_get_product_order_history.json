@@ -1,0 +1,32 @@
+{
+  "chatHistoryProducts": {
+    "hasNext": false,
+    "minOrderTime": "1586273233",
+    "products": [
+      {
+        "categoryId": 1758,
+        "discountedPercentage": 90,
+        "imageUrl": "https://ecs7.tokopedia.net/img/cache/700/attachment/2020/4/23/32520341/32520341_b8b2d0fc-527b-421a-87ab-2c1e5cf9ca39.jpg.webp",
+        "isCampaignActive": true,
+        "listImageUrl": [
+          "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/18/12299749/12299749_147b4105-bd1a-4128-8828-98136290af18_795_795"
+        ],
+        "minOrder": 1,
+        "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at feugiat ex, vel",
+        "playstoreStatus": "NORMAL",
+        "price": "Rp 500.000",
+        "priceBefore": "Rp 999.999.999",
+        "priceBeforeInt": 0,
+        "priceInt": 500,
+        "productId": "621535997",
+        "productUrl": "https://www.tokopedia.com/tumblersbux/f45h1on-w4n1t4",
+        "shopId": "1479278",
+        "status": 1,
+        "freeOngkir": {
+          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+          "isActive": true
+        }
+      }
+    ]
+  }
+}

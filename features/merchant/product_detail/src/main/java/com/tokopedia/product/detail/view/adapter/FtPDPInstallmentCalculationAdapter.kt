@@ -4,25 +4,25 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.FrameLayout
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
 import com.tokopedia.product.detail.data.model.financing.FtTncData
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
+class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                                          var isOfficialStore: Boolean,
                                          var partnerDataList: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        const val DURATION_ANIMATE_INSTALLMENT = 300L
+    }
 
 
     private var expandedPosition = -1
@@ -57,7 +57,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 }
             }
 
-            ImageHandler.loadImage(mContext, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
+            vHolder.ivMainIcon.loadIcon(item.partnerIcon)
             vHolder.tvInstallmentTitle.text = String.format(mContext.getString(R.string.ft_installment_heading), item.partnerName)
             vHolder.llInstallmentContainer.hide()
 
@@ -82,7 +82,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                         tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        if (installmentData.maximumAmount == 0) {
+                        if (installmentData.maximumAmount == 0.0) {
                             tvInstallmentMinimumPriceExt.hide()
                             tvInstallmentPriceExt.show()
                             priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
@@ -107,10 +107,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
             }
 
             if (item.expandLayout) {
-                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.show()
             } else {
-                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.hide()
             }
 
@@ -118,10 +118,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 item.expandLayout = !item.expandLayout
 
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.show()
                 } else {
-                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.hide()
                 }
 
@@ -160,7 +160,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 instructionDesc.text = instructionData.description
 
                 val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
-                ImageHandler.loadImage(context, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
+                instructionIcon.loadIcon(instructionData.insImageUrl)
 
                 vHolder.llInstructionDetailContainer.addView(view)
             }

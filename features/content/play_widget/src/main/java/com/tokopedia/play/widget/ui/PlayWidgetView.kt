@@ -7,9 +7,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -40,6 +44,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mWidgetInternalListener = listener
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -75,19 +80,31 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     private fun addSmallView(model: PlayWidgetUiModel.Small) {
         val widgetView = addWidgetView { PlayWidgetSmallView(context) }
 
-        widgetView.setData(model)
-        widgetView.setAnalyticListener(mAnalyticListener)
-        widgetView.setWidgetListener(mWidgetListener)
-        widgetView.setWidgetInternalListener(mWidgetInternalListener)
+        if (model.items.isNullOrEmpty()) {
+            widgetView.hide()
+        } else {
+            widgetView.show()
+            widgetView.setData(model)
+            widgetView.setAnalyticListener(mAnalyticListener)
+            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+        }
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
-        widgetView.setData(model)
-        widgetView.setWidgetListener(mWidgetListener)
-        widgetView.setWidgetInternalListener(mWidgetInternalListener)
-        widgetView.setAnalyticListener(mAnalyticListener)
+        val overlayItemSize = model.items.filterIsInstance<PlayWidgetMediumOverlayUiModel>().size
+        val isWidgetEmpty = model.items.size.isZero() || (model.items.size == overlayItemSize)
+        if (isWidgetEmpty) {
+            widgetView.hide()
+        } else {
+            widgetView.show()
+            widgetView.setData(model)
+            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
+        }
     }
 
     private fun addPlaceholderView() {

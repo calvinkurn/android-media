@@ -19,6 +19,9 @@ data class RegisterCheckData(
         @SerializedName("isExist")
         @Expose
         var isExist: Boolean = false,
+        @SerializedName("registerOvoEnable")
+        @Expose
+        var isShowRegisterOvo: Boolean = false,
         @SerializedName("isPending")
         @Expose
         var isPending: Boolean = false,

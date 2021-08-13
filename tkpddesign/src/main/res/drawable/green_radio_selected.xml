@@ -11,7 +11,7 @@
                 android:color="@color/Unify_N0"/>
             <stroke
                 android:width="2dp"
-                android:color="@color/tkpd_main_green"/>
+                android:color="@color/Unify_G500"/>
         </shape>
     </item>
     <item>
@@ -24,7 +24,7 @@
                 android:width="18dp"
                 android:height="18dp"/>
             <solid
-                android:color="@color/tkpd_main_green"
+                android:color="@color/Unify_G500"
                 />
 
         </shape>

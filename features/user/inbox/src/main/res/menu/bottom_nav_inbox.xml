@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_inbox_notification"
+        android:enabled="true"
+        android:icon="@drawable/navstate_inbox_notification"
+        android:title="@string/inbox_title_notification"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_inbox_chat"
+        android:enabled="true"
+        android:icon="@drawable/navstate_inbox_chat"
+        android:title="@string/inbox_title_chat"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_inbox_discussion"
+        android:enabled="true"
+        android:icon="@drawable/navstate_inbox_discussion"
+        android:title="@string/inbox_title_discussion"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_inbox_review"
+        android:enabled="true"
+        android:icon="@drawable/navstate_inbox_review"
+        android:title="@string/inbox_title_review"
+        app:showAsAction="ifRoom" />
+</menu>

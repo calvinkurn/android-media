@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_variant"
     android:layout_width="match_parent"
@@ -25,14 +24,15 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/notif_dp_4"
             android:layout_marginRight="@dimen/notif_dp_4"
-            tools:background="@color/black" />
+            android:contentDescription="@null"
+            tools:background="@color/Unify_N700" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_variant_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/Neutral_N200"
+            android:textColor="@color/Unify_N200"
             android:textSize="@dimen/notif_sp_10"
             android:textStyle="bold"
             tools:text="Hitam" />
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/Neutral_N200"
+            android:textColor="@color/Unify_N200"
             android:textSize="@dimen/notif_sp_10"
             android:textStyle="bold"
             tools:text="Besar" />

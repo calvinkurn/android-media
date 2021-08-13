@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/ivCouponError"
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="@dimen/dp_210"
+        android:layout_marginTop="@dimen/dp_30"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/mvc_emptylist.png" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCoupornErrorTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/tp_mvc_empty_title"
+        android:textColor="@color/Unify_N700"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivCouponError"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCouponErrorDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/tp_mvc_empty_subtitle"
+        android:textColor="@color/Unify_N200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCoupornErrorTitle"
+        app:typographyType="body_2" />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnError"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center"
+        android:text="@string/tp_catalog_code_error_btn"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCouponErrorDesc"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

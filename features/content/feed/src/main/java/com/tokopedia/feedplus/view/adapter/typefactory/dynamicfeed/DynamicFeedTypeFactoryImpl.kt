@@ -8,13 +8,16 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 
 /**
@@ -35,7 +38,11 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
         return 0
     }
 
-    override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
+    override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
+        return 0
+    }
+
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
         return 0
     }
 
@@ -51,11 +58,19 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
         return 0
     }
 
+    override fun type(shimmerUiModel: ShimmerUiModel): Int {
+        return 0
+    }
+
+    override fun type(dynamicPostUiModel: DynamicPostUiModel): Int {
+        return 0
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             HighlightViewHolder.LAYOUT ->
-                HighlightViewHolder(parent, highlightListener, cardTitleListener ) as AbstractViewHolder<Visitable<*>>
+                HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
 
         }

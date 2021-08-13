@@ -1,10 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
@@ -16,10 +12,9 @@ import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
 import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
 import com.tokopedia.shop_showcase.common.ShopType
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
-import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListFragment
-import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListReorderFragment
-import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcasePickerFragment
+import com.tokopedia.shop_showcase.common.util.ShopShowcaseAbTestUtil.isNotRegularMerchant
+import com.tokopedia.shop_showcase.common.util.ShopShowcaseAbTestUtil.isShouldCheckShopType
+import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -42,6 +37,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isShowZeroProduct: Boolean = true
     private var shopType = ShopType.REGULAR
     private var isNeedToGoToAddShowcase: Boolean = false
+    private var isNeedToOpenCreateShowcase: Boolean = false
     private var isNeedToOpenShowcasePicker: String = ""
     private var isNeedToOpenReorder: Boolean = false
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
@@ -54,11 +50,13 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         val bundle = intent.getBundleExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE)
         if (bundle != null) {
             shopId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "0").toString()
+            shopType = bundle.getString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, ShopType.REGULAR)
             selectedEtalaseId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "0").toString()
             isShowDefault = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
             isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
             isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
+            isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, false)
             isNeedToOpenShowcasePicker = bundle.getString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
             preSelectedShowcaseListPicker = bundle.getParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER)
             productId = bundle.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
@@ -70,7 +68,11 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
             shopId = getShopIdFromDeepLink()
         }
 
-        getShopType()
+        if (isMyShop()) {
+            getShopType()
+        }
+
+        setBackgroundColor()
 
         super.onCreate(savedInstanceState)
     }
@@ -96,22 +98,8 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
                         productName
                 )
             }
-            isNeedToOpenReorder -> {
-                ShopShowcaseListReorderFragment.createInstance(
-                        shopType, listShowcase, isMyShop())
-            }
-            else -> {
-                ShopShowcaseListFragment.createInstance(
-                        shopType = shopType,
-                        shopId = shopId,
-                        selectedEtalaseId = selectedEtalaseId,
-                        isShowDefault = isShowDefault,
-                        isShowZeroProduct = isShowZeroProduct,
-                        isMyShop = isMyShop(),
-                        isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
-                        isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
-                )
-            }
+            isNeedToOpenReorder -> getShowcaseListReorderFragment()
+            else -> getShowcaseListFragment()
         }
     }
 
@@ -131,14 +119,62 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
-    override fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, android.R.color.white)
+    private fun getShowcaseListReorderFragment(): Fragment {
+        return if (isShouldCheckShopType()) {
+            // if ab test on, check shop type
+            if (isNotRegularMerchant(shopType)) {
+                // return new revamped showcase reorder list
+                ShopShowcaseListReorderFragment.createInstance(shopType, listShowcase, isMyShop())
+            } else {
+                // return old showcase reorder list
+                ShopShowcaseListReorderFragmentOld.createInstance(shopType, listShowcase, isMyShop())
+            }
+        } else {
+            // if ab test is off, by default its return new revamped showcase reorder list
+            ShopShowcaseListReorderFragment.createInstance(shopType, listShowcase, isMyShop())
         }
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    private fun getShowcaseListFragment(): Fragment {
+        return if (isShouldCheckShopType()) {
+            // if ab test on, check shop type
+            if (isNotRegularMerchant(shopType)) {
+                // return new revamped showcase list
+                ShopShowcaseListFragment.createInstance(
+                        shopType = shopType,
+                        shopId = shopId,
+                        selectedEtalaseId = selectedEtalaseId,
+                        isShowDefault = isShowDefault,
+                        isShowZeroProduct = isShowZeroProduct,
+                        isMyShop = isMyShop(),
+                        isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                        isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+                )
+            } else {
+                // return old showcase list
+                ShopShowcaseListFragmentOld.createInstance(
+                        shopType = shopType,
+                        shopId = shopId,
+                        selectedEtalaseId = selectedEtalaseId,
+                        isShowDefault = isShowDefault,
+                        isShowZeroProduct = isShowZeroProduct,
+                        isMyShop = isMyShop(),
+                        isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                        isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+                )
+            }
+        } else {
+            // if ab test is off, by default its return new revamped showcase list
+            ShopShowcaseListFragment.createInstance(
+                    shopType = shopType,
+                    shopId = shopId,
+                    selectedEtalaseId = selectedEtalaseId,
+                    isShowDefault = isShowDefault,
+                    isShowZeroProduct = isShowZeroProduct,
+                    isMyShop = isMyShop(),
+                    isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                    isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+            )
         }
     }
 
@@ -173,6 +209,12 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
                 ShopType.REGULAR
             }
         }
+    }
+
+    private fun setBackgroundColor() {
+        window.decorView.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
 }

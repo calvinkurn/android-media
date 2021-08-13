@@ -1,8 +1,0 @@
-query validateInactivePhoneQuery($phone: String!) {
-    validateInactivePhone(phone: $phone) {
-        user_id
-        is_success
-        error
-        __typename
-    }
- }

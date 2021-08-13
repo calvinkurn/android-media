@@ -4,8 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl.NO_VOUCHER_RESULT_URL
 import com.tokopedia.vouchercreation.voucherlist.model.ui.NoResultStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list_no_result_state.view.*
 import timber.log.Timber
@@ -25,7 +26,7 @@ class NoResultStateViewHolder(itemView: View?,
     override fun bind(element: NoResultStateUiModel) {
         with(itemView) {
             try {
-                imgMvcNoResultState.loadImageDrawable(R.drawable.il_mvc_no_result)
+                imgMvcNoResultState.loadImage(NO_VOUCHER_RESULT_URL)
                 addOnImpressionListener(element.impressHolder) {
                     listener.onImpressionListener(NoResultStateUiModel.DATA_KEY)
                 }

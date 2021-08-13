@@ -11,7 +11,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_4
 import com.tokopedia.topads.dashboard.data.model.insightkey.Negative
-import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.convertToCurrencyString
 import kotlinx.android.synthetic.main.topads_dash_insight_pos_key_item_layout.view.*
 

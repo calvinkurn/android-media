@@ -58,7 +58,7 @@
                 android:maxLines="2"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 tools:text="Sadam Hussein" />
         </LinearLayout>
 

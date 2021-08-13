@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RatesParam;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
@@ -17,8 +17,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.network.utils.ErrorHandler;
 
 import java.util.List;
@@ -149,7 +149,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                                 }
                                             }
                                         }
-                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo(), shippingRecommendationData.getPreOrderModel());
                                         view.stopTrace();
                                     } else {
                                         view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message));
@@ -173,7 +173,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
         shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
         shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
+        shippingParam.setWeightActualInKilograms(shipmentDetailData.getShipmentCartData().getWeightActual() / 1000);
         shippingParam.setShopId(shipmentDetailData.getShopId());
+        shippingParam.setShopTier(shipmentDetailData.getShipmentCartData().getShopTier());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
         shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
         shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
@@ -189,6 +191,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setTradeInDropOff(isTradeInDropOff);
         shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
         shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
+        shippingParam.setBoMetadata(shipmentDetailData.getShipmentCartData().getBoMetadata());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

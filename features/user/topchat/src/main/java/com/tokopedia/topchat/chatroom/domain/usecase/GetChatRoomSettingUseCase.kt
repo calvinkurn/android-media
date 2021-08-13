@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingRespon
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import javax.inject.Inject
 
-class GetChatRoomSettingUseCase @Inject constructor(
+open class GetChatRoomSettingUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<RoomSettingResponse>
 ) {
 

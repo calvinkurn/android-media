@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
-import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod;
 
 import java.lang.ref.WeakReference;
 

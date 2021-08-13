@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="banner_margin">-42dp</dimen>
+    <dimen name="promo_image_height">145dp</dimen>
+    <dimen name="icon_official_store_size">35dp</dimen>
+    <dimen name="icon_official_store_margin">11dp</dimen>
+    <dimen name="icon_official_store_margin_l">15dp</dimen>
+    <dimen name="home_card_page_margin">15dp</dimen>
+    <dimen name="home_card_category_item_margin">8dp</dimen>
+    <dimen name="category_section_item_width">76dp</dimen>
+    <dimen name="margin_card_home">10dp</dimen>
+    <dimen name="home_channel_hero_height">240dp</dimen>
+    <dimen name="home_channel_4_image_size">68dp</dimen>
+    <dimen name="home_channel_sprint_sale_countdown_width">88dp</dimen>
+    <dimen name="home_channel_sprint_sale_countdown_height">24dp</dimen>
+    <dimen name="home_channel_3_image_size">104dp</dimen>
+    <dimen name="discount_background_radius">16dp</dimen>
+
+    <dimen name="space_nob_s">30dp</dimen>
+    <dimen name="margin_side_button_nob">40dp</dimen>
+    <dimen name="margin_bottom_button_nob">8dp</dimen>
+    <dimen name="padding_button_nob">16dp</dimen>
+    <dimen name="padding_detail">15dp</dimen>
+</resources>

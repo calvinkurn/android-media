@@ -1,15 +1,15 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play_common.model.result.NetworkResult
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by jegul on 23/06/20
  */
 interface ProductDataStore {
 
-    fun getObservableSelectedProducts(): LiveData<List<ProductData>>
+    fun getObservableSelectedProducts(): Flow<List<ProductData>>
 
     fun getSelectedProducts(): List<ProductData>
 

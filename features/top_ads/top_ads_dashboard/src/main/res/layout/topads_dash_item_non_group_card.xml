@@ -52,8 +52,7 @@
             android:focusable="true"
             app:unifyImageButtonVariant="image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_dashboard_menu" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/check_box"

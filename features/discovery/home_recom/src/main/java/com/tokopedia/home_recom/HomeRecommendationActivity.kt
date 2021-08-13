@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -60,13 +60,16 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
                         getSimilarRecomPageProductId(),
                         getRef(),
                         getSource(),
-                        getInternalRef())
+                        getInternalRef(),
+                        FragmentInflater.ACTIVITY
+                )
                 else RecommendationFragment
                         .newInstance(
                                 getRecomPageProductId(),
                                 getSource(),
                                 getRef(),
-                                getInternalRef())
+                                getInternalRef(),
+                                FragmentInflater.ACTIVITY)
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)

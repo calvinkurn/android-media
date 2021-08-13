@@ -11,7 +11,7 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.common.utils.DealsDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
@@ -25,11 +25,11 @@ class DealCategoryViewModel @Inject constructor(
         private val mapCategoryLayout: MapperCategoryLayout,
         private val chipsCategoryUseCase: GetChipsCategoryUseCase,
         private val dealsSearchUseCase: DealsSearchUseCase,
-        private val dispatcher: DealsDispatcherProvider
-) : BaseViewModel(dispatcher.io()) {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcher.io() + SupervisorJob()
+        get() = dispatcher.main + SupervisorJob()
 
     private val privateObservableChips = MutableLiveData<List<ChipDataView>>()
     val observableChips: LiveData<List<ChipDataView>>
@@ -92,7 +92,7 @@ class DealCategoryViewModel @Inject constructor(
         return {
             if (page == 1) {
                 val categoryLayout = if (it.eventSearch.brands.isNotEmpty()
-                        && it.eventSearch.products.isNotEmpty()) {
+                        || it.eventSearch.products.isNotEmpty()) {
                     mapCategoryLayout.mapCategoryLayout(it, page, category)
                 } else {
                     mapCategoryLayout.getEmptyLayout(isFilter)

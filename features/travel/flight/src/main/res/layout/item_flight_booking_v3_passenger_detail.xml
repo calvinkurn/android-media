@@ -5,8 +5,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_2"
-    android:paddingBottom="@dimen/dp_2">
+    android:paddingTop="@dimen/spacing_lvl1"
+    android:paddingBottom="@dimen/spacing_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         tools:text="Paspor | "
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         tools:text="ABX123 lalallalallalalallalal gegeggegege uuuuu iiiiii aaaaa"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:lines="1"
         android:ellipsize="end"/>
 

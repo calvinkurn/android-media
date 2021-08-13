@@ -8,7 +8,8 @@ import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 
 /**
  * Created by jegul on 04/08/20
@@ -23,6 +24,7 @@ class PortraitDynamicLayoutManager(
     private val playButtonView: View = container.findViewById(R.id.view_play_button)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
     private val pinnedView: View = container.findViewById(R.id.view_pinned)
+    private val winnerBadgeView: View = container.findViewById(R.id.view_interactive_winner_badge)
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
 
     override fun onVideoOrientationChanged(videoOrientation: VideoOrientation) {
@@ -30,8 +32,8 @@ class PortraitDynamicLayoutManager(
         changePlayButtonViewConstraint(videoOrientation)
     }
 
-    override fun onVideoPlayerChanged(videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
-        val bottomMargin = if (videoPlayerUiModel.isYouTube && channelType.isVod) 0 else offset12
+    override fun onVideoPlayerChanged(videoPlayer: PlayVideoPlayerUiModel, channelType: PlayChannelType) {
+        val bottomMargin = if (videoPlayer.isYouTube && channelType.isVod) 0 else offset12
         changePinnedBottomMarginGone(bottomMargin)
     }
 
@@ -47,7 +49,7 @@ class PortraitDynamicLayoutManager(
                 setDimensionRatio(immersiveBoxView.id, "H, ${videoOrientation.aspectRatio}")
             } else {
                 connect(immersiveBoxView.id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
-                connect(immersiveBoxView.id, ConstraintSet.BOTTOM, pinnedView.id, ConstraintSet.TOP, offset16)
+                connect(immersiveBoxView.id, ConstraintSet.BOTTOM, winnerBadgeView.id, ConstraintSet.TOP, offset16)
             }
         }
     }

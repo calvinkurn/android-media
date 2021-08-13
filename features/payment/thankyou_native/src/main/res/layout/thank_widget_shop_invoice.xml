@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/spacing_lvl4">
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopName"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
@@ -28,21 +28,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopDiscount"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_discount"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llShopItemContainer"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopDiscountValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopDiscount"
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopDiscount"
@@ -51,21 +51,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemProtection"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_protection"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopDiscount"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemProtectionValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemProtection"
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemProtection"
@@ -75,21 +75,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShipping"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_shipping_fee"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemProtection"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShippingValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemShipping"
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemShipping"
@@ -99,9 +99,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemCourier"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemShipping"
         app:typographyType="body_3"
@@ -109,21 +109,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShippingDiscount"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_shipping_discount"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemCourier"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShippingDiscountValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemShippingDiscount"
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemShippingDiscount"
@@ -132,21 +132,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShippingInsurance"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_shipping_insurance"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemShippingDiscount"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemShippingInsuranceValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemShippingInsurance"
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemShippingInsurance"
@@ -156,11 +156,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopShippingAddress"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/thank_invoice_item_shipping_address"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemShippingInsurance"
         app:typographyType="body_2"
@@ -169,10 +169,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopShippingAddressValue"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopShippingAddress"
         app:typographyType="body_3"

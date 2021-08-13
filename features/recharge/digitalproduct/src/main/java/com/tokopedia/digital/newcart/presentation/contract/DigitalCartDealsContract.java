@@ -48,10 +48,6 @@ public interface DigitalCartDealsContract {
 
         void notifyAdapterInSpecifyFragment(Integer position);
 
-        boolean isOnboardAlreadyShown();
-
-        void renderOnboarding();
-
         void notifyCheckoutPageToStartAnimation();
     }
 

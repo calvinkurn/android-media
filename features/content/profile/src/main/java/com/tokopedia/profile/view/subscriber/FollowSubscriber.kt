@@ -1,11 +1,10 @@
 package com.tokopedia.profile.view.subscriber
 
-import android.text.TextUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
 
@@ -39,7 +38,7 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
             onError(RuntimeException())
             return
         }
-        if (!TextUtils.isEmpty(query.data.error)) {
+        if (query.data.error.isNotEmpty()) {
             view.onErrorFollowKol(query.data.error)
             return
         }

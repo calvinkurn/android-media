@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.analytics.performance
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 
 /**
  * Created By @ilhamsuaib on 27/08/20
@@ -52,5 +53,9 @@ class StatisticPerformanceMonitoring : StatisticPerformanceMonitoringInterface {
                 stopMonitoring()
             }
         }
+    }
+
+    override fun getPltResult(): PltPerformanceData? {
+        return performanceMonitoring?.getPltPerformanceData()
     }
 }

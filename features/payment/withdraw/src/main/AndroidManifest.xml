@@ -6,10 +6,10 @@
         <activity android:name=".saldowithdrawal.presentation.activity.WithdrawActivity"
             android:label="@string/swd_activity_withdraw"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
@@ -21,10 +21,10 @@
         <activity android:name=".auto_withdrawal.presentation.activity.AutoWithdrawalActivity"
             android:label="@string/swd_activity_auto_withdraw_settings"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data

@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -285,7 +284,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun initView() {
-        setBackgroundColor()
         initRecyclerView()
         setupPickerLayout()
         loadShowcaseList()
@@ -380,6 +378,13 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                     buttonAddShowcaseBottomSheet?.isLoading = true
                     createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
                 }
+
+                // on dismiss bottomsheet
+                setOnDismissListener {
+                    activity?.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+                }
             })
             isKeyboardOverlap = false
         }
@@ -406,6 +411,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
+                activity?.let { activity ->
+                    KeyboardHandler.showSoftKeyboard(activity)
+                }
             }
         }
     }
@@ -665,10 +673,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             footer?.visible()
             headerLayout?.visible()
         }
-    }
-
-    private fun setBackgroundColor() {
-        view?.setBackgroundColor(Color.WHITE)
     }
 
     private fun hideSoftKeyboard() {

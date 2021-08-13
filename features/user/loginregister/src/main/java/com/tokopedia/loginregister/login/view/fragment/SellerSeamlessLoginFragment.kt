@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,13 +23,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -39,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
 import kotlinx.android.synthetic.main.item_account_with_shop.*
 import kotlinx.android.synthetic.main.item_account_with_shop.view.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -70,7 +72,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        activity?.run {
+        activity?.let {
             analytics.trackScreen(screenName)
         }
     }
@@ -165,8 +167,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
         }
-        if (context?.applicationContext is LoginRouter) {
-            (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
+        (context?.applicationContext as? LoginRouter)?.let {
+            it.setOnboardingStatus(true)
         }
     }
 
@@ -199,7 +201,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
         context?.run {
-            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            val i = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivity(i)
         }
     }
@@ -227,11 +229,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver(){
-        seamlessViewModel.goToSecurityQuestion.observe(this, Observer {
+        seamlessViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if(it) goToSecurityQuestion()
         })
 
-        seamlessViewModel.loginTokenResponse.observe(this, Observer {
+        seamlessViewModel.loginTokenResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessLoginToken()
                 is Fail -> onErrorLoginToken(it.throwable)
@@ -243,6 +245,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
+        SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
+
         finishIntent()
     }
 
@@ -257,15 +261,30 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun connectService() {
         if(GlobalConfig.isSellerApp() && serviceConnection == null) {
-            serviceConnection = RemoteServiceConnection()
-            val i = Intent().apply {
-                component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
-            }
-            val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
-            if(success == false)  {
-                Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
+            try {
+                serviceConnection = RemoteServiceConnection()
+                val i = Intent().apply {
+                    component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
+                }
+                val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
+                if (success == false) {
+                    ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                            mapOf("type" to "ErrorBindingService", "reason" to "Connect Service Failed", "detail" to "Bind Service: $success"))
+                    moveToNormalLogin()
+                }
+            } catch(ex: Exception) {
+                ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                        mapOf("type" to "ErrorBindingService", "reason" to "Exception Thrown While Binding", "detail" to "Exception: ${formatThrowable(ex)}."))
                 moveToNormalLogin()
             }
+        }
+    }
+
+    fun formatThrowable(throwable: Throwable): String {
+        return try{
+            Log.getStackTraceString(throwable).take(1000)
+        } catch (e: Exception){
+            e.toString()
         }
     }
 
@@ -308,7 +327,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Service Disconnected';detail='$name'")
+            ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                    mapOf("type" to "ErrorBindingService", "reason" to "Service Disconnected", "detail" to name.toString()))
             service = null
             activity?.finish()
         }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_option_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/time_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/rb_option"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="asdada"
+        android:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/rb_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:clickable="false"/>
+
+    <View
+        android:id="@+id/divider_label"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        android:layout_below="@id/time_today"
+        android:visibility="visible"/>
+
+
+</RelativeLayout>

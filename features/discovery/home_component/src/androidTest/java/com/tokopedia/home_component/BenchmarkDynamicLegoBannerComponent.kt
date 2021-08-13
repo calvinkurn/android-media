@@ -8,6 +8,7 @@ import com.tokopedia.home_component.mock.channel.MockChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_6_IMAGE
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
+import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
@@ -73,6 +74,19 @@ class BenchmarkDynamicLegoBannerComponent {
                 itemView, null, null
         )
         val data = DynamicLegoBannerDataModel(MockChannelModel.get(LAYOUT_LEGO_3_IMAGE))
+        benchmarkRule.measureRepeated {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                viewHolder.bind(data)
+            }
+        }
+    }
+    @Test
+    fun benchmark_onBind_ViewHolder_dynamic_lego_2_component() {
+        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
+        val viewHolder = DynamicLegoBannerViewHolder(
+                itemView, null, null
+        )
+        val data = DynamicLegoBannerDataModel(MockChannelModel.get(LAYOUT_LEGO_2_IMAGE))
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)

@@ -6,5 +6,11 @@
         android:id="@+id/actionStcSelectDate"
         android:icon="@drawable/ic_stc_calendar"
         android:title="@string/stc_select_date"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/actionStcOtherMenu"
+        android:icon="@drawable/ic_stc_more_grey"
+        android:title="@string/stc_other_menu"
         app:showAsAction="always" />
 </menu>

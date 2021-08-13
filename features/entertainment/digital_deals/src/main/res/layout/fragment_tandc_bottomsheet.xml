@@ -5,13 +5,13 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottomnav_bg">
+        android:background="@color/Unify_N0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -40,7 +40,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             android:textIsSelectable="true"
-            android:textColor="@color/expandable_text_color"
+            android:textColor="@color/Unify_N700_44"
             tools:text="@string/bigcontent" />
     </ScrollView>
 

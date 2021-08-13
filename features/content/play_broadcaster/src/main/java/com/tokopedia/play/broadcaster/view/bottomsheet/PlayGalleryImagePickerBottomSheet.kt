@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet
 
-import android.Manifest
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
@@ -12,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -24,22 +20,20 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.imagepicker.picker.album.AlbumAdapter
-import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
+import com.tokopedia.imagepicker.common.GalleryType
+import com.tokopedia.imagepicker.common.adapter.AlbumAdapter
+import com.tokopedia.imagepicker.common.adapter.AlbumMediaAdapter
+import com.tokopedia.imagepicker.common.loader.AlbumLoader
+import com.tokopedia.imagepicker.common.loader.AlbumMediaLoader
+import com.tokopedia.imagepicker.common.model.AlbumItem
+import com.tokopedia.imagepicker.common.model.MediaItem
+import com.tokopedia.imagepicker.common.widget.MediaGridInset
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.showToaster
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
-import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.view.*
 import java.io.File
 import javax.inject.Inject
 
@@ -97,13 +91,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            showLoading()
-            hideMediaLayout()
-            hideAlbumLayout()
-            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
-        }
+        showLoading()
+        hideMediaLayout()
+        hideAlbumLayout()
+        LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
     }
 
     override fun onDestroy() {
@@ -143,15 +134,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        return if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            when (id) {
-                ALBUM_LOADER_ID -> AlbumLoader.newInstance(requireContext(), GalleryType.IMAGE_ONLY)
-                MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem?.intoAlbum(), GalleryType.IMAGE_ONLY)
-                else -> Loader<Cursor>(requireContext())
-            }
-        } else {
-            Loader(requireContext())
+        return when (id) {
+            ALBUM_LOADER_ID -> AlbumLoader.newInstance(requireContext(), GalleryType.IMAGE_ONLY)
+            MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem?.intoAlbum(), GalleryType.IMAGE_ONLY)
+            else -> Loader<Cursor>(requireContext())
         }
     }
 
@@ -290,7 +276,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
             showToaster(
-                    message = getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
+                    message = getString(com.tokopedia.imagepicker.common.R.string.error_no_media_storage),
                     type = Toaster.TYPE_ERROR
             )
         } else {
@@ -353,8 +339,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     companion object {
         const val TAG = "Gallery Image Picker"
 
-        const val MINIMUM_COVER_WIDTH = 300
-        const val MINIMUM_COVER_HEIGHT = 533
+        const val MINIMUM_COVER_WIDTH = 324
+        const val MINIMUM_COVER_HEIGHT = 576
 
         private const val SAVED_ALBUM_TITLE = "SAVED_ALBUM_TITLE"
 

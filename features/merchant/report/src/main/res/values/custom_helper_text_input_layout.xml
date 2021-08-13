@@ -7,6 +7,6 @@
     </declare-styleable>
 
     <style name="HelperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Neutral_N700</item>
+        <item name="android:textColor">@color/Unify_N700</item>
     </style>
 </resources>

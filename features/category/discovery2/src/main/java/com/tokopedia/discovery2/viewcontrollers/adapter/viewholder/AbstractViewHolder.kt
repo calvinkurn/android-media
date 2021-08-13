@@ -14,7 +14,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     }
 
     protected var parentAbstractViewHolder: AbstractViewHolder? = null
-    protected var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
+    var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
 
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
 
@@ -27,7 +27,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
                 this.discoveryBaseViewModel?.onDetachToViewHolder()
                 lifecycleOwner?.lifecycle?.removeObserver(this.discoveryBaseViewModel!!)
                 this.discoveryBaseViewModel = discoveryBaseViewModel
-
             }
         } else {
             this.discoveryBaseViewModel = discoveryBaseViewModel

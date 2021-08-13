@@ -3,7 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.edit.view.adapter.product.viewholder.ProductViewHolder
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductShimmerViewModel
@@ -41,9 +41,9 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
         notifyDataSetChanged()
     }
 
-    fun getSelectedItems(): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
+    fun getSelectedItems(): List<TopAdsProductModel> {
 
-        val selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
+        val selected = mutableListOf<TopAdsProductModel>()
         items.forEach { item ->
             if (item is ProductItemViewModel)
                 if (item.isChecked)
@@ -53,7 +53,7 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
     }
 
 
-    fun setSelectedList(selectedProductIds: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+    fun setSelectedList(selectedProductIds: List<TopAdsProductModel>) {
         items.forEachIndexed { _, productViewModel ->
             selectedProductIds.forEach {
                 if ((productViewModel is ProductItemViewModel) && productViewModel.data.productID == it.productID) {

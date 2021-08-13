@@ -16,24 +16,24 @@ import javax.inject.Inject
 /**
  * Created by zulfikarrahman on 1/19/18.
  */
-class ReviewShopPresenter @Inject constructor(protected val shopReviewUseCase: ReviewShopUseCase?,
-                                              private val likeDislikeReviewUseCase: LikeDislikeReviewUseCase?,
-                                              private val deleteReviewResponseUseCase: DeleteReviewResponseUseCase?,
-                                              protected val productReviewListMapper: ReviewProductListMapper,
-                                              protected val userSession: UserSessionInterface) : BaseDaggerPresenter<ReviewShopContract.View?>(), ReviewShopContract.Presenter {
+class ReviewShopPresenter @Inject constructor(private val shopReviewUseCase: ReviewShopUseCase,
+                                              private val likeDislikeReviewUseCase: LikeDislikeReviewUseCase,
+                                              private val deleteReviewResponseUseCase: DeleteReviewResponseUseCase,
+                                              private val productReviewListMapper: ReviewProductListMapper,
+                                              private val userSession: UserSessionInterface) : BaseDaggerPresenter<ReviewShopContract.View?>(), ReviewShopContract.Presenter {
 
     val isLogin: Boolean
         get() = userSession.isLoggedIn
 
     override fun onDestroy() {
-        shopReviewUseCase?.unsubscribe()
-        likeDislikeReviewUseCase?.unsubscribe()
-        deleteReviewResponseUseCase?.unsubscribe()
+        shopReviewUseCase.unsubscribe()
+        likeDislikeReviewUseCase.unsubscribe()
+        deleteReviewResponseUseCase.unsubscribe()
     }
 
     fun deleteReview(reviewId: String?, reputationId: String?, productId: String?) {
         view!!.showProgressLoading()
-        deleteReviewResponseUseCase!!.execute(DeleteReviewResponseUseCase.Companion.getParam(reviewId, productId, userSession.shopId, reputationId),
+        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.Companion.getParam(reviewId, productId, userSession.shopId, reputationId),
                 getSubscriberDeleteReview(reviewId))
     }
 
@@ -60,7 +60,7 @@ class ReviewShopPresenter @Inject constructor(protected val shopReviewUseCase: R
 
     fun postLikeDislikeReview(reviewId: String?, likeStatus: Int, productId: String?) {
         view!!.showProgressLoading()
-        likeDislikeReviewUseCase!!.execute(LikeDislikeReviewUseCase.Companion.getParam(reviewId, likeStatus, productId, userSession.shopId),
+        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.Companion.getParam(reviewId, likeStatus, productId, userSession.shopId),
                 getSubscriberPostLikeDislike(reviewId, likeStatus))
     }
 
@@ -82,7 +82,7 @@ class ReviewShopPresenter @Inject constructor(protected val shopReviewUseCase: R
     }
 
     fun getShopReview(shopDomain: String?, shopId: String?, page: Int) {
-        shopReviewUseCase!!.execute(
+        shopReviewUseCase.execute(
                 shopReviewUseCase.createRequestParams(shopDomain, shopId, page.toString(), userSession.userId),
                 subscriberGetShopReview
         )

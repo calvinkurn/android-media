@@ -1,6 +1,7 @@
 package com.tokopedia.kategori.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_category.data.kategorymodel.ChildItem
 
 data class CategoryChildItem(
 

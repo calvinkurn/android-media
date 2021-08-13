@@ -12,6 +12,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAY_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SELLER_INSIGHT_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SHOP_FUND_ICON
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SMART_REPLY_DISCUSSION_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_STATISTICS_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_STOCK_REMINDER_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_TEMPLATE_CHAT_ICON
@@ -142,34 +143,53 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_product_manage_set_variant_description,
             data = data)
 
-    class PostFeedDataUiModel: SellerFeatureUiModel(
+    class PostFeedDataUiModel : SellerFeatureUiModel(
             imageUrl = URL_FEED_ICON,
             titleId = R.string.seller_migration_fragment_feed_play_tab_post_feed_title,
             descriptionId = R.string.seller_migration_fragment_feed_play_tab_post_feed_description
     )
 
-    class LiveVideoDataUiModel: SellerFeatureUiModel(
+    class LiveVideoDataUiModel : SellerFeatureUiModel(
             imageUrl = URL_PLAY_ICON,
             titleId = R.string.seller_migration_fragment_feed_play_tab_live_video_title,
             descriptionId = R.string.seller_migration_fragment_feed_play_tab_live_video_description
     )
 
-    class ShopCapitalDataUiModel: SellerFeatureUiModel(
+    class ShopCapitalDataUiModel : SellerFeatureUiModel(
             imageUrl = URL_SHOP_FUND_ICON,
             titleId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_title,
             descriptionId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_description
     )
 
-    class PriorityBalanceDataUiModel: SellerFeatureUiModel(
+    class PriorityBalanceDataUiModel : SellerFeatureUiModel(
             imageUrl = URL_FINANCE_ICON,
             titleId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_title,
             descriptionId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_description
     )
 
-    class BroadcastChatUiModel: SellerFeatureUiModel(
+    class BroadcastChatUiModel : SellerFeatureUiModel(
             imageUrl = URL_TEMPLATE_CHAT_ICON,
             titleId = R.string.seller_migration_tab_ads_broadcast_chat_title,
             descriptionId = R.string.seller_migration_tab_ads_broadcast_chat_description
+    )
+
+    class BroadcastChatProductManageUiModel(data: Any) : SellerFeatureUiModel(
+            imageUrl = URL_TEMPLATE_CHAT_ICON,
+            titleId = R.string.seller_migration_tab_ads_broadcast_chat_title,
+            descriptionId = R.string.seller_migration_entry_point_broadcast_chat_description,
+            data = data
+    )
+
+    class DiscussionTemplateUiModel: SellerFeatureUiModel(
+            imageUrl = URL_TEMPLATE_CHAT_ICON,
+            titleId = R.string.seller_migration_template_title,
+            descriptionId = R.string.seller_migration_template_subtitle
+    )
+
+    class DiscussionSmartReplyUiModel: SellerFeatureUiModel(
+            imageUrl = URL_SMART_REPLY_DISCUSSION_ICON,
+            titleId = R.string.seller_migration_smart_reply_title,
+            descriptionId = R.string.seller_migration_smart_reply_subtitle
     )
 
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {

@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,20 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
-import com.tokopedia.settingbank.domain.AddBankRequest
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.SettingBankErrorHandler
-import com.tokopedia.settingbank.domain.UploadDocumentPojo
+import com.tokopedia.settingbank.domain.model.AddBankRequest
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.SettingBankErrorHandler
+import com.tokopedia.settingbank.domain.model.UploadDocumentPojo
 import com.tokopedia.settingbank.util.AccountConfirmationType
 import com.tokopedia.settingbank.util.ImageUtils
 import com.tokopedia.settingbank.view.activity.SettingBankActivity
@@ -97,8 +99,8 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        uploadDocumentViewModel = viewModelProvider.get(UploadDocumentViewModel::class.java)
+        uploadDocumentViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(UploadDocumentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -113,6 +115,9 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankAccountData()
         setDocKycUI()
+        progressBar.setOnClickListener {
+            //no implementation required
+        }
     }
 
     private fun setBankAccountData() {
@@ -153,9 +158,11 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             AccountConfirmationType.FAMILY -> bankSettingAnalytics.eventFamilyDocumentSubmitClick()
             AccountConfirmationType.COMPANY -> bankSettingAnalytics.eventCompanyDocumentSubmitClick()
         }
-        val uploadDocumentPojo = getUploadDocumentPojo()
-        uploadDocumentPojo?.let {
-            uploadDocumentViewModel.uploadDocument(it)
+        context?.let {context->
+            val uploadDocumentPojo = getUploadDocumentPojo(context)
+            uploadDocumentPojo?.let {
+                uploadDocumentViewModel.uploadDocument(it)
+            }
         }
     }
 
@@ -171,18 +178,14 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             getString(R.string.sbank_pic_of_family_card)
         else getString(R.string.sbank_attach_image_company)
         context?.let {
-            val builder = ImagePickerBuilder(pickerTitle,
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, MAX_FILE_SIZE,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            null, null, -1, 1
-                    ))
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(maxPick = 1)
+                    .apply {
+                        maxFileSizeInKB = MAX_FILE_SIZE
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -191,7 +194,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val selectedImage = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                     setSelectedFile(selectedImage[0])
                 }
             }
@@ -208,7 +211,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun startObservingViewModels() {
-        uploadDocumentViewModel.uploadDocumentStatus.observe(this, Observer {
+        uploadDocumentViewModel.uploadDocumentStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DocumentUploadStarted -> progressBar.visible()
                 is DocumentUploadEnd -> progressBar.gone()
@@ -257,7 +260,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getUploadDocumentPojo(): UploadDocumentPojo? {
+    private fun getUploadDocumentPojo(context: Context): UploadDocumentPojo? {
         val docType = when (accountConfirmationType) {
             AccountConfirmationType.OTHER -> DOC_TYPE_OTHER
             AccountConfirmationType.FAMILY -> DOC_TYPE_FAMILY
@@ -276,7 +279,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                 document_name = ImageUtils.getFileName(selectedFilePath),
                 document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
                 document_ext = ImageUtils.getFileExt(selectedFilePath),
-                document_mime = ImageUtils.getMimeType(context!!, selectedFilePath))
+                document_mime = ImageUtils.getMimeType(context, selectedFilePath))
     }
 
 }

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingBottom="30dp">
+
+    <ImageView
+        android:id="@+id/usp_pdp_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@null"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_header"
+        app:layout_constraintTop_toBottomOf="@+id/usp_pdp_img"
+        android:layout_marginTop="16dp"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_number_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pdp_circle_360"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_header"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginTop="16dp"
+        android:text="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_1_1"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_1"
+        app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_1"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_1_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_1_2"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_1"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_1"
+        app:typographyType="body_3"
+        android:layout_marginStart="12dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_number_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pdp_circle_360"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_1_2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginTop="16dp"
+        android:text="2"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_2_1"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_2"
+        app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_2_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_2_2"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_2"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_2"
+        app:typographyType="body_3"
+        android:layout_marginStart="12dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_number_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pdp_circle_360"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_2_2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginTop="16dp"
+        android:text="3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_3_1"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_3"
+        app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_3"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_3_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_3_2"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_3"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_3"
+        app:typographyType="body_3"
+        android:layout_marginStart="12dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_usp_static_3_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_usp_static_3_3"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_3"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_3_2"
+        app:typographyType="body_3"
+        android:layout_marginStart="12dp"/>
+
+    <ImageView
+        android:id="@+id/pdp_usp_static_free_ongkir"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginStart="4dp"
+        android:scaleType="centerInside"
+        android:contentDescription="@null"
+        tools:src="@drawable/ic_pdp_topchat"
+        app:layout_constraintTop_toTopOf="@+id/pdp_usp_static_3_3"
+        app:layout_constraintStart_toEndOf="@+id/pdp_usp_static_3_3"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

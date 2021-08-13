@@ -11,14 +11,15 @@
         android:layout_height="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@+id/tvShcTooltipTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle" />
+        app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle"
+        android:contentDescription="@string/shc_content_desc_image_dot" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcTooltipTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constraintStart_toEndOf="@+id/imgShcTooltipDot"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
@@ -28,7 +29,7 @@
         android:id="@+id/tvShcTooltipValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/tvShcTooltipTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipTitle"
         app:typographyType="body_3"

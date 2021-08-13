@@ -51,5 +51,9 @@
     <color name="gf_outline_btn">#9FA6B0</color>
     <color name="gf_reward_green_1">#9BFA99</color>
     <color name="gf_reward_green_2">#B7F49B</color>
+    <color name="gf_direct_gift_borderColor">#50000000</color>
+    <color name="gf_white_66">#66ffffff</color>
+    <color name="gf_glowing_green">#B3AAFE56</color>
+    <color name="gf_close_color">#6C727C</color>
 
 </resources>

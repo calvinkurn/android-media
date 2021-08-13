@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleHeaderSomFilter"
+        tools:text="Urutkan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvHeaderSeeAll"
+        tools:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/title_see_all"
+        android:layout_alignTop="@id/tvTitleHeaderSomFilter"
+        android:textColor="@color/Unify_G500"
+        android:visibility="gone"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSomFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/tvTitleHeaderSomFilter"
+        tools:listitem="@layout/item_chips_som_filter"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerSomFilter"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/rvSomFilter"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4" />
+
+
+</RelativeLayout>

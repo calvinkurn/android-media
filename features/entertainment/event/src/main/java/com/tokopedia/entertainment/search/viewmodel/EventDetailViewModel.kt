@@ -1,16 +1,11 @@
 package com.tokopedia.entertainment.search.viewmodel
 
-import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.search.adapter.DetailEventItem
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
-import com.tokopedia.entertainment.search.data.mapper.DetailMapper
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mapInitCategory
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mapSearchtoGrid
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mappingForbiddenID
@@ -20,9 +15,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -39,7 +32,6 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     val hashSet = HashSet<String>()
-    lateinit var resources: Resources
     var cityID = ""
     var category = ""
     var initCategory = false
@@ -51,7 +43,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     val showParentView : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showResetFilter : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showProgressBar : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val errorReport : MutableLiveData<Throwable> by lazy { MutableLiveData<Throwable>() }
 
     val catLiveData: MutableLiveData<CategoryModel> by lazy { MutableLiveData<CategoryModel>() }
     var categoryData : MutableList<CategoryTextBubbleAdapter.CategoryTextBubble> = mutableListOf()
@@ -102,7 +94,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                 },
                 onError = {
                     Timber.tag(TAG + "Error").w(it)
-                    errorReport.value = it.message
+                    errorReport.value = it
                     isItRefreshing.value = false
                     isItShimmering.value = false
                     showParentView.value = false
@@ -112,7 +104,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+    fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
         //Case 1 Still empty or Data Category size and API Category Size is different
         if(categoryData.size == 0 || hashSet.isEmpty() || categoryData.size != list.categories.size-1) return true
 

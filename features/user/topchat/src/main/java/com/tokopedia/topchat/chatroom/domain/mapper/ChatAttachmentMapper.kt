@@ -8,6 +8,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import javax.inject.Inject
 
 class ChatAttachmentMapper @Inject constructor() {
@@ -34,6 +35,9 @@ class ChatAttachmentMapper @Inject constructor() {
         attachment.parsedAttributes = when (attachment.type) {
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> convertToProductAttachment(attachment)
             AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> convertToInvoiceAttachment(attachment)
+            AttachmentType.Companion.TYPE_REVIEW_REMINDER.toInt() -> {
+                convertToReviewReminderAttachment(attachment)
+            }
             else -> null
         }
     }
@@ -44,6 +48,13 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun convertToProductAttachment(attachment: Attachment): ProductAttachmentAttributes {
         return CommonUtil.fromJson(attachment.attributes, ProductAttachmentAttributes::class.java)
+    }
+
+    private fun convertToReviewReminderAttachment(attachment: Attachment): Any? {
+        return CommonUtil.fromJson<ReviewReminderAttribute>(
+                attachment.attributes,
+                ReviewReminderAttribute::class.java
+        )
     }
 
 }

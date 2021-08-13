@@ -177,9 +177,12 @@ class AddChangePinViewModel @Inject constructor(
         }
     }
   
-    fun checkSkipOtpPin(){
+    fun checkSkipOtpPin(validateToken: String){
         rawQueries[ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION)
+            val params = mapOf(
+                    ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION,
+                    ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN_SKIP_OTP to validateToken
+            )
 
             skipOtpPinUseCase.setTypeClass(SkipOtpPinPojo::class.java)
             skipOtpPinUseCase.setRequestParams(params)

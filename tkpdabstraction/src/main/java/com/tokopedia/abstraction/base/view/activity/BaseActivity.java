@@ -8,10 +8,12 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -19,12 +21,17 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -44,6 +51,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
 
+    private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +71,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
         pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
+    }
+
+    public void addListener(DebugVolumeListener debugVolumeListener) {
+        debugVolumeListeners.add(debugVolumeListener);
+    }
+
+    public void removeDebugVolumeListener() {
+        debugVolumeListeners.clear();
     }
 
     @Override
@@ -210,5 +227,29 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public boolean isAllowShake() {
         return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            for (int i = 0, size = debugVolumeListeners.size(); i < size; i++) {
+                debugVolumeListeners.get(i).onKeyUp(keyCode, event);
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        for(Fragment fragment : list) {
+            if(fragment instanceof TkpdBaseV4Fragment) {
+                boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
+                if (handled) {
+                    return;
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }

@@ -8,9 +8,9 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopNoteUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.shop.note.view.model.ShopNoteUiModel
@@ -22,23 +22,24 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
-                                            private val getShopNoteUseCase: GetShopNotesByShopIdUseCase,
+                                            private val getShopNoteUseCase: GetShopNoteUseCase,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopStatisticUseCase: GetShopStatisticUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
-                                            private val coroutineDispatcherProvider: CoroutineDispatcherProvider
-): BaseViewModel(coroutineDispatcherProvider.main()){
+                                            private val coroutineDispatcherProvider: CoroutineDispatchers
+): BaseViewModel(coroutineDispatcherProvider.main){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopInfo = withContext(coroutineDispatcherProvider.io()) {
+                val getShopInfo = withContext(coroutineDispatcherProvider.io) {
                     val shopIdParams = listOf(shopId.toIntOrZero())
 
                     getShopInfoUseCase.isFromCacheFirst = false
@@ -57,8 +58,8 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopNotes(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val shopNotes = withContext(coroutineDispatcherProvider.io()) {
-                    getShopNoteUseCase.params = GetShopNotesByShopIdUseCase.createParams(shopId)
+                val shopNotes = withContext(coroutineDispatcherProvider.io) {
+                    getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
 
                     try {
@@ -81,13 +82,21 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         }){}
     }
 
+    fun getShopReputationBadge(shopId: String) {
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            getShopReputation(shopId)?.let {
+                shopBadgeReputation.postValue(Success(it))
+            }
+        }) {}
+    }
+
     fun getShopStats(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopStatisticRespAsync = async(coroutineDispatcherProvider.io()) {
+                val getShopStatisticRespAsync = async(coroutineDispatcherProvider.io) {
                     getShopStatistics(shopId)
                 }
-                val getShopReputationRespAsync = async(coroutineDispatcherProvider.io()) {
+                val getShopReputationRespAsync = async(coroutineDispatcherProvider.io) {
                     getShopReputation(shopId)
                 }
 

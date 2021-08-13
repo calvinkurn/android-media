@@ -7,7 +7,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
-import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
@@ -20,18 +20,19 @@ private const val emptyLocalSearchRecommendationPage1JSON = "searchproduct/local
 
 internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPresenterTestFixtures() {
 
+    private val navsource = "clp"
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
     private val searchProductPageId = "1234"
     private val keyword = "asus"
     private val searchParameter = mapOf(
             SearchApiConst.Q to keyword,
-            SearchApiConst.NAVSOURCE to "campaign",
+            SearchApiConst.NAVSOURCE to navsource,
             SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
             SearchApiConst.SRP_PAGE_ID to searchProductPageId
     )
 
     private val localSearchRecomRequestParamsSlot = mutableListOf<RequestParams>()
-    private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableListSlot = mutableListOf<List<Visitable<*>>>()
 
     @Test
     fun `Get empty local search recommendation success during local search - page 1`() {
@@ -76,7 +77,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
             parameters[SearchApiConst.SOURCE] shouldBe SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
             parameters[SearchApiConst.DEVICE] shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
-            parameters[SearchApiConst.NAVSOURCE] shouldBe SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN
+            parameters[SearchApiConst.NAVSOURCE] shouldBe navsource
             parameters[SearchApiConst.SRP_PAGE_TITLE] shouldBe searchProductPageTitle
             parameters[SearchApiConst.SRP_PAGE_ID] shouldBe searchProductPageId
             parameters[SearchApiConst.START] shouldBe expectedStart[index].toString()
@@ -106,9 +107,9 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun `Then verify visitable list for set empty recommendation page 1`(localSearchRecommendationModel: SearchProductModel) {
-        val visitableList = visitableListSlot.captured
+        val visitableList = visitableListSlot.last()
 
-        visitableList.first().shouldBeInstanceOf<SearchProductTitleViewModel>()
+        visitableList.first().shouldBeInstanceOf<SearchProductTitleDataView>()
         visitableList.first().assertSearchProductTitle()
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
@@ -117,7 +118,9 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun Visitable<*>.assertSearchProductTitle() {
-        (this as SearchProductTitleViewModel).title shouldBe searchProductPageTitle
+        val searchProductTitleViewModel = this as SearchProductTitleDataView
+        searchProductTitleViewModel.title shouldBe searchProductPageTitle
+        searchProductTitleViewModel.isRecommendationTitle shouldBe true
     }
 
     private fun `Then verify has next page`(expectedHasNextPage: Boolean) {
@@ -199,7 +202,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
             productListView.addLocalSearchRecommendation(capture(visitableListSlot))
         }
 
-        val visitableList = visitableListSlot.captured
+        val visitableList = visitableListSlot.last()
 
         visitableList.size shouldBe localSearchRecommendationModel.searchProduct.data.productList.size
 

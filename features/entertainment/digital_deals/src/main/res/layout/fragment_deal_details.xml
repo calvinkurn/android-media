@@ -15,8 +15,8 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            app:contentScrim="@color/white"
+            android:background="@color/Unify_N0"
+            app:contentScrim="@color/Unify_N0"
             app:expandedTitleGravity="left|bottom"
             app:expandedTitleMarginBottom="@dimen/dp_8"
             app:expandedTitleMarginStart="@dimen/dp_16"
@@ -32,7 +32,10 @@
                 <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                     android:id="@+id/deals_images"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/image_width_deals_details_header" />
+                    android:layout_height="@dimen/image_width_deals_details_header"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
 
 
                 <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
@@ -42,13 +45,13 @@
                     android:layout_marginBottom="@dimen/dp_16"
                     android:padding="@dimen/dp_2"
                     app:centered="false"
-                    app:fillColor="@color/green_250"
+                    app:fillColor="@color/Unify_G400"
                     app:layout_constraintBottom_toBottomOf="@+id/deals_images"
                     app:layout_constraintLeft_toLeftOf="@+id/deals_images"
                     app:layout_constraintRight_toRightOf="@id/deals_images"
                     app:layout_constraintWidth_default="wrap"
-                    app:pageColor="@color/grey_400"
-                    app:strokeColor="@color/grey_400" />
+                    app:pageColor="@color/Unify_N150"
+                    app:strokeColor="@color/Unify_N150" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -85,7 +88,7 @@
         android:layout_height="@dimen/bottom_view_height"
         android:layout_gravity="bottom"
         android:visibility="gone"
-        app:cardBackgroundColor="@color/white">
+        app:cardBackgroundColor="@color/Unify_N0">
 
 
         <TextView
@@ -106,7 +109,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

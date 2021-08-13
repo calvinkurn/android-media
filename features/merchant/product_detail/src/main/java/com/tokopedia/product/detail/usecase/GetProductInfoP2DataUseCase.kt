@@ -9,11 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -32,16 +34,18 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
+                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+                    if(affiliateUUIDRequest!=null)
+                        putObject(ProductDetailCommonConstant.PARAM_AFFILIATE_UUID, affiliateUUIDRequest)
                 }
 
-        val QUERY = """
-        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate) {
             error {
               Code
               Message
@@ -54,6 +58,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subTitle
                 titlePDP
                 subTitlePDP
+                iconURL
+                partnerText
+                partnerLogo
+                linkURL
+                isAppLink
               }
             }
             productView
@@ -151,41 +160,9 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 totalShowcase
               }
               shopType
+              badgeURL
+              shopTier
             }
-            merchantVoucher {
-                vouchers {
-                  voucher_id
-                  voucher_name
-                  voucher_type {
-                    voucher_type
-                    identifier
-                  }
-                  voucher_code
-                  amount {
-                    amount
-                    amount_type
-                  }
-                  minimum_spend
-                  owner {
-                    owner_id
-                    identifier
-                  }
-                  valid_thru
-                  tnc
-                  banner {
-                    desktop_url
-                    mobile_url
-                  }
-                  status {
-                    status
-                    identifier
-                  }
-                  in_use_expiry
-                  restricted_for_liquid_product
-                }
-                 error_message_title
-                 error_message
-               }
             nearestWarehouse {
               product_id
               warehouse_info {
@@ -197,19 +174,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             installmentRecommendation {
-              message
               data {
-                term
-                mdr_value
-                mdr_type
-                interest_rate
-                minimum_amount
-                maximum_amount
                 monthly_price
                 os_monthly_price
                 partner_code
-                partner_name
-                partner_icon
+                subtitle
               }
             }
             installmentCalculation {
@@ -286,9 +255,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             cartRedirection {
               status
               error_message
+              alternate_copy {
+                 text
+                 cart_type
+                 color
+              }
               data{
                 product_id
-                config_name
                 available_buttons {
                   text
                   color
@@ -297,6 +270,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   show_recommendation
                 }
                 unavailable_buttons
+                hide_floating_button
               }
             }
             upcomingCampaigns {
@@ -333,8 +307,123 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                         title
                         description
                         attributeName
+                        badgeURL
                     }
                 }
+            }
+            uniqueSellingPoint{
+              bebasOngkirExtra{
+                icon
+              }
+            }
+            bebasOngkir{
+                  products{
+                    productID
+                    boType
+                  }
+                  images{
+                    boType
+                    imageURL
+                    tokoCabangImageURL
+                  }
+            }
+            ratesEstimate{
+              warehouseID
+              products
+              bottomsheet {
+                title
+                iconURL
+                subtitle
+                buttonCopy
+              }
+              data {
+                totalService
+                courierLabel
+                cheapestShippingPrice
+                destination
+                icon
+                title
+                subtitle
+                eTAText
+                errors{
+                  Code
+                  Message
+                  DevMessage       
+                }
+              }
+            }
+            merchantVoucherSummary{
+                animatedInfo{
+                    title
+                    subTitle
+                    iconURL
+                }
+                isShown
+            }
+            reviewImage{
+              list{
+                imageID
+                reviewID
+                imageSibling
+              }
+              detail{
+                 reviews {
+                   reviewId
+                   message
+                   ratingDescription
+                   rating
+                   time_format{
+                     date_time_fmt1
+                   }
+                   updateTime
+                   isAnonymous
+                   isReportable
+                   isUpdated
+                   reviewer{
+                     userID
+                     fullName
+                     profilePicture
+                     url
+                   }
+                 }
+                 images {
+                   imageAttachmentID
+                   description
+                   uriThumbnail
+                   uriLarge
+                   reviewID
+                 }
+                 imageCountFmt
+                 imageCount
+               }
+              hasNext
+              hasPrev
+            }
+            mostHelpFulReviewData{
+              list{
+                reviewId
+                message
+                productRating
+                reviewCreateTime
+                user {
+                  userId
+                  fullName
+                  image
+                }
+                imageAttachments{
+                  attachmentId
+                  imageUrl
+                  imageThumbnailUrl
+                }
+                likeDislike{
+                  TotalLike
+                  TotalDislike
+                  isShowable
+                }
+                variant{
+                  name
+                }
+              }
             }
         }
     }""".trimIndent()
@@ -346,6 +435,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
+
+    private var errorLogListener: OnErrorLog? = null
 
     suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
         this.requestParams = requestParams
@@ -371,6 +462,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
             Timber.d(t)
+            errorLogListener?.invoke(t)
         }
         return p2UiData
     }
@@ -392,12 +484,22 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
             p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
             p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE } ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
+            p2UiData.ratesEstimate = ratesEstimate
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.bebasOngkir = bebasOngkir
+            p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
+            p2UiData.merchantVoucherSummary = merchantVoucherSummary
+            p2UiData.helpfulReviews = mostHelpFulReviewData.list
+            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.alternateCopy = cartRedirection.alternateCopy
         }
         return p2UiData
+    }
+
+    fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
+        this.errorLogListener = setErrorLogListener
     }
 
     fun clearCache() {

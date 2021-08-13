@@ -2,28 +2,41 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
+import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
+import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
+import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-
-@ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
+
+    private val defaultShopId = "123"
 
     @Test
     fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
@@ -55,6 +68,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 price = 1000.toBigInteger()
         )
         onGetProduct_thenReturn(product)
+        onGetIsShopOwner_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(true)
+        onGetAdminEditStockPermission_thenReturn(true)
+        viewModel.setProductId(product.productID)
         viewModel.getProductData(product.productID)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -83,6 +101,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When get remote product is fail Expect fail object`() = runBlocking {
         onGetProduct_thenFailed()
+        onGetIsShopOwner_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(true)
+        onGetAdminEditStockPermission_thenReturn(true)
+        viewModel.setProductId("4")
         viewModel.getProductData("4")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -200,6 +223,46 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When check shouldShowMultiLocationTicker Expect should return expected result`() {
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(false)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("12")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+    }
+
+    @Test
     fun `When check product input model Expect should return expected result`() {
         val product = MediatorLiveData<ProductInputModel>()
         product.value = ProductInputModel()
@@ -209,9 +272,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When check has original variant level Expect should return expected result`() {
-        viewModel.hasOriginalVariantLevel = true
-        assertEquals(true, viewModel.hasOriginalVariantLevel)
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
     }
 
     @Test
@@ -219,17 +287,18 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
             fileName = "apa"
+            urlThumbnail = "www.gmail.com"
         }
         var product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
-            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
         }
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        var imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        var originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        var editted = arrayListOf(true,false,true)
+        var imagePickerResult = arrayListOf("pict1.0","pict2","pict3")
+        var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
+        var editted = arrayListOf(false,false,true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -255,6 +324,55 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        val pictureInputModel2 = PictureInputModel().apply {
+            urlOriginal = "www.blank.com"
+            fileName = "apa"
+            urlThumbnail = ""
+        }
+        product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel2)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+        }
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
+        editted = arrayListOf(false,false,false)
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        viewModel.productInputModel.value = null
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertEquals(null, viewModel.productInputModel.value)
+    }
+
+    @Test
+    fun `When update product photos Expect updated url path list`() {
+        val successImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path", AddEditProductConstants.HTTP_PREFIX + "/")
+        val successPictureList1: List<PictureInputModel> = listOf(PictureInputModel(
+            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
+            urlOriginal = AddEditProductConstants.HTTP_PREFIX + "/"
+        ))
+        val successPictureList2: List<PictureInputModel> = listOf(PictureInputModel(
+            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
+        ))
+        val errorImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path")
+        val errorPictureList: List<PictureInputModel> = listOf()
+
+        viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList1)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList2)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
+        viewModel.updateProductPhotos(errorImageUrlOrPathList, errorPictureList)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
     }
 
     @Test
@@ -287,7 +405,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When productInputModel data changed Expect `() {
+    fun `When productInputModel data changed Expect changes to isDataChanged`() {
         viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
 
@@ -296,6 +414,330 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.setIsDataChanged(false)
         assertFalse(viewModel.getIsDataChanged())
+
+        viewModel.productInputModel.value = null
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.setIsDataChanged(true)
+        assertFalse(viewModel.getIsDataChanged())
+    }
+
+    @Test
+    fun  `When validate shop location should be true`() = runBlocking {
+        onGetShopInfoLocation_thenReturn()
+
+        viewModel.validateShopLocation(121313)
+
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocation()
+    }
+
+    @Test
+    fun  `When save shop location should be successful`() = runBlocking {
+        onSaveShopShipmentLocation_thenReturn()
+
+        viewModel.saveShippingLocation(mutableMapOf())
+
+        viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
+        verifyGetShopInfoLocation()
+    }
+
+    @Test
+    fun  `When validate product name and product name unchanged Expect return success result`() = runBlocking {
+        val productName = "testing"
+
+        viewModel.setProductId("123")
+        viewModel.isEditing.getOrAwaitValue()
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = productName)
+        )
+
+        viewModel.validateProductNameInput("not same")
+        val failedResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_ERROR, failedResult.result)
+
+        viewModel.validateProductNameInput(productName)
+        val successResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_SUCCESS, successResult.result)
+    }
+
+    @Test
+    fun  `When validate product name is success Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
+
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf()
+        }
+
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
+
+        coVerify { validateProductNameUseCase.executeOnBackground() }
+
+        viewModel.validationResult.getOrAwaitValue()
+
+        val validationResult = response.productValidateV3.data.validationResults.joinToString("\n")
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
+        assertEquals(viewModel.validationResult.value?.exception?.message, validationResult)
+
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.UNVALIDATED)
+    }
+
+    @Test
+    fun  `When validate product name if product name equals to current product name Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
+
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf()
+        }
+
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = "testing")
+        )
+
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
+
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
+
+        viewModel.validateProductNameInput("another test")
+        viewModel.validationResult.getOrAwaitValue()
+
+        val validationResult = response.productValidateV3.data.validationResults.joinToString("\n")
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.VALIDATION_SUCCESS)
+        assertEquals(viewModel.validationResult.value?.exception?.message, validationResult)
+
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertEquals(viewModel.validationResult.value?.result, ValidationResultModel.Result.UNVALIDATED)
+    }
+
+    @Test
+    fun `When is shop owner should not get admin permission and role is eligible`() {
+        onGetIsShopOwner_thenReturn(true)
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionNotCalled(getAccessId())
+        verifyGetAdminEditStockPermissionNotCalled()
+        verifyGetAdminProductPermissionResult(Success(true))
+    }
+
+    @Test
+    fun `When is not shop owner but is shop admin should get admin permission`() {
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+    }
+
+    @Test
+    fun `When product id is not blank, is not shop owner, but is shop admin, and admin permission is not yet known, should get admin permission`() {
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+
+        viewModel.setProductId("123")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+    }
+
+    @Test
+    fun `When product id is not blank, is not shop owner, but is shop admin, and admin permission result is already known, should not get admin permission`() = runBlocking {
+        val isEligible = true
+
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(isEligible)
+        onGetAdminEditStockPermission_thenReturn(isEligible)
+
+        viewModel.setProductId("123")
+        viewModel.setProductId("123")
+
+        verifyGetAdminProductPermissionCalledOnlyOnce(getAccessId())
+        verifyGetAdminEditStockPermissionCalledOnlyOnce()
+    }
+
+    @Test
+    fun `When both get admin permission use case success Expect admin is eligible`() = runBlocking {
+        val isEligible = true
+
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(isEligible)
+        onGetAdminEditStockPermission_thenReturn(isEligible)
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+        verifyGetAdminProductPermissionResult(Success((isEligible)))
+    }
+
+    @Test
+    fun `When product permission is eligible but edit stock permission is not eligible, admin is not eligible`() = runBlocking {
+        val isProductManageEligible = true
+        val isEditStockEligible = false
+
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(isProductManageEligible)
+        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+        verifyGetAdminProductPermissionResult(Success(false))
+    }
+
+    @Test
+    fun `When product permission is not eligible but edit stock permission is eligible, admin is not eligible`() = runBlocking {
+        val isProductManageEligible = false
+        val isEditStockEligible = true
+
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(isProductManageEligible)
+        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+        verifyGetAdminProductPermissionResult(Success(false))
+    }
+
+    @Test
+    fun `When both permissions are not eligible, admin is not eligible`() = runBlocking {
+        val isProductManageEligible = false
+        val isEditStockEligible = false
+
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetShopId_thenReturnDefault()
+        onGetAdminProductPermission_thenReturn(isProductManageEligible)
+        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminEditStockPermissionCalled()
+        verifyGetAdminProductPermissionResult(Success(false))
+    }
+
+    @Test
+    fun `When get admin permission use case failed should return error object`() = runBlocking {
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetAdminEditStockPermission_thenReturn(true)
+        onGetAdminProductPermission_thenFailed()
+        onGetShopId_thenReturnDefault()
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminProductPermissionFailed()
+    }
+
+    @Test
+    fun `When get admin edit stock permission use case failed should return error object`() = runBlocking {
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        onGetAdminProductPermission_thenReturn(true)
+        onGetAdminEditStockPermission_thenFailed()
+        onGetShopId_thenReturnDefault()
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled(getAccessId())
+        verifyGetAdminProductPermissionFailed()
+    }
+
+    @Test
+    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa",
+                        data = listOf(
+                                Values(1, "Soto", false, ""),
+                                Values(1, "Bawang", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.updateSpecificationFromRemote("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(2, result?.detailInputModel?.specifications?.size)
+    }
+
+    @Test
+    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", false, ""),
+                                Values(1, "Seedap", false, ""))
+                )
+        )
+
+        viewModel.productInputModel.value = null
+        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        var result = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(null, result?.detailInputModel?.specifications?.size)
+
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        result = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(0, result?.detailInputModel?.specifications?.size)
+    }
+
+    @Test
+    fun `When get product limitation should return success data`() = runBlocking {
+        onGetProductLimitation_thenReturn(ProductAddRuleResponse())
+
+        viewModel.getProductLimitation()
+
+        val result = viewModel.productLimitationData.getOrAwaitValue()
+        verifyProductLimitationData(result)
+    }
+
+    private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
+        coEvery { productLimitationUseCase.executeOnBackground() } returns successResponse
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
@@ -310,6 +752,42 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { getProductUseCase.executeOnBackground() } returns product
     }
 
+    private fun onValidateProductName_thenReturn(response: ValidateProductNameResponse) {
+        coEvery { validateProductNameUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onGetShopInfoLocation_thenReturn() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onSaveShopShipmentLocation_thenReturn() {
+        coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } returns SaveShipmentLocation()
+    }
+
+    private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
+        coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
+    }
+
+    private fun onGetAdminEditStockPermission_thenReturn(isEligible: Boolean) {
+        coEvery { authorizeEditStockUseCase.execute(any()) } returns isEligible
+    }
+
+    private fun onGetIsShopOwner_thenReturn(isShowOwner: Boolean) {
+        coEvery { userSession.isShopOwner } returns isShowOwner
+    }
+
+    private fun onGetIsShopAdmin_thenReturn(isShopAdmin: Boolean) {
+        coEvery { userSession.isShopAdmin } returns isShopAdmin
+    }
+
+    private fun onGetShopId_thenReturnDefault() {
+        coEvery { userSession.shopId } returns defaultShopId
+    }
+
+    private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {
+        coEvery { userSession.isMultiLocationShop } returns isMultiLocationShop
+    }
+
     private fun onSaveProductDraft_thenFailed() {
         coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
     }
@@ -320,6 +798,50 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenFailed() {
         coEvery { getProductUseCase.executeOnBackground() } throws MessageErrorException("")
+    }
+
+    private fun onGetAdminProductPermission_thenFailed() {
+        coEvery { authorizeAccessUseCase.execute(any()) } throws MessageErrorException("")
+    }
+
+    private fun onGetAdminEditStockPermission_thenFailed() {
+        coEvery { authorizeEditStockUseCase.execute(any()) } throws MessageErrorException("")
+    }
+
+    private fun verifyGetAdminProductPermissionCalled(accessId: Int) {
+        coVerify {
+            authorizeAccessUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetAdminProductPermissionCalledOnlyOnce(accessId: Int) {
+        coVerify(exactly = 1) {
+            authorizeAccessUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetAdminProductPermissionNotCalled(accessId: Int) {
+        coVerify(exactly = 0) {
+            authorizeAccessUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetAdminEditStockPermissionCalled() {
+        coVerify {
+            authorizeEditStockUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetAdminEditStockPermissionCalledOnlyOnce() {
+        coVerify(exactly = 1) {
+            authorizeEditStockUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetAdminEditStockPermissionNotCalled() {
+        coVerify(exactly = 0) {
+            authorizeEditStockUseCase.execute(any())
+        }
     }
 
     private fun verifyGetProductDraftResult(expectedResult: Success<ProductDraft>) {
@@ -342,6 +864,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(false, viewModel.isLoading.value)
     }
 
+    private fun verifyGetAdminProductPermissionResult(expectedResult: Success<Boolean>) {
+        val actualResult = viewModel.isProductManageAuthorized.value as Success<Boolean>
+        assertEquals(expectedResult, actualResult)
+    }
+
     private fun verifySaveProductDraftFailed() {
         val result = viewModel.saveProductDraftResultLiveData.value
         assertTrue(result is Fail)
@@ -359,4 +886,33 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
     }
+
+    private fun verifyGetShopInfoLocation() {
+        assertTrue(viewModel.saveShopShipmentLocationResponse.value == Success(SaveShipmentLocation()))
+    }
+
+    private fun verifyValidateShopLocation() {
+        assertTrue(viewModel.locationValidation.value == Success(true))
+    }
+
+    private fun verifyGetAdminProductPermissionFailed() {
+        val result = viewModel.isProductManageAuthorized.value
+        assertTrue(result is Fail)
+    }
+
+    private fun verifyProductLimitationData(result: Result<ProductLimitationData>) {
+        coVerify {
+            productLimitationUseCase.executeOnBackground()
+        }
+        assert(result is Success)
+    }
+
+    private fun getAccessId() =
+            when {
+                viewModel.isAdding -> AccessId.PRODUCT_ADD
+                viewModel.isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
+                else -> AccessId.PRODUCT_ADD
+            }
+
 }

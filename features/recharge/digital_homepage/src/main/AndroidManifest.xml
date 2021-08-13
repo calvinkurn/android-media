@@ -6,10 +6,10 @@
             android:name=".old.presentation.activity.DigitalHomePageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -24,10 +24,10 @@
             android:name=".presentation.activity.RechargeHomepageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -41,7 +41,7 @@
         <activity
             android:name=".presentation.activity.DigitalHomePageSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
 
     </application>
 </manifest>

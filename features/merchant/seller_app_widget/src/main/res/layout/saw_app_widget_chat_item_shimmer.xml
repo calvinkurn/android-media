@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/sawChatShimmerName"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/saw_dimen_12dp"
+        android:layout_marginEnd="@dimen/saw_dimen_50dp"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/sawChatShimmerLastMsg"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/saw_dimen_142dp"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/horLineSawChatItem"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/saw_dimen_12dp"
+        android:background="@color/Unify_N75" />
+</LinearLayout>

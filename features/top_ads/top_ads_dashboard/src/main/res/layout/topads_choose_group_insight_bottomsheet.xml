@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bs_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:text="@string/topads_dash_grp_bs_desc"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.ContentSwitcherUnify
+        android:id="@+id/contentSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textOff="@string/topads_dash_grp_bs_label_switch_on"
+        android:textOn="@string/topads_dash_grp_bs_label_switch_off" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/group_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSearch"
+        android:lines="1"
+        android:visibility="gone"
+        app:text_field_label="@string/topads_common_nama_group"
+        app:text_field_label_static="true"
+        app:text_field_message="@string/topads_dash_grp_bs_hint" />
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:search_bar_placeholder="@string/topads_dash_grp_bs_search_hint"
+        app:search_bar_show_icon="false" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/topads_dash_grp_bs_empty"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:itemCount="8"
+        tools:listitem="@layout/topads_dash_item_moveto_group_recom" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/submit_butt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:enabled="false"
+        android:text="@string/topads_iklankan_button"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+</LinearLayout>

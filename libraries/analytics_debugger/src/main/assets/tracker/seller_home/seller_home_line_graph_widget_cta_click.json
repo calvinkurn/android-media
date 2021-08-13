@@ -5,9 +5,9 @@
     {
       "event": "clickSellerWidget",
       "eventCategory": "seller app - home",
-      "eventAction": "{{click widget trend line - .{1,} - see more}}",
-      "eventLabel": "{{.{1,}}}",
-      "sessionIris": "{{.{1,}}}"
+      "eventAction": "click widget trend line - .{1,} - see more",
+      "eventLabel": ".{1,}",
+      "sessionIris": ".{1,}"
     }
   ]
 }

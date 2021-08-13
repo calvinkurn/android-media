@@ -1,9 +1,0 @@
-<resources>
-    <declare-styleable name="ImagesSelectView">
-        <attr name="recyclerviewPadding" format="dimension" />
-        <attr name="addPictureSrc" format="reference" />
-        <attr name="primaryImageString" format="reference" />
-        <attr name="imageLimit" format="integer" />
-        <attr name="titleString" format="reference" />
-    </declare-styleable>
-</resources>

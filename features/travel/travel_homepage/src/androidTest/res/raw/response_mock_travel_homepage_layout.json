@@ -1,0 +1,80 @@
+[
+  {
+    "data": {
+      "travelLayoutSubhomepage": {
+        "data": [
+          {
+            "id": "1",
+            "dataType": "banner",
+            "widgetType": "SliderBanner",
+            "priority": "10000",
+            "title": "Banner Paling Atas",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          },
+          {
+            "id": "3",
+            "dataType": "category_list",
+            "widgetType": "DynamicIcon",
+            "priority": "9000",
+            "title": "ICON List",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          },
+          {
+            "id": "2",
+            "dataType": "recent_search",
+            "widgetType": "SliderProductCard",
+            "priority": "8000",
+            "title": "Terakhir Dicari",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          },
+          {
+            "id": "2",
+            "dataType": "recent_search",
+            "widgetType": "LegoBanner",
+            "priority": "8000",
+            "title": "Terakhir Dicari",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          },
+          {
+            "id": "4",
+            "dataType": "travel_destination",
+            "widgetType": "QuadProductCard",
+            "priority": "3",
+            "title": "Travel Destination Paling Bawah",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          },
+          {
+            "id": "4",
+            "dataType": "travel_destination",
+            "widgetType": "DynamicBanner",
+            "priority": "3",
+            "title": "Travel Destination Paling Bawah",
+            "subtitle": "Subtitle",
+            "appURL": "tokopedia://hotel/dashboard",
+            "webURL": "",
+            "metaText": "Lihat Semua"
+          }
+        ],
+        "meta": {
+          "templateID": "17",
+          "templateName": "Layout Nov 3 2020"
+        }
+      }
+    }
+  }
+]

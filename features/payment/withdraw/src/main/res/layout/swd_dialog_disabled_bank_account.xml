@@ -3,26 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl5">
+    android:paddingBottom="@dimen/unify_space_24">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivDeactivatedAccount"
         android:layout_width="@dimen/swd_de_active_account_width"
         android:layout_height="@dimen/swd_de_active_account_height"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/swd_img_deactivated_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/swd_img_deactivated_account"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDeactivatedAccountTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:gravity="center"
         android:text="@string/swd_can_withdraw_to_premium_account"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivDeactivatedAccount"
@@ -31,12 +32,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDeactivatedAccountDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:gravity="center"
         android:text="@string/swd_deactivated_account_description"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDeactivatedAccountTitle"
@@ -44,9 +45,9 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnCheckPremiumProgram"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:text="@string/swd_check_premium_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

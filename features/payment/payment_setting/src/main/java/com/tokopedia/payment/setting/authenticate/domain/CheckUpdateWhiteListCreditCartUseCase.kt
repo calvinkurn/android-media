@@ -1,39 +1,55 @@
 package com.tokopedia.payment.setting.authenticate.domain
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.payment.setting.authenticate.di.GQL_CHECK_UPDATE_WHITE_LIST
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListResponse
-import rx.Subscriber
+import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
+import com.tokopedia.payment.setting.util.GQL_CHECK_UPDATE_WHITE_LIST
 import javax.inject.Inject
-import javax.inject.Named
 
+@GqlQuery("CheckUpdateWhiteList", GQL_CHECK_UPDATE_WHITE_LIST)
 class CheckUpdateWhiteListCreditCartUseCase @Inject constructor(
-        @Named(GQL_CHECK_UPDATE_WHITE_LIST) val query: String,
-        private val graphqlUseCase: GraphqlUseCase) {
+        graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<CheckWhiteListResponse>(graphqlRepository) {
 
-    fun execute(authValue: Int, status: Boolean,
-                token: String?, subscriber: Subscriber<GraphqlResponse>) {
-        graphqlUseCase.clearRequest()
-        val params = mapOf<String, Any?>(
+    fun whiteListResponse(
+            onSuccess: (CheckWhiteListStatus) -> Unit,
+            onError: (Throwable) -> Unit,
+            authValue: Int, status: Boolean,
+            token: String?,
+    ) {
+        try {
+            this.setTypeClass(CheckWhiteListResponse::class.java)
+            this.setGraphqlQuery(CheckUpdateWhiteList.GQL_QUERY)
+            this.setRequestParams(getRequestParams(authValue, status, token))
+            this.execute(
+                    { result ->
+                        if (result.checkWhiteListStatus == null)
+                            onError(NullPointerException("Null Response"))
+                        else onSuccess(result.checkWhiteListStatus!!)
+                    },
+                    { error -> onError(error) }
+            )
+        } catch (throwable: Throwable) {
+            onError(throwable)
+        }
+    }
+
+    private fun getRequestParams(
+            authValue: Int, status: Boolean,
+            token: String?,
+    ): Map<String, Any?> {
+        return mapOf(
                 UPDATE_STATUS to status,
                 AUTH_VALUE to authValue,
                 TOKEN to token)
-        val graphqlRequestForUsable = GraphqlRequest(query,
-                CheckWhiteListResponse::class.java, params)
-        graphqlUseCase.addRequest(graphqlRequestForUsable)
-        graphqlUseCase.execute(subscriber)
-    }
-
-    fun unSubscribe() {
-        graphqlUseCase.unsubscribe()
     }
 
     companion object {
-        val UPDATE_STATUS = "updateStatus"
-        val AUTH_VALUE = "authValue"
-        val TOKEN = "token"
+        const val UPDATE_STATUS = "updateStatus"
+        const val AUTH_VALUE = "authValue"
+        const val TOKEN = "token"
     }
 
 }

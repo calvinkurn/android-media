@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="path_media_catalogue" translatable="false">/medialoader-lab</string>
+    <string name="hint_medialoader_url">URL</string>
+    <string name="btn_medialoader_blurhash_loader">blurhash loader</string>
+    <string name="btn_medialoader_blurhash_loader_ratio">blurhash loader (ratio)</string>
+    <string name="btn_medialoader_loadimage">loadImage()</string>
+    <string name="btn_medialoader_loadimage_rounded">loadImage(rounded)</string>
+    <string name="btn_medialoader_loadimage_fit_center">loadImage(fit_center)</string>
+    <string name="btn_medialoader_loadimage_center_crop">loadImage(center_crop)</string>
+    <string name="btn_medialoader_loadimagecircle">loadImageCircle</string>
+    <string name="btn_medialoader_toprightcrop">TopRightCrop</string>
+    <string name="btn_medialoader_blurhash_native">blurhash native</string>
+    <string name="btn_medialoader_blurhash_native_ratio">blurhash native (ratio)</string>
+    <string name="btn_medialoader_loadimage_invalid_url">loadImage(invalid url)</string>
+    <string name="btn_medialoader_loadimage_custom_error">loadImage(custom_error)</string>
+    <string name="btn_medialoader_loadimagewithoutplaceholder">loadImageWithoutPlaceholder</string>
+    <string name="btn_medialoader_loadimagewithtarget">loadImageWithTarget</string>
+    <string name="btn_medialoader_loadimage_blurhash">loadImage blurhash</string>
+    <string name="btn_medialoader_loadicon">loadIcon</string>
+    <string name="desc_medialoader_image_test">image test</string>
+</resources>

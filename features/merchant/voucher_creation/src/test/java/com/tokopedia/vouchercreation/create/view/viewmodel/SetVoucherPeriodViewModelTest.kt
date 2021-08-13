@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PeriodValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PeriodValidation
 import io.mockk.MockKAnnotations
@@ -13,7 +13,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -44,7 +43,7 @@ class SetVoucherPeriodViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = SetVoucherPeriodViewModel(TestCoroutineDispatchers, periodValidationUseCase)
+        mViewModel = SetVoucherPeriodViewModel(CoroutineTestDispatchersProvider, periodValidationUseCase)
     }
 
     @Test
@@ -83,8 +82,6 @@ class SetVoucherPeriodViewModelTest {
 
             validateVoucherPeriod()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 periodValidationUseCase.executeOnBackground()
             }
@@ -92,6 +89,32 @@ class SetVoucherPeriodViewModelTest {
             assert(periodValidationLiveData.value == Success(dummySuccessPeriodValidation))
         }
     }
+
+    @Test
+    fun `check if periodValidationLiveData value is null if end date is null`() = runBlocking {
+        with(mViewModel) {
+            val dummySuccessPeriodValidation = PeriodValidation()
+
+            coEvery {
+                periodValidationUseCase.executeOnBackground()
+            } returns dummySuccessPeriodValidation
+
+            setStartDateCalendar(DUMMY_CALENDAR)
+
+            validateVoucherPeriod()
+
+            assert(periodValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check if periodValidationLiveData value is null if start and end date is null`() = runBlocking {
+        with(mViewModel) {
+            validateVoucherPeriod()
+            assert(periodValidationLiveData.value == null)
+        }
+    }
+
 
     @Test
     fun `fail validating voucher period`() = runBlocking {
@@ -106,8 +129,6 @@ class SetVoucherPeriodViewModelTest {
             setEndDateCalendar(DUMMY_CALENDAR)
 
             validateVoucherPeriod()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 periodValidationUseCase.executeOnBackground()

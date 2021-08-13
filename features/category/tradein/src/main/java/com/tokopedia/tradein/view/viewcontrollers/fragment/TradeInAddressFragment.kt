@@ -18,15 +18,15 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.mapper.TradeInMapper
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInOutsideCoverageBottomSheet
 import com.tokopedia.tradein.viewmodel.TradeInAddressViewModel
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
@@ -84,7 +84,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     private fun setUpObservers() {
         tradeInAddressViewModel.getAddressLiveData().observe(viewLifecycleOwner, Observer {
             if (it.defaultAddress != null) {
-                setAddress(it.defaultAddress)
+                setAddress(it.defaultAddress as MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data)
             } else {
                 val intent = RouteManager.getIntent(
                         context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)

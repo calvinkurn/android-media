@@ -16,10 +16,9 @@ android {
     }
 }
 
-apply plugin: 'io.hansel.preprocessor.module'
-
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }

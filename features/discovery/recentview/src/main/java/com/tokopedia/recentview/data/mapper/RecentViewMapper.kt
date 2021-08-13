@@ -27,6 +27,7 @@ class RecentViewMapper {
                     labels = convertLabels(domain.labels) ?: listOf(),
                     isFreeReturn = false,
                     isWishlist = domain.wishlist,
+                    productLink = domain.productUrl,
                     rating = if (domain.rating.isNotEmpty()) domain.rating.toInt() else "0".toInt(),
                     isGold = domain.isNewGold == 1,
                     isOfficial = convertToIsOfficial(domain.badges),

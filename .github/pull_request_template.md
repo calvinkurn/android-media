@@ -44,9 +44,15 @@ https://phab.tokopedia.com/XXXXX
 - **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
+- **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
+- **/check vector** - run vector drawable optimizer
+- **/create jira** - auto generate jira for this PR
 
 ## Gatekeeper Spells
-- **approved for app-size** - send along with the approval to cast the magic 
+- **approved for customer app-size** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-app-size)*
+
+- **approved for seller app-size** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-app-size)*
 
 - **approved for risk** - send along with the approval to cast the magic 
@@ -55,4 +61,9 @@ https://phab.tokopedia.com/XXXXX
 - **approved for linter** - send along with the approval to cast the magic 
 *(more info: @tokopedia/android-gatekeeper-linter)*
 
+- **approved for new module** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-new-module)*
+
+- **approved for dark mode** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-dark-mode)*
 

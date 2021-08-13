@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.deals.search.model.visitor.*
 import com.tokopedia.deals.search.listener.DealsSearchListener
 import com.tokopedia.deals.search.ui.adapter.viewholder.*
-import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactory
 
 class DealsSearchTypeFactoryImpl(
         private val dealsSearchListener: DealsSearchListener
@@ -34,7 +33,7 @@ class DealsSearchTypeFactoryImpl(
         return VoucherViewHolder.LAYOUT
     }
 
-    override fun type(viewItem: MerchantModelViewModel): Int {
+    override fun type(item: MerchantModelModel): Int {
         return MerchantViewHolder.LAYOUT
     }
 

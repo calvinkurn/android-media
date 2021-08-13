@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -42,12 +42,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
-        private val dispatchers: OfficialStoreDispatcherProvider
-) : BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     var currentSlug: String = ""
         private set
-
+    var currentSlugDC: String = ""
+        private set
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
         get() = _officialStoreBannersResult
@@ -88,17 +89,18 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<WishlistModel>>()
     }
 
-    fun loadFirstData(category: Category?) {
+    fun loadFirstData(category: Category?, location: String = "") {
         launchCatchError(block = {
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
+            currentSlugDC = category?.slug ?: ""
 
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
-            getOfficialStoreDynamicChannel(currentSlug)
+            getOfficialStoreDynamicChannel(currentSlug, location)
         }) {
             _officialStoreBannersResult.value = Fail(it)
             _officialStoreBenefitResult.value = Fail(it)
@@ -109,7 +111,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
         launch {
             try {
-                withContext(dispatchers.io()) {
+                withContext(dispatchers.io) {
                     val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
                             .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
                     _productRecommendation.postValue(Success(recomData.first().get(0)))
@@ -121,7 +123,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private suspend fun getOfficialStoreBanners(categoryId: String, isCache:Boolean): Result<OfficialStoreBanners> {
-        return withContext(dispatchers.io()) {
+        return withContext(dispatchers.io) {
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
@@ -133,7 +135,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private suspend fun getOfficialStoreBenefit(): Result<OfficialStoreBenefits> {
-        return withContext(dispatchers.io()) {
+        return withContext(dispatchers.io) {
             try {
                 val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
                 Success(benefits)
@@ -144,7 +146,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
-        return withContext(dispatchers.io()) {
+        return withContext(dispatchers.io) {
             try {
                 getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
                 val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
@@ -155,9 +157,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getOfficialStoreDynamicChannel(channelType: String) {
+    private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
-            getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+            getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
             _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))
@@ -165,7 +167,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
-        return withContext(dispatchers.io()) {
+        return withContext(dispatchers.io) {
             try {
                 val params = RequestParams.create().apply {
                     putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
@@ -223,6 +225,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
+
+    fun getUserId() = userSessionInterface.userId
 
     override fun onCleared() {
         super.onCleared()

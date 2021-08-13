@@ -23,6 +23,12 @@ data class OtpModeListData(
         @SerializedName("message")
         @Expose
         var message: String = "",
+        @SerializedName("enableTicker")
+        @Expose
+        var enableTicker: Boolean = false,
+        @SerializedName("tickerTrouble")
+        @Expose
+        var tickerTrouble: String = "",
         @SerializedName("errorMessage")
         @Expose
         var errorMessage: String = "",
@@ -71,5 +77,5 @@ data class ModeListData(
         var countdown: Boolean = false,
         @SerializedName("otpDigit")
         @Expose
-        var otpDigit: Int = 6  // default otp length 6 digits
+        var otpDigit: Int = 4  // default otp length 4 digits
 ): Parcelable

@@ -3,10 +3,11 @@ package com.tokopedia.troubleshooter.notification.ui.viewmodel
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
-import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
@@ -18,28 +19,24 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.troubleshooter.notification.util.dispatchers.TestDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class TroubleshootViewModelTest {
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val troubleshootUseCase: TroubleshootStatusUseCase = mockk(relaxed = true)
+    private val troubleshootUseCase: GetTroubleshootStatusUseCase = mockk(relaxed = true)
     private val notificationChannel: NotificationChannelManager = mockk(relaxed = true)
     private val notificationCompat: NotificationCompatManager = mockk(relaxed = true)
     private val messagingManager: FirebaseMessagingManager = mockk(relaxed = true)
@@ -48,14 +45,16 @@ class TroubleshootViewModelTest {
     private val ringtoneMode: RingtoneModeService = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
+    private val notificationStatus: Observer<Boolean> = mockk(relaxed = true)
     private val notificationSetting: Observer<Result<UserSettingUIView>> = mockk(relaxed = true)
     private val deviceSetting: Observer<Result<DeviceSettingState>> = mockk(relaxed = true)
     private val notificationRingtoneUri: Observer<Pair<Uri?, RingtoneState>> = mockk(relaxed = true)
-    private val troubleshoot: Observer<Result<NotificationSendTroubleshoot>> = mockk(relaxed = true)
-    private val tokenObserver: Observer<String> = mockk(relaxed = true)
+    private val troubleshootSuccess: Observer<NotificationSendTroubleshoot> = mockk(relaxed = true)
+    private val troubleshootError: Observer<Throwable> = mockk(relaxed = true)
+    private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
 
-    private val dispatcherProvider = TestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: TroubleshootViewModel
 
@@ -73,52 +72,72 @@ class TroubleshootViewModelTest {
                 dispatcherProvider
         )
 
+        viewModel.notificationStatus.observeForever(notificationStatus)
         viewModel.notificationSetting.observeForever(notificationSetting)
         viewModel.deviceSetting.observeForever(deviceSetting)
         viewModel.notificationRingtoneUri.observeForever(notificationRingtoneUri)
-        viewModel.troubleshoot.observeForever(troubleshoot)
+        viewModel.troubleshootSuccess.observeForever(troubleshootSuccess)
+        viewModel.troubleshootError.observeForever(troubleshootError)
         viewModel.token.observeForever(tokenObserver)
         viewModel.dndMode.observeForever(dndMode)
     }
 
+    @Test fun `it should return notification status as true`() {
+        val expectedValue = true
+        every { notificationCompat.isNotificationEnabled() } returns expectedValue
+
+        viewModel.isNotificationEnabled()
+
+        verify { notificationStatus.onChanged(expectedValue) }
+    }
+
+    @Test fun `it should return notification status as false`() {
+        val expectedValue = false
+        every { notificationCompat.isNotificationEnabled() } returns expectedValue
+
+        viewModel.isNotificationEnabled()
+
+        verify { notificationStatus.onChanged(expectedValue) }
+    }
+
     @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
-        val expectedReturn = NotificationTroubleshoot()
-        val expectedValue = Success(expectedReturn.notificationSendTroubleshoot)
+        val expectedValue = NotificationTroubleshoot().notificationSendTroubleshoot
 
         coEvery {
             troubleshootUseCase(any())
-        } returns expectedReturn
+        } returns NotificationTroubleshoot()
 
         viewModel.troubleshoot()
 
-        verify { troubleshoot.onChanged(expectedValue) }
-        viewModel.troubleshoot isEqualsTo expectedValue
+        verify { troubleshootSuccess.onChanged(expectedValue) }
+        viewModel.troubleshootSuccess isEqualsTo expectedValue
     }
 
     @Test fun `it should cannot troubleshoot`() = runBlockingTest {
         val expectedValue = Throwable()
-        coEvery {
-            troubleshootUseCase(any())
-        } throws expectedValue
+
+        coEvery { troubleshootUseCase(any()) } throws expectedValue
 
         viewModel.troubleshoot()
 
-        verify { troubleshoot.onChanged(Fail(expectedValue)) }
+        verify { troubleshootError.onChanged(expectedValue) }
+        viewModel.troubleshootError isEqualsTo expectedValue
     }
 
     @Test fun `it should return new token`() {
         val token = "123"
+        val expectedValue = Success(token)
 
-        every { instanceManager.getNewToken(any()) } answers {
+        every { instanceManager.getNewToken(any(), any()) } answers {
             firstArg<(String) -> Unit>().invoke(token)
         }
 
         viewModel.getNewToken()
 
-        verify { instanceManager.getNewToken(any()) }
-        verify { tokenObserver.onChanged(token) }
+        verify { instanceManager.getNewToken(any(), any()) }
+        verify { tokenObserver.onChanged(expectedValue) }
 
-        viewModel.token isEqualsTo token
+        viewModel.token isEqualsTo expectedValue
     }
 
     @Test fun `it should update new token`() {
@@ -165,7 +184,61 @@ class TroubleshootViewModelTest {
         viewModel.deviceSetting isEqualsTo expectedValue
     }
 
-    @Test fun `it should return user settings properly`() {
+    @Test fun `it should get fail of device setting if notification disabled`() {
+        val expectedValue = Fail(Throwable(""))
+        every { notificationCompat.isNotificationEnabled() } returns false
+
+        viewModel.deviceSetting()
+
+        viewModel.deviceSetting.value isEqualsTo expectedValue
+    }
+
+    @Test fun `it should get fail of device setting if notification channel disabled`() {
+        val expectedValue = Fail(Throwable(""))
+
+        every { notificationCompat.isNotificationEnabled() } returns true
+        every { notificationChannel.hasNotificationChannel() } returns true
+        every { notificationChannel.isNotificationChannelEnabled() } returns true
+
+        viewModel.deviceSetting()
+
+        viewModel.deviceSetting.value isEqualsTo expectedValue
+    }
+
+    @Test fun `it should return user settings for seller app properly`() {
+        runBlockingTest {
+            val userSettingMock = UserSettingUIView()
+            val expectedValue = Success(userSettingMock)
+
+            mockkStatic(GlobalConfig::class)
+
+            every { GlobalConfig.isSellerApp() } returns true
+            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+
+            viewModel.userSetting()
+
+            verify { notificationSetting.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `it should return user settings as buyer and have shop properly`() {
+        runBlockingTest {
+            val userSettingMock = UserSettingUIView()
+            val expectedValue = Success(userSettingMock)
+
+            mockkStatic(GlobalConfig::class)
+
+            every { GlobalConfig.isSellerApp() } returns false
+            every { userSession.hasShop() } returns true
+            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+
+            viewModel.userSetting()
+
+            verify { notificationSetting.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `it should return user settings as buyer and did not have shop properly`() {
         val userSettingMock = UserSettingUIView()
         val expectedValue = Success(userSettingMock)
 

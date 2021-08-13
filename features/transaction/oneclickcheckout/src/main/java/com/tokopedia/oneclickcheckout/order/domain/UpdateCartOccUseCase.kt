@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.domain
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -14,7 +15,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import java.util.*
 import javax.inject.Inject
 
-class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) {
+class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                               private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccPrompt? {
         val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
@@ -30,6 +32,9 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {
+        if (param.chosenAddress == null) {
+            param.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        }
         return mapOf(PARAM_KEY to param)
     }
 

@@ -5,14 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.review.R;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.HeaderOptionViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.OptionViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -24,38 +24,38 @@ public class InboxReputationFilterAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface FilterListener {
-        void onFilterSelected(OptionViewModel optionViewModel);
+        void onFilterSelected(OptionUiModel optionUiModel);
 
-        void onFilterUnselected(OptionViewModel optionViewModel);
+        void onFilterUnselected(OptionUiModel optionUiModel);
     }
 
     private static final int VIEW_HEADER = 101;
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
+        Typography title;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
-            this.title = (TextView) itemView.findViewById(R.id.title);
+            this.title = (Typography) itemView.findViewById(R.id.title);
         }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView filter;
+        Typography filter;
         ImageView check;
         View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.filter = (TextView) itemView.findViewById(R.id.filter);
+            this.filter = (Typography) itemView.findViewById(R.id.filter);
             this.check = (ImageView) itemView.findViewById(R.id.check);
             this.mainView = itemView.findViewById(R.id.main_view);
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (OptionViewModel viewModel : listOption) {
+                    for (OptionUiModel viewModel : listOption) {
                         if (viewModel == listOption.get(getAdapterPosition()))
                             viewModel.setSelected(!viewModel.isSelected());
                         else if (viewModel.getKey() == listOption.get(getAdapterPosition()).getKey())
@@ -74,19 +74,19 @@ public class InboxReputationFilterAdapter
         }
     }
 
-    private final ArrayList<OptionViewModel> listOption;
+    private final ArrayList<OptionUiModel> listOption;
     private final FilterListener listener;
     private Context context;
 
 
     public static InboxReputationFilterAdapter createInstance(Context context, FilterListener listener,
-                                                              ArrayList<OptionViewModel>
+                                                              ArrayList<OptionUiModel>
                                                                       listOption) {
         return new InboxReputationFilterAdapter(context, listener, listOption);
     }
 
     private InboxReputationFilterAdapter(Context context, FilterListener listener,
-                                         ArrayList<OptionViewModel> listOption) {
+                                         ArrayList<OptionUiModel> listOption) {
         this.listener = listener;
         this.listOption = listOption;
         this.context = context;
@@ -116,10 +116,10 @@ public class InboxReputationFilterAdapter
             ViewHolder holder = (ViewHolder) parent;
             holder.filter.setText(listOption.get(position).getName());
             if (listOption.get(position).isSelected()) {
-                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.medium_green));
+                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
                 holder.check.setVisibility(View.VISIBLE);
             } else {
-                holder.filter.setTextColor(MethodChecker.getColor(context, R.color.black_54));
+                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 holder.check.setVisibility(View.GONE);
             }
         }
@@ -128,7 +128,7 @@ public class InboxReputationFilterAdapter
 
     @Override
     public int getItemViewType(int position) {
-        if (listOption.get(position) instanceof HeaderOptionViewModel)
+        if (listOption.get(position) instanceof HeaderOptionUiModel)
             return VIEW_HEADER;
         else return super.getItemViewType(position);
     }
@@ -139,8 +139,8 @@ public class InboxReputationFilterAdapter
     }
 
     public void resetFilter() {
-        for (OptionViewModel optionViewModel : listOption) {
-            optionViewModel.setSelected(false);
+        for (OptionUiModel optionUiModel : listOption) {
+            optionUiModel.setSelected(false);
         }
         notifyDataSetChanged();
     }

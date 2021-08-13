@@ -5,7 +5,6 @@ import com.tokopedia.review.feature.reviewlist.di.scope.ReviewProductListScope
 import dagger.Module
 import dagger.Provides
 
-@ReviewProductListScope
 @Module
 class ReviewProductListModule {
 

@@ -1,38 +1,40 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
-import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
-import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse
-import com.tokopedia.core.network.constants.TkpdBaseURL
-import java.util.*
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-const val FILE_UPLOADED = "file_uploaded"
-const val POST_KEY = "post_key"
+const val FILE_UPLOADED = "fileUploaded"
+const val POST_KEY = "postKey"
+const val TICKETID = "ticketID"
 
+private const val TICKET_REPLY_ATTACH: String = """
+    mutation ticketReplyAttach(${'$'}ticketID: String, ${'$'}userID: String!, ${'$'}postKey: String, ${'$'}fileUploaded: String) {
+  ticket_reply_attach(ticketID: ${'$'}ticketID, userID: ${'$'}userID, postKey: ${'$'}postKey, fileUploaded: ${'$'}fileUploaded) {
+    data {
+      status
+      is_success
+    }
+  }
+}"""
+
+@GqlQuery("TicketReplyAttach", TICKET_REPLY_ATTACH)
 class PostMessageUseCase2 @Inject internal constructor(private val repository: ContactUsRepository) {
 
-    suspend fun getInboxDataResponse(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (repository.postRestData(
-                url,
-                object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
-                queryMap) as InboxDataResponse<StepTwoResponse>)
+    suspend fun getInboxDataResponse(requestParams: RequestParams): StepTwoResponse? {
+        return repository.getGQLData(TicketReplyAttach.GQL_QUERY, StepTwoResponse::class.java, requestParams.parameters)
 
     }
 
-    private val url: String
-        get() = TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.SEND_MESSAGE_ATTACHMENT
-
-    fun setQueryMap(fileUploaded: String, postKey: String): MutableMap<String, Any> {
-        val queryMap: MutableMap<String, Any> = HashMap()
-        queryMap.clear()
-        queryMap[FILE_UPLOADED] = fileUploaded
-        queryMap[POST_KEY] = postKey
-        return queryMap
+    fun createRequestParams(ticketId: String, userId: String, fileUploaded: String, postKey: String): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putString(USER_ID,userId)
+        requestParams.putString(FILE_UPLOADED, fileUploaded)
+        requestParams.putString(POST_KEY, postKey)
+        requestParams.putString(TICKETID, ticketId)
+        return requestParams
     }
 
 

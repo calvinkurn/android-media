@@ -13,15 +13,20 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
 public class AttachProductItemUiModel implements Parcelable, Visitable<AttachProductListAdapterTypeFactory>  {
     protected String productUrl;
     protected String productName;
-    protected int productId;
+    protected String productId;
     protected String productImageFull;
     protected String productImage;
     protected String productPrice;
     protected String shopName;
+    protected String originalPrice;
+    protected String discountPercentage;
 
-    public AttachProductItemUiModel(String productUrl, String productName, int productId,
-                                    String productImageFull, String productImage,
-                                    String productPrice, String shopName) {
+    public AttachProductItemUiModel(
+            String productUrl, String productName, String productId,
+            String productImageFull, String productImage,
+            String productPrice, String shopName, String originalPrice,
+            String discountPercentage
+    ) {
         this.productUrl = productUrl;
         this.productName = productName;
         this.productId = productId;
@@ -29,6 +34,16 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         this.productImage = productImage;
         this.productPrice = productPrice;
         this.shopName = shopName;
+        this.originalPrice = originalPrice;
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public String getDiscountPercentage() {
+        return discountPercentage;
     }
 
     public String getProductUrl() {
@@ -39,7 +54,7 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
         return productName;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
@@ -71,21 +86,25 @@ public class AttachProductItemUiModel implements Parcelable, Visitable<AttachPro
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productUrl);
         dest.writeString(this.productName);
-        dest.writeInt(this.productId);
+        dest.writeString(this.productId);
         dest.writeString(this.productImageFull);
         dest.writeString(this.productImage);
         dest.writeString(this.productPrice);
         dest.writeString(this.shopName);
+        dest.writeString(this.originalPrice);
+        dest.writeString(this.discountPercentage);
     }
 
     protected AttachProductItemUiModel(Parcel in) {
         this.productUrl = in.readString();
         this.productName = in.readString();
-        this.productId = in.readInt();
+        this.productId = in.readString();
         this.productImageFull = in.readString();
         this.productImage = in.readString();
         this.productPrice = in.readString();
         this.shopName = in.readString();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readString();
     }
 
     public static final Creator<AttachProductItemUiModel> CREATOR = new

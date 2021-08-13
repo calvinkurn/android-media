@@ -9,4 +9,18 @@
     <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
 
     <string name="content_desc_lego_image">image lego item</string>
+
+    <string name="content_desc_icon_image">Image Icon</string>
+    <string name="content_desc_reminder">reminder image</string>
+
+    <string name="content_desc_mix_left">Image</string>
+
+    <string name="content_desc_shop_product_image">Shop product image</string>
+    <string name="content_desc_shop_logo_image">Shop logo</string>
+    <string name="content_desc_shop_badge_image">Shop badge</string>
+    <string name="content_desc_shop_rating">Shop rating star</string>
+    <string name="content_desc_shop_location_icon">Shop location icon</string>
+
+    <string name="content_desc_featured_brand_icon">featured brand icon</string>
+    <string name="content_desc_featured_brand_image">featured brand image</string>
 </resources>

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -26,7 +26,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_20"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_search_bar" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -37,7 +37,7 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title" />
@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_subtitle" />
@@ -72,7 +72,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_divider" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -83,7 +83,7 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_2"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_2"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title_2" />
@@ -96,7 +96,7 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_2"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_2"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_subtitle_2" />
@@ -107,7 +107,7 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_body_2"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -120,7 +120,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_divider_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -131,7 +131,7 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_3"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_3"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title_3" />
@@ -144,7 +144,7 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_3"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_3"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_subtitle_3" />
@@ -166,7 +166,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_divider_3" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -177,7 +177,7 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_4"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_4"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title_4" />
@@ -190,7 +190,7 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_4"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_4"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_subtitle_4" />
@@ -201,7 +201,7 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_body_4"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -214,7 +214,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_divider_4" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -225,7 +225,7 @@
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_5"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_5"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title_5" />
@@ -238,7 +238,7 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_5"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_5"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_subtitle_5" />

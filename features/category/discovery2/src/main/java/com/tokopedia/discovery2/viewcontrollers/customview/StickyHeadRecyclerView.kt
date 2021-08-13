@@ -69,6 +69,10 @@ class StickyHeadRecyclerView : ConstraintLayout {
         }
     }
 
+    fun addDecorator(itemDecoration: RecyclerView.ItemDecoration){
+        recyclerView.addItemDecoration(itemDecoration)
+    }
+
     fun smoothScrollToPosition(position: Int = 0) {
         if (position == 0) {
             recyclerView.smoothScrollToPosition(position)

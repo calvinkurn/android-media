@@ -16,22 +16,18 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationInfoBinding
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
  * Created by fwidjaja on 2019-06-18.
  */
 class LocationInfoBottomSheetFragment : BottomSheets() {
-    private var bottomSheetView: View? = null
-    private lateinit var btnActivateLocation: ButtonCompat
-    private lateinit var imageInvalid: DeferredImageView
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
 
@@ -66,11 +62,9 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
     }
 
     override fun initView(view: View) {
-        bottomSheetView = view
-        btnActivateLocation = view.findViewById(R.id.btn_activate_location)
-        imageInvalid = view.findViewById(R.id.img_location_not_detected)
-        imageInvalid.loadRemoteImageDrawable(ADDRESS_NOT_DETECTED)
-        btnActivateLocation.setOnClickListener {
+        val binding = BottomsheetLocationInfoBinding.bind(view)
+        binding.imgLocationNotDetected.loadRemoteImageDrawable(ADDRESS_NOT_DETECTED)
+        binding.btnActivateLocation.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow, isLogisticLabel)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))

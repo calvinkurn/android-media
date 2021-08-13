@@ -7,10 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
@@ -20,7 +20,8 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
  * Author errysuprayogi on 27,January,2020
  */
 class CategoryEventViewHolder(itemView: View,
-                              val categoryEventListener: TrackingListener) : HomeEventViewHolder<CategoryModel>(itemView) {
+                              val categoryEventListener: TrackingListener)
+    : AbstractViewHolder<CategoryModel>(itemView) {
 
     val listAdapter = InnerCategoryItemAdapter(categoryEventListener)
 

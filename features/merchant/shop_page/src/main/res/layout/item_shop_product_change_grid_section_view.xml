@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:textColor="@color/clr_5231353B"
+        android:textColor="@color/Unify_N700_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_grid_icon"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintHorizontal_bias="1"
         app:typographyType="heading_5"
         android:text="Tampilan"
@@ -50,7 +50,7 @@
         android:layout_marginRight="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat ="@drawable/ic_shop_page_product_grid_list"
+        app:srcCompat ="@drawable/ic_shop_page_product_grid_list_old"
         app:layout_constraintHorizontal_bias="1"
         android:layout_height="@dimen/dp_24" />
 

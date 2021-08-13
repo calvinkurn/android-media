@@ -6,7 +6,13 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,5 +51,23 @@ public class AppModule {
     @Provides
     public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter) {
         return abstractionRouter.getPersistentCacheManager();
+    }
+
+    @ApplicationScope
+    @Provides
+    public CoroutineDispatchers provideCoroutineDispatchers() {
+        return CoroutineDispatchersProvider.INSTANCE;
+    }
+
+    @ApplicationScope
+    @Provides
+    @ApplicationContext
+    public GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @Provides
+    public GraphqlUseCaseInterface provideGraphqlUsecase() {
+        return new GraphqlUseCase();
     }
 }

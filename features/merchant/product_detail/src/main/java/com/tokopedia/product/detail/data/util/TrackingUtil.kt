@@ -1,12 +1,12 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -20,24 +20,40 @@ import org.json.JSONObject
  */
 object TrackingUtil {
 
-    fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
-        val list = mutableListOf<Any>()
-        for (i in viewModelList.indices) {
-            val viewModel = viewModelList[i]
-            val position = startIndex.plus(i).plus(1)
-            if (viewModel.isAvailable()) {
-                list.add(
-                        DataLayer.mapOf(
-                                ProductTrackingConstant.Tracking.ID, shopId.toString(),
-                                ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductDetailTracking.PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
-                                ProductTrackingConstant.Tracking.PROMO_POSITION, position,
-                                ProductTrackingConstant.Tracking.PROMO_ID, viewModel.voucherId,
-                                ProductTrackingConstant.Tracking.PROMO_CODE, viewModel.voucherCode
-                        )
+    fun sendTrackingBundle(key: String, bundle: Bundle) {
+        TrackApp
+                .getInstance()
+                .gtm
+                .sendEnhanceEcommerceEvent(
+                        key, bundle
                 )
-            }
+    }
+
+    fun getBoTypeString(boType: Int): String {
+        return when (boType) {
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
         }
-        return list
+    }
+
+    fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
+        return if (isTradein && isDiagnosed)
+            ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
+        else if (isTradein && !isDiagnosed)
+            ProductTrackingConstant.Tracking.TRADEIN_TRUE_NON_DIAGNOSTIC
+        else
+            ProductTrackingConstant.Tracking.VALUE_FALSE
+    }
+
+    fun getProductFirstImageUrl(productInfo: DynamicProductInfoP1?) : String {
+        return productInfo?.data?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.uRLOriginal ?: ""
+    }
+
+    fun getProductViewLabel(productInfo: DynamicProductInfoP1?):String {
+        return "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
     }
 
     fun getTickerTypeInfoString(tickerType:Int) : String {
@@ -45,18 +61,6 @@ object TrackingUtil {
             Ticker.TYPE_INFORMATION -> "info"
             Ticker.TYPE_WARNING -> "warning"
             else -> "other"
-        }
-    }
-
-    fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
-        return vouchers.withIndex().filter { it.value.isAvailable() }.map {
-            DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.ID, shopId,
-                    ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductDetailTracking.PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
-                    ProductTrackingConstant.Tracking.PROMO_POSITION, (position + it.index + 1).toString(),
-                    ProductTrackingConstant.Tracking.PROMO_ID, it.value.voucherId,
-                    ProductTrackingConstant.Tracking.PROMO_CODE, it.value.voucherCode
-            )
         }
     }
 
@@ -158,8 +162,8 @@ object TrackingUtil {
         return TextUtils.join("/", list)
     }
 
-    fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    fun getFormattedPrice(price: Double): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price, false, 0).formattedString
     }
 
     fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {

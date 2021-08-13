@@ -1,10 +1,14 @@
 package com.tokopedia.checkout.view;
 
+import androidx.fragment.app.FragmentManager;
+
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.promocheckout.common.domain.model.deals.CartItem;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
@@ -23,21 +27,15 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
 
     void onChangeAddress();
-
-    void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
-                                  RecipientAddressModel recipientAddressModel,
-                                  int cartPosition);
 
     void onTotalPaymentChange(String totalPayment);
 
     void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
-
-    void resetTotalPrice();
 
     void onInsuranceChecked(int position);
 
@@ -53,15 +51,11 @@ public interface ShipmentAdapterActionListener {
 
     void onOntimeDeliveryClicked(String url);
 
-    void onImpressionOntimeDelivery(String message);
-
     void onNeedUpdateRequestData();
 
     void onDropshipCheckedForTrackingAnalytics();
 
     void onInsuranceCheckedForTrackingAnalytics();
-
-    void onChoosePaymentMethodButtonClicked();
 
     void onDonationChecked(boolean checked);
 
@@ -89,15 +83,9 @@ public interface ShipmentAdapterActionListener {
 
     void onPurchaseProtectionChangeListener(int position);
 
-    void navigateToProtectionMore(String url);
-
-    void onNotifierClicked(String url);
-
-    void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
+    void navigateToProtectionMore(CartItemModel cartItemModel);
 
     void onProcessToPayment();
-
-    void onProcessToPaymentCod();
 
     void onChangeTradeInDropOffClicked();
 
@@ -122,4 +110,16 @@ public interface ShipmentAdapterActionListener {
     void onClickSwapInIndomaret();
 
     void onSwapInUserAddress();
+
+    FragmentManager getCurrentFragmentManager();
+
+    void scrollToPositionWithOffset(int position, float dy);
+
+    void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
+
+    void onClickRefreshErrorLoadCourier();
+
+    void onViewErrorInCourierSection(String errorMessage);
+
+    void onClickSetPinpoint(int position);
 }

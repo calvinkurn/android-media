@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
@@ -30,7 +29,6 @@ import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryComponent
-import com.tokopedia.brandlist.brandlist_category.di.BrandlistCategoryModule
 import com.tokopedia.brandlist.brandlist_category.di.DaggerBrandlistCategoryComponent
 import com.tokopedia.brandlist.brandlist_category.presentation.activity.BrandlistActivity.Companion.CATEGORY_EXTRA_APPLINK
 import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
@@ -123,7 +121,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
         return activity?.run {
             DaggerBrandlistCategoryComponent
                     .builder()
-                    .brandlistCategoryModule(BrandlistCategoryModule())
                     .brandlistComponent(BrandlistInstance.getComponent(application))
                     .build()
         }
@@ -158,7 +155,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
     }
 
     private fun observeBrandListCategoriesData() {
-        viewModel.brandlistCategoriesResponse.observe(this, Observer {
+        viewModel.brandlistCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val brandListCategories: BrandlistCategories = it.data
@@ -190,8 +187,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
 
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val _categoryReselected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                _categoryReselected?.let { }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -201,8 +196,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val _categorySelected = tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())
-                _categorySelected?.let {
+                tabAdapter.categories.getOrNull(tab?.position.toZeroIfNull())?.let {
                     targetCategoryName = it.title
                     categoryData = it
                     brandlistTracking?.clickCategory(targetCategoryName, currentCategoryName)
@@ -286,10 +280,6 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
                 activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up, R.anim.no_change)?.commit()
             }
         }
-        appBarLayout?.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, p1: Int) {
-                ViewCompat.setElevation(appBarLayout, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
-            }
-        })
+        appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, _ -> ViewCompat.setElevation(appBarLayout, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)) })
     }
 }

@@ -6,21 +6,21 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
-import com.tokopedia.entertainment.home.fragment.EventHomeFragment
+import com.tokopedia.entertainment.home.fragment.NavEventHomeFragment
 import kotlinx.android.synthetic.main.ent_banner_view.view.*
 
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : HomeEventViewHolder<BannerModel>(itemView), BannerView.OnPromoClickListener,
+class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : AbstractViewHolder<BannerModel>(itemView), BannerView.OnPromoClickListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
@@ -37,7 +37,7 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ho
         itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
                 context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         itemView.banner_home_ent?.customHeight = context.resources.getDimensionPixelSize(R.dimen.dimen_dp_110)
-        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
     }
 
@@ -55,7 +55,7 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ho
     }
 
     override fun onPromoAllClick() {
-        RouteManager.route(context, EventHomeFragment.PROMOURL)
+        RouteManager.route(context, NavEventHomeFragment.PROMOURL)
     }
 
     override fun onPromoScrolled(pos: Int) {

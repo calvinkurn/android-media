@@ -30,7 +30,7 @@
             android:layout_marginRight="@dimen/tp_margin_medium"
             android:gravity="center_horizontal"
             android:text="@string/tp_label_prepare_catalog"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/tp_text_size_medium"
             android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
             android:gravity="center_horizontal"
             android:padding="@dimen/tp_padding_small"
             android:text="@string/tp_label_go_shopping"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/tp_text_size_small" />
 
 
@@ -64,7 +64,7 @@
             android:gravity="center"
             android:padding="@dimen/tp_padding_medium"
             android:text="@string/tp_label_exchange_point"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/tp_text_size_small"
             android:textStyle="bold"
             android:visibility="visible" />
@@ -80,7 +80,7 @@
             android:gravity="center"
             android:text="@string/tp_label_help_with_storepoints"
             android:textAllCaps="false"
-            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/tp_text_size_small" />
 
     </RelativeLayout>

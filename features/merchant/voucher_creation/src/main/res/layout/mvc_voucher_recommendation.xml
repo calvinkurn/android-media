@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/mvc_dimen_14dp"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:background="@drawable/mvc_recommendation_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_recommendation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mvc_voucher_recommendation_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_recommendation_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_recommendation_title"
+        app:srcCompat="@drawable/ic_mvc_voucher_img" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_recommendation_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/mvc_dimen_11dp"
+        android:text="@string/mvc_voucher_recommendation"
+        app:layout_constraintLeft_toRightOf="@id/iv_recommendation_icon"
+        app:layout_constraintTop_toBottomOf="@id/tv_recommendation_title"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

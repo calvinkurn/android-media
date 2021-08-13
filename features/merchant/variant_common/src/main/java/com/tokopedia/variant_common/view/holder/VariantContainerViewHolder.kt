@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.model.VariantCategory
-import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantOptionAdapter
 
 /**
  * Created by mzennis on 2020-03-11.
  */
-class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view), ProductVariantListener by listener {
+class VariantContainerViewHolder(val view: View, val listener: AtcVariantListener) : RecyclerView.ViewHolder(view), AtcVariantListener by listener {
 
     private val variantOptionAdapter = VariantOptionAdapter(this)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
@@ -33,6 +33,7 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
     init {
         rvVariant.adapter = variantOptionAdapter
         rvVariant.layoutManager = layoutManager
+        rvVariant.setHasFixedSize(true)
         rvVariant.itemAnimator = null
     }
 
@@ -70,10 +71,10 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
 
         if (data.getSelectedOption() == null) {
             txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
-            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Unify_N700_44))
+            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
-            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Unify_N700_96))
+            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
     }
 

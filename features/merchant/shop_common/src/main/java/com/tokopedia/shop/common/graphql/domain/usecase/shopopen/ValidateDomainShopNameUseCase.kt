@@ -7,7 +7,6 @@ import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameRes
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class ValidateDomainShopNameUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase

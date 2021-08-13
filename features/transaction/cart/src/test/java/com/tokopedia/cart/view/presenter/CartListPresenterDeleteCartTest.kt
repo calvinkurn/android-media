@@ -11,9 +11,6 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -49,14 +46,11 @@ object CartListPresenterDeleteCartTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
@@ -72,8 +66,7 @@ object CartListPresenterDeleteCartTest : Spek({
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
                     followShopUseCase, TestSchedulers
             )
@@ -104,7 +97,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, false)
                 }
             }
         }
@@ -117,7 +110,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
             val secondCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
-                originData?.cartId = 1
+                originData.cartId = 1
             }
 
             Given("success delete") {
@@ -131,7 +124,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false, false, false)
                 }
             }
         }
@@ -144,7 +137,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
             val secondCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
-                originData?.cartId = 1
+                originData.cartId = 1
             }
 
             Given("success delete") {
@@ -158,7 +151,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false, false, false)
                 }
             }
         }

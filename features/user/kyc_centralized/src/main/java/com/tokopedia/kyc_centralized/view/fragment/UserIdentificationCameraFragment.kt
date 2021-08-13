@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,23 +16,24 @@ import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import java.io.File
-import java.io.FileOutputStream
 
 /**
  * @author by alvinatin on 12/11/18.
  */
 class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
+    private var container: View? = null
     private var cameraView: CameraView? = null
-    private var closeButton: ImageButton? = null
+    private var closeButton: UnifyImageButton? = null
     private var title: TextView? = null
     private var subtitle: TextView? = null
     private var focusedFaceView: View? = null
@@ -42,7 +41,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var shutterButton: View? = null
     private var loading: View? = null
     private var switchCamera: View? = null
-    private var imagePreview: ImageView? = null
+    private var imagePreview: ImageUnify? = null
     private var buttonLayout: View? = null
     private var reCaptureButton: View? = null
     private var nextButton: UnifyButton? = null
@@ -66,9 +65,10 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         super.onCreate(savedInstanceState)
         permissionCheckerHelper = PermissionCheckerHelper()
         if (arguments != null) {
-            viewMode = arguments?.getInt(ARG_VIEW_MODE, 1)?: 1
+            viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
-        analytics = UserIdentificationCommonAnalytics.createInstance(activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1)?: 1)
+        analytics = UserIdentificationCommonAnalytics.createInstance(activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1)
+                ?: 1)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +79,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView(view: View) {
+        container = view.findViewById(R.id.container)
         cameraView = view.findViewById(R.id.full_camera_view)
         closeButton = view.findViewById(R.id.close_button)
         title = view.findViewById(R.id.title)
@@ -100,6 +101,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun populateView() {
+        container?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N700)
         shutterButton?.setOnClickListener { v: View? ->
             sendAnalyticClickShutter()
             val fragment: Fragment = this@UserIdentificationCameraFragment
@@ -174,7 +176,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventViewOpenCameraKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventViewOpenCameraSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -182,7 +185,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickBackCameraKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickBackCameraSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -190,7 +194,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickShutterCameraKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickShutterCameraSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -198,7 +203,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickFlipCameraKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickFlipCameraSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -206,7 +212,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventViewImagePreviewKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventViewImagePreviewSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -214,7 +221,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickCloseImagePreviewKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickCloseImagePreviewSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -222,7 +230,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickRecaptureKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickRecaptureSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -230,7 +239,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> analytics?.eventClickNextImagePreviewKtp()
             PARAM_VIEW_MODE_FACE -> analytics?.eventClickNextImagePreviewSelfie()
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -271,13 +281,20 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         mCaptureNativeSize = cameraView?.pictureSize
         try {
             //rotate the bitmap using the library
-            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width?: 0, mCaptureNativeSize?.height?: 0) { bitmap: Bitmap? ->
-                val cameraResultFile = writeImageToTkpdPath(bitmap)
-                onSuccessImageTakenFromCamera(cameraResultFile)
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width
+                    ?: 0, mCaptureNativeSize?.height ?: 0) { bitmap: Bitmap? ->
+                if (bitmap != null) {
+                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
+                    if (cameraResultFile!= null) {
+                        onSuccessImageTakenFromCamera(cameraResultFile)
+                    }
+                }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-            onSuccessImageTakenFromCamera(cameraResultFile)
+            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
+            if (cameraResultFile != null) {
+                onSuccessImageTakenFromCamera(cameraResultFile)
+            }
         }
     }
 
@@ -289,24 +306,6 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         } else {
             Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun writeImageToTkpdPath(bitmap: Bitmap?): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
-        val cachePath = cacheDir.absolutePath
-        val file = File(cachePath)
-        if (file.exists()) {
-            file.delete()
-        }
-        try {
-            val out = FileOutputStream(file)
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            out.flush()
-            out.close()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        return file
     }
 
     private fun populateViewByViewMode() {

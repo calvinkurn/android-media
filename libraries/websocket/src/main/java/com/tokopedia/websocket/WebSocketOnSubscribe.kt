@@ -51,9 +51,13 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.onNext(WebSocketInfo.createReconnect())
-                    subscriber.onError(t)
+                try {
+                    if (!subscriber.isUnsubscribed) {
+                        subscriber.onNext(WebSocketInfo.createReconnect())
+                        subscriber.onError(t)
+                    }
+                } catch (e: Throwable) {
+
                 }
             }
 

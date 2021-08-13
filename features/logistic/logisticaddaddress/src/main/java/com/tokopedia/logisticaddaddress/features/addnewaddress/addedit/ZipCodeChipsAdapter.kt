@@ -31,9 +31,9 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
             text = zipCodes[position]
-            setTextColor(res.getColor(com.tokopedia.design.R.color.font_black_secondary_54))
+            setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             setOnClickListener {
-                setTextColor(res.getColor(R.color.tkpd_green))
+                setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
                 actionListener.onZipCodeClicked(zipCodes[position])
             }
         }

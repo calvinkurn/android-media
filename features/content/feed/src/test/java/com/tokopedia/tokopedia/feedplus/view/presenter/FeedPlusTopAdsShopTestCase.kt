@@ -1,20 +1,18 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
-import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
-import com.tokopedia.tokopedia.feedplus.view.FeedTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -33,19 +31,22 @@ class FeedPlusTopAdsShopTestCase {
     private var trackUrl: String = "test"
     private lateinit var trackAffiliateClickUseCase: TrackAffiliateClickUseCase
     private lateinit var sendTopAdsUseCase: SendTopAdsUseCase
-    private lateinit var baseDispatcher: FeedDispatcherProvider
+    private lateinit var baseDispatcher: CoroutineDispatchers
 
     @Before
     @Throws(Exception::class)
     fun setUpFeedViewModel() {
-        baseDispatcher = FeedTestDispatcherProvider()
+        baseDispatcher = CoroutineTestDispatchersProvider
         trackAffiliateClickUseCase = mockk(relaxed = true)
         sendTopAdsUseCase = mockk(relaxed = true)
-        feedViewModel = spyk(FeedViewModel(baseDispatcher, mockk(), mockk(),
+        feedViewModel = spyk(
+            FeedViewModel(
+                baseDispatcher, mockk(), mockk(),
                 mockk(), mockk(), mockk(),
-                mockk(), mockk(), mockk(),
-                mockk(), mockk(), trackAffiliateClickUseCase, mockk(), sendTopAdsUseCase, mockk()))
-        Dispatchers.setMain(TestCoroutineDispatcher())
+                mockk(), mockk(), trackAffiliateClickUseCase,
+                mockk(), sendTopAdsUseCase, mockk(), mockk(), mockk(), mockk(), mockk()
+            )
+        )
     }
 
     @After
@@ -69,9 +70,14 @@ class FeedPlusTopAdsShopTestCase {
         mockkStatic(TrackAffiliateClickUseCase::class)
         coEvery { RequestParams.create() } returns RequestParams()
         coEvery { TrackAffiliateClickUseCase.createRequestParams(trackUrl) } returns RequestParams()
-        coEvery { trackAffiliateClickUseCase.createObservable(any()).toBlocking().first() } returns true
+        coEvery {
+            trackAffiliateClickUseCase.createObservable(any()).toBlocking().first()
+        } returns true
         feedViewModel.doTrackAffiliate(trackUrl)
-        assertEquals(feedViewModel.trackAffiliateResp.value, Success(TrackAffiliateViewModel(true, trackUrl)))
+        assertEquals(
+            feedViewModel.trackAffiliateResp.value,
+            Success(TrackAffiliateViewModel(true, trackUrl))
+        )
     }
 
     @Test
@@ -81,7 +87,9 @@ class FeedPlusTopAdsShopTestCase {
         mockkStatic(TrackAffiliateClickUseCase::class)
         coEvery { RequestParams.create() } returns RequestParams()
         coEvery { TrackAffiliateClickUseCase.createRequestParams(trackUrl) } returns RequestParams()
-        coEvery { trackAffiliateClickUseCase.createObservable(any()).toBlocking().first() } throws Exception()
+        coEvery {
+            trackAffiliateClickUseCase.createObservable(any()).toBlocking().first()
+        } throws Exception()
         feedViewModel.doTrackAffiliate(trackUrl)
         assertEquals(feedViewModel.trackAffiliateResp.value, null)
     }

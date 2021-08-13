@@ -9,7 +9,7 @@ import java.util.*
 
 data class CartDetail(
     @SerializedName("cart_id")
-    val cartId: Int = 0,
+    val cartId: Long = 0,
     @SerializedName("errors")
     val errors: List<String> = ArrayList(),
     @SerializedName("messages")

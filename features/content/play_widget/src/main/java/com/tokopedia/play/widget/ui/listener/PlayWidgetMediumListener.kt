@@ -1,6 +1,8 @@
 package com.tokopedia.play.widget.ui.listener
 
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 
 
 /**
@@ -11,7 +13,18 @@ interface PlayWidgetMediumListener : PlayWidgetRouterListener {
     fun onToggleReminderClicked(
             view: PlayWidgetMediumView,
             channelId: String,
-            remind: Boolean,
+            reminderType: PlayWidgetReminderType,
             position: Int
+    ) {}
+
+    fun onMenuActionButtonClicked(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            position: Int
+    ) {}
+
+    fun onDeleteFailedTranscodingChannel(
+            view: PlayWidgetMediumView,
+            channelId: String
     ) {}
 }

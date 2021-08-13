@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_search_number_telco"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/layout_lvl1"
         android:paddingRight="@dimen/layout_lvl2"
@@ -30,6 +31,7 @@
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="end|center"
+            android:contentDescription="@string/telco_content_desc_content_book"
             app:srcCompat="@drawable/digital_topup_ic_contact" />
 
     </LinearLayout>
@@ -37,13 +39,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/Neutral_N50" />
+        android:background="@color/Unify_N50" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/telco_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>

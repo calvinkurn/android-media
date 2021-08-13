@@ -4,11 +4,14 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShimmerViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
@@ -21,11 +24,14 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
 
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener itemImpressionListener;
+    private final TopAdsAddToCartClickListener topAdsAddToCartClickListener;
 
     public BannerAdsAdapterTypeFactory(TopAdsBannerClickListener topAdsBannerClickListener,
-                                       TopAdsItemImpressionListener itemImpressionListener) {
+                                       TopAdsItemImpressionListener itemImpressionListener,
+                                       TopAdsAddToCartClickListener topAdsAddToCartClickListener) {
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.itemImpressionListener = itemImpressionListener;
+        this.topAdsAddToCartClickListener = topAdsAddToCartClickListener;
     }
 
     @Override
@@ -44,14 +50,21 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     }
 
     @Override
+    public int type(BannerProductShimmerViewModel viewModel) {
+        return BannerProductShimmerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == BannerShopViewHolder.LAYOUT) {
             holder = new BannerShopViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
         } else if (viewType == BannerShopProductViewHolder.LAYOUT) {
-            holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener);
+            holder = new BannerShopProductViewHolder(view, topAdsBannerClickListener, itemImpressionListener, topAdsAddToCartClickListener);
         } else if (viewType == BannerShowMoreViewHolder.LAYOUT) {
             holder = new BannerShowMoreViewHolder(view, topAdsBannerClickListener);
+        } else if (viewType == BannerProductShimmerViewHolder.Companion.getLAYOUT()) {
+            holder = new BannerProductShimmerViewHolder(view);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

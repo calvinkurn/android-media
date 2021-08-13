@@ -1,10 +1,8 @@
 package com.tokopedia.travelhomepage.destination.presentation.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Point
 import android.graphics.PorterDuff
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -28,6 +26,7 @@ import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.common.util.TravelHomepageGqlQuery
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingUtil
 import com.tokopedia.travelhomepage.destination.di.TravelDestinationComponent
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
@@ -40,9 +39,6 @@ import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDest
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.EXTRA_DESTINATION_WEB_URL
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel
-import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
-import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
-import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
 import com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelDestinationTypeFactory
 import com.tokopedia.usecase.coroutines.Fail
@@ -102,16 +98,16 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.travelDestinationCityModel.observe(this, Observer {
+        destinationViewModel.travelDestinationCityModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     cityId = it.data.cityId
                     cityName = it.data.cityName
                     destinationViewModel.getInitialList()
-                    destinationViewModel.getAllContent(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary),
-                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
-                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list),
-                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article),
+                    destinationViewModel.getAllContent(TravelHomepageGqlQuery.DESTINATION_CITY_SUMMARY,
+                            TravelHomepageGqlQuery.RECOMMENDATION,
+                            TravelHomepageGqlQuery.ORDER_LIST,
+                            TravelHomepageGqlQuery.DESTINATION_CITY_ARTICLE,
                             cityId)
                 }
 
@@ -119,14 +115,14 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             }
         })
 
-        destinationViewModel.travelDestinationItemList.observe(this, Observer {
+        destinationViewModel.travelDestinationItemList.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 if (it.isEmpty()) showNetworkErrorLayout()
                 else renderList(this) }
         })
 
-        destinationViewModel.isAllError.observe(this, Observer {
+        destinationViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) showNetworkErrorLayout()
             }
@@ -158,7 +154,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
 
         if (savedInstanceState != null) {
             webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
@@ -170,11 +166,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             val display = it.windowManager.defaultDisplay
             val size = Point()
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    display.getRealSize(size)
-                } else {
-                    display.getSize(size)
-                }
+                display.getRealSize(size)
             } catch (err: NoSuchMethodError) {
                 display.getSize(size)
             }
@@ -207,10 +199,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         return titleBarHeight
     }
 
-    @SuppressLint("NewApi")
     private fun getSoftButtonsBarHeight(): Int {
-        // getRealMetrics is only available with API 17 and +
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val metrics = DisplayMetrics();
             activity?.let {
                 it.windowManager.defaultDisplay.getMetrics(metrics);
@@ -222,7 +211,6 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 else
                     return 0;
             }
-        }
         return 0;
     }
 
@@ -231,11 +219,10 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = travel_homepage_destination_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
-
         shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
@@ -248,11 +235,11 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = cityName
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
 
@@ -288,13 +275,13 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun loadData(page: Int) { /* do nothing */
         if (cityId.isEmpty()) {
             if (webUrl.last() != '/') webUrl += "/"
-            destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+            destinationViewModel.getDestinationCityData(TravelHomepageGqlQuery.DESTINATION_CITY_DATA, webUrl)
         } else {
             destinationViewModel.getInitialList()
-            destinationViewModel.getAllContent(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary),
-                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
-                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list),
-                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article),
+            destinationViewModel.getAllContent(TravelHomepageGqlQuery.DESTINATION_CITY_SUMMARY,
+                    TravelHomepageGqlQuery.RECOMMENDATION,
+                    TravelHomepageGqlQuery.ORDER_LIST,
+                    TravelHomepageGqlQuery.DESTINATION_CITY_ARTICLE,
                     cityId)
         }
     }
@@ -322,6 +309,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         }
         travel_homepage_destination_view_pager.buildView()
         layout_travel_destination_shimmering.hide()
+        layout_travel_destination_shimmering.alpha = 0f
     }
 
     private fun scrollImageViewPagerIndicator(currentPosition: Int) {

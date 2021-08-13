@@ -67,7 +67,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
             element.productProtectionStr?.let {
-                tvInvoiceShopItemProtectionValue.text = getString(R.string.thankyou_rp_without_space, element.productProtectionStr)
+                tvInvoiceShopItemProtectionValue.text = element.productProtectionStr
                 tvInvoiceShopItemProtectionValue.visible()
                 tvInvoiceShopItemProtection.visible()
             } ?: run {

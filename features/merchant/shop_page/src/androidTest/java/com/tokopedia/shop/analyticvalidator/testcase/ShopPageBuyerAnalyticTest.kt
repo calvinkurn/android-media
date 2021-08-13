@@ -20,10 +20,10 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -34,8 +34,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -57,15 +55,12 @@ class ShopPageBuyerAnalyticTest {
         private const val SHOP_PAGE_PRODUCT_TAB_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_tab_product_card_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_display_widget_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_featured_product_widget_tracker.json"
-        private const val SHOP_PAGE_HOME_TAB_PLAY_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_play_widget_tracker.json"
         private const val SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_home_tab_npl_widget_tracker.json"
-
 
     }
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopPageActivity> = IntentsTestRule(ShopPageActivity::class.java, false, false)
-
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -73,8 +68,6 @@ class ShopPageBuyerAnalyticTest {
 
     @Before
     fun beforeTest() {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ShopPageAnalyticValidatorHomeTabMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -86,7 +79,6 @@ class ShopPageBuyerAnalyticTest {
 
     @Test
     fun testShopPageJourney() {
-        waitForData(5000)
         testHeader()
         testProductTab()
         testHomeTab()
@@ -95,7 +87,6 @@ class ShopPageBuyerAnalyticTest {
 
     private fun validateTracker() {
         activityRule.activity.finish()
-        waitForData(5000)
         //header
         doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_CLICK_SEARCH_BAR_TRACKER_MATCHER_PATH)
@@ -109,7 +100,6 @@ class ShopPageBuyerAnalyticTest {
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_DISPLAY_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_FEATURED_PRODUCT_WIDGET_TRACKER_MATCHER_PATH)
         doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_NPL_WIDGET_TRACKER_MATCHER_PATH)
-        doAnalyticDebuggerTest(SHOP_PAGE_HOME_TAB_PLAY_WIDGET_TRACKER_MATCHER_PATH)
 
     }
 
@@ -117,103 +107,55 @@ class ShopPageBuyerAnalyticTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(CommonActions.selectTabLayoutPosition(0))
-        waitForData(2000)
         testDisplayWidget()
         testProductWidget()
         testNplWidget()
-        testPlayWidget()
     }
 
     private fun testNplWidget() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        val playWidgetPosition = 3
+        val playWidgetPosition = 2
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
         )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.image_tnc))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.bottom_sheet_close))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.layout_remind_me))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.snackbar_btn))
-        )).perform(click())
-        waitForData(200)
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.text_see_all))
-        )).perform(click())
-        waitForData(200)
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.rv_product_carousel))
         )).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,  click()))
-    }
-
-    private fun testPlayWidget() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        val playWidgetPosition = 4
         Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.recycler_view),
-                isDisplayed())
-        )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
-        waitForData(200)
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
-
-        Espresso.onView(AllOf.allOf(
-                instanceOf(RecyclerView::class.java),
-                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
+                withId(R.id.text_see_all))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withText("Tutup"))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.layout_remind_me_un_notified))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.snackbar_btn))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.image_tnc))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.bottom_sheet_close))
+        )).perform(click())
     }
 
     private fun testProductWidget() {
         val productWidgetPosition = 1
-        val sampleProductIdWishlist = "23151232"
-        val mockIntentData = Intent().apply {
-            putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, ProductCardOptionsModel(
-                    isWishlisted = true,
-                    productId = sampleProductIdWishlist
-            ).apply {
-                wishlistResult = ProductCardOptionsModel.WishlistResult(
-                        isUserLoggedIn = true,
-                        isAddWishlist = true,
-                        isSuccess = true
-                )
-            })
-        }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         val recyclerViewHomeWidgetInteraction = Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
         ))
         recyclerViewHomeWidgetInteraction.perform(ShopUiTestUtil.rvScrollToPositionWithOffset(productWidgetPosition))
-        waitForData(100)
 
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
-        Espresso.onView(AllOf.allOf(
-                withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))
-
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.tvSeeAll),
                 isDisplayed()))
@@ -228,6 +170,12 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testHeader() {
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.searchBarText)
+        )))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.tabLayout)
+        )))
         testClickSearchBar()
         testClickTabs()
     }
@@ -235,14 +183,20 @@ class ShopPageBuyerAnalyticTest {
     private fun testProductTab() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(CommonActions.selectTabLayoutPosition(1))
-        waitForData(2000)
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withText("Urutkan"),
+                isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+        )))
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withText("Etalase Toko"),
+                isDescendantOfA(withId(R.id.sort_filter_items_wrapper))
+        )))
         testSelectSortOption()
         testClickEtalase()
         testProductCard()
     }
 
     private fun testProductCard() {
-        waitForData(200)
         val sampleProductIdWishlist = "23151232"
         val clickedItemPosition = 2
         val mockIntentData = Intent().apply {
@@ -270,20 +224,16 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testClickTabs() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(0))
-        waitForData(100)
+                .perform(clickTabLayoutPosition(0))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(1))
-        waitForData(100)
+                .perform(clickTabLayoutPosition(1))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(2))
-        waitForData(100)
+                .perform(clickTabLayoutPosition(2))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(3))
+                .perform(clickTabLayoutPosition(3))
     }
 
     private fun testSelectSortOption() {
-        waitForData(200)
         val mockIntentData = Intent().apply {
             putExtra(ShopProductSortActivity.SORT_ID, "1")
             putExtra(ShopProductSortActivity.SORT_NAME, "Terbaru")
@@ -298,7 +248,6 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testClickEtalase() {
-        waitForData(200)
         val mockIntentData = Intent().apply {
             putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, "1")
             putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME, "Etalase")
@@ -314,10 +263,6 @@ class ShopPageBuyerAnalyticTest {
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
-    }
-
-    private fun waitForData(ms: Long) {
-        Thread.sleep(ms)
     }
 
     private fun testClickSearchBar() {

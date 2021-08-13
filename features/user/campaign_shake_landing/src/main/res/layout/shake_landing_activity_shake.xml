@@ -10,7 +10,7 @@
         android:id="@+id/layout_shake_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/shake_black_54"
+        android:background="@color/Unify_N700_44"
         android:visibility="gone">
 
         <LinearLayout
@@ -42,7 +42,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:text="@string/shake_landing_oops"
-                android:textColor="@color/shake_black_b3"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/shake_landing_sp_18"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:layout_marginLeft="@dimen/shake_landing_dp_25"
                 android:layout_marginRight="@dimen/shake_landing_dp_25"
                 android:gravity="center"
-                android:textColor="@color/shake_black_b3"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/fontSize_lvl4" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:background="@drawable/shake_landing_bg_btn_green"
                 android:gravity="center"
                 android:text="@string/shake_landing_shake_lagi"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_N0"
                 android:textSize="@dimen/sp_13" />
         </LinearLayout>
     </LinearLayout>
@@ -75,7 +75,7 @@
         android:id="@+id/disable_shake_shake_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/shake_black_54"
+        android:background="@color/Unify_N700_44"
         android:visibility="gone">
 
         <LinearLayout
@@ -107,7 +107,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:text="@string/shake_landing_oops"
-                android:textColor="@color/shake_black_b3"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/fontSize_lvl5"
                 android:textStyle="bold" />
 
@@ -119,7 +119,7 @@
                 android:layout_marginRight="@dimen/shake_landing_dp_25"
                 android:gravity="center"
                 android:text="@string/shake_landing_sepertinya_sistem_shake"
-                android:textColor="@color/shake_black_b3"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/fontSize_lvl4" />
 
             <TextView
@@ -131,7 +131,7 @@
                 android:background="@drawable/shake_landing_bg_btn_green"
                 android:gravity="center"
                 android:text="@string/shake_landing_matikan_shake"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_N0"
                 android:textSize="@dimen/shake_landing_sp_13" />
         </LinearLayout>
     </LinearLayout>
@@ -170,7 +170,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/shake_landing_shake_shake_terus"
-                android:textColor="@color/shake_tkpd_main_green"
+                android:textColor="@color/Unify_G400"
                 android:textSize="@dimen/shake_landing_dp_14"
                 android:textStyle="normal" />
 
@@ -190,7 +190,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="1"
-                android:textColor="@color/shake_tkpd_main_green"
+                android:textColor="@color/Unify_G400"
                 android:textSize="@dimen/fontSize_lvl2"
                 android:textStyle="normal"
                 android:visibility="gone">
@@ -233,7 +233,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/shake_landing_cancel_shake_shake"
-                android:textColor="@color/shake_tkpd_main_green"
+                android:textColor="@color/Unify_G400"
                 android:textSize="@dimen/shake_landing_sp_14"
                 android:textStyle="normal" />
 

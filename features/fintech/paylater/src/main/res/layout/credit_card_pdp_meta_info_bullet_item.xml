@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/unify_space_4"
+    android:paddingBottom="@dimen/unify_space_4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivDot"
+        android:layout_width="@dimen/unify_space_4"
+        android:layout_height="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvBulletPoint"
+        app:srcCompat="@drawable/ic_credit_card_tnc_bullet" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBulletPoint"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivDot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Pembayaran dengan sistem cicilan 0%, berlaku untuk pemegang kartu kredit berlogo Visa, Mastercard, JCB, dan American Express" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

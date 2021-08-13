@@ -1,5 +1,7 @@
 package androidx.core.app
 
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 
 /**
@@ -14,7 +16,7 @@ abstract class BaseJobIntentService : JobIntentService() {
         try {
             return super.dequeueWork()
         } catch (e: SecurityException) {
-            Timber.e("P1#IRIS#dequeueWork %s", e.toString())
+            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dequeueWork", "err" to e.toString()))
         }
         return null
     }

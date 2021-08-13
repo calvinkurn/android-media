@@ -10,6 +10,6 @@
     android:gravity="center"
     android:paddingTop="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl4"
-    android:textColor="@color/topchat_chat_hour_time"
+    android:textColor="@color/Unify_N700_44"
     app:typographyType="body_3"
     tools:text="Hari Ini" />

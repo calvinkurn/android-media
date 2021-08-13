@@ -7,6 +7,12 @@ import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 data class RechargeBills(
+        @SerializedName("UUID")
+        @Expose
+        val uuid: String = "",
+        @SerializedName("flag")
+        @Expose
+        val flag: Boolean = false,
         @SerializedName("index")
         @Expose
         val index: Int = -1,
@@ -61,9 +67,38 @@ data class RechargeBills(
         @SerializedName("isChecked")
         @Expose
         var isChecked: Boolean = false,
-        var errorMessage: String = ""
-): Visitable<SmartBillsAdapterFactory> {
+        var errorMessage: String = "",
+        @SerializedName("DueDate")
+        @Expose
+        var dueDate: String = "",
+        @SerializedName("DueMessage")
+        @Expose
+        var dueMessage: DueUrgency = DueUrgency(),
+        @SerializedName("DueDateLabel")
+        @Expose
+        var dueDateLabel: DueUrgency = DueUrgency(),
+        @SerializedName("sections")
+        @Expose
+        var section: Section = Section(),
+
+        ): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
+        }
+
+        enum class Source(val label: String) {
+                DEFAULT("default"),
+                FAVORITE_WIDGET("favorite"),
+                REMINDER_WIDGET("reminder");
+
+                companion object {
+                        @JvmStatic
+                        fun getSourceByString(label: String): Source {
+                                for (type in values()) {
+                                        if (type.label == label) return type
+                                }
+                                return DEFAULT
+                        }
+                }
         }
 }

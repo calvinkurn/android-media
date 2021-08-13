@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -38,7 +39,7 @@ class GetCarouselDataUseCaseTest {
     lateinit var mapper: CarouselMapper
 
     private val getCarouselDataUseCase by lazy {
-        GetCarouselDataUseCase(gqlRepository, mapper)
+        GetCarouselDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetCarouselDataUseCase.getRequestParams(listOf(ArgumentMatchers.anyString()))

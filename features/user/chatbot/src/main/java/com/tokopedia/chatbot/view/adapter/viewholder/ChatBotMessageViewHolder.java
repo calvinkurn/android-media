@@ -31,8 +31,8 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
 
     @Override
     public void bind(MessageViewModel element) {
-        super.bind(element);
         htmlMessage = element.getMessage();
+        super.bind(element);
     }
 
     @Override

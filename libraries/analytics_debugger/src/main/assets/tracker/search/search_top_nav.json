@@ -1,12 +1,16 @@
 {
   "readme": "Search Top Nav Tracking",
+  "mode": "exact",
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - search result page",
+      "eventCategory": "top nav",
       "eventAction": "click search box",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "pageSource": ".*",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "search"
     }
   ]
 }

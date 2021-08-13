@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
@@ -26,6 +27,10 @@ import javax.inject.Inject
 class TopChatRoomWebSocketMessageMapper @Inject constructor(
 
 ) : WebsocketMessageMapper() {
+
+    override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
+        return MessageViewModel(pojo)
+    }
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
@@ -63,14 +68,17 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier, ownerId = voucher.ownerId)
+        var voucherOwner = MerchantVoucherOwner(
+                identifier = voucher.identifier,
+                ownerId = voucher.ownerId.toIntOrZero()
+        )
         var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
-        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId,
+        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId.toIntOrZero(),
                 voucherName = voucher.voucherName,
                 voucherCode = voucher.voucherCode,
                 merchantVoucherType = voucherType,
                 merchantVoucherAmount = voucherAmount,
-                minimumSpend = voucher.minimumSpend,
+                minimumSpend = voucher.minimumSpend.toIntOrZero(),
                 merchantVoucherOwner = voucherOwner,
                 validThru = voucher.validThru.toString(),
                 tnc = voucher.tnc,

@@ -1,38 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="@dimen/layout_lvl2"
     android:layout_marginLeft="@dimen/layout_lvl2"
     android:layout_marginEnd="@dimen/layout_lvl2"
-    android:layout_marginRight="@dimen/layout_lvl2"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/voucherTipsBasicTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/voucherTipsBasicTitle"
-        tools:text="Cara perhitungan estimasi pengeluaran"/>
+    android:layout_marginRight="@dimen/layout_lvl2">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/voucherTipsBasicDesc"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/expensesEstimationTicker"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
-        android:layout_marginTop="@dimen/mvc_create_voucher_tips_basic_desc_margin_top"
-        android:layout_marginBottom="@dimen/mvc_create_voucher_tips_basic_desc_margin_bottom"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/voucherTipsBasicTitle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Estimasi = Nominal diskon x Kuota Voucher"/>
+        app:closeButtonVisibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="loose" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

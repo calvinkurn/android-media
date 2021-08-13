@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 
 import java.util.ArrayList;
 
@@ -18,10 +18,10 @@ import java.util.ArrayList;
  */
 
 public class ImageEditorEditCropAdapter implements View.OnClickListener {
-    private ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList;
+    private ArrayList<ImageRatioType> imageRatioTypeDefArrayList;
     private Context context;
     private ViewGroup viewGroup;
-    private ImageRatioTypeDef selectedImageRatio;
+    private ImageRatioType selectedImageRatio;
 
     private OnImageEditorEditCropAdapterListener listener;
     private int maxIconWidth;
@@ -43,10 +43,10 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
     }
 
     public interface OnImageEditorEditCropAdapterListener {
-        void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef);
+        void onEditCropClicked(ImageRatioType imageRatioTypeDef);
     }
 
-    public void setRatio(ImageRatioTypeDef imageRatio){
+    public void setRatio(ImageRatioType imageRatio){
         this.selectedImageRatio = imageRatio;
         if (tempSelectedView!= null &&
                 imageRatio != imageRatioTypeDefArrayList.get(tempSelectedView.getId()) &&
@@ -54,7 +54,7 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
             tempSelectedView.setSelected(false);
 
             int position = 0;
-            for (ImageRatioTypeDef imageRatioTypeDef : imageRatioTypeDefArrayList) {
+            for (ImageRatioType imageRatioTypeDef : imageRatioTypeDefArrayList) {
                 View view = viewGroup.getChildAt(position);
                 if (imageRatioTypeDef == selectedImageRatio) {
                     view.setSelected(true);
@@ -72,8 +72,8 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
     public ImageEditorEditCropAdapter(
             ViewGroup viewGroup,
             Context context,
-            ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList,
-            ImageRatioTypeDef selectedImageRatio,
+            ArrayList<ImageRatioType> imageRatioTypeDefArrayList,
+            ImageRatioType selectedImageRatio,
             OnImageEditorEditCropAdapterListener listener) {
         this.viewGroup = viewGroup;
         this.selectedImageRatio = selectedImageRatio;
@@ -83,7 +83,7 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
         this.maxIconWidth = context.getResources().getDimensionPixelSize(R.dimen.dp_24);
     }
 
-    private void setImageRatioTypeDefArrayList(ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList) {
+    private void setImageRatioTypeDefArrayList(ArrayList<ImageRatioType> imageRatioTypeDefArrayList) {
         if (imageRatioTypeDefArrayList == null || imageRatioTypeDefArrayList.size() == 0) {
             this.imageRatioTypeDefArrayList = new ArrayList<>();
             this.imageRatioTypeDefArrayList.add(selectedImageRatio);
@@ -98,7 +98,7 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
             viewGroup.removeAllViews();
         }
         int position = 0;
-        for (ImageRatioTypeDef imageRatioTypeDef : imageRatioTypeDefArrayList) {
+        for (ImageRatioType imageRatioTypeDef : imageRatioTypeDefArrayList) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_edit_crop_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
             TextView tvEdit = view.findViewById(R.id.tv_edit);
@@ -151,7 +151,7 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
         }
     }
 
-    public ImageRatioTypeDef getSelectedImageRatio() {
+    public ImageRatioType getSelectedImageRatio() {
         return selectedImageRatio;
     }
 }

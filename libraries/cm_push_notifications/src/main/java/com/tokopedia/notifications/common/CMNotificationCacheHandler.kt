@@ -34,6 +34,15 @@ class CMNotificationCacheHandler(context: Context) {
         localCacheHandler.applyEditor()
     }
 
+    fun getLongValue(Key: String): Long {
+        return localCacheHandler.getLong(Key)!!
+    }
+
+    fun saveLongValue(key: String, value: Long) {
+        localCacheHandler.putLong(key, value)
+        localCacheHandler.applyEditor()
+    }
+
     fun remove(key: String) {
         localCacheHandler.remove(key)
         localCacheHandler.applyEditor()

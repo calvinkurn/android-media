@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="catalog_clr_31353b">#31353b</color>
-    <color name="catalog_grey_796">#f531353b</color>
-    <color name="catalog_N700_44">#7031353B</color>
     <color name="catalog_grey_line">#EAEAEA</color>
 </resources>

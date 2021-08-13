@@ -42,7 +42,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
     override fun showActionButtonUse(): Boolean {

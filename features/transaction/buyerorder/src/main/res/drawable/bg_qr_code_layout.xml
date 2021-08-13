@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="rectangle" >
             <corners android:radius="@dimen/dp_10"/>
-                <solid android:color="@color/deals_qr_background"/>
+                <solid android:color="@color/Unify_G600"/>
         </shape>
     </item>
     <item android:drawable="@drawable/ic_show_qr_code_background" />

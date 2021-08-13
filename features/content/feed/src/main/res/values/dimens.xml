@@ -65,5 +65,7 @@
     <dimen name="product_padding_very_small">6dp</dimen>
     <dimen name="image_padding_for_border">0.5dp</dimen>
     <dimen name="tab_feed_indicator">54dp</dimen>
+    <dimen name="searchbar_tansition_range">50dp</dimen>
+    <dimen name="searchbar_start_tansition_offsite">100dp</dimen>
 
 </resources>

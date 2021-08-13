@@ -1,7 +1,9 @@
 package com.tokopedia.productcard
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
@@ -39,12 +41,21 @@ data class ProductCardModel (
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
+        val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
+        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
-        val countSoldRating: String = ""
+        val countSoldRating: String = "",
+        val hasNotifyMeButton: Boolean = false,
+        val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        @Deprecated("determined from product card")
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        val isWideContent: Boolean = false,
+        val variant: Variant? = null,
+        val nonVariant: NonVariant? = null,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -83,6 +94,45 @@ data class ProductCardModel (
         }
     }
 
+    data class LabelGroupVariant(
+            val typeVariant: String = "",
+            var title: String = "",
+            val type: String = "",
+            val hexColor: String = ""
+    ) {
+        fun isColor() = typeVariant == TYPE_VARIANT_COLOR
+        fun isSize() = typeVariant == TYPE_VARIANT_SIZE
+        fun isCustom() = typeVariant == TYPE_VARIANT_CUSTOM
+    }
+
+    data class Variant(
+            val quantity: Int = 0,
+    )
+
+    fun hasVariant(): Boolean {
+        return variant != null
+    }
+
+    fun hasVariantWithQuantity(): Boolean {
+        return variant?.quantity ?: 0 > 0
+    }
+
+    data class NonVariant(
+            val quantity: Int = 0,
+            val minQuantity: Int = 0,
+            val maxQuantity: Int = 0,
+    )
+
+    fun shouldShowAddToCartNonVariantQuantity(): Boolean {
+        return nonVariant?.quantity == 0
+    }
+
+    fun canShowQuantityEditor() = nonVariant != null
+
+    fun shouldShowCartEditorComponent(): Boolean {
+        return nonVariant?.quantity ?: 0 > 0
+    }
+
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
     }
@@ -111,6 +161,26 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_CAMPAIGN)
     }
 
+    fun getLabelBestSeller(): LabelGroup? {
+        return findLabelGroup(LABEL_BEST_SELLER)
+    }
+
+    fun getLabelETA(): LabelGroup? {
+        return findLabelGroup(LABEL_ETA)
+    }
+
+    fun getLabelFulfillment(): LabelGroup? {
+        return findLabelGroup(LABEL_FULFILLMENT)
+    }
+
+    fun getLabelCategory(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY)
+    }
+
+    fun getLabelCostPerUnit(): LabelGroup? {
+        return findLabelGroup(LABEL_COST_PER_UNIT)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -131,5 +201,120 @@ data class ProductCardModel (
 
     fun isShowShopRating() = shopRating.isNotEmpty()
 
-    fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
+    fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
+
+    fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
+
+    fun isShowLabelCampaign(): Boolean {
+        val labelCampaign = getLabelCampaign()
+
+        return !isShowLabelBestSeller()
+                && labelCampaign != null
+                && labelCampaign.title.isNotEmpty()
+                && labelCampaign.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelGimmick() =
+            !isShowLabelBestSeller()
+                    && !isShowLabelCampaign()
+
+    fun willShowVariant(): Boolean {
+        return labelGroupVariantList.isNotEmpty()
+    }
+
+    fun willShowFulfillment(): Boolean{
+        val labelFulfillment = getLabelFulfillment()
+
+        return labelFulfillment != null
+                && labelFulfillment.title.isNotEmpty()
+                && labelFulfillment.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelCategory() = getLabelCategory()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
+
+    fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
+
+    fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
+        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
+
+        if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
+            return listOf()
+
+        val colorVariantTaken = getLabelVariantColorCount(colorVariant)
+        val sizeVariantTaken = getLabelVariantSizeCount(colorVariantTaken)
+
+        return colorVariant.take(colorVariantTaken) +
+                sizeVariant.take(sizeVariantTaken) +
+                customVariant
+    }
+
+    private fun isLabelVariantCountBelowMinimum(
+            colorVariant: List<LabelGroupVariant>,
+            sizeVariant: List<LabelGroupVariant>
+    ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT
+            && sizeVariant.size < MIN_LABEL_VARIANT_COUNT
+
+    private fun getLabelVariantColorCount(colorVariant: List<LabelGroupVariant>) =
+            if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
+                MAX_LABEL_VARIANT_COUNT
+            else 0
+
+    private fun getLabelVariantSizeCount(colorVariantTaken: Int): Int {
+        val hasLabelVariantColor = colorVariantTaken > 0
+
+        return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
+    }
+
+    private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
+        var sizeVariantCount = 0
+        var hiddenSizeVariant = 0
+
+        val colorVariant = mutableListOf<LabelGroupVariant>()
+        val sizeVariant = mutableListOf<LabelGroupVariant>()
+        val customVariant = mutableListOf<LabelGroupVariant>()
+
+        labelGroupVariantList.forEach { element ->
+            when {
+                element.isColor() -> {
+                    colorVariant.add(element)
+                }
+                element.isSize() -> {
+                    val additionalSize = element.title.length + EXTRA_CHAR_SPACE
+                    val isWithinCharLimit =
+                            (sizeVariantCount + additionalSize) <= LABEL_VARIANT_CHAR_LIMIT
+
+                    if (isWithinCharLimit) {
+                        sizeVariant.add(element)
+                        sizeVariantCount += additionalSize
+                    }
+                    else {
+                        hiddenSizeVariant++
+                    }
+                }
+                else -> {
+                    customVariant.add(element)
+                }
+            }
+        }
+
+        processHiddenSizeVariant(hiddenSizeVariant, customVariant)
+
+        return Triple(colorVariant, sizeVariant, customVariant)
+    }
+
+    private fun processHiddenSizeVariant(hiddenSizeVariant: Int, customVariant: MutableList<LabelGroupVariant>) {
+        if (hiddenSizeVariant <= 0) return
+
+        val labelGroupCustomVariant = customVariant.getOrNull(0)
+                ?: LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "0")
+
+        val title = (labelGroupCustomVariant.title.toIntOrZero() + hiddenSizeVariant).toString()
+
+        labelGroupCustomVariant.title = title
+
+        customVariant.clear()
+        customVariant.add(labelGroupCustomVariant)
+    }
 }

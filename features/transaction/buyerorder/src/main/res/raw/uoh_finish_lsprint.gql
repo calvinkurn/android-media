@@ -1,9 +1,0 @@
-mutation OrderInternalActionMutation($businessCode: String, $action: String, $uuid: String, $value: String = "") {
-  oiaction(business_code: $businessCode, action: $action, uuid: $uuid, value: $value) {
-    error
-    status
-    data {
-      message
-    }
-  }
-}

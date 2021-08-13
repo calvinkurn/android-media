@@ -23,6 +23,9 @@ import javax.inject.Inject
 class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
+
+        const val TAG = "TipsAndTrickBottomSheet"
+
         fun createInstance(context: Context) : TipsAndTrickBottomSheetFragment {
             return TipsAndTrickBottomSheetFragment().apply {
                 context.run {

@@ -35,7 +35,7 @@ class FlightFilterSortWidgetViewHolder(itemView: View)
     fun unselectChip() {
         with(itemView) {
             flightFilterSortChip.chipType = ChipsUnify.TYPE_NORMAL
-            flightFilterSortChip.chip_text.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            flightFilterSortChip.chip_text.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 

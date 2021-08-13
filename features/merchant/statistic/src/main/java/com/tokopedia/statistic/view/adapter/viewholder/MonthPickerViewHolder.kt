@@ -12,9 +12,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.utils.StatisticDateUtil
 import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
+import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -77,20 +79,24 @@ class MonthPickerViewHolder(
 
     private fun showMonthPicker(element: DateFilterItem.MonthPickerItem) {
         val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            val last3months = TimeUnit.DAYS.toMillis(30).times(3)
-            val minDateMillis = timeInMillis.minus(last3months)
-            timeInMillis = minDateMillis
+            element.monthPickerMinDate?.let {
+                time = it
+            }
         }
 
         var selectedMonth: Date? = element.startDate
 
         val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            if (selectedMonth != null) {
-                time = selectedMonth
+            selectedMonth?.let {
+                time = it
             }
         }
 
-        val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
+        val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
+            element.monthPickerMaxDate?.let {
+                time = it
+            }
+        }
 
         val listener = object : OnDateChangedListener {
             override fun onDateChanged(date: Long) {
@@ -112,8 +118,9 @@ class MonthPickerViewHolder(
 
             datePickerButton.setOnClickListener {
                 selectedMonth?.let { selectedMonth ->
-                    element.startDate = selectedMonth
-                    element.endDate = selectedMonth
+                    val (startDate, endDate) = StatisticDateUtil.getStartAndEndDateInAMonth(selectedMonth)
+                    element.startDate = startDate
+                    element.endDate = endDate
                 }
                 showSelectedMonth(element)
                 this@MonthPickerViewHolder.listener.onItemDateRangeClick(element)
@@ -138,4 +145,5 @@ class MonthPickerViewHolder(
         val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, "MMMM yyyy")
         itemView.edtStcPerMonth.valueStr = selectedMonthFmt
     }
+
 }

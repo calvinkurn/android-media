@@ -15,6 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -51,8 +52,6 @@ class ShopUpcomingProductResultPageAnalyticTest {
 
     @Before
     fun beforeTest() {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_UPCOMING_PRODUCT))
@@ -108,7 +107,7 @@ class ShopUpcomingProductResultPageAnalyticTest {
                 )
             })
         }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )

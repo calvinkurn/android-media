@@ -3,11 +3,15 @@ package com.tokopedia.hotel.homepage.presentation.model.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -34,7 +38,8 @@ class HotelHomepageViewModel @Inject constructor(
         private val bannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
         private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
-        val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+        private val travelTickerUseCase: TravelTickerCoroutineUseCase,
+        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
@@ -58,21 +63,32 @@ class HotelHomepageViewModel @Inject constructor(
     val videoBannerLiveData: LiveData<Result<TravelCollectiveBannerModel>>
         get() = mutableVideoBannerLiveData
 
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
     fun fetchVideoBannerData() {
-        launch(dispatcher.ui()) {
+        launch(dispatcher.main) {
             val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, true)
             mutableVideoBannerLiveData.postValue(bannerList)
         }
     }
 
+    fun fetchTickerData() {
+        launch(dispatcher.main) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.HOME)
+            mutableTickerData.postValue(tickerData)
+        }
+    }
+
     fun getHotelPromo() {
-        launch(dispatcher.ui()) {
+        launch(dispatcher.main) {
             promoData.postValue(bannerUseCase.execute(TravelType.HOTEL, true))
         }
     }
 
     fun getPopularCitiesData() {
-        launchCatchError(context = dispatcher.ui(), block = {
+        launchCatchError(context = dispatcher.main, block = {
             val response = getPropertyPopularUseCase.executeOnBackground()
             mutablePopularCitiesLiveData.postValue(Success(response))
         }) {
@@ -82,7 +98,7 @@ class HotelHomepageViewModel @Inject constructor(
 
     fun getDefaultHomepageParameter(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelPropertyDefaultHome.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
@@ -103,7 +119,7 @@ class HotelHomepageViewModel @Inject constructor(
 
     fun deleteRecentSearch(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)

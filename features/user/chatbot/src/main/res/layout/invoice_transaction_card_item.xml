@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_chatbot_3"
+    android:layout_marginBottom="@dimen/dp_chatbot_3"
+    android:layout_marginLeft="@dimen/dp_chatbot_11"
+    android:layout_marginRight="@dimen/dp_chatbot_11"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/chat_width">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            tools:text="10 Oct 2017" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/dp_chatbot_50"
+            android:layout_height="@dimen/dp_chatbot_50"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:srcCompat="@tools:sample/avatars[0]" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textSize="@dimen/fontSize_lvl1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="90.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_invoice_date"
+            app:layout_constraintTop_toTopOf="@+id/tv_invoice_date"
+            tools:labelType="general_light_red"
+            tools:text="Pesanan Dibatalkan Pesanan Dibatalkan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
+            app:typographyType="heading_5"
+            tools:text="Kaca Pembesar hewa unik" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_desc"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/chatbot_black_color_opacity_lvl_35"
+            app:layout_constraintStart_toStartOf="@id/tv_invoice_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_name"
+            app:typographyType="small"
+            tools:text="+4 barang lainnyag" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price_prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@string/chatbot_total_text"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
+            app:typographyType="body_3"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Y500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_price_prefix"
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp 25.500" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

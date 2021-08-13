@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_160"
+    android:layout_alignParentTop="true">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_open_map"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_40"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_27"
+        android:text="@string/change_pinpoint"
+        android:textStyle="bold"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="small"/>
+
+    <ImageView
+        android:id="@+id/icon_pointer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_open_map"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/pointer"
+        app:srcCompat="@drawable/ic_green_pointer" />
+
+</RelativeLayout>

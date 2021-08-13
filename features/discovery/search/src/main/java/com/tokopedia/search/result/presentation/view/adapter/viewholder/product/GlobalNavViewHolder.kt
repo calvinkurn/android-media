@@ -6,23 +6,23 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.globalnavwidget.GlobalNavWidgetListener
 import com.tokopedia.globalnavwidget.GlobalNavWidgetModel
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import kotlinx.android.synthetic.main.search_global_nav_view_holder.view.*
 
 class GlobalNavViewHolder(
         itemView: View,
         private val globalNavListener: GlobalNavListener?
-) : AbstractViewHolder<GlobalNavViewModel>(itemView) {
+) : AbstractViewHolder<GlobalNavDataView>(itemView) {
 
-    override fun bind(element: GlobalNavViewModel) {
+    override fun bind(element: GlobalNavDataView) {
         val globalNavWidgetModel = createGlobalNavWidgetModel(element)
         val globalNavWidgetListener = createGlobalNavWidgetListener(element)
 
         itemView.globalNavWidget?.setData(globalNavWidgetModel, globalNavWidgetListener)
     }
 
-    private fun createGlobalNavWidgetModel(element: GlobalNavViewModel): GlobalNavWidgetModel {
+    private fun createGlobalNavWidgetModel(element: GlobalNavDataView): GlobalNavWidgetModel {
         return GlobalNavWidgetModel(
                 source = element.source,
                 keyword = element.keyword,
@@ -39,7 +39,7 @@ class GlobalNavViewHolder(
         )
     }
 
-    private fun convertGlobalNavWidgetItemModel(item: GlobalNavViewModel.Item): GlobalNavWidgetModel.Item {
+    private fun convertGlobalNavWidgetItemModel(item: GlobalNavDataView.Item): GlobalNavWidgetModel.Item {
         return GlobalNavWidgetModel.Item(
                 categoryName = item.categoryName,
                 name = item.name,
@@ -55,7 +55,7 @@ class GlobalNavViewHolder(
         )
     }
 
-    private fun createGlobalNavWidgetListener(element: GlobalNavViewModel): GlobalNavWidgetListener {
+    private fun createGlobalNavWidgetListener(element: GlobalNavDataView): GlobalNavWidgetListener {
         return object : GlobalNavWidgetListener {
             override fun onClickItem(item: GlobalNavWidgetModel.Item) {
                 globalNavListener?.onGlobalNavWidgetClicked(convertGlobalNavWidgetItemViewModel(item), element.keyword)
@@ -69,8 +69,8 @@ class GlobalNavViewHolder(
 
     private fun convertGlobalNavWidgetItemViewModel(
             globalNavWidgetModelItem: GlobalNavWidgetModel.Item
-    ): GlobalNavViewModel.Item {
-        return GlobalNavViewModel.Item(
+    ): GlobalNavDataView.Item {
+        return GlobalNavDataView.Item(
                 globalNavWidgetModelItem.categoryName,
                 globalNavWidgetModelItem.name,
                 globalNavWidgetModelItem.info,

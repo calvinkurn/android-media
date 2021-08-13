@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -14,7 +14,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -47,7 +46,7 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = FreeDeliveryVoucherCreateViewModel(TestCoroutineDispatchers, freeDeliveryValidationUseCase)
+        mViewModel = FreeDeliveryVoucherCreateViewModel(CoroutineTestDispatchersProvider, freeDeliveryValidationUseCase)
         mViewModel.expensesExtimationLiveData.observeForever(expenseEstimationObserver)
     }
 
@@ -62,6 +61,15 @@ class FreeDeliveryVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
 
             assert(voucherImageValueLiveData.value is VoucherImageType.FreeDelivery && voucherImageValueLiveData.value?.value == DUMMY_AMOUNT)
+        }
+    }
+
+    @Test
+    fun `adding free delivery amount text field value to calculation with null value will keep image value null`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(null, PromotionType.FreeDelivery.Amount)
+
+            assert(voucherImageValueLiveData.value == null)
         }
     }
 
@@ -93,6 +101,15 @@ class FreeDeliveryVoucherCreateViewModelTest {
             refreshTextFieldValue(true)
 
             assert(voucherImageValueLiveData.value is VoucherImageType.FreeDelivery && voucherImageValueLiveData.value?.value == DUMMY_AMOUNT)
+        }
+    }
+
+    @Test
+    fun `not refreshing text field value if edit voucher will keep voucher image value as null`() {
+        with(mViewModel) {
+            refreshTextFieldValue(true)
+
+            assert(voucherImageValueLiveData.value == null)
         }
     }
 
@@ -147,8 +164,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
 
             validateFreeDeliveryValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert(freeDeliveryValidationLiveData.value == Success(dummySuccessFreeDeliveryValidation))
         }
     }
@@ -168,9 +183,35 @@ class FreeDeliveryVoucherCreateViewModelTest {
 
             validateFreeDeliveryValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert(freeDeliveryValidationLiveData.value is Fail)
+        }
+    }
+
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mFreeDeliveryAmountLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mMinimumPurchaseLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mVoucherQuotaLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
+            addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.FreeDelivery.MinimumPurchase)
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
         }
     }
 

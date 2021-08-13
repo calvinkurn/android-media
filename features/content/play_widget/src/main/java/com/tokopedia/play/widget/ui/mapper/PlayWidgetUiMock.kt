@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import kotlin.random.Random
 
 
@@ -20,7 +21,7 @@ object PlayWidgetUiMock {
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
             actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-            actionWebLink = "www.tokopedia.com/play/channels",
+            isActionVisible = true,
             config = getPlayWidgetConfigUiModel(),
             items = getSampleSmallCardData(),
             useHeader = true
@@ -30,7 +31,7 @@ object PlayWidgetUiMock {
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
             actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
-            actionWebLink = "www.tokopedia.com/play/channels",
+            isActionVisible = true,
             background = getPlayWidgetBackgroundUiModel(),
             config = getPlayWidgetConfigUiModel(),
             items = getSampleMediumCardData()
@@ -82,8 +83,9 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
-            video = getVideoUiModel(channelType)
+            promoType = PlayWidgetPromoType.NoPromo,
+            video = getVideoUiModel(channelType),
+            hasGiveaway = true
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -108,10 +110,18 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
-            activeReminder = cardItemTypeRandom.nextBoolean(),
+            promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
+            reminderType = PlayWidgetReminderType.Reminded,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasAction = true,
+            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+            share = PlayWidgetShareUiModel(
+                    "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+                    isShow = true
+            ),
+            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
+            hasGiveaway = true
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
@@ -127,14 +137,15 @@ object PlayWidgetUiMock {
             autoPlay = true,
             autoPlayAmount = 3,
             maxAutoPlayCellularDuration = 5,
-            maxAutoPlayWifiDuration = 10
+            maxAutoPlayWifiDuration = 10,
+            businessWidgetPosition = 0
     )
 
     private fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
             overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
             overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
             overlayImageWebLink = "www.tokopedia.com/play/channels",
-            gradientColors = listOf( "#57E9FF", "#009ad6"),
+            gradientColors = listOf(),
             backgroundUrl = ""
     )
 }

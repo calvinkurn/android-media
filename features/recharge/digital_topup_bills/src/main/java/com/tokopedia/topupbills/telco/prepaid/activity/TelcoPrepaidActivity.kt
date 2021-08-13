@@ -31,7 +31,8 @@ class TelcoPrepaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoCompo
                 ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER)
                 ?: ""
-        return DigitalTelcoPrepaidFragment.newInstance(digitalTelcoExtraParam)
+        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA) ?: ""
+        return DigitalTelcoPrepaidFragment.newInstance(digitalTelcoExtraParam,rechargeProductFromSlice)
     }
 
     override fun getComponent(): DigitalTelcoComponent? {

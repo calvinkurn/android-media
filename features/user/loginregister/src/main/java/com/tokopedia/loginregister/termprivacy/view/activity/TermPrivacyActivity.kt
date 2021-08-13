@@ -1,21 +1,29 @@
 package com.tokopedia.loginregister.termprivacy.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 
 /**
  * @author rival
  * @team @minion-kevin
  *
  * @created at 8/09/2020
+ *
+ * @appLink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY]
+ * parameter :
+ * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION]
+ * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY]
+ * @example :
+ * RouteManager.getIntent(getActivity(), TERM_PRIVACY, PAGE_TERM_AND_CONDITION)
  * */
 
-class TermPrivacyActivity: BaseSimpleActivity() {
+class TermPrivacyActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -23,30 +31,17 @@ class TermPrivacyActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loadPage()
+    }
 
-        when {
-            intent?.data != null -> {
-                intent?.data?.let {
-                    if (it.getQueryParameter(PARAM).equals(MODE_TERM)) {
-                        openTermPage()
-                    } else if (it.getQueryParameter(PARAM).equals(MODE_PRIVACY)) {
-                        openPrivacyPage()
-                    }
+    private fun loadPage() {
+        intent.data?.let {
+            if (it.scheme == DeeplinkConstant.SCHEME_INTERNAL && it.pathSegments.size > 0) {
+                when(it.lastPathSegment) {
+                    PAGE_TERM_AND_CONDITION -> openTermPage()
+                    PAGE_PRIVACY_POLICY -> openPrivacyPage()
+                    else -> finish()
                 }
-            }
-
-            intent?.extras != null -> {
-                intent?.extras?.let {
-                    if (it.getString(PAGE_MODE).equals(MODE_TERM)) {
-                        openTermPage()
-                    } else if (it.getString(PAGE_MODE).equals(MODE_PRIVACY)) {
-                        openPrivacyPage()
-                    }
-                }
-            }
-
-            else -> {
-                finish()
             }
         }
     }
@@ -62,26 +57,7 @@ class TermPrivacyActivity: BaseSimpleActivity() {
     }
 
     companion object {
-        private const val PARAM = "param"
-        private const val PAGE_MODE = "pageMode"
-        private const val MODE_TERM = "0"
-        private const val MODE_PRIVACY = "1"
-
         private const val URL_TERM = "https://m.tokopedia.com/terms.pl?device=android&flag_app=1"
         private const val URL_PRIVACY = "https://m.tokopedia.com/privacy.pl?device=android&flag_app=1"
-
-        fun createIntentTermAndCondition(context: Context): Intent {
-            return createIntent(context, MODE_TERM)
-        }
-
-        fun createIntentPrivacy(context: Context): Intent {
-            return createIntent(context, MODE_PRIVACY)
-        }
-
-        private fun createIntent(context: Context, mode: String): Intent {
-            val intent = Intent(context, TermPrivacyActivity::class.java)
-            intent.putExtra(PAGE_MODE, mode)
-            return intent
-        }
     }
 }

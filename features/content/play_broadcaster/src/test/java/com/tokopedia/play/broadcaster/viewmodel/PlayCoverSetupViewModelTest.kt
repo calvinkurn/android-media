@@ -2,13 +2,11 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.play.broadcaster.data.config.*
-import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
-import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
+import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteUseCase
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockImageTransformer
 import com.tokopedia.play.broadcaster.testdouble.MockPlayCoverImageUtil
@@ -17,18 +15,16 @@ import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.max
 
 /**
  * Created by jegul on 29/09/20
@@ -38,46 +34,53 @@ class PlayCoverSetupViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
+    private lateinit var titleDataStore: TitleDataStore
+    private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
 
     private lateinit var channelConfigStore: ChannelConfigStore
-    private lateinit var coverConfigStore: CoverConfigStore
+    private lateinit var titleConfigStore: TitleConfigStore
 
-    private val uploadImageUseCase: UploadImageToRemoteUseCase = mockk(relaxed = true)
+    private val uploadImageUseCase: UploadImageToRemoteV2UseCase = mockk(relaxed = true)
     private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase = mockk(relaxed = true)
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
 
     private lateinit var viewModel: PlayCoverSetupViewModel
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
 
     private val uploadCoverTitleException = IllegalStateException("error upload cover title")
 
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()
-        coverConfigStore = CoverConfigStoreImpl()
+        titleConfigStore = TitleConfigStoreImpl()
 
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
-        coverDataStore = MockCoverDataStore(dispatcherProvider, uploadCoverTitleException)
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        coverDataStore = MockCoverDataStore(dispatcherProvider)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         viewModel = PlayCoverSetupViewModel(
                 hydraConfigStore = HydraConfigStoreImpl(
                         channelConfigStore,
                         ProductConfigStoreImpl(),
-                        coverConfigStore
+                        titleConfigStore,
+                        BroadcastScheduleConfigStoreImpl()
                 ),
                 dispatcher = dispatcherProvider,
                 setupDataStore = mockSetupDataStore,
                 uploadImageUseCase = uploadImageUseCase,
                 getOriginalProductImageUseCase = getOriginalProductImageUseCase,
-                userSession = mockk(relaxed = true),
                 coverImageUtil = MockPlayCoverImageUtil(),
                 coverImageTransformer = MockImageTransformer()
         )
@@ -88,37 +91,6 @@ class PlayCoverSetupViewModelTest {
         Assertions
                 .assertThat(viewModel.cropState)
                 .isEqualTo(CoverSetupState.Blank)
-    }
-
-    @Test
-    fun `when get cover title, if there is no cover title, then it should return empty`() {
-        Assertions
-                .assertThat(viewModel.savedCoverTitle)
-                .isEmpty()
-    }
-
-    @Test
-    fun `when get cover title, if there is cover title, then it should return the cover title`() {
-        val croppedState = CoverSetupState.Cropped.Draft(mockk(relaxed = true), CoverSource.Gallery)
-        val title = "abc"
-        coverDataStore.setFullCover(
-                PlayCoverUiModel(
-                        croppedCover = croppedState,
-                        title = title,
-                        state = SetupDataState.Draft
-                )
-        )
-        val observer = Observer<String> {}
-
-        viewModel.observableCoverTitle.observeForever(observer)
-
-        val actualTitle = viewModel.savedCoverTitle
-
-        viewModel.observableCoverTitle.removeObserver(observer)
-
-        Assertions
-                .assertThat(actualTitle)
-                .isEqualTo(title)
     }
 
     @Test
@@ -136,7 +108,6 @@ class PlayCoverSetupViewModelTest {
         coverDataStore.setFullCover(
                 PlayCoverUiModel(
                         croppedCover = croppedState,
-                        title = "aaa",
                         state = SetupDataState.Draft
                 )
         )
@@ -161,7 +132,6 @@ class PlayCoverSetupViewModelTest {
         coverDataStore.setFullCover(
                 PlayCoverUiModel(
                         croppedCover = croppedState,
-                        title = "aaa",
                         state = SetupDataState.Draft
                 )
         )
@@ -186,7 +156,7 @@ class PlayCoverSetupViewModelTest {
     @Test
     fun `when get max title character allowed for cover, it should return the correct length`() {
         val maxChar = 5
-        coverConfigStore.setMaxTitleChars(maxChar)
+        titleConfigStore.setMaxTitleChars(maxChar)
 
         Assertions
                 .assertThat(viewModel.maxTitleChars)
@@ -206,7 +176,7 @@ class PlayCoverSetupViewModelTest {
     fun `when check the validity of cover title that exceeds max chars, it should return false`() {
         val coverTitle = "abcde"
         val maxChar = 3
-        coverConfigStore.setMaxTitleChars(maxChar)
+        titleConfigStore.setMaxTitleChars(maxChar)
 
         Assertions
                 .assertThat(viewModel.isValidCoverTitle(coverTitle))
@@ -217,7 +187,7 @@ class PlayCoverSetupViewModelTest {
     fun `when check the validity of cover title that doesn't exceed max chars and not blank, it should return true`() {
         val coverTitle = "abcde"
         val maxChar = 6
-        coverConfigStore.setMaxTitleChars(maxChar)
+        titleConfigStore.setMaxTitleChars(maxChar)
 
         Assertions
                 .assertThat(viewModel.isValidCoverTitle(coverTitle))

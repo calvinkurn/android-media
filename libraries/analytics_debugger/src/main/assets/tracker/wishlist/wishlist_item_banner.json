@@ -1,0 +1,46 @@
+{
+  "readme": "Wishlist banner, impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [
+        {
+          "creative_url": ".+",
+          "creative_name": ".+",
+          "creative_slot": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".+"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "wishlist page",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/wishlist",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression - banner ads",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_url": ".+",
+          "creative_name": ".+",
+          "creative_slot": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".+"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "wishlist page",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/wishlist",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click - banner ads",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

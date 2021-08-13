@@ -1,0 +1,29 @@
+[{
+  "data": {
+    "OfficialStoreBenefits": {
+      "benefits": [
+        {
+          "id": 4,
+          "label": "Pasti Ready",
+          "iconUrl": "https://ecs7.tokopedia.net/img/official_store/microsite/benefits/desktop/ic-ready.png",
+          "position": 1,
+          "redirectUrl": "https://www.tokopedia.com/help/article/a-1937"
+        },
+        {
+          "id": 5,
+          "label": "Pasti Ori",
+          "iconUrl": "https://ecs7.tokopedia.net/img/official_store/microsite/benefits/desktop/ic-ori.png",
+          "position": 2,
+          "redirectUrl": "https://www.tokopedia.com/help/article/a-1938"
+        },
+        {
+          "id": 6,
+          "label": "Garansi 7 Hari",
+          "iconUrl": "https://ecs7.tokopedia.net/img/official_store/microsite/benefits/desktop/ic-garansi.png",
+          "position": 3,
+          "redirectUrl": "https://www.tokopedia.com/help/article/a-1939"
+        }
+      ]
+    }
+  }
+}]

@@ -54,9 +54,9 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
         var i = 0
         val p: Pattern = Pattern.compile("\"isTopads\":true")
         val p2: Pattern = Pattern.compile("\"is_topads\":true")
-        val p3: Pattern = Pattern.compile("\"activity\":\"topads")
+        val p3: Pattern = Pattern.compile("\"activity\":\"topads\\b")
         val p4: Pattern = Pattern.compile("\"activity\":\"topads_banner")
-        val p5: Pattern = Pattern.compile("\\?src=topads")
+        val p5: Pattern = Pattern.compile("\"activity\":\"topads_headline")
 
         val m: Matcher = p.matcher(`in`)
         while (m.find()) {

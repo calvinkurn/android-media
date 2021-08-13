@@ -46,7 +46,8 @@ query ORDERDETAIL($cartString: String, $paymentId: String,$orderCategory: String
       invoiceUrl
     }
     items {
-          categoryID
+      detail_id
+      categoryID
       categoryL1
       categoryL2
       categoryL3

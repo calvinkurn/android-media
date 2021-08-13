@@ -4,7 +4,6 @@ import com.tokopedia.autocomplete.initialstate.InitialStateMapper
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class InitialStateMapperModule {
 

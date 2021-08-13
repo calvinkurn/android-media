@@ -12,8 +12,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.component.Tabs
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoInfoVIewPagerAdapter
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
@@ -26,9 +24,10 @@ import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHol
 import com.tokopedia.saldodetails.utils.CurrencyUtils
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TabsUnify
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
 import kotlinx.android.synthetic.main.saldo_info_help_bottomsheet.view.*
-import kotlinx.android.synthetic.main.saldo_info_toolbar.*
 import javax.inject.Inject
 
 class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoHoldInfoContract.View {
@@ -43,8 +42,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var sellerAmount: Long = 0
     var buyerAmount: Long = 0
     var item: ArrayList<SaldoHistoryTabItem>? = null
-    lateinit var tabLayout: Tabs
-    lateinit var helpdialog: CloseableBottomSheetDialog
+    lateinit var tabLayout: TabsUnify
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
     val SAVE_INSTANCE_CACHEMANAGER_ID = "SAVE_INSTANCE_CACHEMANAGER_ID"
@@ -52,9 +50,12 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     val VALUE_SELLER_TYPE = 0
     val VALUE_BUYER_TYPE = 1
 
+    override fun getLayoutRes(): Int = com.tokopedia.saldodetails.R.layout.saldo_hold_info_tabview
+
+    override fun getToolbarResourceID() = com.tokopedia.saldodetails.R.id.toolbar_saldo_info
+
     companion object {
         val TAG: String = SaldoHoldInfoItem::class.java.simpleName
-        val SALDOHOLD_FINTECH_PLT = "saldoholdfintech_plt"
         val SALDOHOLD_FINTECH_PLT_PREPARE_METRICS = "saldoholdfintech_plt_prepare_metrics"
         val SALDOHOLD_FINTECH_PLT_NETWORK_METRICS = "saldoholdfintech_plt_network_metrics"
         val SALDOHOLD_FINTECH_PLT_RENDER_METRICS = "saldoholdfintech_plt_render_metrics"
@@ -70,15 +71,11 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         performanceInterface.startMonitoring()
         performanceInterface.stopPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.saldo_hold_info_tabview)
         SaldoDetailsComponentInstance.getComponent(this).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
-        clearFrgmentManger()
-        top_bar_close_button.setOnClickListener {
-            onBackPressed()
-        }
+        clearFragmentManger()
 
         btn_bantuan.setOnClickListener {
             initBottomSheet()
@@ -88,7 +85,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         saldoInfoPresenter.getSaldoHoldInfo()
     }
 
-    private fun clearFrgmentManger() {
+    private fun clearFragmentManger() {
         supportFragmentManager.fragments.forEach {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
@@ -236,26 +233,31 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun initViewPagerAdapter() {
         val adapter = item?.let { SaldoInfoVIewPagerAdapter(supportFragmentManager, it) }
         viewPager?.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
+        viewPager?.let { tabLayout.setupWithViewPager(it) }
     }
 
     private fun initBottomSheet() {
-        helpdialog = CloseableBottomSheetDialog.createInstanceRounded(this)
+        val bottomSheet = BottomSheetUnify()
         val view = LayoutInflater.from(this).inflate(R.layout.saldo_info_help_bottomsheet, null)
-        helpdialog.setCustomContentView(view, "", false)
-        view.btn1.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
-            helpdialog.cancel()
+        view.apply {
+            btn1.setOnClickListener {
+                RouteManager.route(this@SaldoHoldInfoActivity, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL))
+                bottomSheet.dismiss()
+            }
+            btn2.setOnClickListener {
+                RouteManager.route(this@SaldoHoldInfoActivity, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
+                bottomSheet.dismiss()
+            }
         }
-        view.btn2.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDO_HOLD_HELP_URL_TWO))
-            helpdialog.cancel()
+        supportFragmentManager.let {
+            bottomSheet.apply {
+                setChild(view)
+                setTitle(this@SaldoHoldInfoActivity.getString(com.tokopedia.saldodetails.R.string.saldo_info_btn_text))
+                show(it, "SaldoHoldBottomSheet")
+            }
         }
-
-        helpdialog.show()
-
     }
 
     override fun showErrorView() {
@@ -271,9 +273,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     private fun showLayout() {
         container_cl.visibility = View.VISIBLE
         viewflipper_container.displayedChild = 0
-        top_bar_close_button.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     override fun onDestroy() {
@@ -282,5 +281,4 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         performanceInterface.stopMonitoring()
 
     }
-
 }

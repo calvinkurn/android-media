@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.product.addedit">
+
+    <application
+        android:label="Add Edit Product Instrumentation Test"
+        tools:replace="android:label">
+
+        <activity
+            android:name=".stub.AddEditProductPreviewActivityStub"
+            android:label="@string/label_title_add_product"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_open_product_preview"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

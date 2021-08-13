@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fl_loading"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_loading_overlay_background"
-    tools:background="@color/black"
+    android:background="@color/play_dms_loading_overlay_background"
+    tools:background="@color/Unify_Static_Black"
     >
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/iv_loading"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/play_viewer_loading_size"
+        android:layout_height="@dimen/play_viewer_loading_size"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/iv_loading_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular"
+        app:loader_type="circular_white"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,7 +30,7 @@
         android:layout_marginTop="@dimen/play_offset_18"
         android:layout_marginEnd="@dimen/spacing_lvl6"
         android:gravity="center"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

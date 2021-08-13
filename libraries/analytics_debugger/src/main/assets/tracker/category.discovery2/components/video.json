@@ -1,0 +1,13 @@
+{
+  "readme": "Discovery Video Click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventAction": ".*",
+      "event": "clickDiscovery",
+      "eventLabel": ".*"
+    }
+  ]
+}

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_CUSTOM
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -167,7 +167,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val shopShowcaseList = ArrayList<String>()
         shopShowcaseListReorderAdapter?._showcaseList?.let {
             for (shopShowcaseModel in it) {
-                if (shopShowcaseModel.type == ShowcaseType.CUSTOM) {
+                if (shopShowcaseModel.type == ETALASE_CUSTOM) {
                     shopShowcaseList.add(shopShowcaseModel.id)
                 }
             }

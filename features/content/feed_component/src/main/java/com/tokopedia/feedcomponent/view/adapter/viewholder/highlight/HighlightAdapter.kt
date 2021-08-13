@@ -1,7 +1,9 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import android.view.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
@@ -62,10 +64,26 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
             }
             itemView.userImage.setOnClickListener {
-                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink, 0 , "", FollowCta())
+                highlightListener.onAvatarClick(
+                    item.positionInFeed,
+                    item.header.avatarApplink,
+                    0,
+                    "",
+                    FollowCta(),
+                    "",
+                    false, "", isVideo = false, isCaption = false
+                )
             }
             itemView.userName.setOnClickListener {
-                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink ,0, "", FollowCta())
+                highlightListener.onAvatarClick(
+                    item.positionInFeed,
+                    item.header.avatarApplink,
+                    0,
+                    "",
+                    FollowCta(),
+                    "",
+                    false, "", isVideo = false, isCaption = false
+                )
             }
             itemView.productImage.setOnClickListener {
                 highlightListener.onHighlightItemClicked(item.positionInFeed, item)
@@ -105,14 +123,14 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
                     itemView.likeText.text = like.fmt
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
+                            MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
                     )
                 }
                 like.value > 0 -> {
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
                     itemView.likeText.text = like.fmt
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
+                            MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                     )
                 }
                 else -> {
@@ -120,7 +138,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     val likeText = if (like.fmt.isNotEmpty()) like.fmt else ""
                     itemView.likeText.text = likeText
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
+                            MethodChecker.getColor(itemView.likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                     )
                 }
             }
@@ -133,7 +151,18 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
     }
 
     interface HighlightListener {
-        fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta)
+        fun onAvatarClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            activityId: Int,
+            activityName: String,
+            followCta: FollowCta,
+            type: String,
+            isFollowed: Boolean,
+            shopId: String,
+            isVideo: Boolean,
+            isCaption: Boolean
+        )
 
         fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)
 

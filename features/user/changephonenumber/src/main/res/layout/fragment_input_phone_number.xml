@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         tools:visibility="visible">
 
         <LinearLayout
@@ -27,7 +27,7 @@
                 android:layout_marginRight="@dimen/changephonenumber_dp_24_5"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/changephonenumber_sp_4"
-                android:textColor="@color/changephonenumber_black_54"
+                android:textColor="@color/Unify_N700_44"
                 android:text="@string/for_your_safety"/>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/changephonenumber_dp_3"
                 android:text="@string/old_phone_number"
-                android:textColor="@color/changephonenumber_white_two"
+                android:textColor="@color/Unify_N100"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 app:typographyType="body_1"
                 android:layout_marginBottom="@dimen/changephonenumber_dp_3"
-                android:textColor="@color/changephonenumber_white_two"
+                android:textColor="@color/Unify_N100"
                 tools:text="0821-1201-0377" />
 
             <View
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
                 android:text="@string/new_phone_number"
-                android:textColor="@color/changephonenumber_black_54" />
+                android:textColor="@color/Unify_N700_44" />
 
             <EditText
                 android:id="@+id/new_phone_number_value"
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/we_will_send_verification_code"
-                android:textColor="@color/changephonenumber_black_38"
+                android:textColor="@color/Unify_N700_32"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -94,7 +94,7 @@
                 android:gravity="center"
                 android:text="@string/button_continue"
                 app:typographyType="body_3"
-                android:textColor="@color/changephonenumber_black_12"
+                android:textColor="@color/Unify_N700_20"
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
@@ -103,7 +103,7 @@
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"

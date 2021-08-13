@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixRating
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
@@ -14,9 +15,12 @@ import com.tokopedia.review.common.util.getGeneratedFilterByText
 import com.tokopedia.review.common.util.removeFilterElement
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewUseCase
+import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewCounterUseCase
 import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewUiModel
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounter
+import com.tokopedia.review.feature.reviewreminder.domain.ProductrevGetReminderCounterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,10 +30,12 @@ import java.util.*
 import javax.inject.Inject
 
 class InboxReviewViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val getInboxReviewUseCase: GetInboxReviewUseCase,
+        private val getInboxReviewCounterUseCase: GetInboxReviewCounterUseCase,
+        private val productrevGetReminderCounterUseCase: ProductrevGetReminderCounterUseCase,
         val userSession: UserSessionInterface
-) : BaseViewModel(dispatcherProvider.main()) {
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _inboxReview = MutableLiveData<Result<InboxReviewUiModel>>()
     val inboxReview: LiveData<Result<InboxReviewUiModel>>
@@ -47,6 +53,13 @@ class InboxReviewViewModel @Inject constructor(
     val feedbackInboxReviewMediator = MediatorLiveData<Result<InboxReviewUiModel>>()
     val feedbackInboxReview: LiveData<Result<InboxReviewUiModel>>
         get() = feedbackInboxReviewMediator
+
+    private val _inboxReviewCounterText = MutableLiveData<Result<Int>>()
+    val inboxReviewCounterText: LiveData<Result<Int>>
+        get() = _inboxReviewCounterText
+
+    private val estimation = MutableLiveData<ProductrevGetReminderCounter>()
+    fun getEstimation(): LiveData<ProductrevGetReminderCounter> = estimation
 
     init {
         setupFeedBackInboxReview()
@@ -83,9 +96,20 @@ class InboxReviewViewModel @Inject constructor(
         getInitInboxReview()
     }
 
+    fun getInboxReviewCounter() {
+        launchCatchError(block = {
+            val counterResult = withContext(dispatcherProvider.io) {
+                getInboxReviewCounterUseCase.executeOnBackground().productrevReviewTabCounter.list.firstOrNull()?.count.orZero()
+            }
+            _inboxReviewCounterText.postValue(Success(counterResult))
+        }, onError = {
+            _inboxReviewCounterText.postValue(Fail(it))
+        })
+    }
+
     fun getInboxReview(page: Int = 1) {
         launchCatchError(block = {
-            val inboxReviewResult = withContext(dispatcherProvider.io()) {
+            val inboxReviewResult = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page
@@ -102,7 +126,7 @@ class InboxReviewViewModel @Inject constructor(
 
     fun getInitInboxReview(page: Int = 1, statusFilter: String = UNANSWERED_VALUE) {
         launchCatchError(block = {
-            val inboxReviewResult = withContext(dispatcherProvider.io()) {
+            val inboxReviewResult = withContext(dispatcherProvider.io) {
 
                 val statusFilterTextGenerated = "$prefixStatus$statusFilter"
                 filterByList.removeFilterElement(prefixStatus)
@@ -133,7 +157,7 @@ class InboxReviewViewModel @Inject constructor(
                 filterByList.add(statusFilterTextGenerated)
             }
 
-            val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
+            val feedbackInboxReviewList = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page
@@ -193,7 +217,7 @@ class InboxReviewViewModel @Inject constructor(
 
     fun getFeedbackInboxReviewListNext(page: Int) {
         launchCatchError(block = {
-            val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
+            val feedbackInboxReviewList = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page
@@ -206,6 +230,13 @@ class InboxReviewViewModel @Inject constructor(
         }, onError = {
             feedbackInboxReviewMediator.postValue(Fail(it))
         })
+    }
+
+    fun fetchReminderCounter() {
+        launchCatchError(block = {
+            val responseWrapper = productrevGetReminderCounterUseCase.executeOnBackground()
+            estimation.postValue(responseWrapper.productrevGetReminderCounter)
+        }, onError = {})
     }
 
 }

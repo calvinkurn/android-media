@@ -60,6 +60,8 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            if (position < 0) return;
+
             if (recyclerView != null) {
                 scrollToCenter(position);
             }
@@ -103,7 +105,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
     @Override
     public void onBindViewHolder(ImageEditThumbnailViewHolder holder, int position) {
         String imagePath = imagePathList.get(position).get(currentEditStepIndexList.get(position));
-        ImageHandler.loadImageFit2(holder.imageView.getContext(), holder.imageView, imagePath);
+        ImageHandler.loadImageRounded(holder.imageView.getContext(), holder.imageView, imagePath, 20);
         holder.rectGreenView.setVisibility(selectedIndex == position ? View.VISIBLE : View.GONE);
     }
 

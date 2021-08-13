@@ -7,6 +7,7 @@ repositories {
 }
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -50,7 +51,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
 
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit
@@ -73,13 +74,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
 
-    testImplementation rootProject.ext.testDependencies.powerMock
-    testImplementation rootProject.ext.testDependencies.powerMockJUnit
-    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.testDependencies.powerMockXstream
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-
 }
 
 

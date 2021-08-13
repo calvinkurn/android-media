@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_col_1"
@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_8"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold"
             app:layout_constraintHeight_default="wrap"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             app:layout_constraintHeight_default="wrap"
@@ -66,7 +66,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="#f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         tools:text="Title in banner Title in banne Title in banne Title in banne" />
 
@@ -78,7 +78,7 @@
         android:ellipsize="end"
         android:lines="2"
         android:maxLines="2"
-        android:textColor="#8f000000"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_10"
         tools:text="Subtitle in banner gkkj Subtitle in banner gkkj Subtitle in banner gkkj Subtitle in banner gkkj" />
 </LinearLayout>

@@ -12,4 +12,4 @@
     android:text="@string/uoh_recommendation_title"
     app:typographyType="body_2"
     app:typographyWeight="bold"
-    android:textColor="@color/grey_560"/>
+    android:textColor="@color/Unify_N700_68"/>

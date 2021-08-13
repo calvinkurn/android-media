@@ -21,12 +21,11 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.databinding.FragmentHotelRecommendationBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -39,10 +38,12 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
-import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 /**
@@ -54,6 +55,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
+    private var binding by autoClearedNullable<FragmentHotelRecommendationBinding>()
 
     lateinit var currentLocationTextView: TextView
     lateinit var currentLocationLayout: View
@@ -67,7 +69,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private var gpsRetryCounter: Int = 0
-    private val GPS_MAX_RETRY = 5
 
     override fun getScreenName(): String = ""
 
@@ -85,28 +86,27 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
 
         permissionCheckerHelper = PermissionCheckerHelper()
-        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
-        initView(view)
-        return view
+        binding = FragmentHotelRecommendationBinding.inflate(inflater, container, false)
+        initView()
+        return binding?.root
     }
 
-    fun initView(view: View) {
-        initCurrentLocationTextView(view)
-        initRecentSearch(view)
+    fun initView() {
+        initCurrentLocationTextView()
+        initRecentSearch()
     }
 
-    fun initRecentSearch(view: View) {
+    fun initRecentSearch() {
         //init recyclerview
         val layoutManager = ChipsLayoutManager.newBuilder(context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
         val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-        val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
+        val recentSearchRecyclerView = binding?.recentSearchRecyclerView as RecyclerView
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp
                 ?: 0, staticDimen8dp ?: 0))
         recentSearchRecyclerView.layoutManager = layoutManager
@@ -115,10 +115,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         recentSearchRecyclerView.adapter = recentSearchAdapter
 
         //init titleBar
-        recentSearchLayout = view.findViewById(R.id.recent_search_layout)
-        deleteSearchTextView = view.findViewById(R.id.delete_text_view)
-        deleteSearchTextView.setOnClickListener {
-            recentSearchAdapter.deleteAllRecentSearch()
+        binding?.let {
+            recentSearchLayout = it.recentSearchLayout
+            deleteSearchTextView = it.deleteTextView
+            deleteSearchTextView.setOnClickListener {
+                recentSearchAdapter.deleteAllRecentSearch()
+            }
         }
     }
 
@@ -126,20 +128,20 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun getRecyclerViewResourceId() = com.tokopedia.hotel.R.id.recycler_view
 
-    fun initCurrentLocationTextView(view: View) {
-
-        currentLocationTextView = view.findViewById(R.id.current_location_tv)
-
-        currentLocationLayout = view.findViewById(R.id.current_location_layout)
-        currentLocationLayout.setOnClickListener {
-            destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+    fun initCurrentLocationTextView() {
+        binding?.let {
+            currentLocationTextView = it.currentLocationTv
+            currentLocationLayout = it.currentLocationLayout
+            currentLocationLayout.setOnClickListener {
+                getCurrentLocation()
+            }
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.popularSearch.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.popularSearch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -154,7 +156,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.recentSearch.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.recentSearch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -168,7 +170,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.longLat.observe(this, androidx.lifecycle.Observer {
+        destinationViewModel.longLat.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
                 is Fail -> if (!it.throwable.message.isNullOrEmpty() && it.throwable.message.equals(GPS_FAILED_SHOW_ERROR)) {
@@ -192,7 +194,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     private fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchLayout.visibility = if (recentSearches.isEmpty()) View.GONE else View.VISIBLE
-        if (recentSearches.size >= 5) recentSearchAdapter.setData(recentSearches.subList(0, 5))
+        if (recentSearches.size >= RECENT_SEARCH_SIZE) recentSearchAdapter.setData(recentSearches.subList(RECENT_SEARCH_SIZE_SUBLIST, RECENT_SEARCH_SIZE))
         else recentSearchAdapter.setData(recentSearches)
     }
 
@@ -215,19 +217,19 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun showOnlyList(showListOnly: Boolean) {
-        current_location_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
-        recent_search_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
-        popular_search_title.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.currentLocationLayout?.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.recentSearchLayout?.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.popularSearchTitle?.visibility = if (showListOnly) View.GONE else View.VISIBLE
     }
 
     override fun onDeleteRecentSearchItem(uuid: String) {
         if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation), uuid)
+        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, uuid)
     }
 
     override fun onDeleteAllRecentSearch() {
         recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation), "")
+        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, "")
     }
 
     override fun onItemClicked(recentSearch: RecentSearch) {
@@ -263,7 +265,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         } else {
             if (gpsRetryCounter < GPS_MAX_RETRY) {
                 gpsRetryCounter++
-                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+                getCurrentLocation()
             } else {
                 destinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
                 gpsRetryCounter = 0
@@ -289,7 +291,39 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun onErrorGetLocation() {
-        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
+        view?.let { v ->
+            Toaster.build(v, getString(R.string.hotel_destination_error_get_location),
+                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
+    }
+
+    private fun getCurrentLocation() {
+        val locationDetectorHelper = LocationDetectorHelper(
+                permissionCheckerHelper,
+                fusedLocationProviderClient,
+                requireActivity().applicationContext)
+
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(destinationViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
+
+                    }, getString(R.string.hotel_destination_need_permission))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -297,7 +331,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
         when (requestCode) {
             REQUEST_CODE_GPS -> {
-                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+               getCurrentLocation()
             }
         }
     }
@@ -317,6 +351,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     companion object {
         private const val REQUEST_CODE_GPS = 10101
         const val GPS_FAILED_SHOW_ERROR = "GPS_FAILED_SHOW_ERROR"
+        const val GPS_MAX_RETRY = 5
+        const val RECENT_SEARCH_SIZE = 5
+        const val RECENT_SEARCH_SIZE_SUBLIST = 0
 
         fun getInstance(): HotelRecommendationFragment = HotelRecommendationFragment()
     }

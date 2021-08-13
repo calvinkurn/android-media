@@ -69,6 +69,10 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            parent_container?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+
         if (userSession.isLoggedIn || isRemoveFooter) {
             btnRegister?.visibility = View.GONE
         }
@@ -182,7 +186,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
             override fun onClick(view: View) { }
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = true
-                ds.color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500) }  ?: 0
+                ds.color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500) }  ?: 0
             }
         }, sourceString.indexOf("Daftar"), sourceString.length, 0)
         return spannable

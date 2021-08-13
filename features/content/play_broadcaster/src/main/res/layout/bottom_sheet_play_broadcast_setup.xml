@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@color/Blue_B600"
+        tools:background="@color/Unify_B600"
         >
 
         <FrameLayout

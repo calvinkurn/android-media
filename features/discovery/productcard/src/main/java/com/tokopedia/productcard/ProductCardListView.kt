@@ -4,16 +4,19 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 class ProductCardListView: BaseCustomView, IProductCardView {
+
+    private val cartExtension = ProductCardCartExtension(this)
 
     constructor(context: Context): super(context) {
         init()
@@ -34,33 +37,48 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
+
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(
+                isShowBestSeller,
+                labelBestSeller,
+                productCardModel
+        )
+
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, isWideContent = true)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+
+        cartExtension.setProductModel(productCardModel)
 
         buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
 
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-
-        setAddToCartButtonText(productCardModel)
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -82,24 +100,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        cartExtension.addToCartClickListener = addToCartClickListener
     }
 
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
-        }
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-        }
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
-    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
-        if (productCardModel.addToCardText.isNotEmpty())
-            buttonAddToCart?.text = productCardModel.addToCardText
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -124,16 +137,17 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
-
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        cartExtension.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
 
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
-
+    override fun getShopBadgeView(): View? = imageShopBadge
 
     /**
      * Special cases for specific pages
@@ -148,12 +162,12 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_enableButtonAddToCart(){
         buttonAddToCart?.isEnabled = true
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_disableButtonAddToCart(){
         buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_setOutOfStock(){

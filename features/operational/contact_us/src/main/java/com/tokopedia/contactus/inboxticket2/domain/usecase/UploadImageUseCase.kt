@@ -1,12 +1,16 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
-import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.contactus.inboxticket2.data.model.PicObjPojo
+import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.utils.image.ImageProcessingUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.IOException
@@ -22,9 +26,10 @@ private const val PARAM_ID = "id"
 class ContactUsUploadImageUseCase @Inject constructor(private val context: Context,
                                                       private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>) {
 
-    fun uploadFile(userId: String,
-                           imageUploads: List<ImageUpload>?,
-                           files: List<String>): List<ImageUpload>{
+   suspend fun uploadFile(userId: String,
+                          imageUploads: List<ImageUpload>?,
+                          files: List<String>,
+                          listOfSecureImageParmeter: ArrayList<SecureImageParameter>): List<ImageUpload>{
         val list = ArrayList<ImageUpload>()
         imageUploads?.forEachIndexed { index, imageUpload ->
 
@@ -36,10 +41,28 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
                     .first()
                     .dataResultImageUpload
 
-            imageUpload.picObj = response.data.picObj
+            imageUpload.picObj = getModifiedPicObj(response.data.picObj, listOfSecureImageParmeter[index])
             list.add(imageUpload)
         }
         return list
+    }
+
+    fun getModifiedPicObj(picObj: String, secureImageParameter: SecureImageParameter): String? {
+        val picObjPojo = GsonBuilder().create()
+                .fromJson<PicObjPojo>(picObj.decode(),
+                        PicObjPojo::class.java)
+        picObjPojo.fileName = secureImageParameter.imageData?.imageDataValues?.fileName
+        picObjPojo.filePath = secureImageParameter.imageData?.imageDataValues?.filePath
+
+        return Gson().toJson(picObjPojo).encode();
+    }
+
+    private fun String.decode(): String {
+        return android.util.Base64.decode(this, android.util.Base64.DEFAULT).toString(charset("UTF-8"))
+    }
+
+    private fun String.encode(): String {
+        return android.util.Base64.encodeToString(this.toByteArray(charset("UTF-8")), android.util.Base64.DEFAULT)
     }
 
     private fun getParams(userId: String, pathFile: String): RequestParams {
@@ -62,7 +85,7 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
     fun getFile(imageUpload: List<ImageUpload>?): List<String> {
         val list = ArrayList<String>()
         imageUpload?.forEach {
-            val s = ImageUtils.compressImageFile(it.fileLoc, IMAGE_QUALITY)
+            val s = ImageProcessingUtil.compressImageFile(it.fileLoc ?: "", IMAGE_QUALITY)
             list.add(try {
                 s.absolutePath
             } catch (e: IOException) {

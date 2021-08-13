@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingLeft="@dimen/layout_lvl2"
     android:paddingTop="@dimen/layout_lvl2"
@@ -28,7 +29,7 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
             app:typographyType="heading_4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:text="Fasilitas Umum"
             />
 

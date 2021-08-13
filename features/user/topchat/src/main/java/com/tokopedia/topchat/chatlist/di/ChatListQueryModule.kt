@@ -17,15 +17,8 @@ import dagger.multibindings.StringKey
  * @author : Steven 2019-08-08
  */
 
-@ChatListScope
 @Module
 class ChatListQueryModule {
-    @ChatListScope
-    @Provides
-    @IntoMap
-    @StringKey(ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE)
-    fun provideRawQueryDeleteChatListMessage(@TopchatContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_delete)
 
     @ChatListScope
     @Provides

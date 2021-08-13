@@ -8,25 +8,28 @@ class ChipSelectionUseCase @Inject constructor() {
 
     fun onChipSelection(componentId: String, pageIdentifier: String, chipSelectionId: String): Boolean {
         val component = getComponent(componentId, pageIdentifier)
-        component?.let {
-            val parentComponent = getComponent(it.parentComponentId, pageIdentifier)
+        val chipFilterItemData = getComponent(chipSelectionId, pageIdentifier)?.data?.firstOrNull()
+        component?.let { item ->
+            val parentComponent = getComponent(item.parentComponentId, pageIdentifier)
             parentComponent?.getComponentsItem()?.let {
                 parentComponent.setComponentsItem(it.map { childComponent ->
-                    if (childComponent.id != componentId) {
-                        childComponent.apply {
-                            setComponentsItem(null, component.tabName)
-                            noOfPagesLoaded = 0
+                    chipFilterItemData?.targetComponent?.let { targetStringList ->
+                        targetStringList.split(",").forEach { targetId ->
+                            if (targetId == childComponent.id) {
+                                childComponent.apply {
+                                    setComponentsItem(null, component.tabName)
+                                    noOfPagesLoaded = 0
+                                }
+                            }
                         }
-                    } else {
                         childComponent
                     }
-
+                    childComponent
                 }, component.tabName)
-                parentComponent.chipSelectionData = getComponent(chipSelectionId, pageIdentifier)?.data?.get(0)
+                parentComponent.chipSelectionData = chipFilterItemData
             }
             return true
         }
-
         return false
     }
 

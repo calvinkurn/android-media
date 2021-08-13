@@ -8,14 +8,11 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
 
-
-
 /**
  * Created by fwidjaja on 2019-11-07.
  */
 class SomBottomSheetCourierProblemsAdapter(private var listener: ActionListener): RecyclerView.Adapter<SomBottomSheetCourierProblemsAdapter.ViewHolder>() {
     var listChildCourierProblems = mutableListOf<SomReasonRejectData.Data.SomRejectReason.Child>()
-    var reasonCode = ""
     var selectedRadio = -1
 
     interface ActionListener {
@@ -41,12 +38,6 @@ class SomBottomSheetCourierProblemsAdapter(private var listener: ActionListener)
 
         holder.itemView.rl_reject_item.setOnClickListener {
             selectItem(position)
-            /*if (reasonCode.equals("7", true) && position == listChildCourierProblems.size - 1) {
-                holder.itemView.tf_reason_for_option.visibility = View.VISIBLE
-                holder.itemView.tf_reason_for_option.setPlaceholder(holder.itemView.context.getString(R.string.placeholder_reject_reason))
-            } else {
-                holder.itemView.tf_reason_for_option.visibility = View.GONE
-            }*/
         }
     }
 

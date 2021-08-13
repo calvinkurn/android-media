@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/video_thumbnail_main_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/digital_youtube_thumbnail_height"
+    android:layout_height="@dimen/digital_dimen_180"
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -11,8 +12,8 @@
         android:id="@+id/youtube_thumbnail_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/digital_youtube_thumbnail_height"
-        android:tint="@color/cardview_shadow_start_color" />
+        android:minHeight="@dimen/digital_dimen_180"
+        android:tint="@color/Unify_N700_44" />
 
     <View
         android:id="@+id/circle_thumbnail_view"
@@ -20,9 +21,9 @@
         android:layout_height="48dp"
         android:layout_centerInParent="true" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/youtube_thumbnail_loading_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        app:loader_type="circular"/>
 </RelativeLayout>

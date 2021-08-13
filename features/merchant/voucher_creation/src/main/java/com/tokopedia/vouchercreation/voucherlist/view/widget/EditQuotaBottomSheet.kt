@@ -24,6 +24,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.*
@@ -53,6 +54,10 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
         private const val MAX_TEXTFIELD_LENGTH = 3
 
         private const val VOUCHER = "voucher"
+
+        private const val ERROR_MESSAGE = "Error edit voucher quota"
+
+        const val TAG = "EditQuotaBottomSheet"
     }
 
     private val voucher by lazy {
@@ -117,6 +122,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
                 }
                 is Fail -> {
                     onFailUpdateVoucher(result.throwable.message.toBlankOrString())
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                 }
             }
             btnMvcSaveQuota?.run {
@@ -250,7 +256,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, EditQuotaBottomSheet::class.java.simpleName)
+        show(fm, TAG)
     }
 
     fun setOnSuccessUpdateVoucher(action: () -> Unit): EditQuotaBottomSheet {

@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
@@ -21,6 +22,7 @@ import org.junit.Test
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
+@ExperimentalCoroutinesApi
 class HasPasswordViewModelTestJunit {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

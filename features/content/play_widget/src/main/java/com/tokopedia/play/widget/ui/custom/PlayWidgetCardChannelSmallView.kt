@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -16,7 +17,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by jegul on 06/10/20
@@ -29,14 +30,16 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val flBorder: FrameLayout
-    private val ivCover: ImageView
+    private val ivCover: ImageUnify
     private val pvVideo: PlayerView
-    private val ivDiscount: ImageView
-    private val clTotalView: ConstraintLayout
+    private val llTotalView: LinearLayout
     private val tvTotalView: TextView
+    private val tvLiveBadge: TextView
+    private val ivTotalView: ImageView
     private val tvTitle: TextView
     private val tvUpcoming: TextView
-    private val ivLiveBadge: ImageView
+    private val tvContextualInfo: TextView
+    private val ivGiveaway: ImageView
 
     private var mListener: Listener? = null
 
@@ -48,12 +51,14 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         flBorder = view.findViewById(R.id.fl_border)
         ivCover = view.findViewById(R.id.iv_cover)
         pvVideo = view.findViewById(R.id.pv_video)
-        ivDiscount = view.findViewById(R.id.iv_discount)
-        clTotalView = view.findViewById(R.id.cl_total_view)
+        llTotalView = view.findViewById(R.id.ll_total_view)
         tvTotalView = view.findViewById(R.id.tv_total_view)
+        tvLiveBadge = view.findViewById(R.id.tv_live_badge)
+        ivTotalView = view.findViewById(R.id.iv_total_view)
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
-        ivLiveBadge = view.findViewById(R.id.iv_live_badge)
+        tvContextualInfo = view.findViewById(R.id.tv_contextual_info)
+        ivGiveaway = view.findViewById(R.id.iv_giveaway)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -81,6 +86,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         return mPlayer
     }
 
+    override fun isPlayable(): Boolean {
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         setPlayer(null)
@@ -89,25 +99,38 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     fun setModel(model: PlayWidgetSmallChannelUiModel) {
         mModel = model
 
-        ivCover.loadImage(model.video.coverUrl)
+        ivCover.setImageUrl(model.video.coverUrl)
 
         handleType(model.channelType)
-        handlePromo(model.channelType, model.hasPromo)
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
+        handleGiveaway(model.hasGiveaway)
 
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
+
+        tvContextualInfo.text = model.promoType.promoText
 
         setOnClickListener {
             mListener?.onChannelClicked(this, model)
         }
 
-        if (model.video.isLive) {
-            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
-            ivLiveBadge.visible()
-        } else {
-            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
-            ivLiveBadge.invisible()
+        when {
+            model.video.isLive -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
+            model.hasPromo -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_promo_border)
+            else -> flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
+        }
+
+        when {
+            model.hasPromo -> {
+                tvContextualInfo.setBackgroundResource(
+                        if (model.video.isLive) R.drawable.bg_play_widget_small_live_context
+                        else R.drawable.bg_play_widget_small_promo_context
+                )
+                tvContextualInfo.visible()
+            }
+            else -> {
+                tvContextualInfo.invisible()
+            }
         }
     }
 
@@ -118,31 +141,36 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private fun handleType(type: PlayWidgetChannelType) {
         when (type) {
             PlayWidgetChannelType.Live -> {
+                tvLiveBadge.visible()
+                ivTotalView.gone()
                 tvUpcoming.gone()
             }
             PlayWidgetChannelType.Vod -> {
+                ivTotalView.visible()
+                tvLiveBadge.gone()
                 tvUpcoming.gone()
             }
             PlayWidgetChannelType.Upcoming -> {
+                ivTotalView.gone()
+                tvLiveBadge.gone()
                 tvUpcoming.visible()
-                ivDiscount.gone()
             }
+            else -> {}
         }
-    }
-
-    private fun handlePromo(type: PlayWidgetChannelType, hasPromo: Boolean) {
-        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) ivDiscount.gone()
-        else if (hasPromo) ivDiscount.visible()
-        else ivDiscount.gone()
     }
 
     private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
-        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) clTotalView.gone()
+        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) llTotalView.gone()
         else if (isVisible) {
-            clTotalView.visible()
+            llTotalView.visible()
             tvTotalView.text = totalViewString
         }
-        else clTotalView.gone()
+        else llTotalView.gone()
+    }
+
+    private fun handleGiveaway(hasGiveaway: Boolean) {
+        if(hasGiveaway) ivGiveaway.visible()
+        else ivGiveaway.gone()
     }
 
     interface Listener {

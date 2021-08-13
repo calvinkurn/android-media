@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
@@ -22,8 +22,8 @@ import javax.inject.Inject
 class ShowcaseProductAddViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getProductListUseCase: GetProductListUseCase,
-    private val dispatchers: ShopShowcaseDispatchProvider
-): BaseViewModel(dispatchers.ui()) {
+    private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val shopId: String by lazy {
         userSession.shopId
@@ -53,7 +53,7 @@ class ShowcaseProductAddViewModel @Inject constructor(
     }
 
     private suspend fun executeProductListUseCase(filter: GetProductListFilter) {
-        _productList.value = Success(withContext(dispatchers.io()){
+        _productList.value = Success(withContext(dispatchers.io){
             getProductListUseCase.params = GetProductListUseCase.createRequestParams(shopId, filter)
             return@withContext getProductListUseCase.executeOnBackground()
         })

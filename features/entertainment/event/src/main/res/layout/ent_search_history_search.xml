@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTerakhirDicari"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTerakhirDicari"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/ent_search_event_list_item"/>
 

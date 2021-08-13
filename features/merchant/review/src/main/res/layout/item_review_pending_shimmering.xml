@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             app:corners="8"
-            app:custom_color="@color/shimmer_custom_color"
+            app:custom_color="@color/Unify_N50"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -32,7 +32,7 @@
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:corners="8"
-            app:custom_color="@color/shimmer_custom_color"
+            app:custom_color="@color/Unify_N50"
             app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -47,7 +47,7 @@
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginEnd="@dimen/layout_lvl7"
             app:corners="8"
-            app:custom_color="@color/shimmer_custom_color"
+            app:custom_color="@color/Unify_N50"
             app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
             app:layout_constraintTop_toBottomOf="@id/inbox_reputation_shimmer_title"
             app:layout_constraintEnd_toEndOf="parent" />

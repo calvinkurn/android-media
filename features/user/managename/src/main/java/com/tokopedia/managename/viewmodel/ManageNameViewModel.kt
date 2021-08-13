@@ -3,7 +3,7 @@ package com.tokopedia.managename.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.managename.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.managename.data.model.UpdateNameModel
 import com.tokopedia.managename.domain.AddNameUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 class ManageNameViewModel @Inject constructor(
         private val addNameUseCase: AddNameUseCase,
-        dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     private val mutableUpdateName = MutableLiveData<com.tokopedia.usecase.coroutines.Result<UpdateNameModel>>()
     val updateNameLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<UpdateNameModel>>

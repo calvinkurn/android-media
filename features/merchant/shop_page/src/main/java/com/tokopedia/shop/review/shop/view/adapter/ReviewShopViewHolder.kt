@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shop.R
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductContentViewHolder
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductModelContent
@@ -21,7 +21,7 @@ class ReviewShopViewHolder(itemView: View, viewListener: ListenerReviewHolder, s
         if (element is ReviewShopModelContent) {
             val shopReviewModelContent = element
             productName.text = shopReviewModelContent.productName
-            ImageHandler.loadImageRounded2(itemView.context, productImage, shopReviewModelContent.productImageUrl, convertDpToPx(productImage.context, RADIUS_IMAGE.toFloat()))
+            productImage.loadImageRounded(shopReviewModelContent.productImageUrl, convertDpToPx(productImage.context, RADIUS_IMAGE.toFloat()))
             productName.setOnClickListener { goToProductDetail(shopReviewModelContent) }
             productImage.setOnClickListener { goToProductDetail(shopReviewModelContent) }
         }

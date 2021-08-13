@@ -6,11 +6,10 @@ import com.tokopedia.home.analytics.v2.RechargeRecommendationTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendationData
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.home_component.model.ReminderData
 
-class RechargeRecommendationCallback (val context: Context?, val viewModel: HomeViewModel,
+class RechargeRecommendationCallback (val context: Context?,
                                       val homeCategoryListener: HomeCategoryListener): RechargeRecommendationListener{
 
     override fun onRechargeRecommendationClickListener(reminderData: ReminderData) {
@@ -35,7 +34,7 @@ class RechargeRecommendationCallback (val context: Context?, val viewModel: Home
         val requestParams = mapOf(
                 DeclineRechargeRecommendationUseCase.PARAM_UUID to reminderData.UUID,
                 DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to reminderData.id)
-        viewModel.declineRechargeRecommendationItem(requestParams)
+        homeCategoryListener.declineRechargeRecommendationItem(requestParams)
     }
 
     override fun onRechargeRecommendationImpressionListener(reminderData: ReminderData) {
@@ -47,7 +46,7 @@ class RechargeRecommendationCallback (val context: Context?, val viewModel: Home
     }
 
     override fun getRechargeRecommendation() {
-        viewModel.getRechargeRecommendation()
+        homeCategoryListener.getRechargeRecommendation()
     }
 
     private fun mapRemindertoRechargeRecommendationData(reminderData: ReminderData): RechargeRecommendationData {

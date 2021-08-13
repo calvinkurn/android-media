@@ -1,5 +1,5 @@
 package com.tokopedia.talk.feature.inbox.presentation.listener
 
 interface TalkInboxListener {
-    fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int)
+    fun updateUnreadCounter(sellerUnread: Long, buyerUnread: Long)
 }

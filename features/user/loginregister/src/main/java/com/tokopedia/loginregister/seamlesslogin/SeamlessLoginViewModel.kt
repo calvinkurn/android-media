@@ -1,10 +1,10 @@
 package com.tokopedia.loginregister.seamlesslogin
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyData
 import com.tokopedia.loginregister.seamlesslogin.usecase.GenerateKeyUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class SeamlessLoginViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                                  private val generateKeyUseCase: GenerateKeyUseCase,
-                                                 dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                                 dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.main) {
     fun getKey(onSuccess: (GenerateKeyData) -> kotlin.Unit, onError: (Throwable) -> kotlin.Unit) {
         generateKeyUseCase.executeCoroutines(onSuccess, onError)
     }

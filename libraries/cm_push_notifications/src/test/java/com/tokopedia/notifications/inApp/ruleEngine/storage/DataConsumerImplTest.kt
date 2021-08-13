@@ -40,15 +40,6 @@ class DataConsumerImplTest {
     }
 
     @Test
-    fun dataShownWithIdAndNewStartTime() {
-        every { RepositoryManager.getInstance().storageProvider.updateInAppDataFreq(any(), any()).subscribe() } returns mockk()
-
-        dataConsumerImpl.dataShown(123, 123)
-
-        verify { RepositoryManager.getInstance().storageProvider.updateInAppDataFreq(any(), any()).subscribe() }
-    }
-
-    @Test
     fun inflationError() {
         every { RepositoryManager.getInstance().storageProvider.deleteRecord(any()).subscribe() } returns mockk()
 

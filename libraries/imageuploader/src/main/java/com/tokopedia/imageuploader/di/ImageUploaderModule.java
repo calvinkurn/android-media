@@ -9,7 +9,6 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.imageuploader.data.ProgressResponseBody;
@@ -85,12 +84,10 @@ public class ImageUploaderModule {
                                             @ImageUploaderQualifier OkHttpRetryPolicy retryPolicy,
                                             @ImageUploaderChuckQualifier Interceptor chuckInterceptor,
                                             @ImageUploaderQualifier HttpLoggingInterceptor loggingInterceptor,
-                                            @ImageUploaderQualifier ErrorResponseInterceptor errorHandlerInterceptor,
-                                            @ImageUploaderQualifier CacheApiInterceptor cacheApiInterceptor) {
+                                            @ImageUploaderQualifier ErrorResponseInterceptor errorHandlerInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(tkpdAuthInterceptor);
         builder.addInterceptor(fingerprintInterceptor);
-        builder.addInterceptor(cacheApiInterceptor);
         builder.addInterceptor(errorHandlerInterceptor);
 
         if (isNeedProgress) {
@@ -165,12 +162,6 @@ public class ImageUploaderModule {
     @Provides
     public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(ImageUploaderResponseError.class);
-    }
-
-    @ImageUploaderQualifier
-    @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
     }
 
     @ImageUploaderQualifier

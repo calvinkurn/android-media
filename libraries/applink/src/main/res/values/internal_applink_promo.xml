@@ -35,7 +35,7 @@
     <string name="host_tokopoints">tokopoints</string>
     <string name="path_tokopoint_home">/home</string>
     <string name="path_tokopoints_coupon">/kupon-saya</string>
-    <string name="path_tokopoints_history">/history</string>
+    <string name="path_tokopoints_merchant_couponlist">/kupon-toko</string>
     <string name="path_tokopoints_coupon_details">/kupon-detail</string>
     <string name="path_tokopoints_catalog_details">/tukar-detail</string>
     <string name="path_tokopoints_catalog_listing">/tukar-point</string>
@@ -49,5 +49,8 @@
     <string name="path_gift_60s">/gamification_gift_60s</string>
     <string name="path_smc_referral">/smc-referral</string>
     <string name="internet_title_gamification">Gamification</string>
+
+    <!--promo checkout-->
+    <string name="title_promo_checkout">Promo Checkout</string>
 
 </resources>

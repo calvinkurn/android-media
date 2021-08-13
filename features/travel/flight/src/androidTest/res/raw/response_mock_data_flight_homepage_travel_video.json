@@ -1,0 +1,27 @@
+[
+  {
+    "data": {
+      "travelCollectiveBanner": {
+        "banners": [
+          {
+            "id": "634",
+            "product": "FLIGHTPROMOTIONAL",
+            "attributes": {
+              "description": "Traveling aman",
+              "webURL": "https://www.tokopedia.com/amp/flight/stories/protocol",
+              "appURL": "tokopedia://webview?url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Famp%2Fflight%2Fstories%2Fprotocol",
+              "imageURL": "https://ecs7.tokopedia.net/img/aBwccf/2021/3/5/1ebc1b4d-119d-4aa4-942c-e3be9888468d.jpg",
+              "promoCode": ""
+            }
+          }
+        ],
+        "meta": {
+          "title": "Lihat semua",
+          "webURL": "https://www.tokopedia.com/promo/tiket/?cta_src\u003d4",
+          "appURL": "tokopedia://promo?menuID\u003d4",
+          "label": "Traveling aman"
+        }
+      }
+    }
+  }
+]

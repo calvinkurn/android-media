@@ -22,7 +22,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        listener.onRechargeLegoBannerItemClicked(channelModel.id.toIntOrNull() ?: -1, channelGrid.id.toIntOrNull() ?: -1, position)
+        listener.onRechargeLegoBannerItemClicked(channelModel.id, channelGrid.id, position)
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -46,7 +46,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-        listener.onRechargeLegoBannerImpression(channelModel.id.toIntOrNull() ?: -1)
+        listener.onRechargeLegoBannerImpression(channelModel.id)
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
@@ -62,6 +62,18 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
-        listener.loadRechargeSectionData(channelModel.id.toIntOrNull() ?: -1)
+        listener.loadRechargeSectionData(channelModel.id)
+    }
+    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+    }
+
+    override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+    }
+
+    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
     }
 }

@@ -13,6 +13,10 @@ class ProductItem {
     @Expose
     var name // 2
             : String = ""
+    @SerializedName("product_url")
+    @Expose
+    var productUrl // 2
+            : String = ""
     @SerializedName("product_price")
     @Expose
     var price // 3

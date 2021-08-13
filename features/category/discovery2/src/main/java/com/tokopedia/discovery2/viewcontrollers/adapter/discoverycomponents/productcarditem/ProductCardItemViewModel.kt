@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.PDP_APPLINK
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
@@ -13,10 +12,9 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -35,7 +33,6 @@ private const val SOURCE = "discovery"
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val NOTIFY_ME_TEXT = "tertarik"
-private const val DEFAULT_COLOR = "#1e31353b"
 
 class ProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -52,11 +49,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
-    init {
-        initDaggerInject()
-    }
+    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -92,6 +85,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return UserSession(application).isLoggedIn
     }
 
+    fun getUserID():String? {
+        return UserSession(application).userId
+    }
+
     fun getDataItemValue() = dataItem
 
     fun chooseShopBadge(): Int {
@@ -111,7 +108,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     fun getFreeOngkirImage(dataItem: DataItem): String {
         val isBebasActive = dataItem.freeOngkir?.isActive
         return if (isBebasActive == true) {
-            dataItem.freeOngkir.freeOngkirImageUrl
+            dataItem.freeOngkir?.freeOngkirImageUrl ?: ""
         } else {
             ""
         }
@@ -138,7 +135,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     fun getStockWord(): StockWording {
-        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
         var stockWordTitle = dataItem.value?.stockWording?.title
         var stockAvailableCount: String? = ""
 
@@ -164,7 +161,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             customStock <= threshold -> {
                                 stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
+                                stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                             }
                             else -> {
                                 stockWordTitle = getStockText(R.string.terjual)
@@ -193,11 +190,11 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     private fun getStockColor(colorID: Int): String {
-        try {
+        return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
+            application.resources.getString(R.string.discovery_product_stock_color)
         }
-        return DEFAULT_COLOR
     }
 
     fun handleNavigation() {
@@ -281,10 +278,5 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return campaignNotifyMeRequest
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 }

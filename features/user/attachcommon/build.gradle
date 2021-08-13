@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -17,6 +18,10 @@ project.ext {
     groupId = 'com.tokopedia.user'
     versionName = "0.0.2"
     artifactName = "attachcommon-release"
+}
+
+dependencies {
+    implementation rootProject.ext.unifyDependencies.principles
 }
 
 apply from: '../../../publish_local.gradle'

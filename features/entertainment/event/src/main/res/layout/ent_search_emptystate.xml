@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="@dimen/dimen_dp_20">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography2"
@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography2"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 

@@ -1,0 +1,95 @@
+[{
+  "data": {
+    "productRecommendationWidget": {
+      "data": [
+        {
+          "tID": "YsNspGPiC6gWSzrnOtvJskkyz9g=",
+          "source": "custom",
+          "title": "Produk serupa",
+          "foreignTitle": "Related products",
+          "widgetUrl": "",
+          "pagination": {
+            "currentPage": 1,
+            "nextPage": 2,
+            "prevPage": -1,
+            "hasNext": true
+          },
+          "recommendation": [
+            {
+              "id": 1140602418,
+              "name": "Dreame CC Mop Cleaner Wireless Electric Mop alt SWDK D260",
+              "categoryBreadcrumbs": "Elektronik/Elektronik Rumah Tangga/Vacuum Cleaners",
+              "url": "https://www.tokopedia.com/dreameofficial-/dreame-cc-mop-cleaner-wireless-electric-mop-alt-swdk-d260?src=topads",
+              "appUrl": "tokopedia://product/1140602418",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosHdopJfoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJhHAHFHpj7bm-srcHi6sJaHAnDUMVj9RosQR-BUstpHpHX6_edopKhHpnNo_UFHAHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_9j781NEgp-vzcrh_32zH1Y1e9x6qBV2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8jOkgpVoucDa_9jFP7OEZ9xHuVVN_uPzPVB9u9Pg1pnO3uzcQJO1qch6Hj7F_32gq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOE_9uvuVJ7_S2S8JOEe_u6uJBR_1zoq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81NE19u6zcHh_uzgH1NEZ_C6uJBd_92oq3gzv_7ibm-Orfua9fBjUstiH_yhHsKaoAnibm-pg9opq3YX9fBjUstiPMPjouzIPIuwQ9CtzBxbQ7uh1jyR3jWS8JdhgO-k3JuZ_sgib12RHRxRu_ViHVCE_pPk8VCqZIJN3uCtu9ofup1dPO-co3NeHjNXg1oCr1Ndr3DOefYNHMedyS2FZBov63OB6u2dzRzEH3yFoAV33VBj3MoX3JPv3c1RP3oCrJKibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pyFbAHd6AHDHpjf6u7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HprfoS7?management_type=1&src=recom_widget_default&page=1&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH&ob=%00&dv=android&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fdreameofficial-%2Fdreame-cc-mop-cleaner-wireless-electric-mop-alt-swdk-d260%3Fsrc%3Dtopads",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosHdopJfoAnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJhHAHFHpj7bm-srcHi6sJaHAnDUMVj9RosQR-BUstpHpHX6_edopKhHpnNo_UFHAHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_9j781NEgp-vzcrh_32zH1Y1e9x6qBV2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8jOkgpVoucDa_9jFP7OEZ9xHuVVN_uPzPVB9u9Pg1pnO3uzcQJO1qch6Hj7F_32gq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOE_9uvuVJ7_S2S8JOEe_u6uJBR_1zoq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81NE19u6zcHh_uzgH1NEZ_C6uJBd_92oq3gzv_7ibm-Orfua9fBjUstiH_yhHsKaoAnibm-pg9opq3YX9fBjUstiPMPjouzIPIuwQ9CtzBxbQ7uh1jyR3jWS8JdhgO-k3JuZ_sgib12RHRxRu_ViHVCE_pPk8VCqZIJN3uCtu9ofup1dPO-co3NeHjNXg1oCr1Ndr3DOefYNHMedyS2FZBov63OB6u2dzRzEH3yFoAV33VBj3MoX3JPv3c1RP3oCrJKibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pyFbAHd6AHDHpjf6u7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HprfoS7?t=android&uid=16128240&page=1&ob=%00&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH&src=recom_widget_default&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fdreameofficial-%2Fdreame-cc-mop-cleaner-wireless-electric-mop-alt-swdk-d260%3Fsrc%3Dtopads&product_id=1140602418&management_type=1",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syp6ArhoseFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yhH_npHAHNomFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5HZ4hH_n7osKdopn5H_JFoAyd6ArF9fujo3zBHsHpb_HRy_nWoceh6mOx6APsb_r7osusy31p6AxsoB4hHAKF9pJF6Anibm-xgVYpyfYagZUEHpHpbsj76ArdH_HF6_1aHAnpbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoIB68Mra_7zSH1Ok1_VvuJVd_M2zq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z92oqMrh_uz0HjONHIPo8jBd_Vzz81O919zguOuR3uHFouB1zMhoucxD_s-oHJOk33BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92o8jOO_OzzoJNEgRxo8jJO_Bz-P7OJ_3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B68BVO_jzsH1O13_V68jjF_Bz-8JOE_3BM1_7YUiFiP9oBrBY2gmUEUsJfH_UdHseFUiFirfuprfB5QBY2gmUEUSgSgAu1zRzO9fOFqJgyZfYVru-coO2bgRx6H3PZqBxV1jdfyiOGPpodPO1hysCe8j4RqSxe3jxh6uBeqVupPBrO6IPZzsuX1A-6QMuAe9V68IV0o1o58_-j6c-ErJ2__pBWg_Bq8JP78sVMHAehuBxggV2sQBxI_OxBoRuse9CUUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sepopyfwe?t=android&dv=android&page=1&ob=%00&management_type=1&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH&src=recom_widget_default",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/9/1/110468870/110468870_ed5de233-37a0-4d18-a87c-7465cae388c6_1080_1080",
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "price": "Rp1.200.000",
+              "priceInt": 1200000,
+              "slashedPriceInt": 1899000,
+              "slashedPrice": "Rp1.899.000",
+              "discountPercentage": 37,
+              "shop": {
+                "id": 9353708,
+                "name": "Dreame Official Store ID",
+                "city": "Jakarta Barat"
+              },
+              "departmentId": 3969,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                }
+              ],
+              "rating": 5,
+              "countReview": 17,
+              "recommendationType": "cluster_v2_recentview",
+              "stock": 0,
+              "isTopads": true
+            },
+            {
+              "id": 541577733,
+              "name": "Trowel Coratex / Sendok Semen / Cetok Semen / Cetok Perata Godwin - Lancip",
+              "categoryBreadcrumbs": "Pertukangan/Hand Tools/Sendok Semen",
+              "url": "https://www.tokopedia.com/gutehardware/trowel-coratex-sendok-semen-cetok-semen-cetok-perata-godwin-lancip?src=topads",
+              "appUrl": "tokopedia://product/541577733",
+              "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAnho_rhH_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosJhHAHFHpj7bm-srcHi6seFHmFiy3zwrfo5rM1i6sHa6ZdNHsHho_ya6_KF6ArfHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepea_M2gHjNk3_-6qBja_M2gHjNk3_o-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk39uozVBR_M2CHjOJ39P6qjJa_1zgP7N2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1BE_32SH1O1qp-o8_CR_92-8Jh119BouOV73uPuPOB_HAuguJgD_uztQJda__CoqBB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_320P1Y1Z92ouV1a_320oJOJgpo6qjO2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2sP1YJu_oo8j7O_uzgo1NJypuve7tNUiFiP9oBrBY2gmUEUsJfH_UdHseFUiFirfuprfB5QBY2gmUEUSgSgAu1zRzO9fOFqJgyZfYVru-coO2bgRx6H3PZqBxV1jdfyiOGPpodPO1hysCe8j4RqSxe3jxh6uBeqVupPBrO6IPZzsuX1A-6QMuAe9V68IV0o1o58_-j6c-ErJ2__pBWg_Bq8JP78sVMHAehuBxggV2sQBxI_OxBoRuse9CUUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BD7HAUNbAeFop1DoAJhHO7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHpUNo97?ob=%00&management_type=1&dv=android&t=android&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH&src=recom_widget_default&page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fgutehardware%2Ftrowel-coratex-sendok-semen-cetok-semen-cetok-perata-godwin-lancip%3Fsrc%3Dtopads",
+              "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoAnho_rhH_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosJhHAHFHpj7bm-srcHi6seFHmFiy3zwrfo5rM1i6sHa6ZdNHsHho_ya6_KF6ArfHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepea_M2gHjNk3_-6qBja_M2gHjNk3_o-q9P23_oZ8uKp_Mhg3J2ky1o-ojBk39uozVBR_M2CHjOJ39P6qjJa_1zgP7N2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1BE_32SH1O1qp-o8_CR_92-8Jh119BouOV73uPuPOB_HAuguJgD_uztQJda__CoqBB2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_320P1Y1Z92ouV1a_320oJOJgpo6qjO2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2sP1YJu_oo8j7O_uzgo1NJypuve7tNUiFiP9oBrBY2gmUEUsJfH_UdHseFUiFirfuprfB5QBY2gmUEUSgSgAu1zRzO9fOFqJgyZfYVru-coO2bgRx6H3PZqBxV1jdfyiOGPpodPO1hysCe8j4RqSxe3jxh6uBeqVupPBrO6IPZzsuX1A-6QMuAe9V68IV0o1o58_-j6c-ErJ2__pBWg_Bq8JP78sVMHAehuBxggV2sQBxI_OxBoRuse9CUUiFiy3hSUstiyfhOrRzBrBYfHBYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BD7HAUNbAeFop1DoAJhHO7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHpUNo97?page=1&t=android&src=recom_widget_default&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH&uid=16128240&management_type=1&dv=android&product_id=541577733&ob=%00&r=https%3A%2F%2Fwww.tokopedia.com%2Fgutehardware%2Ftrowel-coratex-sendok-semen-cetok-semen-cetok-perata-godwin-lancip%3Fsrc%3Dtopads",
+              "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seFH_1RH_J7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yhH_npHAHNomFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJhbpH5gAxBgsusg_eWH3gBHZ77HcgMb_KNo3yWy_H7g3-jgMuBosujbM2FgaUDUMVj9RosQR-BUstpHsjX6_UpH_1fHsjdHAKRosHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7HjNk3_-6qBja_M2gHjNk3_-6qBjpZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBBO_1zgP7Nke_-ozVBR_M2CHjOJ39P6q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8jOkgpVoucDa_9jFP7OEZ9xHuVVN_uPzPVB9u9Pg1pnO3uzcQJO1qch6Hj7F_32gq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-8jOkqRuvuJBE_uzuHjOkqpzozcrp_M2oq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81NkyRuvzV1p_92oo1O13_u6zcHO_7oG6ZUDUSupg9-wq3ei6iUhosJa6AU7HmUDUSoBrRo2QfNwq3ei6i-fgfeOuJP7PuYWrcxc3JW5z9VZzsPqZfPd_sVS1M2yzu-6oMUWZSrp8IPuH3UF1I2vof2d1V2Ur_Bg1cxurRg9o_xR1jyOQBna_MNBe7Vh_SxhqpuAQRjagAxi8SCG174NQ31N3SxIPIthgsn7Hugy33zqyfNyz7Yyg_POy7VFZmUDUMVDgaUEUMoDP9o7g9-wPs-wrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-X9foxQMz2gcV7guYxgIHi6seFbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHpUNo97?dv=android&src=recom_widget_default&page=1&management_type=1&t=android&ob=%00&sid=vgd5TGtu_mphFXKoEqRF7ZKgxN1gRjXERN6b-Jw3xwU1b0PzO7jxPZHq9YPhUsvW58wRF5nP2NneCAqNxqk5Coy2d8bzpJSO9me9ZxGtz1f041VXYdZcnXGOXe7ucApH",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/3/d8ef5ce4-1fe1-40ff-895f-a34ebdfee65d.jpg",
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "price": "Rp25.000",
+              "priceInt": 25000,
+              "slashedPriceInt": 0,
+              "slashedPrice": "",
+              "discountPercentage": 0,
+              "shop": {
+                "id": 4869902,
+                "name": "Gute Hardware",
+                "city": "Surabaya"
+              },
+              "departmentId": 4113,
+              "badges": [
+                {
+                  "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                }
+              ],
+              "rating": 5,
+              "countReview": 98,
+              "recommendationType": "cluster_v2_recentview",
+              "stock": 0,
+              "isTopads": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}]

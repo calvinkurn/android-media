@@ -1,24 +1,17 @@
 package com.tokopedia.shop.open.common
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.shop.open.BuildConfig
-import timber.log.Timber
 
 /**
  * @author by milhamj on 21/04/20.
  */
 object ShopOpenRevampErrorHandler {
 
-    fun logMessage(message: String) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log(message)
-            } else {
-                Timber.e(message)
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+    fun logMessage(title: String, userId: String, message: String) {
+        ServerLogger.log(Priority.P2, "SHOP_OPEN", mapOf("type" to "$title.", "userId" to userId, "errorMessage" to message))
     }
 
     fun logExceptionToCrashlytics(t: Throwable) {

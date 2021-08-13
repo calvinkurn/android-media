@@ -25,7 +25,10 @@ data class PieChartWidgetDataModel(
         val dataKey: String = "",
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String = ""
+        val errorMsg: String = "",
+        @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean = false
 )
 
 data class PieChartDataModel(

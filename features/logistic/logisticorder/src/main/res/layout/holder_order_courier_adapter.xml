@@ -37,6 +37,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/white_two" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

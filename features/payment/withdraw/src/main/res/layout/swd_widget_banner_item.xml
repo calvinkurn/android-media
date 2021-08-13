@@ -4,22 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/Neutral_N200"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingStart="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl2"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:paddingStart="@dimen/unify_space_4"
+    android:paddingTop="@dimen/unify_space_8"
+    android:paddingEnd="@dimen/unify_space_4"
+    android:paddingBottom="@dimen/unify_space_8"
+    tools:background="@color/Unify_N200">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageUnifyBackground"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -31,12 +32,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBannerTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/swp_dp_12"
-        android:layout_marginTop="@dimen/swp_dp_12"
-        android:layout_marginEnd="@dimen/swp_dp_12"
-        android:textColor="@color/Neutral_N0"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="@id/text_guideline_right"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -45,12 +46,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBannerDescriptionOne"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/swp_dp_12"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/swd_dp_6"
-        android:layout_marginEnd="@dimen/swp_dp_12"
-        android:textColor="@color/Neutral_N0"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="@id/text_guideline_right"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvBannerTitle"
@@ -59,11 +60,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBannerDescriptionTwo"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/swp_dp_12"
-        android:layout_marginEnd="@dimen/swp_dp_12"
-        android:textColor="@color/Neutral_N0"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="@id/text_guideline_right"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvBannerDescriptionOne"
@@ -74,6 +75,6 @@
         android:id="@+id/bannerTextGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tvBannerTitle,tvBannerDescriptionOne,tvBannerDescriptionTwo"/>
+        app:constraint_referenced_ids="tvBannerTitle,tvBannerDescriptionOne,tvBannerDescriptionTwo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

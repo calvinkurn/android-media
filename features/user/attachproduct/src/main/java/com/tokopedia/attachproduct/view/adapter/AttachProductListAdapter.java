@@ -16,7 +16,7 @@ import java.util.List;
 
 public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemUiModel,AttachProductListAdapterTypeFactory>
 {
-    private HashSet<Integer> productIds;
+    private HashSet<String> productIds;
     private ArrayList<AttachProductItemUiModel> checkedList;
 
     public AttachProductListAdapter(AttachProductListAdapterTypeFactory baseListAdapterTypeFactory) {
@@ -26,7 +26,7 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemU
     }
 
     public AttachProductListAdapter(AttachProductListAdapterTypeFactory baseListAdapterTypeFactory,
-                                    HashSet<Integer> productIds, ArrayList<AttachProductItemUiModel> checkedList) {
+                                    HashSet<String> productIds, ArrayList<AttachProductItemUiModel> checkedList) {
         super(baseListAdapterTypeFactory);
         this.productIds = productIds;
         this.checkedList = checkedList;
@@ -60,7 +60,7 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemU
     public void itemChecked(boolean isChecked,int position){
         AttachProductItemUiModel product = getDataRow(position);
         if(product != null) {
-            int productId = product.getProductId();
+            String productId = product.getProductId();
             if (isChecked) {
                 productIds.add(productId);
                 addToCheckedDataList(product);
@@ -75,7 +75,7 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemU
         checkedList.add(productItemViewModel);
     }
 
-    private void removeFromCheckedDataList(int productId){
+    private void removeFromCheckedDataList(String productId){
         Iterator<AttachProductItemUiModel> iterator = checkedList.iterator();
         while(iterator.hasNext()){
             AttachProductItemUiModel itemViewModel = iterator.next();
@@ -91,7 +91,7 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemU
     }
 
     public boolean isChecked(int position){
-        int productId = 0;
+        String productId = "0";
         AttachProductItemUiModel attachProductItemUiModel = getDataRow(position);
         if(attachProductItemUiModel != null) {
             productId = attachProductItemUiModel.getProductId();

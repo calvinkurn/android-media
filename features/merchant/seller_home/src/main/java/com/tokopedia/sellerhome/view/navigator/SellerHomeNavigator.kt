@@ -40,9 +40,6 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        if (fm.fragments.isEmpty()) {
-            addAllPages(fragment, transaction)
-        }
 
         fragment?.let {
             showFragment(it, transaction)
@@ -73,24 +70,17 @@ class SellerHomeNavigator(
             val fragment = setupPageFromAppLink(page)
 
             fragment?.let { selectedPage ->
-                val tag = page::class.java.canonicalName
                 val transaction = fm.beginTransaction()
-                val fragments = fm.fragments
+                val currentTag = currentPage::class.java.canonicalName
+                val currentFragment = fm.findFragmentByTag(currentTag)
 
-                when {
-                    fragments.isEmpty() -> {
-                        addAllPages(selectedPage, transaction)
-                        showFragment(selectedPage, transaction)
-                    }
-                    currentPage != selectedPage -> {
-                        hideAllPages(transaction)
-
-                        transaction
-                            .remove(currentPage)
-                            .add(R.id.sahContainer, selectedPage, tag)
-                            .commit()
-                    }
-                    else -> showFragment(fragment, transaction)
+                if (currentFragment != null && currentFragment != selectedPage) {
+                    transaction
+                            .remove(currentFragment)
+                            .add(R.id.sahContainer, selectedPage, currentTag)
+                            .commitNowAllowingStateLoss()
+                } else {
+                    showFragment(selectedPage, transaction)
                 }
 
                 setSelectedPage(type)
@@ -156,10 +146,11 @@ class SellerHomeNavigator(
     }
 
     private fun initFragments() {
+        clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -169,43 +160,25 @@ class SellerHomeNavigator(
         addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
     }
 
-    private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
-        pages.keys.forEach {
-            it?.let {
-                val tag = it::class.java.canonicalName
-                transaction.add(R.id.sahContainer, it, tag)
-
-                if(it != selectedPage) {
-                    try {
-                        transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
-                    }
-                }
-            }
+    private fun clearFragments() {
+        val transaction = fm.beginTransaction()
+        for (fragment in fm.fragments) {
+            transaction.remove(fragment)
         }
+        transaction.commitNowAllowingStateLoss()
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
         val tag = fragment::class.java.canonicalName
         val fragmentByTag = fm.findFragmentByTag(tag)
-        val selectedFragment = fragmentByTag ?: fragment
-        val currentState = selectedFragment.lifecycle.currentState
-        val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed) {
-            try {
-                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        if (fragmentByTag == null || fm.fragments.isEmpty()) {
+            transaction.add(R.id.sahContainer, fragment, tag)
         }
 
-        hideAllPages(transaction)
+        showOnlySelectedFragment(transaction, fragmentByTag)
 
-        transaction
-            .show(selectedFragment)
-            .commit()
+        transaction.commitNowAllowingStateLoss()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
@@ -252,12 +225,19 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
         return somListFragment
     }
 
     private fun addPage(fragment: Fragment?, title: String?) {
         fragment?.let { pages[it] = title }
+    }
+
+    private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
+        hideAllPages(transaction)
+        fragment?.let {
+            transaction.show(it)
+        }
     }
 
     private fun hideAllPages(transaction: FragmentTransaction) {

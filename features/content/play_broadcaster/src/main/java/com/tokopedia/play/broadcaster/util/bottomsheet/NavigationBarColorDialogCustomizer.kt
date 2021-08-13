@@ -13,13 +13,13 @@ class NavigationBarColorDialogCustomizer @Inject constructor() : PlayBroadcastDi
     override fun customize(dialog: Dialog) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             dialog.updateNavigationBarColors(
-                    intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                    intArrayOf(com.tokopedia.unifyprinciples.R.color.Unify_N0)
             )
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             dialog.updateNavigationBarColors(
                     intArrayOf(
-                            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                            com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
                     )
             )
     }

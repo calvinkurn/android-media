@@ -9,16 +9,21 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.*
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -30,7 +35,7 @@ class BroadcastViewHolder constructor(
         itemView: View?,
         private val imageAnnouncementListener: ImageAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
-        private val productListener: ProductAttachmentListener,
+        private val productListener: TopchatProductAttachmentListener,
         private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val searchListener: SearchListener,
@@ -39,13 +44,23 @@ class BroadcastViewHolder constructor(
         private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
-    private val broadcastContainer: LinearLayout? = itemView?.findViewById(R.id.bubble_broadcast_container)
+    private val broadcastContainer: LinearLayout? = itemView?.findViewById(
+            R.id.bubble_broadcast_container
+    )
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
-    private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(R.id.broadcast_merchant_voucher)
-    private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.broadcast_product)
-    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(R.id.broadcast_fx_chat)
+    private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(
+            R.id.broadcast_merchant_voucher
+    )
+    private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(
+            R.id.broadcast_product
+    )
+    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(
+            R.id.broadcast_fx_chat
+    )
     private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
-    private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product_carousel)
+    private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(
+            R.id.rv_product_carousel
+    )
     private val adapterProductCarousel = ProductListAdapter(
             searchListener = searchListener,
             listener = productListener,
@@ -75,11 +90,8 @@ class BroadcastViewHolder constructor(
                 bindProductCarousel(element)
                 bindSingleProduct(element)
             }
-            is TopchatProductAttachmentViewHolder.OccState -> {
-                ProductCarouselListAttachmentViewHolderBinder.bindNewOccState(adapterProductCarousel, payload)
-                element.singleProduct?.let {
-                    TopchatProductAttachmentViewHolderBinder.bindNewOccState(it, singleProduct)
-                }
+            is SingleProductAttachmentContainer.PayloadUpdateStock -> {
+                updateProductStock(element, payload)
             }
         }
     }
@@ -94,11 +106,42 @@ class BroadcastViewHolder constructor(
         bindCta(element)
     }
 
+    private fun updateProductStock(
+            element: BroadCastUiModel,
+            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+    ) {
+        if (element.isSingleProduct()) {
+            val product = element.singleProduct ?: return
+            singleProduct?.updateStockState(product)
+        } else {
+            ProductCarouselListAttachmentViewHolderBinder.updateCarouselProductStock(
+                    adapterProductCarousel, payload
+            )
+        }
+    }
+
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
-        ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
-        ImageAnnouncementViewHolderBinder.bindBannerClick(banner, bannerView, imageAnnouncementListener)
-        bindBannerMargin(element)
+        if (banner.isHideBanner) {
+            bannerView?.hide()
+            setPaddingTop(paddingWithoutBanner)
+        } else {
+            bannerView?.show()
+            setPaddingTop(paddingWithBanner)
+            ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+            ImageAnnouncementViewHolderBinder.bindBannerClick(
+                    banner, bannerView, imageAnnouncementListener
+            )
+            bindBannerMargin(element)
+        }
+    }
+
+    private fun setPaddingTop(topPadding: Float) {
+        broadcastContainer?.apply {
+            post {
+                setPadding(paddingLeft, topPadding.toInt(), paddingRight, paddingBottom)
+            }
+        }
     }
 
     private fun bindBannerMargin(element: BroadCastUiModel) {
@@ -117,7 +160,7 @@ class BroadcastViewHolder constructor(
         val voucher = element.voucherUiModel
         if (voucher != null) {
             voucherView?.show()
-            TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView, voucherListener)
+            TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView)
             TopChatVoucherViewHolderBinder.bindClick(voucher, voucherView, voucherListener)
         } else {
             voucherView?.gone()
@@ -128,9 +171,18 @@ class BroadcastViewHolder constructor(
         val productCarousel = element.productCarousel
         if (productCarousel != null) {
             rvProductCarousel?.show()
-            ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(productCarousel, deferredAttachment)
-            ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(productCarousel, adapterProductCarousel)
-            ProductCarouselListAttachmentViewHolderBinder.bindScrollState(rvProductCarousel, productCarouselListener, this)
+            ProductCarouselListAttachmentViewHolderBinder.updateParentMetaData(
+                    element, adapterPosition, adapterProductCarousel
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(
+                    productCarousel, deferredAttachment
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(
+                    productCarousel, adapterProductCarousel
+            )
+            ProductCarouselListAttachmentViewHolderBinder.bindScrollState(
+                    rvProductCarousel, productCarouselListener, this
+            )
         } else {
             rvProductCarousel?.gone()
         }
@@ -138,11 +190,15 @@ class BroadcastViewHolder constructor(
 
     private fun bindSingleProduct(element: BroadCastUiModel) {
         val product = element.singleProduct
+        val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
+                element, adapterPosition
+        )
         if (product != null) {
             singleProduct?.show()
             singleProduct?.bindData(
                     product, adapterPosition, productListener, deferredAttachment,
-                    searchListener, commonListener, adapterListener, false
+                    searchListener, commonListener, adapterListener,
+                    false, metaData
             )
         } else {
             singleProduct?.gone()
@@ -178,5 +234,8 @@ class BroadcastViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_broadcast_message_bubble
+
+        private val paddingWithBanner = 1f.toPx()
+        private val paddingWithoutBanner = 6f.toPx()
     }
 }

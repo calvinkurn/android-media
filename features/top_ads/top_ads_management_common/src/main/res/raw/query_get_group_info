@@ -13,6 +13,7 @@ query topAdsGetPromoGroup($group_id : String!){
       group_end_date
       group_end_time
       keyword_total
+      strategies
     }
   }
 }

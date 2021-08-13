@@ -1,14 +1,13 @@
 package com.tokopedia.entertainment.search.adapter.viewholder
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.ent_search_category_text_item.view.*
 
 class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerView.Adapter<CategoryTextBubbleAdapter.CategoryTextBubbleViewHolder>() {
@@ -61,28 +60,26 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
         val category = listCategory.get(position)
         var clicked = false
         with(holder.view) {
-            name_category.text = category.category
-            name_category.setOnClickListener {
-                clicked = setClicked(this, context, clicked)
+            category_chip_event.chipText = category.category
+            category_chip_event.setOnClickListener {
+                clicked = setClicked(category_chip_event, clicked)
                 EventCategoryPageTracking.getInstance().onClickCategoryBubble(category)
                 if (onClicked != null) {
                     onClicked.invoke(category.id)
                 }
             }
             if (hashSet.contains(category.id)) {
-                clicked = setClicked(this, context, clicked)
+                clicked = setClicked(category_chip_event, clicked)
             }
         }
     }
 
-    private fun setClicked(view: View, context: Context, clicked: Boolean): Boolean {
+    private fun setClicked(chipsUnify: ChipsUnify, clicked: Boolean): Boolean {
         if (clicked) {
-            view.name_category.background = ContextCompat.getDrawable(context, R.drawable.bg_text_category)
-            view.name_category.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N100))
+            chipsUnify.chipType = ChipsUnify.TYPE_NORMAL
             return false
         } else {
-            view.name_category.background = ContextCompat.getDrawable(context, R.drawable.bg_text_category_green)
-            view.name_category.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+            chipsUnify.chipType = ChipsUnify.TYPE_SELECTED
             return true
         }
     }

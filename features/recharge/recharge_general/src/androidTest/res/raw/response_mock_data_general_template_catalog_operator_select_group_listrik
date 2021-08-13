@@ -1,0 +1,47 @@
+[
+  {
+    "data": {
+      "rechargeCatalogOperatorSelectGroup": {
+        "text": "Jenis Produk Listrik",
+        "style": "select_dropdown",
+        "operatorGroup": [
+          {
+            "name": "",
+            "operators": [
+              {
+                "type": "",
+                "id": 6,
+                "attributes": {
+                  "name": "Token Listrik",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 18,
+                "attributes": {
+                  "name": "Tagihan Listrik",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2315,
+                "attributes": {
+                  "name": "PLN Non-Taglis",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_bb3dfb1e-ed2c-4f6c-8301-f2bf7cc0e52e.jpg",
+                  "description": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

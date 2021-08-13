@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_2"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Cashback 10% hingga Rp150.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_2"
+        app:typographyType="body_3"
+        tools:text="Transaksi min. Rp700.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        tools:text="Berakhir dalam 10 hari • Sisa 20 kupon" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/mvc_line_separator" />
+</LinearLayout>

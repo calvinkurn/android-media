@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@TradeInScope
 abstract class TradeInViewModelModule {
 
     @TradeInScope
@@ -28,12 +27,6 @@ abstract class TradeInViewModelModule {
     @TradeInScope
     @ViewModelKey(FinalPriceViewModel::class)
     internal abstract fun finalPriceViewModel(viewModel: FinalPriceViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
-    @ViewModelKey(MoneyInCheckoutViewModel::class)
-    internal abstract fun moneyInCheckoutViewModel(viewModel: MoneyInCheckoutViewModel): ViewModel
 
     @Binds
     @IntoMap

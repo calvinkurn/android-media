@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/album"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 tools:text="Album" />
 
@@ -51,7 +51,7 @@
                 android:id="@+id/tvPlayGalleryAlbumLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_2"
                 tools:text="Semua media" />
 

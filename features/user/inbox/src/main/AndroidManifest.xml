@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.inbox">
+
+    <application>
+        <activity
+            android:name=".view.activity.InboxActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_user_inbox"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_user_inbox_with_query"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -2,12 +2,20 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+}
+
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -17,53 +25,69 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.attachcommon)
-    implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.inboxCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation rootProject.ext.miscDependencies.rxKotlin
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewPager2
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    // UI Test
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {
@@ -76,3 +100,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply plugin: "androidx.navigation.safeargs"

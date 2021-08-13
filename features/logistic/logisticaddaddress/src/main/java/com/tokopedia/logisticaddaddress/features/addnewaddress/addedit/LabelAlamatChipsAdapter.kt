@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.chips_item.view.*
+import kotlinx.android.synthetic.main.chips_unify_item.view.*
 
 /**
  * Created by fwidjaja on 2019-06-21.
@@ -17,7 +19,7 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
     private val labelAlamatList = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_unify_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -26,11 +28,12 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val ctx = holder.itemView.context
-        holder.itemView.tv_chips_item.run {
-            text = labelAlamatList[position]
-            setTextColor(ContextCompat.getColor(ctx, com.tokopedia.design.R.color.font_black_secondary_54))
+        holder.itemView.chips_item.run {
+            chipText = labelAlamatList[position]
+            chipType = ChipsUnify.TYPE_NORMAL
+            chipSize = ChipsUnify.SIZE_MEDIUM
             setOnClickListener {
-                setTextColor(ContextCompat.getColor(ctx, R.color.tkpd_green))
+                chipType = ChipsUnify.TYPE_SELECTED
                 labelAlamatList.getOrNull(position)?.let {
                     actionListener.onLabelAlamatChipClicked(it)
                 }

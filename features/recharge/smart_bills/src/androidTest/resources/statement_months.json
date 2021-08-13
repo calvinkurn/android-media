@@ -1,0 +1,22 @@
+[
+  {
+    "data": {
+      "rechargeStatementMonths": [
+        {
+          "index": 0,
+          "label": "November",
+          "month": 11,
+          "year": 2020,
+          "isOngoing": false
+        },
+        {
+          "index": 1,
+          "label": "December",
+          "month": 12,
+          "year": 2020,
+          "isOngoing": true
+        }
+      ]
+    }
+  }
+]

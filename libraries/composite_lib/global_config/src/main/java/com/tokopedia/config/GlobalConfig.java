@@ -47,6 +47,11 @@ public class GlobalConfig {
     public static String DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = "";
     public static String DEEPLINK_ACTIVITY_CLASS_NAME = "";
 
+    public static String INTERNAL_FILE_DIR = "";
+    public static String INTERNAL_CACHE_DIR = "";
+    public static String EXTERNAL_FILE_DIR = "";
+    public static String EXTERNAL_CACHE_DIR = "";
+
     public static boolean isSellerApp() {
         return APPLICATION_TYPE == SELLER_APPLICATION;
     }

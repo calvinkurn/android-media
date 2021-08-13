@@ -7,7 +7,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*
 import com.tokopedia.search.result.stubExecute
 import org.junit.Test
 
-internal class SearchShopRetryTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopRetryTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Retry Search Shop After Error in Search Shop`() {

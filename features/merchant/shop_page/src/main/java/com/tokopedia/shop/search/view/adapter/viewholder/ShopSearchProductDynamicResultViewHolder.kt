@@ -1,15 +1,11 @@
 package com.tokopedia.shop.search.view.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.search.util.SpanTextHelper
+import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
 import kotlinx.android.synthetic.main.shop_search_product_dynamic_result_layout.view.*
 
 class ShopSearchProductDynamicResultViewHolder(
@@ -22,7 +18,7 @@ class ShopSearchProductDynamicResultViewHolder(
 
     override fun bind(element: ShopSearchProductDynamicResultDataModel) {
         with(view) {
-            ImageHandler.LoadImage(iv_product, element.imageUri)
+            iv_product.loadImage(element.imageUri)
             val sourceString = element.name
             val targetString = element.searchQuery
             val isTargetStringExists = sourceString.indexOf(targetString, ignoreCase = true) != -1

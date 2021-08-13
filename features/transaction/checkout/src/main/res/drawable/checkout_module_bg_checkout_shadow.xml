@@ -8,7 +8,7 @@
                 android:top="1dp"
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/checkout_shadow_color_1" />
+            <solid android:color="@color/Unify_N200" />
         </shape>
     </item>
     <item>
@@ -17,7 +17,7 @@
                 android:top="1dp"
                 android:bottom="2dp"/>
 
-            <solid android:color="@color/checkout_shadow_color_2" />
+            <solid android:color="@color/Unify_N200" />
         </shape>
     </item>
     <item>
@@ -26,7 +26,7 @@
                 android:top="0.5dp"
                 android:bottom="1dp"/>
 
-            <solid android:color="@color/checkout_shadow_color_3" />
+            <solid android:color="@color/Unify_N200" />
         </shape>
     </item>
     <item>
@@ -35,7 +35,7 @@
                 android:top="0.5dp"
                 android:bottom="1dp"/>
 
-            <solid android:color="@color/checkout_shadow_color_4" />
+            <solid android:color="@color/Unify_N200" />
         </shape>
     </item>
     <item>
@@ -44,14 +44,14 @@
                 android:top="0.5dp"
                 android:bottom="1dp"/>
 
-            <solid android:color="@color/checkout_shadow_color_5" />
+            <solid android:color="@color/Unify_N200" />
         </shape>
     </item>
 
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 

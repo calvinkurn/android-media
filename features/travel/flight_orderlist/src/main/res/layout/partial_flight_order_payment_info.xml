@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/payment_info_layout"
     android:layout_width="match_parent"
@@ -7,72 +8,84 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_label"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/flight_orderlist_20dp"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
         tools:text="Rekening Tujuan" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment"
-        style="@style/TextView.Title.BlackSecondary.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
         tools:text="MANDIRI" />
 
-
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_description"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
         tools:text="a.n. Tokopedia\nCabang Permata Hijau\n102 000 526 8673" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_due_date_label"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/flight_order_payment_due_date_label" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/flight_order_payment_due_date_label"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_due_date"
-        style="@style/TextView.Micro.BlackSecondary.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="2 September 2017, 20:30 WIB" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_unique_code_label"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/flight_order_unique_code_label" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/flight_order_unique_code_label"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_unique_code"
         style="@style/TextView.Micro.BlackSecondary.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="12312312" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_cost_label"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/flight_order_total_label" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/flight_order_total_label"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_cost"
-        style="@style/TextView.Micro.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/orange_red"
+        android:textColor="@color/Unify_Y500"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Rp500.000" />
 </LinearLayout>

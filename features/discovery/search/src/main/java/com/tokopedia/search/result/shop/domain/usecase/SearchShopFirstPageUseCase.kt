@@ -74,11 +74,20 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
         source
         total_shop
         search_url
+        header {
+            response_code
+            keyword_process
+        }
         paging {
             uri_next
             uri_previous
         }
         tab_name
+        suggestion {
+            currentKeyword
+            query
+            text
+        }
         shops {
             shop_id
             shop_name
@@ -119,6 +128,7 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
             reputation_score
             is_official
             ga_key
+            is_pm_pro
         }
         top_shop {
             shop_id
@@ -194,11 +204,19 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
               gold_shop
               gold_shop_badge
               shop_is_official
+              pm_pro_shop
+              merchant_vouchers
               product {
                 id
                 name
                 price_format
                 applinks
+                rating_average
+                label_group {
+                    title
+                    type
+                    position
+                }
                 image_product {
                   product_id
                   product_name

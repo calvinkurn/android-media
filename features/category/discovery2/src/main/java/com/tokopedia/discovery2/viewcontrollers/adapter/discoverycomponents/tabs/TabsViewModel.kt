@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,17 +22,11 @@ const val TAB_DEFAULT_BACKGROUND = "plain"
 class TabsViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
-
-
     @Inject
     lateinit var dynamicTabsUseCase: DynamicTabsUseCase
 
 
-    init {
-        initDaggerInject()
-    }
-
-    override fun onAttachToViewHolder() {
+   override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchDynamicTabData()
         updateTabItems()
@@ -47,11 +43,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         }
     }
 
-    private fun fetchDynamicTabData() {
+    fun fetchDynamicTabData() {
         components.properties?.let {
-            if (components.getComponentsItem()?.size == 0 && it.dynamic) {
+            val items = components.getComponentsItem()
+            if ((items == null || items.isEmpty()) && it.dynamic) {
                 launchCatchError(block = {
-                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint, components.rpc_discoQuery).run {
+                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint).run {
                         updateTabItems()
                         this@TabsViewModel.syncData.value = this
                     }
@@ -60,7 +57,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
                 })
             }
         }
-
     }
 
 
@@ -97,4 +93,28 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
                 .build()
                 .inject(this)
     }
+
+    fun getTabItemData(position : Int): DataItem? {
+        components.data?.let {
+            if (it.isNotEmpty() && position >= 0 && position < it.size) {
+                return it[position]
+            }
+        }
+        return null
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
+    }
+
+    fun reInitTabComponentData() {
+        components.reInitComponentItems()
+    }
+
+    fun reInitTabTargetComponents() {
+        dynamicTabsUseCase.updateTargetProductComponent(components.id, components.pageEndPoint)
+    }
+
+    fun getArrowVisibilityStatus() = components.properties?.categoryDetail ?: false
+
 }

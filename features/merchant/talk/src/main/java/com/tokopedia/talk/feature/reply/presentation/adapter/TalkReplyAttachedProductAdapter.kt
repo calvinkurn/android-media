@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyAttachedProductViewHolder
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 
 class TalkReplyAttachedProductAdapter(
         private val attachedProductCardListener: AttachedProductCardListener,

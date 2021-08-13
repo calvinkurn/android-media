@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import com.tokopedia.unifycomponents.UnifyButton
 
 interface IProductCardView {
 
@@ -13,4 +14,8 @@ interface IProductCardView {
     fun recycle()
 
     fun getThreeDotsButton(): View?
+
+    fun getNotifyMeButton(): UnifyButton?
+
+    fun getShopBadgeView(): View?
 }

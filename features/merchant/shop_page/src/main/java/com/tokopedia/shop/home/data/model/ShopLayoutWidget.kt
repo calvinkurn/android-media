@@ -53,7 +53,9 @@ data class ShopLayoutWidget(
                 @SerializedName("ratio")
                 val ratio: String = "",
                 @SerializedName("isATC")
-                val isAtc: Int = 0
+                val isAtc: Int = 0,
+                @SerializedName("etalaseID")
+                val etalaseId: String = ""
         )
 
         data class Data(
@@ -68,7 +70,7 @@ data class ShopLayoutWidget(
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
                 @SerializedName("productID")
-                val productID: Int = -1,
+                val productID: String = "",
                 @SerializedName("name")
                 val name: String = "",
                 @SerializedName("campaignID")
@@ -108,7 +110,7 @@ data class ShopLayoutWidget(
                 @SerializedName("isSoldOut")
                 val isSoldOut: Boolean = false,
                 @SerializedName("rating")
-                val rating: Double = 0.0,
+                val rating: String = "",
                 @SerializedName("totalReview")
                 val totalReview: String = "",
                 @SerializedName("isPO")
@@ -116,7 +118,14 @@ data class ShopLayoutWidget(
                 @SerializedName("cashback")
                 val cashback: Int = -1,
                 @SerializedName("statusCampaign")
-                val statusCampaign: String = ""
+                val statusCampaign: String = "",
+                @SerializedName("labelGroups")
+                val labelGroups: List<LabelGroup> = listOf(),
+                @SerializedName("recommendationType")
+                val recommendationType: String = "",
+                @SerializedName("minimumOrder")
+                val minimumOrder: Int? = 1
+
         ) {
             data class Banner(
                     @SerializedName("imageID")
@@ -131,7 +140,7 @@ data class ShopLayoutWidget(
 
             data class Product(
                     @SerializedName("id")
-                    val id: Int = -1,
+                    val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("url")
@@ -143,7 +152,7 @@ data class ShopLayoutWidget(
                     @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("price")
-                    val price: String = "",
+                    val displayedPrice: String = "",
                     @SerializedName("countSold")
                     val countSold: Int = -1,
                     @SerializedName("stock")

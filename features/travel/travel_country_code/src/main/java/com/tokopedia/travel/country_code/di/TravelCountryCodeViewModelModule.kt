@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 23/12/2019
  */
 @Module
-@TravelCountryCodeScope
 abstract class TravelCountryCodeViewModelModule {
 
     @TravelCountryCodeScope

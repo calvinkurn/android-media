@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/unify_space_12">
+
+    <ImageView
+        android:id="@+id/category_imageview"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:contentDescription="@string/nbs_content_desc_imageview"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/category_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/category_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lines="2"
+        android:paddingLeft="@dimen/unify_space_4"
+        android:paddingRight="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@+id/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_imageview"
+        app:layout_constraintWidth_default="spread"
+        app:typographyType="small"
+        tools:text="Fashion Wanita" />
+
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

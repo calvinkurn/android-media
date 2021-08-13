@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_11">11dp</dimen>
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_13">13dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_42">42dp</dimen>
@@ -15,8 +17,6 @@
     <dimen name="dp_117">117dp</dimen>
     <dimen name="dp_154">154dp</dimen>
     <dimen name="max_width_incentive_ovo_subtitle">300dp</dimen>
-    <dimen name="margin_top_incentive_ovo_description">30dp</dimen>
-    <dimen name="size_incentive_ovo_image">200dp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="fonts">14sp</dimen>
     <dimen name="fontl">18sp</dimen>
@@ -39,8 +39,6 @@
     <dimen name="text_small">12sp</dimen>
     <dimen name="notification_circle_size">22dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
-    <dimen name="size_width_incentive_ovo_image">170dp</dimen>
-    <dimen name="size_height_incentive_ovo_image">120dp</dimen>
     <dimen name="size_seller_migration_review_icon">56dp</dimen>
     <dimen name="size_seller_migration_review_right_arrow_icon">24dp</dimen>
     <dimen name="seller_migration_card_side_margin">10dp</dimen>

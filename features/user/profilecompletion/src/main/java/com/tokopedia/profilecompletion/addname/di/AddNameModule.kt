@@ -13,7 +13,6 @@ import javax.inject.Named
 /**
  * @author by nisie on 23/04/19.
  */
-@AddNameScope
 @Module
 class AddNameModule {
 

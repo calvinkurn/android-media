@@ -12,5 +12,9 @@ data class OrderData(
         var preference: OrderProfile = OrderProfile(),
         var promo: OrderPromo = OrderPromo(),
         var payment: OrderPayment = OrderPayment(),
-        var prompt: OccPrompt = OccPrompt()
+        var prompt: OccPrompt = OccPrompt(),
+        val revampData: OccRevampData = OccRevampData(),
+        val errorCode: String = "",
+        val popUpMessage: String = "",
+        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )

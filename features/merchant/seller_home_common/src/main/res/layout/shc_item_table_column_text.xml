@@ -10,6 +10,6 @@
     android:ellipsize="end"
     android:maxLines="2"
     android:padding="@dimen/spacing_lvl2"
-    android:textColor="@color/Neutral_N700_96"
+    android:textColor="@color/Unify_N700_96"
     app:typographyType="body_3"
     tools:text="Text Of Table" />

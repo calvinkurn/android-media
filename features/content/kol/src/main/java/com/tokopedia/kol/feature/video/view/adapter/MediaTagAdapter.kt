@@ -39,7 +39,7 @@ class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf
 
         fun bind(postTagItem: PostTagItem) {
             with(itemView){
-                picture.loadImageRounded(postTagItem.thumbnail, resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
+                picture.loadImageRounded(postTagItem.thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
                 title.text = postTagItem.text
                 original_price.gone()
                 price.text = postTagItem.price

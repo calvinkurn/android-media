@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
         return this.list.contains(loadingModel);
     }
 
-    public void addHeader(InboxReputationDetailHeaderViewModel model) {
+    public void addHeader(InboxReputationDetailHeaderUiModel model) {
         this.list.add(model);
     }
 
@@ -88,9 +88,9 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
         this.list.clear();
     }
 
-    public InboxReputationDetailHeaderViewModel getHeader() {
-        if (list.get(0) instanceof InboxReputationDetailHeaderViewModel)
-            return (InboxReputationDetailHeaderViewModel) list.get(0);
+    public InboxReputationDetailHeaderUiModel getHeader() {
+        if (list.get(0) instanceof InboxReputationDetailHeaderUiModel)
+            return (InboxReputationDetailHeaderUiModel) list.get(0);
         else
             return null;
     }

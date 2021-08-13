@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="left|top"
+        android:lineSpacingMultiplier="1.1"
+        android:textColor="@color/Unify_N700_96"
+        android:textIsSelectable="true"
+        android:textColorLink="@color/read_more_color"
+        app:typographyType="body_1"
+        tools:ignore="RtlHardcoded"
+        android:ellipsize="end"
+        tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
+
+    <LinearLayout
+        android:id="@+id/llStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom|center_vertical"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivCheckMark"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:layout_marginRight="@dimen/spacing_lvl1"
+            tools:srcCompat="@drawable/ic_chat_read"
+            android:contentDescription="@null"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:textColor="@color/Unify_N700_44"
+            app:typographyType="body_3"
+            tools:text="11:00" />
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/read_more_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginTop="@dimen/dp_chatbot_6"
+        android:text="@string/read_more"
+        android:textColor="@color/read_more_color"
+        android:textStyle="bold"
+        android:textIsSelectable="true"
+        android:visibility="gone"
+        app:typographyType="heading_6"
+        tools:ignore="RtlHardcoded,RtlSymmetry"
+        tools:visibility="visible" />
+
+</merge>

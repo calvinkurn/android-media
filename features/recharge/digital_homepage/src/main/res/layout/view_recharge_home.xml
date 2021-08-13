@@ -34,35 +34,37 @@
         app:contentInsetLeft="@dimen/layout_lvl0"
         app:contentInsetStart="@dimen/layout_lvl0"
         app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
-        app:elevation="@dimen/dp_4"
+        app:elevation="@dimen/spacing_lvl2"
+        android:visibility="gone"
         app:navigationIcon="@drawable/ic_action_back">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginVertical="@dimen/spacing_lvl1"
             android:orientation="horizontal">
 
             <com.tokopedia.digital.home.widget.RechargeSearchBarWidget
                 android:id="@+id/digital_homepage_search_view"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 app:siv_search_hint_subhome="@string/digital_home_search_view_hint" />
 
             <ImageView
                 android:id="@+id/digital_homepage_order_list"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="@dimen/order_list_icon_size"
+                android:layout_height="@dimen/order_list_icon_size"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                app:srcCompat="@drawable/digital_common_ic_tagihan" />
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                app:srcCompat="@drawable/digital_common_ic_tagihan"
+                android:contentDescription="null" />
 
         </LinearLayout>
 

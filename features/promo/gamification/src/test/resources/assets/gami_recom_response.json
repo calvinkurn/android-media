@@ -1,0 +1,84 @@
+[
+  {
+    "data": {
+      "productRecommendationWidget": {
+        "data": [
+          {
+            "tID": "2C_tr-3P6EoP5q_kqPriRQTRsGc=",
+            "source": "custom",
+            "title": "Rekomendasi untuk Anda",
+            "foreignTitle": "Recommendation for you",
+            "widgetUrl": "",
+            "pageName": "giftbox_page",
+            "seeMoreAppLink": "",
+            "layoutType": "Custom-vertical",
+            "pagination": {
+              "currentPage": 1,
+              "nextPage": 2,
+              "prevPage": -1,
+              "hasNext": true
+            },
+            "recommendation": [
+              {
+                "id": 694430339,
+                "name": "Kalenji Celana Pendek Jogging Hitam Decathlon - M",
+                "categoryBreadcrumbs": "Olahraga/Perlengkapan Lari/Celana Lari Pria",
+                "url": "https://www.tokopedia.com/decathlon/kalenji-celana-pendek-jogging-hitam-decathlon-m?src=topads",
+                "appUrl": "tokopedia://product/694430339",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_Jho_HOH_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJfHAyaH_Ufbm-srcHi6syOHmFiy3zwrfo5rM1i6sHRHZdNoAHFopHaop1FosjNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoAC6zcPN_S2uoJNkZ9P6qMrO_M2u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1NE39xvuJJF_S2g8JY1e_C68BBNZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkypCozcHh3M2oHJh9uMBqz7O7_jP6q7OAHAzgHBJa_VPV8JNE192qQu2k_92Gq1ONZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__oo1peO_jzoP7NE_9B68BuR_M20o1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpCHqjJh_M2Vo1N1u9PvucWE_Oz0q3gzv_7ibm-Orfua9fBjUstiH_npHpnfH_rhUiFirfuprfB5QBY2gmUEUMzG9RxCZcO117o_9f2XuAghru-zg1eEeuCC6_ViZJ-gPJzar3OXqfKN8jg2ZfuqPOugu7ByojOoQ1NCu7ra1cPObuYVojYs1MVEq9VjQj2zgRBgoAPcHVBezOu-Zf7WQMYjzsx-gAjF1APmujozPJ2O3B2cgOCpgjhSQpuHrOut83PB11jR_1BH8BgpZAzc6ctWe_1O3Sotr1NSeZOzQR-7QjUibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pyabAH7H_UDHp1R6V7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpoAKFwe?dv=android-4.01&r=https%3A%2F%2Fwww.tokopedia.com%2Fdecathlon%2Fkalenji-celana-pendek-jogging-hitam-decathlon-m%3Fsrc%3Dtopads&ob=28&page=1&management_type=1&sid=dJ_xAHmTSCS_jnT6qqRQeD%3AAPA91bHBYtDrqmnkh9zFiKeZwUYWIX6MMmNAWG2Pgu-_E6OcRaziqdnJQgyY47F0YPGUIKm-nodF8Id90P7BVCQtJuZZFgPsfLgo5LsUhygeQI7MILzVsH4F8j-A55ZshqNgA-QortnB&src=recom_widget_giftbox_page&t=android",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_Jho_HOH_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJfHAyaH_Ufbm-srcHi6syOHmFiy3zwrfo5rM1i6sHRHZdNoAHFopHaop1FosjNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoAC6zcPN_S2uoJNkZ9P6qMrO_M2u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1NE39xvuJJF_S2g8JY1e_C68BBNZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkypCozcHh3M2oHJh9uMBqz7O7_jP6q7OAHAzgHBJa_VPV8JNE192qQu2k_92Gq1ONZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__oo1peO_jzoP7NE_9B68BuR_M20o1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpCHqjJh_M2Vo1N1u9PvucWE_Oz0q3gzv_7ibm-Orfua9fBjUstiH_npHpnfH_rhUiFirfuprfB5QBY2gmUEUMzG9RxCZcO117o_9f2XuAghru-zg1eEeuCC6_ViZJ-gPJzar3OXqfKN8jg2ZfuqPOugu7ByojOoQ1NCu7ra1cPObuYVojYs1MVEq9VjQj2zgRBgoAPcHVBezOu-Zf7WQMYjzsx-gAjF1APmujozPJ2O3B2cgOCpgjhSQpuHrOut83PB11jR_1BH8BgpZAzc6ctWe_1O3Sotr1NSeZOzQR-7QjUibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiyfV79fBjraUE3pyabAH7H_UDHp1R6V7DUMNwyfVXgcBjy9zB9fVjraUEoAnDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpoAKFwe?page=1&uid=103306171&r=https%3A%2F%2Fwww.tokopedia.com%2Fdecathlon%2Fkalenji-celana-pendek-jogging-hitam-decathlon-m%3Fsrc%3Dtopads&management_type=1&product_id=694430339&ob=28&t=android&sid=dJ_xAHmTSCS_jnT6qqRQeD%3AAPA91bHBYtDrqmnkh9zFiKeZwUYWIX6MMmNAWG2Pgu-_E6OcRaziqdnJQgyY47F0YPGUIKm-nodF8Id90P7BVCQtJuZZFgPsfLgo5LsUhygeQI7MILzVsH4F8j-A55ZshqNgA-QortnB&dv=android-4.01&src=recom_widget_giftbox_page",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1hH_1po_Jdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yhosnfHsJaoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpU5H_n5yMV7yfKWP9CDQfVjbf-xPcotb9uFQcYxgV4FysKaypjfgZ7RgM1Fb_zxoAHW6AUpgi7ao_nRo_PsHp-By3UXqSCSUiFiy3zwrfo5rM1i6sHRHZdNoAHFopHaop1FosjNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1ONoAC6zcPN_S2uoJNkZ9P6qMrO_M2u8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32zP1NE39xvuJJF_S2g8JY1e_C68BBNZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkypCozcHh3M2oHJh9uMBqz7O7_jP6q7OAHAzgHBJa_VPV8JNE192qQu2k_92Gq1ONZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk__oo1peO_jzoP7NE_9B68BuR_M20o1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpCHqjJh_M2Vo1N1u9PvucWE_Oz0q3gzv_7ibm-Orfua9fBjUstiH_npHpnfH_rhUiFirfuprfB5QBY2gmUEUMzG9RxCZcO117o_9f2XuAghru-zg1eEeuCC6_ViZJ-gPJzar3OXqfKN8jg2ZfuqPOugu7ByojOoQ1NCu7ra1cPObuYVojYs1MVEq9VjQj2zgRBgoAPcHVBezOu-Zf7WQMYjzsx-gAjF1APmujozPJ2O3B2cgOCpgjhSQpuHrOut83PB11jR_1BH8BgpZAzc6ctWe_1O3Sotr1NSeZOzQR-7QjUibm-xQcri6i-sQIupPcua9Rya9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUst7HmFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpedHI7?ob=28&page=1&t=android&management_type=1&dv=android-4.01&sid=dJ_xAHmTSCS_jnT6qqRQeD%3AAPA91bHBYtDrqmnkh9zFiKeZwUYWIX6MMmNAWG2Pgu-_E6OcRaziqdnJQgyY47F0YPGUIKm-nodF8Id90P7BVCQtJuZZFgPsfLgo5LsUhygeQI7MILzVsH4F8j-A55ZshqNgA-QortnB&src=recom_widget_giftbox_page",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/2/10/batch-upload/batch-upload_0b82c96e-7fe0-4a43-823f-250757c32eab.jpg",
+                "price": "Rp87.000",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 1,6rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 87000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 7687545,
+                  "name": "Decathlon Indonesia",
+                  "city": "Jakarta Barat"
+                },
+                "departmentId": 3578,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.8",
+                "countReview": 751,
+                "recommendationType": "cluster_v2_recentview",
+                "stock": 0,
+                "isTopads": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

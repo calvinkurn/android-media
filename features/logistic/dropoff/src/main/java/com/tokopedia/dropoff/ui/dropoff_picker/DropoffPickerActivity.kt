@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,10 +34,10 @@ import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.dropoff.util.getDescription
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.util.bitmapDescriptorFromVector
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -305,10 +306,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
-            val circleColor = ContextCompat.getColor(this, R.color.polygon_map)
+            val circleColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
+            val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(CircleOptions().center(mLastLocation)
                     .radius(radius * 1000.0)
-                    .fillColor(circleColor)
+                    .fillColor(alphaCircleColor)
                     .strokeWidth(0.0f))
         }
     }

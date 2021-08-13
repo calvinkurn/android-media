@@ -10,5 +10,7 @@ import kotlinx.android.parcel.Parcelize
 class TravelVideoBannerModel(
         var title: String = "",
         var imageUrl: String = "",
-        var destinationLink: String = ""
+        var destinationLink: String = "",
+        var id: String = "",
+        var description: String = ""
 ) : Parcelable

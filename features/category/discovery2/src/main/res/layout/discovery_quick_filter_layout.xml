@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/spacing_lvl4">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.sortfilter.SortFilter
         app:layout_constraintTop_toTopOf="parent"
@@ -12,6 +14,6 @@
         android:layout_height="wrap_content"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"
-        android:background="@color/white" />
+        android:background="@color/Unify_N0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

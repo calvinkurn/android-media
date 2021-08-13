@@ -22,9 +22,7 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
     @Inject
     lateinit var claimCouponUseCase: ClaimCouponUseCase
 
-    init {
-        initDaggerInject()
-    }
+
 
     fun getComponentList(): LiveData<ArrayList<ComponentsItem>> {
         return componentList
@@ -38,12 +36,7 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 
     fun getClickCouponData() {
         launchCatchError(block = {

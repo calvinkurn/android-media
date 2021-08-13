@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.promoui.common.CouponView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.promoui.common.PromoCouponView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/couponView"
@@ -73,5 +73,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.promoui.common.CouponView>
+</com.tokopedia.promoui.common.PromoCouponView>
 

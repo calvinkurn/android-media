@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talk_smart_reply_stock_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/smart_reply_settings_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talk_smart_reply_stock_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/smart_reply_stock_settings_subtitle"
+        app:layout_constraintStart_toStartOf="@id/talk_smart_reply_stock_title"
+        app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_stock_title"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/talkIsSmartReplyOnLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_stock_subtitle"
+        app:layout_constraintStart_toEndOf="@id/talk_smart_reply_stock_subtitle"
+        app:layout_constraintTop_toTopOf="@id/talk_smart_reply_stock_subtitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkSmartReplySettingsDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl7"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/talkStockSubtitleChevron"
+        app:layout_constraintStart_toStartOf="@id/talk_smart_reply_stock_subtitle"
+        app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_stock_subtitle"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/talkStockSubtitleChevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/talkSmartReplySettingsDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/talkSmartReplySettingsDescription" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/talk_smart_reply_settings_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/talkSmartReplySettingsDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

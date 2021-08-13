@@ -29,16 +29,10 @@ class WishlistViewModelUpdateRecommendationWishlistTest {
     private val getWishlistDataUseCase = mockk<GetWishlistDataUseCase>(relaxed = true)
     private val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
-    private val parentPosition1 = 25
-    private val childPosition1 = 2
-
-    private val parentPosition2 = 25
-    private val childPosition2 = 4
 
     @Test
     fun `Update wishlist will change its wishlist data in wishlistLiveData`() {
         val wishlistCurrentStateFor33 = true
-        val wishlistCurrentStateFor55 = false
 
         // Create wishlist viewmodel
         wishlistViewModel = createWishlistViewModel(
@@ -56,47 +50,24 @@ class WishlistViewModelUpdateRecommendationWishlistTest {
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
         ))
-        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
-                WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
-                WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
-                WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
-                WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
-        ), page = 2)
 
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
-                listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = 33),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
-                )
-        )
+                listOf(RecommendationItem(productId = 33)))
 
         // Live data is filled by data from getWishlist
         wishlistViewModel.getWishlistData()
-        wishlistViewModel.getNextPageWishlistData()
 
         // Update wishlist data in selected parent and child
-        wishlistViewModel.updateRecommendationItemWishlist(33, parentPosition1, childPosition1, wishlistCurrentStateFor33)
-        wishlistViewModel.updateRecommendationItemWishlist(55, parentPosition2, childPosition2, wishlistCurrentStateFor55)
+        val index = (wishlistViewModel.wishlistLiveData.value?.size ?: -1) -1
+        wishlistViewModel.updateRecommendationItemWishlist(33, index, 0, wishlistCurrentStateFor33)
 
-
-        // Expect product in parent position = 4 and child position = 2 updated with new wishlist status in wishlist data
+        // Expect product in last position and child position = 0 updated with new wishlist status in wishlist data
         val recommendationCarouselDataModel =
-                wishlistViewModel.wishlistLiveData.value!![parentPosition1] as RecommendationCarouselDataModel
+                wishlistViewModel.wishlistLiveData.value!![index] as RecommendationCarouselDataModel
         val recommendationCarouselItemDataModel =
-                recommendationCarouselDataModel.list[childPosition1]
+                recommendationCarouselDataModel.list[0]
 
         Assert.assertEquals(wishlistCurrentStateFor33, recommendationCarouselItemDataModel.recommendationItem.isWishlist)
-
-        val recommendationCarouselDataModel2 =
-                wishlistViewModel.wishlistLiveData.value!![parentPosition2] as RecommendationCarouselDataModel
-        val recommendationCarouselItemDataModel2 =
-                recommendationCarouselDataModel2.list[childPosition2]
-
-        Assert.assertEquals(wishlistCurrentStateFor55, recommendationCarouselItemDataModel2.recommendationItem.isWishlist)
-
     }
 }

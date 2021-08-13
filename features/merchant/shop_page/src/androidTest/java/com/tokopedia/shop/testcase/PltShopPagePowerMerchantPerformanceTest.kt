@@ -2,6 +2,7 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -15,6 +16,7 @@ import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
@@ -44,6 +46,7 @@ class PltShopPagePowerMerchantPerformanceTest {
             )
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
+            intent.putExtra(FORCE_NOT_SHOWING_HOME_TAB, true)
             activityRule.launchActivity(intent)
         }
     }

@@ -25,4 +25,5 @@
     <dimen name="search_new_filter_icon_height">14dp</dimen>
     <dimen name="text_size_l_medium">16sp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="dp_18">18sp</dimen>
 </resources>

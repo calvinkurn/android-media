@@ -1,124 +1,55 @@
 package com.tokopedia.settingbank.view.viewModel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.di.QUERY_GET_BANK_LIST
-import com.tokopedia.settingbank.domain.Bank
-import com.tokopedia.settingbank.domain.GetBankListResponse
-import com.tokopedia.settingbank.view.viewState.*
-import kotlinx.coroutines.*
+import com.tokopedia.settingbank.domain.model.Bank
+import com.tokopedia.settingbank.domain.usecase.BankListUseCase
+import com.tokopedia.settingbank.domain.usecase.SearchBankListUseCase
+import com.tokopedia.settingbank.view.viewState.BankListState
+import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
+import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-const val PARAM_CURRENT_PAGE = "page"
-const val PARAM_ITEM_PER_PAGE = "perPage"
 
-class SelectBankViewModel @Inject constructor(private val context: Context,
-                                              private val graphqlRepository: GraphqlRepository,
-                                              private val rawQueries: Map<String, String>,
-                                              dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
-    private val DELAY_IN_SEARCH = 200L
+class SelectBankViewModel @Inject constructor(
+        private val bankListUseCase: dagger.Lazy<BankListUseCase>,
+        private val searchBankUseCase: dagger.Lazy<SearchBankListUseCase>,
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+
     private val masterBankList = MutableLiveData<ArrayList<Bank>>()
     val bankListState = MutableLiveData<BankListState>()
 
-    private var currentPage: Int = 1
-    private var maxItemPerPage = 999
-    private var searchBankJob = Job()
-
     fun loadBankList() {
-        launchCatchError(block = {
-            bankListState.value = OnBankListLoading
-            val response = loadBankListGQL(getBankListParams())
-            processLoadedBankList(response.getSuccessData())
-        }) {
-            bankListState.value = OnBankListLoadingError(it)
-            it.printStackTrace()
-        }
-    }
-
-    private fun processLoadedBankList(response: GetBankListResponse) {
-        val bankList: ArrayList<Bank>? = getBankListFromResponse(response)
-        if (bankList.isNullOrEmpty()) {
-            bankListState.value = OnBankListLoaded(arrayListOf())
-        } else {
-            masterBankList.value = bankList
-            bankListState.value = OnBankListLoaded(bankList = bankList)
-        }
-    }
-
-    private fun getBankListFromResponse(response: GetBankListResponse): ArrayList<Bank>? {
-        return response.bankListResponse?.bankData?.bankList
-    }
-
-    private suspend fun loadBankListGQL(param: Map<String, Any>): GraphqlResponse = withContext(Dispatchers.IO) {
-        val graphRequest = GraphqlRequest(rawQueries[QUERY_GET_BANK_LIST],
-                GetBankListResponse::class.java, param)
-        graphqlRepository.getReseponse(listOf(graphRequest))
-    }
-
-    fun searchBankByQuery(query: String) {
-        cancelOldSearchJob()
-        createNewSearchJob()
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO + searchBankJob) {
-                delay(DELAY_IN_SEARCH)
-                return@withContext searchInMasterList(query)
-            }
-            bankListState.value = OnBankSearchResult(data)
-        }) {
-            it.printStackTrace()
-        }
-    }
-
-    private fun cancelOldSearchJob() {
-        if (searchBankJob.isActive)
-            searchBankJob.cancel()
-    }
-
-    private fun createNewSearchJob() {
-        searchBankJob = Job()
-    }
-
-    fun resetSearchResult() {
-        cancelOldSearchJob()
-        createNewSearchJob()
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO + searchBankJob) {
-                return@withContext masterBankList.value
-            }
-            data?.let {
-                bankListState.value = OnBankSearchResult(data)
-            }
-                    ?: run { bankListState.value = OnBankListLoadingError(Exception(context.resources.getString(R.string.sbank_no_bank_account))) }
-        }) {
-            it.printStackTrace()
-        }
-    }
-
-    private fun searchInMasterList(query: String): ArrayList<Bank> {
-        val searchedBankList = arrayListOf<Bank>()
-        val tempBankList = masterBankList.value
-        tempBankList?.forEach { bank ->
-            bank.bankName?.let {
-                if (bank.bankName.contains(query, true)) {
-                    searchedBankList.add(bank)
+        bankListUseCase.get().getBankList {
+            when (it) {
+                is OnBankListLoaded -> {
+                    masterBankList.value = it.bankList
+                    bankListState.postValue(it)
+                }
+                else -> {
+                    bankListState.postValue(it)
                 }
             }
         }
-        return searchedBankList
     }
 
-    private fun getBankListParams() = mapOf(PARAM_CURRENT_PAGE to currentPage,
-            PARAM_ITEM_PER_PAGE to maxItemPerPage)
+    fun searchBankByQuery(query: String?) {
+        searchBankUseCase.get().cancelJobs()
+        searchBankUseCase.get().searchForBanks(
+                query, masterBankList.value
+        ) {
+            bankListState.postValue(OnBankSearchResult(it))
+        }
+    }
+
+    fun resetSearchResult() {
+        searchBankByQuery("")
+    }
 
     override fun onCleared() {
-        cancelOldSearchJob()
+        bankListUseCase.get().cancelJobs()
+        searchBankUseCase.get().cancelJobs()
         super.onCleared()
     }
 

@@ -18,7 +18,6 @@ import dagger.Provides;
  * @author okasurya on 7/20/18.
  */
 @Module
-@AccountHomeScope
 public class AccountHomeModule {
     @Provides
     AccountAnalytics provideAccountAnalytics(@ApplicationContext Context context) {

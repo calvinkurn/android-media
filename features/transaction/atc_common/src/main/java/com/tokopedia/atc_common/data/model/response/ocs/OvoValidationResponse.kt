@@ -33,7 +33,7 @@ class OvoInsufficientBalance(
 class OvoInsufficientDetails(
         @SerializedName("product_price")
         @Expose
-        val productPrice: Int = 0,
+        val productPrice: Long = 0,
         @SerializedName("shipping_estimation")
         @Expose
         val shippingEstimation: Int = 0,

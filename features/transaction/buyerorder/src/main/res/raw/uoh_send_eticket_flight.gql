@@ -1,7 +1,0 @@
-mutation ResendBookingEmail($invoiceID: String!, $email: String!) {
-  flightResendEmailV2(invoiceID: $invoiceID, email: $email) {
-    meta {
-      status
-    }
-  }
-}

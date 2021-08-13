@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ChipsUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/replyTemplateChip"
+    android:layout_width="@dimen/layout_lvl9"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/spacing_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:chipType="alternate"
+    app:chipSize="small" />

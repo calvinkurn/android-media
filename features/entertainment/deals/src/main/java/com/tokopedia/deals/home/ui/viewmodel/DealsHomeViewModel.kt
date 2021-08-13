@@ -7,7 +7,8 @@ import com.tokopedia.deals.common.data.DealsNearestLocationParam
 import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.deals.common.utils.DealsDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
@@ -18,7 +19,6 @@ import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,16 +26,18 @@ import javax.inject.Inject
  * @author by jessica on 19/06/20
  */
 
-class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider,
+class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                              private val dealsHomeMapper: DealsHomeMapper,
                                              private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
                                              private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
                                              private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.main) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
         get() = _observableEventHomeLayout
+
+    var mutableTickerData = DealsEventHome.TickerHome()
 
     init {
         _observableEventHomeLayout.postValue(Success(GetInitialHomeLayoutModelUseCase.requestEmptyViewModels()))
@@ -49,7 +51,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider
                 val brands = getBrandPopular(location)
                 val location = getNearestLocation(location)
 
-                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location)
+                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location, mutableTickerData)
                 _observableEventHomeLayout.postValue(Success(homeLayout))
             } catch (t: Throwable) {
                 _observableEventHomeLayout.postValue(Fail(t))
@@ -62,6 +64,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider
             val data = getEventHomeLayoutUseCase.apply {
                 useParams(GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name))
             }.executeOnBackground()
+            setTickerData(data.response.ticker)
             return data.response.layout
         } catch (t: Throwable) {
             throw t
@@ -95,6 +98,10 @@ class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider
         } catch (t: Throwable) {
             emptyList()
         }
+    }
+
+    private fun setTickerData(tickerData: DealsEventHome.TickerHome){
+        mutableTickerData = tickerData
     }
 
     companion object {

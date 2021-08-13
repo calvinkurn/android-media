@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 27/03/2020
  */
 @Module
-@FlightHomepageScope
 abstract class FlightHomepageViewModelModule {
 
     @Binds

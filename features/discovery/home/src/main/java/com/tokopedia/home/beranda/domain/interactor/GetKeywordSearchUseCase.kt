@@ -41,6 +41,6 @@ class GetKeywordSearchUseCase @Inject constructor(
 
     companion object {
         const val FIRST_INSTALL = "firstInstall"
-        const val UNIQUE_ID = "unique_id"
+        const val UNIQUE_ID = "uniqueId"
     }
 }

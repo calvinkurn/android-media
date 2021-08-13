@@ -32,4 +32,7 @@
     <string name="msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="cek_sekarang">Cek Sekarang</string>
     <string name="see_more_txt">Lihat Produk Lainnya</string>
+    <string name="topads_ads_text">Ad •&#160;</string>
+    <string name="topads_sdk_shop_more_content_description">Shop More Image</string>
+    <string name="topads_sdk_shop_banner_content_description">Shop Banner Image</string>
 </resources>

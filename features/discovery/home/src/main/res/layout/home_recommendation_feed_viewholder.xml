@@ -5,6 +5,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/recom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/dp_8"
+        />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
         android:layout_width="match_parent"

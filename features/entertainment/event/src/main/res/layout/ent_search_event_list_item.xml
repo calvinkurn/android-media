@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginBottom="20dp">
+    android:layout_marginBottom="@dimen/dimen_dp_20">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgEvent"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="@dimen/dimen_dp_52"
+        android:layout_height="@dimen/dimen_dp_52"
         android:background="@drawable/bg_image_event_search"
         tools:src="@tools:sample/avatars"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,9 +19,9 @@
         android:id="@+id/txtTanggalSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         tools:text="14 Jan"
-        android:textColor="@color/Tile_T500"
+        android:textColor="@color/Unify_T500"
         app:layout_constraintStart_toEndOf="@+id/imgEvent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"/>
@@ -38,12 +38,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtJudulEvent"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         tools:text="Djakarta Warehouse Project 2019"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginRight="@dimen/spacing_lvl1"
         android:maxLines="2"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@+id/imgEvent"

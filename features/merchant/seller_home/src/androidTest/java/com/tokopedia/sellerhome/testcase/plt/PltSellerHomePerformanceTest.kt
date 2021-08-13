@@ -7,18 +7,15 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity.Companion.createIntent
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
+import com.tokopedia.test.application.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,20 +34,22 @@ class PltSellerHomePerformanceTest {
     var activityRule: ActivityTestRule<SellerHomeActivity> = object : ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponseWithCheck(createMockModelConfig())
-            setupTotalSizeInterceptor(
+            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
+                    createMockModelConfig(),
                     listOf("getNotifications", "getShopInfoMoengage", "shopInfoByID",
                             "goldGetPMOSStatus", "GetSellerDashboardLayout", "getCardWidgetData",
                             "getLineGraphData", "getCarouselWidgetData", "getPostWidgetData",
                             "getProgressData", "getBarChartData", "getPieChartData", "getTableData",
                             "getTicker"
-                    ))
+                    )
+            )
+
         }
 
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
-            activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
+            activity.loadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
     }
@@ -58,7 +57,7 @@ class PltSellerHomePerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
+    val sellerHomeLoadTimeMonitoringListener = object : LoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
             SellerHomeIdlingResource.increment()
         }
@@ -81,7 +80,7 @@ class PltSellerHomePerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-        login()
+        PltSellerHomePerformanceUtils.login()
         Espresso.onIdle() // wait for login to complete
         activityRule.launchActivity(createIntent(InstrumentationRegistry.getInstrumentation().targetContext))
         Espresso.onIdle() // wait for seller home render process to complete
@@ -92,7 +91,9 @@ class PltSellerHomePerformanceTest {
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(
                 InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-                SellerHomeIdlingResource.idlingResource
+                SellerHomeIdlingResource.idlingResource,
+                "try.sugiharto+02@tokopedia.com",
+                "tokopedia789"
         )
     }
 

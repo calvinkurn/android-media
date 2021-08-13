@@ -22,6 +22,7 @@ class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         private const val PRODUCT_NAME = "PRODUCT_NAME"
+        const val ENCODING_UTF_8 = "UTF-8"
         fun newInstance(productName: String): TradeInOutsideCoverageBottomSheet {
             return TradeInOutsideCoverageBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -36,7 +37,7 @@ class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
         arguments?.getString(PRODUCT_NAME)?.let { productName ->
             view.findViewById<UnifyButton>(R.id.btn_similar_items).setOnClickListener {
                 tradeInAnalytics?.clickCoverageAreaSimilarItems()
-                RouteManager.route(context, getString(R.string.tradein_search_deeplink, URLEncoder.encode(productName, Charsets.UTF_8.toString())))
+                RouteManager.route(context, getString(R.string.tradein_search_deeplink, URLEncoder.encode(productName, ENCODING_UTF_8)))
                 dialog?.dismiss()
             }
         }

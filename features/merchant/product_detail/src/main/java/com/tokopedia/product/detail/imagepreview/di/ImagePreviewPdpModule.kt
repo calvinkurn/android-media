@@ -10,11 +10,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
-@ImagePreviewPdpScope
 @Module(includes = [
     ImagePreviewPdpViewModelModule::class
 ])
@@ -31,11 +27,6 @@ class ImagePreviewPdpModule {
     @ImagePreviewPdpScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
-    @ImagePreviewPdpScope
-    @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @ImagePreviewPdpScope
     @Provides

@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/label_variant_sizechart"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_6"
-            app:cardBackgroundColor="@color/Neutral_N50"
+            app:cardBackgroundColor="@color/Unify_N50"
             app:cardCornerRadius="@dimen/spacing_lvl2"
             app:cardElevation="@dimen/layout_lvl0">
 
@@ -55,7 +55,7 @@
                 android:layout_height="@dimen/layout_lvl2"
                 android:padding="@dimen/spacing_lvl2"
                 android:background="@drawable/oval_transparent_grey"
-                android:tint="@color/white_95"
+                android:tint="@color/Unify_N0_96"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_edit_price" />
 
@@ -68,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/label_variant_sizechart_description"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"

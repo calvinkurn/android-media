@@ -2,26 +2,28 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
-import androidx.annotation.DimenRes
-import com.google.android.material.snackbar.Snackbar
+import android.view.animation.Animation
+import android.view.animation.Transformation
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,21 +33,8 @@ import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
-    private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
-    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
     private const val ALLOW_CLICK = true
-
-    fun reviewDescFormatterOld(review: String): Pair<Spanned, Boolean> {
-        return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
-            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
-            Pair(MethodChecker
-                    .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION_OLD), ALLOW_CLICK)
-        } else {
-            Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
-        }
-    }
 
     fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
@@ -56,21 +45,10 @@ object ProductDetailUtil {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
-
-    fun generateDescriptionData(productInfo: DynamicProductInfoP1, textDescription: String) = DescriptionData(
-            basicId = productInfo.basic.productID,
-            basicName = productInfo.getProductName,
-            basicPrice = productInfo.data.price.value.toFloat(),
-            shopName = productInfo.basic.shopName,
-            thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
-            basicDescription = textDescription,
-            videoUrlList = productInfo.data.videos.map { it.url },
-            isOfficial = productInfo.data.isOS,
-            isGoldMerchant = productInfo.data.isPowerMerchant)
-
 }
 
-fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+fun String.boldOrLinkText(isLink: Boolean, context: Context,
+                          vararg textToBold: Pair<String, () -> Unit>): SpannableString {
     val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
@@ -98,7 +76,8 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        ds.color = MethodChecker.getColor(context, textColor)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -108,8 +87,31 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     return builder
 }
 
-internal fun Int.getRelativeDateByMinute(context: Context): String {
-    if (this == 0) return ""
+fun String.renderHtmlBold(context: Context): CharSequence? {
+    if (this.isEmpty()) return null
+    val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
+    val spanHandler = SpannableStringBuilder(spannedHtmlString)
+    val styleSpanArr = spanHandler.getSpans(0, spannedHtmlString.length, StyleSpan::class.java)
+    val boldSpanArr: MutableList<StyleSpan> = mutableListOf()
+    styleSpanArr.forEach {
+        if (it.style == Typeface.BOLD) {
+            boldSpanArr.add(it)
+        }
+    }
+
+    boldSpanArr.forEach {
+        val boldStart = spanHandler.getSpanStart(it)
+        val boldEnd = spanHandler.getSpanEnd(it)
+
+        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanHandler.setSpan(UnifyCustomTypefaceSpan(getTypeface(context, "RobotoBold.ttf")), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+    }
+
+    return spanHandler
+}
+
+internal fun Long.getRelativeDateByMinute(context: Context): String {
+    if (this == 0L) return ""
 
     val minuteInput = this
     val minuteDivider = TimeUnit.HOURS.toMinutes(1)
@@ -128,8 +130,8 @@ internal fun Int.getRelativeDateByMinute(context: Context): String {
     }
 }
 
-internal fun Int.getRelativeDateByHours(context: Context): String {
-    if (this == 0) return ""
+internal fun Long.getRelativeDateByHours(context: Context): String {
+    if (this == 0L) return ""
 
     val hourInput = this
     val dayInHours = TimeUnit.DAYS.toHours(1)
@@ -138,22 +140,6 @@ internal fun Int.getRelativeDateByHours(context: Context): String {
         context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
     } else {
         context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
-    }
-}
-
-internal fun String.isGivenDateIsBelowThan24H(): Boolean {
-    return try {
-        val endDate = Date(this.toLongOrZero() * 1000)
-        val now = System.currentTimeMillis()
-        val diff = (endDate.time - now).toFloat()
-        if (diff < 0) {
-            //End date is out dated
-            false
-        } else {
-            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
-        }
-    } catch (e: Throwable) {
-        false
     }
 }
 
@@ -240,9 +226,6 @@ infix fun String?.toDateId(format: String): String {
     return ""
 }
 
-fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString()
-        ?: "")
-
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {
         is Success -> {
@@ -270,36 +253,62 @@ fun String.goToWebView(context: Context) {
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
 
-fun View?.showToasterSuccess(message: String,
-                             @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-    }
-}
+internal fun View?.animateExpand() = this?.run {
+    val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+    val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+    val targetHeight = measuredHeight
 
-fun View?.showToasterError(message: String,
-                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
-                           ctaMaxWidth: Int? = null,
-                           ctaText: String = "",
-                           ctaListener: (() -> Unit?)? = null) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        ctaMaxWidth?.let {
-            Toaster.toasterCustomCtaWidth = ctaMaxWidth
+    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+    layoutParams.height = 1
+    show()
+    val animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            layoutParams.height = if (interpolatedTime == 1f) ConstraintLayout.LayoutParams.WRAP_CONTENT
+            else (targetHeight * interpolatedTime).toInt()
+            alpha = interpolatedTime
+            requestLayout()
         }
 
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        if (ctaText.isNotEmpty()) {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            })
-        } else {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            })
+        override fun willChangeBounds(): Boolean {
+            return true
         }
     }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
 }
 
+internal fun View?.animateCollapse() = this?.run {
+    val initialHeight = measuredHeight
+    val animation: Animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            if (interpolatedTime == 1f) {
+                gone()
+            } else {
+                layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                alpha = 1.0f - interpolatedTime
+                requestLayout()
+            }
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
+    startAnimation(animation)
+}
+
+internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+    val productCardOptionsModel = ProductCardOptionsModel()
+    productCardOptionsModel.hasWishlist = true
+    productCardOptionsModel.isWishlisted = isWishlist
+    productCardOptionsModel.productId = productId.toString()
+    productCardOptionsModel.isTopAds = isTopAds
+    productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.productPosition = position
+    productCardOptionsModel.screenName = header
+    return productCardOptionsModel
+}

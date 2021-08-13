@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -12,13 +12,15 @@ import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkoutOccUseCase: CheckoutOccUseCase,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                            private val executorDispatchers: ExecutorDispatchers) {
+                                                            private val executorDispatchers: CoroutineDispatchers) {
 
     private fun generateShopPromos(finalPromo: ValidateUsePromoRevampUiModel?, orderCart: OrderCart): List<PromoRequest> {
         if (finalPromo != null) {
@@ -58,19 +60,21 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
+            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
                             ShopProduct(
                                     shopId = shop.shopId,
-                                    isPreorder = product.isPreorder,
+                                    isPreorder = product.isPreOrder,
                                     warehouseId = product.warehouseId,
                                     finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
                                     productData = listOf(
                                             ProductData(
                                                     product.productId,
                                                     product.quantity.orderQuantity,
-                                                    product.notes
+                                                    product.notes,
+                                                    isPPPChecked
                                             )
                                     ),
                                     shippingInfo = ShippingInfo(
@@ -92,6 +96,15 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         var paymentType = pref.preference.payment.gatewayName
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                        }
+                        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+                            orderSummaryAnalytics.eventPPClickBayar(userId,
+                                    product.categoryId,
+                                    product.purchaseProtectionPlanData.protectionTitle,
+                                    product.purchaseProtectionPlanData.protectionPricePerProduct,
+                                    orderCart.cartId,
+                                    if (isPPPChecked) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
+                                    else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,

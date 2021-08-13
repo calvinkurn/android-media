@@ -1,0 +1,14 @@
+{
+  "readme": "click back on product preview page, click yes",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click save as draft",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
+      "screenName":"/addproductpage - stepper"
+    }
+  ]
+}

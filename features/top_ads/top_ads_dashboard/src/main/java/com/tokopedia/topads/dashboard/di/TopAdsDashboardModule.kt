@@ -9,11 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonUrl
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource
-import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
@@ -31,7 +27,6 @@ import javax.inject.Named
  * Created by hadi.putra on 23/04/18.
  */
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
 
@@ -46,25 +41,6 @@ class TopAdsDashboardModule {
     fun provideWSRetrofit(@ShopQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build()
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopCommonApi(@ShopQualifier retrofit: Retrofit): ShopCommonApi {
-        return retrofit.create(ShopCommonApi::class.java)
-    }
-
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideShopCommonDataSource(shopInfoCloudDataSource: ShopCommonCloudDataSource): ShopCommonDataSource {
-        return ShopCommonDataSource(shopInfoCloudDataSource)
     }
 
     @TopAdsDashboardScope
@@ -84,10 +60,6 @@ class TopAdsDashboardModule {
     fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource): TopAdsSourceTaggingRepository {
         return TopAdsSourceTaggingRepositoryImpl(dataSource)
     }
-
-    @TopAdsDashboardScope
-    @Provides
-    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
 
     @TopAdsDashboardScope
     @Provides

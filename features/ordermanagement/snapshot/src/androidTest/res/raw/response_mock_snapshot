@@ -1,0 +1,72 @@
+[
+  {
+    "data": {
+      "get_order_snapshot": {
+        "pre_order": false,
+        "shop_image_primary_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/1/19/1479278/1479278_46c58811-d206-455c-b332-325590c7be58.jpg",
+        "product_url": "https://www.tokopedia.com/tumblersbux/product-6",
+        "product_price_formatted": "Rp 100",
+        "product_total_price_formatted": "Rp 100",
+        "product_weight_formatted": "100 gr",
+        "product_total_weight_formatted": "100 gr",
+        "shop_summary": {
+          "user_id": 12299749,
+          "shop_name": "Tumbler Starbucks 123",
+          "shop_id": 1479278,
+          "shop_domain": "tumblersbux",
+          "logo": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/1/19/1479278/1479278_46c58811-d206-455c-b332-325590c7be58.jpg"
+        },
+        "product_additional_data": {
+          "create_time": "05 February 2021",
+          "product_price": "Rp 100"
+        },
+        "product_image_secondary": [
+          {
+            "image_url": "https://ecs7.tokopedia.net/img/product-1/2016/12/17/12299749/12299749_651f2dcd-1ff8-4a00-a3f7-50af8e1babde_638_638.jpg",
+            "file_name": "12299749_651f2dcd-1ff8-4a00-a3f7-50af8e1babde_638_638.jpg",
+            "file_path": "product-1/2016/12/17/12299749"
+          }
+        ],
+        "order_detail": {
+          "order_dtl_id": 0,
+          "order_id": 704550391,
+          "product_id": 112658526,
+          "product_name": "Product 6",
+          "product_desc": "Tumbler Sbux punya nih jangan dibeli yaaa oke deh nanti aja ya belinya abis gajian text nya juga biarin aja ya biar panjang deskripsinya jadi tau ngebug apa ngga nih oke oke oke oke oke lanjut lanjut lanjut lanjut lanjut lanjut lanjut",
+          "quantity": 1,
+          "quantity_deliver": 1,
+          "quantity_reject": 0,
+          "product_price": 100,
+          "product_weight": 0.1,
+          "total_weight": 0.1,
+          "subtotal_price": 100,
+          "notes": "",
+          "finsurance": 1,
+          "returnable": 0,
+          "child_cat_id": 981,
+          "currency_id": 1,
+          "insurance_price": 0,
+          "normal_price": 100,
+          "create_time": "2021-02-05T17:33:23.625861Z",
+          "min_order": 1,
+          "must_insurance": 0,
+          "condition": 1
+        },
+        "pre_order_duration": "",
+        "is_os": false,
+        "is_pm": true,
+        "campaign_data": {
+          "product_id": 0,
+          "campaign": {
+            "discounted_price": "",
+            "discount_percentage_text": "",
+            "discount_percentage_text_color": "",
+            "discount_percentage_label_color": "",
+            "original_price": "",
+            "original_price_fmt": ""
+          }
+        }
+      }
+    }
+  }
+]

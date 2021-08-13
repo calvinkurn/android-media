@@ -22,13 +22,13 @@ dependencies {
 project.ext {
     artifactId = 'lint'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.5"
+    versionName = "0.0.13"
     artifactName = "lint"
 }
 
 jar{
     manifest{
-        attributes 'Lint-Registry-V2': 'com.tokopedia.linter.IssueRegistry'
+        attributes 'Lint-Registry-v2': 'com.tokopedia.linter.IssueRegistry'
     }
 }
 apply from: '../publish_local.gradle'

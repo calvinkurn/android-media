@@ -7,7 +7,7 @@
         <activity android:name=".SellerActionActivity"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.tokopedia.seller.action.slices"
             android:name="com.tokopedia.seller.action.SellerActionSliceProvider"
+            android:authorities="com.tokopedia.seller.action.slices"
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.app.slice.category.SLICE" />
             </intent-filter>
         </provider>

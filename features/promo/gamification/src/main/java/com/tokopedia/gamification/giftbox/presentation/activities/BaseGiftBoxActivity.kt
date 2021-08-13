@@ -65,7 +65,6 @@ open class BaseGiftBoxActivity : BaseActivity() {
                 .beginTransaction()
                 .add(fm.id, getDestinationFragment())
                 .commit()
-
     }
 
     fun checkLoggedIn() {

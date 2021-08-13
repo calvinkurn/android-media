@@ -70,6 +70,8 @@ object ShopSettingsErrorHandler {
                 }
             } else if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
                 e.message
+            } else if (e is com.tokopedia.abstraction.common.network.exception.MessageErrorException && !e.message.isNullOrBlank()) {
+                e.message
             } else {
                 if (e is IOException) context?.getString(R.string.error_internal_server_error_message) else context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)
             }

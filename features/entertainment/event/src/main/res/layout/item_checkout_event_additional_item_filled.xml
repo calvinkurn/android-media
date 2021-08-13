@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Hola | "
-        android:textColor="@color/Neutral_N300"
+        android:textColor="@color/Unify_N300"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         />
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Hola"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         />

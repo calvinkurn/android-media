@@ -14,29 +14,17 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
-import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@SellerMenuScope
 class SellerMenuModule {
-
-    @SellerMenuScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
 
     @SellerMenuScope
     @Provides
@@ -81,8 +69,7 @@ class SellerMenuModule {
 
     @SellerMenuScope
     @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor,
-                            tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fun provideOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
                             powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
@@ -110,11 +97,5 @@ class SellerMenuModule {
     fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
         val analytics = TrackApp.getInstance().gtm
         return SellerMenuTracker(analytics, userSession)
-    }
-
-    @SellerMenuScope
-    @Provides
-    fun provideSellerHomeDispatcher(): SellerHomeCoroutineDispatcher {
-        return SellerHomeCoroutineDispatcherImpl
     }
 }

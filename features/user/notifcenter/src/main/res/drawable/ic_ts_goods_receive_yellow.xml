@@ -16,5 +16,5 @@
     <path
         android:pathData="M24 13c0 2.2 -1.8 4 -4 4s-4 -1.8 -4 -4s1.8 -4 4 -4S24 10.8 24 13"
         android:fillType="evenOdd"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="@color/Unify_N0" />
 </vector>

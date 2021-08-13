@@ -1,0 +1,949 @@
+[
+  {
+    "data": {
+        "ace_search_product_v4": {
+          "header": {
+            "totalData": 0,
+            "totalDataText": "",
+            "defaultView": 1,
+            "responseCode": 4,
+            "errorMessage": "",
+            "additionalParams": "",
+            "keywordProcess": "0"
+          },
+          "data": {
+            "isQuerySafe": true,
+            "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=qwekjnkqjwneqwe",
+            "redirection": {
+              "redirectApplink": ""
+            },
+            "ticker": {
+              "text": "",
+              "query": "",
+              "typeId": 0
+            },
+            "related": {
+              "relatedKeyword": "",
+              "position": 1,
+              "otherRelated": [
+                {
+                  "keyword": "pikachu plushie",
+                  "url": "https://www.tokopedia.com/search?q=pikachu+plushie&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=pikachu+plushie&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 469752802,
+                      "name": "Boneka Pikachu Plushie Pilot Exclusive Jewel Pokemon Center Singapore",
+                      "price": 500000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/5/11/2692619/2692619_0af3c8f3-6730-4d79-8f24-00cdb4995d16_1728_1728.jpg",
+                      "url": "https://www.tokopedia.com/momoco99/boneka-pikachu-plushie-pilot-exclusive-jewel-pokemon-center-singapore?whid=0",
+                      "applink": "tokopedia://product/469752802",
+                      "priceStr": "Rp500.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Tangerang Selatan"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": false,
+                        "imgUrl": ""
+                      },
+                      "ads": {
+                        "id": "82398085",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AUp6_KF6A1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6seOHmFiy3zwrfo5rM1i6sUfHZdhHAKR6_HpHp1fHsURoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OZQJN9zMOqzchk_VzsPOBEZ9z6zV173MjFo1YJQcxHuO-D_uzzH7N1e_og8j-W_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oIxozcrp_Ozo8jOEu_-oqjjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO_oAu6qjjO_uz-HjNJqp-vzJj7_9BG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHaFiyfV79fBjraUE3p1ObA1FHiFaHp179ZFiQBYsy3Njq3zxPcuwy3zpUsthbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUposeNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?page=1&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fmomoco99%2Fboneka-pikachu-plushie-pilot-exclusive-jewel-pokemon-center-singapore%3Fsrc%3Dtopads&keywords=pikachu+eevee+plushie&src=topads_dynamic_broadmatch&management_type=2&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AUp6_KF6A1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6seOHmFiy3zwrfo5rM1i6sUfHZdhHAKR6_HpHp1fHsURoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OZQJN9zMOqzchk_VzsPOBEZ9z6zV173MjFo1YJQcxHuO-D_uzzH7N1e_og8j-W_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oIxozcrp_Ozo8jOEu_-oqjjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO_oAu6qjjO_uz-HjNJqp-vzJj7_9BG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHaFiyfV79fBjraUE3p1ObA1FHiFaHp179ZFiQBYsy3Njq3zxPcuwy3zpUsthbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUposeNbm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?is_search=1&uid=75093631&keywords=pikachu+eevee+plushie&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Fmomoco99%2Fboneka-pikachu-plushie-pilot-exclusive-jewel-pokemon-center-singapore%3Fsrc%3Dtopads&dv=android&src=topads_dynamic_broadmatch&t=android&management_type=2&product_id=469752802",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKaHpjdHAKObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAJNbp15H_J5HsyNHsyh6Z4aosjaosJN9pCxgsos6cypb_yRHpnWoceR6Z7dgsU7b_nFyfzioAjNo3ehoB4hopUd9pJRHsKXqSCSUiFiy3zwrfo5rM1i6sUfHZdhHAKR6_HpHp1fHsURoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OZQJN9zMOqzchk_VzsPOBEZ9z6zV173MjFo1YJQcxHuO-D_uzzH7N1e_og8j-W_1o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO_oIxozcrp_Ozo8jOEu_-oqjjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO_oAu6qjjO_uz-HjNJqp-vzJj7_9BG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHaFiQBYsy3Njq3zxPcuwy3zpUsthbm-FQRo79fVDgaUE3a-pQcY7PcBXgOYpg3VayfKi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsHfoAjDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?keywords=pikachu+eevee+plushie&t=android&dv=android&src=topads_dynamic_broadmatch&page=1&management_type=2&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1"
+                      }
+                    },
+                    {
+                      "id": 648246431,
+                      "name": "Boneka Plushie Pokemon Detective Pikachu The Movie Figure",
+                      "price": 650000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/1/3/157803998231216/157803998231216_581aca0b-d7e0-4689-9724-c62ba7ecb17e.png",
+                      "url": "https://www.tokopedia.com/tomzhobby/boneka-plushie-pokemon-detective-pikachu-the-movie-figure?whid=0",
+                      "applink": "tokopedia://product/648246431",
+                      "priceStr": "Rp650.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Kab. Pemalang"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 273411205,
+                      "name": "Pikachu Plushie Keychain 2",
+                      "price": 35000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/3/30/0/0_cb0dc294-2d00-43d6-9055-c68bc1a654e3_780_1040.jpg",
+                      "url": "https://www.tokopedia.com/comic-animeshopu/pikachu-plushie-keychain-2?whid=0",
+                      "applink": "tokopedia://product/273411205",
+                      "priceStr": "Rp35.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Kab. Tangerang"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "eevee plushie",
+                  "url": "https://www.tokopedia.com/search?q=eevee+plushie&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=eevee+plushie&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 787917600,
+                      "name": "Japan UFo Catcher eevee Jolteon plushie",
+                      "price": 220000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/4/16/158701406726169/158701406726169_947e8d95-8e8c-49cc-a6d8-082fd82972d7.png",
+                      "url": "https://www.tokopedia.com/colletoys/japan-ufo-catcher-eevee-jolteon-plushie?whid=0",
+                      "applink": "tokopedia://product/787917600",
+                      "priceStr": "Rp220.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Utara"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 1262419475,
+                      "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
+                      "price": 167000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/hDjmkQ/2020/10/17/c15cb8aa-01c4-4a71-8849-92aae740f074.jpg",
+                      "url": "https://www.tokopedia.com/asanahholshop/terpopuler-boneka-pokemon-eevee-plushie-changi-airport-singapore?whid=0",
+                      "applink": "tokopedia://product/1262419475",
+                      "priceStr": "Rp167.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Barat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": false,
+                        "imgUrl": ""
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 1249480214,
+                      "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
+                      "price": 167000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/hDjmkQ/2020/10/11/4e2d32ab-ce6a-4d9e-9f06-44337efc920e.jpg",
+                      "url": "https://www.tokopedia.com/wahanaaolshop/terpopuler-boneka-pokemon-eevee-plushie-changi-airport-singapore?whid=0",
+                      "applink": "tokopedia://product/1249480214",
+                      "priceStr": "Rp167.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Barat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": false,
+                        "imgUrl": ""
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "pikachu eevee",
+                  "url": "https://www.tokopedia.com/search?q=pikachu+eevee&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=pikachu+eevee&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 1074105134,
+                      "name": "Penghapus Pokemon 3D Setip Eraser Hapusan Stip Pikachu Snorlax Eevee - Kuning",
+                      "price": 15500,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/5/70371269/70371269_449933c4-33d7-472b-85b9-02a98b18459e_2048_2048",
+                      "url": "https://www.tokopedia.com/pepepipi/penghapus-pokemon-3d-setip-eraser-hapusan-stip-pikachu-snorlax-eevee-kuning?whid=0",
+                      "applink": "tokopedia://product/1074105134",
+                      "priceStr": "Rp15.500",
+                      "wishlist": false,
+                      "ratingAverage": "4.8",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Bandung"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "62295726",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUa6_1RHsyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUOHidOHsHpHAKNo_rpHsepbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj1O_MOo8jNWz_zHucoE_BzCPJNI3MxvepnO_1Poo1h1u_-vuJNk3M2V8JNWZ9Poq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_3j7H1Ok_92ozcrO_Bzs8jOk192-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBBN_c2SP7NEz92oucra_S2-o1NkyR2-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2QoseabAJFopyDose79ZFiQBYsy3Njq3zxPcuwy3zpUstabm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHposJ7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?keywords=pikachu+eevee+plushie&management_type=1&src=topads_dynamic_broadmatch&is_search=1&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Fpepepipi%2Fpenghapus-pokemon-3d-setip-eraser-hapusan-stip-pikachu-snorlax-eevee-kuning%3Fsrc%3Dtopads&t=android&dv=android",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosUa6_1RHsyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUOHidOHsHpHAKNo_rpHsepbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj1O_MOo8jNWz_zHucoE_BzCPJNI3MxvepnO_1Poo1h1u_-vuJNk3M2V8JNWZ9Poq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_3j7H1Ok_92ozcrO_Bzs8jOk192-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBBN_c2SP7NEz92oucra_S2-o1NkyR2-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2QoseabAJFopyDose79ZFiQBYsy3Njq3zxPcuwy3zpUstabm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHposJ7bm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?src=topads_dynamic_broadmatch&product_id=1074105134&t=android&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&page=1&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Fpepepipi%2Fpenghapus-pokemon-3d-setip-eraser-hapusan-stip-pikachu-snorlax-eevee-kuning%3Fsrc%3Dtopads&is_search=1&dv=android&management_type=1",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaHsjOopUfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpK5oZ4RHAHRH_Uf6Z4RHAHRH_Uf6u47oAjNHposom7pHfeRb_eRHMUW6Aui6Z7FHMJN6cUh6AeO63uwHsn76V4aHAedUiFiy3zwrfo5rM1i6sUOHidOHsHpHAKNo_rpHsepbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj1O_MOo8jNWz_zHucoE_BzCPJNI3MxvepnO_1Poo1h1u_-vuJNk3M2V8JNWZ9Poq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_3j7H1Ok_92ozcrO_Bzs8jOk192-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBBN_c2SP7NEz92oucra_S2-o1NkyR2-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstpbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9RoBy9-sqm-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHpyhomFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?src=topads_dynamic_broadmatch&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&management_type=1&t=android&keywords=pikachu+eevee+plushie&page=1"
+                      }
+                    },
+                    {
+                      "id": 1300903369,
+                      "name": "Boneka Pokemon Eevee Size 18cm/boneka pikachu/boneka pokemon",
+                      "price": 55000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/31/a4ef8862-80b7-4e05-af5e-bba4af21650b.jpg",
+                      "url": "https://www.tokopedia.com/toyshopee-1/boneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon?whid=0",
+                      "applink": "tokopedia://product/1300903369",
+                      "priceStr": "Rp55.000",
+                      "wishlist": false,
+                      "ratingAverage": "",
+                      "labelGroups": [],
+                      "shop": {
+                        "city": "Jakarta Barat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "80798493",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AnR6_K76_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfHidO6AKO6A1RoAefHAeNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj1O_MOo8jNWz_zHucoE_BzCPJNI3MxvepnO_1Poo1h1u_-vuJNk3M2V8JNWZ9Poq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_3j7H1YJgpVvzV1p_jzzHjOJ1_u-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBjF_c2CoJY1yRB6zcr7_7zVP7O1qp--QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2Qo_1Do_nabAUpo_zPbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUdHiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?r=https%3A%2F%2Fwww.tokopedia.com%2Ftoyshopee-1%2Fboneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon%3Fsrc%3Dtopads&is_search=1&keywords=pikachu+eevee+plushie&page=1&management_type=2&src=topads_dynamic_broadmatch&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&dv=android",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AnR6_K76_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfHidO6AKO6A1RoAefHAeNbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qj1O_MOo8jNWz_zHucoE_BzCPJNI3MxvepnO_1Poo1h1u_-vuJNk3M2V8JNWZ9Poq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_3j7H1YJgpVvzV1p_jzzHjOJ1_u-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBjF_c2CoJY1yRB6zcr7_7zVP7O1qp--QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2Qo_1Do_nabAUpo_zPbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUstirfh5PIz2QMPwrfuxrMotUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpUdHiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftoyshopee-1%2Fboneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon%3Fsrc%3Dtopads&src=topads_dynamic_broadmatch&is_search=1&t=android&management_type=2&uid=75093631&product_id=1300903369&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&page=1",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKFopjdoAjpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpHhbfJ7g3yd6Ayab_KFysrWoc1FoZOxgsuBb3-iy_zxgsUhos1FyiNkrcribm-xgVYpyfYagZUEHsyabs1d6A1do_r7oAyFoAjDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz_u6Q1OE_MOVoJh1yR26uJV7_jPqqJYAHAuoz77O_VzuHjY1_M2qqjud_MO-P7O2Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_eh_7zSH1YJu_o6zVJa_1zzo1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok3_CHqjJ7_Ozs81NJgpzvzJuR_uz0HjBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sHDUMNwyfVXgcBjy9zB9fVjraUEHiFircYpPVYxQcri6BDirfh5PIz2QMPwrfuxrMotUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHa6AUDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?dv=android&src=topads_dynamic_broadmatch&management_type=2&keywords=pikachu+eevee+plushie&page=1&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1"
+                      }
+                    },
+                    {
+                      "id": 1025538191,
+                      "name": "Boneka eevee 18cm/boneka teman pokemon/boneka karakter/boneka pikachu",
+                      "price": 55000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/14/1025538191/1025538191_0d911196-0cb3-47c8-ace6-7550c869b689_384_384.jpg",
+                      "url": "https://www.tokopedia.com/bear-online/boneka-eevee-18cm-boneka-teman-pokemon-boneka-karakter-boneka-pikachu?whid=0",
+                      "applink": "tokopedia://product/1025538191",
+                      "priceStr": "Rp55.000",
+                      "wishlist": false,
+                      "ratingAverage": "4.8",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 27",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Pusat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "pikachu",
+                  "url": "https://www.tokopedia.com/search?q=pikachu&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=pikachu&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 191238055,
+                      "name": "boneka pokemon pikachu besar jumbo real pict",
+                      "price": 120000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2017/6/20/0/0_c49b8186-d4d6-446e-9118-20290356b4a5_576_1024.jpg",
+                      "url": "https://www.tokopedia.com/jkt-mangga/boneka-pokemon-pikachu-besar-jumbo-real-pict?whid=0",
+                      "applink": "tokopedia://product/191238055",
+                      "priceStr": "Rp120.000",
+                      "wishlist": false,
+                      "ratingAverage": "4.9",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 629",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Utara"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "13714890",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_HRH_ed6_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6s1Fbm-xgVYpyfYagZUEHsepbsHaHAUh6_Udo_rfHAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jF_c2zHJNJ1_C6zVJF_jzzHJNJ1_C617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8Jda_Mxg8Mh0_1HF81O1yRPHuVJp_Bz-PVB91_VoepCE392o8jNW3_uqQuuE33O-q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81NJ_9uo8jBR_32Vo1OkgpV68BBR_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-8jO2oA-68jVN_S2CoJYJypuouVuR_BoG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstpbm-XP3Oig9-wy3zp9R-BrZUEHaFiyfV79fBjraUE3p1ObA1FHiFaHp179ZFiQBYsy3Njq3zxPcuwy3zpUstpbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sKdHiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?keywords=pikachu+eevee+plushie&t=android&dv=android&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fjkt-mangga%2Fboneka-pokemon-pikachu-besar-jumbo-real-pict%3Fsrc%3Dtopads&src=topads_dynamic_broadmatch",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_HRH_ed6_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6s1Fbm-xgVYpyfYagZUEHsepbsHaHAUh6_Udo_rfHAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jF_c2zHJNJ1_C6zVJF_jzzHJNJ1_C617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8Jda_Mxg8Mh0_1HF81O1yRPHuVJp_Bz-PVB91_VoepCE392o8jNW3_uqQuuE33O-q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81NJ_9uo8jBR_32Vo1OkgpV68BBR_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-8jO2oA-68jVN_S2CoJYJypuouVuR_BoG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstpbm-XP3Oig9-wy3zp9R-BrZUEHaFiyfV79fBjraUE3p1ObA1FHiFaHp179ZFiQBYsy3Njq3zxPcuwy3zpUstpbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sKdHiFiq9owgIBXy3O2yOYpQcY7PcBXgaUEPI-Og97?page=1&src=topads_dynamic_broadmatch&dv=android&t=android&keywords=pikachu+eevee+plushie&is_search=1&management_type=1&product_id=191238055&r=https%3A%2F%2Fwww.tokopedia.com%2Fjkt-mangga%2Fboneka-pokemon-pikachu-besar-jumbo-real-pict%3Fsrc%3Dtopads&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpopJ76AjFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAJRbpy5Hsn5Hm4F9fH763UdH_Kfb3e7gAyWoAefgZ7NH_Jdb_UFHsjFHp1fyszxou4OopgwH_naomNkrcribm-xgVYpyfYagZUEHsepbsHaHAUh6_Udo_rfHAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jF_c2zHJNJ1_C6zVJF_jzzHJNJ1_C617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-8Jda_Mxg8Mh0_1HF81O1yRPHuVJp_Bz-PVB91_VoepCE392o8jNW3_uqQuuE33O-q1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81NJ_9uo8jBR_32Vo1OkgpV68BBR_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-8jO2oA-68jVN_S2CoJYJypuouVuR_BoG6ZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-pQcY7PcBXgOYpg3VayfKibm-XP3Oig9-wQfgwy3zpUstpbm-XP3Oig9-wy3zp9R-BrZUEHaFiQBYsy3Njq3zxPcuwy3zpUstpbm-FQRo79fVDgaUE3a-pQcY7PcBXgOYpg3VayfKi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUE6AKabm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?page=1&management_type=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie&src=topads_dynamic_broadmatch&t=android&dv=android&is_search=1"
+                      }
+                    },
+                    {
+                      "id": 685931247,
+                      "name": "Mainan Anak Pokemon Pokeball Deformation Toy Pikachu Original New",
+                      "price": 153000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/24/747dae94-f457-4e86-bb80-5bb1b1955c63.png",
+                      "url": "https://www.tokopedia.com/babamainan/mainan-anak-pokemon-pokeball-deformation-toy-pikachu-original-new?whid=0",
+                      "applink": "tokopedia://product/685931247",
+                      "priceStr": "Rp153.000",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 282",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Utara"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "49341880",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAjpoAJd6AnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUNoadhosUdHpUhosn7HsHhomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zN_92-8JNJZ_z6ucod_jz-oJN1yfBHe72kgJxGgMHauMxsQ1N5Z325q1O_oA-vzJJa_S2-81NkgpuozcHh_M2oq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouczk3uPoou2Je9zoqj1p_1HFHJNEu9BHu7g0_BzCPJ7a_92o8B2W_OPqQJ7aZMB-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMDp_c2VHjOkgR2oqj1a_1zz81OEz_C-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBJ7_c2CoJNke_CoqBVR_32z8jNke9B-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sHDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2Qo_1DH_UDoArp9ZFiQBYsy3Njq3zxPcuwy3zpUstpbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6srpoAJDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie&t=android&page=1&src=topads_dynamic_broadmatch&is_search=1&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fbabamainan%2Fmainan-anak-pokemon-pokeball-deformation-toy-pikachu-original-new%3Fsrc%3Dtopads",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoAjpoAJd6AnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sUNoadhosUdHpUhosn7HsHhomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoq_zN_92-8JNJZ_z6ucod_jz-oJN1yfBHe72kgJxGgMHauMxsQ1N5Z325q1O_oA-vzJJa_S2-81NkgpuozcHh_M2oq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1OAZ9o-Q_ufyMO6QJBkQfBouczk3uPoou2Je9zoqj1p_1HFHJNEu9BHu7g0_BzCPJ7a_92o8B2W_OPqQJ7aZMB-q9P2ysoGrVtaQIuyHB-Dy7yNrV2AZ_g-qjV2_JoGPMoWQcNxupuMy7xGPB2UuM2jzsBF3jo-ojBke3BHe72fyfODQMV9o3gsHMxfy7yNrV2AZ_g-qjV2_JoG8cz9uSBBusjF3uPj8jBkQfB-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMDp_c2VHjOkgR2oqj1a_1zz81OEz_C-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBJ7_c2CoJNke_CoqBVR_32z8jNke9B-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sHDUMNOQ3-BrBYxgIowrMuhUstpbm-sy9zwq3zpUs2Qo_1DH_UDoArp9ZFiQBYsy3Njq3zxPcuwy3zpUstpbm-FQRo79fVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6srpoAJDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?page=1&management_type=1&dv=android&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fbabamainan%2Fmainan-anak-pokemon-pokeball-deformation-toy-pikachu-original-new%3Fsrc%3Dtopads&is_search=1&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&product_id=685931247&src=topads_dynamic_broadmatch&uid=75093631",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seNHpeh6AKFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpU7bpr7ofzxg_j7b3y7o_rWoc1doiOiysKFb_uiysViH_jOo3HfHaNFQMribm-xgVYpyfYagZUEHsjRbsJfHsKpHsJfHAeaHpJ7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oIBo8jBd_jz-oJN1yRx6zJj7_Bzsq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uH7HjYJe_-68jBN_M2So1OJypV6qjO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1O1gc2gu77O3jzCPJOkz_ooepnF_S2u81h9zMW6uJV7__-o8jOE3MOvuO2D__-Gq1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkqpoHqj1a_32S8jOkz_-ozVVN_92VHJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok1_zHqjJ7_M2CHJOk19PoqBVE_M2C81BXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHaFiQSuWyMua9fVjrOYag9Ji6sHDUMNwyfVXgcBjy9zB9fVjraUEHaFircYpPVYxQcri6BDirfh5PIz2QMPwrfuxrMotUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6srpoAJDUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?management_type=1&keywords=pikachu+eevee+plushie&dv=android&page=1&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=topads_dynamic_broadmatch&is_search=1"
+                      }
+                    },
+                    {
+                      "id": 483958862,
+                      "name": "Boneka Pikachu Pokemon Charizard / Boneka Anak Pokemon",
+                      "price": 105000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/24/483958862/483958862_f332e39c-b198-44a0-8392-89df8d21ea63_1564_1564.jpg",
+                      "url": "https://www.tokopedia.com/rm-toys/boneka-pikachu-pokemon-charizard-boneka-anak-pokemon?whid=0",
+                      "applink": "tokopedia://product/483958862",
+                      "priceStr": "Rp105.000",
+                      "wishlist": false,
+                      "ratingAverage": "4.9",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 324",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Utara"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": false,
+                        "imgUrl": ""
+                      },
+                      "ads": {
+                        "id": "36734998",
+                        "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpyRHpeN6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sHhHZd7HAj7o_UfH_rO6AUdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N2oAo68MDa_M2VP7O13_u6zcWd_Bz-q1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9x6HjNt392Dq7OAHIBoucoR_VzzH7N1Z9zguOJh_1HF8BBE_926QujO3MOu8BBWZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92ouJuO_jzCo1NJu9B6qj1p_BzS81YAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_Voepe7_7zC8JO139xoucrF_Oz0o1BXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHaFiQSuWyMua9fVjrOYag9Ji6sHDUMoxPVY2gIHi6BDOoZFOHAUDHsHOoV7DUMNwyfVXgcBjy9zB9fVjraUEHaFircYpPVYxQcri6i-pQcY7PcBXgOYpg3VayfKibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKabm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Frm-toys%2Fboneka-pikachu-pokemon-charizard-boneka-anak-pokemon%3Fsrc%3Dtopads&src=topads_dynamic_broadmatch&keywords=pikachu+eevee+plushie&dv=android&management_type=1&t=android&is_search=1&page=1",
+                        "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHpyRHpeN6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosndosJRo_rhbm-srcHi6sUOHmFiy3zwrfo5rM1i6sHhHZd7HAj7o_UfH_rO6AUdbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N2oAo68MDa_M2VP7O13_u6zcWd_Bz-q1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z9x6HjNt392Dq7OAHIBoucoR_VzzH7N1Z9zguOJh_1HF8BBE_926QujO3MOu8BBWZ3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92ouJuO_jzCo1NJu9B6qj1p_BzS81YAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_Voepe7_7zC8JO139xoucrF_Oz0o1BXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstirfh5PIz2QMPwrfuxrMotUiFiQSuWyMua9fYM9fVjraUEHaFiQSuWyMua9fVjrOYag9Ji6sHDUMoxPVY2gIHi6BDOoZFOHAUDHsHOoV7DUMNwyfVXgcBjy9zB9fVjraUEHaFircYpPVYxQcri6i-pQcY7PcBXgOYpg3VayfKibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKabm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?keywords=pikachu+eevee+plushie&product_id=483958862&uid=75093631&src=topads_dynamic_broadmatch&management_type=1&is_search=1&dv=android&t=android&page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&r=https%3A%2F%2Fwww.tokopedia.com%2Frm-toys%2Fboneka-pikachu-pokemon-charizard-boneka-anak-pokemon%3Fsrc%3Dtopads",
+                        "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHfopH76_jdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpJ5Hse5oAKp6_1d6AyabpedHpjO6AKfHBYMHpHag_HNyaOiH_jdb_e7y_nW6AHNHi7d63zM6ceaH3uxosowH_1foV4ho_y7bM2FgaUDUMVj9RosQR-BUstpH_JXoAnNoA1aosJRo_Ka6mFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6q_ep_S20HjNkz9PouVjO_jz08JN1Z3BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1Bd_s-6qVBEQcWoepCN_uzsP7h11_o6uJB73uPzH1OAHI2g8jOE_MOgou2Wu92gQ1B2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_uzVP1NJe_u6zVuN_M2VH7N1gRBve7BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjh_1H7oJYJe9xouVBd_uzSHJY1qpu-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUSoDQRz7q3NS9RoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sHDUMNOQ3-BrBYxgIowrMuhUstpbm-X9foxQMz2gcV7guYxgIHi6sHDUSC5rRzwy3hSUs2QUSoDQRz7q3NS9RoBy9-sqm-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKabm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?src=topads_dynamic_broadmatch&management_type=1&t=android&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie&page=1&is_search=1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "keyword": "eevee",
+                  "url": "https://www.tokopedia.com/search?q=eevee&source=related_keyword&st=product",
+                  "applink": "tokopedia://search?q=eevee&source=related_keyword&st=product",
+                  "product": [
+                    {
+                      "id": 473836862,
+                      "name": "Takara Tomy Pokemon Figure - Eevee [READY]",
+                      "price": 22900,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2019/5/15/155793319105436/155793319105436_42b83637-f771-4db1-9431-e2f1a461a734.png",
+                      "url": "https://www.tokopedia.com/gachacenter/takara-tomy-pokemon-figure-eevee-ready?whid=0",
+                      "applink": "tokopedia://product/473836862",
+                      "priceStr": "Rp22.900",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 40",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Pusat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": false,
+                        "imgUrl": ""
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 361998589,
+                      "name": "Nintendo Switch NS Pokemon Lets Go Eevee !",
+                      "price": 650000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/12/7/839036/839036_e562a760-35aa-4f30-aa5a-9c628bb5f6f0_700_700.jpg",
+                      "url": "https://www.tokopedia.com/butikgames/nintendo-switch-ns-pokemon-lets-go-eevee?whid=0",
+                      "applink": "tokopedia://product/361998589",
+                      "priceStr": "Rp650.000",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 111",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Pusat"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    },
+                    {
+                      "id": 377851346,
+                      "name": "Nintendo Switch Pokemon Let's Lets Go Eevee",
+                      "price": 450000,
+                      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/30/d59e33cd-14de-4dcb-b456-412d0e6f0e45.jpg",
+                      "url": "https://www.tokopedia.com/gitgutshop/nintendo-switch-pokemon-let-s-lets-go-eevee?whid=0",
+                      "applink": "tokopedia://product/377851346",
+                      "priceStr": "Rp450.000",
+                      "wishlist": false,
+                      "ratingAverage": "5.0",
+                      "labelGroups": [
+                        {
+                          "title": "Terjual 64",
+                          "position": "integrity",
+                          "type": "textDarkGrey",
+                          "url": ""
+                        }
+                      ],
+                      "shop": {
+                        "city": "Jakarta Selatan"
+                      },
+                      "badges": [
+                        {
+                          "imageUrl": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png",
+                          "show": true
+                        }
+                      ],
+                      "freeOngkir": {
+                        "isActive": true,
+                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "ads": {
+                        "id": "",
+                        "productClickUrl": "",
+                        "productWishlistUrl": "",
+                        "productViewUrl": ""
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "suggestion": {
+              "suggestion": "",
+              "query": "",
+              "text": ""
+            },
+            "products": []
+          }
+        }
+    }
+  },
+  {
+    "data": {
+      "quick_filter": {
+        "filter": [
+          {
+            "options": [
+              {
+                "name": "Bebas Ongkir",
+                "key": "bebas_ongkir_promo",
+                "icon": "",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Official Store",
+                "key": "official",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Kurir Instan",
+                "key": "shipping",
+                "icon": "",
+                "value": "10,12,13",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Power Merchant",
+                "key": "goldmerchant",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "productAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.02119317,
+          "total_data": 2
+        },
+        "data": [
+            {
+              "id": "80798493",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/toyshopee-1",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AnR6_K76_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfomdF6AjRHsed6AKhHAJNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32VPO2keMhozcDp_VPGqu2939z6zO1h_7HhqV2k1_zHu7ud332cqOB1gpuouJN0_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ926uVUdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32g81hku_zvzV17_BzsHJNJ39P6zcW2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2zP1OJgpu68jjF_7zSoJO1e9xvuVB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDOoZFOHAUDHsHOoV7DUMNwyfVXgcBjy9zB9fVjraUEHiFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHa6AUDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?keywords=pikachu+eevee+plushie&r=https%3A%2F%2Fwww.tokopedia.com%2Ftoyshopee-1%2Fboneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon%3Fsrc%3Dtopads&is_search=1&management_type=2&dv=android&page=1&ob=23&t=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AnR6_K76_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfomdF6AjRHsed6AKhHAJNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32VPO2keMhozcDp_VPGqu2939z6zO1h_7HhqV2k1_zHu7ud332cqOB1gpuouJN0_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ926uVUdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32g81hku_zvzV17_BzsHJNJ39P6zcW2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2zP1OJgpu68jjF_7zSoJO1e9xvuVB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDOoZFOHAUDHsHOoV7DUMNwyfVXgcBjy9zB9fVjraUEHiFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHa6AUDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?page=1&ob=23&product_id=1300903369&keywords=pikachu+eevee+plushie&src=search&management_type=2&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&is_search=1&t=android&dv=android&uid=75093631&r=https%3A%2F%2Fwww.tokopedia.com%2Ftoyshopee-1%2Fboneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon%3Fsrc%3Dtopads",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AnR6_K76_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosndosJRo_rhbm-srcHi6seFHmFiy3zwrfo5rM1i6sUfomdF6AjRHsed6AKhHAJNoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32VPO2keMhozcDp_VPGqu2939z6zO1h_7HhqV2k1_zHu7ud332cqOB1gpuouJN0_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ926uVUdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32g81hku_zvzV17_BzsHJNJ39P6zcW2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2zP1OJgpu68jjF_7zSoJO1e9xvuVB2gBJYvZUDUSupg9-wq3ei6iURo_nNHpypHZUDUSoBrRo2QfNwq3ei6iUR6_gsg_yagi7fysHNb_epH3yW6_KNyi7hyp-B63Viysjh6Aeibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDOoZFOHAUDHsHOoV7DUMNwyfVXgcBjy9zB9fVjraUEHiFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHa6AUDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?page=1&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631&keywords=pikachu+eevee+plushie&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Ftoyshopee-1&management_type=2&dv=android&src=search",
+              "product": {
+                "id": "1300903369",
+                "name": "Boneka Pokemon Eevee Size 18cm/boneka pikachu/boneka pokemon",
+                "category_breadcrumb": "mainan-hobi / boneka / boneka-karakter",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKFopjdoAjpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_n5HpJ5y_zBgsKdosUW6ACioa77g_nOb3VMo31WyM-xocVMHsJfo_CibM2FgaUDUMVj9RosQR-BUstaoseXHAKNopU76AKdH_nh6_yDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkz9Pqqj-D_1z0H7h9ZMBquOB7_jPuH1YAH3xqqBJ7_VPV8VBkzMWgucrO_uz6q7YAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPR2y8jBE_BzZ6cgIPRBizpjpgjxdr7O98IgjHRKdypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok39BHqB17_7zuoJN1ypC6zVBR_jz0q1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81Nk19uozcrO_S2-HJYJgpzouJVd_Ozgq3gzv_7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sUDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHa6AUDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?ob=23&is_search=1&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&src=search&page=1&management_type=2&dv=android",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKFopjdoAjpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpHhbfJ7g3yd6Ayab_KFysrWoc1FoZOxgsuBb3-iy_zxgsUhos1FyiNkrcribm-xgVYpyfYagZUEHsy7bsnd6_raoAKd6AJFH_jfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2-8jN11sxMzRPNyjrNHfgU8IoouRxfgAod6cHp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBN_c2uoJYJu_z6ucHF_jzgP7NJqfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6qBVO_1zSo1NEZ_Cvzcr7_uzC8JY133BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKabm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUaHp17UiFioArhUiFiHpyibmUOHA1ibmU7opUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-Fq3WxyfxOUcuBPMuBUS7?ob=23&is_search=1&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&src=search&page=1&management_type=2&dv=android",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKFopjdoAjpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpHhbfJ7g3yd6Ayab_KFysrWoc1FoZOxgsuBb3-iy_zxgsUhos1FyiNkrcribm-xgVYpyfYagZUEHsy7bsnd6_raoAKd6AJFH_jfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2-8jN11sxMzRPNyjrNHfgU8IoouRxfgAod6cHp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBN_c2uoJYJu_z6ucHF_jzgP7NJqfBHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9B6qBVO_1zSo1NEZ_Cvzcr7_uzC8JY133BM1_7YUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKabm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUaHp17UiFioArhUiFiHpyibmUOHA1ibmU7opUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-Fq3WxyfxOUcuBPMuBUS7?ob=23&is_search=1&keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&t=android&src=search&page=1&management_type=2&dv=android",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/10/31/a4ef8862-80b7-4e05-af5e-bba4af21650b.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/31/a4ef8862-80b7-4e05-af5e-bba4af21650b.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/31/a4ef8862-80b7-4e05-af5e-bba4af21650b.jpg"
+                },
+                "uri": "https://www.tokopedia.com/toyshopee-1/boneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon?src=topads",
+                "relative_uri": "toyshopee-1/boneka-pokemon-eevee-size-18cm-boneka-pikachu-boneka-pokemon",
+                "price_format": "Rp55.000",
+                "wholesale_price": [
+                  {
+                    "price_format": "Rp35.000",
+                    "quantity_max_format": "10.000",
+                    "quantity_min_format": "3"
+                  }
+                ],
+                "count_talk_format": "0",
+                "count_review_format": "0",
+                "category": {
+                  "id": "2354"
+                },
+                "product_preorder": false,
+                "product_wholesale": true,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 0,
+                "product_rating_format": "",
+                "product_item_sold_payment_verified": "",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": [
+                  {
+                    "position": "offers",
+                    "type": "lightGrey",
+                    "title": "Grosir"
+                  },
+                  {
+                    "position": "price",
+                    "type": "lightGreen",
+                    "title": "Grosir"
+                  }
+                ]
+              },
+              "shop": {
+                "id": "9903297",
+                "name": "Toyshopee",
+                "domain": "toyshopee-1",
+                "location": "Jakarta Barat",
+                "city": "Jakarta Barat",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=9903297",
+                "uri": "https://www.tokopedia.com/toyshopee-1",
+                "owner_id": "122935572",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/1300903369"
+            },
+            {
+              "id": "69928249",
+              "ad_ref_key": "",
+              "redirect": "https://www.tokopedia.com/originalestuff",
+              "sticker_id": "0",
+              "sticker_image": "",
+              "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosjNHsKaoAjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6sHFHmFiy3zwrfo5rM1i6sU7oZda6_yp6_rR6_rpH_U7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2zH7OX8AxizJ2pysoj6cgIPRxizpjpgjxd8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6ucWO_BzVHjN1gpCoqMH7_32g8JN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_C61pzN_Ozg8jY1ypovucoE_uz-HJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qo_1DH_UDoAra9ZFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsHfoAjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?page=1&dv=android&is_search=1&keywords=pikachu+eevee+plushie&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Foriginalestuff%2Fputitto-pokemon-cafe-japan-figure-set-misb-original-eevee-mew-pikachu%3Fsrc%3Dtopads&src=search&ob=23&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&management_type=1",
+              "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosjNHsKaoAjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6sHFHmFiy3zwrfo5rM1i6sU7oZda6_yp6_rR6_rpH_U7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2zH7OX8AxizJ2pysoj6cgIPRxizpjpgjxd8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6ucWO_BzVHjN1gpCoqMH7_32g8JN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_C61pzN_Ozg8jY1ypovucoE_uz-HJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qo_1DH_UDoAra9ZFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsHfoAjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?ob=23&page=1&uid=75093631&management_type=1&t=android&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Foriginalestuff%2Fputitto-pokemon-cafe-japan-figure-set-misb-original-eevee-mew-pikachu%3Fsrc%3Dtopads&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&src=search&keywords=pikachu+eevee+plushie&is_search=1&product_id=805565415",
+              "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosjNHsKaoAjDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosndosJRo_rhbm-srcHi6sHFHmFiy3zwrfo5rM1i6sU7oZda6_yp6_rR6_rpH_U7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2zH7OX8AxizJ2pysoj6cgIPRxizpjpgjxd8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6ucWO_BzVHjN1gpCoqMH7_32g8JN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_C61pzN_Ozg8jY1ypovucoE_uz-HJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qo_1DH_UDoAra9ZFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsHfoAjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsUpo_eibmU7opJibmUpoiUDUs1FoZUDUseRHi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSC2qfVsqI1Kg3ufg31iwe?keywords=pikachu+eevee+plushie&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&uid=75093631&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Foriginalestuff&page=1&t=android&dv=android&src=search",
+              "product": {
+                "id": "805565415",
+                "name": "Putitto Pokemon Cafe Japan Figure Set MISB Original Eevee Mew Pikachu",
+                "category_breadcrumb": "mainan-hobi / figure / figure-set",
+                "wishlist": false,
+                "image": {
+                  "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syN6_UdHseNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5om4aoiYBgMoBHpea6m7Fy3Hdb_zxofJW6coB6mOsy31hHfgM63eNH_1XqSCSUiFiy3zwrfo5rM1i6sU7oZda6_yp6_rR6_rpH_U7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qjuR3M2mQJOJqpoHu7223BPgPJNIu_VvepVt3M2zoJh9z9xgqjg03uzSo1O1_MWve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2zH7OX8AxizJ2pysoj6cgIPRxizpjpgjxd8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9B6ucWO_BzVHjN1gpCoqMH7_32g8JN_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_C61pzN_Ozg8jY1ypovucoE_uz-HJBXHA7ibm-Orfua9fBjUstiop1F6_HfHpJibm-pg9opq3YX9fBjUstiopjfyf1fHMyWoMUp6Z77HpVMb_jd63UWH3Hag_BxyMUNH_K7UiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sUDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUposeNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUaHp17UiFioArhUiFiHpyibmUOHA1ibmU7opUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-Fq3WxyfxOUcuBPMuBUS7?is_search=1&page=1&management_type=1&t=android&src=search&ob=23&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie",
+                  "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syN6_UdHseNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpe5Hsy5g3gsg_H7HsKWHcVs6m77y_Pxb_xsg_KWyfVBH_oMgsBj6_JObM2FgaUDUMVj9RosQR-BUstaoA1XHsjfHpjRopjRHpJaomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32VPO2keMhozcDp_VPGqu2939z6zO1h_7HhqV2k1_zHu7ud332cqOB1gpuouJN0_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxE1_ooQSKdyjzGrfUpgAxMzRPdyjrNHfgU8I2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_Bz0P1N1z_-6ucrF_32soJOk39x617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjF_BH781Y1392vucHp_Ozs8jO1Z_C-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHpy76ZFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHsHOomUDUseRHZUDUsHfUiFio_nOUiFioAraUB7DUMVDPcuaQMV7guY0g9BRQR-jUstircB0y3otPZCBg9gBgZ-Y?is_search=1&page=1&management_type=1&t=android&src=search&ob=23&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie",
+                  "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syN6_UdHseNbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yF6Ayhop1RHZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpe5Hsy5g3gsg_H7HsKWHcVs6m77y_Pxb_xsg_KWyfVBH_oMgsBj6_JObM2FgaUDUMVj9RosQR-BUstaoA1XHsjfHpjRopjRHpJaomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32VPO2keMhozcDp_VPGqu2939z6zO1h_7HhqV2k1_zHu7ud332cqOB1gpuouJN0_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxE1_ooQSKdyjzGrfUpgAxMzRPdyjrNHfgU8I2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_Bz0P1N1z_-6ucrF_32soJOk39x617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjF_BH781Y1392vucHp_Ozs8jO1Z_C-QsnYUiFiP9oBrBY2gmUEUsrOHAjposHhUiFirfuprfB5QBY2gmUEUsrNoMoBos-Mb_giHpjWoAHhgi7N6ABib_VsHM1Ny3-i6_JdomUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUstabm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaHpy76ZFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHsHOomUDUseRHZUDUsHfUiFio_nOUiFioAraUB7DUMVDPcuaQMV7guY0g9BRQR-jUstircB0y3otPZCBg9gBgZ-Y?is_search=1&page=1&management_type=1&t=android&src=search&ob=23&dv=android&sid=796ce62f-6b39-431f-989b-1c2e9abb9184&keywords=pikachu+eevee+plushie",
+                  "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/4/26/efce3428-0ac8-4a7a-8ce8-cae13ff9d915.jpg",
+                  "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/4/26/efce3428-0ac8-4a7a-8ce8-cae13ff9d915.jpg",
+                  "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/4/26/efce3428-0ac8-4a7a-8ce8-cae13ff9d915.jpg"
+                },
+                "uri": "https://www.tokopedia.com/originalestuff/putitto-pokemon-cafe-japan-figure-set-misb-original-eevee-mew-pikachu?src=topads",
+                "relative_uri": "originalestuff/putitto-pokemon-cafe-japan-figure-set-misb-original-eevee-mew-pikachu",
+                "price_format": "Rp400.000",
+                "wholesale_price": [],
+                "count_talk_format": "0",
+                "count_review_format": "1",
+                "category": {
+                  "id": "472"
+                },
+                "product_preorder": false,
+                "product_wholesale": false,
+                "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                "product_cashback": false,
+                "product_new_label": false,
+                "product_cashback_rate": "",
+                "product_rating": 100,
+                "product_rating_format": "5.0",
+                "product_item_sold_payment_verified": "Terjual 1",
+                "product_minimum_order": 1,
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                },
+                "label_group": []
+              },
+              "shop": {
+                "id": "1743832",
+                "name": "Originale Stuffs",
+                "domain": "originalestuff",
+                "location": "Tangerang Selatan",
+                "city": "Tangerang Selatan",
+                "gold_shop": true,
+                "gold_shop_badge": true,
+                "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1743832",
+                "uri": "https://www.tokopedia.com/originalestuff",
+                "owner_id": "15313865",
+                "is_owner": false,
+                "shop_is_official": false,
+                "shop_rating_avg": "<b>4.9</b> Rating Toko",
+                "badges": [
+                  {
+                    "title": "Free Return",
+                    "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+                    "show": false
+                  },
+                  {
+                    "title": "Power Merchant",
+                    "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+                    "show": true
+                  }
+                ]
+              },
+              "applinks": "tokopedia://product/805565415"
+            }
+        ],
+        "template": [
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "headlineAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.014300596,
+          "total_data": 1
+        },
+        "data": []
+      }
+    }
+  },
+  {
+    "data": {
+      "global_search_navigation": {
+        "data": {
+            "source": "",
+            "title": "",
+            "keyword": "",
+            "nav_template": "",
+            "background": "",
+            "see_all_applink": "",
+            "see_all_url": "",
+            "show_topads": false,
+            "list": []
+         }
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationCarouselV2": {
+        "data": []
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationWidget": {
+        "data": []
+      }
+    }
+  }
+]

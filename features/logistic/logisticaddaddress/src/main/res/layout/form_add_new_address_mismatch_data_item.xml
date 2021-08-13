@@ -34,7 +34,7 @@
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
             android:singleLine="false"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -58,7 +58,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +89,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -101,7 +101,7 @@
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
         android:text="@string/min_5_char"
-        android:textColor="@color/label_grey"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
 
     <LinearLayout
@@ -115,14 +115,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detail_alamat"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_detail_alamat_mismatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>

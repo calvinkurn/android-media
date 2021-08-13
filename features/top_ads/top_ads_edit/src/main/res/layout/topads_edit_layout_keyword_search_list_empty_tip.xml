@@ -42,14 +42,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ic_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_14"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_bulp_fill" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/typography22"
@@ -64,22 +63,21 @@
                 app:layout_constraintTop_toTopOf="@id/ic_tip" />
 
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_2"
                 app:layout_constraintBottom_toBottomOf="@+id/typography23"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/typography23"
-                app:srcCompat="@drawable/topads_create_ic_checklist" />
+                app:layout_constraintTop_toTopOf="@+id/typography23" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/typography23"
                 style="@style/TextView.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:gravity="top"
                 android:text="@string/topads_edit_search_empty_tip_desc1"
@@ -91,22 +89,21 @@
                 app:typographyType="body_2" />
 
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_2"
                 app:layout_constraintBottom_toBottomOf="@+id/desc2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/desc2"
-                app:srcCompat="@drawable/topads_create_ic_checklist" />
+                app:layout_constraintTop_toTopOf="@+id/desc2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/typography25"
                 style="@style/TextView.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/topads_edit_search_empty_tip_desc2"
                 app:layout_constraintBottom_toTopOf="@+id/typography26"
@@ -117,22 +114,21 @@
                 app:typographyType="body_2" />
 
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_2"
                 app:layout_constraintBottom_toBottomOf="@+id/typography26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/typography26"
-                app:srcCompat="@drawable/topads_create_ic_checklist" />
+                app:layout_constraintTop_toTopOf="@+id/typography26" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/typography26"
                 style="@style/TextView.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/topads_edit_search_empty_tip_desc3"
                 app:layout_constraintBottom_toBottomOf="parent"

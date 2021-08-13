@@ -11,7 +11,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -29,8 +29,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -41,6 +41,36 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.shoplocation.ShopLocationActivity"
+            android:label="@string/shop_settings_manage_address"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_settings_address"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.shoplocation.shopaddress.ShopSettingsAddressActivity"
+            android:label="@string/shop_settings_manage_address"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity android:name=".ui.shoplocation.shopaddress.ShopSettingAddressAddEditActivity"
+            android:label="@string/shop_settings_add_address"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

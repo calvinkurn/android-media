@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -20,7 +19,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,8 +38,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<String> imagePathList;
     private List<Integer> placeholderDrawableResList;
     private int maxSize;
-    private @StringRes
-    int primaryImageStringRes;
+    private boolean usePrimaryString;
     private int grayColor;
     private int whiteColor;
     private boolean canReorder;
@@ -114,7 +112,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             File file = new File(imagePath);
             boolean loadFitCenter = false;
             if (file.exists()) {
-                loadFitCenter = ImageUtil.shouldLoadFitCenter(file);
+                loadFitCenter = ImageProcessingUtil.shouldLoadFitCenter(file);
             }
             RequestBuilder<Bitmap> requestBuilder = Glide.with(context)
                     .asBitmap()
@@ -134,8 +132,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if (position == 0 && primaryImageStringRes != -1 && primaryImageStringRes != 0) {
-                tvCounterPrimary.setText(primaryImageStringRes);
+            if (position == 0 && usePrimaryString) {
+                tvCounterPrimary.setText(R.string.label_primary);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);
             } else {
@@ -147,7 +145,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
+    public static class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPlaceholder;
         ImageView vFrameImage;
 
@@ -163,10 +161,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+    public void setData(List<String> imagePathList, boolean usePrimaryString,
                         List<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
-        this.primaryImageStringRes = primaryImageStringRes;
+        this.usePrimaryString = usePrimaryString;
         this.placeholderDrawableResList = placeholderDrawableList;
         notifyDataSetChanged();
     }

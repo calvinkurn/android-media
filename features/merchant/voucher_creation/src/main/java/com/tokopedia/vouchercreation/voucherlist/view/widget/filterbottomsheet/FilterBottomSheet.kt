@@ -31,7 +31,7 @@ class FilterBottomSheet : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
-        val TAG: String = FilterBottomSheet::class.java.simpleName
+        const val TAG: String = "FilterBottomSheet"
 
         fun getMvcFilterItems(context: Context): MutableList<BaseFilterUiModel> {
             return mutableListOf(

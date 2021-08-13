@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.recentview.di.RecentViewDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.recentview.domain.usecase.RecentViewUseCase
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,12 +24,12 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class RecentViewViewModel @Inject constructor(
-        baseDispatcher: RecentViewDispatcherProvider,
+        baseDispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val recentViewUseCase: RecentViewUseCase
-): BaseViewModel(baseDispatcher.io()) {
+): BaseViewModel(baseDispatcher.io) {
 
 
     val recentViewDetailProductDataResp : LiveData<Result<ArrayList<RecentViewDetailProductDataModel>>>

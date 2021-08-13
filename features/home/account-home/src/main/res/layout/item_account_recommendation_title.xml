@@ -9,7 +9,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/account_recommendation_separator_size"
-        android:background="@color/account_recommendation_separator_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_10"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/dp_16"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

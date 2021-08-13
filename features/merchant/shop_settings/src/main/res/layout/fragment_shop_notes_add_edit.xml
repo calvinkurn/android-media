@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,42 +10,26 @@
         android:orientation="vertical"
         android:padding="@dimen/dp_16">
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_title"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_note_label_title"
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/text_input_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextDarkMode"
             app:counterEnabled="true"
-            app:counterMaxLength="@integer/shop_note_title_max_counter">
+            app:text_field_counter="@integer/shop_note_title_max_counter"
+            app:text_field_input_type="text"
+            app:text_field_label="@string/shop_note_label_title" />
 
-            <EditText
-                android:id="@+id/edit_text_title"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_note_label_title"
-                android:imeOptions="actionNext"
-                android:inputType="textCapSentences"
-                android:maxLength="@integer/shop_note_title_max_counter"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_desc"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_note_label_desc"
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/text_input_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_32"
+            android:theme="@style/TextDarkMode"
             app:counterEnabled="true"
-            app:counterMaxLength="@integer/shop_note_content_max_counter">
-
-            <EditText
-                android:id="@+id/edit_text_desc"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_note_label_desc"
-                android:imeOptions="actionNext"
-                android:inputType="textMultiLine|textCapSentences"
-                android:maxLength="@integer/shop_note_content_max_counter"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            app:text_field_counter="@integer/shop_note_content_max_counter"
+            app:text_field_input_type="text"
+            app:text_field_label="@string/shop_note_label_desc" />
 
     </LinearLayout>
 

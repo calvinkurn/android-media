@@ -14,6 +14,10 @@ data class ProfileResponse(
         val hasPreference: Boolean = false,
         @SerializedName("is_changed_profile")
         val isChangedProfile: Boolean = false,
+        @SerializedName("profile_revamp_wording")
+        val profileRevampWording: String = "",
+        @SerializedName("is_recom")
+        val isRecom: Boolean = false,
         @SerializedName("profile_id")
         val profileId: Int = 0,
         @SerializedName("status")

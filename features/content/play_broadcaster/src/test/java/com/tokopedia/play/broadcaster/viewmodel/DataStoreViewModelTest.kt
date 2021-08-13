@@ -4,9 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -20,11 +19,14 @@ class DataStoreViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+    private val dispatcherProvider = CoroutineTestDispatchers
 
     private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: CoverDataStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
+    private lateinit var titleDataStore: TitleDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
+    private lateinit var tagsDataStore: TagsDataStore
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var viewModel: DataStoreViewModel
@@ -33,7 +35,11 @@ class DataStoreViewModelTest {
     fun setUp() {
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
         viewModel = DataStoreViewModel(mockSetupDataStore)
     }
 

@@ -9,7 +9,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,6 +48,8 @@ class AddEditAddressPresenter
                         response.keroAddAddress.data.run {
                             if (isSuccess == 1) {
                                 model.id = this.addrId
+                                model.warehouseId = this.tokonow.warehouseId
+                                model.shopId = this.tokonow.shopId
                                 view?.onSuccessAddAddress(model)
                             } else {
                                 view?.showError(null)

@@ -15,7 +15,6 @@ import dagger.Provides
  * @author by Rafli Syam on 2020-03-10
  */
 
-@ShopShowcaseAddScope
 @Module
 class ShopShowcaseAddUseCaseModule {
 

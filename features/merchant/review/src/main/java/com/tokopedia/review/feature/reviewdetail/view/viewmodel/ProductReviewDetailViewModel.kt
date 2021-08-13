@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
@@ -22,11 +23,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductReviewDetailViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val userSession: UserSessionInterface,
-        private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
-        private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
+    private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
+) : BaseViewModel(dispatcherProvider.main) {
 
     var filterPeriod: String = ""
     var sortBy: String = ""
@@ -36,7 +37,7 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var prefixRating = "rating="
 
     private var chipsFilterText = "30 Hari Terakhir"
-    private var productId = 0
+    private var productId = ""
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
 
     private var filterRatingData: List<RatingBarUiModel> = listOf()
@@ -171,7 +172,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         ratingFilterData.value = updatedData
     }
 
-    fun getProductRatingDetail(productID: Int, sortBy: String) {
+    fun getProductRatingDetail(productID: String, sortBy: String) {
         launchCatchError(block = {
             productId = productID
             getProductReviewInitialUseCase.requestParams = GetProductReviewInitialUseCase.createParams(productID, filterByList.getGeneratedFilterByText, sortBy, 1,
@@ -197,7 +198,7 @@ class ProductReviewDetailViewModel @Inject constructor(
                 if (productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list?.isEmpty() == true || productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list == null) {
                     uiData.add(ProductFeedbackErrorUiModel(false))
                 } else {
-                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(productRatingDetailData.productFeedBackResponse!!.productrevFeedbackDataPerProduct, userSession))
+                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct, userSession))
                 }
                 _reviewInitialData.postValue(Success(Triple(uiData, productName, hasNext)))
             }
@@ -207,9 +208,9 @@ class ProductReviewDetailViewModel @Inject constructor(
         }
     }
 
-    fun getFeedbackDetailListNext(productID: Int, sortBy: String, page: Int) {
+    fun getFeedbackDetailListNext(productID: String, sortBy: String, page: Int) {
         launchCatchError(block = {
-            val feedbackDetailList = withContext(dispatcherProvider.io()) {
+            val feedbackDetailList = withContext(dispatcherProvider.io) {
                 getProductFeedbackDetailListUseCase.params = GetProductFeedbackDetailListUseCase.createParams(
                         productID,
                         sortBy,

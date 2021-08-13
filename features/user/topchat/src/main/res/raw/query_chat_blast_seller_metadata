@@ -1,21 +1,7 @@
 query {
   chatBlastSellerMetadata {
-    shopId
-    quota
-    quotaGroup{
-      quotaFollowers
-      quotaActualBuyers
-      quotaPotentialBuyers
-    }
-    expireAt
-    refreshTime
     status
-    price
-    priceAB
-    pricePB
-    unused
-    promo
-    expirePromo
     url
+    urlBroadcast
   }
 }

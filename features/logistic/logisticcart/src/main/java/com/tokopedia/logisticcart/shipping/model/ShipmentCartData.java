@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata;
+
 import java.util.List;
 
 /**
@@ -24,14 +26,17 @@ public class ShipmentCartData implements Parcelable {
     private String destinationLongitude;
     private String destinationAddress;
     private double weight;
+    private double weightActual;
     private String token;
     private String ut;
     private int insurance;
     private int productInsurance;
-    private int orderValue;
+    private long orderValue;
     private String categoryIds;
     private int preOrderDuration;
     private boolean isFulfillment;
+    private int shopTier;
+    private BoMetadata boMetadata;
 
     public ShipmentCartData() {
     }
@@ -180,11 +185,11 @@ public class ShipmentCartData implements Parcelable {
         this.productInsurance = productInsurance;
     }
 
-    public int getOrderValue() {
+    public long getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(int orderValue) {
+    public void setOrderValue(long orderValue) {
         this.orderValue = orderValue;
     }
 
@@ -194,6 +199,46 @@ public class ShipmentCartData implements Parcelable {
 
     public void setCategoryIds(String categoryIds) {
         this.categoryIds = categoryIds;
+    }
+
+    public double getWeightActual() {
+        return weightActual;
+    }
+
+    public void setWeightActual(double weightActual) {
+        this.weightActual = weightActual;
+    }
+
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getShopTier() {
+        return shopTier;
+    }
+
+    public void setShopTier(int shopTier) {
+        this.shopTier = shopTier;
+    }
+
+    public BoMetadata getBoMetadata() {
+        return boMetadata;
+    }
+
+    public void setBoMetadata(BoMetadata boMetadata) {
+        this.boMetadata = boMetadata;
     }
 
     @Override
@@ -217,14 +262,17 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.destinationLongitude);
         dest.writeString(this.destinationAddress);
         dest.writeDouble(this.weight);
+        dest.writeDouble(this.weightActual);
         dest.writeString(this.token);
         dest.writeString(this.ut);
         dest.writeInt(this.insurance);
         dest.writeInt(this.productInsurance);
-        dest.writeInt(this.orderValue);
+        dest.writeLong(this.orderValue);
         dest.writeString(this.categoryIds);
         dest.writeInt(this.preOrderDuration);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
+        dest.writeInt(shopTier);
+        dest.writeParcelable(boMetadata, flags);
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -242,14 +290,17 @@ public class ShipmentCartData implements Parcelable {
         this.destinationLongitude = in.readString();
         this.destinationAddress = in.readString();
         this.weight = in.readDouble();
+        this.weightActual = in.readDouble();
         this.token = in.readString();
         this.ut = in.readString();
         this.insurance = in.readInt();
         this.productInsurance = in.readInt();
-        this.orderValue = in.readInt();
+        this.orderValue = in.readLong();
         this.categoryIds = in.readString();
         this.preOrderDuration = in.readInt();
         this.isFulfillment = in.readByte() != 0;
+        this.shopTier = in.readInt();
+        this.boMetadata = in.readParcelable(BoMetadata.class.getClassLoader());
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
@@ -264,19 +315,4 @@ public class ShipmentCartData implements Parcelable {
         }
     };
 
-    public int getPreOrderDuration() {
-        return preOrderDuration;
-    }
-
-    public void setPreOrderDuration(int preOrderDuration) {
-        this.preOrderDuration = preOrderDuration;
-    }
-
-    public boolean isFulfillment() {
-        return isFulfillment;
-    }
-
-    public void setFulfillment(boolean fulfillment) {
-        isFulfillment = fulfillment;
-    }
 }

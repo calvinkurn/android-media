@@ -1,8 +1,11 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
         //region General data
@@ -27,10 +30,10 @@ data class ComponentData(
         //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
-        @SerializedName("isFreeOngkir")
-        val isFreeOngkir: IsFreeOngkir = IsFreeOngkir(),
         @SerializedName("isOS")
         val isOS: Boolean = false,
         @SerializedName("isPowerMerchant")
@@ -43,18 +46,21 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
-        val videos: List<Video> = listOf(),
+        val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
         //endregion
         //region Variant data
         @SerializedName("parentID")
@@ -66,11 +72,34 @@ data class ComponentData(
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")
-        val variants: List<ProductP1Variant> = listOf(),
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children: List<VariantChild> = listOf(),
+        //endregioncopy
+
+        //region one liners data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true,
+        //endregioncopy
+
+        //region category carousel
+        @SerializedName("titleCarousel")
+        val titleCarousel: String = "",
+        @SerializedName("list")
+        val categoryCarouselList: List<CategoryCarousel> = listOf()
         //endregion
-)  {
+) {
+    companion object {
+        private const val PRODUCT_IMAGE_TYPE = "image"
+    }
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()
@@ -79,7 +108,7 @@ data class ComponentData(
         if (media.isEmpty()) return null
 
         val firstImage = media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }
 
         return if (firstImage != null) {
@@ -97,21 +126,24 @@ data class ComponentData(
     fun getProductImageUrl(): String? {
         if (media.isEmpty()) return null
         return media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
     }
 
-    fun getFsProductIsActive(): Boolean {
-        return isFreeOngkir.isActive
-    }
-
-    fun getFsProductImageUrl(): String {
-        return isFreeOngkir.imageURL
+    fun getImagePathExceptVideo(): ArrayList<String>? {
+        val imageData = media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }.map { it.uRLOriginal }
+        val arrayList = arrayListOf<String>()
+        return if (imageData.isEmpty()) {
+            null
+        } else {
+            arrayList.addAll(imageData)
+            arrayList
+        }
     }
 
     fun getImagePath(): ArrayList<String> {
         return ArrayList(media.map {
-            if (it.type == "image") {
+            if (it.type == PRODUCT_IMAGE_TYPE) {
                 it.uRLOriginal
             } else {
                 it.uRLThumbnail
@@ -119,3 +151,16 @@ data class ComponentData(
         })
     }
 }
+
+data class CategoryCarousel(
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("isApplink")
+        var isApplink: Boolean = false,
+        @SerializedName("applink")
+        val applink: String = "",
+        @SerializedName("categoryID")
+        val categoryId: String = ""
+)

@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.converter;
 
-
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -8,8 +7,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
@@ -40,7 +39,9 @@ public class RatesDataConverter {
         shipmentDetailData.setShipmentCartData(shipmentCartData);
         int totalQuantity = 0;
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            totalQuantity += cartItemModel.getQuantity();
+            if (!cartItemModel.isError()) {
+                totalQuantity += cartItemModel.getQuantity();
+            }
         }
         shipmentDetailData.setTotalQuantity(totalQuantity);
         shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
@@ -58,20 +59,32 @@ public class RatesDataConverter {
                                                 ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        int orderValue = 0;
+        long orderValue = 0;
         int totalWeight = 0;
+        int totalWeightActual = 0;
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-                totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
-                preOrderDuration = cartItemModel.getPreOrderDurationDay();
+                if (!cartItemModel.isError()) {
+                    orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                    totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
+                    double weightActual;
+                    if (cartItemModel.getWeightActual() > 0) {
+                        weightActual = cartItemModel.getWeightActual();
+                    } else {
+                        weightActual = cartItemModel.getWeight();
+                    }
+                    totalWeightActual += (cartItemModel.getQuantity() * weightActual);
+                    preOrderDuration = cartItemModel.getPreOrderDurationDay();
+                }
             }
         }
         shipmentCartData.setOrderValue(orderValue);
         shipmentCartData.setWeight(totalWeight);
+        shipmentCartData.setWeightActual(totalWeightActual);
         shipmentCartData.setPreOrderDuration(preOrderDuration);
         shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
+        shipmentCartData.setShopTier(shipmentCartItemModel.getShopTypeInfoData().getShopTier());
 
         return shipmentCartData;
     }
@@ -82,13 +95,13 @@ public class RatesDataConverter {
         shipmentCartData.setToken(keroToken);
         shipmentCartData.setUt(keroUnixTime);
         shipmentCartData.setDestinationAddress(userAddress.getAddress());
-        shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
+        shipmentCartData.setDestinationDistrictId(userAddress.getDistrictId());
         shipmentCartData.setDestinationLatitude(!UtilsKt.isNullOrEmpty(userAddress.getLatitude()) ?
                 userAddress.getLatitude() : null);
         shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?
                 userAddress.getLongitude() : null);
         shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
-        shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
+        shipmentCartData.setOriginDistrictId(groupShop.getShop().getDistrictId());
         shipmentCartData.setOriginLatitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLatitude()) ?
                 groupShop.getShop().getLatitude() : null);
         shipmentCartData.setOriginLongitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLongitude()) ?
@@ -103,14 +116,17 @@ public class RatesDataConverter {
         shipmentCartData.setShippingServices(shippingServices);
         shipmentCartData.setInsurance(1);
         shipmentCartData.setDeliveryPriceTotal(0);
+        shipmentCartData.setBoMetadata(groupShop.getBoMetadata());
     }
 
     private String getCategoryIds(List<Product> products) {
         List<Integer> categoryIds = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
-            int categoryId = products.get(i).getProductCatId();
-            if (!categoryIds.contains(categoryId)) {
-                categoryIds.add(categoryId);
+            if (!products.get(i).isError()) {
+                int categoryId = products.get(i).getProductCatId();
+                if (!categoryIds.contains(categoryId)) {
+                    categoryIds.add(categoryId);
+                }
             }
         }
         return UtilsKt.joinToStringFromListInt(categoryIds, ",");
@@ -118,7 +134,7 @@ public class RatesDataConverter {
 
     private boolean isForceInsurance(List<com.tokopedia.checkout.domain.model.cartshipmentform.Product> products) {
         for (com.tokopedia.checkout.domain.model.cartshipmentform.Product product : products) {
-            if (product.isProductFinsurance()) {
+            if (!product.isError() && product.isProductFinsurance()) {
                 return true;
             }
         }

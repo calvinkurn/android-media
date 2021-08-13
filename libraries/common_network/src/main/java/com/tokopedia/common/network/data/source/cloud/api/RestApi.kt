@@ -82,9 +82,6 @@ interface RestApi {
     @PATCH
     suspend fun patchDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>
 
-    @PUT
-    fun putDeferred(@Url url: String, @Body json: String, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Deferred<Response<String>>
-
     @FormUrlEncoded
     @PUT
     suspend fun putDeferred(@Url url: String, @FieldMap(encoded = true) params: Map<String, String>, @QueryMap(encoded = true) queries: Map<String, String>?, @HeaderMap headers: Map<String, String>?): Response<String>

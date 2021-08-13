@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
-import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
@@ -15,6 +15,9 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
+import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,10 +39,11 @@ class BuyerAccountViewModel @Inject constructor (
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val shortcutDataUseCase: GetShortcutDataUseCase,
+        private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
-        private val dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()) {
+        private val dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io) {
 
     private val _buyerAccountData = MutableLiveData<Result<AccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<AccountDataModel>>
@@ -61,17 +65,54 @@ class BuyerAccountViewModel @Inject constructor (
     val firstRecommendation : LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendation
 
+    private val _canGoToSellerAccount = MutableLiveData<Boolean>()
+    val canGoToSellerAccount: LiveData<Boolean>
+        get() = _canGoToSellerAccount
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
-            withContext(dispatcher.main()) {
+            val (adminDataResponse, shopData) =
+                    if (userSession.isShopOwner) {
+                        null to null
+                    } else {
+                        with(accountAdminInfoUseCase) {
+                            requestParams = AccountAdminInfoUseCase.createRequestParams(SOURCE)
+                            isLocationAdmin = userSession.isLocationAdmin
+                            setStrategyCloudThenCache()
+                            executeOnBackground()
+                        }
+                    }
+            withContext(dispatcher.main) {
+                val isShopActive = adminDataResponse?.data?.isShopActive() == true
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
+                accountModel.adminTypeText =
+                        if (isShopActive) {
+                            adminDataResponse?.data?.adminTypeText
+                        } else {
+                            null
+                        }
                 saveLocallyAttributes(accountModel)
+                adminDataResponse?.let {
+                    userSession.refreshUserSessionAdminData(it)
+                }
+                (adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
+                    _canGoToSellerAccount.value = canGoToSellerAccount
+                }
+                shopData?.let {
+                    val shopId =
+                            if (isShopActive) {
+                                it.shopId
+                            } else {
+                                ""
+                            }
+                    userSession.refreshUserSessionShopData(it.copy(shopId = shopId))
+                }
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
@@ -81,7 +122,6 @@ class BuyerAccountViewModel @Inject constructor (
 
     private fun saveLocallyAttributes(accountDataModel: AccountDataModel) {
         saveLocallyWallet(accountDataModel)
-        saveLocallyVccUserStatus(accountDataModel)
         savePhoneVerified(accountDataModel)
         saveIsAffiliateStatus(accountDataModel)
         saveDebitInstantData(accountDataModel)
@@ -152,15 +192,8 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private fun saveLocallyWallet(accountDataModel: AccountDataModel) {
-        walletPref.saveWallet(accountDataModel.wallet)
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.tokoSwipeUrl = accountDataModel.vccUserStatus.redirectionUrl
-        }
-    }
-
-    private fun saveLocallyVccUserStatus(accountDataModel: AccountDataModel) {
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.saveVccUserStatus(accountDataModel.vccUserStatus)
+        if (accountDataModel.profile != null) {
+            walletPref.saveWallet(accountDataModel.wallet)
         }
     }
 
@@ -210,5 +243,6 @@ class BuyerAccountViewModel @Inject constructor (
         private const val MSG_FAILED_ADD_WISHLIST = "Gagal menambahkan ke Wishlist"
         private const val MSG_SUCCESS_REMOVE_WISHLIST = "Berhasil menghapus dari Wishlist"
         private const val AKUN_PAGE = "account"
+        private const val SOURCE = "kevin_account-home"
     }
 }

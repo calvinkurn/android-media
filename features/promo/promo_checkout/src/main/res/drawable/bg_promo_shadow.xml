@@ -5,8 +5,8 @@
 
     <gradient
         android:angle="90"
-        android:centerColor="@color/promo_gradient_centercolor"
-        android:endColor="@color/promo_gradient_endcolor"
-        android:startColor="@color/promo_gradient_startcolor" />
+        android:centerColor="@color/Unify_T900"
+        android:endColor="@color/Unify_T900"
+        android:startColor="@color/Unify_N700_32" />
 
 </shape>

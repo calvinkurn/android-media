@@ -1,7 +1,7 @@
 package com.tokopedia.manageaddress.ui.addresschoice
 
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import rx.Subscriber
 import javax.inject.Inject
@@ -30,8 +30,8 @@ class AddressListPresenter @Inject constructor(
         mView = null
     }
 
-    override fun getAddress() {
-        usecase.execute(EMPTY_STRING)
+    override fun getAddress(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+        usecase.execute(EMPTY_STRING, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
@@ -40,8 +40,8 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(EMPTY_STRING))
     }
 
-    override fun searchAddress(query: String) {
-         usecase.execute(query)
+    override fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+         usecase.execute(query, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
@@ -50,10 +50,10 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(query))
     }
 
-    override fun loadMore() {
+    override fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
         // Always true until has_next property is ready from backend, still works fine
         // if (!mHasNext) return
-        usecase.loadMore(mCurrentQuery, mCurrentPage + 1)
+        usecase.loadMore(mCurrentQuery, mCurrentPage + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()

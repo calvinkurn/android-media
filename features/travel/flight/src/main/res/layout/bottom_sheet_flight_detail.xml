@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
             android:id="@+id/flightDetailDepartureAirportCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@+id/flightDetailArrowView"
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="@+id/flightDetailDepartureAirportCode"
             app:layout_constraintRight_toRightOf="@+id/flightDetailDepartureAirportCode"
@@ -52,7 +53,7 @@
             android:id="@+id/flightDetailArrivalAirportCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="@+id/flightDetailArrowView"
             app:layout_constraintRight_toRightOf="parent"
@@ -65,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="@+id/flightDetailArrivalAirportCode"
             app:layout_constraintRight_toRightOf="@+id/flightDetailArrivalAirportCode"
@@ -88,7 +89,7 @@
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/flightDetailViewPager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_weight="1" />
 
     <androidx.cardview.widget.CardView

@@ -8,5 +8,5 @@
         android:id="@+id/rvFlightSort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:background="@color/Green_G500" />
+        tools:background="@color/Unify_G500" />
 </LinearLayout>

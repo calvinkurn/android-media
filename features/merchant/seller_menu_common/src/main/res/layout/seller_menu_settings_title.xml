@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/settingTitleIcon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:gravity="center_vertical"
-        android:textColor="@color/default_black_text"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Akun Toko"/>

@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
-import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +28,7 @@ class UploadImageUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val context: Context = mockk()
+    private val context: Context = mockk(relaxed = true)
     private val uploadImageUseCase = mockk<UploadImageUseCase<UploadImageResponse>>(relaxed = true)
     private var contactUsUploadImageUseCase = spyk(ContactUsUploadImageUseCase(context, uploadImageUseCase))
     private lateinit var userSession: UserSessionInterface
@@ -50,7 +51,7 @@ class UploadImageUseCaseTest {
     @Test
     fun `check invocation of uploadFile with parameter list as null`() {
         runBlockingTest {
-            val list = contactUsUploadImageUseCase.uploadFile("", mockk(relaxed = true), mockk(relaxed = true))
+            val list = contactUsUploadImageUseCase.uploadFile("", mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
             assertEquals(list.size, 0)
         }
     }
@@ -58,18 +59,21 @@ class UploadImageUseCaseTest {
     @Test
     fun `check picObj value on invocation of upload file`() {
 
-        list.add(ImageUpload("", "", "", ""))
-        val listfile = listOf<String>("file1")
-        val response = mockk<UploadImageResponse>(relaxed = true)
+        runBlockingTest {
+            list.add(ImageUpload("", "", "", ""))
+            val listfile = listOf<String>("file1")
+            val response = mockk<UploadImageResponse>(relaxed = true)
+            
+            every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
+            every { response.data.picObj } returns "picObj"
 
+            every { contactUsUploadImageUseCase.getModifiedPicObj(any(),any()) } returns "picObj"
 
-        every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
-        every { response.data.picObj } returns "picObj"
+            contactUsUploadImageUseCase.uploadFile("", list, listfile, arrayListOf<SecureImageParameter>(
+                mockk(relaxed = true)))
 
-        contactUsUploadImageUseCase.uploadFile("", list, listfile)
-
-        assertEquals(list[0].picObj, "picObj")
-
+            assertEquals(list[0].picObj, "picObj")
+        }
 
     }
 
@@ -78,8 +82,8 @@ class UploadImageUseCaseTest {
         list.add(ImageUpload("", "", "", ""))
         val path = "absolute_path"
 
-        mockkStatic(ImageUtils::class)
-        every { ImageUtils.compressImageFile(any(), any()).absolutePath } returns path
+        mockkStatic(ImageProcessingUtil::class)
+        every { ImageProcessingUtil.compressImageFile(any(), any()).absolutePath } returns path
 
         val result = contactUsUploadImageUseCase.getFile(list)
 
@@ -91,8 +95,8 @@ class UploadImageUseCaseTest {
         list.add(ImageUpload("", "", "", ""))
         val exception = IOException("io")
 
-        mockkStatic(ImageUtils::class)
-        every { ImageUtils.compressImageFile(any(), any()).absolutePath } throws exception
+        mockkStatic(ImageProcessingUtil::class)
+        every { ImageProcessingUtil.compressImageFile(any(), any()).absolutePath } throws exception
         every { context.getString(any()) } returns ""
 
         var result: List<String> = arrayListOf()

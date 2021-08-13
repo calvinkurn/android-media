@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
+import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface TokoPointsHomeContract {
 
     interface View extends CustomerView {
-        void onError(String error, boolean hasInternet);
+        void onError(int error, boolean hasInternet);
 
         Context getAppContext();
 
@@ -24,9 +25,7 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void renderExploreSectionTab(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection);
-
-        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections );
+        void renderRewardUi(TopSectionResponse topSectionResponse,List<SectionContent> sections , RewardsRecommendation rewardsRecommendation);
 
     }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TickerView">
+        <attr name="tckv_text_color" format="color" />
+        <attr name="tckv_highlight_color" format="color" />
+        <attr name="tckv_background_color" format="color" />
+        <attr name="tckv_indicator_on_color" format="color" />
+        <attr name="tckv_indicator_off_color" format="color" />
+        <attr name="tckv_link_color" format="color" />
+        <attr name="tckv_show_close_button" format="boolean"/>
+        <attr name="tckv_show_link_underline" format="boolean"/>
+        <attr name="tckv_content_text_size" format="dimension" />
+        <attr name="tckv_content_height" format="dimension" />
+    </declare-styleable>
+</resources>

@@ -10,12 +10,13 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_brightness"
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_gravity="center_horizontal"
+        android:textColor="@color/Unify_N700"
         android:text="@string/default_brightness_value" />
 
     <RelativeLayout

@@ -19,7 +19,7 @@
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/play_broadcast_edit_title_title"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3" />
 
         <com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
@@ -31,7 +31,7 @@
             android:hint="@string/play_prepare_cover_title_default_title_placeholder"
             android:inputType="textMultiLine"
             android:imeOptions="actionDone"
-            android:textColor="@color/Neutral_N700_96" />
+            android:textColor="@color/Unify_N700_96" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title_counter"
@@ -40,7 +40,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             tools:text="31/38" />
 
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            android:background="@color/play_bg_shadow"
+            android:background="@color/play_dms_bg_shadow"
             app:layout_constraintBottom_toTopOf="@+id/ll_crop_action"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />

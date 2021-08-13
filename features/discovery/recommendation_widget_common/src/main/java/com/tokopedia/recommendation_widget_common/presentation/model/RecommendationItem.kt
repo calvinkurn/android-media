@@ -1,46 +1,57 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class RecommendationItem(val productId: Int = 0,
-                              val name: String = "",
-                              val categoryBreadcrumbs: String = "",
-                              val url: String = "",
-                              val appUrl: String = "",
-                              val clickUrl: String = "",
-                              val wishlistUrl: String = "",
-                              val trackerImageUrl: String = "",
-                              val imageUrl: String = "",
-                              val price: String = "",
-                              val priceInt: Int = 0,
-                              val departmentId: Int = 0,
-                              val rating: Int = 0,
-                              val ratingAverage: String = "",
-                              val countReview: Int = 0,
-                              val stock: Int = 0,
-                              val recommendationType: String = "",
-                              val isTopAds: Boolean = false,
-                              var isWishlist: Boolean = false,
-                              val slashedPrice: String = "",
-                              val slashedPriceInt: Int = 0,
-                              val discountPercentageInt: Int = 0,
-                              val discountPercentage: String = "",
-                              val position: Int = 0,
-                              val shopId: Int = 0,
-                              val shopType: String = "",
-                              val shopName: String = "",
-                              var cartId: String = "",
-                              val quantity: Int = 0,
-                              val header: String = "",
-                              val pageName: String = "",
-                              val minOrder: Int = 0,
-                              val location: String = "",
-                              val badgesUrl: List<String?> = listOf(),
-                              val type: String = "",
-                              val isFreeOngkirActive: Boolean = false,
-                              val freeOngkirImageUrl: String = "",
-                              val labelGroupList: List<RecommendationLabel> = listOf(),
-                              val isGold: Boolean = false): ImpressHolder(){
+data class RecommendationItem(
+        val productId: Int = 0,
+        val name: String = "",
+        val categoryBreadcrumbs: String = "",
+        val url: String = "",
+        val appUrl: String = "",
+        val clickUrl: String = "",
+        val wishlistUrl: String = "",
+        val trackerImageUrl: String = "",
+        val imageUrl: String = "",
+        val price: String = "",
+        val priceInt: Int = 0,
+        val departmentId: Int = 0,
+        val rating: Int = 0,
+        val ratingAverage: String = "",
+        val countReview: Int = 0,
+        val stock: Int = 0,
+        val recommendationType: String = "",
+        val isTopAds: Boolean = false,
+        var isWishlist: Boolean = false,
+        val slashedPrice: String = "",
+        val slashedPriceInt: Int = 0,
+        val discountPercentageInt: Int = 0,
+        val discountPercentage: String = "",
+        val position: Int = 0,
+        val shopId: Int = 0,
+        val shopType: String = "",
+        val shopName: String = "",
+        var cartId: String = "",
+        var quantity: Int = 0,
+        val header: String = "",
+        val pageName: String = "",
+        val minOrder: Int = 0,
+        val location: String = "",
+        val badgesUrl: List<String> = listOf(),
+        val type: String = "",
+        val isFreeOngkirActive: Boolean = false,
+        val freeOngkirImageUrl: String = "",
+        val labelGroupList: List<RecommendationLabel> = listOf(),
+        val isGold: Boolean = false,
+        val isOfficial:Boolean = false,
+        // for tracker field
+        val dimension61: String = "",
+        val specs: List<RecommendationSpecificationLabels> = listOf(),
+        //for tokonow
+        val parentID: Long = 0L,
+        val isRecomProductShowVariantAndCart:Boolean = false,
+        var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
+): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -87,12 +98,15 @@ data class RecommendationItem(val productId: Int = 0,
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
         if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
+        if (parentID != other.parentID) return false
+        if (isRecomProductShowVariantAndCart != other.isRecomProductShowVariantAndCart) return false
+        if (currentQuantity != other.currentQuantity) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = productId
+        var result = productId.hashCode()
         result = HASH_CODE * result + name.hashCode()
         result = HASH_CODE * result + categoryBreadcrumbs.hashCode()
         result = HASH_CODE * result + url.hashCode()
@@ -105,6 +119,7 @@ data class RecommendationItem(val productId: Int = 0,
         result = HASH_CODE * result + priceInt
         result = HASH_CODE * result + departmentId
         result = HASH_CODE * result + rating
+        result = HASH_CODE * result + ratingAverage.hashCode()
         result = HASH_CODE * result + countReview
         result = HASH_CODE * result + stock
         result = HASH_CODE * result + recommendationType.hashCode()
@@ -130,6 +145,11 @@ data class RecommendationItem(val productId: Int = 0,
         result = HASH_CODE * result + freeOngkirImageUrl.hashCode()
         result = HASH_CODE * result + labelGroupList.hashCode()
         result = HASH_CODE * result + isGold.hashCode()
+        result = HASH_CODE * result + isOfficial.hashCode()
+        result = HASH_CODE * result + dimension61.hashCode()
+        result = HASH_CODE * result + parentID.hashCode()
+        result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
+        result = HASH_CODE * result + currentQuantity.hashCode()
         return result
     }
 
@@ -137,6 +157,31 @@ data class RecommendationItem(val productId: Int = 0,
         private const val HASH_CODE = 31
     }
 
+    fun isProductHasParentID(): Boolean {
+        return parentID != 0L
+    }
+
+    //default value 0
+    fun setDefaultCurrentStock() {
+        this.quantity = 0
+        this.currentQuantity = 0
+    }
+
+    //func to update quantity from minicart
+    fun updateItemCurrentStock(quantity: Int) {
+        this.quantity = quantity
+        this.currentQuantity = quantity
+    }
+
+    //call this when product card update values
+    fun onCardQuantityChanged(updatedQuantity : Int) {
+        currentQuantity = updatedQuantity
+    }
+
+    //call this when failed atc / update / delete
+    fun onFailedUpdateCart() {
+        currentQuantity = quantity
+    }
 }
 
-data class RecommendationLabel(var title: String = "", val type: String = "", val position: String = "")
+data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")

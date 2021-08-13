@@ -3,7 +3,8 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -12,10 +13,10 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TopchatUploadImageUseCase @Inject constructor(
+open class TopchatUploadImageUseCase @Inject constructor(
         private var uploadImageUseCase: UploaderUseCase,
         private var chatImageServerUseCase: ChatImageServerUseCase,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var isUploading: Boolean = false
@@ -24,9 +25,9 @@ class TopchatUploadImageUseCase @Inject constructor(
     private var onSuccess: ((String, ImageUploadViewModel) -> Unit)? = null
     private var onError: ((Throwable, ImageUploadViewModel) -> Unit)? = null
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun upload(
+    open fun upload(
             image: ImageUploadViewModel,
             onSuccess: (String, ImageUploadViewModel) -> Unit,
             onError: (Throwable, ImageUploadViewModel) -> Unit
@@ -51,11 +52,11 @@ class TopchatUploadImageUseCase @Inject constructor(
     }
 
     private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
-        launch(dispatchers.IO) {
+        launch(dispatchers.io) {
             val requestParams = uploadImageUseCase.createParams(sourceId, File(image.imageUrl))
             val result = uploadImageUseCase(requestParams)
             setUploading(false)
-            withContext(dispatchers.Main) {
+            withContext(dispatchers.main) {
                 when (result) {
                     is UploadResult.Success -> onSuccess?.invoke(result.uploadId, image)
                     is UploadResult.Error -> onErrorUploadImage(result, image)
@@ -65,7 +66,7 @@ class TopchatUploadImageUseCase @Inject constructor(
     }
 
     private fun onErrorUploadImage(result: UploadResult.Error, image: ImageUploadViewModel) {
-        val error = Throwable(result.message)
+        val error = MessageErrorException(result.message)
         onError?.invoke(error, image)
     }
 

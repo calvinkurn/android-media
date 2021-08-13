@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by zulfikarrahman on 4/2/18.
  */
-@FingerprintScope
 @Module
 class FingerprintModule {
 

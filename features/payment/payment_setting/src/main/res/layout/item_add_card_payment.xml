@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_gravity="center_vertical"
     android:layout_height="wrap_content">
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonAddCard"
-        android:text="@string/payment_label_add_card_list"
-        style="@style/Button.Submit.White.Border.Green.Full"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
+        android:text="@string/payment_label_add_card_list" />
+
 </LinearLayout>

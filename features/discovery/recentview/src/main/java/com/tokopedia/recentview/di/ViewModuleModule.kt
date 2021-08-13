@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@RecentViewScope
 abstract class ViewModelModule {
 
     @RecentViewScope

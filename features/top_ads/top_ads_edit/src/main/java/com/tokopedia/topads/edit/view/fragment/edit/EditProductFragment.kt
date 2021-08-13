@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,7 +38,7 @@ import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
 import javax.inject.Inject
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
-
+private const val PRODUCT_EDIT_NAME = "android.topads_edit"
 class EditProductFragment : BaseDaggerFragment() {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
@@ -47,7 +46,7 @@ class EditProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditProductListAdapter
-    private var originalIdList: MutableList<Int> = arrayListOf()
+    private var originalIdList: MutableList<String> = arrayListOf()
     private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var btnState = true
@@ -57,14 +56,12 @@ class EditProductFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
+
     private val viewModel by lazy {
-        viewModelProvider.get(EditFormDefaultViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
     }
     private val sharedViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel::class.java)
     }
 
     companion object {
@@ -112,21 +109,17 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(page: Int) {
-        viewModel.getAds(page, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
+        viewModel.getAds(page, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = EditProductListAdapter(EditProductListAdapterTypeFactoryImpl(this::onProductListDeleted))
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         fetchData()
     }
 
     private fun fetchData() {
-        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
+        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
     }
 
     private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) {
@@ -172,7 +165,7 @@ class EditProductFragment : BaseDaggerFragment() {
         add_product.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
-            intent.putIntegerArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
+            intent.putStringArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
         }
     }
@@ -209,20 +202,21 @@ class EditProductFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
-                createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getIntegerArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
+                createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getStringArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
                 sharedViewModel.setProductIds(getProductIds())
             }
         }
     }
 
-    private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
+    private fun createProduct(price: ArrayList<String>?, product: ArrayList<String>?, name: ArrayList<String>?, image: ArrayList<String>?) {
         if (adapter.items.isNotEmpty() && adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
         product?.forEachIndexed { ind, it ->
-            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
-            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
+            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)
+                    ?: "", image?.get(ind) ?: "", name?.get(ind) ?: "")
+            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", "0", "0", dataItem)))
             if (!existsOriginal(it)) {
-                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", 0, 0, dataItem))
+                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", "0", "0", dataItem))
             }
         }
         adapter.notifyDataSetChanged()
@@ -232,7 +226,7 @@ class EditProductFragment : BaseDaggerFragment() {
         buttonStateCallback?.setButtonState()
     }
 
-    private fun existsOriginal(id: Int): Boolean {
+    private fun existsOriginal(id: String): Boolean {
         return originalIdList.find { id == it } != null
     }
 
@@ -261,25 +255,24 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun filterAddedProducts() {
         /// for the products which are added and removed
-        val iterator = addedProducts.iterator()
-        while (iterator.hasNext()) {
-            val key = iterator.next()
-            deletedProducts.forEach { deleted ->
+        deletedProducts.forEach { deleted->
+            val iterator = addedProducts.iterator()
+            while (iterator.hasNext()){
+                val key = iterator.next()
                 if (key.itemID == deleted.itemID) {
                     iterator.remove()
+                    break
                 }
             }
         }
 
         //remove the delete items which are not originally in the group
-        var indi: MutableList<Int> = mutableListOf()
-        deletedProducts.forEachIndexed { index, deleted ->
-            if ((originalIdList.find { it -> deleted.itemID == it }) == null) {
-                indi.add(index)
+        val iteratorDel = deletedProducts.iterator()
+        while (iteratorDel.hasNext()) {
+            val key = iteratorDel.next()
+            if (!originalIdList.contains(key.itemID)) {
+                iteratorDel.remove()
             }
-        }
-        for (index in indi) {
-            deletedProducts.removeAt(index)
         }
     }
 

@@ -1,12 +1,11 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
-import android.graphics.Color
-import android.graphics.drawable.ScaleDrawable
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.asUpperCase
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
@@ -14,6 +13,8 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -30,6 +31,7 @@ class SectionViewHolder(
 
     override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
+            toggleSectionWidgetHeight(element.shouldShow)
             tvSectionTitle.text = element.title
             tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
@@ -57,13 +59,29 @@ class SectionViewHolder(
 
         val regex = mapOf(
                 "{DATE_YESTERDAY_PAST_7D}" to { DateTimeUtil.getFormattedDate(7, "dd MMM yy").asUpperCase() },
-                "{DATE_YESTERDAY}" to { DateTimeUtil.getFormattedDate(1, "dd MMM yy").asUpperCase() }
+                "{DATE_YESTERDAY}" to { DateTimeUtil.getFormattedDate(1, "dd MMM yy").asUpperCase() },
+                "{NOW_DD_MMMM_YYYY_hh:mm_WIB}" to {
+                    DateTimeUtil.format(
+                            System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)),
+                            "dd MMMM yyyy (HH:00 z)",
+                            TimeZone.getTimeZone("Asia/Jakarta"))
+                }
         )
 
         val pattern = "\\{([^}]*?)\\}".toRegex()
         return pattern.replace(this) {
             regex[it.value]?.invoke() ?: it.value
         }
+    }
+
+    private fun View.toggleSectionWidgetHeight(isShown: Boolean) {
+        layoutParams.height =
+                if (isShown) {
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+                } else {
+                    0
+                }
+        requestLayout()
     }
 
     interface Listener : BaseViewHolderListener {

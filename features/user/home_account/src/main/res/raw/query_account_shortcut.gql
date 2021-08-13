@@ -1,0 +1,26 @@
+query {
+  tokopointsStatusFiltered(filterKeys: ["tier"]) {
+    statusFilteredData {
+      tier {
+        nameDesc
+        eggImageHomepageURL
+        backgroundImgURLMobile
+      }
+    }
+  }
+  tokopointsShortcutList(groupCodes: ["account_page_widget"]) {
+    shortcutGroupList {
+      groupCode
+      shortcutList {
+        id
+        cta {
+          text
+          url
+          appLink
+        }
+        iconImageURL
+        description
+      }
+    }
+  }
+}

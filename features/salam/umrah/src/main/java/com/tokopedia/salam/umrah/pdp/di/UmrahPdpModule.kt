@@ -5,5 +5,4 @@ import dagger.Module
  * @author by M on 30/10/19
  */
 @Module
-@UmrahPdpScope
 class UmrahPdpModule

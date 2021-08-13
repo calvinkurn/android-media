@@ -1,15 +1,16 @@
 package com.tokopedia.digital.newcart.presentation.compoundview;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.digital.R;
@@ -81,10 +82,15 @@ public class DigitalCartDetailHolderView extends LinearLayout {
     public void removeAdditionalInfo() {
         detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
         adapter.setInfos(new ArrayList<>(this.mainInfos));
-        for (int i = additionalInfos.size()-1; i >= 0; i--) {
+        for (int i = additionalInfos.size() - 1; i >= 0; i--) {
             if (additionalInfos.get(i).getTitle().contains(TITLE_PAYMENT)) {
                 additionalInfos.remove(i);
             }
+        }
+        if (additionalInfos != null && additionalInfos.size() > 0) {
+            detailToggleAppCompatTextView.setVisibility(VISIBLE);
+        } else {
+            detailToggleAppCompatTextView.setVisibility(GONE);
         }
         adapter.addInfos(constructAdditionalInfo(additionalInfos));
         adapter.notifyDataSetChanged();

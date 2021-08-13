@@ -4,12 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.logisticdata.domain.model.SavedAddress
-import com.tokopedia.logisticdata.domain.model.SuggestedPlace
-import com.tokopedia.logisticdata.data.response.AutoCompleteResponse
-import com.tokopedia.logisticdata.data.repository.KeroRepository
-import com.tokopedia.logisticdata.data.response.AddressResponse
-import com.tokopedia.logisticdata.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.domain.model.SavedAddress
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +44,7 @@ class AutoCompleteViewModelTest {
 
     @Test
     fun `When autocomplete Given success response Then livedata is changed to success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Success }) }
     }
@@ -52,7 +52,7 @@ class AutoCompleteViewModelTest {
     @Test
     fun `When autocomplete Given error response Then livedata is changed to fail`() {
         val testError = defaultThrowable
-        coEvery { repo.getAutoComplete(any()) } throws testError
+        coEvery { repo.getAutoComplete(any(), any()) } throws testError
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Fail }) }
     }

@@ -25,14 +25,14 @@ open class RightChatMessageViewHolder constructor(
     var header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
-    private val bg = ViewUtil.generateBackgroundWithShadow(
+    protected open val bg = ViewUtil.generateBackgroundWithShadow(
             fxChat,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_20,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
@@ -45,28 +45,46 @@ open class RightChatMessageViewHolder constructor(
         bindBackground(message)
     }
 
-    private fun bindBackground(message: MessageViewModel) {
-        fxChat?.background = bg
+    protected fun bindHeader(message: MessageViewModel) {
+        bindHeaderSmartReply(message)
+        bindHeaderAutoReply(message)
+        bindHeaderVisibility(message)
     }
 
-    private fun bindHeader(message: MessageViewModel) {
-        if (
-                (message.isFromAutoReply() || message.isFromSmartReply()) &&
-                message.isSender &&
-                commonListener.isSeller()
-        ) {
-            val headerRoleText = if (message.isFromSmartReply()) {
-                itemView.context?.getString(R.string.tittle_header_smart_reply)
-            } else {
-                itemView.context?.getString(R.string.tittle_header_auto_reply)
-            } ?: ""
+    private fun bindHeaderSmartReply(message: MessageViewModel) {
+        if (fromSmartReply(message)) {
+            val headerText = itemView.context?.getString(R.string.tittle_header_smart_reply)
+            headerRole?.text = headerText
+        }
+    }
+
+    private fun bindHeaderAutoReply(message: MessageViewModel) {
+        if (fromAutoReply(message)) {
+            val headerText = itemView.context?.getString(R.string.tittle_header_auto_reply)
+            headerRole?.text = headerText
+        }
+    }
+
+    private fun bindHeaderVisibility(message: MessageViewModel) {
+        if (fromAutoReply(message) || fromSmartReply(message)) {
             bindBlueDot(message)
             header?.show()
             headerRole?.show()
-            headerRole?.text = headerRoleText
         } else {
             header?.hide()
         }
+    }
+
+    private fun fromAutoReply(message: MessageViewModel): Boolean {
+        return message.isSender && commonListener.isSeller() && message.isFromAutoReply()
+    }
+
+    private fun fromSmartReply(message: MessageViewModel): Boolean {
+        return message.isSender && commonListener.isSeller() && message.isFromSmartReply()
+    }
+
+    protected open fun bindBackground(message: MessageViewModel) {
+        fxChat?.background = bg
     }
 
     private fun bindBlueDot(message: MessageViewModel) {

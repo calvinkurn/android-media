@@ -9,6 +9,7 @@ import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -72,6 +73,36 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun when_get_shop_statistics_fail__should_return_throwable() {
+        runBlocking {
+            val shopStatistics = ShopStatisticsResp()
+
+            onGetShopStatistics_thenReturn(shopStatistics)
+            onGetShopReputationFailed_thenReturn(Throwable())
+
+            viewModel.getShopStats("1")
+
+            verifyGetShopStatisticsCalled()
+            verifyGetShopReputationCalled()
+        }
+    }
+
+    @Test
+    fun when_call_is_my_shop_should_return_true() {
+        val shopId = "2913"
+        onGetShopId_thenReturn(shopId)
+        verifyShopIdEquals(shopId)
+    }
+
+    @Test
+    fun `check whether shopBadgeReputation value is success`() {
+        val shopId = "2913"
+        onGetShopReputation_thenReturn(ShopBadge())
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value is Success)
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
@@ -85,8 +116,16 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         coEvery { getShopReputationUseCase.executeOnBackground() } returns shopBadge
     }
 
+    private fun onGetShopReputationFailed_thenReturn(throwable: Throwable) {
+        coEvery { getShopReputationUseCase.executeOnBackground() } throws throwable
+    }
+
     private fun onGetShopStatistics_thenReturn(shopStatistics: ShopStatisticsResp) {
         coEvery { getShopStatisticsUseCase.executeOnBackground() } returns shopStatistics
+    }
+
+    private fun onGetShopId_thenReturn(shopId: String) {
+        every { userSessionInterface.shopId } returns shopId
     }
     //endregion
 
@@ -134,6 +173,10 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     private fun verifyShopStatisticsEquals(expectedShopStatistics: ShopStatisticsResp) {
         val actualShopStatistics = viewModel.shopStatisticsResp.value
         assertEquals(expectedShopStatistics, actualShopStatistics)
+    }
+
+    private fun verifyShopIdEquals(shopId: String) {
+        assertEquals(viewModel.isMyShop(shopId), true)
     }
     //endregion
 

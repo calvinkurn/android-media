@@ -2,14 +2,10 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.variant.data.model.Unit
-import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -21,6 +17,7 @@ import kotlinx.coroutines.test.resetMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 abstract class AddEditProductVariantDetailViewModelTestFixture {
@@ -30,6 +27,9 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
     val productInputModel: ProductInputModel by lazy {
@@ -63,6 +63,7 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
     protected val viewModel: AddEditProductVariantDetailViewModel by lazy {
         spyk(AddEditProductVariantDetailViewModel(
                 resourceProvider,
+                userSession,
                 testCoroutineDispatcher
         ))
     }

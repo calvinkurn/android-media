@@ -1,0 +1,221 @@
+[
+  {
+    "data": {
+        "ace_search_product_v4": {
+          "header": {
+            "totalData": 0,
+            "totalDataText": "",
+            "defaultView": 1,
+            "responseCode": 1,
+            "errorMessage": "Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.",
+            "additionalParams": "",
+            "keywordProcess": "0"
+          },
+          "data": {
+            "isQuerySafe": true,
+            "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=qwekjnkqjwneqwe",
+            "redirection": {
+              "redirectApplink": ""
+            },
+            "ticker": {
+              "text": "",
+              "query": "",
+              "typeId": 0
+            },
+            "related": {
+              "relatedKeyword": "",
+              "position": 0,
+              "otherRelated": []
+            },
+            "suggestion": {
+              "suggestion": "",
+              "query": "",
+              "text": ""
+            },
+            "products": []
+          }
+        }
+    }
+  },
+  {
+    "data": {
+      "quick_filter": {
+        "filter": [
+          {
+            "options": [
+              {
+                "name": "Bebas Ongkir",
+                "key": "bebas_ongkir_promo",
+                "icon": "",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Official Store",
+                "key": "official",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Kurir Instan",
+                "key": "shipping",
+                "icon": "",
+                "value": "10,12,13",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          },
+          {
+            "options": [
+              {
+                "name": "Power Merchant",
+                "key": "goldmerchant",
+                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "value": "true",
+                "is_new": false,
+                "input_type": "checkbox",
+                "total_data": "",
+                "val_max": "",
+                "val_min": "",
+                "hex_color": "",
+                "child": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "productAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.02119317,
+          "total_data": 6
+        },
+        "data": [],
+        "template": [
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": true
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          },
+          {
+            "is_ad": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "headlineAds": {
+        "status": {
+          "error_code": 0,
+          "message": "OK"
+        },
+        "header": {
+          "process_time": 0.014300596,
+          "total_data": 1
+        },
+        "data": []
+      }
+    }
+  },
+  {
+    "data": {
+      "global_search_navigation": {
+        "data": {
+            "source": "",
+            "title": "",
+            "keyword": "",
+            "nav_template": "",
+            "background": "",
+            "see_all_applink": "",
+            "see_all_url": "",
+            "show_topads": false,
+            "list": []
+         }
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationCarouselV2": {
+        "data": []
+      }
+    }
+  },
+  {
+    "data": {
+      "searchInspirationWidget": {
+        "data": []
+      }
+    }
+  }
+]

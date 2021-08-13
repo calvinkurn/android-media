@@ -8,7 +8,7 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import org.junit.Test
 
-internal class SearchShopHandleViewReloadTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopHandleViewReloadTest: SearchShopDataViewTestFixtures() {
 
     private var searchShopFirstPagePerformanceMonitoringIsStarted = false
     private var searchShopFirstPagePerformanceMonitoringIsEnded = false

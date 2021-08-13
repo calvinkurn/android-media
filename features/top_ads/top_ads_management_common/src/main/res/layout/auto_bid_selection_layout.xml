@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/atur_otomatis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radiobtn_otomatis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
+            android:padding="@dimen/dp_16"
+            android:gravity="center"
+            android:checked="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_otomatis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/autobid_otomatis_title"
+            android:layout_marginStart="@dimen/dp_16"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/desc_otomatis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            android:text="@string/autobid_otomatis_desc"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintStart_toEndOf="@+id/radiobtn_otomatis"
+            app:layout_constraintTop_toBottomOf="@+id/title_otomatis"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_80"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/atur_otomatis"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/atur_manual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radiobtn_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
+            android:padding="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/autobid_manual_title"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/desc_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:text="@string/autobid_manual_desc"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
+            app:layout_constraintTop_toBottomOf="@+id/title_manual"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/tip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fbType="group"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/save_autobid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/save_autobid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/lanjutkan"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

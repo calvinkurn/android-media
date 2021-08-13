@@ -6,16 +6,16 @@
   <path
       android:pathData="M1.1304,2.1721L4.9586,6.0003L1.1304,9.8273C0.622,10.3357 0.6089,11.1529 1.0983,11.6423C1.5877,12.1316 2.4037,12.1174 2.9121,11.609L7.6311,6.8911C8.1205,6.4018 8.1205,5.5988 7.6311,5.1094L2.9121,0.3904C2.4037,-0.118 1.5877,-0.1311 1.0983,0.3583C0.6089,0.8477 0.622,1.6637 1.1304,2.1721"
       android:strokeWidth="1"
-      android:fillColor="#9FA6B0"
+      android:fillColor="@color/Unify_N200"
       android:fillType="evenOdd"
-      android:strokeColor="#00000000"/>
+      android:strokeColor="@color/topchat_transparent"/>
   <group>
     <clip-path android:pathData="M1.1304,2.1721L4.9586,6.0003L1.1304,9.8273C0.622,10.3357 0.6089,11.1529 1.0983,11.6423C1.5877,12.1316 2.4037,12.1174 2.9121,11.609L7.6311,6.8911C8.1205,6.4018 8.1205,5.5988 7.6311,5.1094L2.9121,0.3904C2.4037,-0.118 1.5877,-0.1311 1.0983,0.3583C0.6089,0.8477 0.622,1.6637 1.1304,2.1721 M 0,0"/>
     <path
         android:pathData="M-7,-5h22v22h-22z"
         android:strokeWidth="1"
-        android:fillColor="#6C727C"
+        android:fillColor="@color/Unify_N400"
         android:fillType="nonZero"
-        android:strokeColor="#00000000"/>
+        android:strokeColor="@color/topchat_transparent"/>
   </group>
 </vector>

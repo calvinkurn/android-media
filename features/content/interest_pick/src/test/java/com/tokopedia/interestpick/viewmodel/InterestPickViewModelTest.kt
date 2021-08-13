@@ -6,17 +6,15 @@ import com.tokopedia.interestpick.domain.usecase.GetInterestUseCase
 import com.tokopedia.interestpick.domain.usecase.UpdateInterestUseCase
 import com.tokopedia.interestpick.view.subscriber.InterestPickViewState
 import com.tokopedia.interestpick.view.viewmodel.InterestPickViewModel
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.jvm.Throws
 
 private const val DEFAULT_HEADER_TITLE = "Kamu Suka Apa?"
 
@@ -26,7 +24,8 @@ class InterestPickViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private lateinit var testDispatcher: TestCoroutineDispatcher
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private val getInterestUseCase: GetInterestUseCase = mockk(relaxed = true)
 
@@ -37,15 +36,12 @@ class InterestPickViewModelTest {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        testDispatcher = TestCoroutineDispatcher()
         interestPickViewModel = spyk(InterestPickViewModel(getInterestPickUseCase = getInterestUseCase, updateInterestUseCase = updateInterestUseCase))
-        Dispatchers.setMain(testDispatcher)
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
-        Dispatchers.resetMain()
         unmockkAll()
     }
 

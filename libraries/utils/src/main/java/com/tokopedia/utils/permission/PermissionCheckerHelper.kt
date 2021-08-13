@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_NFC
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
@@ -62,7 +62,6 @@ class PermissionCheckerHelper {
         const val PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         const val PERMISSION_READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE
         const val PERMISSION_NFC = Manifest.permission.NFC
-        const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
         const val PERMISSION_READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
         const val PERMISSION_READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
@@ -151,6 +150,7 @@ class PermissionCheckerHelper {
             PERMISSION_WRITE_EXTERNAL_STORAGE -> context.getString(R.string.permission_write_storage)
             PERMISSION_READ_EXTERNAL_STORAGE -> context.getString(R.string.permission_read_storage)
             PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
+            PERMISSION_NFC -> context.getString(R.string.permission_nfc)
             else -> ""
         }
     }
@@ -187,7 +187,7 @@ class PermissionCheckerHelper {
 
         } else if (!permissions.isEmpty()
                 && shouldShowRequestPermissionRationale(activity, permissions[0])) {
-            onShowRationale(activity, permissions, permissions[0], listener, rationaleText)
+            onShowRationale(activity, permissions, getPermissionName(activity, permissions[0]), listener, rationaleText)
         } else if (!permissions.isEmpty()) {
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         }
@@ -235,7 +235,7 @@ class PermissionCheckerHelper {
                                    REQUEST_PERMISSION_CODE: Int) {
 
         try {
-            activity.requestPermissions(permissions,
+            ActivityCompat.requestPermissions(activity, permissions,
                     REQUEST_PERMISSION_CODE)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
@@ -307,7 +307,7 @@ class PermissionCheckerHelper {
         dialog.setCancelable(true)
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
-            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
+            requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
         }
         dialog.setSecondaryCTAClickListener {
             listener.onPermissionDenied(permissionText)

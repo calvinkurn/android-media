@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.waitingpayment
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.GetWaitingPaymentOrderUseCase
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.mapper.WaitingPaymentOrderResultMapper
@@ -11,6 +10,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPayment
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -96,7 +96,7 @@ class WaitingPaymentOrderViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     lateinit var getWaitingPaymentOrderGqlUseCase: GraphqlUseCase<WaitingPaymentOrderResponse.Data>

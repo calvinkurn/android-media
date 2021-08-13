@@ -24,6 +24,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             telco_prepaid_title_product.text = element.attributes.desc
 
+            renderCardSize()
             renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
@@ -34,9 +35,17 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         }
     }
 
+    private fun renderCardSize() {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_MCCM) {
+                telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+            }
+        }
+    }
+
     private fun renderDescProduct(element: TelcoProduct) {
         with(itemView) {
-            if (productType == TelcoProductType.PRODUCT_LIST) {
+            if (productType == TelcoProductType.PRODUCT_LIST || productType == TelcoProductType.PRODUCT_MCCM) {
                 telco_empty_view.hide()
                 telco_desc_product.show()
                 telco_desc_product.text = element.attributes.detail
@@ -63,11 +72,11 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderTextColor(status: Int) {
         with(itemView) {
             if (isProductOutOfStock(status)) {
-                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
-                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             } else {
-                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
-                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
             }
         }
     }

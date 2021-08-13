@@ -8,6 +8,7 @@ public interface SearchConstant {
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
+    String SEARCH_RESULT_PAGE = "search result page";
     String SEARCH_RESULT_TRACE = "search_result_trace";
     String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
     String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
@@ -17,6 +18,8 @@ public interface SearchConstant {
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
@@ -31,6 +34,9 @@ public interface SearchConstant {
     interface DefaultViewType {
         int SMALL_GRID = 1;
         int LIST = 2;
+        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
+        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
+        String VIEW_TYPE_NAME_LIST = "list";
     }
 
     interface Wishlist {
@@ -78,9 +84,16 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
+        String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
+        String SEARCH_PRODUCT_PARAMS = "params";
+        String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
+        String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
+        String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
     }
 
     interface SearchShop {
@@ -128,13 +141,6 @@ public interface SearchConstant {
         String QUERY = "SIMILAR_SEARCH_QUERY";
     }
 
-    interface Advertising {
-        String ADVERTISING_ID = "ADVERTISINGID";
-        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
-        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
-        String APP_CLIENT_ID = "appClientId";
-    }
-
     interface ABTestRemoteConfigKey {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
@@ -148,19 +154,28 @@ public interface SearchConstant {
     }
 
     interface ProductCardLabel {
+        String LABEL_FULFILLMENT = "fulfillment";
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
+        String TEXT_DARK_ORANGE = "textDarkOrange";
+        String TEXT_DARK_RED = "textDarkRed";
+        String TEXT_LIGHT_GREY = "textLightGrey";
     }
 
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
-        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
     }
 
     interface TopAdsComponent {
@@ -174,5 +189,14 @@ public interface SearchConstant {
         String TYPE_CATEGORY = "category";
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
+        String TYPE_RELATED = "related";
+    }
+
+    interface ImageUrl {
+        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
+    }
+
+    interface CustomDimension {
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
     }
 }

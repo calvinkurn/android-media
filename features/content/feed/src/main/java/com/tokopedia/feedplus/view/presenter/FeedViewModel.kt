@@ -3,25 +3,26 @@ package com.tokopedia.feedplus.view.presenter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
+import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
-import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
@@ -45,7 +46,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -58,26 +60,32 @@ private const val PARAM_SRC = "src"
 private const val PARAM_AD_KEY = "ad_key"
 private const val DEFAULT_VALUE_SRC = "fav_shop"
 
-class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatcherProvider,
-                                        private val userSession: UserSessionInterface,
-                                        private val getInterestPickUseCase: GetInterestPickUseCase,
-                                        private val submitInterestPickUseCase: SubmitInterestPickUseCase,
-                                        private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
-                                        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                        private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-                                        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-                                        private val likeKolPostUseCase: LikeKolPostUseCase,
-                                        private val sendVoteUseCase: SendVoteUseCase,
-                                        private val atcUseCase: AddToCartUseCase,
-                                        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-                                        private val deletePostUseCase: DeletePostUseCase,
-                                        private val sendTopAdsUseCase: SendTopAdsUseCase,
-                                        private val playWidgetTools: PlayWidgetTools)
-    : BaseViewModel(baseDispatcher.ui()) {
+class FeedViewModel @Inject constructor(
+    private val baseDispatcher: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getInterestPickUseCase: GetInterestPickUseCase,
+    private val submitInterestPickUseCase: SubmitInterestPickUseCase,
+    private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
+    private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+    private val likeKolPostUseCase: LikeKolPostUseCase,
+    private val atcUseCase: AddToCartUseCase,
+    private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
+    private val sendTopAdsUseCase: SendTopAdsUseCase,
+    private val playWidgetTools: PlayWidgetTools,
+    private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
+    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val sendReportUseCase: SendReportUseCase,
+    private val addWishListUseCase: AddWishListUseCase
+) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
+        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
+        private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
+        private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
+
     }
 
     private val userId: String
@@ -91,11 +99,12 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
     val followKolRecomResp = MutableLiveData<Result<FollowKolViewModel>>()
     val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
-    val voteResp = MutableLiveData<Result<VoteViewModel>>()
     val deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
     val atcResp = MutableLiveData<Result<AtcViewModel>>()
     val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
+    val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
@@ -115,7 +124,39 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         })
     }
 
-    fun submitInterestPickData(dataList: List<InterestPickDataViewModel>, source: String, requestInt: Int) {
+    fun sendReport(
+        positionInFeed: Int,
+        contentId: Int,
+        reasonType: String,
+        reasonMessage: String,
+        contentType: String
+    ) {
+        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
+        sendReportUseCase.execute(
+            {
+                val deleteModel = DeletePostViewModel(
+                    contentId,
+                    positionInFeed,
+                    it.feedReportSubmit.errorMessage,
+                    true
+                )
+                if (it.feedReportSubmit.errorMessage.isEmpty()) {
+                    reportResponse.value = Success(deleteModel)
+                } else {
+                    reportResponse.value = Fail(Exception(it.feedReportSubmit.errorMessage))
+                }
+            },
+            {
+                reportResponse.value = Fail(it)
+            }
+        )
+    }
+
+    fun submitInterestPickData(
+        dataList: List<InterestPickDataViewModel>,
+        source: String,
+        requestInt: Int
+    ) {
         val idList = dataList.map { it.id }
         submitInterestPickUseCase.apply {
             clearRequest()
@@ -133,12 +174,12 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         })
     }
 
-    fun getFeedFirstPage(firstPageCursor: String) {
+    fun getFeedFirstPage() {
         pagingHandler.resetPage()
         currentCursor = ""
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
-                getFeedDataResult(firstPageCursor)
+            val results = withContext(baseDispatcher.io) {
+                getFeedFirstDataResult()
             }
             currentCursor = results.dynamicFeedDomainModel.cursor
             getFeedFirstPageResp.value = Success(results)
@@ -162,8 +203,8 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             return
         }
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
-                getFeedNextDataResult()
+            val results = withContext(baseDispatcher.io) {
+                getFeedDataResult()
             }
             if (results.hasNext) {
                 currentCursor = results.cursor
@@ -185,7 +226,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 doFavoriteShopResult(promotedShopViewModel)
             }
             results.adapterPosition = adapterPosition
@@ -197,29 +238,29 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doFollowKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 followKol(id, rowNumber)
             }
             followKolResp.value = Success(results)
         }) {
-            followKolResp.value = Fail(it)
+            followKolResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
         }
     }
 
     fun doUnfollowKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unfollowKol(id, rowNumber)
             }
             followKolResp.value = Success(results)
         }) {
-            followKolResp.value = Fail(it)
+            followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
         }
     }
 
     fun doLikeKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
             }
             likeKolResp.value = Success(results)
@@ -230,7 +271,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doUnlikeKol(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
             }
             likeKolResp.value = Success(results)
@@ -241,7 +282,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doFollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 followKolFromRecom(id, rowNumber, position)
             }
             followKolRecomResp.value = Success(results)
@@ -252,7 +293,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doUnfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 unfollowKolFromRecom(id, rowNumber, position)
             }
             followKolRecomResp.value = Success(results)
@@ -263,7 +304,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doDeletePost(id: Int, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 deletePost(id, rowNumber)
             }
             deletePostResp.value = Success(results)
@@ -272,21 +313,10 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
     }
 
-    fun doVote(rowNumber: Int, pollId: String, optionId: String) {
+    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
-                vote(optionId, pollId, rowNumber)
-            }
-            voteResp.value = Success(results)
-        }) {
-            voteResp.value = Fail(it)
-        }
-    }
-
-    fun doAtc(postTagItem: PostTagItem) {
-        launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
-                atc(postTagItem)
+            val results = withContext(baseDispatcher.io) {
+                atc(postTagItem, shopId, type, isFollowed, activityId)
             }
             atcResp.value = Success(results)
         }) {
@@ -296,7 +326,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doTrackAffiliate(url: String) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 trackAffiliate(url)
             }
             trackAffiliateResp.value = Success(results)
@@ -304,18 +334,33 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
     }
 
-    fun doToggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String) {
+    fun doToggleFavoriteShop(
+        rowNumber: Int,
+        adapterPosition: Int,
+        shopId: String,
+        follow: Boolean = true
+    ) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
+            val results = withContext(baseDispatcher.io) {
                 toggleFavoriteShop(rowNumber, adapterPosition, shopId)
             }
             toggleFavoriteShopResp.value = Success(results)
         }) {
-            toggleFavoriteShopResp.value = Fail(it)
+            if (follow)
+                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
+            else
+                toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
+
         }
     }
 
-    fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean) {
+    fun doTopAdsTracker(
+        url: String,
+        shopId: String,
+        shopName: String,
+        imageUrl: String,
+        isClick: Boolean
+    ) {
         if (isClick) {
             sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
         } else {
@@ -333,57 +378,88 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         })
     }
 
-    private fun OnboardingData.convertToViewModel(): OnboardingViewModel = mappingOnboardingData(feedUserOnboardingInterests)
+    fun addWishlist(
+        activityId: String,
+        productId: String,
+        shopId: String,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        onFail: (String) -> Unit,
+        onSuccess: (String, String, String, Boolean) -> Unit
+    ) {
+        addWishListUseCase.createObservable(
+            productId, userSession.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    if (productId != null) {
+                        onSuccess.invoke(activityId, shopId, type, isFollowed)
+                    }
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+
+            })
+    }
+
+    private fun OnboardingData.convertToViewModel(): OnboardingViewModel =
+        mappingOnboardingData(feedUserOnboardingInterests)
 
     private fun mappingOnboardingData(pojo: FeedUserOnboardingInterests): OnboardingViewModel {
         return OnboardingViewModel(
-                pojo.meta.isEnabled,
-                pojo.meta.minPicked,
-                pojo.meta.source,
-                pojo.meta.assets.titleIntro,
-                pojo.meta.assets.titleFull,
-                pojo.meta.assets.instruction,
-                pojo.meta.assets.buttonCta,
-                mappingOnboardingListData(pojo.data)
+            pojo.meta.isEnabled,
+            pojo.meta.minPicked,
+            pojo.meta.source,
+            pojo.meta.assets.titleIntro,
+            pojo.meta.assets.titleFull,
+            pojo.meta.assets.instruction,
+            pojo.meta.assets.buttonCta,
+            mappingOnboardingListData(pojo.data)
         )
     }
 
     private fun mappingOnboardingListData(pojoList: List<DataItem>): MutableList<InterestPickDataViewModel> {
         val dataList: MutableList<InterestPickDataViewModel> = mutableListOf()
         for (pojo in pojoList) {
-            dataList.add(InterestPickDataViewModel(
+            dataList.add(
+                InterestPickDataViewModel(
                     pojo.id,
                     pojo.name,
                     pojo.image,
                     pojo.isSelected
-            ))
+                )
+            )
         }
         return dataList
     }
 
-    private fun getFeedDataResult(firstPageCursor: String): DynamicFeedFirstPageDomainModel {
-        try {
-            return getDynamicFeedFirstPageUseCase.createObservable(
-                    GetDynamicFeedFirstPageUseCase.createRequestParams(
-                            userId,
-                            "",
-                            GetDynamicFeedUseCase.FeedV2Source.Feeds,
-                            firstPageCursor, userSession.isLoggedIn))
-                    .toBlocking().single() ?: DynamicFeedFirstPageDomainModel()
+    private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
+        return try {
+            val feedResponseModel = getFeedDataResult()
+            if (userSession.isLoggedIn) {
+                val whiteListModel = getWhitelistNewUseCase.execute(type = WHITELIST_INTEREST)
+                DynamicFeedFirstPageDomainModel(
+                    feedResponseModel,
+                    (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist)
+                )
+            } else {
+                DynamicFeedFirstPageDomainModel(feedResponseModel, false)
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e
         }
     }
 
-    private fun getFeedNextDataResult(): DynamicFeedDomainModel {
+    private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedUseCase.createObservable(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId,
-                            currentCursor,
-                            GetDynamicFeedUseCase.FeedV2Source.Feeds))
-                    .toBlocking().single() ?: DynamicFeedDomainModel()
+            return getDynamicFeedNewUseCase.execute(cursor = currentCursor)
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e
@@ -393,12 +469,14 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     private fun doFavoriteShopResult(promotedShopViewModel: Data): FeedPromotedShopViewModel {
         try {
             val result = FeedPromotedShopViewModel()
-            val params = ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
+            val params =
+                ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
 
             params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
             params.putString(PARAM_SRC, DEFAULT_VALUE_SRC)
             params.putString(PARAM_AD_KEY, promotedShopViewModel.adRefKey)
-            val requestSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().single()
+            val requestSuccess =
+                doFavoriteShopUseCase.createObservable(params).toBlocking().single()
             result.isSuccess = requestSuccess
             result.promotedShopViewModel = promotedShopViewModel
             return result
@@ -420,7 +498,8 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
             if (query.data != null) {
                 val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess =
+                    true
             }
             return data
         } catch (e: Throwable) {
@@ -435,13 +514,15 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             data.rowNumber = rowNumber
             data.status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
             followKolPostGqlUseCase.clearRequest()
-            val params = FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+            val params =
+                FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
             if (query.data != null) {
                 val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess =
+                    true
             }
             return data
         } catch (e: Throwable) {
@@ -468,7 +549,8 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             val data = LikeKolViewModel()
             data.id = id
             data.rowNumber = rowNumber
-            val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
+            val params =
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
             val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data
@@ -527,20 +609,6 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
     }
 
-    private fun vote(optionId: String, pollId: String, rowNumber: Int): VoteViewModel {
-        try {
-            val data = VoteViewModel()
-            data.optionId = optionId
-            data.rowNumber = rowNumber
-            val params = SendVoteUseCase.createParamsV1(pollId, optionId)
-            val response = sendVoteUseCase.createObservable(params).toBlocking().single()
-            data.voteModel = response
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
     private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
         try {
             val data = DeletePostViewModel()
@@ -555,15 +623,32 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
     }
 
-    private fun atc(postTagItem: PostTagItem): AtcViewModel {
+    private fun atc(
+        postTagItem: FeedXProduct,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        activityId: String
+    ): AtcViewModel {
         try {
             val data = AtcViewModel()
-            data.applink = postTagItem.applink
-            if (postTagItem.shop.isNotEmpty()) {
-                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId,
-                        productName = postTagItem.text, price = postTagItem.price, userId = userId)
-                val result = atcUseCase.createObservable(params).toBlocking().single()
-                data.isSuccess = result.data.success == 0
+            data.applink = postTagItem.appLink
+            data.activityId = activityId
+            data.postType = type
+            data.isFollowed = isFollowed
+            data.shopId = shopId
+
+            val params = AddToCartUseCase.getMinimumParams(
+                postTagItem.id,
+                shopId,
+                productName = postTagItem.name,
+                price = postTagItem.price.toString(),
+                userId = userId
+            )
+            val result = atcUseCase.createObservable(params).toBlocking().single()
+            data.isSuccess = result.data.success == 1
+            if (result.isStatusError()) {
+                data.errorMsg = result.errorMessage.firstOrNull() ?: ""
             }
             return data
         } catch (e: Throwable) {
@@ -571,7 +656,11 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         }
     }
 
-    private fun toggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String): FavoriteShopViewModel {
+    private fun toggleFavoriteShop(
+        rowNumber: Int,
+        adapterPosition: Int,
+        shopId: String
+    ): FavoriteShopViewModel {
         try {
             val data = FavoriteShopViewModel()
             data.rowNumber = rowNumber
@@ -611,9 +700,9 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         if (currentValue is Success) {
             val model = currentValue.data.playWidgetUiModel
             _playWidgetModel.value = Success(
-                    data = currentValue.data.copy(
-                            playWidgetUiModel = playWidgetTools.updateTotalView(model, channelId, totalView)
-                    )
+                data = currentValue.data.copy(
+                    playWidgetUiModel = playWidgetTools.updateTotalView(model, channelId, totalView)
+                )
             )
         }
     }
@@ -623,7 +712,10 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     }
 
     private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardViewModel {
-        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io())
+        val response = playWidgetTools.getWidgetFromNetwork(
+            widgetType = PlayWidgetUseCase.WidgetType.Feeds,
+            coroutineContext = baseDispatcher.io
+        )
         val uiModel = playWidgetTools.mapWidgetToModel(response)
         return CarouselPlayCardViewModel(uiModel, isAutoRefresh)
     }

@@ -1,3 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.core.network">
+
+    <application>
+    <activity
+        android:name="com.tokopedia.core.common.ui.MaintenancePage"
+        android:label="@string/title_activity_maintenance_page"
+        android:screenOrientation="portrait" />
+    </application>
 </manifest>

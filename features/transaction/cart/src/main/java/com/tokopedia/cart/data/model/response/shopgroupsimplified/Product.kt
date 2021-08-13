@@ -13,9 +13,9 @@ data class Product(
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("parent_id")
-        val parentId: Int = 0,
+        val parentId: Long = 0,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("sku")
@@ -25,15 +25,15 @@ data class Product(
         @SerializedName("free_returns")
         val freeReturns: FreeReturns = FreeReturns(),
         @SerializedName("initial_price")
-        val initialPrice: Int = 0,
+        val initialPrice: Long = 0,
         @SerializedName("initial_price_fmt")
         val initialPriceFmt: String = "",
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
         @SerializedName("product_price")
-        val productPrice: Int = 0,
+        val productPrice: Long = 0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Int = 0,
+        val productOriginalPrice: Long = 0,
         @SerializedName("is_slash_price")
         val isSlashPrice: Boolean = false,
         @SerializedName("slash_price_label")
@@ -117,5 +117,7 @@ data class Product(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("free_shipping")
-        val freeShipping: FreeShipping = FreeShipping()
+        val freeShipping: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_extra")
+        val freeShippingExtra: FreeShipping = FreeShipping()
 )

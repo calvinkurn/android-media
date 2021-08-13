@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/digital_bg_chooser_operator_product_item"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/digital_bg_chooser_operator_product_item"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,18 +19,18 @@
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
             tools:ignore="ContentDescription"
             tools:src="@drawable/digital_ic_clear_widget"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/operator_name"
-            style="@style/TextTitleMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/dp_10"
+            android:padding="@dimen/layout_lvl1"
+            app:typographyType="body_2"
             tools:text="Operator"/>
     </LinearLayout>
 
@@ -37,6 +38,6 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/digital_separator"/>
+        android:background="@color/Unify_N700_20"/>
 
 </LinearLayout>

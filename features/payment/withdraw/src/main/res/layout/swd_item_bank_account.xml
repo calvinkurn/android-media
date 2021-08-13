@@ -5,32 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/spacing_lvl4">
+    android:paddingTop="@dimen/unify_space_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSpecialOffer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Blue_B500"
-        app:typographyType="body_3"
-        android:visibility="visible"
-        android:paddingTop="@dimen/spacing_lvl1"
-        android:paddingBottom="@dimen/spacing_lvl1"
-        android:paddingStart="@dimen/spacing_lvl2"
-        android:paddingEnd="@dimen/spacing_lvl2"
         android:background="@drawable/swd_special_offer"
-        android:text="@string/swd_special_offer"/>
+        android:paddingStart="@dimen/unify_space_4"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/unify_space_2"
+        android:text="@string/swd_special_offer"
+        android:textColor="@color/Unify_B500"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivBankSelector"
         android:layout_width="@dimen/swd_radio_button"
         android:layout_height="@dimen/swd_radio_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/swd_radio_button_default" />
+        app:srcCompat="@drawable/swd_radio_button_default"
+        app:unify_image_corner_radius="0" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -39,46 +40,47 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
-        app:layout_goneMarginRight="@dimen/spacing_lvl4"
-        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
-        app:layout_goneMarginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/ivPremiumAccount"
         app:layout_constraintEnd_toStartOf="@+id/ivPremiumAccount"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivPremiumAccount"
+        app:layout_goneMarginEnd="@dimen/unify_space_16"
+        app:layout_goneMarginRight="@dimen/unify_space_16"
+        app:layout_goneMarginTop="@dimen/unify_space_16"
         app:typographyType="body_3"
         tools:text="PT Bank Bank Bank Bank BankBankBankBankBank BankBankBankBankBankBankBankBankBankBank" />
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivPremiumAccount"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
         app:layout_constraintStart_toEndOf="@+id/tvBankName"
         app:layout_constraintTop_toBottomOf="@id/tvSpecialOffer"
-        app:srcCompat="@drawable/swd_ic_power_merchant" />
+        app:srcCompat="@drawable/swd_ic_power_merchant"
+        app:unify_image_corner_radius="0" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankAccountHolderName"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
         android:ellipsize="marquee"
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="@id/tvBankName"
         app:layout_constraintStart_toStartOf="@id/tvBankName"
         app:layout_constraintTop_toBottomOf="@+id/tvBankName"
@@ -87,15 +89,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAdminFee"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
         android:ellipsize="marquee"
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="@id/tvBankName"
         app:layout_constraintStart_toStartOf="@id/tvBankName"
         app:layout_constraintTop_toBottomOf="@id/tvBankAccountHolderName"
@@ -106,8 +108,8 @@
         android:id="@+id/dividerUnify"
         android:layout_width="match_parent"
         android:layout_height="@dimen/swp_half_dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@color/Neutral_N50"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

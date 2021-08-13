@@ -20,6 +20,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         @Named(GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL) val gqlQuery: String
 ) : UseCase<List<OfficialStoreChannel>>() {
     private val paramChannelType = "type"
+    private val paramChannelLocation = "location"
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -45,9 +46,10 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    fun setupParams(channelType: String) {
+    fun setupParams(channelType: String, location: String) {
         if (channelType.isNotEmpty()) {
             requestParams[paramChannelType] = channelType
+            requestParams[paramChannelLocation] = location
         }
     }
 

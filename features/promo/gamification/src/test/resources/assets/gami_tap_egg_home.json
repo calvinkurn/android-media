@@ -1,0 +1,69 @@
+[
+  {
+    "data": {
+      "gamiTapEggHome": {
+        "backButton": {
+          "isShow": true,
+          "imageURL": "",
+          "title": "Eh, kamu mau ke mana?",
+          "text": "Hadiah yang belum dibuka akan hangus kalau kamu keluar dari permainan ini.",
+          "yesText": "Keluar Permainan",
+          "cancelText": "Lanjut Main"
+        },
+        "tokensUser": {
+          "state": "crackunlimited",
+          "tokenUserIDstr": "0",
+          "campaignID": 2256,
+          "title": "Tap kotak ini untuk buka hadiahmu!"
+        },
+        "timeRemaining": {
+          "isShow": true,
+          "unixFetch": 1593159312,
+          "seconds": 30,
+          "backgroundColor": "#60562B",
+          "fontColor": "#EEEEAE",
+          "borderColor": "#C5C593"
+        },
+        "actionButton": [],
+        "tokenAsset": {
+          "backgroundImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/BG.png",
+          "seamlessImgURL": "-",
+          "imageURL": "",
+          "glowShadowImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-glow-shadow.png",
+          "glowImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/box-glow.png",
+          "imageV2URLs": [
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/box%20bottom.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/boxlid.gif",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_0.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_1.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_2.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_3.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_4.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_5.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_6.png",
+            "https://ecs7.tokopedia.net/assets/images/gamification/taptap/gf_ic_lid_7.png"
+          ],
+          "rewardImgURL": "https://ecs7.tokopedia.net/assets/images/gamification/taptap/small-box.png"
+        },
+        "rewardButton": [
+          {
+            "text": "Cek Hadiah",
+            "type": "redirect",
+            "url": "https://www.tokopedia.com/tokopoints",
+            "applink": "tokopedia://tokopoints",
+            "isDisable": false,
+            "backgroundColor": "green"
+          },
+          {
+            "text": "Keluar",
+            "type": "redirect",
+            "url": "https://www.tokopedia.com",
+            "applink": "tokopedia://home",
+            "isDisable": false,
+            "backgroundColor": "outline"
+          }
+        ]
+      }
+    }
+  }
+]

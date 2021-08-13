@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/status_bar_latest_event_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:tag="bigPicture">
+
+    <include layout="@layout/cm_layout_collapsed_pre_dark_mode" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_64">
+
+        <LinearLayout
+            android:id="@+id/ll_expandedProductView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:weightSum="10">
+
+            <RelativeLayout
+                android:id="@+id/ll_productImage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5">
+
+                <!--Don't convert these image to Vector: Strictly Prohibited-->
+                <ImageView
+                    android:id="@+id/iv_productImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@null" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ll_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_weight="5">
+
+                <TextView
+                    android:id="@+id/tv_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cm_sisa_ongkir"
+                    android:layout_alignParentTop="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
+                    tools:text="Sisa 2" />
+
+                <TextView
+                    android:id="@+id/tv_productTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_stock"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Lorem ipsum dolor sit amet" />
+
+                <LinearLayout
+                    android:id="@+id/ll_oldPriceAndDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_productTitle"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_discountPercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cm_background_discount"
+                        android:paddingLeft="@dimen/dp_5"
+                        android:paddingTop="@dimen/dp_2"
+                        android:paddingRight="@dimen/dp_5"
+                        android:paddingBottom="@dimen/dp_2"
+                        android:textColor="@color/red_500"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="20%" />
+
+                    <TextView
+                        android:id="@+id/tv_oldPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textColor="@color/black_40"
+                        android:textSize="@dimen/sp_12"
+                        tools:text="Rp1500000" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_currentPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_oldPriceAndDiscount"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_15"
+                    android:textStyle="bold"
+                    tools:text="Rp1500000" />
+
+                <LinearLayout
+                    android:id="@+id/widget_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_below="@id/img_campaign">
+
+                    <ImageView
+                        android:id="@+id/img_star"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        android:src="@drawable/cm_ic_star_review"
+                        android:contentDescription="@null"/>
+
+                    <TextView
+                        android:id="@+id/txt_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="@color/cm_review"
+                        android:textSize="@dimen/sp_12"
+                        android:layout_marginStart="@dimen/dp_4"
+                        tools:text="4.5" />
+
+                    <TextView
+                        android:id="@+id/txt_count_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="@color/cm_count_review"
+                        android:layout_marginStart="@dimen/dp_4"
+                        tools:text="(60)" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_campaign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_below="@+id/tv_currentPrice"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:scaleType="fitStart"
+                    android:visibility="gone"
+                    tools:src="@tools:sample/avatars"
+                    tools:visibility="visible"
+                    android:contentDescription="@null"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_2"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_icon"
+                        android:layout_width="@dimen/dp_32"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/cm_btn_atc"
+                        android:gravity="center"
+                        android:layout_marginEnd="@dimen/dp_12" />
+
+                    <TextView
+                        android:id="@+id/btn_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/cm_background_buy"
+                        android:gravity="center"
+                        android:layout_toEndOf="@+id/btn_icon"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="bold"
+                        tools:text="Beli Sekarang" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivArrowLeft"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_margin="@dimen/dp_5"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/cm_next_btn_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:padding="8dp"
+            android:rotation="180"
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@null"/>
+
+        <!--Don't convert these image to Vector: Strictly Prohibited-->
+        <ImageView
+            android:id="@+id/ivArrowRight"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dp_5"
+            android:background="@drawable/cm_next_btn_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:padding="8dp"
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@null"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

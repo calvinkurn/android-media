@@ -68,7 +68,7 @@ public class BookingCodeView extends RelativeLayout {
                 myClip = ClipData.newPlainText(TEXT, bookingCode);
                 myClipboard.setPrimaryClip(myClip);
                 Toaster.build(view, TEXT_COPIED, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> {
-                });
+                }).show();
 
             }
         });

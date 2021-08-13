@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/digital_padding_16">
+    android:layout_marginBottom="@dimen/layout_lvl2">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_guide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_5"/>
+        android:paddingTop="@dimen/spacing_lvl2"/>
 
 </LinearLayout>

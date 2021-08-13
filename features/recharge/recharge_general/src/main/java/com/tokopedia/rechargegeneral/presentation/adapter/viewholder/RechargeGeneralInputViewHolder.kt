@@ -40,6 +40,10 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             override fun onCustomInputClick() {
                 listener.onCustomInputClick(inputView, enquiryData)
             }
+
+            override fun onTextChangeInput() {
+                listener.onTextChangeInput()
+            }
         }
         if (enquiryData.help.isNotEmpty()) {
             inputView.infoListener = object : TopupBillsInputFieldWidget.InfoListener {

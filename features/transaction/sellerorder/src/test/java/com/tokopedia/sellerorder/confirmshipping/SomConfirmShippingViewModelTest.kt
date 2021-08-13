@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.confirmshipping
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
@@ -9,9 +8,11 @@ import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingResultUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -28,7 +29,7 @@ class SomConfirmShippingViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var somConfirmShippingViewModel: SomConfirmShippingViewModel
     private var listMsg = listOf<String>()
     private var listCourier = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
@@ -50,9 +51,9 @@ class SomConfirmShippingViewModelTest {
 
         listMsg = listOf("Ok1", "Ok2", "Ok3")
 
-        val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 123)
-        val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 456)
-        val courier3 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 789)
+        val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "123")
+        val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "456")
+        val courier3 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "789")
         listCourier = listOf(courier1, courier2, courier3)
     }
 
@@ -114,7 +115,7 @@ class SomConfirmShippingViewModelTest {
 
         //then
         assert(somConfirmShippingViewModel.courierListResult.value is Success)
-        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == 123)
+        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == "123")
     }
 
     @Test

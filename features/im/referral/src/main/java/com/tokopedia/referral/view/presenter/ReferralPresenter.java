@@ -411,7 +411,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     public void urlCreated(LinkerShareResult linkerShareData) {
                         Util.shareData(getView().getActivity(), packageName, "text/plain",
                                 linkerShareData.getShareContents(),
-                                linkerShareData.getShareUri(), null, null);
+                                linkerShareData.getShareUri());
                     }
 
                     @Override

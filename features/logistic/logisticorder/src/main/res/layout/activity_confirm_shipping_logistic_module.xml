@@ -4,7 +4,7 @@
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="@string/title_choose_logistic_module"
-                android:textColor="@color/medium_green"
+                android:textColor="@color/Unify_G400"
                 tools:text="Jne Reguler" />
 
         </LinearLayout>
@@ -43,7 +43,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"
-            android:background="@color/white_two" />
+            android:background="@color/Unify_N100" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,7 +109,7 @@
             android:background="@drawable/green_button_rounded_unify_logistic_module"
             android:gravity="center"
             android:text="Konfirmasi"
-            android:textColor="@color/white" />
+            android:textColor="@color/Unify_N0" />
 
     </LinearLayout>
 

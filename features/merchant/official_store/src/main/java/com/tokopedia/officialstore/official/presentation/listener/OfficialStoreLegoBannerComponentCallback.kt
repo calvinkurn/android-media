@@ -58,4 +58,15 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
 
     }
 
+    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+    }
+
+    override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+    }
+
+    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+    }
+
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+    }
 }

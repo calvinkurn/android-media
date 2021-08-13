@@ -10,6 +10,7 @@
     <string name="period">Periode: "</string>
     <string name="title_code">Kode:</string>
     <string name="title_copy">Salin</string>
+    <string name="label_close">Tutup</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="title_detail_feed">Product Lainnya</string>
     <string name="title_feed_onboarding">Topik Favorit</string>
@@ -77,7 +78,6 @@
     <string name="feed_see_profile">Lihat Profil</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_delete">Hapus</string>
-    <string name="feed_cancel">Batal</string>
     <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
     <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
     <string name="post_personal">Post Pribadi</string>
@@ -90,9 +90,10 @@
 
     <string name="feed_open_feed">Buka Feed</string>
     <string name="feed_finish_follow_recommendation">Yeay, updatenya siap dilihat!</string>
-    <string name="feed_delete_post">Hapus Post</string>
-    <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
-    <string name="feed_post_deleted">Post berhasil dihapus</string>
+    <string name="feed_delete_post">Ingin hapus postingan ini?</string>
+    <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
+dari Feed.</string>
+    <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
     <string name="feed_msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="feed_msg_add_wishlist">Sukses menambah wishlist</string>
 
@@ -104,5 +105,19 @@
     <string name="feed_onboarding_name_format">Hai, %s</string>
 
     <string name="feed_con_desc_btn_search">button search</string>
+
+    <!-- Like -->
+    <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+
+    <!--Toaster -->
+    <string name="feed_go_to_cart">Lihat Keranjang</string>
+    <string name="feed_go_to_wishlist">Lihat Wishlist</string>
+    <string name="feed_added_to_wishlist">Sukses menambah wishlist.</string>
+    <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
+
+
+    <!--Share -->
+    <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
+    <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
 
 </resources>

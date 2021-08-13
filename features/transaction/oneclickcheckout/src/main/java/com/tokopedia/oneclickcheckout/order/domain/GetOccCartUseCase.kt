@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.domain
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -12,12 +13,17 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, private val mapper: GetOccCartMapper) {
+class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                            private val mapper: GetOccCartMapper,
+                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     fun createRequestParams(source: String): RequestParams {
-        return RequestParams.create().apply {
+        val params = RequestParams.create().apply {
             putString(PARAM_SOURCE, source)
         }
+        chosenAddressRequestHelper.addChosenAddressParam(params)
+
+        return params
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
@@ -40,11 +46,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String) {
-  get_occ_cart_page(source: ${"$"}source) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_cart_page(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {
+      error_code
+      pop_up_message
       max_quantity
       max_char_note
       messages {
@@ -72,6 +80,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
       occ_main_onboarding {
         force_show_coachmark
         show_onboarding_ticker
+        coachmark_type
         onboarding_ticker {
             title
             message
@@ -100,15 +109,11 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             attribution
             tracker_list_name
           }
-          isWishlist
           product_id
           product_name
-          product_price_fmt
           product_price
-          parent_id
           category_id
           category
-          catalog_id
           wholesale_price {
             qty_min_fmt
             qty_max_fmt
@@ -117,96 +122,64 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             prd_prc
             prd_prc_fmt
           }
-          product_weight_fmt
           product_weight
-          product_condition
-          product_status
-          product_url
-          product_returnable
-          is_freereturns
+          product_weight_actual
           is_preorder
           product_cashback
           product_min_order
           product_max_order
-          product_rating
           product_invenage_value
           product_switch_invenage
-          product_invenage_total {
-            by_user {
-              in_cart
-              last_stock_less_than
-            }
-            by_user_text {
-              in_cart
-              last_stock_less_than
-              complete
-            }
-            is_counted_by_user
-            by_product {
-              in_cart
-              last_stock_less_than
-            }
-            by_product_text {
-              in_cart
-              last_stock_less_than
-              complete
-            }
-            is_counted_by_product
-          }
-          price_changes {
-            changes_state
-            amount_difference
-            original_amount
-            description
-          }
-          product_price_currency
           product_image {
-            image_src
             image_src_200_square
-            image_src_300
-            image_src_square
           }
-          product_all_images
           product_notes
           product_quantity
-          product_weight_unit_code
-          product_weight_unit_text
-          last_update_price
-          is_update_price
-          product_alias
-          sku
           campaign_id
           product_original_price
           product_price_original_fmt
           is_slash_price
           product_finsurance
-          is_wishlisted
-          is_ppp
-          is_cod
           warehouse_id
-          is_parent
-          is_campaign_error
-          is_blacklisted
           free_shipping {
             eligible
             badge_url
           }
-          booking_stock
+          free_shipping_extra {
+            eligible
+            badge_url
+          }
+          product_preorder {
+            duration_day
+          }
         }
         cart_string
         payment_profile
+        purchase_protection_plan_data {
+          protection_available
+          protection_type_id
+          protection_price_per_product
+          protection_price
+          protection_title
+          protection_subtitle
+          protection_link_text
+          protection_link_url
+          protection_opt_in
+          protection_checkbox_disabled
+          unit
+          source
+        }
+        toko_cabang {
+          message
+          badge_url
+        }
         shop {
           shop_id
           user_id
-          admin_ids
           shop_name
-          shop_image
-          shop_url
-          shop_status
           is_gold
           is_gold_badge
           is_official
-          is_free_returns
           gold_merchant {
             is_gold
             is_gold_badge
@@ -216,21 +189,19 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             is_official
             os_logo_url
           }
-          address_id
+          shop_type_info {
+            shop_tier
+            shop_grade
+            badge
+            badge_svg
+            title
+            title_fmt
+          }
           postal_code
           latitude
           longitude
           district_id
-          district_name
-          origin
-          address_street
-          province_id
-          city_id
           city_name
-          province_name
-          country_name
-          is_allow_manage
-          shop_domain
           shop_shipments {
             ship_id
             ship_name
@@ -246,6 +217,9 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
               additional_fee
             }
           }
+        }
+        warehouse {
+          is_fulfillment
         }
       }
       profile_index_wording
@@ -264,6 +238,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             link
           }
         }
+        profile_revamp_wording
+        is_recom
         profile_id
         status
         address {
@@ -282,6 +258,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           latitude
           postal_code
           geolocation
+          state
+          state_detail
+          status
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         payment {
           enable
@@ -290,7 +273,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           gateway_name
           image
           description
-          url
           fee
           minimum_amount
           maximum_amount
@@ -325,6 +307,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 link
             }
           }
+          occ_revamp_error_message {
+            message
+            button {
+                text
+                action
+            }
+          }
           ticker_message
           is_enable_next_button
           is_disable_pay_button
@@ -350,11 +339,51 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 error_ticker
             }
           }
+          bid
+          specific_gateway_campaign_only_type
+          wallet_additional_data {
+            wallet_type
+            enable_wallet_amount_validation
+            activation {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            top_up {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            phone_number_registered {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+          }
         }
         shipment {
           service_id
           service_duration
           service_name
+          sp_id
+          recommendation_service_id
+          recommendation_sp_id
+          is_free_shipping_selected
         }
       }
       promo {
@@ -501,6 +530,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               sp_ids
             }
@@ -535,6 +565,19 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           link
           action
           color
+        }
+      }
+      occ_revamp {
+        enable
+        total_profile
+        change_template_text
+      }
+      occ_remove_profile {
+        enable
+        ui_type
+        message {
+          title
+          description
         }
       }
     }

@@ -27,12 +27,20 @@ data class PlayWidgetItem(
         @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
         @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
-        @SerializedName("backgroundURL") val backgroundUrl : String = ""
+        @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
+        @SerializedName("backgroundURL") val backgroundUrl : String = "",
+        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = ""
 )
 
 data class PlayWidgetItemConfig(
         @SerializedName("hasPromo") val hasPromo: Boolean = false,
-        @SerializedName("isReminderSet") val isReminderSet: Boolean = false
+        @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
+        @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList(),
+)
+
+data class PlayWidgetPromoLabel(
+        @SerializedName("text") val text: String = "",
+        @SerializedName("type") val type: String = "",
 )
 
 data class PlayWidgetItemPartner(
@@ -42,6 +50,15 @@ data class PlayWidgetItemPartner(
 
 data class PlayWidgetItemStat(
         @SerializedName("view") val view: PlayWidgetItemStatView = PlayWidgetItemStatView()
+)
+
+data class PlayWidgetItemShare(
+        @SerializedName("text") val text: String = "",
+        @SerializedName("redirect_url") val redirectUrl: String = "",
+        @SerializedName("use_short_url") val useShortUrl: Boolean = false,
+        @SerializedName("meta_title") val metaTitle: String = "",
+        @SerializedName("meta_description") val metaDescription: String = "",
+        @SerializedName("is_show_button") val isShowButton: Boolean = false
 )
 
 data class PlayWidgetItemStatView(
@@ -73,5 +90,7 @@ data class PlayWidgetMeta(
     @SerializedName("autoplay") val autoplay: Boolean = false,
     @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0,
     @SerializedName("maxAutoplayWifi") val maxAutoplayWifi: Int = 0,
-    @SerializedName("template") val template: String = ""
+    @SerializedName("template") val template: String = "",
+    @SerializedName("isButtonVisible") val isButtonVisible: Boolean = true,
+    @SerializedName("businessWidgetPosition") val businessWidgetPosition: Int = 0
 )

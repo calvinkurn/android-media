@@ -29,4 +29,18 @@
     <color name="attachproduct_deep_orange_500">#ff5722</color>
     <color name="attachproduct_black">#000000</color>
 
+    <color name="chatcommon_dms_y200">#FFF0B3</color>
+    <color name="chatcommon_dms_y400">#FF8B00</color>
+    <color name="chatcommon_dms_g200">#D6FFDE</color>
+    <color name="chatcommon_dms_g400">#4FD15A</color>
+
+    <color name="chatcommon_dms_bg_blue_icon">#32AFFF</color>
+    <color name="chatcommon_dms_blue_icon">#77CAFF</color>
+    <color name="chatcommon_dms_bg_green_icon">#4FD15A</color>
+    <color name="chatcommon_dms_green_icon">#82EF95</color>
+    <color name="chatcommon_dms_bg_orange_icon">#4FD15A</color>
+    <color name="chatcommon_dms_orange_icon">#82EF95</color>
+    <color name="chatcommon_dms_bg_purple_icon">#BB4DE8</color>
+    <color name="chatcommon_dms_purple_icon">#52EFC6FF</color>
+
 </resources>

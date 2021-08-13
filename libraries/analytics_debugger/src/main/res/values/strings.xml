@@ -12,4 +12,6 @@
     <string name="topads_debugger_detail_param_list_label">Url Param List</string>
     <string name="topads_debugger_detail_topads_url_label">Full TopAds Url</string>
     <string name="topads_debugger_detail_verificator_response_label">Full Verificator Response</string>
+    <string name="cassava_network_label">Network</string>
+    <string name="cassava_local_label">Local</string>
 </resources>

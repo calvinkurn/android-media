@@ -2,7 +2,7 @@ package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.dummy.DUMMY_NATIONALITY_SUCCESS
 import com.tokopedia.flight.dummy.DUMMY_PASSENGER_DATA
 import com.tokopedia.flight.shouldBe
@@ -42,7 +42,7 @@ class FlightPassengerViewModelTest {
         viewModel = FlightPassengerViewModel(getContactListUseCase,
                 upsertContactListUseCase,
                 getPhoneCodeByIdUseCase,
-                TravelTestDispatcherProvider())
+                CoroutineTestDispatchersProvider)
     }
 
     @Test

@@ -8,5 +8,5 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 interface PlayWidgetMapper {
 
-    fun mapWidget(data: PlayWidget): PlayWidgetUiModel
+    fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel? = null): PlayWidgetUiModel
 }

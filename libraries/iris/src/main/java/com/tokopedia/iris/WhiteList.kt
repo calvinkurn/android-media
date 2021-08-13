@@ -22,7 +22,11 @@ object WhiteList {
             "pushClicked",
             "pushReceived",
             "appInstall",
-            "appSiteOpen"
+            "appSiteOpen",
+            "pushDismissed",
+            "inappReceived",
+            "inappClicked",
+            "inappDismissed"
     )
 
 }

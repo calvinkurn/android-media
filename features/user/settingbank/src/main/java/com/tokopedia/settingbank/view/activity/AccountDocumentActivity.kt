@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankModule
-import com.tokopedia.settingbank.domain.BankAccount
+import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.view.fragment.ARG_ACCOUNT_TYPE
 import com.tokopedia.settingbank.view.fragment.ARG_BANK_ACCOUNT_DATA
 import com.tokopedia.settingbank.view.fragment.ARG_KYC_NAME

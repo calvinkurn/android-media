@@ -9,8 +9,8 @@
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/discovery_tabs_holder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_56"
-        app:tabBackground="@color/white"
+        android:layout_height="wrap_content"
+        app:tabBackground="@color/Unify_N0"
         app:tabPaddingEnd="@dimen/dp_0"
         app:tabMode="scrollable" />
 </LinearLayout>

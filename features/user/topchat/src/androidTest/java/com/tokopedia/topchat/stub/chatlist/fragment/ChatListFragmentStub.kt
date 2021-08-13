@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.stub.chatlist.fragment
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
@@ -9,6 +8,8 @@ import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.user.session.UserSessionInterface
 
 class ChatListFragmentStub : ChatListFragment() {
@@ -18,9 +19,12 @@ class ChatListFragmentStub : ChatListFragment() {
     lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
 
     override fun initInjector() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(context!!.applicationContext))
+                .build()
         DaggerChatListComponentStub
                 .builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .fakeBaseAppComponent(baseComponent)
                 .chatListContextModule(ChatListContextModule(context!!))
                 .chatListNetworkModuleStub(ChatListNetworkModuleStub(stubUserSession))
                 .chatListQueryModuleStub(ChatListQueryModuleStub(chatListUseCase, chatNotificationUseCase))

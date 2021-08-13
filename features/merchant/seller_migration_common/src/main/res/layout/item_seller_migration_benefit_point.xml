@@ -11,7 +11,7 @@
         android:id="@+id/tv_seller_migration_benefit_point"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="parent"

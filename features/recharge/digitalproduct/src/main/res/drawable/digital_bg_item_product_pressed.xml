@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/digital_dark_selectable_recycler" />
+    <solid android:color="@color/Unify_N150" />
 
     <stroke
         android:width="0.5dp"
-        android:color="@color/digital_separator" />
+        android:color="@color/Unify_N700_20" />
 </shape>

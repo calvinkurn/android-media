@@ -16,22 +16,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
-import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.quickfilter.QuickFilterItem;
-import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -46,11 +43,18 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.sortfilter.SortFilter;
+import com.tokopedia.sortfilter.SortFilterItem;
+import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
@@ -61,7 +65,6 @@ import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_
 
 public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightOrderTypeFactory>
         implements FlightOrderListContract.View,
-        QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
@@ -69,7 +72,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_ORDER_DETAIL = 3;
-    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
     public static final boolean DEFAULT_CHECK_PRELOAD = true;
 
@@ -78,7 +80,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Inject
     FlightOrderListPresenter presenter;
 
-    private QuickSingleFilterView quickSingleFilterView;
+    private SortFilter quickSingleFilterView;
 
     public static FlightOrderListFragment createInstance() {
         Bundle bundle = new Bundle();
@@ -114,7 +116,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_order_list, container, false);
         quickSingleFilterView = view.findViewById(R.id.quick_filter);
-        quickSingleFilterView.setListener(this);
         return view;
     }
 
@@ -144,9 +145,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void renderOrderStatus(List<QuickFilterItem> filterItems) {
-        quickSingleFilterView.setDefaultItem(filterItems.get(0));
-        quickSingleFilterView.renderFilter(filterItems);
+    public void renderOrderStatus(List<SortFilterItem> filterItems) {
+        quickSingleFilterView.addItem(new ArrayList(filterItems));
     }
 
     @Override
@@ -156,9 +156,17 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void navigateToInputEmailForm(String invoiceId, String userId, String userEmail) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId, userEmail);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
+        FlightOrderResendEmailBottomSheet bottomSheet = FlightOrderResendEmailBottomSheet.Companion
+                .getInstance(userEmail, invoiceId);
+        bottomSheet.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        bottomSheet.setShowListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                bottomSheet.getBottomSheet().setState(BottomSheetBehavior.STATE_EXPANDED);
+                return null;
+            }
+        });
+        bottomSheet.show(getFragmentManager(), FlightOrderResendEmailBottomSheet.TAG);
     }
 
     @Override
@@ -171,14 +179,14 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
         startActivityForResult(RouteManager.getIntent(getContext(),
-                getString(R.string.flight_order_detail_applink_pattern, ApplinkConst.FLIGHT_ORDER, viewModel.getOrderId())),
+                String.format(getString(R.string.flight_order_detail_applink_pattern), ApplinkConst.FLIGHT_ORDER, viewModel.getOrderId())),
                 REQUEST_CODE_ORDER_DETAIL);
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
         startActivityForResult(RouteManager.getIntent(getContext(),
-                getString(R.string.flight_order_detail_applink_pattern, ApplinkConst.FLIGHT_ORDER, orderId)),
+                String.format(getString(R.string.flight_order_detail_applink_pattern), ApplinkConst.FLIGHT_ORDER, orderId)),
                 REQUEST_CODE_ORDER_DETAIL);
     }
 
@@ -229,7 +237,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == RESULT_OK) {
-                    showGreenSnackbar(R.string.resend_eticket_success);
+                    showSnackbarSuccess(R.string.resend_eticket_success);
                 }
                 break;
             case REQUEST_CODE_CANCELLATION:
@@ -249,13 +257,13 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         }
     }
 
-    private void showGreenSnackbar(int resId) {
-        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
+    private void showSnackbarSuccess(int resId) {
+        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
     }
 
     @NonNull
     private SpannableString buildAirlineContactInfo(String fullText, String mark) {
-        final int color = getContext().getResources().getColor(R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = fullText.indexOf(mark);
         int stopIndex = fullText.length();
         SpannableString description = new SpannableString(fullText);
@@ -279,49 +287,41 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
+        dialog.setDescription(
                 MethodChecker.fromHtml(getString(
                         R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToCancellationPage(invoiceId, item);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            goToCancellationPage(invoiceId, item);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setSecondaryCTAText(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }
 
     @Override
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
+        dialog.setDescription(
                 MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToCancellationPage(invoiceId, item);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            goToCancellationPage(invoiceId, item);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setSecondaryCTAText(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.kotlin.util
 
-import android.Manifest
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,23 +7,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
-import androidx.annotation.RequiresPermission
 import org.jetbrains.annotations.NotNull
-
 
 /**
  * @param context  to be used to fetch download service
  * @param uri you need to pass the URI of the file to be downloaded.
  * @param filename to be shown in notification and name of the file to be saved
  * @param listener (optional) to update download complete
+ *
+ * WRITE_EXTERNAL_STORAGE Permission is still need to be asked for android 28 and below
  */
-
 class DownloadHelper(@NotNull val context: Context,
                      @NotNull val uri: String,
                      @NotNull val filename: String,
                      var listener: DownloadHelperListener?) {
 
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadFile(isDownloadable: (String) -> Boolean) {
         val downloadUri = Uri.parse(uri)
 

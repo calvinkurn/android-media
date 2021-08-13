@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import javax.inject.Inject
 

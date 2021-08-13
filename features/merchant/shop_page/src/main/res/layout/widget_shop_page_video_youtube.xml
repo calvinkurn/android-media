@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/youtube_home_shop_page"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,7 @@
         android:singleLine="true"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
         android:id="@+id/youtube_home_shop_page"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintDimensionRatio="H,16:9"
-        android:background="@color/clr_31353B"
+        android:background="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page" />
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_13"
         android:text="@string/video_not_found"
-        android:textColor="@color/clr_f3f4f5"
+        android:textColor="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@+id/ivVideoNotFound"
         app:layout_constraintStart_toStartOf="@+id/ivVideoNotFound"
         app:layout_constraintTop_toBottomOf="@id/ivVideoNotFound" />

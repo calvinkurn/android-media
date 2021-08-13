@@ -1,8 +1,6 @@
 package com.tokopedia.gamification.taptap.data.entiity
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.gamification.taptap.utils.TapTapConstants
 
 data class TokensUser(
         @SerializedName("campaignID")
@@ -23,6 +21,4 @@ data class TokensUser(
         @SerializedName("tokenUserIDstr")
         val tokenUserID: String? = null,
 
-        @Expose(serialize = false, deserialize = false)
-        val isEmptyState: Boolean = TapTapConstants.TokenState.STATE_EMPTY.equals(state, ignoreCase = true)
-)
+        )

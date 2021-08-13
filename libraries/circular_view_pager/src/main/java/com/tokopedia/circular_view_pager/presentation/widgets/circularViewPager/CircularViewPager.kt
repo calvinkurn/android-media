@@ -324,4 +324,14 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         pauseAutoScroll()
         resumeAutoScroll()
     }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        resumeAutoScroll()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        pauseAutoScroll()
+    }
 }

@@ -1,15 +1,18 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Test
@@ -71,6 +74,9 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.expandHeader(3, 3)
         assert(viewModel.getCurrentHeaderPosition(0) == 0)
         assert(viewModel.getCurrentHeaderPosition(3) == 3)
+
+        // test overflowed element
+        assert(viewModel.getCurrentHeaderPosition(999999) == 0)
     }
 
     @Test
@@ -324,6 +330,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.expandHeader(1, 1)
         Assert.assertFalse(viewModel.isEditMode)
         Assert.assertTrue(viewModel.hasVariantCombination(MAX_SELECTED_VARIANT_TYPE))
+        Assert.assertFalse(viewModel.hasVariantCombination(99999))
 
         val updateSwitchStatusResult = viewModel.updateSwitchStatus(false, 999)
         val updateVariantSkuInputResult = viewModel.updateVariantSkuInput("KK", 999)
@@ -337,4 +344,50 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(validateProductVariantStockInputResult.headerPosition == 0)
         assert(generateVariantDetailInputModelResult.headerPosition == 0)
     }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be true if all conditions met`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns true
+
+        viewModel.setupMultiLocationValue()
+
+        assert(viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not multi location shop`() {
+        every { userSession.isMultiLocationShop } returns false
+        every { userSession.isShopAdmin } returns true
+
+        viewModel.setupMultiLocationValue()
+
+        assert(!viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When setupMultiLocationValue, isMultiLocationShop will be false if is not shop admin or shop owner`() {
+        every { userSession.isMultiLocationShop } returns true
+        every { userSession.isShopAdmin } returns false
+        every { userSession.isShopAdmin } returns false
+
+        viewModel.setupMultiLocationValue()
+
+        assert(!viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When updateProductStatus with all variant is inactive, then set all product status to inactive`() {
+        viewModel.productInputModel.value = productInputModel
+        viewModel.callPrivateFunc("updateProductStatus", hashMapOf(0 to VariantDetailInputLayoutModel(isActive = false)))
+        assert(viewModel.productInputModel.value?.detailInputModel?.status == ProductStatus.STATUS_INACTIVE)
+    }
+
+    @Test
+    fun `When editVariantDetailInputMap using invalid fieldPosition, expect inputLayoutModelMap unchanged`() {
+        viewModel.editVariantDetailInputMap(999, VariantDetailInputLayoutModel())
+        val result = viewModel.getVariantDetailHeaderData(999)
+        assert(result.isEmpty())
+    }
+
 }

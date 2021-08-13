@@ -31,8 +31,6 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import timber.log.Timber;
 
-;
-
 
 public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContract.View>
         implements BrandDetailsContract.Presenter {

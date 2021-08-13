@@ -2,12 +2,15 @@ package com.tokopedia.notifications.factory
 
 import android.app.Notification
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import androidx.core.app.NotificationCompat
 import android.text.TextUtils
-
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.common.CMNotificationUtils
+import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.model.BaseNotificationModel
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @author lalit.singh
@@ -35,7 +38,8 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
     }
 
     private fun setBigPictureNotification(builder: NotificationCompat.Builder, baseNotificationModel: BaseNotificationModel) {
-        val bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality) ?: getBitmap(baseNotificationModel.media?.mediumQuality)
+        var bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality)
+                ?: getBitmap(baseNotificationModel.media?.mediumQuality)
         if (null != bitmap) {
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
@@ -49,5 +53,4 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
             builder.setStyle(bigPictureStyle)
         }
     }
-
 }

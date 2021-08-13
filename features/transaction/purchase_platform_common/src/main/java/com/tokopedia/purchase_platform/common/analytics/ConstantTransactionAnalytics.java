@@ -47,8 +47,10 @@ public interface ConstantTransactionAnalytics {
         String PROMO_VIEW = "promoView";
         String PROMO_CLICK = "promoClick";
         String CLICK_PDP = "clickPDP";
-        String PURCHASE_PROTECTION = "fintechppandroid";
+        String PURCHASE_PROTECTION_CLICK = "clickFintechMicrosite";
+        String PURCHASE_PROTECTION_IMPRESSION = "viewFintechMicrositeIris";
         String VIEW_CART = "viewCart";
+        String VIEW_CART_IRIS = "viewCartIris";
         String CLICK_REGISTER = "clickRegister";
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
@@ -61,6 +63,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TRADEIN = "clickTradeIn";
         String CART = "Cart";
         String CLICK_WISHLIST = "clickWishlist";
+        String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     }
 
     interface EventCategory {
@@ -85,6 +88,7 @@ public interface ConstantTransactionAnalytics {
 
         //OCC
         String PURCHASE_SETTING = "purchase setting";
+        String PURCHASE_PROTECTION_OCC = "fin - order summary occ";
         String ORDER_SUMMARY = "order summary";
     }
 
@@ -270,9 +274,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PRODUCT = "view product";
 
         //PURCHASE PROTECTION
-        String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
-        String IMPRESSION_PELAJARI = "pp - pelajari impression";
+        String IMPRESSION_PELAJARI = "pp - ins section impression";
 
         //TOKOPEDIA CORNER
         String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
@@ -460,6 +463,43 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_RELEASED = "view promo released after adjust item";
         String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
 
+        // OCC Revamp
+        String CLICK_TAMBAH_TEMPLATE = "preference - click tambah template";
+        String CLICK_PILIH_TEMPLATE_LAIN = "preference - click pilih template lain";
+        String VIEW_PROFILE_LIST = "view profile list";
+        String CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION = "address - click arrow to change address option";
+        String CLICK_SELECTED_ADDRESS_OPTION = "address - click selected address option";
+        String CLICK_ARROW_TO_CHANGE_DURATION_OPTION = "duration - click arrow to change duration option";
+        String CLICK_SELECTED_DURATION_OPTION_NEW = "duration - click selected duration option";
+        String CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "payment - click arrow to change payment option";
+        String CLICK_SELECTED_PAYMENT_OPTION = "payment - click selected payment option";
+        String CLICK_PROFILE_OPTION_ON_PROFILE_LIST = "preference - click profile option on profile list";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY = "preference - click tambah template beli langsung on order summary";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST = "preference - click tambah template beli langsung on profile list";
+        String CLICK_EDIT_PROFILE_ON_PROFILE_LIST = "preference - click edit profile on profile list";
+
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 1 for existing user one profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 2 for existing user one profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "click done on coachmark 2 for existing user one profile";
+
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 1 for existing user multi profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 2 for existing user multi profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "click done on coachmark 2 for existing user multi profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 1 for new buyer before create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 2 for new buyer before create profile";
+        String CLICK_LANJUT_ON_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "click lanjut on coachmark 2 for new buyer before create profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 1 for new buyer after create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 2 for new buyer after create profile";
+        String VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 3 for new buyer after create profile";
+        String CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click done on coachmark 3 for new buyer after create profile";
+
+        // OCC PP
+        String PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression";
+        String PP_CLICK_TOOLTIP = "pp - click tooltip";
+        String PP_CLICK_BAYAR = "pp - click bayar";
+
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
         String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";
@@ -479,6 +519,21 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart";
         String CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page";
         String CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section";
+        String CLICK_BACK_BUTTON_NAV = "click back button nav";
+        String CLICK_GLOBAL_MENU_NAV = "click global menu nav";
+        String CLICK_WISHLIST_NAV = "click wishlist nav";
+
+        // Checkout TokoNow
+        String VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker product level error in checkout page";
+        String VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker order level error in checkout page";
+        String VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker payment level error in checkout page";
+        String CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "click lihat on ticker order level error in checkout page";
+        String CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER = "click refresh when error load courier";
+        String VIEW_ERROR_IN_COURIER_SECTION = "view error in courier section";
+
+        // Cart TokoNow
+        String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
+        String LOAD_CART_WITH_UNAVAILABLE_PRODUCT = "load cart with unavailable product";
     }
 
     interface EventLabel {
@@ -512,9 +567,8 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_LAST_SEEN = "product last seen";
         String PRODUCT_RECOMMENDATION = "product recommendation";
 
-        String SUCCESS_TICKED_PPP = "success - yes";
-        String SUCCESS_UNTICKED_PPP = "success - no";
-        String APPEAR = "appear";
+        String SUCCESS_TICKED_PPP = "yes";
+        String SUCCESS_UNTICKED_PPP = "no";
 
         String SUCCESS_DEFAULT = "success - default";
         String SUCCESS_NOT_DEFAULT = "success - not default";
@@ -543,10 +597,13 @@ public interface ConstantTransactionAnalytics {
 
     interface ExtraKey {
         String USER_ID = "userId";
+        String CART_ID = "cartId";
         String PROMO_CODE = "promoCode";
         String PAYMENT_TYPE = "paymentType";
         String BUSINESS_UNIT = "businessUnit";
         String CURRENT_SITE = "currentSite";
+        String PAGE_TYPE = "pageType";
+        String PAGE_PATH = "pagePath";
     }
 
     interface ScreenName {
@@ -569,6 +626,9 @@ public interface ConstantTransactionAnalytics {
 
     interface CustomDimension {
         String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
+        String DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH = "tokopediafintechinsurance";
         String DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform";
+        String DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse";
+        String DIMENSION_BUSINESS_UNIT_FINTECH = "fintech";
     }
 }

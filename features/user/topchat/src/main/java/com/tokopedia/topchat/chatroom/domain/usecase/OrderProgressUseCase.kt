@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import javax.inject.Inject
 
-class OrderProgressUseCase @Inject constructor(
+open class OrderProgressUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<OrderProgressResponse>
 ) {
 
@@ -23,6 +23,7 @@ class OrderProgressUseCase @Inject constructor(
             execute({ result ->
                 onSuccess(result)
             }, { error ->
+                error.printStackTrace()
                 onError(error)
             })
         }
@@ -51,7 +52,6 @@ class OrderProgressUseCase @Inject constructor(
             imageUrl
             name
             status
-            statusId
             label {
               title
               value

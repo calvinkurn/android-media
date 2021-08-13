@@ -5,10 +5,10 @@
     <application>
         <activity
             android:name=".view.activity.CreateAutoAdsActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:label="@string/auto_ads_creation" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -22,9 +22,9 @@
             android:name=".view.activity.EditBudgetAutoAdsActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -38,9 +38,9 @@
             android:name=".view.activity.AutoAdsOnboardingActivity"
             android:label="@string/auto_ads_creation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
         <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />

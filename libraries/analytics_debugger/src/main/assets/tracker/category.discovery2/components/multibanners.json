@@ -1,0 +1,41 @@
+{
+  "readme": "Discovery Multi banner impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": ".*",
+      "eventAction": "dynamic banner impression",
+      "event": "view_item",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "promotions": [
+        {
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
+        }
+      ]
+    },
+    {
+      "attribution": ".*",
+      "eventAction": "dynamic banner click",
+      "eventCategory": ".*",
+      "event": "select_content",
+      "categoryId": ".*",
+      "campaignCode": ".*",
+      "sessionIris": ".*",
+      "promotions": [
+        {
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
+        }
+      ],
+      "affinityLabel": ".*",
+      "shopId": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

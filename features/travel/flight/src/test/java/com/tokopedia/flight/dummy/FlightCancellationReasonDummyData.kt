@@ -1,10 +1,10 @@
 package com.tokopedia.flight.dummy
 
-import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationReasonAndAttachmentModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
+import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
+import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 
 /**

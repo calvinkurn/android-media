@@ -220,6 +220,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val DEFAULT_ACTION = "init_data"
         val UTM_SOURCE_ANDROID = "android"
         val UTM_MEDIUM_WIDGET = "widget"
+        val PARAM_FIELD_LABEL_PREFIX = "field_"
 
         @JvmField
         val CREATOR: Parcelable.Creator<DigitalCheckoutPassData> = object : Parcelable.Creator<DigitalCheckoutPassData> {

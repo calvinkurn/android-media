@@ -87,11 +87,11 @@ class CustomSearchView : FrameLayout {
     }
 
     private fun init(attrs: AttributeSet) {
-        val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, com.tokopedia.design.R.styleable.SearchInputView)
+        val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.HomeWishlistSearchInputView)
         try {
-            searchDrawable = styledAttributes.getDrawable(com.tokopedia.design.R.styleable.SearchInputView_siv_search_icon)
-            searchText = styledAttributes.getString(com.tokopedia.design.R.styleable.SearchInputView_siv_search_text)
-            searchHint = styledAttributes.getString(com.tokopedia.design.R.styleable.SearchInputView_siv_search_hint)
+            searchDrawable = styledAttributes.getDrawable(R.styleable.HomeWishlistSearchInputView_siv_search_icon)
+            searchText = styledAttributes.getString(R.styleable.HomeWishlistSearchInputView_siv_search_text)
+            searchHint = styledAttributes.getString(R.styleable.HomeWishlistSearchInputView_siv_search_hint)
         } finally {
             styledAttributes.recycle()
         }

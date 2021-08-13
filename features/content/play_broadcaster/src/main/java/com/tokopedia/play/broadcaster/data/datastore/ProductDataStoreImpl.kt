@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -13,22 +15,20 @@ import javax.inject.Inject
  * Created by jegul on 23/06/20
  */
 class ProductDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val addProductTagUseCase: AddProductTagUseCase
 ) : ProductDataStore {
 
     private val mSelectedProductMap = mutableMapOf<Long, ProductData>()
 
-    private val _selectedProductsLiveData = MutableLiveData<List<ProductData>>().apply {
-        value = emptyList()
-    }
+    private val _observableSelectedProducts = MutableStateFlow<List<ProductData>>(emptyList())
 
-    override fun getObservableSelectedProducts(): LiveData<List<ProductData>> {
-        return _selectedProductsLiveData
+    override fun getObservableSelectedProducts(): Flow<List<ProductData>> {
+        return _observableSelectedProducts
     }
 
     override fun getSelectedProducts(): List<ProductData> {
-        return _selectedProductsLiveData.value.orEmpty()
+        return _observableSelectedProducts.value
     }
 
     override fun selectProduct(product: ProductData, isSelected: Boolean) {
@@ -72,6 +72,6 @@ class ProductDataStoreImpl @Inject constructor(
     }
 
     private fun updateSelectedProducts() {
-        _selectedProductsLiveData.value = mSelectedProductMap.values.toList()
+        _observableSelectedProducts.value = mSelectedProductMap.values.toList()
     }
 }

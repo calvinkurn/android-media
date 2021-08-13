@@ -20,4 +20,5 @@ interface ChatListItemListener {
     fun isTabSeller(): Boolean
     fun getSupportChildFragmentManager(): FragmentManager
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
+    fun returnToSellerHome()
 }

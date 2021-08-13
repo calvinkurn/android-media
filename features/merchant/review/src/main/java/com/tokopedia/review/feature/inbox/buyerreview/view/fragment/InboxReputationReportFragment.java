@@ -57,10 +57,10 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     @Inject
     ReputationTracking tracking;
 
-    public static Fragment createInstance(String reviewId, int shopId) {
+    public static Fragment createInstance(String reviewId, String shopId) {
         Fragment fragment = new InboxReputationReportFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(InboxReputationReportActivity.ARGS_SHOP_ID, shopId);
+        bundle.putString(InboxReputationReportActivity.ARGS_SHOP_ID, shopId);
         bundle.putString(ARGS_REVIEW_ID, reviewId);
         fragment.setArguments(bundle);
         return fragment;
@@ -127,10 +127,12 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
         sendButton.setOnClickListener(v -> {
             tracking.onSubmitReportAbuse(feedbackId);
-            presenter.reportReview(getArguments().getString(ARGS_REVIEW_ID, ""),
-                    String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
-                    reportRadioGroup.getCheckedRadioButtonId(),
-                    otherReason.getText().toString());
+            if (getArguments() != null) {
+                presenter.reportReview(getArguments().getString(ARGS_REVIEW_ID, ""),
+                        getArguments().getString(InboxReputationReportActivity.ARGS_SHOP_ID),
+                        reportRadioGroup.getCheckedRadioButtonId(),
+                        otherReason.getText().toString());
+            }
         });
 
         initProgressDialog();
@@ -152,12 +154,12 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
                 && !TextUtils.isEmpty(otherReason.getText().toString().trim()))
         ) {
             sendButton.setEnabled(true);
-            sendButton.setTextColor(getResources().getColor(com.tokopedia.abstraction.R.color.white));
+            sendButton.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             MethodChecker.setBackground(sendButton,
                     getResources().getDrawable(com.tokopedia.design.R.drawable.green_button_rounded));
         } else {
             sendButton.setEnabled(false);
-            sendButton.setTextColor(getResources().getColor(com.tokopedia.design.R.color.grey_700));
+            sendButton.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500));
             MethodChecker.setBackground(sendButton,
                     getResources().getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled));
         }

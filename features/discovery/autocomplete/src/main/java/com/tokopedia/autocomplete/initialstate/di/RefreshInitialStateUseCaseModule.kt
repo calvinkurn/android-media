@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@InitialStateScope
 @Module
 class RefreshInitialStateUseCaseModule {
 

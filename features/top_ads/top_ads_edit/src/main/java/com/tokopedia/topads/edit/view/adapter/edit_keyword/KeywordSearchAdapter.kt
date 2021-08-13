@@ -65,8 +65,8 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.A
             onChecked.invoke()
         }
         if ((items[holder.adapterPosition].competition ?: "").isEmpty()) {
-            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            holder.view.keywordCompetition.visibility = View.INVISIBLE
+            holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
 
         } else {
             when (items[holder.adapterPosition].competition) {
@@ -84,7 +84,6 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.A
                     holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
                     holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
                 }
-
             }
         }
     }

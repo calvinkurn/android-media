@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/suggestionTopShopSeeMoreCard"
     android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"

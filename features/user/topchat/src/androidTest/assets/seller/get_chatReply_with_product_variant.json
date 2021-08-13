@@ -1,0 +1,190 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1613547415886",
+    "maxReplyTime": "1614831632791",
+    "block": {
+      "blockedUntil": "2020-08-21T17:57:57.447519+07:00",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "802324344,804294340,827472092,827523083",
+    "contacts": [
+      {
+        "role": "Shop Admin",
+        "userId": 144236707,
+        "shopId": 1465130,
+        "interlocutor": false,
+        "name": "t4k45h1 mu12a",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1465130/shop_xs_thumbnail/desktop",
+        "domain": "k45h1mu124",
+        "isOfficial": false,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_pm_icon.png",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Admin",
+        "userId": 144327716,
+        "shopId": 1465130,
+        "interlocutor": false,
+        "name": "t4k45h1 mu12a",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1465130/shop_xs_thumbnail/desktop",
+        "domain": "k45h1mu124",
+        "isOfficial": false,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_pm_icon.png",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Admin",
+        "userId": 144970633,
+        "shopId": 1465130,
+        "interlocutor": false,
+        "name": "t4k45h1 mu12a",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1465130/shop_xs_thumbnail/desktop",
+        "domain": "k45h1mu124",
+        "isOfficial": false,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_pm_icon.png",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 12299592,
+        "shopId": 1465130,
+        "interlocutor": false,
+        "name": "t4k45h1 mu12a",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1465130/shop_xs_thumbnail/desktop",
+        "domain": "k45h1mu124",
+        "isOfficial": false,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_pm_icon.png",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "User",
+        "userId": 12299749,
+        "shopId": 1465130,
+        "interlocutor": true,
+        "name": "Try",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/12299749/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1617172545,
+          "timestampStr": "1617172545",
+          "isOnline": true
+        }
+      },
+      {
+        "role": "Shop Admin",
+        "userId": 72758979,
+        "shopId": 1465130,
+        "interlocutor": false,
+        "name": "t4k45h1 mu12a",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1465130/shop_xs_thumbnail/desktop",
+        "domain": "k45h1mu124",
+        "isOfficial": false,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_pm_icon.png",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "4 Mar 2021",
+        "chats": [
+          {
+            "time": "11:20",
+            "replies": [
+              {
+                "msgId": 173135368,
+                "replyId": "14234947403",
+                "senderId": 12299592,
+                "senderName": "Try",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\"\u003ehttps://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1614831632732981000",
+                "status": 1,
+                "attachmentID": 827523083,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "",
+                "attachment": {
+                  "id": 827523083,
+                  "type": 3,
+                  "attributes": "{\"product_id\":1261590628,\"product_profile\":{\"name\":\"tes etalase android 2 haha\",\"price\":\"Rp555\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/502b119f-723b-4ba2-8884-3ec2e12c7c63.jpg\",\"url\":\"https://www.tokopedia.com/k45h1mu124/tes-etalase-android-2-haha?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":1465130,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "Bisa dikirim hari ini."
+                  }
+                }
+              },
+              {
+                "msgId": 173135368,
+                "replyId": "14234947425",
+                "senderId": 12299592,
+                "senderName": "Try",
+                "role": "Shop Owner",
+                "msg": "Bisa dikirim hari ini. 123",
+                "fraudStatus": 0,
+                "replyTime": "1614831632791968000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "inbox",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

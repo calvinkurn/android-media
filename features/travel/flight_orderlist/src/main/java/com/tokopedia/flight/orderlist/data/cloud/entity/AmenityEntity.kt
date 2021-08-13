@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName
 class AmenityEntity(
         @SerializedName("cabin_baggage")
         @Expose
-        val cabinBaggage: BaggageEntity,
+        val cabinBaggage: BaggageEntity = BaggageEntity(),
         @SerializedName("free_baggage")
         @Expose
-        val freeBaggage: BaggageEntity,
+        val freeBaggage: BaggageEntity = BaggageEntity(),
         @SerializedName("meal")
         @Expose
         val isMeal: Boolean = false,

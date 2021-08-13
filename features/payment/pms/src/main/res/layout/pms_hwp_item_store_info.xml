@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivStoreImage"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStoreName"
+        app:layout_constraintTop_toTopOf="@id/ivStoreImage"
+        app:layout_constraintBottom_toBottomOf="@id/ivStoreImage"
+        app:layout_constraintStart_toEndOf="@+id/ivStoreImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        tools:text="RP2.00000"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:textColor="@color/Unify_N700_68"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStoreFee"
+        app:layout_constraintTop_toTopOf="@id/ivStoreImage"
+        app:layout_constraintBottom_toBottomOf="@id/ivStoreImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        tools:text="RP2.00000"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_N700_96"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/ivStoreImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="1dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

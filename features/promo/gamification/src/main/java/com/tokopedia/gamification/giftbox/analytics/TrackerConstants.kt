@@ -6,11 +6,22 @@ object GiftBoxTrackerConstants {
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
     const val USER_ID = "userId"
+    const val BUSINESS_UNIT = "businessUnit"
+    const val CURRENT_SITE = "currentSite"
+    const val BGP_ENGAGEMENT = "bgp - engagement"
+    const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
+    const val ITEM_LIST = "item_list"
+    const val ITEMS = "items"
+    const val SCREEN_NAME = "screenName"
+    const val DAILY_GIFT_BOX = "daily-gift-box"
 }
 
 object GiftBoxEvent {
     const val CLICK_PRESENT = "clickPresent"
     const val VIEW_PRESENT_IRIS = "viewPresentIris"
+    const val SELECT_CONTENT = "select_content"
+    const val VIEW_ITEM_LIST = "view_item_list"
+    const val OPEN_SCREEN = "openScreen"
 }
 
 object GiftBoxCategory {
@@ -37,6 +48,16 @@ object GiftBoxAction {
     const val CLICK_USE_COUPON = "click use coupon"
     const val CLICK_CHECK_REWARDS = "click check rewards"
     const val CLICK_HOMEPAGE_BUTTON = "click homepage button"
+    const val CLICK_INFO_BUTTON = "click info button"
+    const val CLICK_REWARD_DETAIL = "click reward detail"
+    const val CLICK_T_AND_C = "click t&c"
+    const val CLICK_PRODUCT_RECOM = "click product recommendation"
+    const val CLICK_PRODUCT = "click product"
+    const val VIEW_PRODUCT = "view product"
+    const val VIEW_RP_0_POP_UP = "view popup back 0rp"
+    const val CLICK_CEK_DAFTAR_HADIAH_BUTTON = "click cek daftar hadiah button"
+    const val CLICK_KE_HOME_BUTTON = "click ke home button"
+    const val VIEW_PRODUCT_RECOM = "view product recommendation"
 }
 
 object GiftBoxLabel {

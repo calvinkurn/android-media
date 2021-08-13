@@ -31,6 +31,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     public static final String SOURCE_TALK = "talk";
     public static final Integer MAX_CHECKED_DEFAULT = 3;
 
+    private String warehouseId = "0";
     private String shopId;
     private String shopName;
     private boolean isSeller;
@@ -40,12 +41,19 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupWarehouseId();
         super.onCreate(savedInstanceState);
         shopId = "";
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+    }
+
+    private void setupWarehouseId() {
+        warehouseId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID);
+        if (warehouseId != null && warehouseId.isEmpty()) {
+            warehouseId = "0";
+        }
     }
 
     @Override
@@ -63,8 +71,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         } else {
             shopName = "";
         }
-        toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         toolbar.setSubtitle(shopName);
     }
 
@@ -80,7 +87,9 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
                 maxChecked = getIntent().getIntExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, MAX_CHECKED_DEFAULT);
                 hiddenProducts = getIntent().getStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN);
             }
-            fragment = AttachProductFragment.newInstance(this, isSeller, source, maxChecked, hiddenProducts);
+            fragment = AttachProductFragment.newInstance(
+                    this, isSeller, source, maxChecked, hiddenProducts, warehouseId
+            );
             return fragment;
         }
     }

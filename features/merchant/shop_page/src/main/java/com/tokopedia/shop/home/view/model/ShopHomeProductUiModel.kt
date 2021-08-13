@@ -7,7 +7,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 /**
@@ -37,10 +37,12 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
-    var labelGroupList: List<LabelGroupViewModel> = listOf()
+    var labelGroupList: List<LabelGroupUiModel> = listOf()
     var stockLabel: String = ""
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0
+    var recommendationType: String? = null
+    var minimumOrder: Int = 1
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){
@@ -74,11 +76,11 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         val shopProductLabelList = shopProduct.labels
         if (shopProductLabelList != null) {
             for (shopProductLabel in shopProductLabelList) {
-                if (shopProductLabel.title.startsWith(LABEL_CASHBACK)) {
+                if (shopProductLabel.title?.startsWith(LABEL_CASHBACK) == true) {
                     var cashbackText = shopProductLabel.title
-                    cashbackText = cashbackText.replace(LABEL_CASHBACK, "")
-                    cashbackText = cashbackText.replace(LABEL_PERCENTAGE, "")
-                    val cashbackPercentage = java.lang.Double.parseDouble(cashbackText.trim { it <= ' ' })
+                    cashbackText = cashbackText?.replace(LABEL_CASHBACK, "")
+                    cashbackText = cashbackText?.replace(LABEL_PERCENTAGE, "")
+                    val cashbackPercentage = java.lang.Double.parseDouble(cashbackText?.trim { it <= ' ' }.orEmpty())
                     cashback = cashbackPercentage
                     break
                 }

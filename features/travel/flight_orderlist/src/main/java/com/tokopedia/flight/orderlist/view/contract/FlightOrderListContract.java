@@ -5,10 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.sortfilter.SortFilterItem;
 
 import java.util.List;
 
@@ -20,7 +20,9 @@ public interface FlightOrderListContract {
 
     interface View extends BaseListViewListener<Visitable> {
 
-        void renderOrderStatus(List<QuickFilterItem> filterItems);
+        void renderOrderStatus(List<SortFilterItem> filterItems);
+
+        void selectFilter(String typeFilter);
 
         String getString(int resId);
 

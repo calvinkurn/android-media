@@ -3,7 +3,6 @@ package com.tokopedia.play.data.websocket
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.play.*
 import com.tokopedia.play.data.SocketCredential
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -113,5 +112,20 @@ open class PlaySocket @Inject constructor(
 
     fun destroy() {
         compositeSubscription?.clear()
+    }
+
+    companion object {
+
+        const val KEY_GROUPCHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
+
+        private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
+
+        private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
+
+        private const val PARAM_SEND_TYPE = "type"
+        private const val PARAM_SEND_DATA = "data"
+        private const val PARAM_SEND_TYPE_SEND = "SEND_MESG"
+        private const val PARAM_SEND_CHANNEL_ID = "channel_id"
+        private const val PARAM_SEND_MESSAGE = "message"
     }
 }

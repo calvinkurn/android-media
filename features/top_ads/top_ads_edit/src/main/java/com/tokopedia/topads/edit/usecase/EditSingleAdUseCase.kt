@@ -10,9 +10,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DATA
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.EditSingleAdResponse
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

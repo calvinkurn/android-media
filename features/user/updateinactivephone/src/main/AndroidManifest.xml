@@ -1,41 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.updateinactivephone">
-
-
+  
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+  
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_change_inactive_phone_form"/>
-
-            </intent-filter>
+      
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneActivity"
+          android:label="Inactive Phone"
+          android:theme="@style/Theme.White"
+          android:screenOrientation="portrait"
+          android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+          <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
+    
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+              android:scheme="@string/internal_scheme"
+              android:host="@string/host_global"
+              android:pathPattern="@string/path_change_inactive_phone"/>
+  
+          </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneRequestSubmittedActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity"
+          android:screenOrientation="portrait"/>
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneAccountListActivity"
+          android:screenOrientation="portrait"/>
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneDataUploadActivity"
+          android:windowSoftInputMode="adjustResize"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"/>
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneSuccessPageActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

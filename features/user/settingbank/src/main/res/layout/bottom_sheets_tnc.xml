@@ -2,21 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:scrollbars="none">
-
     <WebView
         android:id="@+id/tncWebView"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

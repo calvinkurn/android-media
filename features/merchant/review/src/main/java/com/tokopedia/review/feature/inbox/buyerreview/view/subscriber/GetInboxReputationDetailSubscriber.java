@@ -17,15 +17,15 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.R
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationDataViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ReputationBadgeViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ReviewResponseViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReputationBadgeUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +67,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    private ReputationBadgeViewModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {
-        return new ReputationBadgeViewModel(reputationBadge.getLevel(),
+    private ReputationBadgeUiModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {
+        return new ReputationBadgeUiModel(reputationBadge.getLevel(),
                 reputationBadge.getSet());
     }
 
@@ -87,7 +87,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
 
     private Visitable convertToInboxReputationDetailItemViewModel(
             ReviewDomain reviewDomain, ReviewItemDomain itemDomain) {
-        return new InboxReputationDetailItemViewModel(
+        return new InboxReputationDetailItemUiModel(
                 reviewDomain.getReputationId(),
                 String.valueOf(itemDomain.getProductData().getProductId()),
                 itemDomain.getProductData().getProductName(),
@@ -122,11 +122,11 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 );
     }
 
-    private ReviewResponseViewModel convertToReviewResponseViewModel(@Nullable ShopDataDomain shopData,
-                                                                     @Nullable ReviewResponseDomain
+    private ReviewResponseUiModel convertToReviewResponseViewModel(@Nullable ShopDataDomain shopData,
+                                                                   @Nullable ReviewResponseDomain
                                                                              reviewResponse) {
         if (reviewResponse != null && shopData != null)
-            return new ReviewResponseViewModel(
+            return new ReviewResponseUiModel(
                     reviewResponse.getResponseMessage(),
                     reviewResponse.getResponseCreateTime().getDateTimeFmt1(),
                     shopData.getShopName()
@@ -134,11 +134,11 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         else return null;
     }
 
-    private ArrayList<ImageAttachmentViewModel>
+    private ArrayList<ImageAttachmentUiModel>
     convertToImageAttachmentViewModel(List<ImageAttachmentDomain> reviewImageUrl) {
-        ArrayList<ImageAttachmentViewModel> list = new ArrayList<>();
+        ArrayList<ImageAttachmentUiModel> list = new ArrayList<>();
         for (ImageAttachmentDomain domain : reviewImageUrl) {
-            list.add(new ImageAttachmentViewModel(
+            list.add(new ImageAttachmentUiModel(
                     domain.getAttachmentId(),
                     domain.getDescription(),
                     domain.getUriThumbnail(),
@@ -149,17 +149,17 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     }
 
 
-    protected InboxReputationViewModel convertToReputationViewModel(InboxReputationDomain inboxReputationDomain) {
-        return new InboxReputationViewModel
+    protected InboxReputationUiModel convertToReputationViewModel(InboxReputationDomain inboxReputationDomain) {
+        return new InboxReputationUiModel
                 (convertToInboxReputationList(inboxReputationDomain.getInboxReputation()),
                         inboxReputationDomain.getPaging().isHasNext()
                 );
     }
 
-    private List<InboxReputationItemViewModel> convertToInboxReputationList(List<InboxReputationItemDomain> inboxReputationDomain) {
-        List<InboxReputationItemViewModel> list = new ArrayList<>();
+    private List<InboxReputationItemUiModel> convertToInboxReputationList(List<InboxReputationItemDomain> inboxReputationDomain) {
+        List<InboxReputationItemUiModel> list = new ArrayList<>();
         for (InboxReputationItemDomain domain : inboxReputationDomain) {
-            list.add(new InboxReputationItemViewModel(
+            list.add(new InboxReputationItemUiModel(
                     String.valueOf(domain.getReputationId()),
                     domain.getRevieweeData().getRevieweeName(),
                     domain.getOrderData().getCreateTimeFmt(),
@@ -178,8 +178,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         return list;
     }
 
-    private RevieweeBadgeSellerViewModel convertToSellerReputationViewModel(RevieweeBadgeSellerDomain revieweeBadgeSeller) {
-        return new RevieweeBadgeSellerViewModel(revieweeBadgeSeller.getTooltip(),
+    private RevieweeBadgeSellerUiModel convertToSellerReputationViewModel(RevieweeBadgeSellerDomain revieweeBadgeSeller) {
+        return new RevieweeBadgeSellerUiModel(revieweeBadgeSeller.getTooltip(),
                 revieweeBadgeSeller.getReputationScore(),
                 revieweeBadgeSeller.getScore(),
                 revieweeBadgeSeller.getMinBadgeScore(),
@@ -187,16 +187,16 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()), revieweeBadgeSeller.getIsFavorited());
     }
 
-    private RevieweeBadgeCustomerViewModel convertToBuyerReputationViewModel(
+    private RevieweeBadgeCustomerUiModel convertToBuyerReputationViewModel(
             RevieweeBadgeCustomerDomain revieweeBadgeCustomer) {
-        return new RevieweeBadgeCustomerViewModel(revieweeBadgeCustomer.getPositive(),
+        return new RevieweeBadgeCustomerUiModel(revieweeBadgeCustomer.getPositive(),
                 revieweeBadgeCustomer.getNeutral(), revieweeBadgeCustomer.getNegative(),
                 revieweeBadgeCustomer.getPositivePercentage(),
                 revieweeBadgeCustomer.getNoReputation());
     }
 
-    private ReputationDataViewModel convertToReputationViewModel(ReputationDataDomain reputationData) {
-        return new ReputationDataViewModel(reputationData.getRevieweeScore(),
+    private ReputationDataUiModel convertToReputationViewModel(ReputationDataDomain reputationData) {
+        return new ReputationDataUiModel(reputationData.getRevieweeScore(),
                 reputationData.getRevieweeScoreStatus(),
                 reputationData.isShowRevieweeScore(),
                 reputationData.getReviewerScore(),

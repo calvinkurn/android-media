@@ -7,5 +7,4 @@ import dagger.Module
  */
 
 @Module
-@HotelCancellationScope
 abstract class HotelCancellationModule

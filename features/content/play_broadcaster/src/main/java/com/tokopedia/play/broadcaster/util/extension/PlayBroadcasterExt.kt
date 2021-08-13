@@ -30,6 +30,15 @@ internal fun Context.getDialog(
     setOverlayClose(overlayClose)
 }
 
+internal fun DialogUnify.setLoading(isLoading: Boolean) {
+    dialogPrimaryCTA.isLoading = isLoading
+    setCancelable(!isLoading)
+    setCanceledOnTouchOutside(!isLoading)
+    dialogOverlay.setOnClickListener {
+        if (!isLoading) dismiss()
+    }
+}
+
 internal fun sendCrashlyticsLog(throwable: Throwable) {
     if (GlobalConfig.DEBUG) {
         throwable.printStackTrace()

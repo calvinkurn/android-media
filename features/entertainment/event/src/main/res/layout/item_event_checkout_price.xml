@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_event_checkout_summary_price"
         tools:text="Rp 1,356,115"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:typographyWeight="bold"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/spacing_lvl4"

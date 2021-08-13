@@ -27,5 +27,8 @@ data class SellerActionOrderListParam(
         var page: Int = 1,
         @SerializedName("batch_page")
         @Expose
-        var batchPage: Int = 0
+        var batchPage: Int = 0,
+        @SerializedName("source")
+        @Expose
+        var source: String = "google-assistant"
 )

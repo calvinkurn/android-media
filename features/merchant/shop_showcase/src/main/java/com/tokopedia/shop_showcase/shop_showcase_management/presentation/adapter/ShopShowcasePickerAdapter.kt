@@ -128,11 +128,11 @@ class ShopShowcasePickerAdapter(
 
         private fun setDisableState(ctx: Context, state: Boolean) {
             if(state) {
-                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, R.color.showcase_picker_disable_color))
+                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 tvShowcaseName?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
-                tvShowcaseName?.setTextColor(Color.BLACK)
+                tvShowcaseName?.setTextColor(androidx.core.content.ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
                 tvShowcaseName?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }

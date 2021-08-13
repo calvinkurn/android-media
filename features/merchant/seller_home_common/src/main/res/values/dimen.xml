@@ -9,6 +9,7 @@
     <dimen name="shc_dimen_7dp">7dp</dimen>
     <dimen name="shc_dimen_10dp">10dp</dimen>
     <dimen name="shc_dimen_12dp">12dp</dimen>
+    <dimen name="shc_dimen_15dp">15dp</dimen>
     <dimen name="shc_dimen_18dp">18dp</dimen>
     <dimen name="shc_dimen_20dp">20dp</dimen>
     <dimen name="shc_dimen_22dp">22dp</dimen>

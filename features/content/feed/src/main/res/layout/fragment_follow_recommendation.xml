@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:clipToPadding="false"
         android:elevation="@dimen/dp_8"
         android:padding="@dimen/dp_16">
@@ -65,7 +65,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_toStartOf="@+id/btn_action"
             android:layout_toLeftOf="@+id/btn_action"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             tools:text="Follow min.1 akun untuk lanjut" />
 

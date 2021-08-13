@@ -8,10 +8,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
-import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
-import com.tokopedia.loginfingerprint.utils.AppDispatcherProvider
-import com.tokopedia.loginfingerprint.utils.DispatcherProvider
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.user.session.UserSession
@@ -38,16 +35,16 @@ class LoginFingerprintSettingModule(val context: Context) {
 
     @LoginFingerprintSettingScope
     @Provides
-    fun providePreferenceHelper(@LoginFingerprintContext context: Context): FingerprintSetting = FingerprintPreferenceHelper(context)
-
-    @LoginFingerprintSettingScope
-    @Provides
     fun provideUserSessionInterface(@LoginFingerprintContext context: Context): UserSessionInterface = UserSession(context)
 
     @LoginFingerprintSettingScope
     @Provides
     fun provideRegisterFingerprintUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterFingerprintPojo> = GraphqlUseCase(graphqlRepository)
+
+    @LoginFingerprintSettingScope
+    @Provides
+    fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
 
     @LoginFingerprintSettingScope
     @Provides
@@ -59,8 +56,4 @@ class LoginFingerprintSettingModule(val context: Context) {
         }
         else null
     }
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideDispatchers(): DispatcherProvider = AppDispatcherProvider()
 }

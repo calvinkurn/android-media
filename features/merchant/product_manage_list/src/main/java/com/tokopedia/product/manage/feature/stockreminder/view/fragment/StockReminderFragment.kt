@@ -26,9 +26,9 @@ import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
@@ -280,7 +280,8 @@ class StockReminderFragment: BaseDaggerFragment() {
         when(stockReminderData) {
             is Success -> { doResultIntent() }
             is Fail -> {
-                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
+                Toaster.build(layout, getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text)).show()
                 Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
             }
@@ -292,7 +293,8 @@ class StockReminderFragment: BaseDaggerFragment() {
         when(stockReminderData) {
             is Success -> { doResultIntent() }
             is Fail -> {
-                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
+                Toaster.build(layout, getString(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text)).show()
                 Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
             }

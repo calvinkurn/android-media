@@ -1,28 +1,34 @@
 package com.tokopedia.payment.setting.list.domain
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.payment.setting.list.di.GQL_GET_CREDIT_CARD_LIST
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.payment.setting.list.model.GQLPaymentQueryResponse
-import rx.Subscriber
+import com.tokopedia.payment.setting.list.model.PaymentQueryResponse
+import com.tokopedia.payment.setting.util.GQL_GET_CREDIT_CARD_LIST
 import javax.inject.Inject
-import javax.inject.Named
 
+@GqlQuery("GetCreditCardList", GQL_GET_CREDIT_CARD_LIST)
 class GetCreditCardListUseCase @Inject constructor(
-        @Named(GQL_GET_CREDIT_CARD_LIST) val query: String,
-        private val graphqlUseCase: GraphqlUseCase) {
+        graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<GQLPaymentQueryResponse>(graphqlRepository) {
 
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        unSubscribe()
-        graphqlUseCase.clearRequest()
-        val graphqlRequestForUsable = GraphqlRequest(query, GQLPaymentQueryResponse::class.java)
-        graphqlUseCase.addRequest(graphqlRequestForUsable)
-        graphqlUseCase.execute(subscriber)
+    fun getCreditCardList(
+            onSuccess: (PaymentQueryResponse) -> Unit,
+            onError: (Throwable) -> Unit,
+    ) {
+        try {
+            this.setTypeClass(GQLPaymentQueryResponse::class.java)
+            this.setGraphqlQuery(GetCreditCardList.GQL_QUERY)
+            this.execute(
+                    { result ->
+                        onSuccess(result.paymentQueryResponse)
+                    }, { error ->
+                onError(error)
+            }
+            )
+        } catch (throwable: Throwable) {
+            onError(throwable)
+        }
     }
-
-    fun unSubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
 }

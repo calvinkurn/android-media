@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.moengage.push.PushManager;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.FCMTokenReceiver;
@@ -18,10 +17,16 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -38,6 +43,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     @Inject FirebaseMessagingManager fcmManager;
     private UserSessionInterface userSession;
+    private RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
@@ -49,6 +55,8 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 .fcmComponent(fcmComponent)
                 .build()
                 .inject(this);
+
+        remoteConfig = new FirebaseRemoteConfigImpl(getBaseContext());
     }
 
     public BaseNotificationMessagingService() {
@@ -79,16 +87,20 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onNewToken(String newToken) {
         fcmManager.onNewToken(newToken);
         propagateIDtoServer(newToken);
+        //update on the basis of moengage flag
         updateMoEngageToken(newToken);
         Hansel.setNewToken(this, newToken);
         updateApsFlyerToken(newToken);
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(newToken);
         try {
-            Timber.w("P2#TOKEN_REFRESH#Notification New Token - " + newToken + " | "
+            String messageType = "Notification New Token - " + newToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                    + " | " + Build.TAGS);
+                    + " | " + Build.TAGS;
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", messageType);
+            ServerLogger.log(Priority.P2, "TOKEN_REFRESH", messageMap);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,11 +117,11 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     public void updateMoEngageToken(String token) {
         Timber.d("Moengage RefreshedToken: " + token);
-        PushManager.getInstance().refreshToken(getApplicationContext(), token);
+        MoengageInteractor.INSTANCE.refreshToken(token);
     }
 
     public void propagateIDtoServer(String token) {
-        if (!TextUtils.isEmpty(token)) {
+        if (!TextUtils.isEmpty(token) && isOldGcmUpdate()) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             if (!localToken.equals(token)) {
                 UserSessionInterface userSession = new UserSession(this);
@@ -127,5 +139,9 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 }
             }
         }
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return remoteConfig.getBoolean(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
     }
 }

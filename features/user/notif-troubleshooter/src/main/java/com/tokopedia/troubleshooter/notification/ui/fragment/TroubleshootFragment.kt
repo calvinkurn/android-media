@@ -10,17 +10,19 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -36,6 +38,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Comp
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
 import com.tokopedia.troubleshooter.notification.util.combineFourth
@@ -47,7 +50,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
@@ -57,10 +60,21 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
+    private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
     }
+
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? = inflater.inflate(
+            R.layout.fragment_notif_troubleshooter,
+            container,
+            false
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,20 +85,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         lifecycle.addObserver(viewModel)
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        return LayoutInflater.from(context).inflate(
-                R.layout.fragment_notif_troubleshooter,
-                container,
-                false
-        ).apply { setupToolbar() }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
+
         initView()
         initObservable()
         troubleshooterStatus()
@@ -107,43 +111,47 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initView() {
-        lstConfig?.layoutManager = LinearLayoutManager(context)
-        lstConfig?.adapter = adapter
+        binding?.lstConfig?.layoutManager = LinearLayoutManager(context)
+        binding?.lstConfig?.adapter = adapter
         adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
         adapter.footerMessage(false)
     }
 
     private fun initObservable() {
-        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer { isNotificationEnabled ->
+        viewModel.notificationStatus.observe(viewLifecycleOwner, { isNotificationEnabled ->
             if (!GlobalConfig.isSellerApp()) {
                 if (!isNotificationEnabled) activity?.finish()
             }
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
-            setUpdateTokenStatus(newToken)
-            TroubleshooterTimber.token(newToken)
-            saveLastCheckedDate(requireContext())
+        viewModel.token.observe(viewLifecycleOwner, {
+            getNewToken(it)
         })
 
-        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationSetting.observe(viewLifecycleOwner, {
             notificationSetting(it)
         })
 
-        viewModel.deviceSetting.observe(viewLifecycleOwner, Observer {
+        viewModel.deviceSetting.observe(viewLifecycleOwner, {
             deviceSetting(it)
         })
 
-        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, {
             ringtoneSetting(it)
         })
 
-        viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            troubleshooterPushNotification(it)
+        viewModel.troubleshootSuccess.observe(viewLifecycleOwner, {
+            val isSuccess = StatusState(it.isTroubleshootSuccess())
+            adapter.updateStatus(PushNotification, isSuccess)
         })
 
-        viewModel.dndMode.observe(viewLifecycleOwner, Observer {
+        viewModel.troubleshootError.observe(viewLifecycleOwner, {
+            adapter.updateStatus(PushNotification, StatusState.Error)
+            showToastError()
+        })
+
+        viewModel.dndMode.observe(viewLifecycleOwner, {
             adapter.footerMessage(it)
         })
     }
@@ -160,22 +168,35 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             val device = it.third
             val ringtone = it.fourth?.second
 
-            if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+            if (viewModel.tickerItems.isNotEmpty()) {
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+            } else {
+                adapter.removeTickers()
+            }
+
+            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull() && token.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
-                if (viewModel.tickerItems.isNotEmpty()) {
-                    adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
-                } else {
-                    adapter.removeTickers()
-                }
-
-                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
                 }
             }
         })
+    }
+
+    private fun getNewToken(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                setUpdateTokenStatus(result.data)
+                TroubleshooterTimber.token(result.data)
+                saveLastCheckedDate(requireContext())
+            }
+            is Fail -> {
+                setUpdateTokenStatus("")
+            }
+        }
     }
 
     private fun notificationSetting(result: Result<UserSettingUIView>) {
@@ -255,28 +276,25 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         }
     }
 
-    private fun troubleshooterPushNotification(result: Result<NotificationSendTroubleshoot>) {
-        when (result) {
-            is Success -> {
-                val isSuccess = StatusState(result.data.isTroubleshootSuccess())
-                adapter.updateStatus(PushNotification, isSuccess)
-            }
-            is Fail -> {
-                adapter.updateStatus(PushNotification, StatusState.Error)
-                showToastError()
-            }
-        }
-    }
-
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
+        binding?.txtToken?.show()
 
-        txtToken?.text = if (fcmManager.isNewToken(newToken)) {
+        binding?.txtToken?.text = when {
+            newToken.isEmpty() -> {
+                getString(R.string.notif_error_update_token)
+            }
+            fcmManager.isNewToken(newToken) -> {
+                tokenUpdateMessage(currentToken, newTrimToken)
+            }
+            else -> {
+                tokenCurrentMessage(currentToken, newTrimToken)
+            }
+        }
+
+        if (newToken.isNotEmpty() && fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
-            tokenUpdateMessage(currentToken, newTrimToken)
-        } else {
-            tokenCurrentMessage(currentToken, newTrimToken)
         }
     }
 
@@ -284,7 +302,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         return if (currentToken != newToken) {
             getString(R.string.notif_token_current_different, currentToken, newToken)
         } else {
-            getString(R.string.notif_token_current, newToken)
+            getString(R.string.notif_token_current, currentToken)
         }
     }
 
@@ -346,9 +364,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         val fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(FcmModule(requireContext()))
                 .build()
+        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
 
         DaggerTroubleshootComponent.builder()
                 .fcmComponent(fcmComponent)
+                .baseAppComponent(baseAppComponent)
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)

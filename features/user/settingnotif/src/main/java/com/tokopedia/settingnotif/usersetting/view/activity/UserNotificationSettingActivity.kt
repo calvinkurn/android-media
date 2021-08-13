@@ -1,14 +1,13 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.SellerFieldFragment
@@ -47,19 +46,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun bindView() {
         fragmentContainer = findViewById(parentViewResourceID)
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, Neutral_N0)
+        val color = ContextCompat.getColor(this, Unify_N0)
         fragmentContainer?.setBackgroundColor(color)
     }
 

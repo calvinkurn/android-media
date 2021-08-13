@@ -48,6 +48,13 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            lihatSemuaViewModel.getComponentData().removeObservers(it)
+        }
+    }
+
     private fun sendGtmEvent(componentsItem: ComponentsItem) {
         if (componentsItem.name == ComponentNames.ProductCardCarousel.componentName) {
             onLihatSemuaClickListener?.onProductCardHeaderClick(componentsItem)

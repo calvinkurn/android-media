@@ -1,0 +1,23 @@
+[
+  {
+    "data": {
+      "login_token": {
+        "acc_sid": "",
+        "access_token": "OQCO3YcbA5ph8Oh5AFLo6Q5DL4mGYez1AxknYwNhTWa+1UFz3WYS6yL+VK2LNlbW",
+        "expires_in": 5184000,
+        "refresh_token": "kIiBkH3PTBmeV_QvxdZZZg",
+        "sid": "",
+        "token_type": "Bearer",
+        "sq_check": false,
+        "action": 0,
+        "errors": [],
+        "event_code": "SuccessLoginEmail",
+        "popup_error": {
+          "header": "",
+          "body": "",
+          "action": ""
+        }
+      }
+    }
+  }
+]

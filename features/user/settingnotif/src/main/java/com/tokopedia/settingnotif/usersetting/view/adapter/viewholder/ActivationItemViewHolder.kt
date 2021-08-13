@@ -13,7 +13,8 @@ import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
 import com.tokopedia.settingnotif.usersetting.state.PushNotif
-import com.tokopedia.settingnotif.usersetting.util.CacheManager.getLastCheckedDate
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.KEY_PREF_DATE
+import com.tokopedia.settingnotif.usersetting.util.CacheManager.getCacheLong
 import com.tokopedia.settingnotif.usersetting.util.intent
 import com.tokopedia.settingnotif.usersetting.util.notificationSetting
 import com.tokopedia.settingnotif.usersetting.util.toLastCheckFormat
@@ -78,7 +79,7 @@ class ActivationItemViewHolder(
     }
 
     private fun setLastCheckedText() {
-        val lastChecked = getLastCheckedDate(context)
+        val lastChecked = getCacheLong(context, KEY_PREF_DATE)
         if(lastChecked != 0L) {
             txtLastChecked?.show()
             val formattedDate = lastChecked.toLastCheckFormat()

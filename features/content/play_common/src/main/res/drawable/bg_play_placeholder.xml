@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:top="@dimen/play_placeholder_shadow_padding"
-        android:bottom="@dimen/play_placeholder_shadow_padding"
-        android:left="@dimen/play_placeholder_shadow_padding"
-        android:right="@dimen/play_placeholder_shadow_padding"
-        >
-        <shape>
-            <solid android:color="@color/Unify_N75"/>
-            <corners android:radius="@dimen/play_placeholder_radius"/>
-        </shape>
-    </item>
     <item>
         <shape>
-            <solid android:color="@color/play_placeholder_shadow"/>
+            <solid android:color="@color/Unify_N75"/>
             <corners android:radius="@dimen/play_placeholder_radius"/>
         </shape>
     </item>

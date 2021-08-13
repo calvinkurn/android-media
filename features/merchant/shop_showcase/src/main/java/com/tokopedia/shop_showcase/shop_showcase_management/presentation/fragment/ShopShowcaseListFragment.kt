@@ -30,6 +30,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
@@ -45,6 +46,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManag
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity.Companion.REQUEST_CODE_ADD_ETALASE
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcaseListAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,7 +66,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
                            isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false,
-                           isSellerNeedToHideShowcaseGroupValue: Boolean = false
+                           isNeedToOpenCreateShowcase: Boolean? = false, isSellerNeedToHideShowcaseGroupValue: Boolean = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -75,6 +77,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, isNeedToOpenCreateShowcase ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE,
@@ -117,6 +120,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
+    private var isNeedToOpenCreateShowcase = false
     private var isReorderList = false
     private var isSellerNeedToHideShowcaseGroupValue = false
 
@@ -188,6 +192,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+            isNeedToOpenCreateShowcase = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE)
             isSellerNeedToHideShowcaseGroupValue = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE)
         }
         super.onCreate(savedInstanceState)
@@ -243,6 +248,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun refreshData() {
         showLoadingSwipeToRefresh(true)
+        showLoading(true)
         loadData()
     }
 
@@ -312,7 +318,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListBuyerShopShowcaseResponse.removeObservers(this)
         viewModel.getListSellerShopShowcaseResponse.removeObservers(this)
         viewModel.deleteShopShowcaseResponse.removeObservers(this)
-        viewModel.getShopProductResponse.removeObservers(this)
+        viewModel.shopTotalProduct.removeObservers(this)
         super.onDestroy()
     }
 
@@ -323,7 +329,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun sendClickShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
-        val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
+        val showcaseId = if (dataShowcase.type == ETALASE_DEFAULT) dataShowcase.alias else dataShowcase.id
         activity?.run{
             val intent = Intent()
             intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, showcaseId)
@@ -390,7 +396,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                                         useAce = showcaseItem.useAce,
                                         aceDefaultSort = showcaseItem.aceDefaultSort,
                                         uri = showcaseItem.uri,
-                                        badge = showcaseItem.badge
+                                        badge = showcaseItem.badge,
+                                        imageUrl = showcaseItem.imageUrl
                                 ))
                             }
 
@@ -410,20 +417,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun observeTotalProduct() {
-        viewModel.getShopProductResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.shopTotalProduct.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val error = it.data.getShopProduct.errors
-                    val totalProduct = it.data.getShopProduct.totalData
-
-                    if (error.isNotEmpty()) {
-                        showErrorResponse(error)
+                    val totalProduct = it.data
+                    if (totalProduct > 0) {
+                        goToAddShowcase()
                     } else {
-                        if (totalProduct < 1) {
-                            showErrorResponse(getString(R.string.error_product_less_than_one))
-                        } else if (totalProduct > 0) {
-                            goToAddShowcase()
-                        }
+                        showErrorResponse(getString(R.string.error_product_less_than_one))
                     }
                 }
                 is Fail -> {
@@ -462,6 +463,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
+        if (isNeedToOpenCreateShowcase && isMyShop) {
+            checkTotalProduct()
+        }
         if (isNeedToGoToAddShowcase && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({
@@ -489,12 +493,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun checkTotalProduct() {
-        val page = 1
-        val perPage = 1
-        val fkeyword = ""
-        val sort = 0
-        val fmenu = "etalase"
-        viewModel.getTotalProduct(shopId, page, perPage, sort, fmenu, fkeyword)
+        viewModel.getTotalProduct(userSession.shopId, GetProductListFilter(perPage = 1))
     }
 
     private fun handleEditShowcase(dataShowcase: ShopEtalaseModel, position: Int) {

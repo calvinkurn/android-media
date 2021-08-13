@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="Sarapan Gratis di rumah enak sekali" />
 </LinearLayout>

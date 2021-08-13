@@ -4,25 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginBottom="30dp">
+    android:layout_marginBottom="@dimen/voucher_game_dp_30">
 
     <include layout="@layout/item_voucher_game_shimmering_operator"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginRight="@dimen/dp_3" />
 
     <include layout="@layout/item_voucher_game_shimmering_operator"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginRight="@dimen/dp_6" />
+        android:layout_marginLeft="@dimen/voucher_game_dp_6"
+        android:layout_marginRight="@dimen/voucher_game_dp_6" />
 
     <include layout="@layout/item_voucher_game_shimmering_operator"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="@dimen/dp_3" />
+        android:layout_marginLeft="@dimen/voucher_game_dp_3" />
 
 </LinearLayout>

@@ -35,7 +35,7 @@ class DiscussionSubmitFormUseCase @Inject constructor(grapqhlRepository: Graphql
         setTypeClass(DiscussionSubmitFormResponseWrapper::class.java)
     }
 
-    fun setParams(text: String, category: String, productId: Int) {
+    fun setParams(text: String, category: String, productId: String) {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_TEXT, text)
             putString(PARAM_PRODUCT_ID, productId.toString())

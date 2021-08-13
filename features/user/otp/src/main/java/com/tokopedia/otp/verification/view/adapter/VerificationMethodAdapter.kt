@@ -21,8 +21,8 @@ import kotlinx.android.synthetic.main.item_verification_method.view.*
  * @created on 9/12/2019
  */
 
-class VerificationMethodAdapter(
-        private var listData: MutableList<ModeListData>,
+open class VerificationMethodAdapter(
+        var listData: MutableList<ModeListData>,
         private val listener: ClickListener
 ) : RecyclerView.Adapter<VerificationMethodAdapter.ViewHolder>() {
 
@@ -61,7 +61,7 @@ class VerificationMethodAdapter(
                 override fun onClick(widget: View) {}
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
+                    ds.color = MethodChecker.getColor(itemView.context, R.color.Unify_N700)
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             }

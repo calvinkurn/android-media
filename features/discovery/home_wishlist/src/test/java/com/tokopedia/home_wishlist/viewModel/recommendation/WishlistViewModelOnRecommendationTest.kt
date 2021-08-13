@@ -65,12 +65,12 @@ class WishlistViewModelOnRecommendationTest {
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
         ))
-        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+        /*getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
                 WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
-        ), page = 2)
+        ), page = 2)*/
 
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
@@ -95,15 +95,18 @@ class WishlistViewModelOnRecommendationTest {
         wishlistViewModel.getWishlistData()
 
         // get recommendation
-        wishlistViewModel.getNextPageWishlistData()
+        // wishlistViewModel.getNextPageWishlistData()
 
 
         // View model add a recommendation product
-        wishlistViewModel.setRecommendationItemWishlist(parentPositionCandidate, childPositionCandidate, wishlistedInitialState)
+        val lastIndex = (wishlistViewModel.wishlistLiveData.value?.size ?: -1) - 1
+        wishlistViewModel.setRecommendationItemWishlist(lastIndex, childPositionCandidate, wishlistedInitialState)
+        wishlistViewModel.setRecommendationItemWishlist(-1, childPositionCandidate, wishlistedInitialState)
+        wishlistViewModel.setRecommendationItemWishlist(-1, 25, wishlistedInitialState)
 
         // Expect that recommendation item wishlist status is updated to true on wishlist data
         val recommendationCarouselDataModel =
-                wishlistViewModel.wishlistLiveData.value!![parentPositionCandidate] as RecommendationCarouselDataModel
+                wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel
         val recommendationCarouselItemDataModel =
                 recommendationCarouselDataModel.list[childPositionCandidate]
 
@@ -151,12 +154,12 @@ class WishlistViewModelOnRecommendationTest {
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
         ))
-        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+        /*getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
                 WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
-        ), page = 2)
+        ), page = 2)*/
 
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
@@ -180,14 +183,15 @@ class WishlistViewModelOnRecommendationTest {
         // Live data is filled by data from getWishlist
         wishlistViewModel.getWishlistData()
 
-        wishlistViewModel.getNextPageWishlistData()
+        // wishlistViewModel.getNextPageWishlistData()
 
         // View model add a recommendation product
-        wishlistViewModel.setRecommendationItemWishlist(parentPositionCandidate, childPositionCandidate, wishlistedInitialState)
+        val lastIndex = (wishlistViewModel.wishlistLiveData.value?.size ?: -1) - 1
+        wishlistViewModel.setRecommendationItemWishlist(lastIndex, childPositionCandidate, wishlistedInitialState)
 
         // Expect that recommendation item is not updated in wishlist data
         val recommendationCarouselDataModel =
-                wishlistViewModel.wishlistLiveData.value!![parentPositionCandidate] as RecommendationCarouselDataModel
+                wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel
         val recommendationCarouselItemDataModel =
                 recommendationCarouselDataModel.list[childPositionCandidate]
 
@@ -234,12 +238,12 @@ class WishlistViewModelOnRecommendationTest {
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
         ))
-        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+        /*getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
                 WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
-        ), page = 2)
+        ), page = 2)*/
 
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
@@ -262,15 +266,16 @@ class WishlistViewModelOnRecommendationTest {
 
         // Live data is filled by data from getWishlist
         wishlistViewModel.getWishlistData()
-        wishlistViewModel.getNextPageWishlistData()
+        // wishlistViewModel.getNextPageWishlistData()
 
 
         // View model add a recommendation product
-        wishlistViewModel.setRecommendationItemWishlist(parentPositionCandidate, childPositionCandidate, wishlistedInitialState)
+        val lastIndex = (wishlistViewModel.wishlistLiveData.value?.size ?: -1) - 1
+        wishlistViewModel.setRecommendationItemWishlist(lastIndex, childPositionCandidate, wishlistedInitialState)
 
         // Expect that recommendation item wishlist status is updated to false on wishlist data
         val recommendationCarouselDataModel =
-                wishlistViewModel.wishlistLiveData.value!![parentPositionCandidate] as RecommendationCarouselDataModel
+                wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel
         val recommendationCarouselItemDataModel =
                 recommendationCarouselDataModel.list[childPositionCandidate]
 
@@ -318,12 +323,12 @@ class WishlistViewModelOnRecommendationTest {
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
         ))
-        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+        /*getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
                 WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
                 WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
                 WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
-        ), page = 2)
+        ), page = 2)*/
 
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
@@ -350,11 +355,12 @@ class WishlistViewModelOnRecommendationTest {
 
 
         // View model add a recommendation product
-        wishlistViewModel.setRecommendationItemWishlist(parentPositionCandidate, childPositionCandidate, wishlistedInitialState)
+        val lastIndex = (wishlistViewModel.wishlistLiveData.value?.size ?: -1) - 1
+        wishlistViewModel.setRecommendationItemWishlist(lastIndex, childPositionCandidate, wishlistedInitialState)
 
         // Expect that recommendation item wishlist status is not updated in wishlist data
         val recommendationCarouselDataModel =
-                wishlistViewModel.wishlistLiveData.value!![parentPositionCandidate] as RecommendationCarouselDataModel
+                wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel
         val recommendationCarouselItemDataModel =
                 recommendationCarouselDataModel.list[childPositionCandidate]
 

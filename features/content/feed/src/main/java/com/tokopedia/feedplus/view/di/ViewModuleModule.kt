@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@FeedPlusScope
 abstract class ViewModelModule {
 
     @FeedPlusScope

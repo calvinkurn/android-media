@@ -111,7 +111,8 @@ class UpdateVoucherParam (
                        startDate: String,
                        startHour: String,
                        endDate: String,
-                       endHour: String) : UpdateVoucherParam =
+                       endHour: String,
+                       imageSquare: String) : UpdateVoucherParam =
                 with(voucherUiModel) {
                     UpdateVoucherParam(
                             voucherId = id,

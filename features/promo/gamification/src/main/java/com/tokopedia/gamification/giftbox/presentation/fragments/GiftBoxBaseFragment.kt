@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
@@ -26,7 +26,6 @@ import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -43,15 +42,14 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var viewFlipper: ViewFlipper
     lateinit var tvTapHint: AppCompatTextView
     lateinit var starsContainer: StarsContainer
-    lateinit var rewardContainer: RewardContainer
     lateinit var giftBoxDailyView: GiftBoxDailyView
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
     lateinit var toolbar: Toolbar
     lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
-    lateinit var fmParent: FrameLayout
-    lateinit var imageSound: AppCompatImageView
+    lateinit var fmParent: ViewGroup
+    var imageSound: AppCompatImageView? = null
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -87,7 +85,6 @@ open class GiftBoxBaseFragment : Fragment() {
         loader = v.findViewById(R.id.loader)
         tvTapHint = v.findViewById(R.id.tvTapHint)
         starsContainer = v.findViewById(R.id.starsContainer)
-        rewardContainer = v.findViewById(R.id.reward_container)
         viewFlipper = v.findViewById(R.id.viewFlipper)
         tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
@@ -116,7 +113,7 @@ open class GiftBoxBaseFragment : Fragment() {
             activity?.onBackPressed()
         }
 
-        imageSound.setOnClickListener {
+        imageSound?.setOnClickListener {
             val state = !isSoundEnabled()
             toggleSound(state)
             if (state) {
@@ -144,7 +141,7 @@ open class GiftBoxBaseFragment : Fragment() {
     fun getScreenDimens() {
         if (activity != null) {
             val displayMetrics = DisplayMetrics()
-            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
             screenHeight = displayMetrics.heightPixels
             screenWidth = displayMetrics.widthPixels
         }
@@ -164,14 +161,11 @@ open class GiftBoxBaseFragment : Fragment() {
         loader.visibility = View.GONE
     }
 
+    open fun getMenu() = R.menu.gami_menu_share
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.gami_menu_share, menu)
+        inflater.inflate(getMenu(), menu)
         super.onCreateOptionsMenu(menu, inflater)
-        val drawable = menu.getItem(0).icon
-        drawable.mutate()
-        context?.let {
-            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_IN)
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -179,9 +173,14 @@ open class GiftBoxBaseFragment : Fragment() {
             R.id.action_share -> {
                 performShareAction()
             }
+            R.id.action_info -> {
+                handleInfoIconClick()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
+
+    open fun handleInfoIconClick() {}
 
     open fun performShareAction() {
         try {
@@ -226,9 +225,12 @@ open class GiftBoxBaseFragment : Fragment() {
                 }
         )
         snackbar.show()
-        val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
-        params.gravity = Gravity.BOTTOM
-        params.width = FrameLayout.LayoutParams.MATCH_PARENT
+        val params = snackbar.view.layoutParams
+        when (params) {
+            is CoordinatorLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+            is FrameLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+        }
+        params.width = CoordinatorLayout.LayoutParams.MATCH_PARENT
         snackbar.view.layoutParams = params
 
         when (this) {
@@ -241,7 +243,7 @@ open class GiftBoxBaseFragment : Fragment() {
         val dialog = NoInternetDialog()
         dialog.showDialog(context)
         dialog.btnRetry.setOnClickListener {
-            dialog.closeAbleDialog.dismiss()
+            dialog.bottomSheet?.dismiss()
             method.invoke()
             when (this) {
                 is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain(userSession?.userId)
@@ -256,13 +258,15 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun toggleSound(enable: Boolean) {
-        val editor = getSharedPres()?.edit()
-        editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
-        editor?.apply()
-        if (enable) {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
-        } else {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+        imageSound?.let {
+            val editor = getSharedPres()?.edit()
+            editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
+            editor?.apply()
+            if (enable) {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
+            } else {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+            }
         }
     }
 
@@ -376,18 +380,10 @@ open class GiftBoxBaseFragment : Fragment() {
         return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
     }
 
-    fun fadeOutSoundIcon() {
-        imageSound.animate().alpha(0f).setDuration(300L).start()
-    }
-
-    fun fadeInSoundIcon() {
-        imageSound.animate().alpha(1f).setDuration(300L).start()
-    }
-
     fun isConnectedToInternet(): Boolean {
         context?.let {
-            return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
-        }
+            return DeviceConnectionInfo.isConnectCellular(it) ||
+                    DeviceConnectionInfo.isConnectWifi(it)}
         return false
     }
 }

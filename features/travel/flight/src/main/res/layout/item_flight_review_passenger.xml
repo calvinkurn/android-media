@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingLeft="@dimen/dp_20"
-    android:paddingRight="@dimen/dp_20"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingLeft="@dimen/flight_dp_20"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingRight="@dimen/flight_dp_20"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_passenger_cancellation_status"
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_second_passenger_cancellation_status"
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
         android:layout_below="@+id/txt_passenger_cancellation_status"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:text="Test"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/passenger_container"
@@ -34,26 +36,35 @@
         android:layout_below="@+id/txt_second_passenger_cancellation_status"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/passenger_number"
-            style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="1. " />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/passenger_name"
-            style="@style/TextView.Small.Bold"
-            android:layout_width="0dp"
-            android:layout_marginEnd="@dimen/dp_3"
-            android:layout_marginRight="@dimen/dp_3"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_weight="1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Nyonya Hetty Koes Endang" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/passenger_category"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
             tools:text="(Dewasa)" />
     </LinearLayout>
 
@@ -62,9 +73,9 @@
         android:id="@+id/recycler_view_passenger_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/passenger_container"
-        android:layout_alignStart="@+id/passenger_container"
         android:layout_below="@+id/passenger_container"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_alignStart="@+id/passenger_container"
+        android:layout_alignLeft="@+id/passenger_container"
+        android:layout_marginTop="@dimen/flight_dp_10"
         android:visibility="gone" />
 </RelativeLayout>

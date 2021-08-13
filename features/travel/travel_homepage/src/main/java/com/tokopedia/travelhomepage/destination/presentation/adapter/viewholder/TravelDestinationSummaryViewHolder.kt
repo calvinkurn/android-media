@@ -3,7 +3,6 @@ package com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder
 import android.text.Html
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -40,7 +39,6 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                     destination_summary_read_more.hide()
                 }
 
-                // Animation
                 val anim1 = TranslateAnimation(0f, 0f, -8f, 0f)
                 anim1.duration = 300
                 anim1.repeatCount = -1
@@ -53,6 +51,10 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
             itemView.shimmering.show()
             itemView.content_destination_summary.hide()
         }
+    }
+
+    fun disableAnimation() {
+        itemView.arrow_up.animation.cancel()
     }
 
     companion object {

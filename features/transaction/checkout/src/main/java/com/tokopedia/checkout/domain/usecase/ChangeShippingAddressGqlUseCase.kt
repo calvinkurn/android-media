@@ -34,10 +34,10 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING
                 .map {
                     val gqlResponse = it.getData<ChangeShippingAddressGqlResponse>(ChangeShippingAddressGqlResponse::class.java)
                     if (gqlResponse != null) {
-                        SetShippingAddressData.Builder()
-                                .success(gqlResponse.changeShippingAddressResponse.dataResponse.success == 1)
-                                .messages(gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList())
-                                .build()
+                        SetShippingAddressData().apply {
+                            isSuccess = gqlResponse.changeShippingAddressResponse.dataResponse.success == 1
+                            messages = gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList()
+                        }
                     } else {
                         throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }

@@ -12,6 +12,8 @@ sealed class LinterConstants {
     object GradleConstructs : LinterConstants() {
         const val DEPENDENCIES = "dependencies"
         const val IMPLEMENTATION = "implementation"
+        const val BUILD_SCRIPT = "buildscript"
+        const val REPOSITORIES = "implementation"
     }
 
     object Libraries : LinterConstants() {
@@ -24,7 +26,6 @@ sealed class LinterConstants {
         const val BOTTOM_SHEET_DIALOG = "com.google.android.material.bottomsheet.BottomSheetDialog"
         const val DIALOG_CLASS_NAME = "android.app.Dialog"
         const val DATE_PICKER = "android.widget.DatePicker"
-        const val FLOATING_BUTTON = "com.tokopedia.design.component.FloatingButton"
         const val FLOATING_ACTION_BUTTON = "com.google.android.material.floatingactionbutton.FloatingActionButton"
         const val SEARCH_BAR_VIEW = "com.tokopedia.autocomplete.searchbar.SearchBarView"
         const val SNACK_BAR = "com.google.android.material.snackbar.Snackbar"
@@ -36,6 +37,7 @@ sealed class LinterConstants {
         const val TOASTER = "com.tokopedia.unifycomponents.Toaster"
         const val DIALOG = "com.tokopedia.dialog.DialogUnify"
         const val DATE_PICKER_UNIFY = "com.tokopedia.datepicker.DatePickerUnify"
+        const val DATE_TIME_PICKER_UNIFY = "com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify"
         const val DATE_PICKER = "com.tokopedia.datepicker.DatePicker"
         const val FLOATING_BUTTON = "com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify"
         const val IMAGE_BUTTON = "com.tokopedia.unifycomponents.UnifyImageButton"

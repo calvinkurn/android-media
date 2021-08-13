@@ -38,13 +38,13 @@ class CreationOnboardingActivity : BaseActivity(), HasComponent<CreateAdsCompone
             onBackPressed()
         }
         header?.actionTextView?.setOnClickListener {
-            startActivity(Intent(this, OnboardingActivity::class.java))
+            startActivity(Intent(this, AdCreationChooserActivity::class.java))
             finish()
         }
 
         btn_submit.setOnClickListener {
             if (view_pager.currentItem == 2) {
-                startActivity(Intent(this, OnboardingActivity::class.java))
+                startActivity(Intent(this, AdCreationChooserActivity::class.java))
                 finish()
             } else
                 view_pager.currentItem = view_pager.currentItem + 1

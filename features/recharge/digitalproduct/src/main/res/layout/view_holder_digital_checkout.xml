@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -19,14 +20,14 @@
     <LinearLayout
         android:id="@+id/container_checkout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_75"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="@dimen/digital_dimen_75"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -35,27 +36,28 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextView.Micro"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/digital_cart_total_payment_label" />
+                android:text="@string/digital_cart_total_payment_label"
+                app:typographyType="body_3"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment"
-                style="@style/TextView.TitleMedium.OrangeRed.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Rp102.500" />
+                tools:text="Rp102.500"
+                app:typographyType="heading_3"
+                android:textColor="@color/Unify_Y500"/>
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_checkout"
             style="@style/Button.Submit.Orange"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/layout_lvl5"
             android:layout_gravity="center_vertical"
-            android:layout_margin="@dimen/dp_0"
+            android:layout_margin="@dimen/layout_lvl0"
             android:layout_weight="1"
             android:text="@string/digital_cart_checkout_pay_label" />
     </LinearLayout>

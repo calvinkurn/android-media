@@ -3,7 +3,8 @@ package com.tokopedia.rechargeocr
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
-import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 
 class RechargeCameraUtil {
 
@@ -15,17 +16,15 @@ class RechargeCameraUtil {
         private const val BOTTOM_DIMEN_DIVIDER = 2.96
 
         @JvmStatic
-        fun trimBitmap(imagePath: String, @ImageUtils.DirectoryDef targetDirectory: String): String {
-            val bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
-                    ImageUtils.DEF_HEIGHT, false)
+        fun trimBitmap(imagePath: String): String {
+            val bitmapToEdit = ImageProcessingUtil.getBitmapFromPath(imagePath, ImageProcessingUtil.DEF_WIDTH,
+                    ImageProcessingUtil.DEF_HEIGHT, false)
             val width = bitmapToEdit!!.width
             val height = bitmapToEdit.height
             var left = 0
             var right = width
             var top = 0
             var bottom = height
-
-            val isPng = ImageUtils.isPng(imagePath)
 
             var outputBitmap: Bitmap? = null
             try {
@@ -41,12 +40,12 @@ class RechargeCameraUtil {
                 val canvas = Canvas(outputBitmap!!)
                 canvas.drawBitmap(bitmapToEdit, Rect(newLeft, newTop, newRight, newBottom),
                         Rect(0, 0, expectedWidth, expectedHeight), null)
-                val file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng)
+                val file = ImageProcessingUtil.writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat())
                 bitmapToEdit.recycle()
                 outputBitmap.recycle()
                 System.gc()
 
-                return file.absolutePath
+                return file?.absolutePath ?: imagePath
             } catch (e: Throwable) {
                 if (outputBitmap != null && !outputBitmap.isRecycled) {
                     outputBitmap.recycle()

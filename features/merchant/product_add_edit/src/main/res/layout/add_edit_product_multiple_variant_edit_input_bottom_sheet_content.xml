@@ -7,6 +7,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_multiple_variant_multi_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerType="information"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/ticker_edit_variant_main_location"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfuPrice"
         android:layout_width="match_parent"

@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 
 
 @Module
-@AttachInvoiceScope
 class AttachInvoiceModule {
 
     @AttachInvoiceScope

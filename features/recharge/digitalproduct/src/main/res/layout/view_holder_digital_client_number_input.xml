@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:background="@color/grey_100">
+    tools:background="@color/Unify_N50">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,14 +30,14 @@
                 android:focusableInTouchMode="true"
                 tools:ignore="UselessLeaf" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_label_client_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/digital_voucher_notes"
-                android:textSize="@dimen/sp_14"
+                android:textColor="@color/Unify_N700_32"
                 android:visibility="gone"
                 tools:text="@string/digital_common_prompt_phone"
+                app:typographyType="body_2"
                 tools:visibility="visible" />
 
             <AutoCompleteTextView
@@ -49,10 +49,10 @@
                 android:focusableInTouchMode="true"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
-                android:popupBackground="@color/white"
-                android:textColor="@color/digital_item_title"
-                android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/sp_14"/>
+                android:popupBackground="@color/Unify_N0"
+                android:textColor="@color/Unify_N700_68"
+                android:textColorHint="@color/Unify_N150"
+                android:textSize="@dimen/unify_font_16"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -68,21 +68,20 @@
                 <ImageView
                     android:id="@+id/iv_pic_operator"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/digital_height_width_25"
+                    android:layout_height="@dimen/layout_lvl3"
                     android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="@dimen/dp_5"
-                    android:layout_marginRight="@dimen/dp_5"
+                    android:layout_marginEnd="@dimen/spacing_lvl2"
+                    android:layout_marginRight="@dimen/spacing_lvl2"
                     android:contentDescription="@string/app_name"
-                    android:paddingBottom="@dimen/digital_padding_5"
+                    android:paddingBottom="@dimen/spacing_lvl2"
                     tools:src="@drawable/digital_common_ic_close_24dp" />
 
-                <Button
+                <ImageView
                     android:id="@+id/btn_clear_client_number"
-                    android:layout_width="@dimen/digital_height_width_20"
-                    android:layout_height="@dimen/digital_height_width_25"
+                    android:layout_width="@dimen/spacing_lvl5"
+                    android:layout_height="@dimen/spacing_lvl5"
                     android:layout_gravity="end|center_vertical"
-                    android:background="@drawable/digital_bg_widget_close"
-                    android:paddingBottom="@dimen/digital_padding_5" />
+                    app:srcCompat="@drawable/digital_bg_widget_close" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -92,28 +91,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="0.12"
-            android:paddingBottom="@dimen/dp_9"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
             tools:visibility="visible">
 
             <Button
                 android:id="@+id/btn_contact_picker"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
                 android:layout_marginEnd="4dp"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginRight="4dp"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/layout_lvl1"
                 android:visibility="gone"
                 android:background="@drawable/digital_ic_phonebook_widget" />
 
             <ImageView
                 android:id="@+id/btn_camera_picker"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
                 android:layout_marginEnd="4dp"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginRight="4dp"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/layout_lvl1"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_product_action_camera_grayscale_24" />
 
@@ -121,18 +117,18 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_error_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/digital_padding_4"
+        android:paddingBottom="@dimen/spacing_lvl2"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/dp_3"
+        android:paddingLeft="@dimen/spacing_lvl2"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/dp_3"
+        android:paddingStart="@dimen/spacing_lvl2"
         android:text="@string/digital_common_title_empty_stock"
-        android:textColor="@color/red_600"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/Unify_R600"
+        app:typographyType="body_3"
         android:visibility="gone"
         tools:visibility="visible" />
 

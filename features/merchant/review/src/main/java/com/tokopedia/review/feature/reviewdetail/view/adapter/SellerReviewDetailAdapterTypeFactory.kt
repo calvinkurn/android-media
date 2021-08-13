@@ -28,12 +28,12 @@ class SellerReviewDetailAdapterTypeFactory(private val listener: SellerReviewDet
         return ProductRatingFilterViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: LoadingModel): Int {
-        return ShimmerReviewDetailViewHolder.LAYOUT
-    }
-
     override fun type(feedbackErrorUiModel: ProductFeedbackErrorUiModel): Int {
         return FeedbackErrorViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel?): Int {
+        return ShimmerReviewDetailViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -41,9 +41,9 @@ class SellerReviewDetailAdapterTypeFactory(private val listener: SellerReviewDet
             ProductFeedbackDetailViewHolder.LAYOUT -> ProductFeedbackDetailViewHolder(parent, productFeedbackDetailListener)
             OverallRatingDetailViewHolder.LAYOUT -> OverallRatingDetailViewHolder(parent, overallRatingDetailListener)
             ProductRatingFilterViewHolder.LAYOUT -> ProductRatingFilterViewHolder(parent,ratingAndTopicsDetailListener)
-            ShimmerReviewDetailViewHolder.LAYOUT -> ShimmerReviewDetailViewHolder(parent)
             TopicViewHolder.LAYOUT -> TopicViewHolder(parent, listener)
             FeedbackErrorViewHolder.LAYOUT -> FeedbackErrorViewHolder(parent)
+            ShimmerReviewDetailViewHolder.LAYOUT -> ShimmerReviewDetailViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

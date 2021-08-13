@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/bg_big_divider"
+    android:background="@color/Unify_N100_32"
     android:paddingTop="@dimen/spacing_lvl4"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/settingnotif_img_desc_icon_section"
             app:srcCompat="@drawable/ic_notifsetting_change_email" />
 
         <LinearLayout
@@ -33,7 +34,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgIcon"
             app:layout_constraintTop_toTopOf="parent">
@@ -42,7 +42,7 @@
                 android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/charcoal_grey_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 tools:text="Notifikasi e-mail akan dikirim ke:" />
@@ -51,7 +51,7 @@
                 android:id="@+id/txtChangeType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/charcoal_grey_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="isfaaghyth@gmail.com" />
@@ -62,9 +62,8 @@
             android:id="@+id/btnChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/settingnotif_green_600"
+            android:textColor="@color/Unify_G500"
             android:layout_marginEnd="@dimen/setting_notif_dp_12"
-            android:layout_marginRight="@dimen/setting_notif_dp_12"
             android:layout_marginBottom="@dimen/setting_notif_dp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

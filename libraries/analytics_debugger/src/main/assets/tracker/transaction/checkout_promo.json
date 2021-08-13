@@ -1,0 +1,20 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click promo section with promo (?:applied|not applied)",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "eventAction": "view promo already applied in checkout list",
+      "eventCategory": "courier selection",
+      "event": "viewCourierIris",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    }
+  ],
+  "readme": "Checkout Page Tracking - Promo Section"
+}

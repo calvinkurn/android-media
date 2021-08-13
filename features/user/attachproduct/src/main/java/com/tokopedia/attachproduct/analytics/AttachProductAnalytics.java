@@ -34,12 +34,12 @@ public class AttachProductAnalytics {
         );
     }
 
-    public static AttachProductEventTracking getEventCheckProductTalk(int productId) {
+    public static AttachProductEventTracking getEventCheckProductTalk(String productId) {
         return new AttachProductEventTracking(
                 "clickInboxChat",
                 "inbox - talk",
                 "attach product",
-                String.valueOf(productId)
+                productId
         );
     }
 

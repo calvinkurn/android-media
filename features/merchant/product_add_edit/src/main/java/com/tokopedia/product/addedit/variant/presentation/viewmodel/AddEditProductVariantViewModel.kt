@@ -107,6 +107,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun getVariantCategoryCombination(categoryId: Int, selections: List<SelectionInputModel>) {
+        if (categoryId <= 0) return // only execute valid ID
         var productVariants = mutableListOf<String>()
         var type = ADD_MODE
         isEditMode.value?.let { isEdit ->
@@ -472,7 +473,9 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            productVariant.pictures = variantPicture
+            if (variantPicture.isNotEmpty()) { // prevent clearing variant
+                productVariant.pictures = variantPicture
+            }
             productVariant
         }
     }

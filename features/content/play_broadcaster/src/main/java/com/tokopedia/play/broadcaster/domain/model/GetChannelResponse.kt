@@ -55,7 +55,9 @@ data class GetChannelResponse(
             @SerializedName("enableChat")
             val enableChat: Boolean = false,
             @SerializedName("status")
-            val status: ChannelBasicStatus = ChannelBasicStatus()
+            val status: ChannelBasicStatus = ChannelBasicStatus(),
+            @SerializedName("timestamp")
+            val timestamp: Timestamp = Timestamp()
     )
 
     data class ChannelBasicStatus(
@@ -63,6 +65,11 @@ data class GetChannelResponse(
             val id: String = "",
             @SerializedName("text")
             val text: String = ""
+    )
+
+    data class Timestamp(
+            @SerializedName("publishedAt")
+            val publishedAt: String = ""
     )
 
     data class Author(

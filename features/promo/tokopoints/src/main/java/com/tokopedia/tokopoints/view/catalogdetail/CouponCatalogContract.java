@@ -29,9 +29,7 @@ public interface CouponCatalogContract {
 
         Resources getResources();
 
-        void redeemCoupon(String cta, String code, String title, String description);
-
-        void checkValidation(CatalogsValueEntity item, String title, String message, int resCode);
+        void redeemCoupon(String cta, String code, String title, String description , String redeemMessage);
 
         void onRealCodeReFresh(String realCode);
 

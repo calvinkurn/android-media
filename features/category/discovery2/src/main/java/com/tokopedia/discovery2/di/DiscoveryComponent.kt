@@ -7,11 +7,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
@@ -35,7 +35,6 @@ interface DiscoveryComponent {
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)
     fun inject(productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel)
     fun inject(productCardRevampViewModel: ProductCardRevampViewModel)
-    fun inject(cpmTopAdsViewModel: CpmTopAdsViewModel)
     fun inject(tabsViewModel: TabsViewModel)
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
@@ -46,4 +45,7 @@ interface DiscoveryComponent {
     fun inject(loadMoreViewModel: LoadMoreViewModel)
     fun inject(quickCouponViewModel: QuickCouponViewModel)
     fun inject(quickFilterViewModel: QuickFilterViewModel)
+    fun inject(emptyStateViewModel: EmptyStateViewModel)
+
+    fun provideSubComponent() : UIWidgetComponent
 }

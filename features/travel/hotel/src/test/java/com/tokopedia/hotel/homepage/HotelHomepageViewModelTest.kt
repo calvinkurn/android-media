@@ -6,7 +6,8 @@ import com.tokopedia.common.travel.data.entity.TravelMetaModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -15,6 +16,7 @@ import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -47,7 +49,9 @@ class HotelHomepageViewModelTest {
     @RelaxedMockK
     lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
+
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelHomepageViewModel: HotelHomepageViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -56,7 +60,7 @@ class HotelHomepageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         hotelHomepageViewModel = HotelHomepageViewModel(this.graphqlRepository, getTravelCollectiveBannerUseCase,
-                travelRecentSearchUseCase, getPropertyPopularUseCase, dispatcher)
+                travelRecentSearchUseCase, getPropertyPopularUseCase, travelTickerCoroutineUseCase, dispatcher)
     }
 
     @Test
@@ -279,5 +283,41 @@ class HotelHomepageViewModelTest {
         //then
         assert(hotelHomepageViewModel.deleteRecentSearch.value != null)
         assert(hotelHomepageViewModel.deleteRecentSearch.value is Fail)
+    }
+
+    @Test
+    fun getTickerData_shouldData() {
+        //given
+        val title = "Title ABC"
+        val message = "this is a message"
+        val response = TravelTickerModel(title = title, message = message, url = "", type = 0, status = 0,
+                        endTime = "", startTime = "", instances = 0, page = "", isPeriod = true)
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Success(response)
+
+        //when
+        hotelHomepageViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelHomepageViewModel.tickerData.value
+        assert(actual is Success)
+        assert((actual as Success).data.title == title)
+        assert(actual.data.message == message)
+    }
+
+    @Test
+    fun getTickerData_shouldReturnFail() {
+        //given
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        hotelHomepageViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelHomepageViewModel.tickerData.value
+        assert(actual is Fail)
     }
 }

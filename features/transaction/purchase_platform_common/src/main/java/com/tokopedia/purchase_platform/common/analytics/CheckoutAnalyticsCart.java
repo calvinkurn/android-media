@@ -1167,7 +1167,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    public void eventClickWishlistIcon(String userId){
+    public void eventClickWishlistIcon(String userId) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_WISHLIST,
                 EventCategory.CART,
@@ -1181,7 +1181,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    public void eventClickRemoveWishlist(String userId, String productId){
+    public void eventClickRemoveWishlist(String userId, String productId) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_WISHLIST,
                 EventCategory.CART,
@@ -1206,6 +1206,84 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
         gtmData.put(ExtraKey.USER_ID, userId);
 
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickBackNavToolbar(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_NAVIGATION_DRAWER,
+                EventCategory.CART,
+                EventAction.CLICK_BACK_BUTTON_NAV,
+                ""
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE);
+        gtmData.put(ExtraKey.PAGE_TYPE, "");
+        gtmData.put(ExtraKey.PAGE_PATH, "");
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickTopNavMenuNavToolbar(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_NAVIGATION_DRAWER,
+                EventCategory.CART,
+                EventAction.CLICK_GLOBAL_MENU_NAV,
+                ""
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE);
+        gtmData.put(ExtraKey.PAGE_TYPE, "");
+        gtmData.put(ExtraKey.PAGE_PATH, "");
+
+        sendGeneralEvent(gtmData);
+    }
+
+
+    // Global checkbox resurrection
+
+    public void eventCheckUncheckGlobalCheckbox(boolean isCheck) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                isCheck ? EventLabel.CHECKLIST : EventLabel.UN_CHECKLIST
+        );
+    }
+
+    public void eventClickGlobalDelete() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_ON_TOP_RIGHT_CORNER
+        );
+    }
+
+    // TokoNow
+
+    public void eventViewToasterErrorInCartPage(String errorMessage) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_CART_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TOASTER_ERROR_IN_CART_PAGE,
+                errorMessage
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventLoadCartWithUnavailableProduct(String shopId, String errorGrouping) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_CART_IRIS,
+                EventCategory.CART,
+                EventAction.LOAD_CART_WITH_UNAVAILABLE_PRODUCT,
+                shopId + " - " + errorGrouping
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
         sendGeneralEvent(gtmData);
     }
 }

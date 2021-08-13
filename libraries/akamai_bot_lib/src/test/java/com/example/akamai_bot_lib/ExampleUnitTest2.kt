@@ -2,6 +2,7 @@ package com.example.akamai_bot_lib
 
 import com.tokopedia.akamai_bot_lib.*
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
@@ -11,6 +12,10 @@ import java.util.*
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class ExampleUnitTest2 {
+
+    @Rule @JvmField
+    public val timberConsoleTree = TimberConsoleRule()
+
     @Test
     fun addition_isCorrect() {
         Assert.assertEquals(4, 2 + 2.toLong())

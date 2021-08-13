@@ -11,7 +11,7 @@ enum class ExploreCardType(val typeString: String) {
     Unknown("");
 
     companion object {
-        val values = values()
+        private val values = values()
 
         @JvmStatic
         fun getCardTypeByString(typeString: String): ExploreCardType {

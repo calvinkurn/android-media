@@ -17,7 +17,6 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoCreationView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
-import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoPostView
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
@@ -30,10 +29,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
-import java.util.*
 import javax.inject.Inject
 
 class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener {
@@ -68,8 +65,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     private val partialViews by lazy {
         return@lazy mapOf(
                 LayoutType.ON_GOING_PROMO to createOnGoingPromoView(),
-                LayoutType.PROMO_CREATION to createPromoRecommendationView(),
-                LayoutType.POST to createPromoPostView()
+                LayoutType.PROMO_CREATION to createPromoRecommendationView()
         )
     }
 
@@ -131,12 +127,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             coachMarkListener = this,
             showCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
 
-    private fun createPromoPostView() = PartialCentralizedPromoPostView(
-            view = layoutCentralizedPromoPostList,
-            adapterTypeFactory = adapterTypeFactory,
-            coachMarkListener = this,
-            showCoachMark = false)
-
     private fun setupView() {
         swipeRefreshLayout.setOnRefreshListener {
             refreshLayout()
@@ -147,8 +137,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         partialViews.forEach { it.value.renderLoading() }
         getLayoutData(
                 LayoutType.ON_GOING_PROMO,
-                LayoutType.PROMO_CREATION,
-                LayoutType.POST
+                LayoutType.PROMO_CREATION
         )
     }
 
@@ -178,7 +167,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     private fun Fail.onFailedGetLayoutData(layoutType: LayoutType) {
-        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
+        SellerHomeErrorHandler.logException(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
         partialViews[layoutType]?.renderError(this.throwable)
         showErrorToaster()
     }
@@ -217,12 +206,11 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        Toaster.make(this, context.getString(R.string.sah_failed_to_get_information),
-                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload),
-                View.OnClickListener {
-                    refreshLayout()
-                }
-        )
+        Toaster.build(this, context.getString(R.string.sah_failed_to_get_information),
+                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
+        ) {
+            refreshLayout()
+        }.show()
 
         Handler().postDelayed({
             isErrorToastShown = false

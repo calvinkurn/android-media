@@ -1,9 +1,13 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+
 
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
+        val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+        val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
         val layoutName: String = "",
         val pdpSession: String = ""
 ) {
@@ -12,28 +16,25 @@ data class DynamicProductInfoP1(
 
     fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
 
-    val isPreOrder: Boolean
-        get() = data.preOrder.isActive
-
     val isUsingOvo: Boolean
         get() = data.campaign.isUsingOvo
 
-    val isLeasing: Boolean
-        get() = basic.isLeasing
-
     val shopTypeString: String
         get() {
-            return if (data.isOS)
-                "official_store"
-            else if (data.isPowerMerchant)
-                "gold_merchant"
-            else
-                "reguler"
+            return when {
+                basic.isTokoNow -> ProductDetailCommonConstant.VALUE_TOKONOW
+                data.isOS -> ProductDetailCommonConstant.VALUE_OFFICIAL_STORE
+                data.isPowerMerchant -> ProductDetailCommonConstant.VALUE_GOLD_MERCHANT
+                else -> ProductDetailCommonConstant.VALUE_REGULER
+            }
         }
+
+    val isProductParent: Boolean
+        get() = data.variant.isVariant && basic.productID == data.variant.parentID
 
     val parentProductId: String
         get() =
-            if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {
+            if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {
                 data.variant.parentID
             } else {
                 basic.productID
@@ -42,7 +43,7 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
-    val finalPrice: Int
+    val finalPrice: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.discountedPrice
@@ -51,12 +52,12 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val priceBeforeInt: Int
+    val priceBeforeDouble: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.originalPrice
             } else {
-                0
+                0.0
             }
         }
 
@@ -68,10 +69,6 @@ data class DynamicProductInfoP1(
                 ""
             }
         }
-
-    fun checkImei(imeiRemoteConfig: Boolean): Boolean {
-        return imeiRemoteConfig && data.campaign.isCheckImei
-    }
 
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {

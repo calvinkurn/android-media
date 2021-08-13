@@ -3,13 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -26,9 +24,11 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-private const val PRODUCT_PER_PAGE = 10
+const val PRODUCT_PER_PAGE = 10
+private const val RESET_HEIGHT = 0
+
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-    private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val productCarouselHeaderData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
@@ -39,57 +39,79 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
-    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
+    fun getProductCardHeaderData(): LiveData<ComponentsItem?> = productCarouselHeaderData
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
-    init {
-        initDaggerInject()
-        components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
-            productCarouselHeaderData.value = lihatSemuaComponentData
-        }
-    }
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
-
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
+        handleLihatSemuaHeader()
+        handleErrorState()
         fetchProductCarouselData()
     }
 
-    private fun fetchProductCarouselData() {
+    private fun handleErrorState() {
+        if(components.verticalProductFailState){
+            productLoadError.value = true
+        }
+    }
+
+    private fun handleLihatSemuaHeader() {
+        var lihatSemuaComponentData: ComponentsItem? = null
+        components.lihatSemua?.let {
+//            we don't add header component in case after when query is hit but no list of products were found.
+            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem().isNullOrEmpty()))
+                it.run {
+                    val lihatSemuaDataItem = DataItem(title = header,
+                            subtitle = subheader, btnApplink = applink)
+                    lihatSemuaComponentData = ComponentsItem(
+                            name = ComponentsList.ProductCardCarousel.componentName,
+                            data = listOf(lihatSemuaDataItem),
+                            creativeName = components.creativeName)
+                }
+        }
+        productCarouselHeaderData.value = lihatSemuaComponentData
+    }
+
+    fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)
+            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+            components.shouldRefreshComponent = null
             setProductsList()
         }, onError = {
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
             productLoadError.value = true
-            it.printStackTrace()
         })
+    }
+
+    fun resetComponent(){
+        components.noOfPagesLoaded = 0
+        components.pageLoadedCounter = 1
     }
 
     private suspend fun setProductsList() {
         getProductList()?.let {
             if (it.isNotEmpty()) {
                 productLoadError.value = false
-                if (components.name == ComponentsList.ProductCardCarousel.componentName) {
-                    getMaxHeightProductCard(it)
-                }
+                reSyncProductCardHeight(it)
                 productCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
+                maxHeightProductCard.value = RESET_HEIGHT
                 productLoadError.value = true
             }
+        }
+    }
+
+    private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
+        if (components.name == ComponentsList.ProductCardCarousel.componentName
+                || components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName) {
+            getMaxHeightProductCard(list)
         }
     }
 
@@ -97,7 +119,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
-                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
+                dataItem.hasNotifyMe = (dataItem.notifyMe != null)
+                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
@@ -107,9 +130,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)) {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
+                    reSyncProductCardHeight(it)
                     productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }
@@ -121,10 +145,12 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    private fun paginatedErrorData() {
+    private suspend fun paginatedErrorData() {
+        components.horizontalProductFailState = true
         getProductList()?.let {
             isLoading = false
-            productCarouselList.value = it
+            reSyncProductCardHeight(it)
+            productCarouselList.value = addErrorReLoadView(it)
             syncData.value = true
         }
     }
@@ -143,6 +169,18 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
         return productLoadState
     }
+    private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
+        val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        productLoadState.addAll(productDataList)
+        productLoadState.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.CarouselErrorLoad.componentName
+            parentComponentPosition = components.position
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productLoadState
+    }
 
     fun isUserLoggedIn() = UserSession(application).isLoggedIn
 
@@ -156,7 +194,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun isLoadingData() = isLoading
 
 
-    private fun getProductList(): ArrayList<ComponentsItem>? {
+    fun getProductList(): ArrayList<ComponentsItem>? {
         components.getComponentsItem()?.let { productList ->
             return productList as ArrayList<ComponentsItem>
         }
@@ -164,4 +202,26 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     }
 
     fun getPageSize() = PRODUCT_PER_PAGE
+
+    override fun refreshProductCarouselError(){
+        getProductList()?.let {
+            isLoading = false
+            productCarouselList.value = it
+            syncData.value = true
+        }
+    }
+
+    fun areFitterApplied():Boolean{
+        return ((components.selectedSort != null && components.selectedFilters != null) &&
+            (components.selectedSort?.isNotEmpty() == true ||
+                    components.selectedFilters?.isNotEmpty() == true))
+    }
+
+    fun getErrorStateComponent():ComponentsItem{
+        return ComponentsItem(name = ComponentNames.ProductListEmptyState.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.ProductListEmptyState.componentName
+        }
+    }
 }

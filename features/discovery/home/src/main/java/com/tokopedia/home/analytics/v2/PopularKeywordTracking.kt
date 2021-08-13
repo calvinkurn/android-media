@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -20,12 +19,18 @@ object PopularKeywordTracking: BaseTrackerConst() {
     private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
     private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
 
+    // / - p{{x}} - popular keyword banner - {recomm_algo} - {keyword name}}",
+    private const val POPULAR_KEYWORDS_PROMOTION_NAME = "/ - p%s - popular keyword banner - %s - %s"
+
     fun getPopularKeywordImpressionItem(
             channel: DynamicHomeChannel.Channels,
-            position: Int, keyword: String,
-            positionInWidget: Int) : Map<String, Any> {
+            position: Int,
+            popularKeywordDataModel: PopularKeywordDataModel,
+            positionInWidget: Int,
+            userId: String
+    ) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
-        return trackerBuilder
+        trackerBuilder
                 .constructBasicPromotionView(
                         event = Event.PROMO_VIEW,
                         eventCategory = Category.HOMEPAGE,
@@ -35,11 +40,18 @@ object PopularKeywordTracking: BaseTrackerConst() {
                                 Promotion(
                                         id = channel.id,
                                         creative = channel.name,
-                                        name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
+                                        name = POPULAR_KEYWORDS_PROMOTION_NAME
+                                                .format(
+                                                        positionInWidget,
+                                                        popularKeywordDataModel.recommendationType,
+                                                        popularKeywordDataModel.title),
                                         position = (position + 1).toString()
                                 ))
                 )
-                .build()
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+        return trackerBuilder.build()
     }
 
     fun getPopularKeywordImpressionIris(
@@ -57,7 +69,11 @@ object PopularKeywordTracking: BaseTrackerConst() {
                             Promotion(
                                     id = channel.id,
                                     creative = channel.name,
-                                    name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, data.title),
+                                    name = POPULAR_KEYWORDS_PROMOTION_NAME
+                                            .format(
+                                                    positionInWidget,
+                                                    data.recommendationType,
+                                                    data.title),
                                     position = (pos + 1).toString()
                             )
 
@@ -68,20 +84,27 @@ object PopularKeywordTracking: BaseTrackerConst() {
 
     fun getPopularKeywordClickItem(
             channel: DynamicHomeChannel.Channels,
-            position: Int, keyword: String,
-            positionInWidget: Int): Map<String, Any> {
+            position: Int,
+            popularKeywordDataModel: PopularKeywordDataModel,
+            positionInWidget: Int,
+            userId: String
+    ): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
-        return trackerBuilder
+        trackerBuilder
                 .constructBasicPromotionClick(
                     event = Event.PROMO_CLICK,
                     eventCategory = Category.HOMEPAGE,
                     eventAction = CLICK_POPULAR_KEYWORDS,
-                    eventLabel = String.format(Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+                    eventLabel = String.format(Label.FORMAT_2_ITEMS, channel.header.name, popularKeywordDataModel.title),
                     promotions = listOf(
                             Promotion(
                                     id = channel.id,
                                     creative = channel.name,
-                                    name = Ecommerce.PROMOTION_NAME.format(positionInWidget, POPULAR_KEYWORDS_NAME, keyword),
+                                    name = POPULAR_KEYWORDS_PROMOTION_NAME
+                                            .format(
+                                                    positionInWidget,
+                                                    popularKeywordDataModel.recommendationType,
+                                                    popularKeywordDataModel.title),
                                     position = (position + 1).toString()
                             )))
                 .appendChannelId(channel.id)
@@ -90,25 +113,34 @@ object PopularKeywordTracking: BaseTrackerConst() {
                 .appendAttribution(channel.galaxyAttribution)
                 .appendShopId(channel.brandId)
                 .appendCampaignCode(channel.campaignCode)
-                .build()
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                return trackerBuilder.build()
     }
 
-    fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword, positionInWidget))
+    fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int, userId: String) {
+        getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, popularKeywordDataModel, positionInWidget, userId))
     }
 
-    fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
-        return DataLayer.mapOf(
-                Event.KEY, CustomEvent.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
-                Label.KEY, channel.header.name,
-                ChannelId.KEY, channel.id
-        ) as HashMap<String, Any>
+    fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels, userId: String): HashMap<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        trackerBuilder.constructBasicGeneralClick(
+                event = Event.CLICK_HOMEPAGE,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_POPULAR_KEYWORDS_RELOAD,
+                eventLabel = channel.header.name
+        )
+                .appendChannelId(channel.id)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+
+        return trackerBuilder.build() as HashMap<String, Any>
     }
 
-    fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
-        getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
+    fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels, userId: String) {
+        getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel, userId))
     }
 
 }

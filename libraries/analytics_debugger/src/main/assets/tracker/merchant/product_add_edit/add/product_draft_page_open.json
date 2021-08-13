@@ -1,0 +1,10 @@
+{
+  "readme": "open product draft page",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/draft product page",
+      "pageSource": "/add-product"
+    }
+  ]
+}

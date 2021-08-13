@@ -4,9 +4,7 @@ import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.SubTitle
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
@@ -17,6 +15,9 @@ import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.stringToDate
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import java.util.*
 
 /**
@@ -71,7 +72,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
             activity?.run {
                 fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate,
-                        true, TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate))
+                        true, (minDate ?: DateUtil.getCurrentCalendar().time).toString(TRAVEL_CAL_YYYY_MM_DD))
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -86,10 +87,10 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
-            val dateFare = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare)
+            val dateFare = it.dateFare.toDate(DateUtil.YYYY_MM_DD)
             minDate?.let { date ->
                 subTitleList.add(SubTitle(dateFare,
-                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
             }
         }
         return subTitleList
@@ -97,7 +98,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
     override fun onDateInClicked(dateIn: Date) {
         calendar.showSubTitle(false)
-        fareCalendarViewModel.calculateRoundTripFareCalendar(TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, dateIn))
+        fareCalendarViewModel.calculateRoundTripFareCalendar(dateIn.toString(TRAVEL_CAL_YYYY_MM_DD))
     }
 
     companion object {

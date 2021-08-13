@@ -32,7 +32,7 @@ import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     private int TYPE_FRAGMENT;
 
     private VerticalSpaceItemDecoration spaceItemDecoration;
-    private ExploreSectionViewModel data;
+    private ExploreSectionDataModel data;
 
     public static ExploreFragment newInstance(int position) {
 
@@ -316,7 +316,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     }
 
-    public void setData(ExploreSectionViewModel data) {
+    public void setData(ExploreSectionDataModel data) {
         this.data = data;
         renderData();
     }

@@ -6,14 +6,18 @@ import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.*
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
+import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
-class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: CoroutineDispatcher,
+class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDispatcher,
                                                 @Named(IO) workerDispatcher: CoroutineDispatcher,
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
                                                 val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
@@ -31,8 +35,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     val giftBoxLiveData: MutableLiveData<LiveDataResult<Pair<GiftBoxEntity, RemindMeCheckEntity>>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
     val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
-    val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
-
+    var autoApplycallback: AutoApplyCallback?=null
     var rewardJob: Job? = null
     var remindMeJob: Job? = null
 
@@ -73,6 +76,20 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             reminderSetLiveData.postValue(LiveDataResult.loading())
             remindMeJob = launchCatchError(block = {
                 val response = remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(about))
+                response.gameRemindMe.requestToSetReminder = true
+                reminderSetLiveData.postValue(LiveDataResult.success(response))
+            }, onError = {
+                reminderSetLiveData.postValue(LiveDataResult.error(it))
+            })
+        }
+    }
+
+    fun unSetReminder() {
+        if (remindMeJob == null || remindMeJob!!.isCompleted) {
+            reminderSetLiveData.postValue(LiveDataResult.loading())
+            remindMeJob = launchCatchError(block = {
+                val response = remindMeUseCase.getUnSetRemindMeResponse(remindMeUseCase.getRequestParams(about))
+                response.gameRemindMe.requestToSetReminder = false
                 reminderSetLiveData.postValue(LiveDataResult.success(response))
             }, onError = {
                 reminderSetLiveData.postValue(LiveDataResult.error(it))
@@ -89,7 +106,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
             var ids = arrayListOf<String>()
             response.gamiCrack.benefits?.forEach {
-                if (!it.referenceID.isNullOrEmpty()) {
+                if (!it.referenceID.isNullOrEmpty() && it.displayType == DisplayType.CATALOG) {
                     ids.add(it.referenceID)
                 }
             }
@@ -108,9 +125,15 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             val map = autoApplyUseCase.getQueryParams(code)
             var response: AutoApplyResponse
             response = autoApplyUseCase.getResponse(map)
-            autoApplyLiveData.postValue(LiveDataResult.success(response))
+            withContext(ui) {
+                autoApplycallback?.success(response)
+            }
         }, onError = {
-            autoApplyLiveData.postValue(LiveDataResult.error(it))
+            Timber.e(it)
         })
     }
+}
+
+interface AutoApplyCallback {
+    fun success(response: AutoApplyResponse?)
 }

@@ -14,5 +14,5 @@ data class ChatDeleteList(
 data class ChatDelete(
         @Expose @SerializedName("IsSuccess") var isSuccess: Int,
         @Expose @SerializedName("DetailResponse") var detailResponse: String,
-        @Expose @SerializedName("MsgID") var messageId: Int
+        @Expose @SerializedName("MsgID") var messageId: Long
 )

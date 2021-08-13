@@ -2,7 +2,6 @@ package com.tokopedia.promocheckoutmarketplace.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutFragment
-import com.tokopedia.sellerorder.common.di.PromoCheckoutModule
 import dagger.Component
 
 @PromoCheckoutMarketplaceScope

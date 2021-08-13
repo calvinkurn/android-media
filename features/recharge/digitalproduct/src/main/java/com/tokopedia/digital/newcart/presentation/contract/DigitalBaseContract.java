@@ -13,6 +13,7 @@ import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParam
 import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.FintechProduct;
 import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
 import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -81,7 +82,7 @@ public interface DigitalBaseContract {
 
         String getClientNumber();
 
-        int getOrderId();
+        long getOrderId();
 
         String getZoneId();
 
@@ -122,11 +123,23 @@ public interface DigitalBaseContract {
         void failedCancelVoucherCart(Throwable message);
 
         void showError(String message);
+
+        void renderMyBillsEgoldView(FintechProduct fintechProduct);
+
+        void updateTotalPriceWithFintechAmount();
+
+        void renderEgoldMoreInfo(String title, String tooltip, String linkUrl);
+
+        Boolean isEgoldChecked();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {
 
         void onViewCreated();
+
+        void onClickPromoButton();
+
+        void onClickPromoDetail();
 
         void onReceivePromoCode(PromoData promoData);
 
@@ -137,6 +150,12 @@ public interface DigitalBaseContract {
         void processPatchOtpCart(String categoryId);
 
         void processGetCartDataAfterCheckout(String categoryId);
+
+        void onEgoldMoreInfoClicked();
+
+        void onEgoldCheckedListener(Boolean checked, Long inputPrice);
+
+        void updateTotalPriceWithFintechAmount(Boolean checked, Long inputPrice);
 
         void cancelVoucherCart();
     }

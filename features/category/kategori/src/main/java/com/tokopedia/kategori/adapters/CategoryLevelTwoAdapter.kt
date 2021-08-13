@@ -152,7 +152,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             if (it.isEmpty()) {
                 val shape = GradientDrawable()
                 shape.cornerRadius = 17.0f
-                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(R.color.category_Blue_B500))
+                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_B500))
                 productHeaderViewHolder.productHeaderRoot.background = shape
             } else {
                 setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, it)

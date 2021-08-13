@@ -17,16 +17,16 @@
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back_address"
+                app:icon_name="ARROW_BACK"
                 tools:ignore="ContentDescription" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -53,7 +53,7 @@
                 android:text="@string/tambah_alamat"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/unify_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="ContentDescription" />
 

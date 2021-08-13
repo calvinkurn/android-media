@@ -1,0 +1,12 @@
+[
+  {
+    "data": {
+      "orderFilterSom": {
+        "waiting_payment_counter": {
+          "text": "Menunggu Pembayaran",
+          "amount": 10
+        }
+      }
+    }
+  }
+]

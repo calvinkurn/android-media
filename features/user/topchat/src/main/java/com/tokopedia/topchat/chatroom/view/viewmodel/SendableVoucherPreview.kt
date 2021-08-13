@@ -6,9 +6,10 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTA
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
 class SendableVoucherPreview(
@@ -33,10 +34,15 @@ class SendableVoucherPreview(
         return attachmentPreviewFactory.type(this)
     }
 
-    override fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>) {
+    override fun generateMsgObj(
+        messageId: String,
+        opponentId: String,
+        message: String,
+        listInterceptor: List<Interceptor>,
+        userLocationInfo: LocalCacheModel
+    ): Any {
         val voucherPayload = generatePayload(messageId, opponentId)
-        val stringJsonPayload = CommonUtil.toJson(voucherPayload)
-        RxWebSocket.send(stringJsonPayload, listInterceptor)
+        return CommonUtil.toJson(voucherPayload)
     }
 
     private fun generatePayload(messageId: String, opponentId: String): WebsocketAttachmentContract {
@@ -57,7 +63,7 @@ class SendableVoucherPreview(
                 voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
-                messageId.toInt(),
+                messageId.toLongOrZero(),
                 getMessageFormat(),
                 "inbox",
                 TYPE_VOUCHER_ATTACHMENT,

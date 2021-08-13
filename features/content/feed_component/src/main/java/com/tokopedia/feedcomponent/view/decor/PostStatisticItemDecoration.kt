@@ -17,7 +17,7 @@ class PostStatisticItemDecoration(context: Context) : RecyclerView.ItemDecoratio
     private val dividerLeftInset = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N75)
+        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

@@ -14,7 +14,7 @@
         app:spanCount="2"
         tools:listitem="@layout/ent_search_event_grid_item"
         tools:itemCount="5"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"/>
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"/>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -12,8 +12,4 @@ object AnalyticsDebuggerConst {
 
     val ENVIRONMENT_TEST = "Test"
     val ENVIRONMENT_PRODUCTION = "Prod"
-
-    val TITLE = "TITLE"
-    val DATA = "DATA"
-    val TIMESTAMP = "TIMESTAMP"
 }

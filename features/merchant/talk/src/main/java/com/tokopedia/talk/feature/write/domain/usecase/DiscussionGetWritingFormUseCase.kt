@@ -42,9 +42,9 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
         setTypeClass(DiscussionGetWritingFormResponseWrapper::class.java)
     }
 
-    fun setParams(productId: Int) {
+    fun setParams(productId: String) {
         setRequestParams(RequestParams.create().apply {
-            putString(PARAM_PRODUCT_ID, productId.toString())
+            putString(PARAM_PRODUCT_ID, productId)
         }.parameters)
     }
 }

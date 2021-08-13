@@ -49,7 +49,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         }
     }
 
-    private fun setReviewCount(countFeedBack: Int) {
+    private fun setReviewCount(countFeedBack: Long) {
         resultFeedbackLabel.text = MethodChecker.fromHtml(view.context.getString(R.string.count_review_label, countFeedBack))
     }
 

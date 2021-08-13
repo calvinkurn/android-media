@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,7 +51,7 @@ import javax.inject.Inject
 
 open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
-    override fun getScreenName(): String = "chat-tab-list"
+    override fun getScreenName(): String = "/new-inbox/chat"
 
     private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()
@@ -105,7 +104,9 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     private fun initBackground() {
         if (GlobalConfig.isSellerApp()) {
-            viewPager?.setBackgroundColor(Color.WHITE)
+            context?.let {
+                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
         }
     }
 
@@ -217,7 +218,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         for (i in 0 until tabList.size) {
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(MethodChecker.getColor(
-                    context, com.tokopedia.design.R.color.white
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_N0
             ))
         }
 
@@ -276,14 +277,14 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun setTabSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(MethodChecker.getColor(
-                context, com.tokopedia.unifyprinciples.R.color.Green_G500
+                context, com.tokopedia.unifyprinciples.R.color.Unify_G500
         ))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
             DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(
-                    context, com.tokopedia.unifycomponents.R.color.Green_G500
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_G500
             ))
         }
     }
@@ -291,14 +292,14 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun setTabUnSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
         titleView?.setTextColor(MethodChecker.getColor(
-                context, com.tokopedia.unifyprinciples.R.color.Neutral_N200
+                context, com.tokopedia.unifyprinciples.R.color.Unify_N200
         ))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
             DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Neutral_N200
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_N200
             ))
         }
     }

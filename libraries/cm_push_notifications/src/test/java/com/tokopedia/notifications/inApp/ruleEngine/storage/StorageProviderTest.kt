@@ -6,18 +6,21 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 
 import org.junit.Test
 import rx.observers.TestSubscriber
+import kotlin.jvm.Throws
 
 class StorageProviderTest {
 
     private val elapsedTimeDao : ElapsedTimeDao = mockk(relaxed = true)
     private val inAppDataDao : InAppDataDao = mockk(relaxed = true)
-    private val storageProvider : StorageProvider = StorageProvider(inAppDataDao, elapsedTimeDao)
+    private val context : StorageProvider.StorageProviderListener = spyk()
+    private val storageProvider : StorageProvider = StorageProvider(inAppDataDao, elapsedTimeDao, context)
 
     @Before
     @Throws(Exception::class)
@@ -64,7 +67,7 @@ class StorageProviderTest {
 
         every { inAppDataDao.getDataForScreen(any()) } returns mockk<List<CMInApp>>()
 
-        storageProvider.getDataFromStore(key)
+        storageProvider.getDataFromStore(key, true)
 
         verify { inAppDataDao.getDataForScreen(any()) }
     }
@@ -124,21 +127,7 @@ class StorageProviderTest {
         val completable = storageProvider.updateInAppDataFreq(id)
         completable.subscribe(testSubscriber)
 
-        every { inAppDataDao.updateFrequency(any()) } returns Unit
-
-        testSubscriber.assertCompleted()
-    }
-
-    @Test
-    fun updateInAppDataFreqWithIdAndNewStartTime() {
-        val id: Long = 123
-        val newStartTime: Long = 123
-
-        val testSubscriber: TestSubscriber<Any> = TestSubscriber()
-        val completable = storageProvider.updateInAppDataFreq(id, newStartTime)
-        completable.subscribe(testSubscriber)
-
-        every { inAppDataDao.updateFrequency(any(), any()) } returns Unit
+        every { inAppDataDao.updateFrequencyWithShownTime(any(), any()) } returns Unit
 
         testSubscriber.assertCompleted()
     }

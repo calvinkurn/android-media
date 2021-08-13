@@ -6,16 +6,21 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM
+import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.Companion.TP_GQL_TOKOPOINT_REDEEM_COUPON
+import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.Companion.TP_GQL_TOKOPOINT_VALIDATE_REDEEM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 
-class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiRequestGraphqlUseCase,
-                                              private val mRedeemCouponUseCase: MultiRequestGraphqlUseCase, private val map: Map<String, String>) {
+class SendGiftRespository @Inject constructor( private val map: Map<String, String>) {
+
+    @Inject
+    lateinit var mStartSendGift: MultiRequestGraphqlUseCase
+
+    @Inject
+    lateinit var mRedeemCouponUseCase: MultiRequestGraphqlUseCase
 
     suspend fun sendGift(id: Int?, email: String, notes: String) = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any?> = HashMap()

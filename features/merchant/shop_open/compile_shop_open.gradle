@@ -1,6 +1,5 @@
 include "features:merchant:shop_open"
 include "features:common:resources_common"
-include "tkpddesign"
 include 'tkpdabstraction'
 include "libraries:inappupdate"
 include "libraries:track"

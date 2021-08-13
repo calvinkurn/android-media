@@ -10,7 +10,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@ShopPageSettingScope
 @Module
 abstract class ShopPageSettingViewModelModule {
 

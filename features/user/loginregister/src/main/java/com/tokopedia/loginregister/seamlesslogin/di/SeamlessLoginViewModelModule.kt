@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-@SeamlessLoginScope
 @Module
 abstract class SeamlessLoginViewModelModule{
 

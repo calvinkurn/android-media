@@ -14,6 +14,9 @@ object SettingTrackingConstant {
     const val VIEW_NAVIGATION_IRIS = "viewNavigationIris"
     const val VIEW_SHOP_SETTING_IRIS = "viewShopSettingIris"
     const val OTHERS_TAB = "others tab"
+    const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
+    const val CLICK_STATISTIC = "clickStatistik"
+    const val CLICK_PRINTING = "clickPrinting"
 
     const val GOLD_MERCHANT = "gold_merchant"
     const val OFFICIAL_STORE = "official_store"
@@ -32,8 +35,9 @@ object SettingTrackingConstant {
     const val SHOP_STATE = "shop state"
     const val ON_SALDO = "on saldo"
     const val ON_TOPADS_CREDIT = "on topads credits"
-    const val SHOP_STATISTIC = "shop statistic"
     const val SHOP_ADS_AND_PROMOTION = "shop ads and promotions"
+    //temporary
+    const val SHOP_PERFORMANCE = "shop performance"
     const val REVIEW = "review"
     const val DISCUSSION = "discussion"
     const val COMPLAINT = "complaint"
@@ -48,6 +52,9 @@ object SettingTrackingConstant {
     const val APP_SETTING = "app settings"
     const val APPLICATION_SETTING = "application settings"
     const val OTHER_SETTING = "other settings"
+    const val SELLER_APP_LAINNYA = "seller app - lainnya"
+    const val IMPRESSION_MENU_STATISTIC = "impression - menu statistik"
+    const val CLICK_MENU_STATISTIC = "click - menu statistik"
 
     const val SHOP_REGULAR_MERCHANT = "RM"
     const val SHOP_POWER_MERCHANT = "PM"
@@ -56,4 +63,12 @@ object SettingTrackingConstant {
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
     const val SHOP_TYPE = "shopType"
+    const val KEY_BUSINESS_UNIT = "businessUnit"
+    const val KEY_CURRENT_SITE = "currentSite"
+
+    const val PHYSICAL_GOODS = "physicalgoods"
+    const val TOKOPEDIASELLER = "tokopediaseller"
+
+    const val ACTION_CLICK_PRINTING = "click printing"
+    const val LABEL_CLICK_PRINTING = "local services - printing"
 }

@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
 data class ChatSocketPojo(
         @SerializedName("msg_id")
         @Expose
-        var msgId: Int = 0,
+        var msgId: Long = 0L,
         @SerializedName("from_uid")
         @Expose
         var fromUid: String = "",
@@ -23,7 +23,7 @@ data class ChatSocketPojo(
         var fromRole: String = "",
         @SerializedName("to_uid")
         @Expose
-        var toUid: Int = 0,
+        var toUid: Long = 0L,
         @SerializedName("message")
         @Expose
         var message: MessagePojo = MessagePojo(),
@@ -47,10 +47,13 @@ data class ChatSocketPojo(
         var isOpposite: Boolean = false,
         @SerializedName("blast_id")
         @Expose
-        var blastId: Int = 0,
+        var blastId: Long = 0L,
         @SerializedName("source")
         @Expose
-        var source: String = ""
+        var source: String = "",
+        @SerializedName("label")
+        @Expose
+        var label: String = ""
 )
 
 

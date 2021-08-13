@@ -16,14 +16,13 @@
     <string name="error_multiply_budget">Biaya harus kelipatan Rp %1s</string>
 
     <!-- Edit auto ads -->
-    <string name="edit_auto_ads_sheet_desc1">Semakin tinggi anggaran harian, semakin besar potensi produkmu menjangkau lebih banyak pembeli.</string>
-    <string name="edit_auto_ads_sheet_desc2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
-    <string name="edit_auto_ads_sheet_desc3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
-    <string name="edit_auto_ads_sheet_desc4">Jumlah klik produk dipengaruhi oleh kualitas gambar, rating, dan ulasan dari pembeli.</string>
+    <string name="edit_auto_ads_sheet_desc1">Semakin tinggi anggaran harian, semakin tinggi maksimum klik harianmu </string>
+    <string name="edit_auto_ads_sheet_desc2">Semakin tinggi anggaran harian, semakin banyak produk yang akan diiklankan </string>
+    <string name="edit_auto_ads_sheet_desc3">Kamu bisa atur anggaran harian dan hentikan Iklan Otomatis kapan saja</string>
 
 
     //Ad Create Auto
-    <string name="tip_title">Seputar Anggaran Harian</string>
+    <string name="tip_title">Tips anggaran harian</string>
     <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
     <string name="tip_desc_2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
     <string name="tip_desc_3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>

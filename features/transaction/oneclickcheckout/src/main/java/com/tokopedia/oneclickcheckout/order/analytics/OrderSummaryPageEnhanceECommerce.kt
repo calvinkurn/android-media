@@ -84,16 +84,16 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_IS_FULFILLMENT] = isFullfilment.toString()
     }
 
-    fun setShopId(shopId: String) {
-        data[KEY_SHOP_ID] = shopId
+    fun setShopIdDimension(shopId: String) {
+        data[KEY_SHOP_ID_DIMENSION] = shopId
     }
 
-    fun setShopName(shopName: String) {
-        data[KEY_SHOP_NAME] = shopName
+    fun setShopNameDimension(shopName: String) {
+        data[KEY_SHOP_NAME_DIMENSION] = shopName
     }
 
-    fun setShopType(isOfficial: Int, isGold: Int) {
-        data[KEY_SHOP_TYPE] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
+    fun setShopTypeDimension(isOfficial: Int, isGold: Int) {
+        data[KEY_SHOP_TYPE_DIMENSION] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
     }
 
     fun setCategoryId(categoryId: String) {
@@ -127,6 +127,33 @@ class OrderSummaryPageEnhanceECommerce {
                         KEY_PRODUCTS to listOf(data)
                 )
         )
+    }
+
+    fun buildForPP(step: Int, option: String): Map<String, Any> {
+        return mapOf(
+                KEY_CHECKOUT to mapOf(
+                        KEY_ACTION_FIELD to mapOf(
+                                KEY_STEP to step,
+                                KEY_OPTION to option
+                        ),
+                        KEY_PRODUCTS to listOf(mapDataForPP())
+                )
+        )
+    }
+
+    private fun mapDataForPP(): HashMap<String, Any> {
+        val ppData = hashMapOf<String, Any>()
+        data[KEY_BRAND]?.also { ppData[KEY_BRAND] = it }
+        data[KEY_CATEGORY]?.also { ppData[KEY_CATEGORY] = it }
+        data[KEY_ID]?.also { ppData[KEY_ID] = it }
+        data[KEY_NAME]?.also { ppData[KEY_NAME] = it }
+        data[KEY_PRICE]?.also { ppData[KEY_PRICE] = it }
+        data[KEY_QUANTITY]?.also { ppData[KEY_QUANTITY] = it }
+        data[KEY_SHOP_ID_DIMENSION]?.also { ppData[KEY_SHOP_ID] = it }
+        data[KEY_SHOP_NAME_DIMENSION]?.also { ppData[KEY_SHOP_NAME] = it }
+        data[KEY_SHOP_TYPE_DIMENSION]?.also { ppData[KEY_SHOP_TYPE] = it }
+        data[KEY_VARIANT]?.also { ppData[KEY_VARIANT] = it }
+        return ppData
     }
 
     private fun setDefaultIfEmpty(value: String?): String {
@@ -164,9 +191,12 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_COD_FLAG = "dimension10"
         private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension57"
         private const val KEY_IS_FULFILLMENT = "dimension58"
-        private const val KEY_SHOP_ID = "dimension79"
-        private const val KEY_SHOP_NAME = "dimension80"
-        private const val KEY_SHOP_TYPE = "dimension81" //marketplace or official_store or gold_merchant
+        private const val KEY_SHOP_ID_DIMENSION = "dimension79"
+        private const val KEY_SHOP_ID = "shop_id"
+        private const val KEY_SHOP_NAME_DIMENSION = "dimension80"
+        private const val KEY_SHOP_NAME = "shop_name"
+        private const val KEY_SHOP_TYPE_DIMENSION = "dimension81" //marketplace or official_store or gold_merchant
+        private const val KEY_SHOP_TYPE = "shop_type" //marketplace or official_store or gold_merchant
         private const val KEY_CATEGORY_ID = "dimension82"
         private const val KEY_PRODUCT_TYPE = "dimension83"
         private const val KEY_SHIPPING_PRICE = "dimension12"

@@ -1,12 +1,13 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -28,7 +29,7 @@ class EmptyChatViewHolder constructor(
 
     val title: Typography = itemView.findViewById(R.id.title_empty_chat_list)
     val subtitle: Typography = itemView.findViewById(R.id.subtitle)
-    val image: SquareImageView = itemView.findViewById(R.id.thumbnail_empty_chat_list)
+    val image: ImageView = itemView.findViewById(R.id.thumbnail_empty_chat_list)
 
     override fun bind(element: EmptyChatModel) {
         bindText(element)
@@ -51,16 +52,19 @@ class EmptyChatViewHolder constructor(
     }
 
     private fun bindCta(element: EmptyChatModel) {
-        if (element.ctaText.isEmpty() || element.ctaApplink.isEmpty()) {
-            itemView.btnCta?.hide()
-        }
-
-        itemView.btnCta?.text = element.ctaText
-        itemView.btnCta?.setOnClickListener {
-            if (element.isTopAds) {
-                chatListAnalytics.eventClickCtaTopAds()
+        itemView.btnCta?.apply {
+            if (element.ctaText.isEmpty() || element.ctaApplink.isEmpty()) {
+                hide()
+            } else {
+                show()
             }
-            RouteManager.route(it.context, element.ctaApplink)
+            text = element.ctaText
+            setOnClickListener {
+                if (element.isTopAds) {
+                    chatListAnalytics.eventClickCtaTopAds()
+                }
+                RouteManager.route(it.context, element.ctaApplink)
+            }
         }
     }
 

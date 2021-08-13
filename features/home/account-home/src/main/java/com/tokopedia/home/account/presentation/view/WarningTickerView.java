@@ -78,7 +78,7 @@ public class WarningTickerView extends FrameLayout {
     public SpannableString getSpannableText(String fullText, String highlightedText,
                                             LinkClickListener
                                                     listener) {
-        final int color = getContext().getResources().getColor(R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = fullText.indexOf(highlightedText);
         int stopIndex = fullText.length();
         SpannableString description = new SpannableString(fullText);

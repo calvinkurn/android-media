@@ -19,7 +19,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:text="@string/lbl_installment_not_available"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -30,7 +30,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"
-            android:background="@color/background_bottom_sheet_installment"
+            android:background="@color/Unify_N0"
             android:paddingBottom="@dimen/dp_16">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -52,7 +52,7 @@
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:text="@string/lbl_see_installment_terms_and_condition"
-                android:textColor="@color/font_black_secondary_54"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_installment_terms"
                 app:layout_constraintEnd_toStartOf="@+id/iv_expand_terms"
                 app:layout_constraintHorizontal_bias="0"

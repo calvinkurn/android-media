@@ -45,7 +45,7 @@ interface BuyerCardContract {
 
         void setMemberStatus(String status);
 
-        void showSellerAccountCard(String shopName);
+        void showSellerAccountCard(String shopName, String roleName);
 
         void showShopOpenCard();
     }

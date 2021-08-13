@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:card_type="shadow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_8"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/dp_116"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/shop_badge_min_height"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_20"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+            </LinearLayout>
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:card_type="shadow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_8"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/dp_116"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/shop_badge_min_height"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_20"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+            </LinearLayout>
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:card_type="shadow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_8"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/dp_116"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_116"
+                    android:layout_height="@dimen/shop_badge_min_height"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_20"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:loader_type="rect"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:loader_corner_radius="@dimen/dp_4"
+                    />
+
+            </LinearLayout>
+        </com.tokopedia.unifycomponents.CardUnify>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_img"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            app:loader_type="rect"
+            />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_name"
+            android:layout_width="@dimen/dp_156"
+            android:layout_height="@dimen/shop_badge_min_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img"
+            app:loader_type="rect"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_16"
+            app:loader_corner_radius="@dimen/dp_4"
+            />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_count"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_16"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_etalase_name"
+            app:loader_type="rect"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_16"
+            app:loader_corner_radius="@dimen/dp_4"
+            />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_etalase_count"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img"
+            android:background="@color/Unify_N75"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_img1"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_8"
+            app:loader_type="rect"
+            />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_name1"
+            android:layout_width="@dimen/dp_156"
+            android:layout_height="@dimen/shop_badge_min_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img1"
+            app:loader_type="rect"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:loader_corner_radius="@dimen/dp_4"
+            />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_etalase_count1"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_16"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img1"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_etalase_name1"
+            app:loader_type="rect"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:loader_corner_radius="@dimen/dp_4"
+            />
+
+        <View
+            android:id="@+id/item_separator2"
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_etalase_count1"
+            app:layout_constraintLeft_toRightOf="@id/shimmer_etalase_img1"
+            android:background="@color/Unify_N75"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

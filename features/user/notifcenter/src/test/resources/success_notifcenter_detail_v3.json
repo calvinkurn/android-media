@@ -1,0 +1,131 @@
+{
+  "notifcenter_detail_v3": {
+    "paging": {
+      "has_next": true,
+      "has_prev": false
+    },
+    "new_paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_list": [],
+    "list": [
+      {
+        "notif_id": "f70ea541-2d1f-11eb-948c-00163e06660f",
+        "user_id": 49032181,
+        "shop_id": 0,
+        "section_id": "promotion",
+        "section_key": "Promo",
+        "section_icon": "https://cdn.tokopedia.net/img/notif-center/promo.png",
+        "subsection_key": "",
+        "template_key": "buyerinfo_create_2555",
+        "title": "BLACKPINK di WIB TV Show! 🖤💖",
+        "button_text": "Klik di sini",
+        "short_description": "Saksikan di NET, SCTV, Indosiar, dan Youtube Tokopedia!",
+        "short_description_html": "Saksikan di NET, SCTV, Indosiar, dan Youtube Tokopedia!",
+        "is_longer_content": false,
+        "show_bottomsheet": false,
+        "type_bottomsheet": 0,
+        "content": "",
+        "type_of_user": 1,
+        "type_link": 4,
+        "create_time": "Kemarin",
+        "create_time_unix": 1606090087,
+        "update_time": "2020-11-23 08:18:22.929737858 +0700 WIB",
+        "update_time_unix": 1606094302,
+        "expire_time": "2020-11-25 21:30:00 +0700 WIB",
+        "expire_time_unix": 1606314600,
+        "status": 0,
+        "read_status": 1,
+        "data_notification": {
+          "app_link": "tokopedia://discovery/waktu-indonesia-belanja-tv-show",
+          "desktop_link": "https://www.tokopedia.com/discovery/waktu-indonesia-belanja-tv-show",
+          "info_thumbnail_url": "https://ecs7.tokopedia.net/img/cache/480/attachment/2020/11/20/89135878/89135878_2e4ed960-5eb6-4d6b-ba5d-ce654a8b89e6.jpg",
+          "mobile_link": "https://www.tokopedia.com/discovery/waktu-indonesia-belanja-tv-show",
+          "product_name": "",
+          "product_url": "",
+          "checkout_url": ""
+        },
+        "total_product": 0,
+        "product_data": [],
+        "bottomsheet": {
+          "title": "",
+          "button_cta": {
+            "type": 0,
+            "text": "",
+            "link": "",
+            "data": ""
+          },
+          "components": []
+        }
+      },
+      {
+        "notif_id": "0192f0bb-2c88-11eb-862c-00163e02b0aa",
+        "user_id": 49032181,
+        "shop_id": 0,
+        "section_id": "promotion",
+        "section_key": "Promo",
+        "section_icon": "https://cdn.tokopedia.net/img/notif-center/promo.png",
+        "subsection_key": "",
+        "template_key": "buyerinfo_create_2542",
+        "title": "Masih ada diskon langsung 20Rb",
+        "button_text": "Klik di sini",
+        "short_description": "Daftar Kredivo di Tokopedia sekarang, bisa PayLater hingga cicilan 0%! Kode: KRDPAYLATER",
+        "short_description_html": "Daftar Kredivo di Tokopedia sekarang, bisa PayLater hingga cicilan 0%! Kode: KRDPAYLATER",
+        "is_longer_content": false,
+        "show_bottomsheet": false,
+        "type_bottomsheet": 0,
+        "content": "",
+        "type_of_user": 1,
+        "type_link": 0,
+        "create_time": "22 Nov",
+        "create_time_unix": 1606024821,
+        "update_time": "2020-11-22 13:00:21.542041605 +0700 WIB",
+        "update_time_unix": 1606024821,
+        "expire_time": "2020-11-25 23:59:00 +0700 WIB",
+        "expire_time_unix": 1606323540,
+        "status": 0,
+        "read_status": 1,
+        "data_notification": {
+          "app_link": "tokopedia://webview?allow_override=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fkredivo",
+          "desktop_link": "https://www.tokopedia.com/kredivo",
+          "info_thumbnail_url": "",
+          "mobile_link": "https://www.tokopedia.com/kredivo",
+          "product_name": "",
+          "product_url": "",
+          "checkout_url": ""
+        },
+        "total_product": 0,
+        "product_data": [],
+        "bottomsheet": {
+          "title": "",
+          "button_cta": {
+            "type": 0,
+            "text": "",
+            "link": "",
+            "data": ""
+          },
+          "components": []
+        }
+      }
+    ],
+    "user_info": {
+      "user_id": 49032181,
+      "shop_id": 6543079,
+      "email": "",
+      "fullname": "Muh Isfhani Ghiath"
+    },
+    "options": {
+      "longer_content": 150
+    },
+    "empty_state_content": {
+      "content": "",
+      "link": {
+        "desktop_link": "",
+        "mobile_link": "",
+        "android_link": "",
+        "ios_link": ""
+      }
+    }
+  }
+}

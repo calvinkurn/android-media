@@ -1,0 +1,49 @@
+{
+  "checkout_general_v2_instant": {
+    "header": {
+      "process_time": 102.510431,
+      "reason": "",
+      "error_code": "200"
+    },
+    "data": {
+      "success": 1,
+      "error": "",
+      "error_state": 0,
+      "message": "",
+      "data": {
+        "callback_url": "https://staging.tokopedia.com/oldcart/thanks",
+        "parameter": {
+          "amount": 50000
+        },
+        "price_validation": {
+          "is_updated": false,
+          "message": {
+            "action": "",
+            "desc": "",
+            "title": ""
+          }
+        },
+        "product_list": [
+          {
+            "id": "4401",
+            "name": "Jadwal Kita punya",
+            "price": 25000,
+            "quantity": 1
+          },
+          {
+            "id": "4406",
+            "name": "Jadwal Kita punya",
+            "price": 25000,
+            "quantity": 1
+          }
+        ],
+        "query_string": "amount=50000\u0026bid=\u0026currency=IDR\u0026customer_email=muhammad.arifin%2B02%40tokopedia.com\u0026customer_msisdn=628992715130\u0026customer_name=Arifin+buyer\u0026gateway_code=\u0026gateway_option=\u0026items%5Bname%5D=Jadwal+Kita+punya\u0026items%5Bname%5D=Jadwal+Kita+punya\u0026items%5Bprice%5D=25000\u0026items%5Bprice%5D=25000\u0026items%5Bquantity%5D=1\u0026items%5Bquantity%5D=1\u0026language=id-ID\u0026merchant_code=tokopediaevtnew\u0026nid=\u0026payment_metadata=6n0-ChTdwHCPo5fDKUiAuPdvvDjwazQuI8mRVqyHkCMRk8tO5kBgvX4dY85Y2wO7hEDngWgSsg1YrKj_wiL9YvDSIN2nV2gcGru8uR4ORASIGoCpOHDDEy5IPrjZ2mc4k2BD2qk8zzImAO3-guzljx6CzcVb260wBWu1Cr5dYYLB1O66ELtRsJvU5WbvC1NNGb1UnP_lmv05Q-_G3bPJk7zzzMF52D_VipGHO7Z06CN7lZIcStQ0yTPlcAal9anCTrInZMnNtEjlfyI3MPb3PinqyqOVuhl1ByDMzoWcQ72_2e2wn0dpbNDojPoZ4uCx-VWNUSRnDLo9gfbyFJQVCfy5p74mY9RkGh9FTpbnL2gjE-EPBv1v-v2q3UzKTpSIEIpgV69bqz6G7P2NSYSsNhr1qPwyFvJjWgwEzA7SFuZ6W0FRStCBvmJskXCsLt36IVK3vtj57hYfBrwIg1ZEV-h_OgfkGm7jasQH239FC4TcIfDWZaagc6LWgaruP4KsT8u0q2fXbZZweDHO4e1eC7IB_N-UlaI3NH95L6cV2i0ZgNPei6RwVlG0_jQtoKBgxeA4_DIOHgBdDk9s5_BQciseIxYiNn54nF8d9fGV3krXLc2KyjUPxZJSdpnGBw9h9f8eMJYIWEiiJFt2wX2dGSFP5E00BfWJzVcSQSS5z04D7-ikRYgil_ihopkCc9i8y3W4m4DsjZK9ayzaxr4MRyViqGg8ahsIQr2j7bqp648-0vI3ufj2KZ9qqG4QpaPwJrMTpeQsSf0xCGrW1qxRItbgfaLTFFfD6CkXPFv4xY_K1xeM5baZiX-U-hCZDLJ1BwNGT8NR-ciBRMVSHYP9jCTQahjkfyfO5qsnD3Uj43UnGwKQ_oF6Cvch0RAxZNAkoXOiHzjwEOqNmd5mQwVNe_r_xHY2dhiUBil6Rg70W4dFjeBu8R9GkrEbKZQDylhCknsLBSvQ11QRsMFGeohTBcddL2FZPeTk215Vu6eawKbHvDei9iTCjTz12W7xdhzl2t6nIf66ScASwlJxooW76j0-2_wVCjUHLJ3bCzZ8U7ut0CGQ5mOUNzEAiZsnMxSAg55IfOzhp-Ly2b0tszkjONCgfY0hfeZ5Sc2ZfWHGWW9gN56VtCVQSW1SdwSb6D6Pzc6Z4PKT0-qIaXMxl8X0D3Tq8uVdY9jIa2nqztk3fSdVdspA_dNcCiYzQegohzC0EEii9ssnGZeWBl_lOdaFEowtd0rF1p7gODjmfAuPLJ-ifZ3imJ0HnjoQWoWPvrk1RZJsnTQQWYNhcDMb_LQ7vgo7-tbkLzhpSTLaLoqVKRMPK6G3lhEDXzuJLqJctHg5joItH3a-8gcYf0TXeqrCB3fRsIYFCNQf6ZNchSIClJGPPBA81zisxAofLZmucB-mpfTdz_hs1aeBzlT1kap7ANeD1eoD3cXa184GSySDWKmWOe-hsQh6hFpx2RqJn2XiDirdzgWhCECnIvJR_MoTRP21d0mtvKP0Dd4necN-P-NkpJOE5ofYWXQYIbB1KNofyW-lfCXAZRf_WVbO0oOLr2mYdy7GWgq8LlhrApe868lrsWMV7YNfnyf5xKaGM2CupEk1ke0nyqgcoq0B1MR8unMhO6R_aZ-hk1Jc9ddLmDrsntmZsj-hw-QB37lNdR2O3DfUnhyuZ2KIGiXgMpnz9Uyi3_W1PMomMwkTm6kPvzYxFPPFCZf-aMpr8G7k3WMpCP6nUkvm4BAvvpU7zGcb3sUInhG7OZI6Tmf48t7S6cmxGXW5nSTLBLqc5ClE3UOw3dgtS9eO0l57tQB_54hVrVh3lYRMC3bsRexoz62ejaj4HZC2s3vbG-t8UiNnRVQUYIdCIvf67W4aR9etCqYSVgHVt20D9XvddxfF7AbZDGM0R3nCFxXE-dp_g1CrZpzoco_HcadlYkDaFVmiC7D8yOWird0Ou72H6V5wrtvUwxRECjUInOok7jV7CqmkS3YTxka5pvBRG7LHFriGtZPaZhga0z5UEnRmRAK79N7H9IhIAQBwQ6Ct5YKg9M6P5JEKWc3FGpaBHdgmxlVncsd4H-rxIADrSD9QhW2HCxkzaEz95_CmhkqENiHZn7ywNCuRN7xKpdcmkkBBY09TO6ghZyf76zuHX0gNwOVKYteKAB98NGkZTzTQR00iLDqm5IcuAUPNEzBsE_ponrl3QdJ2IiHoP3eU_9Be9tv-p-YEJkVckeuyMt_1hIdCxmXnewTfbWEB-sc8Mz2urkulOc8ov1UbQYBUbHNqWz8TPVTbcQ24eEbtHoQAC5hk0yN3MUEUp2h4cFVSjxKvxs6I8kiQdkWmMQeE9lKiVxvwH_R0A_LDuBH3yfU6eKVjsCvzM9DegHiM2SpJDq_bH9m1-04zefbtyfjTI6CasWALT0vx3YOQgMgHWgbsazI6y6uRDTsGh_IxXoAyrz4vFWNmtIm42Ks9qVmdJs1s3-9wWIjVEHo3FdFXtFh2XDB8DNRnuvQcW9K94gE_lgR-PCSIIKbpacTb1s0euccyEbNQuC8Kci4Z51tDs3qyBAjs3YuiEo_Isi81zTmvmOgxnlRXWBusCUz6A_uf6Q-sknamFT1semkn76da2Cmj8sGRUjlN_cbztWtL4irZ-9DbrlKayJ1YOrRc2N8eif0O_ozzdjgLIATx7qaQ--BZ3HHdPO06rnCyNZJsHGQlcKXMmy3bKjU-MBjdzOsaUKOSTUYRQfBPFmXPBlGYH9ismkcD-HjAMbvRDdMZJKQsIFqPj9M8yCNo00Ob5XaMx9G5iK5r9fzKxlh9jNHsrCaRM_5vOgKwOhERWrWwhe9n1TOG1dfEx9LzwcgSEPBt8t04lM-N-Zr6Cjidu69ch5kJvAp_pjfaNDtOHqYwoYm5CF4l-vRET9EZu434dcwgvPrchLWqFulIryNJ9JhM5U_M86WZGyFIhsB-YTDiHDVrDYwSAQrsLQw1xmIsq_rPk31S_OB7ZUa0-H_BeKgIZb7v-Z10ZYUCzJkJr6qKTNIEGG2DMs_b_s_dYVqIMe_WCkHl53A1IRe2Qztu0nvCpDsQyhBQ6cuNczYUY_yMN0LFXgBn7KO-n2eMAoTLx9AA3G5ueLn4-wZ-KXuLyhAFFbhKr9a2B9Jx1ZibtfEv3gUd5ZiMGzojzcSoVg7lxno0CEiA7cmtMz2Bdab4g8avG7I6iVo9bho0idGubCPsoOqOmv8uptmNdzQAmbpDIvF8dxsKXqOws5CkMZorDYJzUeQV_nei6goKOXK-9PnDwnqogWEOU_ltrDOdKi_qfce3Wm-UpzUCxILaDqxH3Kaa8VKFynG4mlro-RqYHCTi14SPQJCEKIDkvcEoT3fQk0qMihMKGBQKNHfOp0Q-MV3gt_EMFp_AajUqSEZVYpAYn9gLKWsv1JkNVAaSgEbKaOzHWnuHgsUZQIDwTkkE8sRS9CNd43o26meIIcm4MN8MNxKo7t9Evg7U4kmDOxqjRfIr7kSTyB5wtJ9BrA17u_pALLqFOMNQpgJnhZ2l_Q1qKChBr6PQYlZridU7Qpv-vK3h8EHWjWmNTIemDN7f-trMr157rbldijWFlbGPhl2gWQIGokeAnUZuFx289yJNWJkLzytgwd0JUylIR55dzWOxUGblD33Dtis-wy1BiYc3kIoU0EZ7QJTAt4Xw19U9jEmm49b6aX6e0Q23_3iTOq9voxmhGhDBi2Aw4_robT5jNHKzqHrOuSsq6ofQ1O3R9JO4qBcL6XwawgmZ5tJR0UiXshgUoPUc6uPUoVzxctOK5K-ptUt1qh5u-XNa7fTFlGrBhQSDTt6jOuhQBWyX3oL0iws5Z_7nPRv-f0XqjyD1wVnAcBL1xy8W1BdoKpdI3Cy6D5MgEkV3OYq2DbsPsyAE-k6_dzoj_UonUcUrS2MLX8T5WztHSuQJmlOO7gr4oLzkgBOOWbX6PdFsqcBGEDOqeYuiNZO93HBkizrLPOMmSSBOwsUJ7oaaP3dNfEZWbTfHNtzKXYeSuJurqMbo18jbGT3LOfqhp6hhGcs9LLvMS91rggjhM6bZ9Ho19I5IL9KE0lVORfPPSa6-Axg\u0026pid=\u0026profile_code=EVENT_NEW\u0026signature=6d2c7b5c4e22a34990be1bcaad27076a161f06c9\u0026transaction_date=2020-06-05T04%3A40%3A09Z\u0026transaction_id=11709448\u0026user_defined_value=%7B%22device%22%3A3%2C%22user_id%22%3A5512982%2C%22payment_description%22%3A%22%22%2C%22msisdn%22%3A%22628992715130%22%2C%22user_address%22%3A%7B%22address%22%3A%22%22%2C%22city%22%3A%22%22%2C%22country%22%3A%22%22%2C%22phone%22%3A%22%22%2C%22postal_code%22%3A%22%22%2C%22state%22%3A%22%22%7D%2C%22va_code%22%3A%2208992715130%22%2C%22access_token%22%3A%22u%3ARuSbs4AYu5oqe88d685jUxgvuSKp4NQZ6WucO6GrnHdUrVKlU%2BB%2FY5r5o07H0RCf%22%2C%22refresh_token%22%3A%22%22%2C%22expires_in%22%3A0%2C%22client_id%22%3A%22%22%2C%22gmv_official_stores%22%3A0%2C%22txn_official_stores%22%3A0%2C%22subsidized_amount%22%3A0%2C%22fingerprint_data%22%3A%7B%22fingerprint_publickey%22%3A%22%22%2C%22fingerprint_support%22%3Afalse%7D%2C%22callback_url%22%3A%22%22%2C%22new_notify_merchant_url%22%3A%22https%3A%2F%2Fapi-staging.tokopedia.com%2Fcart%2Fv2%2Fpayment%2Fgeneral%3Fcallista%3Dfalse%22%2C%22new_local_notify_merchant_url%22%3A%22http%3A%2F%2F172.18.58.160%2Fcart%2Fi%2Fv2%2Fpayment%2Fgeneral%3Fcallista%3Dfalse%22%2C%22new_notify_gateway_codes%22%3A%5B%22TOKOPEDIAWALLET%22%2C%22MANUALTRANSFER%22%2C%22MANDIRICLICKPAY%22%2C%22MANDIRIECASH%22%2C%22BCAKLIKPAY%22%2C%22BCAKLIKBCA%22%2C%22INDOMARET%22%2C%22CREDITCARD%22%2C%22INSTALLMENT%22%2C%22BRIEPAY%22%2C%22SEVELIN%22%2C%22POSPAY%22%2C%22ALFAMART%22%2C%22BRIVA%22%2C%22MANDIRIVA%22%2C%22TOPPOINTS%22%2C%22BNIVA%22%2C%22DANAMONVA%22%2C%22BCAVA%22%2C%22TOKOPEDIATOPCASH%22%2C%22KIOSON%22%2C%22TRUEMONEY%22%2C%22AGENBNI%22%2C%22JNEPAYMENT%22%2C%22PEGADAIAN%22%2C%22SMARTTECH%22%2C%22BCAONEKLIK%22%2C%22OFFLINESTORE%22%2C%22JAKONEMOBILE%22%2C%22RINTIS%22%2C%22BNISMSBANKING%22%2C%22CIMBVA%22%2C%22MCASH%22%2C%22KREDIVO%22%2C%22DEBITONLINE%22%2C%22MITRATOKOPEDIA%22%2C%22VCC%22%2C%22OVOCASH%22%2C%22OVOPOINTS%22%2C%22TOKOPEDIACENTER%22%2C%22NETONE%22%2C%22SALDOMITRA%22%2C%22FAMILYMART%22%2C%22BRICERIA%22%2C%22COD%22%2C%22HOMECREDIT%22%2C%22CIMBCLICKS%22%2C%22DEBITBRI%22%2C%22SALDOPENGHASILAN%22%2C%22MANDIRIVCC%22%2C%22TEMPO%22%2C%22BRILINK%22%2C%22CODAPAY%22%2C%22BRISYARIAHVA%22%2C%22MANDIRISYARIAHVA%22%2C%22BMIVA%22%2C%22DEBITMANDIRI%22%2C%22JENIUSPAY%22%2C%22TOP%22%2C%22PHOENIX%22%2C%22PMZERO%22%2C%22KPK%22%2C%22GRATIS%22%5D%2C%22is_stacking%22%3Afalse%7D",
+        "redirect_url": "https://pay-staging.tokopedia.com/v2/payment"
+      }
+    },
+    "status": "OK",
+    "error_reporter": {
+      "eligible": false
+    }
+  }
+}

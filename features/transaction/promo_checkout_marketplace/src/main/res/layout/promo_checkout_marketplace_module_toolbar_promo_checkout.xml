@@ -4,20 +4,24 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="horizontal"
     android:paddingEnd="0dp"
     android:paddingRight="0dp">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/button_back"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_arrow_back_black" />
+        android:layout_marginEnd="@dimen/dp_16"
+        app:icon_color_light_disabled="@color/Unify_N200"
+        app:icon_color_light_enable="@color/Unify_N700"
+        app:icon_color_night_disabled="@color/Unify_N200"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_enable_state="true"
+        app:icon_name="ARROW_BACK" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_title"
@@ -41,7 +45,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_vertical"
         android:text="Reset Promo"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:typographyType="heading_5" />
 
 

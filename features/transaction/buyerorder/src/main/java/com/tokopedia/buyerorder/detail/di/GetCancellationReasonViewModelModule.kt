@@ -15,12 +15,12 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@OrderListModuleScope
 abstract class GetCancellationReasonViewModelModule {
     @OrderListModuleScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @OrderListModuleScope
     @Binds
     @IntoMap
     @ViewModelKey(BuyerCancellationViewModel::class)

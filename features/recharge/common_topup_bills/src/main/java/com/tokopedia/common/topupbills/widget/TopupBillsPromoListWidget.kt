@@ -20,13 +20,13 @@ import org.jetbrains.annotations.NotNull
  */
 class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+    : LinearLayout(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
     private val promoList = mutableListOf<TopupBillsPromo>()
     private lateinit var topupBillsPromoListAdapter: TopupBillsPromoListAdapter
-    private lateinit var listener: ActionListener
+    private var listener: ActionListener? = null
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
@@ -46,11 +46,11 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
 
         topupBillsPromoListAdapter.setListener(object : TopupBillsPromoListAdapter.ActionListener {
             override fun onClickPromoCode(promoId: Int, voucherCode: String) {
-                listener.onCopiedPromoCode(promoId, voucherCode)
+                listener?.onCopiedPromoCode(promoId, voucherCode)
             }
 
             override fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int) {
-                listener.onClickItemPromo(topupBillsPromo, position)
+                listener?.onClickItemPromo(topupBillsPromo, position)
             }
         })
         this.promoList.addAll(promoList)
@@ -80,7 +80,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
             }
         }
         if (digitalTrackPromoList.size > 0) {
-            listener.onTrackImpressionPromoList(digitalTrackPromoList)
+            listener?.onTrackImpressionPromoList(digitalTrackPromoList)
         }
     }
 
@@ -90,9 +90,11 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
-    override fun toggleTitle(value: Boolean) {
+    fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
+
+    fun getRecyclerView(): RecyclerView = recyclerView
 
     interface ActionListener {
         fun onCopiedPromoCode(promoId: Int, voucherCode: String)

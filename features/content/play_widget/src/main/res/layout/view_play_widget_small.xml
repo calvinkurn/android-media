@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_widget_small"
-    >
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
@@ -41,7 +40,7 @@
         app:constraint_referenced_ids="tv_title, tv_see_all"
         app:barrierDirection="bottom"
         />
-    
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_widget_card_small"
         android:layout_width="match_parent"

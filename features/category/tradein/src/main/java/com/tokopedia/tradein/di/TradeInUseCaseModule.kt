@@ -7,7 +7,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@TradeInScope
 @Module
 class TradeInUseCaseModule {
 

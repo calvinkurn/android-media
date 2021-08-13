@@ -1,6 +1,0 @@
-mutation submitReport($input: ReportProductRequest!){
-  visionSaveReportProduct(input: $input) {
-      status
-      server_process_time
-    }
-}

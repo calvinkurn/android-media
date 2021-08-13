@@ -10,16 +10,16 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
 import com.tokopedia.otp.verification.domain.query.OtpValidateQuery2FA
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OtpValidateUseCase2FA @Inject constructor(
+open class OtpValidateUseCase2FA @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
+        dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpValidatePojo>(dispatcher) {
 
     fun getParams(

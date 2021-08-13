@@ -9,28 +9,28 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_12">
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imagePeriod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
-            app:srcCompat="@drawable/ic_period_promo_green"
+            android:layout_marginLeft="@dimen/dp_12"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/containerLabel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/containerLabel" />
+            app:layout_constraintTop_toTopOf="@+id/containerLabel"
+            app:srcCompat="@drawable/ic_period_promo_green" />
 
 
         <LinearLayout
             android:id="@+id/containerLabel"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageMinTrans"
@@ -38,14 +38,20 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteY="12dp">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/titlePeriod"
-                style="@style/TextView.Micro10.BlackSecondary"
-                android:text="@string/promo_title_period" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/promo_title_period"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textPeriod"
-                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_1"
                 tools:text="16 Aug 2019" />
 
             <com.tokopedia.promocheckout.widget.TimerCheckoutWidget
@@ -60,19 +66,19 @@
             android:id="@+id/imageMinTrans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="110dp"
             android:layout_marginStart="110dp"
-            app:srcCompat="@drawable/ic_voucher_promo_green"
+            android:layout_marginLeft="110dp"
             app:layout_constraintBottom_toBottomOf="@+id/containerLabel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/containerLabel" />
+            app:layout_constraintTop_toTopOf="@+id/containerLabel"
+            app:srcCompat="@drawable/ic_voucher_promo_green" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center_vertical"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -80,19 +86,24 @@
             app:layout_constraintStart_toEndOf="@+id/imageMinTrans"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/titleMinTrans"
-                style="@style/TextView.Micro10.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="visible"
+                app:typographyType="body_3"
                 tools:text="tanpa minimum " />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textMinTrans"
-                style="@style/TextView.Small.Bold"
-                android:textColor="@color/black_70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_96"
                 android:visibility="visible"
+                app:typographyType="body_1"
                 tools:text="Rp 3000000" />
         </LinearLayout>
 

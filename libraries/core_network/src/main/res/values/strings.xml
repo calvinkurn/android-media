@@ -1,3 +1,5 @@
 <resources>
     <string name="code_error">Kode error :</string>
+    <string name="title_activity_maintenance_page">Server Maintenance</string>
+    <string name="msg_under_maintenance">Tokopedia sedang maintenance, silakan coba beberapa saat lagi</string>
 </resources>

@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
@@ -26,13 +28,14 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ContactLoadMoreViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
+import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
 import javax.inject.Inject
 
 /**
  * @author : Steven 2019-08-06
  */
-class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
+open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
         ChatSearchActivity.Listener, LifecycleOwner, EmptySearchChatViewHolder.Listener,
         ContactLoadMoreViewHolder.Listener, ItemSearchChatReplyViewHolder.Listener {
 
@@ -185,6 +188,14 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun getSearchKeyWord(): String {
         return viewModel.query
+    }
+
+    override fun onChatReplyClick(element: ChatReplyUiModel) {
+        val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, element.msgId.toString())
+        chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
+        chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
+        chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, getSearchKeyWord())
+        startActivity(chatRoomIntent)
     }
 
     companion object {

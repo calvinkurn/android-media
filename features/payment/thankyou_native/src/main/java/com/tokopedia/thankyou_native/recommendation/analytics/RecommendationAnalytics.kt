@@ -3,7 +3,7 @@ package com.tokopedia.thankyou_native.recommendation.analytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.IODispatcher
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class RecommendationAnalytics @Inject constructor(
         val userSession: dagger.Lazy<UserSessionInterface>,
         @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
-        @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
+        @IODispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm

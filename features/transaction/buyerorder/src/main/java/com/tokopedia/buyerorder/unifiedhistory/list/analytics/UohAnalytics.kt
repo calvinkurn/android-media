@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder.unifiedhistory.list.analytics
 
 import android.app.Activity
 import android.os.Bundle
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TRACK
@@ -12,6 +11,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.*
 
 /**
  * Created by fwidjaja on 2019-11-29.
@@ -45,6 +45,7 @@ object UohAnalytics {
     private const val ITEM_CATEGORY = "item_category"
     private const val VARIANT = "variant"
     private const val ITEM_VARIANT = "item_variant"
+    private const val ORDER_DETAIL = "order-detail"
     private const val LIST = "list"
     private const val POSITION = "position"
     private const val INDEX = "index"
@@ -61,7 +62,7 @@ object UohAnalytics {
     private const val DIMENSION40 = "dimension40"
     private const val DIMENSION87 = "dimension87"
     private const val DIMENSION88 = "dimension88"
-    private const val ORDER_MANAGEMENT = "ordermanagement"
+    private const val ORDER_MANAGEMENT = "order management"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
     private const val ITEM_LIST = "item_list"
@@ -86,7 +87,7 @@ object UohAnalytics {
     private const val CLICK_STATUS_FILTER_CHIPS = "click status filter chips"
     private const val CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS = "click terapkan on status filter chips"
     private const val CLICK_CATEGORY_FILTER_CHIPS = "click category filter chips"
-    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click category filter chips"
+    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click terapkan on category filter chips"
     private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
     private const val CLICK_PRIMARY_BUTTON_ON_ORDER_CARD = "click primary button on order card "
     private const val CLICK_THREE_DOTS_MENU = "click three dot menu "
@@ -97,6 +98,7 @@ object UohAnalytics {
     private const val CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click selesai on bottom sheet finish transaction"
     private const val CLICK_AJUKAN_KOMPLAIN_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click ajukan komplain on bottom sheet finish transaction"
     private const val CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL = "click kirim on bottom sheet send email "
+    private const val TRUE = "true"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -120,6 +122,7 @@ object UohAnalytics {
         event[IS_LOGGED_IN_STATUS] = isLoggedInStatus
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+        event[USER_ID] = userId
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
@@ -263,7 +266,7 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton:String, userId: String) {
+    fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton: String, userId: String) {
         val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
                 CLICK_PRIMARY_BUTTON_ON_ORDER_CARD + verticalLabel, primaryButton)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
@@ -379,7 +382,7 @@ object UohAnalytics {
 
     fun clickKirimOnBottomSheetSendEmail(userId: String, verticalCategory: String) {
         val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
-                CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL+verticalCategory, "")
+                CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL + verticalCategory, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -483,5 +486,14 @@ object UohAnalytics {
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
+    }
+
+    fun orderDetailOpenScreenEvent() {
+        val bundle = Bundle().apply {
+            putString(EVENT, OPEN_SCREEN)
+            putString(SCREEN_NAME, ORDER_DETAIL)
+            putString(IS_LOGGED_IN_STATUS, TRUE)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, bundle)
     }
 }

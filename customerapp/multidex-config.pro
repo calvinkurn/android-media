@@ -1,3 +1,0 @@
--keep class com.tokopedia.common.payment.model.PaymentPassData
--keep class com.tokopedia.loyalty.common.PopUpNotif
--keep class com.tokopedia.loyalty.common.TokoPointDrawerData

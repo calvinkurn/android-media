@@ -49,6 +49,9 @@ public class Cpm implements Parcelable {
     @SerializedName(KEY_POSITION)
     private int position = 0;
 
+    public Cpm() {
+    }
+
     public Cpm(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TEMPLATE_ID)){
             setTemplateId(object.getInt(KEY_TEMPLATE_ID));

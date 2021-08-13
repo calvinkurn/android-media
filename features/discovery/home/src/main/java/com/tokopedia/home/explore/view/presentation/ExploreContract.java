@@ -6,7 +6,7 @@ import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public interface ExploreContract {
 
         String getString(@StringRes int res);
 
-        void renderData(List<ExploreSectionViewModel> list);
+        void renderData(List<ExploreSectionDataModel> list);
 
         Context getViewContext();
     }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clTransaction"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvColumnData1"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/pay_later_dp_18"
+        android:layout_marginEnd="@dimen/unify_space_4"
+        android:layout_marginBottom="@dimen/pay_later_dp_18"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/headerGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Durasi Cicilan" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/headerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.36" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvColumnSubHeader1"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@+id/tvColumnData1"
+        app:layout_constraintEnd_toStartOf="@+id/subHeaderGuideline"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@+id/headerGuideline"
+        app:layout_constraintTop_toTopOf="@+id/tvColumnData1"
+        app:typographyType="body_3"
+        tools:text="Biaya Layanan Official Store" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/subHeaderGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.68" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvColumnSubHeader2"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="@+id/tvColumnData1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/subHeaderGuideline"
+        app:layout_constraintTop_toTopOf="@+id/tvColumnData1"
+        app:typographyType="body_3"
+        tools:text="Biaya Layanan Non Official Store" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

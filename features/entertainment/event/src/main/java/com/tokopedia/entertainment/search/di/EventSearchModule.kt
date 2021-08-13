@@ -2,9 +2,7 @@ package com.tokopedia.entertainment.search.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
@@ -21,7 +19,6 @@ import okhttp3.logging.HttpLoggingInterceptor
  * Author errysuprayogi on 06,February,2020
  */
 
-@EventSearchScope
 @Module
 class EventSearchModule {
 
@@ -60,13 +57,4 @@ class EventSearchModule {
     fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
         return CommonErrorResponseInterceptor()
     }
-
-    @EventSearchScope
-    @Provides
-    fun provideViewModelFactory(dispatcher: CoroutineDispatcher,
-                                gqlRepository: GraphqlRepository,
-                                userSession: UserSessionInterface):
-            EventSearchViewModelFactory = EventSearchViewModelFactory(dispatcher,
-            gqlRepository, userSession)
-
 }

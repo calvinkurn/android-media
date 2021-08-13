@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/il_main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/swd_header"
-        app:unify_header_is_show_shadow="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_shadow="false" />
 
     <FrameLayout
         android:id="@+id/parent_view"

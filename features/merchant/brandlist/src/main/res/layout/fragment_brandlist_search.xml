@@ -35,7 +35,7 @@
                     app:subtitleTextAppearance="?subtitleTextAppearance"
                     app:titleTextAppearance="?titleTextAppearance">
 
-                    <com.tokopedia.design.text.SearchInputView
+                    <com.tokopedia.unifycomponents.SearchBarUnify
                         android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -44,8 +44,10 @@
                         android:background="@drawable/toolbar_bg_corner"
                         android:textColorHint="@color/Unify_N200"
                         android:textSize="@dimen/sp_16"
-                        app:siv_search_hint="@string/brandlist_search_view_hint"
-                        app:siv_search_icon="@drawable/ic_search_bar" />
+                        android:layout_margin="@dimen/spacing_lvl3"
+                        app:search_bar_clearable="true"
+                        app:search_bar_show_icon="false"
+                        app:search_bar_placeholder="@string/brandlist_search_view_hint" />
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>

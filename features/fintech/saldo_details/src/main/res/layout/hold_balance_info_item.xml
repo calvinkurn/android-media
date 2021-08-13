@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin='@dimen/dp_16'
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4">
+    android:layout_margin="@dimen/sd_dp_10">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_saldo_hold_item"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16">
+        android:paddingLeft="@dimen/unify_space_16"
+        android:paddingRight="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_16">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
@@ -30,7 +28,7 @@
             android:id="@+id/tv_fundHold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             android:text="@string/saldo_dana_tertahan"
             app:layout_constraintStart_toStartOf="@id/tv_invoice"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice"
@@ -40,7 +38,7 @@
             android:id="@+id/tv_valueFundhold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice"
             app:typographyType="heading_6"
@@ -50,7 +48,7 @@
             android:id="@+id/tv_dateWithheld"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:text="@string/saldo_tanggal_ditahan"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_fundHold"
@@ -60,7 +58,7 @@
             android:id="@+id/tv_valueDateWithheld"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_valueFundhold"
             app:typographyType="body_3"
@@ -70,7 +68,7 @@
             android:id="@+id/tv_liquidOnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:text="@string/saldo_akan_cair_pada"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_dateWithheld"
@@ -80,7 +78,7 @@
             android:id="@+id/tv_valueLiquidOnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_valueDateWithheld"
             app:typographyType="body_3"
@@ -89,7 +87,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             android:background="@drawable/bg_hold_info_result"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/tv_invoice"
@@ -98,9 +96,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_8"
                 android:text="@string/saldo_alasan"
                 app:typographyType="body_3" />
 
@@ -108,10 +105,9 @@
                 android:id="@+id/tv_reasonTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_2"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_2"
                 app:typographyType="heading_6"
                 tools:text="Perpindahan dana" />
 
@@ -119,13 +115,12 @@
                 android:id="@+id/tv_valueReason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_16"
                 app:typographyType="body_3"
                 tools:text="Komisi Affiliate masuk dari Tokopedia ID Transaksi Affiliate 187830 " />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

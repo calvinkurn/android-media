@@ -1,17 +1,13 @@
 package com.tokopedia.talk.feature.reading
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import com.tokopedia.talk.coroutines.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
@@ -34,6 +30,6 @@ abstract class TalkReadingViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, userSession, TestCoroutineDispatchers)
+        viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, userSession, CoroutineTestDispatchersProvider)
     }
 }

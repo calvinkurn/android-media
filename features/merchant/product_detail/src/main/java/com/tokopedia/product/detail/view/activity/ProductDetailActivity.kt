@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -19,11 +18,16 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import io.embrace.android.embracesdk.Embrace
 
 
 /**
@@ -31,7 +35,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
+open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterface, HasComponent<ProductDetailComponent> {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -42,10 +46,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
+        private const val PARAM_AFFILIATE_UNIQUE_ID = "aff_unique_id"
         private const val PARAM_LAYOUT_ID = "layoutID"
         const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY = "isVariant"
         private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
+        private const val PRODUCT_VIDEO_DETAIL_TAG = "videoDetailTag"
+        private const val PRODUCT_DETAIL_TAG = "productDetailTag"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -62,13 +69,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         @JvmStatic
-        fun createIntent(context: Context, productId: Int) = Intent(context, ProductDetailActivity::class.java).apply {
+        fun createIntent(context: Context, productId: Long) = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId.toString())
         }
     }
 
     private var isFromDeeplink = false
-    private var isFromAffiliate = false
+    private var isFromAffiliate: Boolean? = false
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
@@ -76,12 +83,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
     private var affiliateString: String? = null
+    private var affiliateUniqueId: String? = null
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
+    private var productDetailComponent: ProductDetailComponent? = null
+    var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
 
@@ -90,52 +100,31 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
 
-    object DeeplinkIntents {
-        @DeepLink(ApplinkConst.PRODUCT_INFO)
-        @JvmStatic
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment)
-
-            if (!uri.getQueryParameter(PARAM_LAYOUT_ID).isNullOrBlank()) {
-                intent.putExtra(PARAM_LAYOUT_ID, uri.getQueryParameter(PARAM_LAYOUT_ID))
-            }
-
-            return intent ?: Intent()
-        }
-
-        @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
-        @JvmStatic
-        fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment) ?: Intent()
-            intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
-            return intent
-        }
-    }
+    var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P1_TRACE)
     }
 
     fun stopMonitoringP2Data() {
         performanceMonitoringP2Data?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_DATA_TRACE)
     }
 
     fun stopMonitoringP2Other() {
         performanceMonitoringP2Other?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE)
     }
 
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
     }
 
     fun stopMonitoringFull() {
         performanceMonitoringFull?.stopTrace()
+        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P3_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -156,6 +145,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        productDetailLoadTimeMonitoringListener?.onStopPltListener()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
@@ -169,22 +159,76 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         finish()
     }
 
+    override fun getComponent(): ProductDetailComponent {
+        return productDetailComponent ?: initializeComponent()
+    }
+
+    private fun initializeComponent(): ProductDetailComponent {
+        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        return DaggerProductDetailComponent.builder()
+                .baseAppComponent(baseComponent)
+                .build()
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.product_detail_parent_view
+    }
+
+    fun addNewFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().add(parentViewResourceID, fragment, PRODUCT_VIDEO_DETAIL_TAG)
+                .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
+                .commit()
+        hidePdpFragment()
+    }
+
+    /**
+     * Need to hide fragment to prevent fragment overdraw
+     */
+    private fun hidePdpFragment() {
+        val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragmentVideoDetail?.let {
+            supportFragmentManager.beginTransaction().hide(it).commit()
+        }
+    }
+
+    private fun showPdpFragment() {
+        val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragmentVideoDetail?.let {
+            supportFragmentManager.beginTransaction().show(it).commit()
+        }
+    }
+
+    override fun getTagFragment(): String {
+        return PRODUCT_DETAIL_TAG
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            super.onBackPressed()
+        } else {
+            val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(PRODUCT_VIDEO_DETAIL_TAG) as? ProductVideoDetailFragment
+            if (fragmentVideoDetail?.isVisible == true) {
+                showPdpFragment()
+                fragmentVideoDetail.onBackButtonClicked()
+            }
+            supportFragmentManager.popBackStack()
+        }
+    }
+
     override fun getScreenName(): String {
         return "" // need only on success load data? (it needs custom dimension)
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
-            isFromAffiliate, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl, layoutId)
-
-    override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+            isFromAffiliate ?: false, trackerAttribution,
+            trackerListName, affiliateString = affiliateString, affiliateUniqueId = affiliateUniqueId, deeplinkUrl, layoutId, getSource())
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSessionInterface = UserSession(this)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
@@ -211,6 +255,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
+            affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
+            isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -234,11 +280,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             if (affiliateString.isNullOrBlank()) {
                 affiliateString = it.getString(PARAM_AFFILIATE_STRING)
             }
-        }
-        isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
-            true
-        } else {
-            intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+            if (affiliateUniqueId.isNullOrBlank()) {
+                affiliateUniqueId = it.getString(PARAM_AFFILIATE_UNIQUE_ID)
+            }
         }
 
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
@@ -261,20 +305,34 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P1_TRACE, null, false)
+
         performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_DATA_TRACE, null, false)
+
         performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
+        Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_OTHER_TRACE, null, false)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
+            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
+
             performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
+            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P3_TRACE, null, false)
         }
     }
 
     private fun generateApplink(applink: String): String {
-        return if (applink.contains(getString(R.string.internal_scheme))) {
-            applink.replace(getString(R.string.internal_scheme), "tokopedia")
+        return if (applink.contains(getString(tokopedia.applink.R.string.internal_scheme))) {
+            applink.replace(getString(tokopedia.applink.R.string.internal_scheme), "tokopedia")
         } else {
             ""
         }
     }
+
+    private fun getSource() = intent.data?.query ?: ""
+}
+
+interface ProductDetailActivityInterface {
+    fun onBackPressed()
 }

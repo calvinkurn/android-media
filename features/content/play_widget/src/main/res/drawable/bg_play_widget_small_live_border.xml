@@ -5,8 +5,8 @@
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/play_widget_small_radius" />
             <gradient
-                android:startColor="@color/play_widget_small_border_gradient_top"
-                android:endColor="@color/Red_R400"
+                android:startColor="@color/play_widget_dms_small_live_border_gradient_top"
+                android:endColor="@color/play_widget_dms_small_live_border_gradient_bottom"
                 android:angle="-90"
                 />
         </shape>
@@ -20,7 +20,7 @@
         >
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/play_widget_small_radius" />
-            <solid android:color="@color/Neutral_N0" />
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 </layer-list>

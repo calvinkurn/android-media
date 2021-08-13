@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <RelativeLayout
+        android:id="@+id/containerShcRecommendation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ViewStub
+            android:id="@+id/stubShcRecommendationLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_recommendation_widget_loading" />
+
+        <ViewStub
+            android:id="@+id/stubShcRecommendationSuccess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_recommendation_widget_success" />
+
+        <ViewStub
+            android:id="@+id/stubShcRecommendationError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_recommendation_widget_error" />
+    </RelativeLayout>
+</com.tokopedia.unifycomponents.CardUnify>

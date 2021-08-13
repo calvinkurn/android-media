@@ -11,5 +11,8 @@ data class LabelsGroup(
         val title: String = "",
 
         @SerializedName("type")
-        val type: String = ""
+        val type: String = "",
+
+        @SerializedName("url")
+        val url: String = ""
 )

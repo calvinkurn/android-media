@@ -1,0 +1,14 @@
+{
+  "readme": "click start on product preview page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click start",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
+      "screenName":"/addproductpage - stepper"
+    }
+  ]
+}

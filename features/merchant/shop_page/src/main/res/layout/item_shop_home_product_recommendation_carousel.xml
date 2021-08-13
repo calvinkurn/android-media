@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:layout_marginBottom="@dimen/dp_4">
+
+    <include
+        android:id="@+id/etalase_header_container"
+        layout="@layout/partial_item_new_shop_carousel_title"
+        />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/rvCarouselRecommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:scrollbars="none"
+        app:useDefaultItemDecorator="false" />
+
+</LinearLayout>

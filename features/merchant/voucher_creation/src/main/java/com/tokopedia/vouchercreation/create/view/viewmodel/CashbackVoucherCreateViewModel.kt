@@ -4,12 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.vouchercreation.common.consts.VoucherDiscountTypeConst
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.Companion.EDITED_RECOMMENDATION
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.Companion.NO_RECOMMENDATION
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.Companion.WITH_RECOMMENDATION
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource.InitialValue
+import com.tokopedia.vouchercreation.create.domain.model.VoucherRecommendationData
+import com.tokopedia.vouchercreation.create.domain.usecase.GetVoucherRecommendationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackPercentageValidationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackRupiahValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
@@ -24,8 +32,12 @@ import javax.inject.Inject
 class CashbackVoucherCreateViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
         private val cashbackRupiahValidationUseCase: CashbackRupiahValidationUseCase,
-        private val cashbackPercentageValidationUseCase: CashbackPercentageValidationUseCase
+        private val cashbackPercentageValidationUseCase: CashbackPercentageValidationUseCase,
+        private val getVoucherRecommendationUseCase: GetVoucherRecommendationUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    var isRupiahInputError = false
+    var isPercentageInputError = false
 
     private val mRupiahMaximumDiscountLiveData = MutableLiveData<Int>()
     private val mRupiahMinimumPurchaseLiveData = MutableLiveData<Int>()
@@ -36,27 +48,29 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mPercentageMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mPercentageVoucherQuotaLiveData = MutableLiveData<Int>()
 
-    private val mRupiahMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
-    private val mRupiahMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
-    private val mRupiahVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mRupiahMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mRupiahMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mRupiahVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
 
-    private val mPercentageDiscountAmountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
-    private val mPercentageMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
-    private val mPercentageMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
-    private val mPercentageVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mPercentageDiscountAmountErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mPercentageMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mPercentageMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mPercentageVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
 
     private val mRupiahValueList = MutableLiveData<Array<Int>>()
-    val rupiahValueList : LiveData<Array<Int>>
+    val rupiahValueList: LiveData<Array<Int>>
         get() = mRupiahValueList
+
     private val mPercentageValueList = MutableLiveData<Array<Int>>()
-    val percentageValueList : LiveData<Array<Int>>
+    val percentageValueList: LiveData<Array<Int>>
         get() = mPercentageValueList
 
     private val mRupiahErrorPairList = MutableLiveData<Array<Pair<Boolean, String>?>>()
-    val rupiahErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
+    val rupiahErrorPairList: LiveData<Array<Pair<Boolean, String>?>>
         get() = mRupiahErrorPairList
+
     private val mPercentageErrorPairList = MutableLiveData<Array<Pair<Boolean, String>?>>()
-    val percentageErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
+    val percentageErrorPairList: LiveData<Array<Pair<Boolean, String>?>>
         get() = mPercentageErrorPairList
 
     private val mCashbackTypeLiveData = MutableLiveData<CashbackType>().apply {
@@ -67,7 +81,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
 
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(mCashbackTypeLiveData) { cashbackType ->
-            value = when(cashbackType) {
+            value = when (cashbackType) {
                 CashbackType.Rupiah -> {
                     mRupiahMaximumDiscountLiveData.value.toZeroIfNull() * mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
                 }
@@ -131,7 +145,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                     mPercentageMaximumDiscountLiveData.value.toZeroIfNull())
         }
     }
-    val cashbackPercentageInfoUiModelLiveData : LiveData<CashbackPercentageInfoUiModel>
+    val cashbackPercentageInfoUiModelLiveData: LiveData<CashbackPercentageInfoUiModel>
         get() = mCashbackPercentageInfoUiModelLiveData
 
     private val mVoucherImageValueLiveData = MediatorLiveData<VoucherImageType>().apply {
@@ -157,7 +171,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         addSource(mCashbackTypeLiveData) { type ->
             mIsFirstTimeDrawLiveData.value?.let { isFirstTimeDraw ->
                 if (!isFirstTimeDraw) {
-                    when(type) {
+                    when (type) {
                         CashbackType.Rupiah -> {
                             mRupiahMaximumDiscountLiveData.value?.let { amount ->
                                 value = VoucherImageType.Rupiah(amount)
@@ -190,8 +204,22 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val percentageValidationLiveData: LiveData<Result<CashbackPercentageValidation>>
         get() = mPercentageValidationLiveData
 
-    fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
-        when(type) {
+    private val mIdrVoucherRecommendationResult = MutableLiveData<Result<VoucherRecommendationData>>()
+    val idrVoucherRecommendationResult: LiveData<Result<VoucherRecommendationData>>
+        get() = mIdrVoucherRecommendationResult
+    private var idrRecommendationData = VoucherRecommendationData()
+
+    private val mPercentageVoucherRecommendationResult = MutableLiveData<Result<VoucherRecommendationData>>()
+    val percentageVoucherRecommendationResult: LiveData<Result<VoucherRecommendationData>>
+        get() = mPercentageVoucherRecommendationResult
+    private var percentageRecommendationData = VoucherRecommendationData()
+
+    private var mVoucherRecommendationStatus = MutableLiveData<Int>()
+    val voucherRecommendationStatus: LiveData<Int>
+        get() = mVoucherRecommendationStatus
+
+    fun <T> addTextFieldValueToCalculation(value: Int?, type: T) {
+        when (type) {
             PromotionType.Cashback.Rupiah.MaximumDiscount -> {
                 mRupiahMaximumDiscountLiveData.value = value.toZeroIfNull()
             }
@@ -211,7 +239,57 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 mPercentageMinimumPurchaseLiveData.value = value.toZeroIfNull()
             }
             PromotionType.Cashback.Percentage.VoucherQuota -> {
-                mPercentageVoucherQuotaLiveData. value = value.toZeroIfNull()
+                mPercentageVoucherQuotaLiveData.value = value.toZeroIfNull()
+            }
+        }
+    }
+
+    fun getStaticRecommendationData(): VoucherRecommendationData {
+        return VoucherRecommendationData(
+                voucherDiscountAmt = InitialValue.DISCOUNT,
+                voucherMinimumAmt = InitialValue.MINIMUM_PURCHASE,
+                voucherQuota = InitialValue.VOUCHER_QUOTA,
+                voucherDiscountAmtMax = InitialValue.MAXIMUM_DISCOUNT
+        )
+    }
+
+    fun updateVoucherRecommendation(cashbackType: CashbackType, recommendationData: VoucherRecommendationData) {
+        when (cashbackType) {
+            CashbackType.Rupiah -> {
+                idrRecommendationData = recommendationData
+            }
+            CashbackType.Percentage -> {
+                percentageRecommendationData = recommendationData
+            }
+        }
+    }
+
+    fun updateRecommendationStatus(cashbackType: CashbackType) {
+        when (cashbackType) {
+            CashbackType.Rupiah -> {
+                val isMaxDiscountEqual = idrRecommendationData.voucherDiscountAmtMax == mRupiahMaximumDiscountLiveData.value.toZeroIfNull()
+                val isMinPurchaseEqual = idrRecommendationData.voucherMinimumAmt == mRupiahMinimumPurchaseLiveData.value.toZeroIfNull()
+                val isVoucherQuotaEqual = idrRecommendationData.voucherQuota == mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
+                if (isMaxDiscountEqual && isMinPurchaseEqual && isVoucherQuotaEqual) {
+                    mVoucherRecommendationStatus.value = WITH_RECOMMENDATION
+                } else if (isMaxDiscountEqual || isMinPurchaseEqual || isVoucherQuotaEqual) {
+                    mVoucherRecommendationStatus.value = EDITED_RECOMMENDATION
+                } else {
+                    mVoucherRecommendationStatus.value = NO_RECOMMENDATION
+                }
+            }
+            CashbackType.Percentage -> {
+                val isDiscountAmtEqual = percentageRecommendationData.voucherDiscountAmt == mPercentageDiscountAmountLiveData.value.toZeroIfNull()
+                val isMaxDiscountEqual = percentageRecommendationData.voucherDiscountAmtMax == mPercentageMaximumDiscountLiveData.value.toZeroIfNull()
+                val isMinPurchaseEqual = percentageRecommendationData.voucherMinimumAmt == mPercentageMinimumPurchaseLiveData.value.toZeroIfNull()
+                val isVoucherQuotaEqual = percentageRecommendationData.voucherQuota == mPercentageVoucherQuotaLiveData.value.toZeroIfNull()
+                if (isDiscountAmtEqual && isMaxDiscountEqual && isMinPurchaseEqual && isVoucherQuotaEqual) {
+                    mVoucherRecommendationStatus.value = WITH_RECOMMENDATION
+                } else if (isDiscountAmtEqual || isMaxDiscountEqual || isMinPurchaseEqual || isVoucherQuotaEqual) {
+                    mVoucherRecommendationStatus.value = EDITED_RECOMMENDATION
+                } else {
+                    mVoucherRecommendationStatus.value = NO_RECOMMENDATION
+                }
             }
         }
     }
@@ -224,7 +302,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         mIsFirstTimeDrawLiveData.value?.let { isFirstTimeDraw ->
             if (!isFirstTimeDraw) {
                 mCashbackTypeLiveData.value?.let { type ->
-                    when(type) {
+                    when (type) {
                         CashbackType.Rupiah -> {
                             mRupiahMaximumDiscountLiveData.value?.let { amount ->
                                 mVoucherImageValueLiveData.value = VoucherImageType.Rupiah(amount)
@@ -245,7 +323,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
 
     fun addErrorPair(isError: Boolean, errorMessage: String, type: PromotionType.Cashback) {
-        when(type) {
+        when (type) {
             PromotionType.Cashback.Rupiah.MaximumDiscount -> {
                 mRupiahMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
             }
@@ -265,7 +343,36 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 mPercentageMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
             }
             PromotionType.Cashback.Percentage.VoucherQuota -> {
-                mPercentageVoucherQuotaErrorPairLiveData. value = Pair(isError, errorMessage)
+                mPercentageVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+        }
+    }
+
+    fun resetErrorPairList(cashbackType: CashbackType) {
+        val isError = false
+        val errorMessage = ""
+        when (cashbackType) {
+            CashbackType.Rupiah -> {
+                mRupiahMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+                mRupiahErrorPairList.value = arrayOf(
+                        mRupiahMaximumDiscountErrorPairLiveData.value,
+                        mRupiahMinimumPurchaseErrorPairLiveData.value,
+                        mRupiahVoucherQuotaErrorPairLiveData.value
+                )
+            }
+            CashbackType.Percentage -> {
+                mPercentageDiscountAmountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+                mPercentageErrorPairList.value = arrayOf(
+                        mPercentageDiscountAmountErrorPairLiveData.value,
+                        mPercentageMaximumDiscountErrorPairLiveData.value,
+                        mPercentageMinimumPurchaseErrorPairLiveData.value,
+                        mPercentageVoucherQuotaErrorPairLiveData.value
+                )
             }
         }
     }
@@ -317,8 +424,40 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         }
     }
 
+    fun getVoucherRecommendationFromApi() {
+        launchCatchError(
+                block = {
+                    // param for rupiah cash back recommendation request
+                    mIdrVoucherRecommendationResult.value = Success(withContext(dispatchers.io) {
+                        getVoucherRecommendationUseCase.params = GetVoucherRecommendationUseCase.createRequestParam(VoucherTypeConst.CASHBACK, VoucherDiscountTypeConst.IDR)
+                        getVoucherRecommendationUseCase.executeOnBackground()
+                    })
+                    // param for percentage cash back recommendation request
+                    mPercentageVoucherRecommendationResult.value = Success(withContext(dispatchers.io) {
+                        getVoucherRecommendationUseCase.params = GetVoucherRecommendationUseCase.createRequestParam(VoucherTypeConst.CASHBACK, VoucherDiscountTypeConst.PERCENTAGE)
+                        getVoucherRecommendationUseCase.executeOnBackground()
+                    })
+                },
+                onError = {
+                    mIdrVoucherRecommendationResult.value = Fail(it)
+                    mPercentageVoucherRecommendationResult.value = Fail(it)
+                }
+        )
+    }
+
+    fun getVoucherRecommendationData(cashbackType: CashbackType): VoucherRecommendationData {
+        return when (cashbackType) {
+            CashbackType.Rupiah -> {
+                idrRecommendationData
+            }
+            CashbackType.Percentage -> {
+                percentageRecommendationData
+            }
+        }
+    }
+
     private fun refreshTextFieldValue(cashbackType: CashbackType) {
-        when(cashbackType) {
+        when (cashbackType) {
             CashbackType.Rupiah -> {
                 mRupiahValueList.value = arrayOf(
                         mRupiahMaximumDiscountLiveData.value.toZeroIfNull(),

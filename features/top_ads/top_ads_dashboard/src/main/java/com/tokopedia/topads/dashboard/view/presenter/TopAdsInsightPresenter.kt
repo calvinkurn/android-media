@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA
-import com.tokopedia.topads.dashboard.data.model.FinalAdResponse
-import com.tokopedia.topads.dashboard.data.model.StatsData
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditKeywordUseCase
@@ -34,13 +32,9 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
         topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
         val requestParams = topAdsInsightUseCase.setParams()
         topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
+            override fun onCompleted() {}
 
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
+            override fun onError(e: Throwable?) {}
 
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
@@ -58,8 +52,7 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
         topAdsEditKeywordUseCase.setQuery(query)
         val requestParams = topAdsEditKeywordUseCase.setParam(groupId, data)
         topAdsEditKeywordUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()
@@ -77,10 +70,10 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
         })
     }
 
-
     override fun detachView() {
         super.detachView()
         topAdsInsightUseCase.unsubscribe()
+        topAdsEditKeywordUseCase.unsubscribe()
     }
 
 }

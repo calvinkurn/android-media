@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.digital.home.R
 import com.tokopedia.network.utils.ErrorHandler
 
@@ -19,6 +20,7 @@ class RechargeHomepageAdapter(val context: Context,
             val emptyModel = EmptyModel()
             emptyModel.content = context.getString(R.string.digital_home_empty_list_label)
             visitables.add(emptyModel)
+            notifyDataSetChanged()
         } else {
             val result = DiffUtil.calculateDiff(RechargeHomepageDiffUtil(this.visitables, data))
             visitables.clear()
@@ -33,10 +35,18 @@ class RechargeHomepageAdapter(val context: Context,
     }
 
     fun showGetListError(e: Throwable) {
-        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
+        val errorNetworkModel = ErrorNetworkModel()
+
+        var pair = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder())
+        errorNetworkModel.errorMessage = pair.first
+        errorNetworkModel.subErrorMessage = context.getString(com.tokopedia.kotlin.extensions.R.string.title_try_again) + "."+ pair.second
+        errorNetworkModel.onRetryListener = ErrorNetworkModel.OnRetryListener {
             showLoading()
             loaderListener.loadData()
         }
+        setErrorNetworkModel(errorNetworkModel)
+
+        showErrorNetwork()
     }
 
     interface LoaderListener {

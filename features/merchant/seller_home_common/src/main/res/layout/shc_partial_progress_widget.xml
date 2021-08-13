@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/shc_line_spacing_6"
         android:maxLines="2"
-        android:textColor="@color/shc_description"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toTopOf="@+id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
         android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingRight="@dimen/spacing_lvl2"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/icProgressArrow"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +74,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

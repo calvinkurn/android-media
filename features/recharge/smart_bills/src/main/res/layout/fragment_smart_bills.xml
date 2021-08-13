@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
+    tools:ignore="Overdraw"
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -97,6 +98,7 @@
         android:id="@+id/smart_bills_checkout_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -113,14 +115,24 @@
         android:id="@+id/checkout_loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/spacing_lvl2"
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/sbm_loader_unify"
             android:layout_width="@dimen/spacing_lvl8"
             android:layout_height="@dimen/spacing_lvl8"
             android:layout_gravity="center" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:id="@+id/sbm_global_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </FrameLayout>
 

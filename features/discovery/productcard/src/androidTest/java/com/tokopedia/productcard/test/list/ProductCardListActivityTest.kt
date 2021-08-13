@@ -8,10 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
-import com.tokopedia.productcard.ProductCardModel
 
 internal class ProductCardListActivityTest: AppCompatActivity() {
 
@@ -32,7 +33,7 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return ProductCardItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        return ProductCardItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
     }
 
     class Adapter: RecyclerView.Adapter<ViewHolder>() {
@@ -60,12 +61,25 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private val productCardView: ProductCardListView? by lazy {
-            itemView.findViewById<ProductCardListView>(R.id.productCardList)
+            itemView.findViewById(R.id.productCardList)
         }
 
         fun bind(productCardModel: ProductCardModel) {
             productCardView?.setProductModel(productCardModel)
-            productCardView?.setOnClickListener { Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show() }
+            productCardView?.setOnClickListener { toast("Click") }
+            productCardView?.setThreeDotsOnClickListener { toast("Three dots") }
+            productCardView?.setAddToCartOnClickListener { toast("Add to cart") }
+            productCardView?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    toast("Quantity changed to $quantity")
+                }
+            })
+            productCardView?.setAddVariantClickListener { toast("Add Variant") }
+        }
+
+        private fun toast(message: String) {
+            val toastMessage = "Position $adapterPosition, $message"
+            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         fun recycle() {

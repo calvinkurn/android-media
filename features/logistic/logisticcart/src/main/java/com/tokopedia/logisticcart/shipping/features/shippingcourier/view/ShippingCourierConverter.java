@@ -1,15 +1,16 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
-
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.DynamicPriceData;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.MerchantVoucherProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.MerchantVoucherProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
 import java.util.List;
 
@@ -78,6 +79,7 @@ public class ShippingCourierConverter {
         courierItemData.setUt(shippingCourierUiModel.getProductData().getUnixTime());
         courierItemData.setBlackboxInfo(shippingCourierUiModel.getBlackboxInfo());
         courierItemData.setSelected(true);
+        courierItemData.setPreOrderModel(shippingCourierUiModel.getPreOrderModel());
 
         /*on time delivery*/
         if (shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
@@ -94,7 +96,7 @@ public class ShippingCourierConverter {
         }
 
         /*merchant voucher*/
-        if(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null) {
+        if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null) {
             MerchantVoucherProductData merchantVoucherProductData = shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData();
             MerchantVoucherProductModel mvc = new MerchantVoucherProductModel(
                     merchantVoucherProductData.isMvc(),

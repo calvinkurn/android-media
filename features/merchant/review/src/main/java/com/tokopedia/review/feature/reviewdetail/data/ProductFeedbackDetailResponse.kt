@@ -1,9 +1,10 @@
 package com.tokopedia.review.feature.reviewdetail.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductFeedbackDetailResponse(
-        @SerializedName("productrevFeedbackDataPerProduct")
+        @SerializedName("productrevFeedbackDataPerProductV2")
         val productrevFeedbackDataPerProduct: ProductFeedbackDataPerProduct = ProductFeedbackDataPerProduct()
 ) {
     data class ProductFeedbackDataPerProduct(
@@ -24,15 +25,15 @@ data class ProductFeedbackDetailResponse(
             @SerializedName("topics")
             val topics: List<Topic> = listOf(),
             @SerializedName("reviewCount")
-            val reviewCount: Int = 0
+            val reviewCount: Long = 0
     ) {
         data class FeedbackList(
                 @SerializedName("attachments")
                 val attachments: List<Attachment> = listOf(),
                 @SerializedName("autoReply")
                 val autoReply: Boolean = false,
-                @SerializedName("feedbackID")
-                val feedbackID: Int? = 0,
+                @SerializedName("feedbackIDStr")
+                val feedbackID: String = "",
                 @SerializedName("rating")
                 val rating: Int? = 0,
                 @SerializedName("replyText")
@@ -46,7 +47,10 @@ data class ProductFeedbackDetailResponse(
                 @SerializedName("reviewerName")
                 val reviewerName: String? = "",
                 @SerializedName("variantName")
-                val variantName: String? = ""
+                val variantName: String? = "",
+                @SerializedName("isKejarUlasan")
+                @Expose
+                val isKejarUlasan: Boolean = false
         ) {
             data class Attachment(
                     @SerializedName("thumbnailURL")

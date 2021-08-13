@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardElevation="@dimen/layout_lvl0"
+    android:id="@+id/cardLevelInformation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl6">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title_level_card"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="heading_5"
+            tools:text="Level 1"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/levelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelTitle="@string/title_my_shop"
+            app:labelType="general_dark_green"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_level_card" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description_level_card"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_level_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700"
+            tools:text="Rp350.000 atau 0-2 produk terjual"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

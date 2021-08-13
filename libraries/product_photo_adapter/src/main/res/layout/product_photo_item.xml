@@ -52,7 +52,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl1"
                     android:layout_marginBottom="@dimen/spacing_lvl1"
                     android:text="@string/label_primary"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/Unify_N0"
                     android:textSize="@dimen/fontSize_lvl1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
