@@ -46,7 +46,9 @@ abstract class ReadReviewViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = ReadReviewViewModel(getProductRatingAndTopicsUseCase, getShopRatingAndTopicsUseCase, getProductReviewListUseCase, getShopReviewListUseCase, toggleLikeReviewUseCase, userSessionInterface, CoroutineTestDispatchersProvider)
         viewModel.productReviews.observeForever { }
+        viewModel.shopReviews.observeForever { }
         viewModel.ratingAndTopic.observeForever { }
+        viewModel.shopRatingAndTopic.observeForever { }
         mockkStatic(Resources::class)
         val resources = mockk<Resources>()
         val displayMetrics = mockk<DisplayMetrics>()
