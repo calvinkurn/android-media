@@ -506,8 +506,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     override fun chatItemClicked(
         element: ItemChatListPojo,
         itemPosition: Int,
-        lastActiveElementId: String?,
-        lastActiveItemPosition: Int?
+        lastActiveChat: Pair<ItemChatListPojo?, Int?>
     ) {
         activity?.let {
             with(chatListAnalytics) {

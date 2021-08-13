@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatV
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import com.tokopedia.topchat.common.Constant
 import javax.inject.Inject
 
 /**
@@ -195,6 +196,8 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
         chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, getSearchKeyWord())
+        chatRoomIntent.putExtra(Constant.CHAT_USER_ROLE_KEY, element.contact.role)
+        chatRoomIntent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
         startActivity(chatRoomIntent)
     }
 

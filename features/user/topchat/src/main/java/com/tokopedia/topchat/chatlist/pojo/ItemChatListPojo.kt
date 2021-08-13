@@ -37,6 +37,7 @@ data class ItemChatListPojo(
     val name: String get() = attributes?.contact?.contactName ?: ""
     val isPinned: Boolean get() = attributes?.pinStatus == 1
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
+    var isActive: Boolean = false
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -36,6 +37,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
+import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -69,8 +71,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private var frameLayoutChatList: FrameLayout? = null
 
     private var layoutUpdatesJob: Job? = null
-    private var role: Int = RoleType.BUYER
-    private var currentActiveChatId: String = ""
     private var displayState: Int = 0
     private var messageId: String = "0"
     private var chatTemplateSeparatedView: TopChatTemplateSeparatedView? = null
@@ -80,14 +80,23 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+    }
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         scanPathQuery(intent.data)
 
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
-            role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
-            currentActiveChatId = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE_ID)?: ""
+
+            if(role == null) {
+                role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
+            }
+            if(currentActiveChat == null) {
+                currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
+            }
         }
 
         return createChatRoomFragment(bundle)
@@ -256,15 +265,25 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun setupFlexModeFragments(savedInstanceState: Bundle?) {
+//        if (savedInstanceState == null) {
+//            role = null
+//            currentActiveChat = null
+//            chatRoomFragment = newFragment as TopChatRoomFragment
+//            chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
+//        } else {
+//            chatRoomFragment = (getChatFragment(R.id.chatroom_fragment) as TopChatRoomFragment?)
+//                ?: newFragment as TopChatRoomFragment
+//            chatListFragment = (getChatFragment(R.id.chatlist_fragment) as ChatListInboxFragment?)
+//                ?: ChatListInboxFragment.createFragment(role, currentActiveChat)
+//        }
         if (savedInstanceState == null) {
-            chatRoomFragment = newFragment as TopChatRoomFragment
-            chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChatId)
+            role = null
+            currentActiveChat = null
         } else {
-            chatRoomFragment = (getChatFragment(R.id.chatroom_fragment) as TopChatRoomFragment?)
-                ?: newFragment as TopChatRoomFragment
-            chatListFragment = (getChatFragment(R.id.chatlist_fragment) as ChatListInboxFragment?)
-                ?: ChatListInboxFragment.createFragment(role, currentActiveChatId)
+            messageId = currentActiveChat?: "0"
         }
+        chatRoomFragment = newFragment as TopChatRoomFragment
+        chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
         chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
         chatListFragment.chatRoomFlexModeListener = this
         chatRoomFragment.chatRoomFlexModeListener = this
@@ -324,10 +343,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         }
     }
 
-    override fun onClickAnotherChat(msgId: String) {
+    override fun onClickAnotherChat(msg: ItemChatListPojo) {
         hideKeyboard()
         if (isFlexMode()) {
-            messageId = msgId
+            messageId = msg.msgId
+            currentActiveChat = msg.msgId
             chatRoomFragment = newFragment as TopChatRoomFragment
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
@@ -434,6 +454,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         if(isFlexMode()) {
             return when (item.itemId) {
                 R.id.menu_chat_filter -> {
+                    chatListFragment.showFilterDialog()
                     true
                 }
                 R.id.menu_chat_setting -> {
@@ -475,6 +496,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         private const val FLAT_STATE = 1
         private const val HALF_OPEN_STATE = 2
         private const val ZER0_MESSAGE_ID = "0"
+        private var role: Int? = null
+        private var currentActiveChat: String? = null
     }
 
 }

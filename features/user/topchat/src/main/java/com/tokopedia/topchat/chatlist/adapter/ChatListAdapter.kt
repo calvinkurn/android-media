@@ -26,6 +26,18 @@ class ChatListAdapter constructor(
         adapterTypeFactory: ChatListTypeFactoryImpl
 ) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
+    var activeChat: Pair<ItemChatListPojo?, Int?> = Pair(null, null)
+        set(value) {
+            if(!field.first?.msgId.isNullOrEmpty()) {
+                val deactivateChat = field.first
+                deactivateChat?.isActive = false
+                if(deactivateChat != null && field.second != null) {
+                    notifyItemChanged(field.second!!, deactivateChat)
+                }
+            }
+            field = value
+        }
+
     override fun isContainData(): Boolean {
         return visitables.size > 0 && !hasEmptyModel()
     }
@@ -268,4 +280,14 @@ class ChatListAdapter constructor(
         }
     }
 
+    fun getItemPosition(msgId: String): Pair<ItemChatListPojo?, Int?> {
+        for(i in list.indices) {
+            if(list[i] is ItemChatListPojo) {
+                if((list[i] as ItemChatListPojo).msgId == msgId) {
+                    return Pair((list[i] as ItemChatListPojo), i)
+                }
+            }
+        }
+        return Pair(null, null)
+    }
 }

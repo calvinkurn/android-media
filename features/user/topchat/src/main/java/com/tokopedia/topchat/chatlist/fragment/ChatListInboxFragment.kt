@@ -156,7 +156,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         initRole()
         initWebSocket()
         setHasOptionsMenu(false)
-        initCurrentActiveChat()
     }
 
     override fun onStart() {
@@ -513,6 +512,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
+        initCurrentActiveChat()
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
@@ -559,7 +559,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
-    private fun showFilterDialog() {
+    fun showFilterDialog() {
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<TopchatItemMenu>()
@@ -612,8 +612,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun chatItemClicked(
         element: ItemChatListPojo,
         itemPosition: Int,
-        lastActiveElementId: String?,
-        lastActiveItemPosition: Int?
+        lastActiveChat: Pair<ItemChatListPojo?, Int?>
     ) {
         activity?.let {
             with(chatListAnalytics) {
@@ -623,19 +622,17 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             }
             webSocket.activeRoom = element.msgId
             if(context is InboxFragmentContainer) {
-                RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                }.let { intent ->
-                    intent.putExtra(Constant.CHAT_CURRENT_ACTIVE_ID, itemPosition)
-                    intent.putExtra(Constant.CHAT_USER_ROLE_KEY, role)
-                    startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
-                }
+                val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
+                intent.putExtra(Constant.CHAT_USER_ROLE_KEY, role)
+                startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
+
                 it.overridePendingTransition(0, 0)
 
                 //Handle if activity is ChatRoom & flex mode
-            } else if(isFromTopChatRoom()) {
-                handleChatRoomAndFlexMode(element, itemPosition,
-                    lastActiveElementId, lastActiveItemPosition)
+            } else if(isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
+                handleChatRoomAndFlexMode(element, itemPosition, lastActiveChat)
             }
         }
     }
@@ -643,15 +640,12 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun handleChatRoomAndFlexMode(
         element: ItemChatListPojo,
         itemPosition: Int,
-        lastActiveElementId: String?,
-        lastActiveItemPosition: Int?
+        lastActiveChat: Pair<ItemChatListPojo?, Int?>
     ) {
-        if(element.msgId != lastActiveElementId) {
+        if(element.msgId != adapter?.activeChat?.first?.msgId) {
             adapter?.notifyItemChanged(itemPosition, element)
-            if(!lastActiveElementId.isNullOrEmpty() && lastActiveItemPosition != null) {
-                adapter?.notifyItemChanged(lastActiveItemPosition)
-            }
-            chatRoomFlexModeListener?.onClickAnotherChat(element.msgId)
+            adapter?.activeChat = lastActiveChat
+            chatRoomFlexModeListener?.onClickAnotherChat(element)
         }
     }
 
@@ -718,12 +712,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
-    }
-
-    override fun onFragmentBackPressed(): Boolean {
-        ChatItemListViewHolder.currentActiveChat = ""
-        ChatItemListViewHolder.lastActivePosition = null
-        return super.onFragmentBackPressed()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -873,10 +861,16 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun initCurrentActiveChat() {
-        if(isFromTopChatRoom()) {
-            val currentActiveChatId = arguments?.getString(Constant.CHAT_CURRENT_ACTIVE_ID)
-            if(!currentActiveChatId.isNullOrEmpty()) {
-                ChatItemListViewHolder.currentActiveChat = currentActiveChatId
+        if(isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
+            val currentActiveChat = arguments?.getString(Constant.CHAT_CURRENT_ACTIVE)
+            if(currentActiveChat != null) {
+                val pair = adapter?.getItemPosition(currentActiveChat)
+                if(pair?.first != null && pair.second != null) {
+                    val activateChat = pair.first
+                    activateChat?.isActive = true
+                    adapter?.notifyItemChanged(pair.second!!, activateChat)
+                    adapter?.activeChat = pair
+                }
             }
         }
     }
@@ -891,21 +885,21 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         fun createFragment(
             @RoleType role: Int? = null,
-            currentActiveChatId: String? = null
+            currentActiveChat: String? = null
         ): ChatListInboxFragment {
             val fragment = ChatListInboxFragment()
-            fragment.arguments = createBundle(role, currentActiveChatId)
+            fragment.arguments = createBundle(role, currentActiveChat)
             return fragment
         }
 
         private fun createBundle(
             @RoleType role: Int? = null,
-            currentActiveChatId: String? = null
+            currentActiveChat: String? = null
         ): Bundle {
             val bundle = Bundle()
             if (role != null) bundle.putInt(Constant.CHAT_USER_ROLE_KEY, role)
-            if (!currentActiveChatId.isNullOrEmpty())
-                bundle.putString(Constant.CHAT_CURRENT_ACTIVE_ID, currentActiveChatId)
+            if (currentActiveChat != null)
+                bundle.putString(Constant.CHAT_CURRENT_ACTIVE, currentActiveChat)
             return bundle
         }
     }
