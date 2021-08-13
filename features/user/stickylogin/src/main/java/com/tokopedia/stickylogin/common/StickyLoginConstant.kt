@@ -19,6 +19,7 @@ object StickyLoginConstant {
 
     const val PARAMS_PAGE = "page"
     const val LAYOUT_FLOATING = "floating"
+    const val LAYOUT_DEFAULT = "default"
 
     const val STICKY_PREF = "sticky_login_widget.pref"
     const val KEY_LAST_SEEN_AT_HOME = "last_seen_at_home"
