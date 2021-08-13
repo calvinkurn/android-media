@@ -130,6 +130,7 @@ class TokoNowSearchFragment:
             outOfCoverageListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
+            broadMatchListener = this,
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
