@@ -89,8 +89,7 @@ class OSTopAdsVerificationTest {
         Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
         Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
         Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
-
-        IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
+        waitForData()
 
         val itemList = itemAdapter.currentList
         topAdsCount = calculateTopAdsCount(itemList)
