@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
@@ -18,11 +18,12 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetLayoutUseCase(
-        gqlRepository: GraphqlRepository,
-        mapper: LayoutMapper,
-        dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository,
+    mapper: LayoutMapper,
+    dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
-        gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false) {
+    gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false
+) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
@@ -30,7 +31,8 @@ class GetLayoutUseCase(
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse =
+            graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -45,9 +47,11 @@ class GetLayoutUseCase(
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_PAGE = "page"
 
-        fun getRequestParams(shopId: String, pageName: String): RequestParams = RequestParams.create().apply {
-            putInt(KEY_SHOP_ID, shopId.toIntOrZero())
-            putString(KEY_PAGE, pageName)
+        fun getRequestParams(shopId: String, pageName: String): RequestParams {
+            return RequestParams.create().apply {
+                putLong(KEY_SHOP_ID, shopId.toLongOrZero())
+                putString(KEY_PAGE, pageName)
+            }
         }
 
         private val QUERY = """
@@ -77,6 +81,7 @@ class GetLayoutUseCase(
                   applink
                   dataKey
                   ctaText
+                  maxData
                   emptyState {
                     imageUrl
                     title
