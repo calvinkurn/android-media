@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
-        val productId: Long = 0,
+        val productId: Long = 0L,
         val name: String = "",
         val categoryBreadcrumbs: String = "",
         val url: String = "",
