@@ -119,6 +119,6 @@
     <string name="saldo_failed_to_load_more_transaction">Gagal menampilkan transaksi</string>
     <string name="saldo_balance_load_fail_title">Gagal menampilkan saldo</string>
     <string name="saldo_balance_load_fail_desc">Klik untuk memuat ulang</string>
-    <string name="cetak">Cetak</string>
+    <string name="saldo_cetak">Cetak</string>
 
 </resources>

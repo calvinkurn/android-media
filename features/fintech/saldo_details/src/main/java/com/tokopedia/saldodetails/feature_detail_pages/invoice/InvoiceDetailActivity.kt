@@ -27,7 +27,7 @@ class InvoiceDetailActivity : BaseSimpleWebViewActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.print_web_view, menu)
+        inflater.inflate(R.menu.saldo_print_web_view, menu)
         return true
     }
 
