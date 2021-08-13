@@ -449,7 +449,6 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
         val coachMarkItem = anchors.getOrNull(currentIndex) ?: return
-        val delayMillis = 250L
         if (coachMarkItem.title == getString(R.string.inbox_title_onboarding_3)) {
             onBoardingCoachMark?.isDismissed = true
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
@@ -616,5 +615,9 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    companion object {
+        private const val delayMillis = 250L
     }
 }
