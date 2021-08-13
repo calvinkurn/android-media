@@ -264,6 +264,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val STATUS_200 = 200
         const val UOH_CANCEL_ORDER = 300
         const val LABEL_HELP_LINK = "Bantuan"
+        const val MINUS_30 = -30
+        const val MINUS_90 = -90
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1389,7 +1391,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_30)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
@@ -1399,7 +1401,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate

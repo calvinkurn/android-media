@@ -142,6 +142,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 }
             }
         }
+
+        const val SUCCESS_CODE_0 = 0
+        const val SUCCESS_CODE_1 = 1
+        const val SUCCESS_CODE_2 = 2
+        const val SUCCESS_CODE_3 = 3
+        const val COUNTER_160 = 160
+        const val COUNTER_15 = 15
+        const val COUNTER_7 = 7
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -262,11 +270,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         tv_cancel_wait_desc?.visible()
         if (waitMessage.contains(BuyerConsts.KEY_SETELAH))  {
-            tv_cancel_wait_desc?.text = waitMessage.substring(0, waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+7) + BuyerConsts.KEY_HOUR_DIVIDER
+            tv_cancel_wait_desc?.text = waitMessage.substring(0, waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+ COUNTER_7) + BuyerConsts.KEY_HOUR_DIVIDER
 
             if (waitMessage.contains(BuyerConsts.KEY_LAGI)) {
                 tv_cancel_wait_time?.visible()
-                tv_cancel_wait_time?.text = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+7, waitMessage.indexOf(BuyerConsts.KEY_LAGI))
+                tv_cancel_wait_time?.text = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+ COUNTER_7, waitMessage.indexOf(BuyerConsts.KEY_LAGI))
             }
             // do not delete - plan B : manual splitting
             /*var hour = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+8, waitMessage.indexOf(BuyerConsts.KEY_HOUR))
@@ -461,10 +469,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 tf_choose_sub_reason_editable.textFieldInput.text.isEmpty() -> {
                     showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
                 }
-                tf_choose_sub_reason_editable.textFieldInput.text.length < 15 -> {
+                tf_choose_sub_reason_editable.textFieldInput.text.length < COUNTER_15 -> {
                     showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
                 }
-                tf_choose_sub_reason_editable.textFieldInput.text.length > 160 -> {
+                tf_choose_sub_reason_editable.textFieldInput.text.length > COUNTER_160 -> {
                     showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                 }
                 else -> {
@@ -506,7 +514,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.visible()
             tf_choose_sub_reason_editable?.requestFocus()
             context?.let { showKeyboard(it) }
-            tf_choose_sub_reason_editable?.setCounter(160)
+            tf_choose_sub_reason_editable?.setCounter(COUNTER_160)
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -633,17 +641,17 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun renderInstantCancellation() {
         when (instantCancelResponse.success) {
-            0 -> {
+            SUCCESS_CODE_0 -> {
                 showToaster(instantCancelResponse.message, Toaster.TYPE_ERROR)
             }
-            1 -> {
+            SUCCESS_CODE_1 -> {
                 // showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
                 backToEntryPoint(RESULT_CODE_SUCCESS, instantCancelResponse.message)
             }
-            2 -> {
+            SUCCESS_CODE_2 -> {
                 showPopupWithTwoButtons()
             }
-            3 -> {
+            SUCCESS_CODE_3 -> {
                 showPopupWithHelpButton(instantCancelResponse.popup.title, instantCancelResponse.popup.body)
             }
         }
