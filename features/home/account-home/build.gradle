@@ -7,17 +7,12 @@ apply from: "../../../compile-instrument-test.gradle"
 buildscript {
     repositories {
         google()
-        maven {
-            url "https://maven.google.com"
-        }
-        google()
-        maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.gradlePlugin.googleServices
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -41,20 +36,6 @@ android {
         }
     }
 }
-
-buildscript {
-    repositories {
-        google()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.gradlePlugin.googleServices
-        classpath rootProject.ext.miscDependencies.hansel
-    }
-}
-
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
