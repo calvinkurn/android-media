@@ -137,6 +137,7 @@
                         android:id="@+id/min_suggested_bid_rekomendasi"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_16"
                         android:text="@string/topads_common_recommended_bid_error"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/budgetRekomendasi"
