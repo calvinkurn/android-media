@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
@@ -63,15 +64,22 @@ class SaldoHoldInfoFragment : Fragment() {
         initView()
     }
 
-    fun initView() {
+    private fun initView() {
 
         var resultAmount: Long? = null
-        if (transactionType == FOR_BUYER) {
-            resultAmount = buyerAmount
-            title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
-        } else if (transactionType == FOR_SELLER) {
-            resultAmount = sellerAmount
-            title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
+        when (transactionType) {
+            FOR_BUYER -> {
+                resultAmount = buyerAmount
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
+            }
+            FOR_SELLER -> {
+                resultAmount = sellerAmount
+                title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
+            }
+            else -> {
+                title_saldo.gone()
+                title_saldo_value.gone()
+            }
         }
 
         title_saldo_value.text = resultAmount?.let { CurrencyUtils.convertToCurrencyString(it) }
