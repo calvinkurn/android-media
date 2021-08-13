@@ -1,7 +1,6 @@
 package com.tokopedia.home.topads
 
 import android.Manifest
-import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -18,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
@@ -29,7 +29,6 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -46,6 +45,9 @@ import org.junit.*
  */
 class HomeTopAdsVerificationTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var topAdsCount = 0
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -54,15 +56,11 @@ class HomeTopAdsVerificationTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark()
+            disableCoachMark(context)
             loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
     }
-
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var topAdsCount = 0
-    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
     @Before
     fun setupEnvironment() {
@@ -97,14 +95,6 @@ class HomeTopAdsVerificationTest {
             checkProductOnDynamicChannel(homeRecyclerView, i)
         }
         topAdsAssertion.assert()
-    }
-
-    private fun disableCoachMark(){
-        val sharedPrefs = InstrumentationRegistry
-                .getInstrumentation().context
-                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     private fun calculateTopAdsCount(itemList: List<Visitable<*>>) : Int {
