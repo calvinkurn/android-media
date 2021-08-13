@@ -114,7 +114,7 @@ class SingleProductBundleViewModel @Inject constructor(
 
     fun generateBundleInfo() = BundleInfo(
         name = "Singel bundle",
-        preorder = PreOrder(
+        preorder = Preorder(
             status = "ACTIVE",
             processTypeNum = 1,
             processTime = 19
@@ -125,8 +125,8 @@ class SingleProductBundleViewModel @Inject constructor(
                 name = "Bundle 1",
                 picURL = "https://placekitten.com/200/300",
                 minOrder = 2,
-                bundlePrice = 2000,
-                originalPrice = 2300,
+                bundlePrice = 2000.0,
+                originalPrice = 2300.0,
                 status = "SHOW",
                 selections = listOf(
                     Selection(
@@ -175,8 +175,8 @@ class SingleProductBundleViewModel @Inject constructor(
                 children = listOf(
                     Child(
                         productID = 123451L,
-                        originalPrice = 10000,
-                        bundlePrice = 9000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 9000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(10, 1),
@@ -185,8 +185,8 @@ class SingleProductBundleViewModel @Inject constructor(
                     ),
                     Child(
                         productID = 123452L,
-                        originalPrice = 10000,
-                        bundlePrice = 8000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 8000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(10, 2),
@@ -195,8 +195,8 @@ class SingleProductBundleViewModel @Inject constructor(
                     ),
                     Child(
                         productID = 123453L,
-                        originalPrice = 10000,
-                        bundlePrice = 9000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 9000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(11, 1),
@@ -205,8 +205,8 @@ class SingleProductBundleViewModel @Inject constructor(
                     ),
                     Child(
                         productID = 123454L,
-                        originalPrice = 10000,
-                        bundlePrice = 8000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 8000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(11, 2),
@@ -220,8 +220,8 @@ class SingleProductBundleViewModel @Inject constructor(
                 name = "Bundle 2",
                 picURL = "https://placekitten.com/200/200",
                 minOrder = 2,
-                bundlePrice = 2000,
-                originalPrice = 2300,
+                bundlePrice = 2000.0,
+                originalPrice = 2300.0,
                 status = "SHOW"
             )
         )

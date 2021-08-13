@@ -5,16 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleDetailViewHolder
 
-class ProductBundleDetailAdapter(private val clickListener: ProductBundleDetailVariantClickListener)
+class ProductBundleDetailAdapter(private val clickListener: ProductBundleDetailItemClickListener)
     : RecyclerView.Adapter<ProductBundleDetailViewHolder>() {
 
-    interface ProductBundleDetailVariantClickListener {
-        fun onProductBundleMasterItemClicked(productBundleItem: BundleItem)
+    interface ProductBundleDetailItemClickListener {
+        fun onProductVariantSpinnerClicked(productBundleItem: BundleItem)
     }
 
-    private var productBundleItems: List<BundleItem> = listOf()
+    private var productBundleDetails: List<ProductBundleDetail> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductBundleDetailViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.product_bundle_detail_item, parent, false)
@@ -22,15 +23,16 @@ class ProductBundleDetailAdapter(private val clickListener: ProductBundleDetailV
     }
 
     override fun getItemCount(): Int {
-        return productBundleItems.size
+        return productBundleDetails.size
     }
 
     override fun onBindViewHolder(holder: ProductBundleDetailViewHolder, position: Int) {
-        val bundleItem = productBundleItems[position]
-        holder.bindData(bundleItem)
+        val bundleDetail = productBundleDetails[position]
+        holder.bindData(bundleDetail)
     }
 
-    fun setProductBundleItems(productBundleItems: List<BundleItem>) {
-        this.productBundleItems = productBundleItems
+    fun setProductBundleDetails(productBundleDetails: List<ProductBundleDetail>) {
+        this.productBundleDetails = productBundleDetails
+        notifyDataSetChanged()
     }
 }
