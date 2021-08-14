@@ -653,8 +653,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
                     creditCardTenorListData = it.ccData
+                    view?.let { v ->
+                        Toaster.build(v, "NAH SUKSES NIH", type = Toaster.TYPE_NORMAL).show()
+                    }
 
-                    Toaster.build(v, "NAH SUKSES NIH", type = Toaster.TYPE_NORMAL).show()
                     // update total
                     // TODO: make sure apakah total yg dimaksud adalah total dari response
                     // TODO: update bottomsheet & summary transaction
