@@ -24,6 +24,7 @@ object AddEditProductUploadErrorHandler {
     private const val ERROR_UPLOADER_NETWORK_ERROR = "networkError"
 
     private const val MULTIPLE_DATA_SEPARATOR = "; "
+    private const val MAX_LENGTH_ERROR_MESSAGE = 3
 
     fun getErrorName(e: Throwable?): String {
         return if (e is ResponseV4ErrorException) {
@@ -33,7 +34,7 @@ object AddEditProductUploadErrorHandler {
         } else if (e is UnknownHostException || e is SocketTimeoutException || e is ConnectException) {
             ERROR_NO_INTERNET
         } else if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3) {
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
@@ -62,7 +63,7 @@ object AddEditProductUploadErrorHandler {
 
     fun isServerTimeout(e: Throwable?): Boolean {
         return if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3) {
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
