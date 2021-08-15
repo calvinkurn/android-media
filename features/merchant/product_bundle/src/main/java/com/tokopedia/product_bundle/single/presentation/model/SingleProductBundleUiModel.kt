@@ -3,7 +3,6 @@ package com.tokopedia.product_bundle.single.presentation.model
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 
 data class SingleProductBundleUiModel (
-        var preorderDurationWording: String? = null,
         var items: List<SingleProductBundleItem> = emptyList(),
         var selectedItems: List<SingleProductBundleSelectedItem> = emptyList()
 )
@@ -24,6 +23,7 @@ data class SingleProductBundleItem (
         var discount: Int = 0,
         var imageUrl: String = "",
         var selectedVariantText: String = "",
+        var preorderDurationWording: String? = null,
         var productVariant: ProductVariant? = null
 ) {
         val hasVariant: Boolean = (productVariant != null)

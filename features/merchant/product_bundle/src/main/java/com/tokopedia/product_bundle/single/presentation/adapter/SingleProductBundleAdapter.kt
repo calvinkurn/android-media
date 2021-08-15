@@ -32,7 +32,12 @@ class SingleProductBundleAdapter(
                 selectedItem.isSelected = (index == viewHolder.adapterPosition)
             }
             data.getOrNull(viewHolder.adapterPosition)?.apply {
-                listener.onBundleItemSelected(originalPrice, discountedPrice, quantity)
+                listener.onBundleItemSelected(
+                    originalPrice,
+                    discountedPrice,
+                    quantity,
+                    preorderDurationWording
+                )
             }
             notifyDataSetChanged()
         }
@@ -68,7 +73,12 @@ class SingleProductBundleAdapter(
                     originalPrice = variant?.finalMainPrice.orZero()
                     discountedPrice = variant?.finalPrice.orZero()
                     selectedVariantText = variantText
-                    listener.onBundleItemSelected(originalPrice, discountedPrice, quantity)
+                    listener.onBundleItemSelected(
+                        originalPrice,
+                        discountedPrice,
+                        quantity,
+                        preorderDurationWording
+                    )
                 }
 
                 selectedItem.productId = selectedProductId

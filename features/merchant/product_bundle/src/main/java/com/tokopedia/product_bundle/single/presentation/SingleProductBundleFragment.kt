@@ -96,14 +96,19 @@ class SingleProductBundleFragment(
         }
     }
 
-    override fun onBundleItemSelected(originalPrice: Double, discountedPrice: Double, quantity: Int) {
+    override fun onBundleItemSelected(
+        originalPrice: Double,
+        discountedPrice: Double,
+        quantity: Int,
+        preorderDurationWording: String?
+    ) {
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
+        updateTotalPO(preorderDurationWording)
     }
 
     private fun observeSingleProductBundleUiModel() {
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
             swipeRefreshLayout?.isRefreshing = false
-            updateTotalPO(it.preorderDurationWording)
             adapter.setData(it.items, it.selectedItems)
         })
     }

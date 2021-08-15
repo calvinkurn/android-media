@@ -13,13 +13,10 @@ object BundleInfoToSingleProductBundleMapper {
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
     private const val PREORDER_TYPE_DAY: Int = 1
     private const val PREORDER_TYPE_MONTH: Int = 2
-    private const val BUNDLEINFO_STATUS_SHOW: String = "1"
-    private const val BUNDLEITEM_STATUS_SHOW: String = "SHOW"
 
     fun mapToSingleProductBundle (
         context: Context, bundleInfo: List<BundleInfo>,
         selectedProductId: Long) = SingleProductBundleUiModel(
-        preorderDurationWording = getPreorderWording(context, bundleInfo[0].preorder),
         items = mapToBundleItem(context, bundleInfo),
         selectedItems = mapToSelectedItem(bundleInfo, selectedProductId)
     )
@@ -39,19 +36,19 @@ object BundleInfoToSingleProductBundleMapper {
         }
     }
 
-    private fun mapToBundleItem(context: Context, bundleInfos: List<BundleInfo>) = bundleInfos.filter {
-        it.status == BUNDLEINFO_STATUS_SHOW
-    }.map {
+    private fun mapToBundleItem(context: Context, bundleInfos: List<BundleInfo>) = bundleInfos.map {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         SingleProductBundleItem(
             quantity = bundleItem.minOrder,
             bundleName = context.getString(R.string.bundle_item_title_prefix, bundleItem.minOrder),
             productName = bundleItem.name,
-            originalPrice = bundleItem.originalPrice.toDouble(),
-            discountedPrice = bundleItem.bundlePrice.toDouble(),
-            discount = DiscountUtil.getDiscountPercentage(bundleItem.originalPrice.toDouble(), bundleItem.bundlePrice.toDouble()),
+            originalPrice = bundleItem.originalPrice,
+            discountedPrice = bundleItem.bundlePrice,
+            discount = DiscountUtil.getDiscountPercentage(bundleItem.originalPrice,
+                bundleItem.bundlePrice),
             imageUrl = bundleItem.picURL,
+            preorderDurationWording = getPreorderWording(context, it.preorder),
             productVariant = if (productVariant.hasVariant) productVariant else null
         )
     }
@@ -59,7 +56,7 @@ object BundleInfoToSingleProductBundleMapper {
     private fun mapToSelectedItem(BundleInfos: List<BundleInfo>, selectedProductId: Long) = BundleInfos.map { bundleInfo ->
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
-            productId = if (true) "" else bundleItem.productID.toString(),
+            productId = if (false) "" else bundleItem.productID.toString(),
             isSelected = bundleItem.children.any { it.productID == selectedProductId }
         )
     }
