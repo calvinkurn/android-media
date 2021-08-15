@@ -54,7 +54,11 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         getComponent(PenaltyComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_penalty_detail, container, false)
     }
 
@@ -67,7 +71,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
             cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
         }
         setupActionBar()
@@ -90,13 +99,22 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
         tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvStartDateDetailPenalty?.text = getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
+        tvStartDateDetailPenalty?.text =
+            getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
         tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
-        tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(getString(R.string.total_deduction_point_performance,
-                shopPenaltyDetailUiModel.deductionPointPenalty))
-        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
+        tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(
+            getString(
+                R.string.total_deduction_point_performance,
+                shopPenaltyDetailUiModel.deductionPointPenalty
+            )
+        )
+        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(
+            getString(
+                R.string.point_deduction_date_result_detail_penalty,
                 shopPenaltyDetailUiModel.prefixDateDetail,
-                shopPenaltyDetailUiModel.endDateDetail))
+                shopPenaltyDetailUiModel.endDateDetail
+            )
+        )
         tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
@@ -105,7 +123,11 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         }
 
         btnCallHelpCenter?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
+            RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ShopScoreConstant.HELP_URL
+            )
             shopScorePenaltyTracking.clickLearMoreHelpCenterPenaltyDetail()
         }
 
@@ -115,7 +137,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupRvStepper(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
-        val gridLayoutManager = GridLayoutManager(context, 5)
+        val gridLayoutManager = GridLayoutManager(context, MAX_SPAN_COUNT)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (stepperList.size == position + 1) {
@@ -150,6 +172,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
         const val SPAN_WIDTH_DEFAULT = 2
         const val SPAN_WIDTH_LAST_ITEM = 1
+        const val MAX_SPAN_COUNT = 5
 
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()
