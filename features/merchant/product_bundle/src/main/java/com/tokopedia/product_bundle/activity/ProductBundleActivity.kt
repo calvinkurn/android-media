@@ -35,7 +35,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = this.pathSegments
             val productId = pathSegments.firstOrNull() ?: "0"
             // call getBundleInfo
-            viewModel.getBundleInfo(productId.toLongOrZero())
+            viewModel.getBundleInfo("2147881195".toLongOrZero())
         }
 
         observeGetBundleInfoResult()
@@ -59,6 +59,10 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     val bundleInfo = result.data
                     val bundleItems = bundleInfo.getBundleInfo.bundleInfo
                     val fragment = SingleProductBundleFragment.newInstance(bundleItems)
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(parentViewResourceID, fragment, tagFragment)
+                        .commit()
                 }
                 is Fail -> {
                     // log and show error view
