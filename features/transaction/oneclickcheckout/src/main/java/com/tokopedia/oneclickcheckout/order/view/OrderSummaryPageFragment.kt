@@ -649,6 +649,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     view?.let { v ->
                         // Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                         Toaster.build(v, "ERROR GAN!", type = Toaster.TYPE_ERROR).show()
+
+                        // TODO: reset pilih pembayaran
+                        // TODO: disable button bayar
+                        // TODO: update total bayar
                     }
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {

@@ -56,21 +56,21 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
         const val INPUT = "input"
 
         val QUERY = """
-            mutation creditCardTenorList(${'$'}input: creditCardTenorListParam) {
-             creditCardTenorList(input:${'$'}input) {
-              process_time
-              error_code
-              error_msg
-              tenor_list{
-            	type
-            	bank
-            	description
-            	amount
-            	fee
-            	rate
-            	disabled
-              }
-             }
+            mutation creditCardTenorList(${'$'}input: CreditCardTenorListRequest!) {
+            creditCardTenorList(input:${'$'}input) {
+                process_time
+                error_code
+                error_msg
+                tenor_list {
+                    type
+                    bank
+                    description
+                    amount
+                    fee
+                    rate
+                    disabled
+                    }
+                }
             }
         """.trimIndent()
     }

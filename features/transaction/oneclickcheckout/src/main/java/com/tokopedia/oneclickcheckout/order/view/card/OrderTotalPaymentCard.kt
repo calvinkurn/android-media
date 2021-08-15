@@ -77,6 +77,7 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                     }
                 }
 
+                // TODO: cek fee nya klo afpb
                 if (orderTotal.orderCost.totalPrice > 0.0) {
                     tvTotalPaymentValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false).removeDecimalSuffix()
                     btnOrderDetail.visibility = if (orderTotal.buttonState == OccButtonState.LOADING) View.GONE else View.VISIBLE
