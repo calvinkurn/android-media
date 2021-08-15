@@ -248,19 +248,19 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                                            userId: String, orderTotal: OrderTotal, orderCart: OrderCart): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
         val paymentAmount = orderTotal.orderCost.totalItemPrice.toInt() + orderTotal.orderCost.shippingFee.toInt()
-        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = paymentAmount)
+        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = paymentAmount.toFloat())
         cartDetailsItemList.add(cartDetailsItem)
         val totalDiscount = orderTotal.orderCost.productDiscountAmount + orderTotal.orderCost.shippingDiscountAmount
         val totalOtherAmount = orderTotal.orderCost.purchaseProtectionPrice + orderTotal.orderCost.insuranceFee.toInt()
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
             userId = userId.toLong(),
-            totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice,
+            totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice.toFloat(),
             profileCode = orderPaymentCreditCard.additionalData.profileCode,
             ccfeeSignature = orderPaymentCreditCard.tenorSignature,
             timestamp = orderPaymentCreditCard.unixTimestamp,
-            otherAmount = totalOtherAmount,
-            discountAmount = totalDiscount,
+            otherAmount = totalOtherAmount.toFloat(),
+            discountAmount = totalDiscount.toFloat(),
             cartDetails = cartDetailsItemList
         )
     }

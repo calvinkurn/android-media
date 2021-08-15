@@ -13,16 +13,16 @@ data class CreditCardTenorListRequest(
 	val userId: Long = 0L,
 
 	@field:SerializedName("total_amount")
-	val totalAmount: String = "",
+	val totalAmount: Float = 0F,
 
 	@field:SerializedName("discount_amount")
-	val discountAmount: Int = 0,
+	val discountAmount: Float = 0F,
 
 	@field:SerializedName("profile_code")
 	val profileCode: String = "",
 
 	@field:SerializedName("other_amount")
-	val otherAmount: Int = 0,
+	val otherAmount: Float = 0F,
 
 	@field:SerializedName("cart_details")
 	val cartDetails: List<CartDetailsItem> = emptyList(),
@@ -40,5 +40,5 @@ data class CartDetailsItem(
 	val shopType: Int = 0,
 
 	@field:SerializedName("payment_amount")
-	val paymentAmount: Int = 0
+	val paymentAmount: Float = 0F
 )
