@@ -59,7 +59,7 @@ object BundleInfoToSingleProductBundleMapper {
     private fun mapToSelectedItem(BundleInfos: List<BundleInfo>, selectedProductId: Long) = BundleInfos.map { bundleInfo ->
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
-            productId = if (bundleItem.hasVariant) "" else bundleItem.productID.toString(),
+            productId = if (true) "" else bundleItem.productID.toString(),
             isSelected = bundleItem.children.any { it.productID == selectedProductId }
         )
     }

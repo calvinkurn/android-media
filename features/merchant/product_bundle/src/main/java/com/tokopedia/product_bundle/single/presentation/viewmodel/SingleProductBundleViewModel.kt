@@ -112,7 +112,7 @@ class SingleProductBundleViewModel @Inject constructor(
     Begin of Dummy model function generator
     */
 
-    fun generateBundleInfo() = BundleInfo(
+    /*fun generateBundleInfo() = BundleInfo(
         name = "Singel bundle",
         preorder = Preorder(
             status = "ACTIVE",
@@ -225,6 +225,6 @@ class SingleProductBundleViewModel @Inject constructor(
                 status = "SHOW"
             )
         )
-    )
+    )*/
 
 }
