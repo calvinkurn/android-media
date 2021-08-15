@@ -254,7 +254,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         val totalOtherAmount = orderTotal.orderCost.purchaseProtectionPrice + orderTotal.orderCost.insuranceFee.toInt()
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
-            userId = userId,
+            userId = userId.toLong(),
             totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice,
             profileCode = orderPaymentCreditCard.additionalData.profileCode,
             ccfeeSignature = orderPaymentCreditCard.tenorSignature,

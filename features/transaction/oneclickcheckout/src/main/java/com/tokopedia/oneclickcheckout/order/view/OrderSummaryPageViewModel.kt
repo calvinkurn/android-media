@@ -734,10 +734,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             userSession.userId, orderTotal.value, orderCart)
         launch(executorDispatchers.immediate) {
             val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
-            if (isSuccess) {
-                globalEvent.value = OccGlobalEvent.Normal
-                return@launch
-            }
+            // TODO: delete if doesn't needed
+            // if (isSuccess) return@launch
             globalEvent.value = newGlobalEvent
         }
     }

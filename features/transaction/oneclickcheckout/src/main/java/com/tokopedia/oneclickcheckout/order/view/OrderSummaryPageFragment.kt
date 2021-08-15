@@ -646,6 +646,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     updateLocalCacheAddressData(it.addressModel)
                 }
                 is OccGlobalEvent.AdjustAdminFeeError ->  {
+                    progressDialog?.dismiss()
                     view?.let { v ->
                         // Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                         Toaster.build(v, "ERROR GAN!", type = Toaster.TYPE_ERROR).show()
@@ -656,6 +657,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
+                    progressDialog?.dismiss()
                     creditCardTenorListData = it.ccData
                     view?.let { v ->
                         Toaster.build(v, "NAH SUKSES NIH", type = Toaster.TYPE_NORMAL).show()
