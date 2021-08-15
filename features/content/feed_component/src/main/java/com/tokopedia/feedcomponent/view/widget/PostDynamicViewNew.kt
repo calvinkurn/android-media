@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -964,6 +965,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                        feedMedia.canPlay = false
                         videoListener?.onVideoStopTrack(
                             feedXCard,
                             (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
@@ -1131,7 +1133,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         timestampText.text = spannableString
     }
 
-
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         videoPlayer?.resume()
@@ -1147,9 +1148,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         detach()
     }
 
-    fun detach(fromSlide: Boolean = false) {
-        if (!fromSlide)
+    fun detach(
+        fromSlide: Boolean = false, model: DynamicPostUiModel? = null
+    ) {
+        if (!fromSlide) {
             carouselView.activeIndex = 0
+            model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+        }
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
@@ -1180,5 +1185,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun isVideo(media: FeedXMedia?): Boolean {
         return media?.type != TYPE_IMAGE
+    }
+
+    fun setVideo(isFragmentVisible: Boolean) {
+        if (isFragmentVisible)
+            videoPlayer?.resume()
+        else
+            videoPlayer?.pause()
     }
 }
