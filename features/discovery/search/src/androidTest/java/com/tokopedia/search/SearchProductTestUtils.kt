@@ -182,3 +182,38 @@ internal fun List<Visitable<*>>.getSuggestionViewModelPosition(): Int {
 internal fun List<Visitable<*>>.getBroadMatchViewModelPosition(): Int {
     return indexOfFirst { it is BroadMatchDataView }
 }
+
+internal fun List<Visitable<*>>.getVariant1BestSellerProduct(): Int {
+    return indexOfFirst { it is ProductItemDataView && it.labelGroupList?.any { labelGroup -> labelGroup.position == "best_seller" } ?: false }
+}
+
+internal fun List<Visitable<*>>.getVariant2BestSellerProduct(): Int {
+    return indexOfFirst {
+        it is ProductItemDataView &&
+                it.labelGroupList?.filter { labelGroup ->
+                    (labelGroup.position == "best_seller" && labelGroup.title.contains(
+                        "terlaris",
+                        true
+                    )) || (labelGroup.position == "category_side")
+                }?.size == 2
+    }
+}
+
+internal fun List<Visitable<*>>.getVariant3BestSellerProduct(): Int {
+    return indexOfFirst {
+        it is ProductItemDataView &&
+                it.labelGroupList?.filter { labelGroup ->
+                    (labelGroup.position == "best_seller" && !labelGroup.title.contains(
+                        "terlaris",
+                        true
+                    )) || (labelGroup.position == "category_side")
+                }?.size == 2
+    }
+}
+
+internal fun List<Visitable<*>>.getVariant4BestSellerProduct(): Int {
+    return indexOfFirst {
+        it is ProductItemDataView &&
+                it.labelGroupList?.filter { labelGroup -> labelGroup.position == "best_seller" || labelGroup.position == "category_bottom" }?.size == 2
+    }
+}
