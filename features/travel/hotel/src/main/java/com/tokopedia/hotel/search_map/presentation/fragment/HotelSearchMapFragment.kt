@@ -111,7 +111,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
     private var hotelProperties: ArrayList<Property> = arrayListOf()
-    private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isSearchByMap: Boolean = false
@@ -1111,20 +1110,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             showErrorNoResult()
         }
 
-        if (isFirstInitializeFilter) {
-            isFirstInitializeFilter = false
-            initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
+        initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
 
-            binding?.quickFilterSortHotelSearchMap?.let {
-                quickFilter ->
-                quickFilter.chipItems?.filter {
+        binding?.quickFilterSortHotelSearchMap?.let {
+                quickFilter -> quickFilter.chipItems?.filter {
                     it.type == ChipsUnify.TYPE_SELECTED
                 }?.forEach { _ ->
                     quickFilter.indicatorCounter -= 1
                 }
-            }
-            showCoachMark()
         }
+        showCoachMark()
     }
 
     private fun hideLoadingCardListMap() {
