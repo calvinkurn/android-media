@@ -422,7 +422,7 @@ object SellerHomeTracking {
                 TrackingConstant.CLICK_WIDGET_PIE_CHART,
                 TrackingConstant.EMPTY_STATE
             ).joinToString(" - "),
-            label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
+            label = arrayOf(model.dataKey, state).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
@@ -440,7 +440,7 @@ object SellerHomeTracking {
                 TrackingConstant.CLICK_WIDGET_PIE_CHART,
                 TrackingConstant.SEE_MORE
             ).joinToString(" - "),
-            label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
+            label = arrayOf(model.dataKey, state).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
