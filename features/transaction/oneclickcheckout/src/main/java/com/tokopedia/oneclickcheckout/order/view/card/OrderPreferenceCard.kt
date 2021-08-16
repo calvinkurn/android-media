@@ -616,49 +616,31 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
-        // TODO: debug & set tvInstallmentDetail jadi "Pilih Bayar Penuh / Cicilan"
-        if (creditCard.isAfpb) {
-            val selectedTerm = creditCard.selectedTerm
-            if (selectedTerm == null) {
-                binding.apply {
-                    tvInstallmentType.visible()
-                    tvInstallmentDetail.visible()
-                    btnChangeInstallment.visible()
-                    tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
-                    setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
-                        val selectedCreditCard = payment.creditCard
-                        if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(selectedCreditCard)
-                        }
-                    }
-                }
-            }
-        } else {
-            val selectedTerm = creditCard.selectedTerm
-            binding.apply {
-                if (!creditCard.isDebit && selectedTerm != null) {
-                    tvInstallmentType.visible()
-                    tvInstallmentDetail.visible()
-                    btnChangeInstallment.visible()
-                    if (selectedTerm.term > 0) {
-                        tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
-                    } else {
-                        tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
-                    }
-                    setupPaymentInstallmentError(selectedTerm)
-                    setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
-                        val selectedCreditCard = payment.creditCard
-                        if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                            listener.onInstallmentDetailClicked(selectedCreditCard)
-                        }
-                    }
+        // TODO: check error & set tvInstallmentDetail jadi "Pilih Bayar Penuh / Cicilan"
+        val selectedTerm = creditCard.selectedTerm
+        binding.apply {
+            if (!creditCard.isDebit && selectedTerm != null) {
+                tvInstallmentType.visible()
+                tvInstallmentDetail.visible()
+                btnChangeInstallment.visible()
+                if (selectedTerm.term > 0) {
+                    tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
                 } else {
-                    tvInstallmentType.gone()
-                    tvInstallmentDetail.gone()
-                    btnChangeInstallment.gone()
-                    tvInstallmentErrorMessage.gone()
-                    tvInstallmentErrorAction.gone()
+                    tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
                 }
+                setupPaymentInstallmentError(selectedTerm)
+                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
+                    val selectedCreditCard = payment.creditCard
+                    if (selectedCreditCard.availableTerms.isNotEmpty()) {
+                        listener.onInstallmentDetailClicked(selectedCreditCard)
+                    }
+                }
+            } else {
+                tvInstallmentType.gone()
+                tvInstallmentDetail.gone()
+                btnChangeInstallment.gone()
+                tvInstallmentErrorMessage.gone()
+                tvInstallmentErrorAction.gone()
             }
         }
     }
