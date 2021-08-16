@@ -1349,6 +1349,7 @@ class NewShopPageFragment :
 
     private fun setupTabs() {
         listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
+        configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         val selectedPosition = getSelectedTabPosition()
         tabLayout.removeAllTabs()
@@ -1420,6 +1421,24 @@ class NewShopPageFragment :
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun configureTab(totalTab: Int) {
+        if(totalTab == 1){
+            hideTabbing()
+        } else{
+            showTabbing()
+        }
+    }
+
+    private fun showTabbing(){
+        tabLayout?.show()
+        view_one_tab_separator?.hide()
+    }
+
+    private fun hideTabbing(){
+        tabLayout?.hide()
+        view_one_tab_separator?.show()
     }
 
     private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
