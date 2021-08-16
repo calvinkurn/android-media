@@ -12,7 +12,6 @@ import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddVariant

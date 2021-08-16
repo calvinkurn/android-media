@@ -308,15 +308,15 @@ internal fun renderLabelBestSellerCategorySide(
 
 internal fun renderLabelBestSellerCategoryBottom(
     isShow: Boolean,
-    textCategorySide: Typography?,
+    textCategoryBottom: Typography?,
     productCardModel: ProductCardModel
 ) {
-    textCategorySide ?: return
+    textCategoryBottom ?: return
 
     if (isShow) {
-        textCategorySide.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
+        textCategoryBottom.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
     } else {
-        textCategorySide.initLabelCategoryBottom(null)
+        textCategoryBottom.initLabelCategoryBottom(null)
     }
 }
 
