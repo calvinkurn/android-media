@@ -12,7 +12,7 @@ class YouTubeViewViewModel(val application: Application, private val components:
 
 
     fun getVideoId(): MutableLiveData<DataItem> {
-        videoData.value = components.data?.get(0)
+        components.data?.firstOrNull()?.let { videoData.value = it }
         return videoData
     }
 }
