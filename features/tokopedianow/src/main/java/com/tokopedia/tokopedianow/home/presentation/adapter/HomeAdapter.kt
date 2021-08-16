@@ -19,21 +19,6 @@ class HomeAdapter(
         }
     }
 
-    fun updateProductRecom(productId: Long, quantity: Int) {
-        val items = data.toMutableList()
-        val widget = getItem(HomeProductRecomUiModel::class.java) as? HomeProductRecomUiModel
-        val indexOfWidget = data.indexOf(widget)
-
-        widget?.recomWidget?.recommendationItemList?.forEach { item ->
-            if (item.productId == productId) {
-                item.quantity = quantity
-            }
-            return@forEach
-        }
-
-        items[indexOfWidget] = widget
-    }
-
     fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
         return data.find { it.javaClass == itemClass}
     }
