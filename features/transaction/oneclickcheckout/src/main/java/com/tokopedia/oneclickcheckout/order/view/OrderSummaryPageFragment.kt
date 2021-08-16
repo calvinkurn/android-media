@@ -462,18 +462,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderPayment() {
         viewModel.orderPayment.observe(viewLifecycleOwner) {
-            if (it.creditCard.isAfpb) {
-                viewModel.adjustAdminFee()
-            } else {
-                if (shouldShowToaster) showToasterSuccess()
-                adapter.payment = it
-                if (binding.rvOrderSummaryPage.isComputingLayout) {
-                    binding.rvOrderSummaryPage.post {
-                        adapter.notifyItemChanged(adapter.preferenceIndex)
-                    }
-                } else {
+            if (shouldShowToaster) showToasterSuccess()
+            adapter.payment = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
                     adapter.notifyItemChanged(adapter.preferenceIndex)
                 }
+            } else {
+                adapter.notifyItemChanged(adapter.preferenceIndex)
             }
         }
     }

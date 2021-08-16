@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
@@ -131,6 +132,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 getRatesSuspend()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+            }
+            if (orderPayment.value.creditCard.isAfpb) {
+                adjustAdminFee()
             }
         }
     }
