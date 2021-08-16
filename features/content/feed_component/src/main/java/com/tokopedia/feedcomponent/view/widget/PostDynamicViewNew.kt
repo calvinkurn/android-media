@@ -684,6 +684,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = getImageView()
+                        feedMedia.isImageImpressedFirst = true
                         feedMedia.imageView = imageItem
                         imageItem?.run {
                             findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
@@ -934,6 +935,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoReadyToPlay() {
+                        videoListener?.onVideoStopTrack(
+                            feedXCard,
+                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
+                        )
                         hideVideoLoading()
                         timer_view.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
@@ -956,10 +961,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
                         feedMedia.canPlay = false
-                        videoListener?.onVideoStopTrack(
-                            feedXCard,
-                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
-                        )
+
                     }
                 })
             }
@@ -1152,6 +1154,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (!fromSlide) {
             carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
