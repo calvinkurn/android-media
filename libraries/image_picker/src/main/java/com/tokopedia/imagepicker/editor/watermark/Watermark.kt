@@ -40,7 +40,7 @@ data class Watermark(
         try {
             canvasBitmap = backgroundImg
             outputImage = backgroundImg
-            watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, R.color.Neutral_N150)
+            watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
 
             if (!isCombine) {
                 createWatermarkImage(watermarkImg)
@@ -242,7 +242,7 @@ data class Watermark(
             else {
                 if (!backgroundImg!!.isDark()) {
                     scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                        .changeColor(MethodChecker.getColor(context, R.color.Green_G400))
+                        .changeColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G400))
                 }
             }
         } catch (e: Exception) {
