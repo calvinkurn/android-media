@@ -78,9 +78,9 @@ class RechargeCCModule {
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
-        listInterceptor.add(httpLoggingInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
+            listInterceptor.add(httpLoggingInterceptor)
             listInterceptor.add(chuckerInterceptor)
         }
         return listInterceptor

@@ -1,13 +1,15 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+
 
 data class DynamicProductInfoP1(
-    val basic: BasicInfo = BasicInfo(),
-    val data: ComponentData = ComponentData(),
-    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
-    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
-    val layoutName: String = "",
-    val pdpSession: String = ""
+        val basic: BasicInfo = BasicInfo(),
+        val data: ComponentData = ComponentData(),
+        val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+        val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+        val layoutName: String = "",
+        val pdpSession: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
@@ -19,12 +21,12 @@ data class DynamicProductInfoP1(
 
     val shopTypeString: String
         get() {
-            return if (data.isOS)
-                "official_store"
-            else if (data.isPowerMerchant)
-                "gold_merchant"
-            else
-                "reguler"
+            return when {
+                basic.isTokoNow -> ProductDetailCommonConstant.VALUE_TOKONOW
+                data.isOS -> ProductDetailCommonConstant.VALUE_OFFICIAL_STORE
+                data.isPowerMerchant -> ProductDetailCommonConstant.VALUE_GOLD_MERCHANT
+                else -> ProductDetailCommonConstant.VALUE_REGULER
+            }
         }
 
     val isProductParent: Boolean

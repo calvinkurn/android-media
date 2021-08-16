@@ -11,7 +11,10 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_sort_filter_penalty.view.*
 
-class ItemSortFilterPenaltyViewHolder(view: View, private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener): AbstractViewHolder<ItemSortFilterPenaltyUiModel>(view) {
+class ItemSortFilterPenaltyViewHolder(
+    view: View,
+    private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener
+) : AbstractViewHolder<ItemSortFilterPenaltyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_sort_filter_penalty
@@ -35,11 +38,13 @@ class ItemSortFilterPenaltyViewHolder(view: View, private val itemSortFilterPena
         val sortFilterItemList = ArrayList<SortFilterItem>()
 
         updateSortFilterItemPeriodList?.map {
-            sortFilterItemList.add(SortFilterItem(
+            sortFilterItemList.add(
+                SortFilterItem(
                     title = it.title,
                     size = ChipsUnify.SIZE_SMALL,
                     type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-            ))
+                )
+            )
         }
 
         addItem(sortFilterItemList)

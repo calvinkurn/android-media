@@ -99,7 +99,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     private fun setupVariantList() {
         adapter = createAdapter()
-        variantList.apply {
+        variantList?.apply {
             adapter = this@QuickEditVariantBottomSheet.adapter
             layoutManager = LinearLayoutManager(this@QuickEditVariantBottomSheet.context)
             itemAnimator = null
@@ -115,14 +115,14 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupErrorView(productId: String) {
-        errorView.setType(GlobalError.NO_CONNECTION)
-        errorView.setActionClickListener { getData(productId) }
-        errorView.errorDescription.text = getString(R.string.product_manage_error_description)
-        errorView.errorTitle.hide()
+        errorView?.setType(GlobalError.NO_CONNECTION)
+        errorView?.setActionClickListener { getData(productId) }
+        errorView?.errorDescription?.text = getString(R.string.product_manage_error_description)
+        errorView?.errorTitle?.hide()
     }
 
     private fun setupSaveBtn() {
-        btnSave.setOnClickListener {
+        btnSave?.setOnClickListener {
             viewModel.saveVariants()
         }
     }
@@ -147,20 +147,20 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     private fun observeViewState() {
         observe(viewModel.showProgressBar) { showProgressBar ->
-            progressBar.showWithCondition(showProgressBar)
+            progressBar?.showWithCondition(showProgressBar)
         }
 
         observe(viewModel.showErrorView) { showErrorView ->
             if(showErrorView) {
                 expandBottomSheet()
-                errorViewContainer.show()
+                errorViewContainer?.show()
             } else {
-                errorViewContainer.hide()
+                errorViewContainer?.hide()
             }
         }
 
         observe(viewModel.showSaveBtn) {
-            btnSave.showWithCondition(it)
+            btnSave?.showWithCondition(it)
         }
     }
 

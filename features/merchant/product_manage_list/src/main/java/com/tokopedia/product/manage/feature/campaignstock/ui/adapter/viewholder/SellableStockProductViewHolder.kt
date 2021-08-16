@@ -6,10 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -83,6 +80,7 @@ class SellableStockProductViewHolder (itemView: View?,
             val stock = if(it.isNotEmpty()) {
                 getValue()
             } else {
+                editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
                 EditProductConstant.MINIMUM_STOCK
             }
             showHideStockInfo(element)

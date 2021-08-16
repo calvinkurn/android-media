@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -1370,86 +1369,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * MoveToWareHouse
-     */
-    @Test
-    fun onSuccessMoveProductToWareHouse() {
-        val productId = "123"
-        val productActionSubmit = ProductActionSubmit()
-
-        coEvery {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        } returns productActionSubmit
-
-        viewModel.moveProductToWareHouse(productId)
-        coVerify {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        }
-
-        Assert.assertEquals((viewModel.moveToWarehouseResult.value as Success).data, anyBoolean())
-    }
-
-    @Test
-    fun onErrorMoveProductToWareHouse() {
-        //Given
-        coEvery {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.moveProductToWareHouse(anyString())
-
-        verify {
-            moveProductToWarehouseUseCase.createParams(anyString(), anyString(), anyString())
-        }
-        coVerify {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.moveToWarehouseResult.value is Fail)
-    }
-
-    /**
-     * MoveToEtalase
-     */
-    @Test
-    fun onSuccessMoveProductToEtalase() {
-        coEvery {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        } returns ProductActionSubmit()
-
-        viewModel.moveProductToEtalase(anyString(), anyString(), anyString())
-
-        verify {
-            moveProductToEtalaseUseCase.createParams(anyString(), anyString(), anyString(), anyString(), anyString())
-        }
-
-        coVerify {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        }
-
-        Assert.assertEquals((viewModel.moveToEtalaseResult.value as Success).data, anyBoolean())
-    }
-
-    @Test
-    fun onErrorMoveProductToEtalase() {
-        coEvery {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.moveProductToEtalase(anyString(), anyString(), anyString())
-
-        verify {
-            moveProductToEtalaseUseCase.createParams(anyString(), anyString(), anyString(), anyString(), anyString())
-        }
-
-        coVerify {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.moveToEtalaseResult.value is Fail)
-    }
-
-    /**
      * Add/Remove Wishlist
      */
     @Test
@@ -1508,18 +1427,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.removeWishList(productId, null, {
             Assert.assertEquals(it, errorMessage)
         })
-    }
-
-    @Test
-    fun onSuccessCancelWarehouseJob() {
-        viewModel.cancelWarehouseUseCase()
-        verify { viewModel.cancelWarehouseUseCase() }
-    }
-
-    @Test
-    fun onSuccessCancelEtalaseJob() {
-        viewModel.cancelEtalaseUseCase()
-        verify { viewModel.cancelEtalaseUseCase() }
     }
 
     /**
@@ -1769,14 +1676,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             trackAffiliateUseCase.cancelJobs()
-        }
-
-        verify {
-            moveProductToWarehouseUseCase.cancelJobs()
-        }
-
-        verify {
-            moveProductToEtalaseUseCase.cancelJobs()
         }
 
         verify {
