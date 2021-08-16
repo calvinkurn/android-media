@@ -110,8 +110,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     // Should only be called from unit test
     fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
         _miniCartABTestData.value = MiniCartABTestData(
-                isOCCFlow = true,
-                buttonBuyWording = "Beli Langsung"
+                isOCCFlow = isOCCFlow,
+                buttonBuyWording = buttonBuyWording
         )
     }
 
