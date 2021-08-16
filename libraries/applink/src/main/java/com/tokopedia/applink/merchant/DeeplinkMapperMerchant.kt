@@ -122,11 +122,11 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
         val segments = uri.pathSegments
         val productId = segments.first()
-        val newUri = if(goToNewReadProductReview()) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
-        }
+//        val newUri = if(goToNewReadProductReview()) {
+            val newUri =UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+//        } else {
+//            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
+//        }
         return Uri.parse(newUri)
                 .buildUpon()
                 .build()
