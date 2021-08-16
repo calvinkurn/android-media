@@ -11,6 +11,7 @@ data class TextAndImage(
     // internal default value
     internal val imageDefault: ImageDefault = ImageDefault(),
     internal val textDefault: TextDefault = TextDefault(),
+    internal val color: String = "#FFFFFF",
 
     // base properties
     override var position: Position = imageDefault.position,

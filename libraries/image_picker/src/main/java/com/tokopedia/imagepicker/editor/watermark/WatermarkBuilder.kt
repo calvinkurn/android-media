@@ -28,6 +28,7 @@ open class WatermarkBuilder {
     private var watermarkText: TextUIModel? = null
     private var watermarkTextAndImage: TextAndImageUIModel? = null
     private var watermarkTypes: List<Int> = defaultWatermarkType
+    private var color: String = "#FFFFFF"
 
     private constructor(
         context: Context,
@@ -94,6 +95,10 @@ open class WatermarkBuilder {
         this.watermarkTypes = types
     }
 
+    fun setWatermarkType(types: List<Int>, color: String) = apply {
+        this.watermarkTypes = types
+    }
+
     fun loadWatermarkTextImage(text: String, bitmap: Bitmap, types: List<Int>) = apply {
         this.isCombine = true
 
@@ -103,8 +108,9 @@ open class WatermarkBuilder {
         }
     }
 
-    fun loadOnlyWatermarkTextImage(text: String, bitmap: Bitmap) = apply {
+    fun loadOnlyWatermarkTextImage(text: String, bitmap: Bitmap, color: String) = apply {
         this.onlyWatermark = true
+        this.color = color
         loadWatermarkTextImage(text, bitmap, watermarkTypes)
     }
 
@@ -149,7 +155,8 @@ open class WatermarkBuilder {
                 isTitleMode = isTitleMode,
                 isCombine = isCombine,
                 context = context,
-                type = watermarkType
+                type = watermarkType,
+                color = this.color
             )
         }
     }

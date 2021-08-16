@@ -266,7 +266,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         lastStateImage = gestureCropImageView.getViewBitmap();
     }
 
-    public void setWatermark() {
+    public void setWatermark(String color) {
         cancelWatermark();
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
@@ -275,8 +275,22 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
                 userSession.getShopName() :
                 userSession.getName();
 
-        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
+        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap, color);
     }
+
+
+
+//    public void setWatermark() {
+//        cancelWatermark();
+//
+//        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+//
+//        String userInfo = userSession.hasShop() ?
+//                userSession.getShopName() :
+//                userSession.getName();
+//
+//        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
+//    }
 
     public int getImageIndex() {
         return imageIndex;

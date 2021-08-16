@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.adapter.EditorItemSelectionAdapter
 import com.tokopedia.imagepicker.editor.data.ItemSelection
+import kotlinx.android.synthetic.main.widget_image_edit_item_selection.view.*
 
 class ItemSelectionWidget : FrameLayout {
 
@@ -55,6 +56,12 @@ class ItemSelectionWidget : FrameLayout {
 
     fun setData(item: ItemSelection) {
         setData(listOf(item), null)
+    }
+
+    fun changeColor(onClick: (color: String) -> Unit) {
+        btn_color.setOnClickListener {
+            onClick.invoke(et_color.textFieldInput.text.toString())
+        }
     }
 
 }

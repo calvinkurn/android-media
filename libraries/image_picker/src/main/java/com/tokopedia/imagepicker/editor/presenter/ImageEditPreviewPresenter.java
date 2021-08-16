@@ -297,7 +297,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
-    public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
+    public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap, String color) {
         if (mainBitmap == null || mainBitmap.isRecycled()) return;
 
         Subscription subscription = Observable.just(
@@ -310,7 +310,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
             // create watermark with transparent container (empty) bitmap
             Bitmap[] watermark = WatermarkBuilder
                     .create(getView().getContext(), mainBitmap)
-                    .loadOnlyWatermarkTextImage("NamaTokoNamaTokoNamaToko", tokopediaLogoBitmap)
+                    .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap, color)
                     .getOutputImages();
 
             return Observable.just(watermark);

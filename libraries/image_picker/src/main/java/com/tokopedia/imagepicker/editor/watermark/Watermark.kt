@@ -2,6 +2,8 @@ package com.tokopedia.imagepicker.editor.watermark
 
 import android.content.Context
 import android.graphics.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
@@ -30,13 +32,15 @@ data class Watermark(
     var isTitleMode: Boolean,
     var isCombine: Boolean,
     var onlyWatermark: Boolean,
-    var type: Int
+    var type: Int,
+    var color: String? = null
 ) {
 
     init {
         try {
             canvasBitmap = backgroundImg
             outputImage = backgroundImg
+            watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, R.color.Neutral_N150)
 
             if (!isCombine) {
                 createWatermarkImage(watermarkImg)
@@ -64,12 +68,13 @@ data class Watermark(
         // threesHold of empty bitmap as container of watermark
         val squareBitmapSize = 2000
 
-        val logoBitmap = watermark.image!!.resizeBitmap(watermark.imageSize.toFloat(), squareBitmapSize)
+        val logoBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
+
         val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
         val combinedBitmap = when (this.type) {
             Constant.TYPE_WATERMARK_TOPED -> {
-                logoBitmap.combineBitmapWithPadding(textBitmap)
+                logoBitmap.combineBitmapWithPadding(textBitmap, backgroundImg!!)
             }
             Constant.TYPE_WATERMARK_CENTER_TOPED -> {
                 logoBitmap.combineBitmapTopDown(textBitmap)
@@ -97,7 +102,7 @@ data class Watermark(
         val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
         createWatermark(
-            bitmap = logoBitmap.combineBitmapWithPadding(textBitmap),
+            bitmap = logoBitmap.combineBitmapWithPadding(textBitmap, backgroundImg!!),
             config = watermark
         )
     }
@@ -226,12 +231,28 @@ data class Watermark(
         scaledWatermarkBitmap =
                 watermarkBitmap!!.downscaleToAllowedDimension(
                     mainBitmap = backgroundImg!!,
-                    textLength = textLength
+                    textLength = textLength,
+                    this.type
                 )
+        try {
+            if (!color.isNullOrEmpty()) {
+                scaledWatermarkBitmap = scaledWatermarkBitmap!!.changeColor(Color.parseColor(color!!))
+            }
 
-        if (!backgroundImg!!.isDark())
-            scaledWatermarkBitmap = scaledWatermarkBitmap!!.changeColor(Color.RED)
+            else {
+                if (!backgroundImg!!.isDark()) {
+                    scaledWatermarkBitmap = scaledWatermarkBitmap!!
+                        .changeColor(MethodChecker.getColor(context, R.color.Green_G400))
+                }
+            }
+        } catch (e: Exception) {
+            println("cek error $e")
+        }
 
+//        if (!backgroundImg!!.isDark()) {
+//            scaledWatermarkBitmap = scaledWatermarkBitmap!!
+//                .changeColor(MethodChecker.getColor(context, R.color.Green_G400))
+//        }
 
         // merge the main bitmap with scaled watermark bitmap
         outputImage = mapWatermarkType(this.type)
@@ -253,6 +274,7 @@ data class Watermark(
                     Shader.TileMode.REPEAT,
                     Shader.TileMode.REPEAT
                 )
+
             })
         }
 
@@ -270,7 +292,7 @@ data class Watermark(
 
             //afterwards, draw watermark on the center
             drawBitmap(scaledWatermarkBitmap!!,
-                (backgroundImg!!.width / 2f - (scaledWatermarkBitmap!!.width/ 2f)),
+                (backgroundImg!!.width / 2f - (scaledWatermarkBitmap!!.width / 2f)),
                 backgroundImg!!.height / 2f, null)
         }
 

@@ -7,9 +7,8 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
+import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -69,7 +68,7 @@ object BitmapHelper {
 
         var boundWidth = bounds.width() + 20 // 20 is the threshold of white space
         var boundHeight = bounds.height()
-        while (boundHeight < height - 20) {
+        while (boundHeight < height * 0.72f) {
             paint.textSize += 1
             paint.getTextBounds(
                 this,
@@ -117,7 +116,6 @@ object BitmapHelper {
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
         canvas.drawColor(properties.backgroundColor)
-
         staticLayout.draw(canvas)
 
         return bitmapResult
@@ -130,6 +128,34 @@ object BitmapHelper {
 
         val matrix = Matrix()
         matrix.postScale(scale, scale)
+
+        return Bitmap.createBitmap(
+            this,
+            0,
+            0,
+            bitmapWidth,
+            bitmapHeight,
+            matrix,
+            true
+        )
+    }
+
+    fun Bitmap.resizeBitmap(mainBitmap: Bitmap): Bitmap {
+        val bitmapWidth = this.width
+        val bitmapHeight = this.height
+        val ratio = this.height.toFloat() / this.width
+
+        val newHeight = if (mainBitmap.height < mainBitmap.width) {
+            mainBitmap.height * 0.035f
+        } else {
+            mainBitmap.width * 0.035f
+        }
+        val newWidth = newHeight / ratio
+        val scaleWidth = newWidth / bitmapWidth
+        val scaleHeight = newHeight / bitmapHeight
+
+        val matrix = Matrix()
+        matrix.postScale(scaleWidth, scaleHeight)
 
         return Bitmap.createBitmap(
             this,
@@ -164,19 +190,19 @@ object BitmapHelper {
             (this.width / 2).toFloat(),
             (this.height / 2).toFloat()
         )
-
         return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
     }
 
-    fun Bitmap.combineBitmapWithPadding(other: Bitmap): Bitmap {
-        var thisPadding = 0f;
+    fun Bitmap.combineBitmapWithPadding(other: Bitmap, mainBitmap: Bitmap): Bitmap {
+        var thisPadding = 10f
         var otherPadding = 0f
-        val thresholdSpace = 300 // space between first bitmap to other bitmap
-        val otherBitmap = other.addPadding(left = thresholdSpace, right = thresholdSpace)
+        val scaledPaddingWidth = (0.2 * mainBitmap.width).toInt()
+        val otherBitmap = other.addPadding(left = scaledPaddingWidth, right = scaledPaddingWidth)
 
+        val scaledPaddingHeight = 0.2 * mainBitmap.height
 
         val width = this.width + otherBitmap.width
-        val height = maxOf(this.height, otherBitmap.height) + thresholdSpace
+        val height = (maxOf(this.height, otherBitmap.height) + scaledPaddingHeight).toInt()
 
         val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
@@ -195,7 +221,7 @@ object BitmapHelper {
     }
 
     fun Bitmap.combineBitmapTopDown(other: Bitmap): Bitmap {
-        var thisPadding = 0f;
+        var thisPadding = 0f
         var otherPadding = 0f
         val padding = 20
         var height = this.height + other.height + padding
@@ -301,25 +327,34 @@ object BitmapHelper {
      * if the text length > 13 the scaling value will be 0.12 from the mainBitmap
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
-    fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
-        var scaleValue = 0.25f
+    fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int, type: Int): Bitmap? {
+        var scaleValue = 1f
 
-        if (textLength > 13) {
-            scaleValue = 0.2f
+        var thresholdMaxWidth = if (type == Constant.TYPE_WATERMARK_TOPED) {
+            1.0f
+        } else {
+            0.7f
         }
 
         val inWidth = this.width
         val inHeight = this.height
-        var newHeight = 0f
+        var newHeight = inHeight * scaleValue
 
         val ratio = inHeight.toFloat() / inWidth
+//        if (mainBitmap.height <= mainBitmap.width) {
+//            newHeight = mainBitmap.height * scaleValue
+//        }
+//        else {
+//            newHeight = mainBitmap.width * scaleValue
+//        }
 
-        if (mainBitmap.height < mainBitmap.width)
-            newHeight = mainBitmap.height * scaleValue
-        else
-            newHeight = mainBitmap.width * scaleValue
+//        while (newHeight / ratio > mainBitmap.width * thresholdMaxWidth) {
+//            scaleValue -= 0.01f
+//            newHeight = inHeight * scaleValue
+//        }
+//
         val newWidth = newHeight / ratio
-
+//
         val scaleWidth = newWidth / inWidth
         val scaleHeight = newHeight / inHeight
 

@@ -23,7 +23,6 @@ import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
-import com.tokopedia.imagepicker.editor.adapter.EditorItemSelectionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
@@ -35,6 +34,8 @@ import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.TextFieldUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -113,6 +114,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private ItemSelectionWidget watermarkItemSelection;
     private Typography titleWatermarkStyle;
+    private TextFieldUnify textFieldColor;
+    private UnifyButton btnColor;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -245,6 +248,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         watermarkItemSelection = findViewById(R.id.watermark_item_selection);
         titleWatermarkStyle = findViewById(R.id.txt_title_item);
+        textFieldColor = findViewById(R.id.et_color);
+        btnColor = findViewById(R.id.btn_color);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -254,6 +259,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutContrast = findViewById(R.id.layout_contrast);
         layoutWatermark = findViewById(R.id.layout_watermark);
         tvActionTitle = findViewById(R.id.tv_action_title);
+
+        btnColor.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                getCurrentFragment().setWatermark(textFieldColor.getTextFieldInput().getText().toString());
+            }
+        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -539,7 +552,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     if (fragment != null && !isSetWatermark) {
                         isSetWatermark = true;
-                        fragment.setWatermark();
+                        fragment.setWatermark("#FFFFFFF");
                     }
 
                     hideAllControls();
