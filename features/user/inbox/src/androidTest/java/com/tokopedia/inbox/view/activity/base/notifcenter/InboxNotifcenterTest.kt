@@ -150,21 +150,12 @@ object NotifcenterAssertion {
         ).check(matches(withText(msgRes)))
     }
 
-    fun assertNotifOrderFirstCardText(msg: String) {
+    fun assertNotifOrderCardTextAtPosition(
+        position: Int, msg: String
+    ) {
         onView(
-            allOf(
-                withId(R.id.tp_order_title),
-                isDescendantOfA(withId(R.id.ll_first_card))
-            )
-        ).check(matches(withText(msg)))
-    }
-
-    fun assertNotifOrderSecondCardText(msg: String) {
-        onView(
-            allOf(
-                withId(R.id.tp_order_title),
-                isDescendantOfA(withId(R.id.ll_second_card))
-            )
+            withRecyclerView(R.id.rv_order_list)
+                .atPositionOnView(position, R.id.tp_order_title)
         ).check(matches(withText(msg)))
     }
 

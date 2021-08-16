@@ -65,11 +65,11 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
                 0, NotificationOrderListViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertNotifOrderFirstCardText(
-            "Cache Transaksi"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            0, "Cache Transaksi"
         )
-        NotifcenterAssertion.assertNotifOrderSecondCardText(
-            "Cache All"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            1, "Cache All"
         )
     }
 
@@ -90,11 +90,11 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
                 0, NotificationOrderListViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertNotifOrderFirstCardText(
-            "Transaksi berlangsung"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            0, "Transaksi berlangsung"
         )
-        NotifcenterAssertion.assertNotifOrderSecondCardText(
-            "Lihat semua"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            1, "Lihat semua"
         )
     }
 

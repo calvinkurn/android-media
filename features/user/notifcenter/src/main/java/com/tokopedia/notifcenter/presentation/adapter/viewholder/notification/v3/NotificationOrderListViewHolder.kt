@@ -20,7 +20,6 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 import com.tokopedia.notifcenter.util.view.ShadowGenerator
 import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
 
-// TODO: Fix this instrumentation test
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
     private val notificationItemListener: NotificationItemListener?,
