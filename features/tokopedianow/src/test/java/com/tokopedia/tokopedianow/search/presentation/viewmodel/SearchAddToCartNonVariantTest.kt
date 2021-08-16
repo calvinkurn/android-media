@@ -142,14 +142,6 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         addToCartTestHelper.`delete cart recom item failed`()
     }
 
-
-
-
-
-
-
-
-
     @Test
     fun `add to cart non login broad match item`() {
         addToCartTestHelper.run {
