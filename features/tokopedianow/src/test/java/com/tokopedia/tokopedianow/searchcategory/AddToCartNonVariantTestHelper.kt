@@ -54,10 +54,10 @@ class AddToCartNonVariantTestHelper(
         private val callback: Callback,
 ) {
 
-    val addToCartRequestParamsSlot = slot<AddToCartRequestParams>()
-    val addToCartRequestParams by lazy { addToCartRequestParamsSlot.captured }
+    private val addToCartRequestParamsSlot = slot<AddToCartRequestParams>()
+    private val addToCartRequestParams by lazy { addToCartRequestParamsSlot.captured }
     val responseErrorException = ResponseErrorException(
-        "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
+            "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
     )
 
     fun `test add to cart success`() {
@@ -74,7 +74,7 @@ class AddToCartNonVariantTestHelper(
         val shopId = productItemDataViewToATC.shop.id
         `Then assert add to cart request params`(productId, shopId, addToCartQty)
         `Then assert cart message event`(
-            expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
+                expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
         )
         `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
         `Then verify mini cart is refreshed`()
@@ -104,9 +104,9 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert add to cart request params`(
-        productId: String,
-        shopId: String,
-        addToCartQty: Int,
+            productId: String,
+            shopId: String,
+            addToCartQty: Int,
     ) {
         verify {
             addToCartUseCase.setParams(capture(addToCartRequestParamsSlot))
@@ -118,8 +118,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert cart message event`(
-        expectedSuccessMessage: String = "",
-        expectedErrorMessage: String = "",
+            expectedSuccessMessage: String = "",
+            expectedErrorMessage: String = "",
     ) {
         val successMessageLiveData = baseViewModel.successATCMessageLiveData.value ?: ""
         assertThat(successMessageLiveData, shouldBe(expectedSuccessMessage))
@@ -129,8 +129,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     private fun `Then assert product item quantity`(
-        productItemDataViewToATC: ProductItemDataView,
-        expectedQuantity: Int,
+            productItemDataViewToATC: ProductItemDataView,
+            expectedQuantity: Int,
     ) {
         val actualQuantity = productItemDataViewToATC.nonVariantATC?.quantity ?: -1
 
@@ -144,9 +144,9 @@ class AddToCartNonVariantTestHelper(
     }
 
     private fun `Then verify add to cart tracking is called`(
-        quantity: Int,
-        cartId: String,
-        productItem: ProductItemDataView,
+            quantity: Int,
+            cartId: String,
+            productItem: ProductItemDataView,
     ) {
         val addToCartEvent = baseViewModel.addToCartTrackingLiveData.value!!
 
@@ -202,7 +202,7 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Given get mini cart simplified use case will be successful`(
-        miniCartSimplifiedData: MiniCartSimplifiedData
+            miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
@@ -245,16 +245,16 @@ class AddToCartNonVariantTestHelper(
         `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
-            productUpdatedQuantity,
-            productInMiniCart.cartId,
-            productInVisitable
+                productUpdatedQuantity,
+                productInMiniCart.cartId,
+                productInVisitable
         )
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
     }
 
     private fun `Given view setup to update quantity`(
-        productId: String,
-        updatedQuantity: Int,
+            productId: String,
+            updatedQuantity: Int,
     ) {
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
@@ -268,9 +268,9 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun updateMiniCartData(
-        updatedMiniCartData: MiniCartSimplifiedData,
-        productId: String,
-        updatedQuantity: Int
+            updatedMiniCartData: MiniCartSimplifiedData,
+            productId: String,
+            updatedQuantity: Int
     ) {
         updatedMiniCartData.miniCartItems.forEach {
             if (it.productId == productId)
@@ -279,7 +279,7 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Given update cart use case will be successful`(
-        successUpdateCartResponse: UpdateCartV2Data
+            successUpdateCartResponse: UpdateCartV2Data
     ) {
         every {
             updateCartUseCase.execute(any(), any())
@@ -288,13 +288,13 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    fun `Then assert update quantity`(
-        updateQuantityParam: Int,
-        cartIdParam: String,
-        productInVisitable: ProductItemDataView,
-        expectedCartErrorMessage: String = "",
-        expectedProductQuantity: Int = updateQuantityParam,
-        expectedRefreshMiniCartCount: Int = 2,
+    private fun `Then assert update quantity`(
+            updateQuantityParam: Int,
+            cartIdParam: String,
+            productInVisitable: ProductItemDataView,
+            expectedCartErrorMessage: String = "",
+            expectedProductQuantity: Int = updateQuantityParam,
+            expectedRefreshMiniCartCount: Int = 2,
     ) {
         `Then assert update cart params`(updateQuantityParam, cartIdParam)
         `Then assert cart message event`("", expectedCartErrorMessage)
@@ -305,8 +305,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert update cart params`(
-        productUpdatedQuantity: Int,
-        cartId: String,
+            productUpdatedQuantity: Int,
+            cartId: String,
     ) {
         val updateCartParamSlot = slot<List<UpdateCartRequest>>()
         val updateCartParam by lazy { updateCartParamSlot.captured }
@@ -343,14 +343,14 @@ class AddToCartNonVariantTestHelper(
         `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
-            productUpdatedQuantity,
-            productInMiniCart.cartId,
-            productInVisitable,
+                productUpdatedQuantity,
+                productInMiniCart.cartId,
+                productInVisitable,
         )
         `Then verify increase cart quantity tracking is called`(productIdToATC)
     }
 
-    fun `Then verify increase cart quantity tracking is called`(productIdToATC: String) {
+    private fun `Then verify increase cart quantity tracking is called`(productIdToATC: String) {
         val increaseQtyTracking = baseViewModel.increaseQtyTrackingLiveData.value!!
         assertThat(increaseQtyTracking, shouldBe(productIdToATC))
 
@@ -429,11 +429,11 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert visitable list is updated to revert add to cart button`(
-        visitableIndex: Int
+            visitableIndex: Int
     ) {
         assertThat(
-            baseViewModel.updatedVisitableIndicesLiveData.value,
-            shouldBe(listOf(visitableIndex))
+                baseViewModel.updatedVisitableIndicesLiveData.value,
+                shouldBe(listOf(visitableIndex))
         )
     }
 
@@ -477,7 +477,7 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-     fun `Then assert delete cart behavior`(
+    private fun `Then assert delete cart behavior`(
             cartIdParam: String,
             productInVisitable: ProductItemDataView,
             expectedQuantity: Int = 0,
@@ -495,14 +495,14 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert delete cart params`(
-        cartIdParam: String,
+            cartIdParam: String,
     ) {
         val deleteCartIdParamSlot = slot<List<String>>()
         val listDeleteCartId by lazy { deleteCartIdParamSlot.captured }
 
         verify {
             deleteCartUseCase.setParams(
-                cartIdList = capture(deleteCartIdParamSlot)
+                    cartIdList = capture(deleteCartIdParamSlot)
             )
         }
         val deleteCartId = listDeleteCartId[0]
@@ -534,11 +534,11 @@ class AddToCartNonVariantTestHelper(
         `When handle cart event product non variant`(productInVisitable, 0)
 
         `Then assert delete cart behavior`(
-            productInMiniCart.cartId,
-            productInVisitable,
-            currentQuantity,
-            expectedFailedDeleteCartMessage = responseErrorException.message!!,
-            expectedRefreshMiniCartCount = 1
+                productInMiniCart.cartId,
+                productInVisitable,
+                currentQuantity,
+                expectedFailedDeleteCartMessage = responseErrorException.message!!,
+                expectedRefreshMiniCartCount = 1
         )
     }
 
