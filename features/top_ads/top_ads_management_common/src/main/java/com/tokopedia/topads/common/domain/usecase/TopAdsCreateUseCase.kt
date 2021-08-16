@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.usecase
+package com.tokopedia.topads.common.domain.usecase
 
 import android.os.Bundle
 import com.google.gson.reflect.TypeToken
@@ -9,35 +9,37 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_ADD
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_DELETE
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_EDIT
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_REMOVE
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTIVE
+import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.BUDGET_LIMITED
+import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
+import com.tokopedia.topads.common.data.internal.ParamObject.EDIT_PAGE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
+import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD_TYPE_NEGATIVE_PHRASE
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD_TYPE_PHRASE
+import com.tokopedia.topads.common.data.internal.ParamObject.NAME_EDIT
+import com.tokopedia.topads.common.data.internal.ParamObject.NEGATIVE_KEYWORDS_ADDED
+import com.tokopedia.topads.common.data.internal.ParamObject.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.common.data.internal.ParamObject.NEGATIVE_PHRASE
+import com.tokopedia.topads.common.data.internal.ParamObject.NEGATIVE_SPECIFIC
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_DELETE
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_EDIT
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_PHRASE
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_SPECIFIC
+import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
+import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
+import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.edit.data.KeySharedModel
-import com.tokopedia.topads.edit.data.raw.MANAGE_GROUP
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
-import com.tokopedia.topads.edit.utils.Constants
-import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
-import com.tokopedia.topads.edit.utils.Constants.ACTION_CREATE
-import com.tokopedia.topads.edit.utils.Constants.ACTION_DELETE
-import com.tokopedia.topads.edit.utils.Constants.ACTION_EDIT
-import com.tokopedia.topads.edit.utils.Constants.ACTION_REMOVE
-import com.tokopedia.topads.edit.utils.Constants.ACTIVE
-import com.tokopedia.topads.edit.utils.Constants.EDIT_SOURCE
-import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
-import com.tokopedia.topads.edit.utils.Constants.INPUT
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
-import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
-import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -52,23 +54,28 @@ import kotlin.collections.ArrayList
 class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
 
-    fun setParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): RequestParams {
+    fun setParam(source: String?, dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): RequestParams {
 
         val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
-        variable[INPUT] = convertToParam(dataProduct, dataKeyword, dataGroup)
+        variable[INPUT] = convertToParam(source, dataProduct, dataKeyword, dataGroup)
         param.putAll(variable)
         return param
     }
 
-    private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
+    private fun convertToParam(source: String?, dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManagePromoGroupProductInput {
         val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
-        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
-        val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
-        val groupId = dataGroup[Constants.GROUP_ID] as? Int
+        val groupAction = dataGroup[ACTION_TYPE] as? String
+        var bidtypeData = dataKeyword[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
+//        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
+        if(bidtypeData == null) {
+            bidtypeData = dataGroup[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
+        }
+        val dailyBudgetGroup = dataGroup[DAILY_BUDGET] as? Int
+        val groupId = dataGroup[GROUPID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
-        val isBudgetLimited = dataGroup[Constants.BUDGET_LIMITED] as? Boolean
+        val isBudgetLimited = dataGroup[BUDGET_LIMITED] as? Boolean
         val dataAddProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("addedProducts")
         val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
@@ -80,30 +87,38 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
         //always
-        val input = TopadsManageGroupAdsInput()
+        val input = TopadsManagePromoGroupProductInput()
         val groupInput = input.groupInput
         val group = groupInput.group
-        input.groupID = groupId.toString()
+        if(groupId != null)
+           input.groupID = groupId.toString()
         input.shopID = userSession.shopId
-        input.source = EDIT_SOURCE
-        groupInput.action = ACTION_EDIT
+        if (source != null) {
+            input.source = source
+        }
+        if (groupAction != null) {
+            groupInput.action = groupAction
+        }
         // if only group name is edited
         if (isNameEdited == true) {
-            group?.type = PRODUCT_ID
             group?.name = groupName
         } else {
             group?.name = null
         }
-        group?.type = PRODUCT_ID
         group?.status = PUBLISHED
-        group?.scheduleStart = ""
-        group?.scheduleEnd = ""
         group?.strategies = strategy
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
             group?.dailyBudget = dailyBudgetGroup?.toDouble()
-        group?.priceBid = priceBidGroup?.toDouble()
+        val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> = mutableListOf()
+        bidtypeData?.forEach {
+            val bidType = GroupEditInput.Group.TopadsGroupBidSetting()
+            bidType.bidType = it.bidType
+            bidType.priceBid = it.priceBid
+            bidSettingsList.add(bidType)
+        }
+        group?.bidSettings = bidSettingsList
         val productList: MutableList<GroupEditInput.Group.AdOperationsItem> = mutableListOf()
         val keywordList: MutableList<KeywordEditInput> = mutableListOf()
         dataAddProduct?.forEach { x ->

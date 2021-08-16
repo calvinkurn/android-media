@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.data
+package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
