@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
@@ -36,6 +37,7 @@ class SearchTypeFactoryImpl(
         outOfCoverageListener: OutOfCoverageListener,
         private val categoryJumperListener: CategoryJumperListener,
         private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
+        recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -45,6 +47,7 @@ class SearchTypeFactoryImpl(
         productItemListener,
         emptyProductListener,
         outOfCoverageListener,
+        recommendationCarouselListener,
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {
