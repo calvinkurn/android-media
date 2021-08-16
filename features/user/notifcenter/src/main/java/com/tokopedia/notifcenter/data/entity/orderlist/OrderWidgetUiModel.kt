@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
 
-// TODO: rename this to UiModel
-data class Card(
+data class OrderWidgetUiModel(
         @SerializedName("counter_str")
         var counter: String = "0",
         @SerializedName("icon")

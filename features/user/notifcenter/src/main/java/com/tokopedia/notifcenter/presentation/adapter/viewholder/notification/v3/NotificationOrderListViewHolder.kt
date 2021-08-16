@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
@@ -101,13 +101,13 @@ class NotificationOrderListViewHolder constructor(
      */
 
     interface OrderListTypeFactory : AdapterTypeFactory {
-        fun type(card: Card): Int
+        fun type(orderWidgetUiModel: OrderWidgetUiModel): Int
     }
 
     class DefaultOrderListTypeFactory(
         private val notificationItemListener: NotificationItemListener?
     ) : BaseAdapterTypeFactory(), OrderListTypeFactory {
-        override fun type(card: Card): Int {
+        override fun type(orderWidgetUiModel: OrderWidgetUiModel): Int {
             return OrderItemViewHolder.LAYOUT
         }
 
@@ -127,7 +127,7 @@ class NotificationOrderListViewHolder constructor(
     class OrderListAdapter(
         adapterTypeFactory: OrderListTypeFactory?
     ) : BaseAdapter<OrderListTypeFactory>(adapterTypeFactory) {
-        fun updateData(list: List<Card>) {
+        fun updateData(list: List<OrderWidgetUiModel>) {
             val diffUtil = OrderWidgetDiffUtil(visitables, list)
             val diffResult = DiffUtil.calculateDiff(diffUtil)
             visitables.clear()
@@ -139,7 +139,7 @@ class NotificationOrderListViewHolder constructor(
     class OrderItemViewHolder(
         itemView: View?,
         private val notificationItemListener: NotificationItemListener?
-    ) : AbstractViewHolder<Card>(itemView) {
+    ) : AbstractViewHolder<OrderWidgetUiModel>(itemView) {
 
         private val card: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_card_uoh)
         private val bg = ShadowGenerator.generateBackgroundWithShadow(
@@ -160,23 +160,23 @@ class NotificationOrderListViewHolder constructor(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8
         )
 
-        override fun bind(element: Card) {
+        override fun bind(element: OrderWidgetUiModel) {
             bindCardContent(element)
             bindCardBackground(element)
             bindTitleMargin(element)
         }
 
-        private fun bindCardBackground(element: Card) {
+        private fun bindCardBackground(element: OrderWidgetUiModel) {
             card?.background = bg
         }
 
-        private fun bindCardContent(element: Card) {
+        private fun bindCardContent(element: OrderWidgetUiModel) {
             card?.bindItem(element) {
                 notificationItemListener?.trackClickOrderListItem(element)
             }
         }
 
-        private fun bindTitleMargin(element: Card) {
+        private fun bindTitleMargin(element: OrderWidgetUiModel) {
             if (card?.hasVisibleIcon() == true) {
                 card.setTitleMarginStart(titleWithIconMargin)
             } else {
