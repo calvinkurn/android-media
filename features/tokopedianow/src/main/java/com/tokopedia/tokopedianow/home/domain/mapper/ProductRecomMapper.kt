@@ -8,7 +8,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.constant.HomeTrackShopTypeDef
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -49,13 +48,12 @@ object ProductRecomMapper {
                         shopName = grid.shop.shopName,
                         appUrl = grid.applink,
                         pageName = pageName,
-                        parentID = grid.parentProductId.toIntOrZero(),
+                        parentID = grid.parentProductId.toLongOrZero(),
                         isRecomProductShowVariantAndCart = true,
                         isTopAds = grid.isTopads,
                         isFreeOngkirActive = grid.isFreeOngkirActive,
                         freeOngkirImageUrl = grid.freeOngkirImageUrl,
                         recommendationType = grid.recommendationType,
-                        shopType = if (grid.shop.isOfficialStore) HomeTrackShopTypeDef.OFFICIAL_STORE else if (grid.shop.isGoldMerchant) HomeTrackShopTypeDef.GOLD_MERCHANT else HomeTrackShopTypeDef.REGULAR_MERCHANT,
                         isGold = grid.shop.isGoldMerchant,
                         isOfficial = grid.shop.isOfficialStore,
                         labelGroupList = grid.labelGroup.map {

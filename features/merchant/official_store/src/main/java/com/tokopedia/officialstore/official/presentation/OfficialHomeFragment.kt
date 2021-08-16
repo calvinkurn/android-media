@@ -87,6 +87,9 @@ class OfficialHomeFragment :
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
         private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+        private const val POS_1 = 1
+        private const val POS_10 = 10
+        private const val DELAY_200L = 200L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
@@ -182,6 +185,7 @@ class OfficialHomeFragment :
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
+                OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -196,6 +200,8 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        observeFeaturedShopSuccessDC()
+        observeFeaturedShopRemoveDC()
         initLocalChooseAddressData()
         resetData()
         loadData()
@@ -231,6 +237,8 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
+        viewModel.featuredShopRemove.removeObservers(this)
+        viewModel.featuredShopResult.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -346,7 +354,7 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
-                    (position + 1).toString(10),
+                    (position + POS_1).toString(POS_10),
                     it,
                     channelModel
             )
@@ -376,7 +384,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData
                 )
@@ -409,7 +417,7 @@ class OfficialHomeFragment :
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         campaignId,
                         campaignCode
@@ -441,7 +449,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData.campaignCode,
                         channelData.campaignID.toString()
@@ -641,6 +649,21 @@ class OfficialHomeFragment :
         RouteManager.route(context, shopData.url)
     }
 
+    override fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int) {
+    }
+
+    override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun goToApplink(applink: String) {
+        RouteManager.route(requireContext(), applink)
+    }
+
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()
 
@@ -800,6 +823,27 @@ class OfficialHomeFragment :
         })
     }
 
+    private fun observeFeaturedShopSuccessDC() {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                   //update UI
+                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
+                        adapter?.submitList(newDataList)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeFeaturedShopRemoveDC() {
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
+            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                adapter?.submitList(newDataList)
+            }
+        })
+    }
+
     private fun showErrorNetwork(t: Throwable) {
         view?.let {
             Toaster.build(it,
@@ -829,7 +873,7 @@ class OfficialHomeFragment :
 
                             Handler().postDelayed({
                                 isScrolling = false
-                            }, 200)
+                            }, DELAY_200L)
                         }
 
                     }

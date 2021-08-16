@@ -2,12 +2,22 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -65,6 +75,9 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var removeWishListUseCase: RemoveWishListUseCase
 
+    @RelaxedMockK
+    lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -84,6 +97,7 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
+                getDisplayHeadlineAds,
                 CoroutineTestDispatchersProvider
         )
     }
@@ -335,6 +349,71 @@ class OfficialStoreHomeViewModelTest {
         onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
 
         verifyIsLoggedInEquals(false)
+    }
+
+    @Test
+    fun given_get_headlineAds_success_then_pass_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+                listOf(
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                )
+        )
+
+        val headlineAdsResponse: MutableList<DisplayHeadlineAdsEntity.DisplayHeadlineAds> = mutableListOf()
+        headlineAdsResponse.addAll(
+                listOf(
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "1"),
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "2"),
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "3"),
+                ))
+
+        val featureShopResult = FeaturedShopDataModel(
+                channelModel = ChannelModel(
+                        id = channelId,
+                        groupId = "",
+                        channelGrids = headlineAdsResponse.mappingTopAdsHeaderToChannelGrid(),
+                        style = ChannelStyle.ChannelOS,
+
+                )
+        )
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
+
+        viewModel.loadFirstData(category, "")
+
+        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.id, featureShopResult.channelModel.id)
+        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.channelGrids.size, featureShopResult.channelModel.channelGrids.size)
+    }
+
+    @Test
+    fun given_get_headlineAds_empty_list_then_pass_error_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+        val sizeZero = 0
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+                listOf(
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                )
+        )
+
+        val headlineAdsResponse: MutableList<DisplayHeadlineAdsEntity.DisplayHeadlineAds> = mutableListOf()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
+
+        viewModel.loadFirstData(category, "")
+
+        Assert.assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids?.size ?: sizeZero, sizeZero)
     }
 
 

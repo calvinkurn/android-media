@@ -46,15 +46,15 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         position = index,
                         shopId = recommendation.shop.id,
                         shopName = recommendation.shop.name,
-                        quantity = 1,
+                        quantity = getItemQuantityBasedOnLayoutType(),
                         header = title,
                         pageName = pageName,
                         minOrder = recommendation.minOrder,
-                        location = recommendation.shop.city,
-                        badgesUrl = recommendation.badges.map { it.imageUrl },
+                        location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
+                        badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
                         type = layoutType,
-                        isFreeOngkirActive = recommendation.freeOngkirInformation.isActive,
-                        freeOngkirImageUrl = recommendation.freeOngkirInformation.imageUrl,
+                        isFreeOngkirActive = if (isRecomCardShouldShowVariantOrCart()) false else recommendation.freeOngkirInformation.isActive,
+                        freeOngkirImageUrl = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.freeOngkirInformation.imageUrl,
                         labelGroupList = recommendation.labelGroups.map {
                             RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
                         },
@@ -103,8 +103,8 @@ fun RecommendationItem.toProductCardModel(
     var hasThreeDotsFinalValue = hasThreeDots
     if (isRecomProductShowVariantAndCart) {
         hasThreeDotsFinalValue = false
-        if (isProductHasParentID()) variant = ProductCardModel.Variant(quantity = quantity)
-        else nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
+        variant = ProductCardModel.Variant(quantity = quantity)
+        nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
     }
     return ProductCardModel(
             slashedPrice = slashedPrice,
@@ -132,17 +132,24 @@ fun RecommendationItem.toProductCardModel(
             },
             hasAddToCartButton = hasAddToCartButton,
             addToCartButtonType = addToCartButtonType,
-            variant = variant,
-            nonVariant = nonVariant
+            variant = if (isProductHasParentID()) variant else null,
+            nonVariant = if (isProductHasParentID()) null else nonVariant
     )
 }
 
 var LABEL_FULFILLMENT: String = "fulfillment"
-var LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+val DEFAULT_QTY_0: Int = 0
+val DEFAULT_QTY_1: Int = 1
 
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC
 }
+
+private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
+    return if (this.isRecomCardShouldShowVariantOrCart()) DEFAULT_QTY_0 else DEFAULT_QTY_1
+}
+
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
     return this.any { it.position == LABEL_FULFILLMENT }
 }
@@ -151,7 +158,8 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
     assets?.banner?.let {
         return RecommendationBanner(
                 applink = appLandingPageLink,
-                imageUrl = it.apps
+                imageUrl = it.apps,
+                thematicID = thematicID
         )
     }
     return null

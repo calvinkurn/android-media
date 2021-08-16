@@ -119,6 +119,8 @@ public class RemoteConfigKey {
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
+    public static final String REMOTE_CONFIG_APP_WORDING_TOKONOW_USP_PDP = "app_wording_tokonow_usp_pdp";
+
     public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
@@ -201,7 +203,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
     public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
 
-    public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
@@ -247,7 +248,7 @@ public class RemoteConfigKey {
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
-    public static final String SETTING_SHOW_SCREEN_RECORDER = "android_show_screen_recorder";
+    public static final String SETTING_SHOW_SCREEN_RECORDER = "android_enable_screen_recorder";
 
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
