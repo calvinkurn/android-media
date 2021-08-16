@@ -1338,11 +1338,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             this.commonAdapter = commonAdapter
     }
 
-    override fun onClickBalanceAndPoint(type: String) {
+    override fun onClickBalanceAndPoint(type: Int) {
         TODO("Not yet implemented")
     }
 
     companion object {
+        private const val BALANCE_AND_POINT_LEFT_INDEX = 0
+        private const val BALANCE_AND_POINT_CENTER_INDEX = 1
+        private const val BALANCE_AND_POINT_RIGHT_INDEX = 2
+
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
 

@@ -1,9 +1,9 @@
 package com.tokopedia.home_account.view.adapter.uimodel
 
 data class BalanceAndPointUiModel(
-    val title: String,
-    val subtitle: String,
-    val urlImage: String,
-    val type: String,
-    val isShowShimmer: Boolean
+    var id: String,
+    var title: String,
+    var subtitle: String,
+    var urlImage: String,
+    var type: Int
 )

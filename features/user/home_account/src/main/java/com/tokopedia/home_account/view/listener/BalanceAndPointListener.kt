@@ -1,5 +1,5 @@
 package com.tokopedia.home_account.view.listener
 
 interface BalanceAndPointListener {
-    fun onClickBalanceAndPoint(type: String)
+    fun onClickBalanceAndPoint(type: Int)
 }
