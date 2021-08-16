@@ -45,10 +45,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_VIEW_MINICART_IRIS = "viewMinicartIris"
         const val EVENT_NAME_BEGIN_CHECKOUT = "begin_checkout"
         const val EVENT_NAME_CHECKOUT_PROGRESS = "checkout_progress"
+        const val EVENT_NAME_CHECKOUT = "checkout"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
-        const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
+        const val EVENT_CATEGORY_CLICK_BUY = "tokonow - %s"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -294,7 +295,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
@@ -338,7 +339,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
