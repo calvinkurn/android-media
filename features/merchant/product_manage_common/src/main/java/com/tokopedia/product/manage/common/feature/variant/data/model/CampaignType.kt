@@ -8,10 +8,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CampaignType(
-        @SuppressLint("Invalid Data Type")
-        @Expose
-        @SerializedName("id")
-        val id: Long? = 0,
         @Expose
         @SerializedName("name")
         val name: String? = "",

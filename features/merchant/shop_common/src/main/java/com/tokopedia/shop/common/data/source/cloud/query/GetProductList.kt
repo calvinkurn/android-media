@@ -36,7 +36,6 @@ internal object GetProductList {
                     management
                 }
                 campaignType {
-                    id
                     name
                     iconURL
                 }

@@ -121,7 +121,6 @@ object ProductManageVariantMapper {
     fun mapVariantCampaignTypeToProduct(campaignList: List<CampaignType>?): List<ProductCampaignType>? {
         return campaignList?.map {
             ProductCampaignType(
-                id = it.id,
                 iconUrl = it.iconUrl,
                 name = it.name
             )

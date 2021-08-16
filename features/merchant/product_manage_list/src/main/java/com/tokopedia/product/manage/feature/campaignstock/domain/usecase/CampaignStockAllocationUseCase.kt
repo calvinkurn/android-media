@@ -38,7 +38,6 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "          product_name\n" +
                 "          stock\n" +
                 "          campaign_types {\n" +
-                "            id\n" +
                 "            name\n" +
                 "            icon_url\n" +
                 "          }\n" +
