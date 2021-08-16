@@ -85,18 +85,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         setupProductBundleDetailView(view)
         setupProductBundleOverView(view)
 
-//        // render product bundle master chips
+        // render product bundle master chips
 //        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
-//        // simulate get the first bundle information
-//        val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
-//        // get recommended product bundle info
-//        viewModel.getBundleInfo(recommendedBundleId)
 
 //        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-
-        // observe data from view model
-        subscribeToProductBundleInfo()
-        subscribeToErrorState()
     }
 
     override fun getScreenName(): String {
@@ -186,12 +178,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 //                    totalSaving = totalSaving
 //            )
 //        })
-    }
-
-    private fun subscribeToErrorState() {
-        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (isError) errorToaster?.show()
-        })
     }
 
     override fun onProductBundleMasterItemClicked(adapterPosition: Int, productBundleMaster: ProductBundleMaster) {

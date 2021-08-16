@@ -41,7 +41,7 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
             price = Utility.formatToRupiahFormat(bundleDetail.bundlePrice.roundToInt())
             slashPrice = Utility.formatToRupiahFormat((bundleDetail.originalPrice.roundToInt()))
             context?.run {
-                discountAmount = String.format(this.getString(R.string.text_discount_in_percentage), bundleDetail.discountAmount.roundToInt())
+                discountAmount = String.format(this.getString(R.string.text_discount_in_percentage), bundleDetail.discountAmount)
             }
         }
     }

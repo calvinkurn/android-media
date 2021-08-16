@@ -12,6 +12,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,8 +99,8 @@ class ProductBundleViewModel @Inject constructor(
         return originalQuota - quota
     }
 
-    fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Double {
-        return ((originalPrice - bundlePrice) * 100 / originalPrice)
+    fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Int {
+        return DiscountUtil.getDiscountPercentage(originalPrice, bundlePrice)
     }
 
     fun calculateTotalPrice(productBundleItems: List<BundleItem>): Double {
