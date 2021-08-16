@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.RequestParams
@@ -90,6 +91,10 @@ class AtcVariantViewModel @Inject constructor(
     val addWishlistResult: LiveData<Result<Boolean>>
         get() = _addWishlistResult
 
+    private val _restrictionData = MutableLiveData<Result<RestrictionData>>()
+    val restrictionData: LiveData<Result<RestrictionData>>
+        get() = _restrictionData
+
     private var isShopOwner: Boolean = false
 
     fun getActivityResultData(): ProductVariantResult = variantActivityResult
@@ -140,10 +145,18 @@ class AtcVariantViewModel @Inject constructor(
 
             _initialData.postValue(list.asSuccess())
 
+
+
             if (!isPartiallySelected) {
                 // if user only select 1 of 2 variant, no need to update the button
                 // this validation only be execute when user clicked variant and fully clicked 2 of 2 variant or 1 of 1
                 _buttonData.postValue(cartData.asSuccess())
+
+                //generate restriction data (shop followers or exclusive campaign)
+                val restrictionData = aggregatorData?.reData?.getReByProductId(productId = selectedVariantChild?.productId
+                        ?: "")
+                assignReData(restrictionData)
+
                 updateActivityResult(
                         selectedProductId = selectedVariantChild?.productId ?: "",
                         mapOfSelectedVariantOption = selectedVariantIds)
@@ -229,6 +242,10 @@ class AtcVariantViewModel @Inject constructor(
                     variantTitle = variantTitle,
                     shouldShowDeleteButton = shouldShowDeleteButton)
 
+            //generate restriction data (shop followers or exclusive campaign)
+            val restrictionData = aggregatorData?.reData?.getReByProductId(productId = selectedChild?.productId
+                    ?: "")
+
             if (visitables != null) {
                 _initialData.postValue(visitables.asSuccess())
                 updateActivityResult(
@@ -238,10 +255,19 @@ class AtcVariantViewModel @Inject constructor(
                 _initialData.postValue(Throwable().asFail())
             }
 
+            assignReData(restrictionData)
             _buttonData.postValue(cartData.asSuccess())
         }) {
             _buttonData.postValue(it.asFail())
             _initialData.postValue(it.asFail())
+        }
+    }
+
+    private fun assignReData(restrictionData: RestrictionData?) {
+        if (restrictionData == null) {
+            _restrictionData.postValue(Throwable().asFail())
+        } else {
+            _restrictionData.postValue(restrictionData.asSuccess())
         }
     }
 

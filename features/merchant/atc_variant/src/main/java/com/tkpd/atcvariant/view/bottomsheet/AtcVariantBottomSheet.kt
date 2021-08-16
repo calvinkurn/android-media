@@ -45,11 +45,15 @@ import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
+import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,7 +66,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtcButtonListener, HasComponent<AtcVariantComponent> {
+class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtcButtonListener, PartialButtonShopFollowersListener, HasComponent<AtcVariantComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -89,6 +93,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private var viewContent: View? = null
+    private var nplFollowersButton: PartialButtonShopFollowersView? = null
 
     private var baseAtcBtn: PartialAtcButtonView? = null
     private var rvVariantBottomSheet: RecyclerView? = null
@@ -149,6 +154,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
         viewContent?.let {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
+            nplFollowersButton = PartialButtonShopFollowersView.build(it.findViewById(R.id.base_atc_variant_re_button), this)
         }
         setChild(viewContent)
         setupRv(viewContent)
@@ -193,6 +199,64 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeDeleteCart()
         observeUpdateCart()
         observeWishlist()
+        observeRestrictionData()
+    }
+
+    private fun observeRestrictionData() {
+        viewModel.restrictionData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderRestrictionBottomSheet(it.data)
+                }
+                is Fail -> {
+                    nplFollowersButton?.setupVisibility = false
+                }
+            }
+        }
+    }
+
+    private fun renderRestrictionBottomSheet(reData: RestrictionData) {
+        when {
+            reData.restrictionExclusiveType() -> {
+                renderExclusiveBottomSheet(reData)
+            }
+            reData.restrictionShopFollowersType() -> {
+                updateNplButtonFollowers(reData)
+            }
+            else -> {
+                nplFollowersButton?.setupVisibility = false
+            }
+        }
+    }
+
+    private fun renderExclusiveBottomSheet(reData: RestrictionData) {
+        if (reData.action.isNotEmpty()) {
+            val title = reData.action.firstOrNull()?.title ?: ""
+            val desc = reData.action.firstOrNull()?.description ?: ""
+            val badgeUrl = reData.action.firstOrNull()?.badgeURL ?: ""
+            nplFollowersButton?.renderView(title = title,
+                    alreadyFollowShop = false,
+                    desc = desc,
+                    iconUrl = badgeUrl,
+                    hideButton = true,
+                    maxLine = 2,
+                    centerImage = true)
+        }
+        nplFollowersButton?.setupVisibility = reData.isNotEligibleExclusive()
+    }
+
+    private fun updateNplButtonFollowers(reData: RestrictionData) {
+        val shouldShowReShopFollowers = !reData.isEligible
+        if (shouldShowReShopFollowers) {
+            if (nplFollowersButton?.view?.isShown == false) {
+                nplFollowersButton?.view?.translationY = 100.toPx().toFloat()
+            }
+
+            val title = reData.action.firstOrNull()?.title ?: ""
+            val desc = reData.action.firstOrNull()?.description ?: ""
+            nplFollowersButton?.renderView(title, desc, shouldShowReShopFollowers)
+        }
+        nplFollowersButton?.setupVisibility = shouldShowReShopFollowers
     }
 
     private fun showToasterSuccess(message: String, ctaText: String = "", ctaListener: () -> Unit = {}) {
@@ -365,7 +429,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
         val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
                 ?: ""
-        val variantTitle = adapter.getHeaderDataModel()?.variantTitle?.joinToString(separator = ", ") ?: ""
+        val variantTitle = adapter.getHeaderDataModel()?.variantTitle?.joinToString(separator = ", ")
+                ?: ""
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -701,5 +766,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         } else {
             t.printStackTrace()
         }
+    }
+
+    override fun onButtonFollowNplClick() {
     }
 }

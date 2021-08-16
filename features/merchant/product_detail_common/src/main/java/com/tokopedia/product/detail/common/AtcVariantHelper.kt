@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -57,9 +58,12 @@ object AtcVariantHelper {
                         alternateCopy: List<AlternateCopy>?,
                         boData: BebasOngkir?,
                         rates: List<P2RatesEstimate>?,
+                        restrictionData: RestrictionInfoResponse?,
+                        isFavorite: Boolean = false,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
+        val updatedReData = manipulateRestrictionFollowers(restrictionData, isFavorite)
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
@@ -80,7 +84,8 @@ object AtcVariantHelper {
                                 category = productInfoP1.basic.category
                         ),
                         shopType = productInfoP1.shopTypeString,
-                        boData = boData ?: BebasOngkir()
+                        boData = boData ?: BebasOngkir(),
+                        reData = updatedReData
                 ),
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
@@ -113,5 +118,17 @@ object AtcVariantHelper {
                        startActivitResult: (Intent, Int) -> Unit) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
+    }
+
+    private fun manipulateRestrictionFollowers(restrictionData: RestrictionInfoResponse?, isFavorite: Boolean): RestrictionInfoResponse {
+        val manipulateRestrictionShopFollowers = restrictionData?.restrictionData?.map {
+            if (it.restrictionShopFollowersType()) {
+                it.copy(isEligible = isFavorite)
+            } else {
+                it
+            }
+        } ?: listOf()
+
+        return restrictionData?.copy(restrictionData = manipulateRestrictionShopFollowers) ?: RestrictionInfoResponse()
     }
 }

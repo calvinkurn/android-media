@@ -36,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

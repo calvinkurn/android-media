@@ -22,6 +22,7 @@ data class ProductVariantBottomSheetParams(
         // only be used in AtcVariantViewModel, dont use this except from AtcVariantViewModel
         var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
         var miniCartData: Map<String, MiniCartItem>? = null,
+        var alreadyFollowShop: Boolean = false,
 
         //Basic info pdp
         var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,

@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -24,6 +25,8 @@ data class ProductVariantAggregatorUiData(
         var alternateCopy: List<AlternateCopy> = listOf(),
 
         var rates: List<P2RatesEstimate> = listOf(),
+
+        var reData: RestrictionInfoResponse = RestrictionInfoResponse(),
 
         //region only for tracker
         var simpleBasicInfo: SimpleBasicInfo = SimpleBasicInfo(),

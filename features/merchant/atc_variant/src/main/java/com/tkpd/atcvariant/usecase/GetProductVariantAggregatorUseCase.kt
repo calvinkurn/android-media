@@ -59,6 +59,20 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     shopInfo {
                         shopType
                     }
+                    restrictionInfo {
+                      message
+                      restrictionData {
+                        productID
+                        isEligible
+                        action {
+                          actionType
+                          title
+                          description
+                          attributeName
+                          badgeURL
+                        }
+                      }
+                    }
                     variantData { 
                       errorCode
                       parentID
@@ -256,7 +270,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 simpleBasicInfo = data.basicInfo,
                 shopType = data.shopInfo.shopType,
                 boData = data.bebasOngkir,
-                rates = data.ratesEstimate
+                rates = data.ratesEstimate,
+                reData = data.restrictionInfo
         )
     }
 }

@@ -74,13 +74,9 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
-import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.*
@@ -107,8 +103,8 @@ import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculatio
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
+import com.tokopedia.product.detail.common.data.model.re.RestrictionData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
@@ -154,8 +150,6 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
@@ -2146,6 +2140,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         viewModel.variantData,
                         getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
 
+                val p2Data = viewModel.p2Data.value
+
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
@@ -2154,12 +2150,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
-                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
-                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
-                        miniCart = viewModel.p2Data.value?.miniCart,
-                        alternateCopy = viewModel.p2Data.value?.alternateCopy,
-                        boData = viewModel.p2Data.value?.bebasOngkir ?: BebasOngkir(),
-                        rates = viewModel.p2Data.value?.ratesEstimate ?: listOf()
+                        warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
+                        cartRedirection = p2Data?.cartRedirection ?: mapOf(),
+                        miniCart = p2Data?.miniCart,
+                        alternateCopy = p2Data?.alternateCopy,
+                        boData = p2Data?.bebasOngkir ?: BebasOngkir(),
+                        rates = p2Data?.ratesEstimate ?: listOf(),
+                        restrictionData = p2Data?.restrictionInfo,
+                        isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
@@ -2908,6 +2906,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun clickButtonWhenVariantTokonow(isVariant: Boolean) {
+        if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
+            DynamicProductDetailTracking.Click.eventClickOosButton(btn_buy_now.text.toString(), isVariant, viewModel.getDynamicProductInfoP1, viewModel.userId)
+            goToWishlist()
+        } else {
+            DynamicProductDetailTracking.Click.eventClickAtcToVariantBottomSheet(viewModel.getDynamicProductInfoP1?.basic?.productID
+                    ?: "")
+            goToAtcVariant()
+        }
+    }
+
     private fun doAtc(buttonAction: Int) {
         buttonActionType = buttonAction
         context?.let {
@@ -2916,9 +2925,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ?: false
 
             if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-                DynamicProductDetailTracking.Click.eventClickAtcToVariantBottomSheet(viewModel.getDynamicProductInfoP1?.basic?.productID
-                        ?: "")
-                goToAtcVariant()
+                clickButtonWhenVariantTokonow(isVariant)
                 return@let
             }
 
