@@ -42,6 +42,8 @@ class PlayChatListView : ConstraintLayout {
     private val path = Path()
     private var maskHeight: Float? = null
 
+    private var maskAnimator: ValueAnimator? = null
+
     init {
         val view = View.inflate(context, R.layout.view_chat_list, this)
 
@@ -95,6 +97,8 @@ class PlayChatListView : ConstraintLayout {
     }
 
     fun animateTopMask(height: Float) {
+        maskAnimator?.cancel()
+
         val valueAnimator = ValueAnimator.ofFloat(maskHeight.orZero(), height)
         valueAnimator.addUpdateListener {
             val value = it.animatedValue as Float
@@ -103,6 +107,8 @@ class PlayChatListView : ConstraintLayout {
         }
         valueAnimator.duration = MASK_DURATION_IN_MS
         valueAnimator.start()
+
+        maskAnimator = valueAnimator
     }
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
@@ -147,6 +153,6 @@ class PlayChatListView : ConstraintLayout {
         private const val SCROLL_OFFSET_INDICATOR = 90
 
         private const val MASK_START_POS = 0f
-        private const val MASK_DURATION_IN_MS = 450L
+        private const val MASK_DURATION_IN_MS = 300L
     }
 }

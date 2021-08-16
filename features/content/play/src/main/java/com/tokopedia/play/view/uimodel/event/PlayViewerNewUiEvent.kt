@@ -25,9 +25,9 @@ data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 /**
  * Real Time Notification
  */
-data class ShowRealTimeNotificationEvent(val notification: RealTimeNotificationUiModel) : PlayViewerNewUiEvent()
-object HideRealTimeNotificationEvent : PlayViewerNewUiEvent(), AllowedWhenInactiveEvent
-
+data class ShowRealTimeNotificationEvent(
+        val notification: RealTimeNotificationUiModel,
+) : PlayViewerNewUiEvent()
 
 //---------------------
 
@@ -36,3 +36,5 @@ sealed class UiString {
     data class Resource(@StringRes val resource: Int) : UiString()
     data class Text(val text: String) : UiString()
 }
+
+private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 500L

@@ -190,6 +190,10 @@ class PlayViewModel @Inject constructor(
                             val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
                             PlayCartCount.Show(countText)
                         } else PlayCartCount.Hide
+                ),
+                rtn = PlayRtnUiState(
+                        shouldShow = channelType.isLive && !bottomInsets.isAnyShown,
+                        lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
                 )
         )
     }
@@ -399,11 +403,6 @@ class PlayViewModel @Inject constructor(
     private val interactiveFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 5)
 
     /**
-     * Real Time Notification
-     */
-    private val rtnFlow = MutableSharedFlow<RealTimeNotificationUiModel>(extraBufferCapacity = 10)
-
-    /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
     private val stateHandlerObserver = object : Observer<Unit> {
@@ -426,16 +425,6 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             interactiveFlow.collect(::onReceivedInteractiveAction)
-        }
-
-        viewModelScope.launch {
-            rtnFlow.filter {
-                this@PlayViewModel.isActive.get() &&
-                        channelType.isLive &&
-                        _status.value.isActive
-            }.collect {
-                onReceivedRealTimeNotification(it)
-            }
         }
     }
 
@@ -688,13 +677,18 @@ class PlayViewModel @Inject constructor(
         checkLeaderboard(channelData.id)
 
 //        viewModelScope.launch {
+//            var index = 0
 //            while(true) {
 //                delay(3000)
-//                rtnFlow.emit(
-//                        RealTimeNotificationUiModel(
-//                                "",
-//                                MethodChecker.fromHtml("eggy & 5 penonton lainnya <b>follow toko<b> ini"),
-//                                "#50BA47"
+//                val text = if (index % 2 == 0) "eggy & 5 penonton lainnya <b>follow toko<b> ini, index ${index++}"
+//                else "eggy & 5, index ${index++}"
+//                _uiEvent.emit(
+//                        ShowRealTimeNotificationEvent(
+//                                RealTimeNotificationUiModel(
+//                                        "",
+//                                        MethodChecker.fromHtml(text),
+//                                        "#50BA47"
+//                                )
 //                        )
 //                )
 //            }
@@ -1227,7 +1221,7 @@ class PlayViewModel @Inject constructor(
             }
             is RealTimeNotification -> {
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
-                rtnFlow.emit(notif)
+                _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
             }
         }
     }
@@ -1244,16 +1238,6 @@ class PlayViewModel @Inject constructor(
             val isSuccess = repo.postInteractiveTap(channelId, activeInteractiveId)
             if (isSuccess) repo.setJoined(activeInteractiveId)
         } catch (ignored: MessageErrorException) {}
-    }
-
-    /**
-     * Called when new RTN arrived
-     */
-    private suspend fun onReceivedRealTimeNotification(rtn: RealTimeNotificationUiModel) {
-        if (rtn.text.isBlank()) return
-        _uiEvent.emit(ShowRealTimeNotificationEvent(rtn))
-        delay(_channelDetail.value.rtnConfigInfo.lifespan)
-        _uiEvent.emit(HideRealTimeNotificationEvent)
     }
 
     private fun doFollowUnfollow(shouldForceFollow: Boolean): PartnerFollowAction? {
@@ -1279,7 +1263,7 @@ class PlayViewModel @Inject constructor(
     private fun handleSetChannelActive() {
         viewModelScope.launch {
             val welcomeFormat = _channelDetail.value.rtnConfigInfo.welcomeNotification
-            rtnFlow.emit(welcomeFormat)
+            _uiEvent.emit(ShowRealTimeNotificationEvent(welcomeFormat))
         }
     }
 
@@ -1517,6 +1501,11 @@ class PlayViewModel @Inject constructor(
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
         private const val MAX_CART_COUNT = 99
+
+        /**
+         * Real Time Notif
+         */
+        private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 300L
 
         /**
          * Request Code When need login

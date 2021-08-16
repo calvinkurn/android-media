@@ -110,7 +110,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductFeaturedViewComponent.Listener,
         PinnedVoucherViewComponent.Listener,
         InteractiveViewComponent.Listener,
-        InteractiveWinnerBadgeViewComponent.Listener
+        InteractiveWinnerBadgeViewComponent.Listener,
+        RealTimeNotificationViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -130,7 +131,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
-    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
+    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
 
     /**
      * Interactive
@@ -468,6 +469,17 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
         playViewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetMaxHeight))
+    }
+
+    /**
+     * RealTimeNotification View Component Listener
+     */
+    override fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float) {
+        chatListView?.animateCutHeight(height + offset8)
+    }
+
+    override fun onHideNotification(view: RealTimeNotificationViewComponent) {
+        chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
     }
     //endregion
 
@@ -821,6 +833,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
+                renderRealTimeNotificationView(state.rtn)
+                renderChatListView(state.rtn)
             }
         }
     }
@@ -848,18 +862,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowToasterEvent -> handleToasterEvent(event)
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is ShowRealTimeNotificationEvent -> {
-                        val rtnView = this@PlayUserInteractionFragment.rtnView ?: return@collect
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            rtnView.rootView.awaitPreDraw()
-                            val height = rtnView.rootView.measuredHeight
-                            chatListView?.animateCutHeight(height.toFloat() + offset8)
-                        }
-                        rtnView.setNotification(event.notification)
-                        rtnView.showAnimated()
-                    }
-                    is HideRealTimeNotificationEvent -> {
-                        chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
-                        rtnView?.hideAnimated()
+                        rtnView?.queueNotification(event.notification)
                     }
                 }
             }
@@ -1449,6 +1452,21 @@ class PlayUserInteractionFragment @Inject constructor(
             totalView: String,
     ) {
         statsInfoView.setTotalViews(totalView)
+    }
+
+    private fun renderRealTimeNotificationView(rtn: PlayRtnUiState) {
+        rtnView?.setLifespan(rtn.lifespanInMs)
+        if (rtn.shouldShow) rtnView?.show()
+        else rtnView?.invisible()
+    }
+
+    private fun renderChatListView(rtn: PlayRtnUiState) {
+        if (rtn.shouldShow) {
+            val rtnHeight = rtnView?.rootView?.measuredHeight
+            if (rtnHeight != null) chatListView?.animateCutHeight(rtnHeight.toFloat() + offset8)
+        } else {
+            chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
+        }
     }
     //endregion
 
