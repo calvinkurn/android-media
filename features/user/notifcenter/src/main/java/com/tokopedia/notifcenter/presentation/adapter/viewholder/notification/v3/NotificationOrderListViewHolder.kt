@@ -12,6 +12,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.util.view.ShadowGenerator
 import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
@@ -21,7 +22,8 @@ import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
 // TODO: Fix this instrumentation test
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
-    notificationItemListener: NotificationItemListener?
+    notificationItemListener: NotificationItemListener?,
+    private val adapterListener: NotificationAdapterListener?
 ) : AbstractViewHolder<NotifOrderListUiModel>(itemView) {
 
     private val rv: RecyclerView? = itemView?.findViewById(R.id.rv_order_list)
@@ -35,6 +37,7 @@ class NotificationOrderListViewHolder constructor(
     private fun initRecyclerView() {
         rv?.apply {
             setHasFixedSize(true)
+            setRecycledViewPool(adapterListener?.getNotificationOrderViewPool())
             itemAnimator = null
             layoutManager = LinearLayoutManager(
                 itemView.context, LinearLayoutManager.HORIZONTAL, false

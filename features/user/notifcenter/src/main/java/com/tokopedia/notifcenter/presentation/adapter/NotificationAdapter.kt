@@ -34,6 +34,7 @@ class NotificationAdapter constructor(
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
+    private val orderWidgetPool = RecyclerView.RecycledViewPool()
 
     interface Listener {
         fun hasFilter(): Boolean
@@ -45,6 +46,10 @@ class NotificationAdapter constructor(
 
     override fun getWidgetTimelineViewPool(): RecyclerView.RecycledViewPool {
         return widgetTimeline
+    }
+
+    override fun getNotificationOrderViewPool(): RecyclerView.RecycledViewPool? {
+        return orderWidgetPool
     }
 
     override fun isPreviousItemNotification(adapterPosition: Int): Boolean {

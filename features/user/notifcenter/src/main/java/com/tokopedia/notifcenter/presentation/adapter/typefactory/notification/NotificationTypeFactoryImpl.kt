@@ -121,15 +121,15 @@ class NotificationTypeFactoryImpl constructor(
             WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
                     view, notificationListener, notifAdapterListener
             )
+            NotificationOrderListViewHolder.LAYOUT -> NotificationOrderListViewHolder(
+                view, notificationListener, notifAdapterListener
+            )
             else -> createViewHolder(view, viewType)
         }
     }
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            NotificationOrderListViewHolder.LAYOUT -> NotificationOrderListViewHolder(
-                    view, notificationListener
-            )
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
                     view, notificationListener
             )
