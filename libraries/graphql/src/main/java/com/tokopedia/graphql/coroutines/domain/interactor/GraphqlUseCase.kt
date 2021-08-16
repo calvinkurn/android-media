@@ -15,7 +15,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
+open class GraphqlUseCase<T: Any> constructor(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null
@@ -26,7 +26,7 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
 
-    constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
+    @Inject constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
 
     fun setCacheStrategy(cacheStrategy: GraphqlCacheStrategy){
         this.cacheStrategy = cacheStrategy

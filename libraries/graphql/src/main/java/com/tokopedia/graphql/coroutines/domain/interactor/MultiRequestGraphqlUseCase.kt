@@ -15,7 +15,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 
-class MultiRequestGraphqlUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) :
+class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: GraphqlRepository) :
     UseCase<GraphqlResponse>() {
 
     private val requests = mutableListOf<GraphqlRequest>()
@@ -24,7 +24,7 @@ class MultiRequestGraphqlUseCase @Inject constructor(private val graphqlReposito
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
 
-    constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
+    @Inject constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
 
     override suspend fun executeOnBackground(): GraphqlResponse {
         if (requests.isEmpty()) {
