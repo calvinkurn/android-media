@@ -1,6 +1,8 @@
-package com.tokopedia.home.beranda.domain.model
+package com.tokopedia.home_component.usecase.featuredshop
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelShop
 
 /**
  * Created by Lukas on 08/09/20.
@@ -76,6 +78,29 @@ data class DisplayHeadlineAdsEntity(
             data class ImageProduct(
                     @SerializedName("image_url") val imageUrl: String = "",
                     @SerializedName("image_click_url") val imageClickUrl: String = ""
+            )
+        }
+    }
+
+    fun List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>.mappingTopAdsHeaderToChannelGrid(): List<ChannelGrid>{
+        return this.map {
+            ChannelGrid(
+                    id = it.id,
+                    applink = it.applink,
+                    shop = ChannelShop(
+                            id = it.headline.shop.id,
+                            shopName = it.headline.shop.name,
+                            shopProfileUrl = it.headline.shop.imageShop.cover,
+                            shopLocation = it.headline.shop.location,
+                            shopBadgeUrl = it.headline.badges.firstOrNull()?.imageUrl ?: "",
+                            isGoldMerchant = it.headline.shop.goldShop,
+                            isOfficialStore = it.headline.shop.shopIsOfficialStore
+                    ),
+                    countReviewFormat = it.headline.shop.products.firstOrNull()?.review ?: "",
+                    rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
+                    impression = it.headline.image.url,
+                    productClickUrl = it.adClickUrl,
+                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
             )
         }
     }

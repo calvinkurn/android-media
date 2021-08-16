@@ -15,6 +15,9 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
@@ -22,6 +25,15 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -29,6 +41,8 @@ import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperLis
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
@@ -42,7 +56,6 @@ class TokoNowSearchFragment:
         BroadMatchListener {
 
     companion object {
-
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -130,6 +143,7 @@ class TokoNowSearchFragment:
             outOfCoverageListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
+            recommendationCarouselListener = this,
             broadMatchListener = this,
     )
 
@@ -275,6 +289,50 @@ class TokoNowSearchFragment:
     override fun onCTAToTokopediaNowHomeClick() {
         SearchTracking.sendClickCTAToHome()
         goToTokopediaNowHome()
+    }
+
+    override fun getImpressionEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            IMPRESSION_SRP_RECOM_OOC
+        } else {
+            IMPRESSION_SRP_PRODUCT_TOKONOW
+        }
+    }
+
+    override fun getClickEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            CLICK_SRP_RECOM_OOC
+        } else {
+            CLICK_SRP_PRODUCT_TOKONOW
+        }
+    }
+
+    override fun getAtcEventAction(isOOC: Boolean): String {
+        return CLICK_ATC_SRP_PRODUCT_TOKONOW
+    }
+
+    override fun getEventCategory(isOOC: Boolean): String {
+        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else TOKONOW_EMPTY_RESULT
+    }
+
+    override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
+        return if (isOOC) {
+            String.format(
+                VALUE_LIST_OOC,
+                RECOM_LIST_PAGE,
+                recommendationItem.recommendationType,
+                if (recommendationItem.isTopAds) VALUE_TOPADS else ""
+            )
+        } else {
+            String.format(
+                RECOM_LIST_PAGE_EMPTY_SEARCH,
+                recommendationItem.recommendationType
+            )
+        }
+    }
+
+    override fun getEventLabel(isOOC: Boolean): String {
+        return getViewModel().query
     }
 
     override fun getRecyclerViewPool() = recycledViewPool

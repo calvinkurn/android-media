@@ -10,6 +10,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -66,6 +67,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updateCartUseCase: UpdateCartUseCase,
         deleteCartUseCase: DeleteCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -79,6 +81,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updateCartUseCase,
         deleteCartUseCase,
         getWarehouseUseCase,
+        getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -354,4 +357,6 @@ class TokoNowSearchViewModel @Inject constructor (
         private val showBroadMatchResponseCodeList = listOf("4", "5")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
     }
+
+    override fun getRecomKeywords() = listOf(query)
 }
