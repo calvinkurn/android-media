@@ -1,15 +1,16 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
+import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
-import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
-import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
+import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -180,5 +181,68 @@ class RechargeGeneralViewModelTest {
         assertEquals(actual, mapOf(
                 RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
                 RechargeGeneralViewModel.PARAM_OPERATOR to operatorId.toString()))
+    }
+
+    // Add Bills
+
+    @Test
+    fun createAddBillsParams() {
+        val request = RechargeSBMAddBillRequest()
+
+        val actual = rechargeGeneralViewModel.createAddBillsParam(request)
+        assertEquals(actual, mapOf(RechargeGeneralViewModel.PARAM_ADD_REQUEST to request))
+    }
+
+    @Test
+    fun createProductAddBills() {
+        val categoryName = "Pulsa"
+        val operatorName = "Telkom"
+        val listProduct = listOf(RechargeGeneralProductSelectData("1", "Title",
+                "Desc", "Rp.0","Rp.0", "Label", true))
+        val listResult = listOf(RechargeAddBillsProductTrackData(0,
+                operatorName,
+                categoryName,
+                "1",
+                "Title",
+                "",
+                "Rp.0"))
+
+        val actual = rechargeGeneralViewModel.createProductAddBills(listProduct, categoryName, operatorName)
+        assertEquals(actual,listResult)
+    }
+
+
+    @Test
+    fun getAddBillRecharge_Success() {
+        //given
+        val addBills = AddSmartBills(RechargeAddBills(message = "Anda berhasil menambahkan data"))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = AddSmartBills::class.java
+        result[objectType] = addBills
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        rechargeGeneralViewModel.addBillRecharge(mapParams)
+
+        //then
+        val actualData = rechargeGeneralViewModel.addBills.value
+        assert(actualData is Success)
+        val actual = (actualData as Success).data
+        assertNotNull(actual)
+        assertEquals(addBills, actual)
+    }
+
+    @Test
+    fun getAddBillRecharge_Fail() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
+        rechargeGeneralViewModel.addBillRecharge(mapParams)
+
+        val actualData = rechargeGeneralViewModel.addBills.value
+        assert(actualData is Fail)
     }
 }

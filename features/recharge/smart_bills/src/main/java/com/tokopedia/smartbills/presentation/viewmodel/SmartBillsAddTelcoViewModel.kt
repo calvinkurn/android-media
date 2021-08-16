@@ -179,10 +179,10 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
 
     fun createCatalogNominal(menuId: Int, platformID: Int, operator: String, clientNumber: String): Map<String, Any> {
         return mapOf(
-                SmartBillsNominalBottomSheetViewModel.PARAM_MENU_ID to menuId,
-                SmartBillsNominalBottomSheetViewModel.PARAM_PLATFORM_ID to platformID,
-                SmartBillsNominalBottomSheetViewModel.PARAM_OPERATOR to operator,
-                SmartBillsNominalBottomSheetViewModel.PARAM_CLIENT_NUMBER to clientNumber
+                PARAM_MENU_ID to menuId,
+                PARAM_PLATFORM_ID to platformID,
+                PARAM_OPERATOR to operator,
+                PARAM_CLIENT_NUMBER to clientNumber
         )
     }
 
@@ -218,6 +218,9 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     companion object{
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_CATEGORY_ID = "categoryID"
+        const val PARAM_PLATFORM_ID = "platformID"
+        const val PARAM_OPERATOR = "operator"
+        const val PARAM_CLIENT_NUMBER = "clientNumber"
 
         const val PARAM_FIELDS = "fields"
         const val PARAM_ADD_REQUEST = "addRequest"
