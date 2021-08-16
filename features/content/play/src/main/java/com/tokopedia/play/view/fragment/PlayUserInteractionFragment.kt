@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -24,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
@@ -75,7 +75,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -178,6 +177,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
+    private lateinit var castAnalyticHelper: CastAnalyticHelper
 
     /**
      * Animation
@@ -432,6 +432,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
+        castAnalyticHelper = CastAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
@@ -797,29 +798,18 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
             cast.previousState == PlayCastState.CONNECTING -> {
-                // Send Analytic Casting Success / Failed
                 val isSuccess = cast.currentState == PlayCastState.CONNECTED
                 analytic.connectCast(isSuccess)
 
                 if(isSuccess) {
-                    // Start Record Cast Duration
-                    val date = Calendar.getInstance().time
-                    val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
-                    Log.d("<LOG>", "start : ${format.format(date)}")
+                    castAnalyticHelper.startRecording()
                 }
             }
             cast.currentState == PlayCastState.CONNECTED -> {
-                // Start Record Cast Duration
-                val date = Calendar.getInstance().time
-                val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
-                Log.d("<LOG>", "start : ${format.format(date)}")
+                castAnalyticHelper.startRecording()
             }
             cast.previousState == PlayCastState.CONNECTED -> {
-                // Send Analytic Cast Duration
-                val date = Calendar.getInstance().time
-                val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
-                Log.d("<LOG>", "end : ${format.format(date)}")
-                analytic.recordCastDuration(0)
+                castAnalyticHelper.stopRecording()
             }
         }
     }
