@@ -22,7 +22,7 @@ class SellerReputationInfoActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setWhiteStatusBar()
-        webviewReputationInfo = findViewById<View>(R.id.webview_reputation_review_info) as WebView
+        webviewReputationInfo = findViewById<View>(R.id.webview_reputation_review_info) as? WebView
         webviewReputationInfo?.settings?.javaScriptEnabled = true
         webviewReputationInfo?.loadUrl("file:///android_asset/poin-reputasi.html")
     }

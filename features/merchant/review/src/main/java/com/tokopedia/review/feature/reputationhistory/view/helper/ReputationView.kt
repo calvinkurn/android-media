@@ -19,19 +19,19 @@ import com.tokopedia.unifyprinciples.Typography
 class ReputationView(context: Context, attrs: AttributeSet) : FrameLayout(
     context, attrs
 ) {
-    private var reputationPoints: Typography
-    private var reputationBadge: AppCompatImageView
+    private var reputationPoints: Typography? = null
+    private var reputationBadge: AppCompatImageView? = null
 
     @LayoutRes
     private val defaultLayoutId: Int = R.layout.reputation_item_view_reputation
 
     fun init(data: ReputationShopUiModel) {
-        reputationPoints.text = String.format(
+        reputationPoints?.text = String.format(
             "%s %s",
             data.reputationScore,
             context.getString(R.string.point)
         )
-        reputationBadge.loadImage(data.badgeReputationUrl)
+        reputationBadge?.loadImage(data.badgeReputationUrl)
     }
 
     data class ReputationUiModel(

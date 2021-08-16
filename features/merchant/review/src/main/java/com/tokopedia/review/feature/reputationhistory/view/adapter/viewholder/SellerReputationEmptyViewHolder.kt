@@ -29,7 +29,6 @@ class SellerReputationEmptyViewHolder(view: View, private val fragment: Fragment
 
     override fun bind(element: EmptyModel?) {
         with(itemView) {
-            dateUtilHelper = DateUtilHelper()
             imgReputationRetry.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
@@ -43,10 +42,10 @@ class SellerReputationEmptyViewHolder(view: View, private val fragment: Fragment
 
             containerReputationChangeDate.setOnClickListener {
                 if (fragment != null) {
+                    dateUtilHelper = DateUtilHelper()
                     dateUtilHelper?.onClick(fragment)
                 }
             }
         }
     }
-
 }

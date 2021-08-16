@@ -21,15 +21,6 @@ class ReputationHeaderViewHelper(itemView: View) : GMStatHeaderViewHelper(
         calendarIcon?.loadImage(CALENDAR_IMAGE_URL, R.drawable.ic_loading_placeholder)
     }
 
-    override val maxDateCalendar: Calendar
-        get() {
-            val maxCalendar = Calendar.getInstance()
-            maxCalendar[Calendar.HOUR_OF_DAY] = 23
-            maxCalendar[Calendar.MINUTE] = 59
-            maxCalendar[Calendar.SECOND] = 59
-            return maxCalendar
-        }
-
     init {
         stopLoading()
     }

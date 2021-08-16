@@ -55,15 +55,6 @@ class DateUtilHelper {
         return minCalendar
     }
 
-    private val maxCalendar: Calendar
-        get() {
-            val maxCalendar = Calendar.getInstance()
-            maxCalendar[Calendar.HOUR_OF_DAY] = 23
-            maxCalendar[Calendar.MINUTE] = 59
-            maxCalendar[Calendar.SECOND] = 59
-            return maxCalendar
-        }
-
     private fun getPeriodRangeList(context: Context?): ArrayList<PeriodRangeModel> {
         val periodRangeList = ArrayList<PeriodRangeModel>()
         var startCalendar = Calendar.getInstance()
@@ -73,7 +64,7 @@ class DateUtilHelper {
             PeriodRangeModel(
                 startCalendar.timeInMillis,
                 startCalendar.timeInMillis,
-                context!!.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+                context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
             )
         )
         startCalendar = Calendar.getInstance()
@@ -83,7 +74,7 @@ class DateUtilHelper {
             PeriodRangeModel(
                 startCalendar.timeInMillis,
                 endCalendar.timeInMillis,
-                context.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+                context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             )
         )
         startCalendar = Calendar.getInstance()
@@ -93,7 +84,7 @@ class DateUtilHelper {
             PeriodRangeModel(
                 startCalendar.timeInMillis,
                 endCalendar.timeInMillis,
-                context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)
+                context?.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)
             )
         )
         return periodRangeList
@@ -112,5 +103,17 @@ class DateUtilHelper {
         private const val MAX_DATE_RANGE = 60
         private const val MIN_DATE = "25/07/2015"
         private const val DATE_FORMAT = "dd/MM/yyyy"
+        private const val MAX_HOUR_OF_DAY = 23
+        private const val MAX_MINUTE_CALENDAR = 59
+        private const val MAX_SECOND_CALENDAR = 59
+
+        val maxCalendar: Calendar
+            get() {
+                val maxCalendar = Calendar.getInstance()
+                maxCalendar[Calendar.HOUR_OF_DAY] = MAX_HOUR_OF_DAY
+                maxCalendar[Calendar.MINUTE] = MAX_MINUTE_CALENDAR
+                maxCalendar[Calendar.SECOND] = MAX_SECOND_CALENDAR
+                return maxCalendar
+            }
     }
 }

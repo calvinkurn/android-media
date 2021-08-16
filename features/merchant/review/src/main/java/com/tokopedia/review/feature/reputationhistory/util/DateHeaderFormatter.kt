@@ -14,7 +14,7 @@ open class DateHeaderFormatter(var monthNames: Array<String>?) {
     }
 
     protected fun validateMonths() {
-        check(!(monthNames == null || monthNames?.isEmpty() == true)) { "need to supply valid month name !!" }
+        check(!(monthNames.isNullOrEmpty())) { "need to supply valid month name !!" }
     }
 
     fun getEndDateFormat(eDate: Long): String {

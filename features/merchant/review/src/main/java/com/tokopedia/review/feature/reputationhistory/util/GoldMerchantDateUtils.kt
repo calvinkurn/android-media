@@ -5,11 +5,16 @@ import java.util.ArrayList
 
 object GoldMerchantDateUtils {
     fun getDateWithYear(date: String, monthNames: Array<String>?): String {
-        val dateRaw = getDateRaw(date)
-        var month = dateRaw[1]
-        month = monthNames?.getOrNull(month.toIntOrZero() - 1).orEmpty()
-        val day = Integer.valueOf(dateRaw[0]).toString()
-        return "$day $month ${dateRaw[2]}"
+        return try {
+            val dateRaw = getDateRaw(date)
+            var month = dateRaw.getOrNull(1)
+            month = monthNames?.getOrNull(month.toIntOrZero() - 1).orEmpty()
+            val day = dateRaw.getOrNull(0).orEmpty()
+            "$day $month ${dateRaw[2]}"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     fun getDateRaw(label: String, monthNames: Array<String>?): String {

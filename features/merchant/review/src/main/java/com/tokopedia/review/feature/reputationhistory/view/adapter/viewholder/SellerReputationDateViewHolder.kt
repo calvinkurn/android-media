@@ -49,7 +49,7 @@ class SellerReputationDateViewHolder(view: View, private val fragment: Fragment?
         super.bind(element, payloads)
         if (payloads.isNullOrEmpty() || element == null) return
 
-        when (payloads.getOrNull(0) as Int) {
+        when (payloads.getOrNull(0) as? Int) {
             PAYLOAD_DATE_FILTER -> {
                 reputationViewHelper?.bindDate(
                     dateHeaderFormatter,

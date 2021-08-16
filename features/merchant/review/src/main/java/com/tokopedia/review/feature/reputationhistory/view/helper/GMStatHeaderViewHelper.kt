@@ -41,9 +41,9 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
     private fun initView(itemView: View) {
         monthNamesAbrev = itemView.resources.getStringArray(R.array.lib_date_picker_month_entries)
         calendarRange =
-            itemView.findViewById<View>(com.tokopedia.review.R.id.calendar_range) as Typography
+            itemView.findViewById(com.tokopedia.review.R.id.calendar_range)
         calendarIcon =
-            itemView.findViewById<View>(com.tokopedia.review.R.id.calendar_icon) as ImageView
+            itemView.findViewById(com.tokopedia.review.R.id.calendar_icon)
         gredyColor = ResourcesCompat.getColor(
             itemView.resources,
             com.tokopedia.unifyprinciples.R.color.Unify_N150,
@@ -103,7 +103,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             return
         }
         val intent = Intent(activity, DatePickerActivity::class.java)
-        val maxCalendar = maxDateCalendar
+        val maxCalendar = DateUtilHelper.maxCalendar
         val dateFormat: DateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
         var minDate: Date? = Date()
         try {
@@ -139,7 +139,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             return
         }
         val intent = Intent(fragment.activity, SellerReputationDatePickerActivity::class.java)
-        val maxCalendar = maxDateCalendar
+        val maxCalendar = DateUtilHelper.maxCalendar
         val dateFormat: DateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
         var minDate: Date? = Date()
         try {
@@ -172,15 +172,6 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         )
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }
-
-    protected open val maxDateCalendar: Calendar
-        get() {
-            val maxCalendar = Calendar.getInstance()
-            maxCalendar[Calendar.HOUR_OF_DAY] = 23
-            maxCalendar[Calendar.MINUTE] = 59
-            maxCalendar[Calendar.SECOND] = 59
-            return maxCalendar
-        }
 
     private fun getPeriodRangeList(context: Context?): ArrayList<PeriodRangeModel> {
         val periodRangeList = ArrayList<PeriodRangeModel>()
