@@ -22,7 +22,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     private var _isSeller = false
     private var source: String = ""
     var maxChecked = MAX_CHECKED_DEFAULT
-    private var hiddenProducts: ArrayList<String>? = arrayListOf()
+    private val hiddenProducts: ArrayList<String> = arrayListOf()
 
     companion object {
         const val MAX_CHECKED_DEFAULT = 3
@@ -32,8 +32,6 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
 
     override val isSeller: Boolean
         get() = _isSeller
-    override val shopId: String
-        get() = _shopId
 
     private fun setupWarehouseId() {
         warehouseId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID)
@@ -44,10 +42,11 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setupWarehouseId()
-        super.onCreate(savedInstanceState)
         _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
                 ?: ""
+        setupWarehouseId()
+        super.onCreate(savedInstanceState)
+
     }
 
 
@@ -62,10 +61,10 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
                         ?: ""
                 maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
                     AttachProductActivity.MAX_CHECKED_DEFAULT)
-                hiddenProducts =
-                        intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN) ?: arrayListOf()
+                hiddenProducts.addAll(intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN) ?: arrayListOf())
+
             fragment = newInstance(
-                this, isSeller, source, maxChecked, hiddenProducts, warehouseId
+                this, isSeller, source, maxChecked, hiddenProducts, warehouseId, _shopId
             )
             fragment
         }

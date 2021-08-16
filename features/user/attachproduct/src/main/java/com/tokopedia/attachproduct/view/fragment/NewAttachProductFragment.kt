@@ -63,6 +63,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     protected val adapter by lazy { NewAttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
+    private var shopId = ""
     private var warehouseId = "0"
     private var maxChecked = NewAttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
@@ -87,10 +88,12 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initSearchBar()
+        shopId = arguments?.getString(SHOP_ID, "") ?: ""
         setupWarehouseId()
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false)
+            shopId = savedInstanceState.getString(SHOP_ID, "")
             source = savedInstanceState.getString(SOURCE, "")
             maxChecked = savedInstanceState.getInt(MAX_CHECKED, NewAttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS)
@@ -147,6 +150,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         outState.putBoolean(IS_SELLER, isSeller)
         outState.putString(SOURCE, source)
         outState.putInt(MAX_CHECKED, maxChecked)
+        outState.putString(SHOP_ID, shopId)
         outState.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts)
     }
 
@@ -182,7 +186,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     }
 
     private fun onSearchTextChanged(text: String) {
-        if (TextUtils.isEmpty(text)) {
+        if (text.isEmpty()) {
             adapter.clearAllElements()
             recyclerViewLayoutManager.scrollToPosition(0)
             addProductToList(viewModel.cacheList, viewModel.cacheHasNext)
@@ -230,14 +234,14 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 val page = (viewModel.cacheList.size / 10) + 1
                 viewModel.loadProductData(
                     "",
-                    activityContract!!.shopId,
+                    shopId,
                     page, warehouseId
                 )
             }
             else {
                 viewModel.loadProductData(
                         searchBar.searchBarTextField.text.toString(),
-                activityContract!!.shopId,
+                shopId,
                 page, warehouseId
                 )
             }
@@ -343,7 +347,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     }
 
     fun addProductClicked() {
-        activityContract!!.goToAddProduct(activityContract!!.shopId)
+        activityContract!!.goToAddProduct(shopId)
     }
 
     private fun removeHiddenProducts(productNews: MutableList<NewAttachProductItemUiModel>) {
@@ -391,14 +395,16 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         private const val SOURCE = "source"
         private const val MAX_CHECKED = "max_checked"
         private const val HIDDEN_PRODUCTS = "hidden_products"
+        private const val SHOP_ID = "shop_id"
 
         @JvmStatic
         fun newInstance(
             checkedUIView: NewAttachProductContract.Activity?,
             isSeller: Boolean, source: String?, maxChecked: Int,
-            hiddenProducts: ArrayList<String>?, warehouseId: String?
+            hiddenProducts: ArrayList<String>?, warehouseId: String?, shopId: String
         ): NewAttachProductFragment {
             val args = Bundle()
+            args.putString(SHOP_ID, shopId)
             args.putBoolean(IS_SELLER, isSeller)
             args.putString(SOURCE, source)
             args.putString(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId)

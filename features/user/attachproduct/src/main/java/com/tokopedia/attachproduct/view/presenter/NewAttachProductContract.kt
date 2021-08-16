@@ -15,7 +15,6 @@ interface NewAttachProductContract {
 
     interface Activity {
         val isSeller: Boolean
-        val shopId: String
         fun finishActivityWithResult(products: ArrayList<ResultProduct>)
         fun goToAddProduct(shopId: String)
         fun setShopName(shopName: String)

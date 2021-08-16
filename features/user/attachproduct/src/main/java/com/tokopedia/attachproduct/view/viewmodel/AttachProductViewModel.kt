@@ -47,7 +47,11 @@ class AttachProductViewModel @Inject constructor
                 _products.value = Success(resultModel)
 
                 if (query.isEmpty()) {
-                    cacheData()
+                    _products.value.let { data ->
+                        if (data != null) {
+                            cacheData(data)
+                        }
+                    }
                 }
             }
         }, onError = {
@@ -98,15 +102,16 @@ class AttachProductViewModel @Inject constructor
         }
     }
 
-    private fun cacheData(){
-        val result = _products.value as Success
-        val listData = result.data.toMutableList()
-        _cacheHasNext = false
-        if (result.data.size >= DEFAULT_ROWS) {
-            _cacheHasNext = true
-            listData.removeAt(result.data.size - 1)
+    private fun cacheData(result: Result<List<NewAttachProductItemUiModel>>){
+        if (result is Success) {
+            val listData = result.data.toMutableList()
+            _cacheHasNext = false
+            if (result.data.size >= DEFAULT_ROWS) {
+                _cacheHasNext = true
+                listData.removeAt(result.data.size - 1)
+            }
+            _cacheList.addAll(listData)
         }
-        _cacheList.addAll(listData)
     }
 
     companion object {
