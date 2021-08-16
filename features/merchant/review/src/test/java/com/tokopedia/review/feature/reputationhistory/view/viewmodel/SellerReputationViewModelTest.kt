@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.view.viewmodel
 
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardResponse
+import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyAndRewardResponse
 import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationShopResponse
 import com.tokopedia.review.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,14 +16,14 @@ class SellerReputationViewModelTest: SellerReputationViewModelTestFixture() {
     fun `when getReputationAndRewardPenalty should return success`() {
         runBlocking {
             val page = 1
-            val reputationPenaltyRewardResponse = ReputationPenaltyRewardResponse()
+            val reputationPenaltyRewardResponse = ReputationPenaltyAndRewardResponse()
             val reputationShopResponse = ReputationShopResponse()
-            onGetReputationShopAndPenaltyRewardUseCase_thenReturn(shopId, page, starDate, endDate)
+            onGetReputationShopAndPenaltyRewardUseCase_thenReturn(shopId, page, startDate, endDate)
             onGetReputationShopUseCase_thenReturn(shopId, reputationShopResponse)
-            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, starDate, endDate, reputationPenaltyRewardResponse)
+            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, startDate, endDate, reputationPenaltyRewardResponse)
             sellerReputationViewModel.getReputationPenaltyRewardMerge()
 
-            verifyGetReputationShopAndPenaltyRewardUseCaseCaseCalled(shopId, page, starDate, endDate)
+            verifyGetReputationShopAndPenaltyRewardUseCaseCaseCalled(shopId, page, startDate, endDate)
             verifyGetReputationShopUseCaseCalled()
             verifyGetReputationPenaltyRewardUseCaseCaseCalled()
             val actualResult = (sellerReputationViewModel.reputationAndPenaltyMerge.observeAwaitValue() as Success).data
@@ -37,7 +37,7 @@ class SellerReputationViewModelTest: SellerReputationViewModelTestFixture() {
         runBlocking {
             val page = 1
             val exception = RuntimeException()
-            onGetReputationShopAndPenaltyRewardUseCaseError_thenReturn(shopId, page, starDate, endDate, exception)
+            onGetReputationShopAndPenaltyRewardUseCaseError_thenReturn(shopId, page, startDate, endDate, exception)
 
             sellerReputationViewModel.getReputationPenaltyRewardMerge()
 
@@ -53,8 +53,8 @@ class SellerReputationViewModelTest: SellerReputationViewModelTestFixture() {
     fun `when getReputationPenaltyList should return success`() {
         runBlocking {
             val page = 5
-            val penaltyRewardListResponse = ReputationPenaltyRewardResponse()
-            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, starDate, endDate, penaltyRewardListResponse)
+            val penaltyRewardListResponse = ReputationPenaltyAndRewardResponse()
+            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, startDate, endDate, penaltyRewardListResponse)
 
             sellerReputationViewModel.getReputationPenaltyList(page)
 
@@ -85,8 +85,8 @@ class SellerReputationViewModelTest: SellerReputationViewModelTestFixture() {
     fun `when getReputationPenaltyList by date filter should return success`() {
         runBlocking {
             val page = 1
-            val shopScorePenaltyDetail = ReputationPenaltyRewardResponse()
-            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, starDate, endDate, shopScorePenaltyDetail)
+            val shopScorePenaltyDetail = ReputationPenaltyAndRewardResponse()
+            onGetPenaltyRewardListUseCase_thenReturn(shopId, page, startDate, endDate, shopScorePenaltyDetail)
 
             val dateFilter = Pair(1234567L, 8765432L)
 

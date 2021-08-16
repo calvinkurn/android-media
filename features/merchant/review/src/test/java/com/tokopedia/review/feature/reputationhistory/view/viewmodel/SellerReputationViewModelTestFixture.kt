@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reputationhistory.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardResponse
+import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyAndRewardResponse
 import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationShopResponse
 import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
 import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationShopAndPenaltyRewardUseCase
@@ -44,7 +44,7 @@ abstract class SellerReputationViewModelTestFixture {
     protected lateinit var lifecycle: LifecycleRegistry
 
     protected val shopId = 12345L
-    protected val starDate = "2021-01-20"
+    protected val startDate = "2021-01-20"
     protected val endDate = "2021-07-25"
 
     @Before
@@ -105,9 +105,9 @@ abstract class SellerReputationViewModelTestFixture {
         coVerify { getReputationShopAndPenaltyRewardUseCase.execute(shopId, page, startDate, endDate) }
     }
 
-    protected fun onGetPenaltyRewardListUseCase_thenReturn(shopId: Long, page: Int, startDate: String, endDate: String, reputationPenaltyRewardResponse: ReputationPenaltyRewardResponse) {
-        coEvery { getReputationPenaltyRewardUseCase.executeOnBackground() } returns reputationPenaltyRewardResponse
-        getReputationPenaltyRewardUseCase.setParams(shopId, page, starDate, endDate)
+    protected fun onGetPenaltyRewardListUseCase_thenReturn(shopId: Long, page: Int, startDate: String, endDate: String, reputationPenaltyRewardResponse: ReputationPenaltyAndRewardResponse) {
+        coEvery { getReputationPenaltyRewardUseCase.executeOnBackground() } returns reputationPenaltyRewardResponse.data
+        getReputationPenaltyRewardUseCase.setParams(shopId, page, startDate, endDate)
     }
 
     protected fun onGetReputationShopUseCase_thenReturn(shopId: Long, reputationShopResponse: ReputationShopResponse) {
