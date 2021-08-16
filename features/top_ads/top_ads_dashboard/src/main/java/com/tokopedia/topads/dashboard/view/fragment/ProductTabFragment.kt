@@ -47,7 +47,6 @@ import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
