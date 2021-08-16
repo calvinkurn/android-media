@@ -86,6 +86,8 @@ class OfficialHomeFragment :
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
         private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+        private const val TO_STRING_RADIX = 10
+        private const val SCROLL_LISTENER_DELAY = 200L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
@@ -343,7 +345,7 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
-                    (position + 1).toString(10),
+                    (position + 1).toString(TO_STRING_RADIX),
                     it,
                     channelModel
             )
@@ -373,7 +375,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + 1).toString(TO_STRING_RADIX),
                         gridData,
                         channelData
                 )
@@ -406,7 +408,7 @@ class OfficialHomeFragment :
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + 1).toString(TO_STRING_RADIX),
                         gridData,
                         campaignId,
                         campaignCode
@@ -438,7 +440,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + 1).toString(TO_STRING_RADIX),
                         gridData,
                         channelData.campaignCode,
                         channelData.campaignID.toString()
@@ -823,10 +825,9 @@ class OfficialHomeFragment :
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
-
                             Handler().postDelayed({
                                 isScrolling = false
-                            }, 200)
+                            }, SCROLL_LISTENER_DELAY)
                         }
 
                     }
