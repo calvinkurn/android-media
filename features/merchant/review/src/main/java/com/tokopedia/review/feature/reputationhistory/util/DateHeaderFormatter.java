@@ -13,9 +13,7 @@ import java.util.Locale;
 public class DateHeaderFormatter {
     public static final String YYYY_M_MDD = "yyyyMMdd";
     public static final String DD_MM = "dd MM";
-    private static final Locale locale = new Locale("in", "ID");
     String[] monthNames;
-    DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
 
     public DateHeaderFormatter(String[] monthNames) {
         this.monthNames = monthNames;

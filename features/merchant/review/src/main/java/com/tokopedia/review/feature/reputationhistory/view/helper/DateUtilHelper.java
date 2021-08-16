@@ -5,9 +5,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
 import com.tokopedia.review.R;
-import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
@@ -20,11 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * @author normansyahputa on 3/30/17.
- *         This class for starting {@link DatePickerActivity}, currently only use for
- *         {@link SellerReputationAdapter}
- */
+
 public class DateUtilHelper {
     public static final int MOVE_TO_SET_DATE = 1;
     private static final int MAX_DATE_RANGE = 60;
@@ -33,9 +27,7 @@ public class DateUtilHelper {
     private long sDate;
     private long eDate;
 
-    public DateUtilHelper(Context context) {
-
-    }
+    public DateUtilHelper() {}
 
     public void onClick(Fragment fragment) {
         Intent intent = new Intent(fragment.getActivity(), SellerReputationDatePickerActivity.class);
@@ -101,16 +93,8 @@ public class DateUtilHelper {
         return periodRangeList;
     }
 
-    public long getsDate() {
-        return sDate;
-    }
-
     public void setsDate(long sDate) {
         this.sDate = sDate;
-    }
-
-    public long geteDate() {
-        return eDate;
     }
 
     public void seteDate(long eDate) {

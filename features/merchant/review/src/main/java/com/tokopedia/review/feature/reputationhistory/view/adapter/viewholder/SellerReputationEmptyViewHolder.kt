@@ -11,7 +11,8 @@ import com.tokopedia.review.R
 import com.tokopedia.review.feature.reputationhistory.view.helper.DateUtilHelper
 import com.tokopedia.unifyprinciples.Typography
 
-class SellerReputationEmptyViewHolder(view: View, private val fragment: Fragment?): AbstractViewHolder<EmptyModel>(view) {
+class SellerReputationEmptyViewHolder(view: View, private val fragment: Fragment?) :
+    AbstractViewHolder<EmptyModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.deisgn_retry_reputation
@@ -21,20 +22,24 @@ class SellerReputationEmptyViewHolder(view: View, private val fragment: Fragment
 
     private val imgReputationRetry = itemView.findViewById<ImageView>(R.id.img_reputation_retry)
     private val tvReputationInfo = itemView.findViewById<Typography>(R.id.good_job_reputation_retry)
-    private val tvDescriptionReputationRetry = itemView.findViewById<Typography>(R.id.description_reputation_retry)
-    private val containerReputationChangeDate = itemView.findViewById<LinearLayout>(R.id.reputation_container_change_date)
+    private val tvDescriptionReputationRetry =
+        itemView.findViewById<Typography>(R.id.description_reputation_retry)
+    private val containerReputationChangeDate =
+        itemView.findViewById<LinearLayout>(R.id.reputation_container_change_date)
 
     override fun bind(element: EmptyModel?) {
         with(itemView) {
-            dateUtilHelper = DateUtilHelper(itemView.context)
+            dateUtilHelper = DateUtilHelper()
             imgReputationRetry.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
                     R.drawable.ic_penalti_reputasi_zero
                 )
             )
-            tvReputationInfo.text = context.getString(R.string.reputation_history_label_congrats_no_penalty)
-            tvDescriptionReputationRetry.text = context.getString(R.string.reputation_history_label_improve_selling_get_badge)
+            tvReputationInfo.text =
+                context.getString(R.string.reputation_history_label_congrats_no_penalty)
+            tvDescriptionReputationRetry.text =
+                context.getString(R.string.reputation_history_label_improve_selling_get_badge)
 
             containerReputationChangeDate.setOnClickListener {
                 if (fragment != null) {
