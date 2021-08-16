@@ -187,14 +187,14 @@ class DiscoveryDataMapper {
                 || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
                 || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
-            slashedPrice = setSlashPrice(dataItem)
-            formattedPrice = setFormattedPrice(dataItem)
+            slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
+            formattedPrice = setFormattedPrice(dataItem.discountedPrice, dataItem.price)
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
-            slashedPrice = dataItem.discountedPrice ?: ""
-            formattedPrice = dataItem.price ?: ""
+            slashedPrice = setSlashPrice(dataItem.price, dataItem.discountedPrice)
+            formattedPrice = setFormattedPrice(dataItem.price, dataItem.discountedPrice)
             isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
@@ -232,20 +232,20 @@ class DiscoveryDataMapper {
         )
     }
 
-    private fun setSlashPrice(dataItem: DataItem): String {
-        if(dataItem.discountedPrice.isNullOrEmpty()){
+    private fun setSlashPrice(discountedPrice: String?, price: String?): String {
+        if(discountedPrice.isNullOrEmpty()){
             return ""
-        }else if(dataItem.discountedPrice == dataItem.price){
+        }else if(discountedPrice == price){
             return ""
         }
-        return dataItem.price ?: ""
+        return price ?: ""
     }
 
-    private fun setFormattedPrice(dataItem: DataItem): String {
-        if (dataItem.discountedPrice.isNullOrEmpty()) {
-            return dataItem.price ?: ""
+    private fun setFormattedPrice(discountedPrice: String?, price: String?): String {
+        if (discountedPrice.isNullOrEmpty()) {
+            return price ?: ""
         }
-        return dataItem.discountedPrice ?: ""
+        return discountedPrice ?: ""
     }
 
     private fun getPDPViewCount(pdpView: String): String {

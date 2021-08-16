@@ -1,18 +1,14 @@
 package com.tokopedia.shop.common.data.model
 
+import com.tokopedia.mvcwidget.AnimatedInfos
+
 data class MerchantVoucherCouponUiModel (
         var resultStatus: ResultStatus? = null,
-        var titles: List<Titles?>? = null,
+        val animatedInfoList: List<AnimatedInfos?>?,
         var isShown: Boolean? = null,
-        var subTitle: String? = null,
-        var imageURL: String? = null,
         var shopId: String? = null
 )
 
-data class Titles(
-        var text: String?,
-        var icon: String?
-)
 
 data class ResultStatus(
         var code: String?,

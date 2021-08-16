@@ -122,7 +122,6 @@
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionmark-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionmark-dev
-/features/recharge/recharge_slice                       @tokopedia/android-minionmark-dev
 /features/recharge/rechargeocr                          @tokopedia/android-minionmark-dev
 /features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionmark-dev
@@ -139,7 +138,6 @@
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
 /features/travel/travel_passenger                       @tokopedia/android-minionmark-dev
-/features/travel/travel_slice                           @tokopedia/android-minionmark-dev
 
 /features/salam/umrah                                   @tokopedia/android-minionmark-dev
 /libraries/travel_calendar                              @tokopedia/android-minionmark-dev
