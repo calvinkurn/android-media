@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +51,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
-import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -76,8 +74,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
     private val profileRoleViewModel by lazy { viewModelProvider.get(ProfileRoleViewModel::class.java) }
 
-    lateinit var overlayView: View
-    lateinit var tickerPhoneVerification: Ticker
+    private var overlayView: View? = null
+    private var tickerPhoneVerification: Ticker? = null
     private var tickerAddNameWarning: Ticker? = null
 
     private var chancesChangeName = "0"
@@ -102,7 +100,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         ImageHandler.LoadImage(headerPhoto, HEADER_PICT_URL)
 
-        overlayView.setOnClickListener { }
         initObserver()
 
         profilePhoto.setOnClickListener(EditUserProfilePhotoListener())
@@ -455,7 +452,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         goToAddPhone()
                     }
             )
-            tickerPhoneVerification.visibility = View.GONE
+            tickerPhoneVerification?.visibility = View.GONE
         } else {
             phone?.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
@@ -472,13 +469,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
             )
 
             if (profileCompletionData.isMsisdnVerified) {
-                tickerPhoneVerification.visibility = View.GONE
+                tickerPhoneVerification?.visibility = View.GONE
             } else {
-                tickerPhoneVerification.visibility = View.VISIBLE
-                tickerPhoneVerification.setHtmlDescription(
+                tickerPhoneVerification?.visibility = View.VISIBLE
+                tickerPhoneVerification?.setHtmlDescription(
                         getString(R.string.ticker_phone_verification)
                 )
-                tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
+                tickerPhoneVerification?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                     }
@@ -604,7 +601,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun showLoading(isOverlay: Boolean = false) {
         if (isOverlay) {
-            overlayView.visibility = View.VISIBLE
+            overlayView?.visibility = View.VISIBLE
         } else {
             mainView?.visibility = View.GONE
         }
@@ -613,7 +610,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun dismissLoading() {
-        overlayView.visibility = View.GONE
+        overlayView?.visibility = View.GONE
         mainView?.visibility = View.VISIBLE
         progressBar?.visibility = View.GONE
     }
