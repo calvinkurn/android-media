@@ -104,9 +104,9 @@ class ProductVariantStockViewHolder(
 
     private fun setupCampaignInfo(variant: ProductVariant) {
         ongoingCampaignInfoText?.run {
-            ProductManageVariantMapper.mapVariantCampaignTypeToProduct(variant.campaignTypeList)?.let { campaignList ->
-                text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
-                setOnClickListener {
+            text = String.format(getString(R.string.product_manage_campaign_count), variant.campaignTypeList?.count().orZero())
+            setOnClickListener {
+                ProductManageVariantMapper.mapVariantCampaignTypeToProduct(variant.campaignTypeList)?.let { campaignList ->
                     campaignListener.onClickCampaignInfo(campaignList)
                 }
             }
