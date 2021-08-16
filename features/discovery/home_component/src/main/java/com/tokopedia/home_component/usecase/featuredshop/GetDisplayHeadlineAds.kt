@@ -1,9 +1,8 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home_component.usecase.featuredshop
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
