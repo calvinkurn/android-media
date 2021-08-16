@@ -211,9 +211,11 @@ data class ProductCardModel (
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
 
-    fun isShowLabelCategorySide() = getLabelCategorySide()?.title?.isNotEmpty()?: false
+    fun isShowLabelCategorySide() =
+        isShowLabelBestSeller() && getLabelCategorySide()?.title?.isNotEmpty() == true
 
-    fun isShowLabelCategoryBottom() = getLabelCategoryBottom()?.title?.isNotEmpty()?: false
+    fun isShowLabelCategoryBottom() =
+        isShowLabelBestSeller() && getLabelCategoryBottom()?.title?.isNotEmpty() == true
 
     fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
 

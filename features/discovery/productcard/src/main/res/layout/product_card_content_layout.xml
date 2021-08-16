@@ -8,13 +8,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textCategoryBottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/product_card_label_best_seller_height"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_label_best_seller_category_bottom_height"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
         tools:text="di Setelan anak laki-laki"

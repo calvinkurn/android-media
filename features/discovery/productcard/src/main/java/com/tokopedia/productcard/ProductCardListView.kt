@@ -12,6 +12,7 @@ import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
 import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddVariant
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.labelBestSel
 import kotlinx.android.synthetic.main.product_card_list_layout.view.labelCampaignBackground
 import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
 import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textCategorySide
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
@@ -65,11 +67,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         renderLabelBestSeller(
             isShowBestSeller,
             labelBestSeller,
-            productCardModel,
+            productCardModel
+        )
+
+        renderLabelBestSellerCategorySide(
+            isShowCategorySide,
+            textCategorySide,
+            productCardModel
+        )
+
+        renderLabelBestSellerCategoryBottom(
             isShowCategoryBottom,
             textCategoryBottom,
-            isShowCategorySide,
-            labelCategorySide
+            productCardModel
         )
 
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller

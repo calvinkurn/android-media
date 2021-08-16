@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
@@ -280,53 +279,50 @@ internal fun renderLabelCampaign(
 }
 
 internal fun renderLabelBestSeller(
-        isShow: Boolean,
-        labelBestSeller: Typography?,
-        productCardModel: ProductCardModel,
-        isShowCategoryBottom: Boolean = false,
-        labelCategoryBottom: Typography? = null,
-        isShowCategorySide: Boolean = false,
-        labelCategorySide: Typography? = null,
+    isShow: Boolean,
+    labelBestSeller: Typography?,
+    productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
     if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
-        when {
-            isShowCategoryBottom -> {
-                labelCategoryBottom?.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
-                labelCategorySide?.initLabelCategorySide(null)
-            }
-            isShowCategorySide -> {
-                labelCategorySide?.initLabelCategorySide(productCardModel.getLabelCategorySide())
-                labelCategoryBottom?.initLabelCategoryBottom(null)
-            }
-            else -> {
-                labelCategorySide?.initLabelCategorySide(null)
-                labelCategoryBottom?.initLabelCategoryBottom(null)
-            }
-        }
-    }
-    else {
+    } else {
         labelBestSeller.initLabelBestSeller(null)
-        labelCategorySide?.initLabelCategorySide(null)
-        labelCategoryBottom?.initLabelCategoryBottom(null)
+    }
+}
+
+internal fun renderLabelBestSellerCategorySide(
+    isShow: Boolean,
+    textCategorySide: Typography?,
+    productCardModel: ProductCardModel
+) {
+    textCategorySide ?: return
+
+    if (isShow) {
+        textCategorySide.initLabelCategorySide(productCardModel.getLabelCategorySide())
+    } else {
+        textCategorySide.initLabelCategorySide(null)
+    }
+}
+
+internal fun renderLabelBestSellerCategoryBottom(
+    isShow: Boolean,
+    textCategorySide: Typography?,
+    productCardModel: ProductCardModel
+) {
+    textCategorySide ?: return
+
+    if (isShow) {
+        textCategorySide.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
+    } else {
+        textCategorySide.initLabelCategoryBottom(null)
     }
 }
 
 private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
     if (labelBestSellerModel == null) hide()
     else showLabelBestSeller(labelBestSellerModel)
-}
-
-private fun Typography.initLabelCategorySide(labelCategorySide: ProductCardModel.LabelGroup?) {
-    if (labelCategorySide == null) hide()
-    else showLabelCategorySide(labelCategorySide)
-}
-
-private fun Typography.initLabelCategoryBottom(labelBestSellerModel: ProductCardModel.LabelGroup?) {
-    if (labelBestSellerModel == null) hide()
-    else showLabelCategoryBottom(labelBestSellerModel)
 }
 
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
@@ -337,16 +333,26 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
     text = labelBestSellerModel.title
 }
 
-private fun Typography.showLabelCategorySide(labelCategorySide: ProductCardModel.LabelGroup) {
-    show()
-    text = labelCategorySide.title
-    setTextColor(labelCategorySide.type.toUnifyTextColor(context))
+private fun Typography.initLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup?) {
+    if (categorySideModel == null) hide()
+    else showLabelCategorySide(categorySideModel)
 }
 
-private fun Typography.showLabelCategoryBottom(labelCategoryBottom: ProductCardModel.LabelGroup) {
+private fun Typography.initLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup?) {
+    if (categoryBottomModel == null) hide()
+    else showLabelCategoryBottom(categoryBottomModel)
+}
+
+private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup) {
     show()
-    text = labelCategoryBottom.title
-    setTextColor(labelCategoryBottom.type.toUnifyTextColor(context))
+    text = categorySideModel.title
+    setTextColor(categorySideModel.type.toUnifyTextColor(context))
+}
+
+private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup) {
+    show()
+    text = categoryBottomModel.title
+    setTextColor(categoryBottomModel.type.toUnifyTextColor(context))
 }
 
 internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
