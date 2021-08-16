@@ -313,8 +313,8 @@ class AddToCartNonVariantTestHelper(
 
         verify {
             updateCartUseCase.setParams(
-                updateCartRequestList = capture(updateCartParamSlot),
-                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+                    updateCartRequestList = capture(updateCartParamSlot),
+                    source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
             )
         }
         val updatedMiniCartItem = updateCartParam[0]
