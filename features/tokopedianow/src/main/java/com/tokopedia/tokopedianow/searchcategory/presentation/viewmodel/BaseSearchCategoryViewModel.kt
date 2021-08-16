@@ -116,10 +116,10 @@ abstract class BaseSearchCategoryViewModel(
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
-    private var allMiniCartItemList: List<MiniCartItem>? = null
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
+    protected var allMiniCartItemList: List<MiniCartItem>? = null
+    protected var cartItemsNonVariant: List<MiniCartItem>? = null
         private set
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
         private set
 
     val queryParam: Map<String, String> = queryParamMutable
@@ -956,7 +956,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun addToCart(
+    protected fun addToCart(
             productId: String,
             shopId: String,
             quantity: Int,
@@ -976,7 +976,7 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    private fun updateCartMessageSuccess(successMessage: String) {
+    protected fun updateCartMessageSuccess(successMessage: String) {
         successATCMessageMutableLiveData.value = successMessage
     }
 
@@ -992,7 +992,7 @@ abstract class BaseSearchCategoryViewModel(
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun onAddToCartFailed(throwable: Throwable) {
+    protected fun onAddToCartFailed(throwable: Throwable) {
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
@@ -1010,7 +1010,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun updateCart(
+    protected fun updateCart(
             productId: String,
             quantity: Int,
             onSuccess: (UpdateCartV2Data) -> Unit,
@@ -1051,7 +1051,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun deleteCart(
+    protected fun deleteCart(
             productId: String,
             onSuccess: (RemoveFromCartData) -> Unit,
             onError: (Throwable) -> Unit,

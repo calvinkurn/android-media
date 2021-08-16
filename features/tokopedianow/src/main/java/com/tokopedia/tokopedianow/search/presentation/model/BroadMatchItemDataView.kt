@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.search.presentation.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 
 data class BroadMatchItemDataView(
     val id: String = "",

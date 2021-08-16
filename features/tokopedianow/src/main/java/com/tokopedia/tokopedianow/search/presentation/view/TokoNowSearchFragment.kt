@@ -362,10 +362,6 @@ class TokoNowSearchFragment:
 
     }
 
-    override fun onBroadMatchItemAddVariant(broadMatchItemDataView: BroadMatchItemDataView) {
-
-    }
-
     override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
         SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
 

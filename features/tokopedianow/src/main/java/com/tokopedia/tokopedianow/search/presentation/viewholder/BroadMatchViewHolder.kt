@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnAddVariantClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
@@ -17,7 +16,6 @@ import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
-import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToVariant
 import com.tokopedia.unifyprinciples.Typography
 
 class BroadMatchViewHolder(
@@ -92,12 +90,6 @@ class BroadMatchViewHolder(
                     val broadMatchItem = broadMatchItemList.getOrNull(carouselProductCardPosition) ?: return
                     saveCarouselScrollPosition()
                     broadMatchListener.onBroadMatchItemATCNonVariant(broadMatchItem, quantity)
-                }
-            },
-            carouselProductCardOnItemAddVariantClickListener = object: OnAddVariantClickListener {
-                override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                    val broadMatchItem = broadMatchItemList.getOrNull(carouselProductCardPosition) ?: return
-                    broadMatchListener.onBroadMatchItemAddVariant(broadMatchItem)
                 }
             },
         )
