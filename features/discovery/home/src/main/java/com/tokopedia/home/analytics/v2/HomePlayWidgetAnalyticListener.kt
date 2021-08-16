@@ -93,7 +93,13 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_VIEW,
                 eventCategory = "homepage-cmp",
                 eventAction = "impression on play sgc channel",
-                eventLabel = "${item.partner.id} - ${item.channelId} - $channelPositionInList - $mBusinessWidgetPosition - $isAutoPlay",
+                eventLabel = "${item.partner.id} - " +
+                        "${item.channelId} - " +
+                        "$channelPositionInList - " +
+                        "$mBusinessWidgetPosition - " +
+                        "$isAutoPlay - " +
+                        "${item.poolType} - " +
+                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
@@ -115,7 +121,14 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
                 eventAction = Event.CLICK,
-                eventLabel = "click channel - ${item.partner.id} - ${item.channelId} - $channelPositionInList - $mBusinessWidgetPosition - $isAutoPlay",
+                eventLabel = "click channel - " +
+                        "${item.partner.id} - " +
+                        "${item.channelId} - " +
+                        "$channelPositionInList - " +
+                        "$mBusinessWidgetPosition - " +
+                        "$isAutoPlay - " +
+                        "${item.poolType} - " +
+                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
@@ -138,7 +151,10 @@ class HomePlayWidgetAnalyticListener(
                         Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
-                        Label.KEY to "${item.channelId} - $channelPositionInList",
+                        Label.KEY to "${item.channelId} - " +
+                                "$channelPositionInList - " +
+                                "${item.poolType} - " +
+                                if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo",
                         UserId.KEY to userId
                 )
         )
