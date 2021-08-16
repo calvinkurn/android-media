@@ -24,6 +24,7 @@ import java.util.*
  * Created by normansyahputa on 11/21/16.
  */
 open class GMStatHeaderViewHelper(protected var itemView: View, private val isGmStat: Boolean) {
+
     @JvmField
     protected var calendarRange: Typography? = null
     @JvmField
@@ -82,7 +83,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
     ) {
         this.sDate = sDate
         this.eDate = eDate
-        lastSelection = lastSelectionPeriod
+        this.lastSelection = lastSelectionPeriod
         this.selectionType = selectionType
         var startDate: String? = null
         if (sDate != -1L) {
@@ -111,8 +112,8 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             e.printStackTrace()
         }
         val minCalendar = Calendar.getInstance()
-        minDate.let {
-            minCalendar.time
+        minDate?.let {
+            minCalendar.time = it
         }
         minCalendar[Calendar.HOUR_OF_DAY] = 0
         minCalendar[Calendar.MINUTE] = 0
@@ -147,8 +148,8 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             e.printStackTrace()
         }
         val minCalendar = Calendar.getInstance()
-        minDate.let {
-            minCalendar.time
+        minDate?.let {
+            minCalendar.time = it
         }
         minCalendar[Calendar.HOUR_OF_DAY] = 0
         minCalendar[Calendar.MINUTE] = 0

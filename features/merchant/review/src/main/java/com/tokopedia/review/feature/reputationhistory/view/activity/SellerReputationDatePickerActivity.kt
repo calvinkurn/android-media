@@ -13,9 +13,9 @@ import java.util.*
  */
 class SellerReputationDatePickerActivity : DatePickerActivity() {
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        tabLayout.visibility = View.GONE
+        tabLayout?.visibility = View.GONE
     }
 
     override fun getViewPagerAdapter(): PagerAdapter {
