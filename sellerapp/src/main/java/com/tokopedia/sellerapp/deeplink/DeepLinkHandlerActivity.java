@@ -87,11 +87,11 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     private void processApplink(DeepLinkDelegate deepLinkDelegate,
                                 DeepLinkAnalyticsImpl presenter) {
         Uri applink = getIntent().getData();
-        presenter.processUTM(this, applink);
-
         if (applink == null) {
             return;
         }
+
+        presenter.processUTM(this, applink);
 
         String applinkString = applink.toString();
         logWebViewApplink(applink);

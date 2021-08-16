@@ -25,17 +25,25 @@ class HomeTickerViewHolder(
         const val PREFIX_LINK = "tokopedia"
     }
 
+    private var closeBtn: AppCompatImageButton? = null
+    private var ticker: Ticker? = null
+
+    init {
+        closeBtn = itemView.findViewById(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
+        ticker = itemView.findViewById(R.id.ticker_announcement)
+    }
+
     override fun bind(data: HomeTickerUiModel) {
         if(data.tickers.isNotEmpty()) {
-            val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
-            val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
-            closeBtn.setOnClickListener {
-                listener?.onTickerDismissed(data.id)
+            ticker?.post {
+                closeBtn?.setOnClickListener {
+                    listener?.onTickerDismissed(data.id)
+                }
+                val adapter = TickerPagerAdapter(itemView.context, data.tickers)
+                adapter.setPagerDescriptionClickEvent(this)
+                ticker?.addPagerView(adapter, data.tickers)
+                itemView.show()
             }
-            val adapter = TickerPagerAdapter(itemView.context, data.tickers)
-            adapter.setPagerDescriptionClickEvent(this)
-            ticker.addPagerView(adapter, data.tickers)
-            itemView.show()
         } else {
             itemView.hide()
         }

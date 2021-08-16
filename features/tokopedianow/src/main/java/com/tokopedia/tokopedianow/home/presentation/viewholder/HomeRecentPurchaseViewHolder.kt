@@ -110,4 +110,10 @@ class HomeRecentPurchaseViewHolder(
             }
         }
     }
+
+    fun submitList(data: HomeRecentPurchaseUiModel?) {
+        data?.productList?.let {
+            adapter.submitList(it)
+        }
+    }
 }
