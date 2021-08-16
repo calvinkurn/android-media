@@ -1992,8 +1992,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             shopId
         )
-        if (::productTagBS.isInitialized)
+        if (::productTagBS.isInitialized) {
+            productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
+        }
         feedViewModel.addWishlist(
             postId.toString(),
             productId,

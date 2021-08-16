@@ -935,10 +935,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoReadyToPlay() {
-                        videoListener?.onVideoStopTrack(
-                            feedXCard,
-                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
-                        )
                         hideVideoLoading()
                         timer_view.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
@@ -961,6 +957,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
                         feedMedia.canPlay = false
+                        videoListener?.onVideoStopTrack(
+                            feedXCard,
+                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
+                        )
 
                     }
                 })
@@ -1157,6 +1157,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
+            videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null
