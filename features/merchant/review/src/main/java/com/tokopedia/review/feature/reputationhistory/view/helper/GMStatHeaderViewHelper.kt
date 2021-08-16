@@ -111,7 +111,9 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             e.printStackTrace()
         }
         val minCalendar = Calendar.getInstance()
-        minCalendar.time = minDate
+        minDate.let {
+            minCalendar.time
+        }
         minCalendar[Calendar.HOUR_OF_DAY] = 0
         minCalendar[Calendar.MINUTE] = 0
         minCalendar[Calendar.SECOND] = 0
@@ -145,7 +147,9 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
             e.printStackTrace()
         }
         val minCalendar = Calendar.getInstance()
-        minCalendar.time = minDate
+        minDate.let {
+            minCalendar.time
+        }
         minCalendar[Calendar.HOUR_OF_DAY] = 0
         minCalendar[Calendar.MINUTE] = 0
         minCalendar[Calendar.SECOND] = 0
@@ -169,7 +173,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
     }
 
     protected open val maxDateCalendar: Calendar
-        protected get() {
+        get() {
             val maxCalendar = Calendar.getInstance()
             maxCalendar[Calendar.HOUR_OF_DAY] = 23
             maxCalendar[Calendar.MINUTE] = 59
@@ -217,11 +221,9 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         const val CALENDAR_IMAGE_URL =
             "https://images.tokopedia.net/img/android/review/review_calendar.png"
         const val MOVE_TO_SET_DATE = 1
-        const val YYYY_M_MDD = "yyyyMMdd"
         private const val MAX_DATE_RANGE = 60
         private const val MIN_DATE = "25/07/2015"
         private const val DATE_FORMAT = "dd/MM/yyyy"
-        private val locale = Locale("in", "ID")
     }
 
     init {

@@ -1,33 +1,30 @@
-package com.tokopedia.review.feature.reputationhistory.util;
+package com.tokopedia.review.feature.reputationhistory.util
 
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import java.util.ArrayList
 
-public class GoldMerchantDateUtils {
-
-    public static String getDateWithYear(String date, String[] monthNames) {
-        List<String> dateRaw = getDateRaw(date);
-        String year = (String) dateRaw.get(2);
-        String month = (String) dateRaw.get(1);
-        month = monthNames[Integer.parseInt(month) - 1];
-        String day = String.valueOf(Integer.valueOf((String) dateRaw.get(0)));
-        return day + " " + month + " " + year;
+object GoldMerchantDateUtils {
+    fun getDateWithYear(date: String, monthNames: Array<String>): String {
+        val dateRaw = getDateRaw(date)
+        var month = dateRaw[1]
+        month = monthNames[month.toIntOrZero() - 1]
+        val day = Integer.valueOf(dateRaw[0]).toString()
+        return "$day $month ${dateRaw[2]}"
     }
 
-    public static String getDateRaw(String label, String[] monthNames) {
-        String[] split = label.split(" ");
-        return split[0] + " " + monthNames[Integer.parseInt(split[1]) - 1];
+    fun getDateRaw(label: String, monthNames: Array<String>): String {
+        val split = label.split(" ".toRegex()).toTypedArray()
+        return split[0] + " " + monthNames[split[1].toInt() - 1]
     }
 
-    private static List<String> getDateRaw(String s) {
-        List<String> result = new ArrayList();
-        String year = s.substring(0, 4);
-        String month = s.substring(4, 6);
-        String day = s.substring(6);
-        result.add(day);
-        result.add(month);
-        result.add(year);
-        return result;
+    private fun getDateRaw(s: String): List<String> {
+        val result: MutableList<String> = ArrayList<String>()
+        val year = s.substring(0, 4)
+        val month = s.substring(4, 6)
+        val day = s.substring(6)
+        result.add(day)
+        result.add(month)
+        result.add(year)
+        return result
     }
 }
-
