@@ -70,8 +70,7 @@ private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boole
 private fun getTextCategoryBottomHeight(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
         context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_margin_vertical) + //top
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_margin_vertical) //bottom
+                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_margin_bottom) //bottom
     else 0
 }
 
