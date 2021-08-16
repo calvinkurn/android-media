@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home_account.AccountConstants
@@ -51,13 +52,15 @@ class ProfileViewHolder(
             } else {
                 account_user_item_profile_phone?.hide()
                 account_user_item_profile_name?.run {
-                    account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
+                    account_user_item_profile_name?.setPadding(paddingLeft, TOP_PAD, paddingRight, paddingBottom)
                 }
             }
 
             if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
                 account_user_item_profile_icon_warning_name?.show()
-                account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
+                account_user_item_profile_icon_warning_name?.setOnClickListener {
+                    listener.onIconWarningClicked(profile)
+                }
             } else account_user_item_profile_icon_warning_name?.hide()
 
             if (profile.phone != profile.email) {
@@ -86,10 +89,12 @@ class ProfileViewHolder(
         val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         when (mode) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
+                val drawable = MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                accountUserItemProfileContainer?.background = drawable
             }
             Configuration.UI_MODE_NIGHT_NO -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
+                val drawable = MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                accountUserItemProfileContainer?.background = drawable
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
@@ -104,7 +109,13 @@ class ProfileViewHolder(
 
     private fun setupFinancialAdapter(itemView: View) {
         itemView.home_account_financial_layout_rv?.adapter = financialAdapter
-        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
+        itemView.home_account_financial_layout_rv?.layoutManager =
+            SpanningLinearLayoutManager(
+                itemView.home_account_financial_layout_rv?.context,
+                LinearLayoutManager.HORIZONTAL,
+                reverseLayout = false,
+                minWidth = MIN_WIDTH
+            )
     }
 
     private fun setupMemberAdapter(itemView: View) {
@@ -119,12 +130,22 @@ class ProfileViewHolder(
 
         itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
-        val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = SpanningLinearLayoutManager(
+            itemView.home_account_member_layout_rv?.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
         if (itemView.context?.isDarkMode() == true) {
-            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dms_dark), PorterDuff.Mode.SRC_IN)
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_dark),
+                PorterDuff.Mode.SRC_IN
+            )
         } else {
-            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dms_light), PorterDuff.Mode.SRC_IN)
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_light),
+                PorterDuff.Mode.SRC_IN
+            )
         }
         val dividerItemDecoration = DividerItemDecoration(itemView.home_account_member_layout_rv.context,
                 layoutManager.orientation)
@@ -133,7 +154,7 @@ class ProfileViewHolder(
             dividerItemDecoration.setDrawable(this)
         }
 
-        if (itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
+        if (itemView.home_account_member_layout_rv.itemDecorationCount < MIN_ITEM) {
             itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
         }
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
@@ -142,6 +163,9 @@ class ProfileViewHolder(
     }
 
     companion object {
+        const val TOP_PAD = 8
+        const val MIN_WIDTH = 180
+        const val MIN_ITEM = 1
         val LAYOUT = R.layout.home_account_item_profile
         private const val DEFAULT_NAME = "toppers-"
     }

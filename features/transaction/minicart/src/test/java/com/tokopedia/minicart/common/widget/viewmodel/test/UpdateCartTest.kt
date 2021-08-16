@@ -3,9 +3,13 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
@@ -21,7 +25,8 @@ class UpdateCartTest {
     private lateinit var viewModel: MiniCartViewModel
     private var dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
-    private var uiModelMapper: MiniCartListUiModelMapper = spyk()
+    private var miniCartListUiModelMapper: MiniCartListUiModelMapper = spyk()
+    private var miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper = spyk()
     private var getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase = mockk()
     private val getMiniCartListUseCase: GetMiniCartListUseCase = mockk()
     private val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -33,7 +38,7 @@ class UpdateCartTest {
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, uiModelMapper)
+        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, miniCartListUiModelMapper, miniCartChatListUiModelMapper)
     }
 
     @Test
@@ -45,7 +50,7 @@ class UpdateCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
@@ -67,7 +72,7 @@ class UpdateCartTest {
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
-        coEvery { updateCartUseCase.setParams(any(), any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
@@ -89,7 +94,7 @@ class UpdateCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
@@ -112,7 +117,7 @@ class UpdateCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -136,7 +141,7 @@ class UpdateCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -158,7 +163,7 @@ class UpdateCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideUpdateCartFailed()
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }

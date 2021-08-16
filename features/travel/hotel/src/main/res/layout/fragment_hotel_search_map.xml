@@ -274,5 +274,9 @@
 
     </LinearLayout>
     <!-- End of Linear Layout for Header (Toolbar and Quick Filter) -->
-
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,13 +20,19 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
                 tokoNowCategoryViewModel,
                 addToCartUseCase,
                 updateCartUseCase,
+                deleteCartUseCase,
                 getMiniCartListSimplifiedUseCase,
+                getRecommendationUseCase,
                 userSession,
                 this,
         )
     }
 
     override fun `Given first page API will be successful`() {
+        `Given get category first page use case will be successful`(categoryModel)
+    }
+
+    override fun `Given first page API can show recommendation`() {
         `Given get category first page use case will be successful`(categoryModel)
     }
 
@@ -63,5 +69,60 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     @Test
     fun `test ATC non login should redirect to cart page`() {
         addToCartTestHelper.`test ATC non login should redirect to login page`()
+    }
+
+    @Test
+    fun `delete cart success`() {
+        addToCartTestHelper.`delete cart success`()
+    }
+
+    @Test
+    fun `delete cart failed`() {
+        addToCartTestHelper.`delete cart failed`()
+    }
+
+    @Test
+    fun `test ATC recom non login should redirect to login page`() {
+        addToCartTestHelper.`test ATC recom non login should redirect to login page`()
+    }
+
+    @Test
+    fun `test add to cart recom item success`() {
+        addToCartTestHelper.`test add to cart recom item success`()
+    }
+
+    @Test
+    fun `test add to cart recom item failed`() {
+        addToCartTestHelper.`test add to cart recom item failed`()
+    }
+
+    @Test
+    fun `add to cart recom item with current quantity should do nothing`() {
+        addToCartTestHelper.`add to cart recom item with current quantity should do nothing`()
+    }
+
+    @Test
+    fun `add to cart recom item to decrease quantity success`() {
+        addToCartTestHelper.`add to cart recom item to decrease quantity success`()
+    }
+
+    @Test
+    fun `add to cart recom item to increase quantity success`() {
+        addToCartTestHelper.`add to cart recom item to increase quantity success`()
+    }
+
+    @Test
+    fun `add to cart recom item to update quantity failed`() {
+        addToCartTestHelper.`add to cart recom item to update quantity failed`()
+    }
+
+    @Test
+    fun `delete cart recom item success`() {
+        addToCartTestHelper.`delete cart recom item success`()
+    }
+
+    @Test
+    fun `delete cart recom item failed`() {
+        addToCartTestHelper.`delete cart recom item failed`()
     }
 }

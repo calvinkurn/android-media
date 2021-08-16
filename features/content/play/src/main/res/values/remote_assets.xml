@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lottie_confetti_tap">https://assets.tokopedia.net/asts/android/content/play/play_interactive_tap_confetti.json</string>
+    <string name="lottie_button_tap">https://assets.tokopedia.net/asts/android/content/play/play_interactive_tap_button.json</string>
+</resources>

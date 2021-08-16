@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter
 
-import android.app.Activity
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -10,7 +9,6 @@ import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

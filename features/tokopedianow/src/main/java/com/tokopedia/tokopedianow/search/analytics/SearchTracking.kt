@@ -14,8 +14,11 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_A
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BANNER
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CARI_BARANG_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_JUMPER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_DELETE_ITEM_FROM_CART
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_PRODUCT
@@ -25,6 +28,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_T
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
@@ -56,7 +60,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 object SearchTracking {
-
     object Action {
         const val GENERAL_SEARCH = "general search"
         const val IMPRESSION_PRODUCT = "impression - product"
@@ -74,17 +77,36 @@ object SearchTracking {
         const val CLICK_BANNER = "click - banner"
         const val CLICK_APPLY_CATEGORY_FILTER = "click - apply category filter"
         const val EVENT_ACTION_CLICK_SEARCH_BAR_VALUE = "click - search - search bar"
+        const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
+        const val CLICK_CATEGORY_JUMPER = "click - category jumper"
+        const val CLICK_CARI_BARANG_DI_TOKONOW = "click - cari barang di tokonow"
+        const val IMPRESSION_SRP_PRODUCT_TOKONOW =
+            "impression product on tokonow product recommendation"
+        const val CLICK_SRP_PRODUCT_TOKONOW =
+            "click product on tokonow product recommendation"
+        const val CLICK_ATC_SRP_PRODUCT_TOKONOW =
+            "click add to cart on tokonow product recommendation"
+
+        const val IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+        const val CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
     }
 
     object Category {
         const val TOKONOW_TOP_NAV = "tokonow - top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
+        const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
+        const val TOKONOW_EMPTY_RESULT =
+            "tokonow empty search result"
+        const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
     }
 
     object Misc {
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
+        const val RECOM_LIST_PAGE = "searchproduct"
+        const val RECOM_LIST_PAGE_EMPTY_SEARCH =
+            "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -429,6 +451,47 @@ object SearchTracking {
                     ),
                 )
             )
+        )
+    }
+
+    fun sendDeleteCartEvent(
+            productId: String,
+    ) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_DELETE_ITEM_FROM_CART,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, productId,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendClickCategoryJumperEvent(categoryName: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_TOKONOW,
+                    EVENT_ACTION, CLICK_CATEGORY_JUMPER,
+                    EVENT_CATEGORY, TOKONOW_NO_SEARCH_RESULT,
+                    EVENT_LABEL, categoryName,
+                    KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                    KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendClickCTAToHome() {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOKONOW,
+                        EVENT_ACTION, CLICK_CARI_BARANG_DI_TOKONOW,
+                        EVENT_CATEGORY, TOKONOW_NO_SEARCH_RESULT,
+                        EVENT_LABEL, "",
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                )
         )
     }
 }
