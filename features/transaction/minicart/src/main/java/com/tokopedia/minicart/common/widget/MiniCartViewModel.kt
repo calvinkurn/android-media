@@ -106,15 +106,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         lastDeletedProductItem = miniCartProductUiModel
     }
 
-    // Used for mocking miniCartABTestData value.
-    // Should only be called from unit test
-    fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
-        _miniCartABTestData.value = MiniCartABTestData(
-                isOCCFlow = isOCCFlow,
-                buttonBuyWording = buttonBuyWording
-        )
-    }
-
     // Setter & Getter
     // Some of setter & getter here added to reduce complexity (due to nullability) so we can increase unit test coverage
 
@@ -162,6 +153,13 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     fun updateChatVisitables(visitables: MutableList<Visitable<*>>) {
         miniCartChatListBottomSheetUiModel.value?.visitables = visitables
         _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
+    }
+
+    fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
+        _miniCartABTestData.value = MiniCartABTestData(
+                isOCCFlow = isOCCFlow,
+                buttonBuyWording = buttonBuyWording
+        )
     }
 
     // API Call & Callback
