@@ -101,6 +101,8 @@ data class TopAdsmageViewResponse(
         )
 
         data class Pagination(
+            @SerializedName("current_page")
+            val currentPage: String?,
             @SerializedName("kind")
             val kind: String?,
             @SerializedName("next_page_token")
