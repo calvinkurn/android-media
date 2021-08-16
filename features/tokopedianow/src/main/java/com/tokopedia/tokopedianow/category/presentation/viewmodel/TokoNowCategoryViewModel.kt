@@ -6,9 +6,12 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -21,11 +24,21 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -52,6 +65,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         updateCartUseCase: UpdateCartUseCase,
         deleteCartUseCase: DeleteCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        getRecommendationUseCase: GetRecommendationUseCase,
+        private val getCategoryListUseCase: GetCategoryListUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -65,6 +80,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         updateCartUseCase,
         deleteCartUseCase,
         getWarehouseUseCase,
+        getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -75,12 +91,20 @@ class TokoNowCategoryViewModel @Inject constructor (
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
     init {
+        updateQueryParamWithCategoryIds()
+
+        categoryIdTracking = getCategoryIdForTracking()
+    }
+
+    private fun updateQueryParamWithCategoryIds() {
+        if (categoryL1.isNotEmpty()) {
+            queryParamMutable[SearchApiConst.SRP_PAGE_ID] = categoryL1
+        }
+
         if (categoryL2.isNotEmpty()) {
             val categoryFilterKeyWithExclude = "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"
             queryParamMutable[categoryFilterKeyWithExclude] = categoryL2
         }
-
-        categoryIdTracking = getCategoryIdForTracking()
     }
 
     override val tokonowSource: String
@@ -108,12 +132,6 @@ class TokoNowCategoryViewModel @Inject constructor (
         return requestParams
     }
 
-    override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
-        super.appendMandatoryParams(tokonowQueryParam)
-
-        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryL1
-    }
-
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
         navigation = categoryModel.categoryDetail.data.navigation
 
@@ -139,7 +157,10 @@ class TokoNowCategoryViewModel @Inject constructor (
         )
     }
 
-    override fun createFooterVisitableList() = listOf(createAisleDataView())
+    override fun createFooterVisitableList() = listOf(
+            createAisleDataView(),
+            RecommendationCarouselDataView(TOKONOW_CLP),
+    )
 
     private fun createAisleDataView() = CategoryAisleDataView(
             listOf(
@@ -155,6 +176,87 @@ class TokoNowCategoryViewModel @Inject constructor (
                 imgUrl = navigationItem?.imageUrl ?: "",
                 applink = navigationItem?.applinks ?: "",
         )
+    }
+
+    override fun createVisitableListWithEmptyProduct() {
+        super.createVisitableListWithEmptyProduct()
+
+        val categoryGridIndex = minOf(visitableList.size, 2)
+        val categoryGridUIModel = TokoNowCategoryGridUiModel(
+                id = "",
+                title = CATEGORY_GRID_TITLE,
+                categoryList = null,
+                state = TokoNowLayoutState.LOADING,
+        )
+        visitableList.add(categoryGridIndex, categoryGridUIModel)
+    }
+
+    override fun processEmptyState(isEmptyProductList: Boolean) {
+        loadCategoryGrid(isEmptyProductList)
+    }
+
+    private fun loadCategoryGrid(isEmptyProductList: Boolean) {
+        launchCatchError(
+                block = { tryLoadCategoryGrid(isEmptyProductList) },
+                onError = { catchLoadCategoryGridError() }
+        )
+    }
+
+    private suspend fun tryLoadCategoryGrid(isEmptyProductList: Boolean) {
+        if (!isEmptyProductList) return
+
+        val categoryList = getCategoryList()
+
+        updateCategoryUIModel(
+                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList),
+                categoryUIModelState = TokoNowLayoutState.SHOW,
+        )
+    }
+
+    private suspend fun getCategoryList() =
+            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH)?.data
+
+    private suspend fun updateCategoryUIModel(
+            categoryItemListUIModel: List<TokoNowCategoryItemUiModel>?,
+            categoryUIModelState: Int,
+    ) {
+        val currentCategoryUIModel = getCategoryGridUIModelInVisitableList() ?: return
+
+        val updatedCategoryUiModel = currentCategoryUIModel.copy(
+                categoryList = categoryItemListUIModel,
+                state = categoryUIModelState,
+        )
+
+        replaceCategoryUIModelInVisitableList(currentCategoryUIModel, updatedCategoryUiModel)
+
+        suspendUpdateVisitableListLiveData()
+    }
+
+    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryGridUiModel? {
+        return visitableList
+                .find { it is TokoNowCategoryGridUiModel }
+                as? TokoNowCategoryGridUiModel
+    }
+
+    private fun replaceCategoryUIModelInVisitableList(
+            current: TokoNowCategoryGridUiModel,
+            updated: TokoNowCategoryGridUiModel,
+    ) {
+        val position = visitableList.indexOf(current)
+
+        visitableList.removeAt(position)
+        visitableList.add(position, updated)
+    }
+
+    private suspend fun catchLoadCategoryGridError() {
+        updateCategoryUIModel(
+                categoryItemListUIModel = null,
+                categoryUIModelState = TokoNowLayoutState.HIDE
+        )
+    }
+
+    fun onCategoryGridRetry() {
+        processEmptyState(true)
     }
 
     override fun executeLoadMore() {
@@ -173,5 +275,17 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun onGetCategoryLoadMorePageError(throwable: Throwable) {
 
+    }
+
+    override fun getRecomCategoryId(
+            recommendationCarouselDataView: RecommendationCarouselDataView
+    ): List<String> {
+        if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
+
+        val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
+        val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
+
+        return if (categoryFilterId.isNotEmpty()) listOf(categoryFilterId)
+        else listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
     }
 }
