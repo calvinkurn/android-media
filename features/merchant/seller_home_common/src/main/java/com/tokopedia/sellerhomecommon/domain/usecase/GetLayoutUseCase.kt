@@ -82,6 +82,7 @@ class GetLayoutUseCase(
                   dataKey
                   ctaText
                   maxData
+                  maxDisplay
                   emptyState {
                     imageUrl
                     title
