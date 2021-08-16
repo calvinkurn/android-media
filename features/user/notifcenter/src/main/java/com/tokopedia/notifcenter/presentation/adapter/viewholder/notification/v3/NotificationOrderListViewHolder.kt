@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.os.Parcelable
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,10 +16,10 @@ import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.util.OrderWidgetDiffUtil
 import com.tokopedia.notifcenter.util.view.ShadowGenerator
 import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
 
-// TODO: Compare cache and network response, update necessary item only
 // TODO: Fix this instrumentation test
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
@@ -127,9 +128,11 @@ class NotificationOrderListViewHolder constructor(
         adapterTypeFactory: OrderListTypeFactory?
     ) : BaseAdapter<OrderListTypeFactory>(adapterTypeFactory) {
         fun updateData(list: List<Card>) {
+            val diffUtil = OrderWidgetDiffUtil(visitables, list)
+            val diffResult = DiffUtil.calculateDiff(diffUtil)
             visitables.clear()
             visitables.addAll(list)
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
     }
 
