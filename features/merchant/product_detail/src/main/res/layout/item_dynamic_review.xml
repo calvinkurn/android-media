@@ -75,7 +75,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/review_rating"
         app:layout_constraintLeft_toRightOf="@+id/review_rating"
-        app:layout_constraintTop_toTopOf="@+id/review_rating"
         app:typographyType="body_3"
         tools:visibility="visible"
         tools:text="dari 1205 ulasan" />

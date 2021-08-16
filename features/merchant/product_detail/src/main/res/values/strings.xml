@@ -263,4 +263,6 @@
     <string name="pdp_pcs_builder">%1d pcs</string>
     <string name="pdp_total_stock_static">Jumlah Barang:</string>
 
+    <string name="pdp_review_rating_and_review_count">%s rating • %s ulasan</string>
+
 </resources>

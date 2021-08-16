@@ -42,7 +42,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             }
             setSeeAllReviewClickListener(componentData)
             it.imageReviews?.let { images ->
-                renderImageReview(images, element.totalRating, element.ratingScore, componentData)
+                renderImageReview(images, element.totalRating, element.ratingScore, element.formattedRating, element.totalRatingCount, element.totalReviewCount, componentData)
             }
             val reviewData = it.listOfReviews?.firstOrNull()
             reviewData?.let { review ->
@@ -77,7 +77,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, formattedRating: String, formattedRatingCount: String, formattedReviewCount: String, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
@@ -86,12 +86,16 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
         with(view) {
             review_count.apply {
-                text = context.getString(R.string.review_out_of_total_reviews, totalRating)
+                text = if (listener.shouldShowRatingAndReviewCount()) {
+                    context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
+                } else {
+                    context.getString(R.string.review_out_of_total_reviews, totalRating)
+                }
                 show()
             }
             review_rating.apply {
                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
-                text = ratingScore.toString()
+                text = if (listener.shouldShowRatingAndReviewCount()) formattedRating else ratingScore.toString()
                 show()
             }
 
