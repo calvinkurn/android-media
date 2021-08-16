@@ -171,7 +171,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
                 btn_submit?.isEnabled = false
-//                val map = convertToParam(view)
                 viewModel.topAdsCreated(getProductData(), getKeywordData(), getGroupData(), this::onSuccessActivation, this::onErrorActivation)
                 sendAnalyticEvent()
             } else {
@@ -484,49 +483,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         datProduct.putParcelableArrayList(ADDED_PRODUCTS, adsItemsList)
         return datProduct
-    }
-
-    private fun convertToParam(view: View): HashMap<String, Any> {
-//        val userSession = UserSession(view.context)
-//        if (!toggle.isChecked) {
-//            input.group.groupBudget = UNLIMITED_BUDGET
-//        } else {
-//            input.group.groupBudget = DEFINED_BUDGET
-//            input.group.priceDaily = stepperModel?.dailyBudget?.toDouble() ?: 0.0
-//        }
-//        input.shopID = userSession.shopId
-//        input.group.groupName = stepperModel?.groupName ?: ""
-//        if (stepperModel?.autoBidState?.isEmpty() == true) {
-//            input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
-//        } else {
-//            input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
-//        }
-//        input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
-//        keywordsList.clear()
-//        adsItemsList.clear()
-//        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
-//            stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
-//                addKeywords(index)
-//            }
-//            input.keywords = keywordsList
-//        } else {
-//            input.keywords = null
-//        }
-//        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
-//            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
-//                addProducts(index)
-//            }
-//            input.group.ads = adsItemsList
-//        }
-
-//        if (stepperModel?.autoBidState?.isNotEmpty() == true) {
-//            strategies.clear()
-//            strategies.add(stepperModel?.autoBidState!!)
-//        }
-//        input.group.strategies = strategies
-
-        map[INPUT] = input
-        return map
     }
 
     private fun addProducts(index: Int) {
