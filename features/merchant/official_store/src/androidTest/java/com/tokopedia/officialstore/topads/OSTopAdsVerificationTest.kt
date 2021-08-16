@@ -6,11 +6,14 @@ import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -25,6 +28,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
+import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -57,15 +61,23 @@ class OSTopAdsVerificationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0
     private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
+    private var osRecyclerViewIdlingResource: OSRecyclerViewIdlingResource? = null
 
     @Before
     fun setUp() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+
+        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
+            recyclerView = recyclerView,
+            limitCountToIdle = 0
+        )
     }
 
     @After
     fun deleteDatabase() {
         topAdsAssertion.after()
+        IdlingRegistry.getInstance().unregister(osRecyclerViewIdlingResource)
     }
 
     @Test
@@ -75,7 +87,10 @@ class OSTopAdsVerificationTest {
         val itemAdapter: OfficialHomeAdapter = recyclerView.adapter as OfficialHomeAdapter
 
         Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
         waitForData()
+
         val itemList = itemAdapter.currentList
         topAdsCount = calculateTopAdsCount(itemList)
 
