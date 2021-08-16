@@ -92,6 +92,7 @@ class PostMapper @Inject constructor() :
                         url = postItem.url.orEmpty(),
                         featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
                         subtitle = postItem.subtitle.orEmpty(),
+                        textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
                         stateText = postItem.stateText.orEmpty(),
                         stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
                         shouldShowUnderLine = index != postList.size.minus(1)
@@ -103,7 +104,8 @@ class PostMapper @Inject constructor() :
                         appLink = postItem.appLink.orEmpty(),
                         url = postItem.url.orEmpty(),
                         featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                        subtitle = postItem.subtitle.orEmpty()
+                        subtitle = postItem.subtitle.orEmpty(),
+                        textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
                     )
                 }
             }
