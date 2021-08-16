@@ -1016,7 +1016,7 @@ abstract class BaseSearchCategoryViewModel(
             onSuccess: (UpdateCartV2Data) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
                 cartId = miniCartItem.cartId,
@@ -1056,7 +1056,7 @@ abstract class BaseSearchCategoryViewModel(
             onSuccess: (RemoveFromCartData) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
         deleteCartUseCase.execute(onSuccess, onError)
