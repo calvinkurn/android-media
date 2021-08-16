@@ -127,7 +127,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_S
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
@@ -510,8 +509,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(MODALTOKO_INTERNAL_ORDER) ||
                         it.startsWith(HOTEL_INTERNAL_ORDER) ||
                         it.startsWith(PESAWAT_INTERNAL_ORDER) ||
-                        it.startsWith(BELANJA_INTERNAL_ORDER) ||
-                        it.startsWith(MARKETPLACE_INTERNAL_ORDER)
+                        it.startsWith(BELANJA_INTERNAL_ORDER)
             }, DF_BASE, R.string.title_buyerorder))
 
             // snapshot
