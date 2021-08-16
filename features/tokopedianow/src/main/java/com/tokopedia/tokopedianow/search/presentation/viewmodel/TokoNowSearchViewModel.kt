@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.search.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -89,6 +90,11 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
+
+    private val addToCartBroadMatchTrackingMutableLiveData =
+        SingleLiveEvent<Triple<Int, String, BroadMatchItemDataView>>()
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, BroadMatchItemDataView>> =
+        addToCartBroadMatchTrackingMutableLiveData
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
@@ -351,6 +357,91 @@ class TokoNowSearchViewModel @Inject constructor (
             if (!updatedProductIndices.contains(index))
                 updatedProductIndices.add(index)
         }
+    }
+
+    fun onViewATCBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    ) {
+        if (userSession.isLoggedIn)
+            handleAddToCartBroadMatchItem(broadMatchItem, quantity)
+        else
+            handleAddToCartEventNonLogin(broadMatchIndex)
+    }
+
+    private fun handleAddToCartBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        quantity: Int,
+    ) {
+        val nonVariantATC = broadMatchItem.nonVariantATC ?: return
+        if (nonVariantATC.quantity == quantity) return
+
+        when {
+            nonVariantATC.quantity == 0 -> addToCartBroadMatchItem(broadMatchItem, quantity)
+            quantity == 0 -> deleteCartBroadMatchItem(broadMatchItem)
+            else -> updateCartBroadMatchItem(broadMatchItem, quantity)
+        }
+    }
+
+    private fun addToCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
+        addToCart(
+            productId = broadMatchItem.id,
+            shopId = broadMatchItem.shop.id,
+            quantity = quantity,
+            onSuccess = {
+                sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onError = ::onAddToCartFailed,
+        )
+    }
+
+    private fun sendAddToCartBroadMatchItemTracking(
+        quantity: Int,
+        addToCartDataModel: AddToCartDataModel,
+        broadMatchItem: BroadMatchItemDataView,
+    ) {
+        addToCartBroadMatchTrackingMutableLiveData.value =
+            Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
+    }
+
+    private fun onAddToCartSuccessBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        updatedQuantity: Int,
+    ) {
+        updateBroadMatchItemQuantity(broadMatchItem, updatedQuantity)
+        refreshMiniCart()
+    }
+
+    private fun updateBroadMatchItemQuantity(
+        broadMatchItem: BroadMatchItemDataView,
+        updatedQuantity: Int,
+    ) {
+        broadMatchItem.nonVariantATC?.quantity = updatedQuantity
+    }
+
+    private fun deleteCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView) {
+        deleteCart(
+            productId = broadMatchItem.id,
+            onSuccess = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onError = ::onAddToCartFailed,
+        )
+    }
+
+    private fun updateCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
+        updateCart(
+            productId = broadMatchItem.id,
+            quantity = quantity,
+            onSuccess = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
+            },
+            onError = ::onAddToCartFailed,
+        )
     }
 
     companion object {

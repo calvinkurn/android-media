@@ -116,10 +116,10 @@ abstract class BaseSearchCategoryViewModel(
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
-    private var allMiniCartItemList: List<MiniCartItem>? = null
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
+    protected var allMiniCartItemList: List<MiniCartItem>? = null
+    protected var cartItemsNonVariant: List<MiniCartItem>? = null
         private set
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
         private set
 
     val queryParam: Map<String, String> = queryParamMutable
@@ -976,7 +976,7 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    private fun updateCartMessageSuccess(successMessage: String) {
+    protected fun updateCartMessageSuccess(successMessage: String) {
         successATCMessageMutableLiveData.value = successMessage
     }
 
@@ -986,13 +986,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateProductNonVariantQuantity(
-            productItem: ProductItemDataView,
-            quantity: Int,
+        productItem: ProductItemDataView,
+        quantity: Int,
     ) {
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun onAddToCartFailed(throwable: Throwable) {
+    protected fun onAddToCartFailed(throwable: Throwable) {
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
@@ -1010,7 +1010,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun updateCart(
+    protected fun updateCart(
             productId: String,
             quantity: Int,
             onSuccess: (UpdateCartV2Data) -> Unit,
@@ -1019,13 +1019,13 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
-                cartId = miniCartItem.cartId,
-                quantity = quantity,
-                notes = miniCartItem.notes
+            cartId = miniCartItem.cartId,
+            quantity = quantity,
+            notes = miniCartItem.notes
         )
         updateCartUseCase.setParams(
-                updateCartRequestList = listOf(updateCartRequest),
-                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute(onSuccess, onError)
     }

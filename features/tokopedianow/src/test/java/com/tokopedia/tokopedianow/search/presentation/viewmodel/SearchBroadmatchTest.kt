@@ -254,15 +254,4 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
         tokoNowSearchViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
     }
-
-    @Test
-    fun `add to cart broad match item`() {
-        val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
-        `Given get search first page use case will be successful`(searchModel)
-        `Given view already created`()
-
-//        tokoNowSearchViewModel.onViewA
-
-        `Then assert broadmatch for no result`(searchModel)
-    }
 }
