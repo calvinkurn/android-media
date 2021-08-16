@@ -40,6 +40,8 @@ class BannerCarouselViewModelTest {
 
     @Test
     fun `title value`() {
+        mockkObject(DiscoveryDataMapper)
+        every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) } returns ArrayList()
         every { componentsItem.data } returns null
         var viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
         assert(viewModelTest.getTitleLiveData().value == null)
