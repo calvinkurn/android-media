@@ -89,24 +89,5 @@ class SummaryViewModel @Inject constructor(
                 e?.printStackTrace()
             }
         })
-//        launchCatchError(
-//                block = {
-//                    val data = withContext(dispatcher.io) {
-//                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_activate_ads),
-//                                ResponseCreateGroup::class.java, param)
-//                        val cacheStrategy = RequestHelper.getCacheStrategy()
-//                        repository.getReseponse(listOf(request), cacheStrategy)
-//                    }
-//                    data.getSuccessData<ResponseCreateGroup>().let {
-//                        if (it.topadsCreateGroupAds.errors.isNotEmpty())
-//                            onErrorGetAds(Exception(it.topadsCreateGroupAds.errors.firstOrNull()?.detail))
-//                        else
-//                            onSuccessGetDeposit()
-//                    }
-//                },
-//                onError = {
-//                    onErrorGetAds(it)
-//                }
-//        )
     }
 }
