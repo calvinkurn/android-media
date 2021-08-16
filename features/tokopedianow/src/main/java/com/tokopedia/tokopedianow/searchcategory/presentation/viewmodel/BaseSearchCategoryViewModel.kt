@@ -986,8 +986,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateProductNonVariantQuantity(
-        productItem: ProductItemDataView,
-        quantity: Int,
+            productItem: ProductItemDataView,
+            quantity: Int,
     ) {
         productItem.nonVariantATC?.quantity = quantity
     }
@@ -1019,13 +1019,13 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
-            cartId = miniCartItem.cartId,
-            quantity = quantity,
-            notes = miniCartItem.notes
+                cartId = miniCartItem.cartId,
+                quantity = quantity,
+                notes = miniCartItem.notes
         )
         updateCartUseCase.setParams(
-            updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+                updateCartRequestList = listOf(updateCartRequest),
+                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute(onSuccess, onError)
     }
