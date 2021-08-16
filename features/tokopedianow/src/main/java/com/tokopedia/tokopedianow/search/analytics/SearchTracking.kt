@@ -137,7 +137,7 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
-                        productItemDataView.getAsImpressionObjectDataLayer(filterSortValue)
+                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
                     )
                 )
         ) as HashMap<String, Any>
@@ -145,7 +145,7 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun ProductItemDataView.getAsImpressionObjectDataLayer(
+    private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
             filterSortValue: String,
     ): Any {
         return getAsObjectDataLayerMap(filterSortValue).also {
@@ -505,7 +505,7 @@ object SearchTracking {
             ECOMMERCE, DataLayer.mapOf(
                 CURRENCYCODE, IDR,
                 IMPRESSIONS, DataLayer.listOf(
-                    broadMatchItemDataView.getAsImpressionObjectDataLayer()
+                    broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
                 )
             )
         ) as HashMap<String, Any>
@@ -513,7 +513,7 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun BroadMatchItemDataView.getAsImpressionObjectDataLayer(): Any {
+    private fun BroadMatchItemDataView.getAsImpressionClickObjectDataLayer(): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "list", TOKONOW_BROAD_MATCH,
@@ -551,20 +551,12 @@ object SearchTracking {
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_BROAD_MATCH),
                         PRODUCTS, DataLayer.listOf(
-                            broadMatchItemDataView.getAsClickObjectDataLayer()
+                            broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
                         )
                     ),
                 )
             )
         )
-    }
-
-    private fun BroadMatchItemDataView.getAsClickObjectDataLayer(): Any {
-        return getAsObjectDataLayerMap().also {
-            it.putAll(DataLayer.mapOf(
-                "position", position,
-            ))
-        }
     }
 
     fun sendBroadMatchSeeAllClickEvent(broadMatchDataView: BroadMatchDataView, keyword: String) {

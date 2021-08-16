@@ -245,7 +245,7 @@ class TokoNowSearchViewModel @Inject constructor (
                         nonVariantATC = NonVariantATCDataView(
                             minQuantity = otherRelatedProduct.minOrder,
                             maxQuantity = otherRelatedProduct.stock,
-                            quantity = getProductNonVariantQuantity(otherRelatedProduct.id)
+                            quantity = getProductQuantityInMiniCart(otherRelatedProduct.id)
                         ),
                     )
                 },
@@ -349,7 +349,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updatedProductIndices: MutableList<Int>,
     ) {
         val nonVariantATC = broadMatchItemDataView.nonVariantATC ?: return
-        val quantity = getProductNonVariantQuantity(broadMatchItemDataView.id)
+        val quantity = getProductQuantityInMiniCart(broadMatchItemDataView.id)
 
         if (nonVariantATC.quantity != quantity) {
             nonVariantATC.quantity = quantity
@@ -358,6 +358,9 @@ class TokoNowSearchViewModel @Inject constructor (
                 updatedProductIndices.add(index)
         }
     }
+
+    private fun getProductQuantityInMiniCart(productId: String)
+        = allMiniCartItemList?.find { it.productId == productId }?.quantity ?: 0
 
     fun onViewATCBroadMatchItem(
         broadMatchItem: BroadMatchItemDataView,

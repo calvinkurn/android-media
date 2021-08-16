@@ -180,30 +180,28 @@ class SearchBroadmatchTest: SearchTestFixtures() {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         val broadMatchList = visitableList.filterIsInstance<BroadMatchDataView>()
 
-        `Then assert product item non variant quantity`(miniCartItems, broadMatchList)
+        `Then assert broad match item quantity`(miniCartItems, broadMatchList)
         `Then assert updated indices`(miniCartItems, visitableList)
     }
 
-    private fun `Then assert product item non variant quantity`(
+    private fun `Then assert broad match item quantity`(
         miniCartItems: List<MiniCartItem>,
         broadMatchList: List<BroadMatchDataView>,
     ) {
-        val miniCartItemsNonVariant = miniCartItems.filter {
-            it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
-        }
         val broadMatchProductItems = broadMatchList.flatMap { it.broadMatchItemDataViewList }
 
-        miniCartItemsNonVariant.forEach { miniCartItem ->
+        miniCartItems.forEach { miniCartItem ->
             val broadMatchItem = broadMatchProductItems.find {
                 it.id == miniCartItem.productId
-            }!!
+            } ?: return@forEach
+
             val reason = createInvalidNonVariantQtyReason(miniCartItem)
             assertThat(reason, broadMatchItem.nonVariantATC?.quantity, shouldBe(miniCartItem.quantity))
         }
     }
 
     private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem) =
-        "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
+        "Product \"${miniCartItem.productId}\" quantity is invalid."
 
     private fun `Then assert updated indices`(
         miniCartItems: List<MiniCartItem>,
