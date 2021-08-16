@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -74,6 +75,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -795,13 +798,27 @@ class PlayUserInteractionFragment @Inject constructor(
         when {
             cast.previousState == PlayCastState.CONNECTING -> {
                 // Send Analytic Casting Success / Failed
-                analytic.connectCast(cast.currentState == PlayCastState.CONNECTED)
+                val isSuccess = cast.currentState == PlayCastState.CONNECTED
+                analytic.connectCast(isSuccess)
+
+                if(isSuccess) {
+                    // Start Record Cast Duration
+                    val date = Calendar.getInstance().time
+                    val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
+                    Log.d("<LOG>", "start : ${format.format(date)}")
+                }
             }
             cast.currentState == PlayCastState.CONNECTED -> {
                 // Start Record Cast Duration
+                val date = Calendar.getInstance().time
+                val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
+                Log.d("<LOG>", "start : ${format.format(date)}")
             }
             cast.previousState == PlayCastState.CONNECTED -> {
                 // Send Analytic Cast Duration
+                val date = Calendar.getInstance().time
+                val format = SimpleDateFormat("dd MMMM yyyy HH:mm:ss")
+                Log.d("<LOG>", "end : ${format.format(date)}")
                 analytic.recordCastDuration(0)
             }
         }
