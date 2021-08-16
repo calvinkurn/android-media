@@ -39,7 +39,7 @@ companion object{
         if (cur != null && cur.count > 0) {
             try {
                 if (cur.moveToFirst()) {
-                    val date = cur.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
+                    val date = cur.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)
                     val path = cur.getColumnIndex(MediaStore.Images.Media.DATA)
                     val id = cur.getColumnIndex(MediaStore.Images.Media._ID)
                     val bytes = cur.getColumnIndex(MediaStore.Images.Media.SIZE)
@@ -105,7 +105,7 @@ companion object{
                             folderName = folderName,
                             mediaType = item["mt"] as String,
                                 uri =  ContentUris.withAppendedId(
-                                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                     index
                                 )
                             )

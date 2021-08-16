@@ -10,10 +10,10 @@ import androidx.core.content.ContextCompat
 
 object CursorUtil {
 
-    val SORT_ORDER = MediaStore.Images.Media.DATE_TAKEN + " DESC"
+    val SORT_ORDER = MediaStore.Images.Media.DATE_ADDED + " DESC"
     fun getPhotoCursor(context: Context, query: String?, args: Array<String?>?): Cursor? {
         val projection = arrayOf(
-            MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_TAKEN,
+            MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED,
             MediaStore.Images.Media.DATA, MediaStore.Images.Media.SIZE
         )
         val images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -27,7 +27,7 @@ object CursorUtil {
 
     fun getVideoCursor(context: Context, query: String?, args: Array<String?>?): Cursor? {
         val projection = arrayOf(
-            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_TAKEN,
+            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_ADDED,
             MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE
         )
         val videos = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
@@ -41,7 +41,7 @@ object CursorUtil {
 
     fun getVideoFileCursor(context: Context, query: String?, args: Array<String?>?, uri: Uri?): Cursor? {
         val projection = arrayOf(
-            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_TAKEN,
+            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_ADDED,
             MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE
         )
 
