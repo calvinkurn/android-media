@@ -583,21 +583,22 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackProductAddToCart(productId: String, quantity: Int, type: String, cartId: String) {
-        when(type) {
-            RECENT_PURCHASE -> trackRecentPurchaseAddToCart(productId, quantity, cartId)
-            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
+        if(type == RECENT_PURCHASE) {
+            trackRecentPurchaseAddToCart(productId, quantity, cartId)
+        } else if (type ==  PRODUCT_RECOM) {
+            trackRecentProductRecomAddToCart(productId, quantity, cartId)
         }
     }
 
     private fun trackProductUpdateCart(productId: String, quantity: Int, type: String, cartId: String) {
-        when(type) {
-            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
+        if(type == PRODUCT_RECOM) {
+            trackRecentProductRecomAddToCart(productId, quantity, cartId)
         }
     }
 
     private fun trackProductRemoveCart(productId: String, type: String, cartId: String) {
-        when(type) {
-            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, DEFAULT_QUANTITY, cartId)
+        if(type == PRODUCT_RECOM) {
+            trackRecentProductRecomAddToCart(productId, DEFAULT_QUANTITY, cartId)
         }
     }
 

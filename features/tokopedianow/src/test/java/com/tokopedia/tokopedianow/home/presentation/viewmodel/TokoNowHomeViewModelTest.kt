@@ -480,33 +480,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given layout state is LOADING when getLayoutData multiple times should call use case ONCE`() {
-        onGetHomeLayout_thenReturn(createHomeLayoutListForBannerOnly())
-        onGetHomeLayoutData_thenReturn(createHomeLayoutData())
-
-        viewModel.getHomeLayout(LocalCacheModel())
-        viewModel.getLayoutData(2, "1", 0, 2, LocalCacheModel())
-        viewModel.getLayoutData(2, "1", 0, 2, LocalCacheModel())
-
-        val expectedResponse = HomeLayoutItemUiModel(
-            BannerDataModel(
-                channelModel= ChannelModel(
-                    id="2222",
-                    groupId="",
-                    style= ChannelStyle.ChannelHome,
-                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                    layout="banner_carousel_v2")
-            ),
-            HomeLayoutItemState.LOADED
-        )
-
-        verifyGetHomeLayoutUseCaseCalled()
-        verifyGetHomeLayoutDataUseCaseCalled(times = 1)
-        verifyGetBannerResponseSuccess(expectedResponse)
-    }
-
-    @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
         val index = 1
         val warehouseId = "1"
