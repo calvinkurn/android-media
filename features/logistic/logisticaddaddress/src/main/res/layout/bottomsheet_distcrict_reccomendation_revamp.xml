@@ -23,7 +23,7 @@
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <include
                 android:id="@+id/card_address"
