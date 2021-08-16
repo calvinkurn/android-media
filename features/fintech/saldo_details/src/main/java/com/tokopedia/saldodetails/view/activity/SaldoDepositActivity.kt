@@ -135,10 +135,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         }
     }
 
-    private fun isAutoWithRollenceActive() : Boolean{
-      return (KEY_ROLLENCE_AUTO_WITHDRAWAL == RemoteConfigInstance.getInstance()
-              .abTestPlatform.getString(KEY_ROLLENCE_AUTO_WITHDRAWAL, ""))
-    }
+
 
     override fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
