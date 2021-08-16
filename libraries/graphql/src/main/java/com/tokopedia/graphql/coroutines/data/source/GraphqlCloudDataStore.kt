@@ -72,10 +72,9 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        if(requests.isNotEmpty() && !requests[0].url.isNullOrEmpty()){
-            return api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
-        }
-        return api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+        return if(!requests[0].url.isNullOrEmpty()){
+            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
     }
 
     override suspend fun getResponse(
@@ -146,10 +145,10 @@ class GraphqlCloudDataStore @Inject constructor(
                                             "key" to requests[0].md5,
                                             "hash" to queryHashValues.toString()
                                     ))
-                            if(requests.isNotEmpty() && !requests[0].url.isNullOrEmpty()){
-                               api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                            if(!requests[0].url.isNullOrEmpty()){
+                                api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                             } else {
-                               api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                             }
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
