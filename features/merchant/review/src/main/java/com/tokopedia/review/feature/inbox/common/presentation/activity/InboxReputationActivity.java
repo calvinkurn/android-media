@@ -128,7 +128,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
-            if(isExistParamTab(tab)) {
+            if (isExistParamTab(tab)) {
                 reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, goToReputationHistory);
             } else {
                 reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
@@ -152,8 +152,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 if (position != selectedTabPosition[0]) {
                     List<Fragment> fragmentList = getFragmentList();
                     for (int i = 0; i < fragmentList.size(); i++) {
-                        Fragment fragment= fragmentList.get(i);
-                        if(fragment instanceof InboxReviewFragment) {
+                        Fragment fragment = fragmentList.get(i);
+                        if (fragment instanceof InboxReviewFragment) {
                             OnTabChangeListener onTabChangeListener = (OnTabChangeListener) fragmentList.get(i);
                             onTabChangeListener.onTabChange(position);
                         }
@@ -275,15 +275,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     }
 
     private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            layoutParams.setMarginStart(start);
-            layoutParams.setMarginEnd(end);
-            layoutParams.leftMargin = start;
-            layoutParams.rightMargin = end;
-        } else {
-            layoutParams.leftMargin = start;
-            layoutParams.rightMargin = end;
-        }
+        layoutParams.setMarginStart(start);
+        layoutParams.setMarginEnd(end);
     }
 
     public List<Fragment> getFragmentList() {

@@ -10,7 +10,7 @@ object GoldMerchantDateUtils {
             var month = dateRaw.getOrNull(1)
             month = monthNames?.getOrNull(month.toIntOrZero() - 1).orEmpty()
             val day = dateRaw.getOrNull(0).orEmpty()
-            "$day $month ${dateRaw[2]}"
+            "$day $month ${dateRaw.getOrNull(2)}"
         } catch (e: Exception) {
             e.printStackTrace()
             ""
@@ -19,17 +19,26 @@ object GoldMerchantDateUtils {
 
     fun getDateRaw(label: String, monthNames: Array<String>?): String {
         val split = label.split(" ".toRegex()).toTypedArray()
-        return split[0] + " " + monthNames?.getOrNull(split[1].toInt() - 1)
+        return split.getOrNull(0) + " " + monthNames?.getOrNull(split.getOrNull(1).toIntOrZero() - 1)
     }
 
     private fun getDateRaw(s: String): List<String> {
         val result: MutableList<String> = ArrayList<String>()
-        val year = s.substring(0, 4)
-        val month = s.substring(4, 6)
-        val day = s.substring(6)
+        val year = s.substring(YEAR_START_INDEX, YEAR_END_INDEX)
+        val month = s.substring(MONTH_START_INDEX, MONTH_END_INDEX)
+        val day = s.substring(DAY_END_INDEX)
         result.add(day)
         result.add(month)
         result.add(year)
         return result
     }
+
+    private const val YEAR_START_INDEX = 0
+    private const val YEAR_END_INDEX = 4
+
+    private const val MONTH_START_INDEX = 4
+    private const val MONTH_END_INDEX = 6
+
+    private const val DAY_END_INDEX = 6
+
 }
