@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -10,6 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
@@ -32,9 +36,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
-
     protected val view: View
+
     private lateinit var listener: ActionListener
+    private lateinit var autoCompleteAdapter1: TopupBillsAutoCompleteAdapter
 
     init {
         view = View.inflate(context, getLayout(), this)
@@ -56,9 +61,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
 
         inputNumberField.textFieldInput.run {
-            isClickable = true
-            isFocusable = false
-            clearFocus()
+            inputType = InputType.TYPE_CLASS_TEXT
+            threshold = 1
+//            dropDownHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl9)
+//            isClickable = true
+//            isFocusable = false
+//            clearFocus()
+            dropDownVerticalOffset = 10
+
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
 
@@ -75,10 +85,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                         btnClear.visibility = View.GONE
                     } else {
                         btnClear.visibility = View.VISIBLE
+                        autoCompleteAdapter1.filter.filter(s)
                     }
                     listener.onRenderOperator()
                 }
             })
+
 
             setOnClickListener {
                 it?.run {
@@ -86,6 +98,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
             }
         }
+
+        initClientNumberAutoComplete(context)
     }
 
     fun clearFocusAutoComplete() {
@@ -105,6 +119,20 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             setMessage(errorMessage)
             setError(true)
         }
+    }
+
+    fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
+//        autoCompleteAdapter1.updateItems(
+//            CommonTopupBillsDataMapper
+//                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
+        autoCompleteAdapter1.updateItems(mutableListOf(
+            TopupBillsAutoCompleteContactDataView("Misael1", "081208120812"),
+            TopupBillsAutoCompleteContactDataView("Misael2", "081908190819"),
+            TopupBillsAutoCompleteContactDataView("Misael3", "081999999999"),
+            TopupBillsAutoCompleteContactDataView("Misael4", "08219283903"),
+            TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
+            TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
+            TopupBillsAutoCompleteContactDataView("Misael7", "085691029101")))
     }
 
     private fun hideErrorInputNumber() {
@@ -143,6 +171,30 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             layoutInputNumber.show()
             layoutResult.hide()
         }
+    }
+
+    private fun initClientNumberAutoComplete(context: Context) {
+        autoCompleteAdapter1 = TopupBillsAutoCompleteAdapter(
+            context,
+            R.layout.item_topup_bills_autocomplete_phonenumber,
+            mutableListOf(
+                TopupBillsAutoCompleteContactDataView("Misael1", "081208120812"),
+                TopupBillsAutoCompleteContactDataView("Misael2", "081908190819"),
+                TopupBillsAutoCompleteContactDataView("Misael3", "081999999999"),
+                TopupBillsAutoCompleteContactDataView("Misael4", "08219283903"),
+                TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
+                TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
+                TopupBillsAutoCompleteContactDataView("Misael7", "085691029101"),
+
+            ),
+            object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return inputNumberField.textFieldInput.text.toString()
+                }
+            }
+        )
+
+        inputNumberField.textFieldInput.setAdapter(autoCompleteAdapter1)
     }
 
     private fun validateContactName(contactName: String): String {

@@ -470,22 +470,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClientNumberHasFocus(clientNumber: String) {
-            operatorId = ""
-            productId = 0
-            sharedModelPrepaid.setVisibilityTotalPrice(false)
-
-            telcoClientNumberWidget.clearFocusAutoComplete()
-
-            val dgCategoryIds = arrayListOf(
-                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                TelcoCategoryType.CATEGORY_ROAMING.toString()
-            )
-
-            navigateFavoriteNumberPage(
-                clientNumber, favNumberList,
-                dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
-            )
+//            operatorId = ""
+//            productId = 0
+//            sharedModelPrepaid.setVisibilityTotalPrice(false)
+//
+//            telcoClientNumberWidget.clearFocusAutoComplete()
+//
+//            val dgCategoryIds = arrayListOf(
+//                TelcoCategoryType.CATEGORY_PULSA.toString(),
+//                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+//                TelcoCategoryType.CATEGORY_ROAMING.toString()
+//            )
+//
+//            navigateFavoriteNumberPage(
+//                clientNumber, favNumberList,
+//                dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
+//            )
         }
     }
 
@@ -625,6 +625,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             autoSelectTabProduct = true
             telcoClientNumberWidget.run {
+                setAutoCompleteList(favNumbers)
                 setInputNumber(favNumbers[0].clientNumber)
                 setContactName(favNumbers[0].clientName)
             }

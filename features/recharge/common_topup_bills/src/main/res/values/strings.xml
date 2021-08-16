@@ -61,4 +61,5 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+    <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
 </resources>

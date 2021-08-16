@@ -306,11 +306,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                postpaidClientNumberWidget.clearFocusAutoComplete()
-                navigateFavoriteNumberPage(
-                    clientNumber, favNumberList,
-                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId)
-                )
+//                postpaidClientNumberWidget.clearFocusAutoComplete()
+//                navigateFavoriteNumberPage(
+//                    clientNumber, favNumberList,
+//                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId)
+//                )
             }
         })
 
@@ -520,6 +520,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
+        postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
     }
 
     private fun performanceMonitoringStopTrace() {
