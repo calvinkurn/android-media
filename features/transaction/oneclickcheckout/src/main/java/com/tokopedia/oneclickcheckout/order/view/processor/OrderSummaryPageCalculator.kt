@@ -194,7 +194,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
                     var itemQty = 0
-                    if (product.hasParentId()) {
+                    if (product.hasParentId() && product.wholesalePriceList.isNotEmpty()) {
                         orderCart.products.filter { !it.isError && it.parentId == product.parentId }
                                 .forEach { itemQty += it.orderQuantity }
                     } else {

@@ -601,6 +601,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                         startActivityForResult(intent, REQUEST_CODE_PROMO)
                                     }
                                 })
+                        promoNotEligibleBottomSheet.dismissListener = {
+                            refresh()
+                        }
                         promoNotEligibleBottomSheet.show(requireContext(), parentFragmentManager)
                         orderSummaryAnalytics.eventViewBottomSheetPromoError()
                     }
