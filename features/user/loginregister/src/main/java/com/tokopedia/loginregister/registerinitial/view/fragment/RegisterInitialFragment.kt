@@ -932,6 +932,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onActivityResultChooseAccount(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+
             activity?.setResult(Activity.RESULT_OK, Intent().putExtras(
                 Bundle().apply {
                     putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
@@ -1276,7 +1277,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
             if (isSmartLogin) {
                 analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
-            } else {
+            }
+
+            if (!isSmartRegister) {
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
 
