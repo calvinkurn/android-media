@@ -956,7 +956,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun addToCart(
+    protected fun addToCart(
             productId: String,
             shopId: String,
             quantity: Int,
@@ -1051,7 +1051,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun deleteCart(
+    protected fun deleteCart(
             productId: String,
             onSuccess: (RemoveFromCartData) -> Unit,
             onError: (Throwable) -> Unit,
