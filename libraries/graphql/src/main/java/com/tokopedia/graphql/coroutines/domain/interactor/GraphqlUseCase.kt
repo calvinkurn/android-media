@@ -2,6 +2,7 @@ package com.tokopedia.graphql.coroutines.domain.interactor
 
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
@@ -24,6 +25,8 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
+
+    constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
 
     fun setCacheStrategy(cacheStrategy: GraphqlCacheStrategy){
         this.cacheStrategy = cacheStrategy
