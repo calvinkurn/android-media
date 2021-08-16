@@ -33,10 +33,13 @@ object RollenceKey {
     const val HOME_PAYMENT_ABC = "PaymentABC"
 
     //home component rollence section
-    const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"
+    const val HOME_COMPONENT_LEGO4BANNER_EXP = "lego4_test"
     const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
     const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-    const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "cat_test"
+    const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
+    const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
+    const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
+    const val HOME_COMPONENT_CATEGORYWIDGET_EXP = "cat_test"
     const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
     const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
     const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
