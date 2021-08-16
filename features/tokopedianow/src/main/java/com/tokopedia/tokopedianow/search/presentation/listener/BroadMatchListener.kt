@@ -12,7 +12,11 @@ interface BroadMatchListener {
 
     fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
-    fun onBroadMatchItemATCNonVariant(broadMatchItemDataView: BroadMatchItemDataView, quantity: Int)
+    fun onBroadMatchItemATCNonVariant(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    )
 
     fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
 

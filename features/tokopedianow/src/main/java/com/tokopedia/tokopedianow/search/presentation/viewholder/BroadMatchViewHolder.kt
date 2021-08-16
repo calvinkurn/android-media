@@ -70,14 +70,24 @@ class BroadMatchViewHolder(
             scrollToPosition = broadMatchListener.onGetCarouselScrollPosition(adapterPosition),
             showSeeMoreCard = false,
             carouselProductCardOnItemClickListener = object: OnItemClickListener {
-                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                    val broadMatchItem = broadMatchItemList.getOrNull(carouselProductCardPosition) ?: return
+                override fun onItemClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int,
+                ) {
+                    val broadMatchItem = broadMatchItemList
+                        .getOrNull(carouselProductCardPosition) ?: return
+
                     broadMatchListener.onBroadMatchItemClicked(broadMatchItem)
                 }
             },
             carouselProductCardOnItemImpressedListener = object: OnItemImpressedListener {
-                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                    val broadMatchItem = broadMatchItemList.getOrNull(carouselProductCardPosition) ?: return
+                override fun onItemImpressed(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int,
+                ) {
+                    val broadMatchItem = broadMatchItemList
+                        .getOrNull(carouselProductCardPosition) ?: return
+
                     broadMatchListener.onBroadMatchItemImpressed(broadMatchItem)
                 }
 
@@ -86,10 +96,21 @@ class BroadMatchViewHolder(
                 }
             },
             carouselProductCardOnItemATCNonVariantClickListener = object: OnATCNonVariantClickListener {
-                override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
-                    val broadMatchItem = broadMatchItemList.getOrNull(carouselProductCardPosition) ?: return
+                override fun onATCNonVariantClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int,
+                    quantity: Int,
+                ) {
+                    val broadMatchItem = broadMatchItemList
+                        .getOrNull(carouselProductCardPosition) ?: return
+
                     saveCarouselScrollPosition()
-                    broadMatchListener.onBroadMatchItemATCNonVariant(broadMatchItem, quantity)
+
+                    broadMatchListener.onBroadMatchItemATCNonVariant(
+                        broadMatchItem,
+                        quantity,
+                        adapterPosition,
+                    )
                 }
             },
         )
@@ -108,8 +129,7 @@ class BroadMatchViewHolder(
 
     private fun saveCarouselScrollPosition() {
         val adapterPosition = this.adapterPosition
-        val carouselScrollPosition =
-            carouselProductCardView?.getCurrentPosition() ?: 0
+        val carouselScrollPosition = carouselProductCardView?.getCurrentPosition() ?: 0
 
         broadMatchListener.onSaveCarouselScrollPosition(
             adapterPosition = adapterPosition,

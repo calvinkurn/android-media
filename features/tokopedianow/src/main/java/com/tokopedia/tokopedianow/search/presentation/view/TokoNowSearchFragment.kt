@@ -98,6 +98,7 @@ class TokoNowSearchFragment:
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartBroadMatchTrackingLiveData.observe(this::sendATCBroadMatchTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -358,8 +359,25 @@ class TokoNowSearchFragment:
         RouteManager.route(context, broadMatchItemDataView.applink)
     }
 
-    override fun onBroadMatchItemATCNonVariant(broadMatchItemDataView: BroadMatchItemDataView, quantity: Int) {
+    override fun onBroadMatchItemATCNonVariant(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    ) {
+        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
+    }
 
+    private fun sendATCBroadMatchTrackingEvent(
+        atcTrackingData: Triple<Int, String, BroadMatchItemDataView>
+    ) {
+        val (quantity, _, broadMatchItemDataView) = atcTrackingData
+
+        SearchTracking.sendBroadMatchAddToCartEvent(
+            broadMatchItemDataView,
+            getViewModel().query,
+            getUserId(),
+            quantity,
+        )
     }
 
     override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
