@@ -371,12 +371,4 @@ class TokoNowSearchFragment:
 
         RouteManager.route(context, broadMatchDataView.applink)
     }
-
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
-    }
-
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
-    }
 }
