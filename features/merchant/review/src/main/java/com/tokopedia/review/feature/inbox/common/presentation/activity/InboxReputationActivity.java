@@ -41,7 +41,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
-import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationPenaltyFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.unifycomponents.TabsUnify;
@@ -62,14 +61,12 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
-    public static final String GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     public static final int TAB_SELLER_INBOX_REVIEW = 1;
-    private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
     private Fragment inboxReviewFragment;
     private Fragment sellerReputationPenaltyFragment;
@@ -88,7 +85,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private boolean goToReputationHistory;
     private boolean goToBuyerReview;
-    private boolean goToInboxReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
@@ -103,7 +99,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
-        goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
@@ -140,7 +135,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             }
             reviewSellerFragment.setArguments(reviewSellerBundle);
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
-            sellerReputationFragment = SellerReputationFragment.createInstance();
             sellerReputationPenaltyFragment = SellerReputationPenaltyFragment.newInstance();
         }
     }
