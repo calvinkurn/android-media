@@ -307,6 +307,8 @@
     <string name="mvc_success_download_voucher">Download Voucher Toko berhasil</string>
     <string name="mvc_fail_download_voucher">Download Voucher Toko tidak berhasil</string>
     <string name="mvc_fail_download_voucher_suffix">. Cek koneksi internet.</string>
+    <string name="mvc_voucher_type_image_content_desc">Gambar tipe voucher</string>
+    <string name="mvc_btn_mvc_more_content_desc">tombol lebih banyak opsi</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_total_quota">/%s</string>

@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMvcVoucherStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="@+id/viewMvcVoucherStatus"
             tools:text="Sedang Berlangsung" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMvcVoucherDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,12 +65,13 @@
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/mvc_dimen_12dp"
+            android:contentDescription="@string/mvc_voucher_type_image_content_desc"
             app:layout_constraintStart_toEndOf="@+id/tvMvcVoucherStatus"
             app:layout_constraintStart_toStartOf="@+id/tvMvcVoucherStatus"
             app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherStatus"
             tools:src="@tools:sample/avatars" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMvcVoucherName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -216,6 +217,7 @@
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl4"
             android:background="@drawable/mvc_rectangle_white_radius_4dp"
+            android:contentDescription="@string/mvc_btn_mvc_more_content_desc"
             android:scaleType="centerInside"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/btnMvcVoucherCta"
