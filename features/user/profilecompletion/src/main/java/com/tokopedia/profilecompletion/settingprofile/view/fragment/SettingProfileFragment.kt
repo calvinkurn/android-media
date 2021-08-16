@@ -80,6 +80,18 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private var chancesChangeName = "0"
 
+    private val editPhotoListener = object: View.OnClickListener {
+        override fun onClick(v: View?) {
+            val ctx = context ?: return
+            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
+                maxFileSizeInKB = MAX_FILE_SIZE
+            }
+            val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
+            startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorUtils.setBackgroundColor(context, activity)
@@ -101,8 +113,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         initObserver()
 
-        profilePhoto.setOnClickListener(EditUserProfilePhotoListener())
-        btnEditProfilePhoto.setOnClickListener(EditUserProfilePhotoListener())
+        profilePhoto.setOnClickListener(editPhotoListener)
+        btnEditProfilePhoto.setOnClickListener(editPhotoListener)
 
         initSettingProfileData()
     }
@@ -359,42 +371,36 @@ class SettingProfileFragment : BaseDaggerFragment() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
-        userSession.phoneNumber = profileCompletionData.msisdn
-        userSession.email = profileCompletionData.email
-
-        ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
-
-        renderWarningTickerName(profileCompletionData)
-        renderNameField(profileCompletionData)
-
-        if (profileCompletionData.birthDay.isEmpty()) {
+    private fun checkBirthDay(birthDay: String) {
+        if (birthDay.isEmpty()) {
             bod?.showEmpty(
-                    getString(R.string.subtitle_bod_setting_profile),
-                    getString(R.string.hint_bod_setting_profile),
-                    true
+                getString(R.string.subtitle_bod_setting_profile),
+                getString(R.string.hint_bod_setting_profile),
+                true
             ) {
                 goToAddBod()
             }
         } else {
             bod?.showFilled(
-                    getString(R.string.subtitle_bod_setting_profile),
-                    DateFormatUtils.formatDate(
-                            DateFormatUtils.FORMAT_YYYY_MM_DD,
-                            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                            profileCompletionData.birthDay),
-                    showVerified = false,
-                    showButton = true
+                getString(R.string.subtitle_bod_setting_profile),
+                DateFormatUtils.formatDate(
+                    DateFormatUtils.FORMAT_YYYY_MM_DD,
+                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    birthDay),
+                showVerified = false,
+                showButton = true
             ) {
-                goToChangeBod(profileCompletionData.birthDay)
+                goToChangeBod(birthDay)
             }
         }
+    }
 
-        if (profileCompletionData.gender != 1 && profileCompletionData.gender != 2) {
+    private fun checkGender(genderType: Int) {
+        if (genderType != GENDER_MALE && genderType != GENDER_FEMALE) {
             gender?.showEmpty(
-                    getString(R.string.subtitle_gender_setting_profile),
-                    getString(R.string.hint_gender_setting_profile),
-                    true
+                getString(R.string.subtitle_gender_setting_profile),
+                getString(R.string.hint_gender_setting_profile),
+                true
             ) {
                 val intent =
                     RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
@@ -402,31 +408,34 @@ class SettingProfileFragment : BaseDaggerFragment() {
             }
         } else {
             gender?.showFilled(
-                    getString(R.string.subtitle_gender_setting_profile),
-                    if (profileCompletionData.gender == 1)
-                        getString(R.string.profile_completion_man)
-                    else getString(R.string.profile_completion_woman),
-                    showVerified = false,
-                    showButton = false
+                getString(R.string.subtitle_gender_setting_profile),
+                if (genderType == GENDER_MALE)
+                    getString(R.string.profile_completion_man)
+                else getString(R.string.profile_completion_woman),
+                showVerified = false,
+                showButton = false
             )
         }
+    }
+
+    private fun checkEmail(profileCompletionData: ProfileCompletionData){
         val isEmailDone = profileCompletionData.isEmailDone
         if (profileCompletionData.email.isEmpty() || !isEmailDone) {
             email?.showEmpty(
-                    getString(R.string.subtitle_email_setting_profile),
-                    getString(R.string.hint_email_setting_profile),
-                    getString(R.string.message_email_setting_profile),
-                    false
+                getString(R.string.subtitle_email_setting_profile),
+                getString(R.string.hint_email_setting_profile),
+                getString(R.string.message_email_setting_profile),
+                false
             ) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
                 startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
             }
         } else {
             email?.showFilled(
-                    getString(R.string.subtitle_email_setting_profile),
-                    profileCompletionData.email,
-                    showVerified = true,
-                    showButton = true
+                getString(R.string.subtitle_email_setting_profile),
+                profileCompletionData.email,
+                showVerified = true,
+                showButton = true
             ) {
                 if (profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified) {
                     goToChangeEmail()
@@ -437,23 +446,25 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun checkMsisdn(profileCompletionData: ProfileCompletionData) {
         if (profileCompletionData.msisdn.isEmpty()) {
             phone?.showEmpty(
-                    getString(R.string.subtitle_phone_setting_profile),
-                    getString(R.string.hint_phone_setting_profile),
-                    getString(R.string.message_phone_setting_profile),
-                    true
+                getString(R.string.subtitle_phone_setting_profile),
+                getString(R.string.hint_phone_setting_profile),
+                getString(R.string.message_phone_setting_profile),
+                true
             ) {
                 goToAddPhone()
             }
             tickerPhoneVerification?.visibility = View.GONE
         } else {
             phone?.showFilled(
-                    getString(R.string.subtitle_phone_setting_profile),
-                    PhoneNumberUtil.transform(profileCompletionData.msisdn),
-                    profileCompletionData.isMsisdnVerified,
-                    true
+                getString(R.string.subtitle_phone_setting_profile),
+                PhoneNumberUtil.transform(profileCompletionData.msisdn),
+                profileCompletionData.isMsisdnVerified,
+                true
             ) {
                 if (profileCompletionData.isMsisdnVerified) {
                     goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
@@ -462,25 +473,41 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
 
-            if (profileCompletionData.isMsisdnVerified) {
-                tickerPhoneVerification?.visibility = View.GONE
-            } else {
-                tickerPhoneVerification?.visibility = View.VISIBLE
-                tickerPhoneVerification?.setHtmlDescription(
-                        getString(R.string.ticker_phone_verification)
-                )
-                tickerPhoneVerification?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
-                    }
-
-                    override fun onDismiss() {
-                    }
-
-                })
-
-            }
+            checkMsisdnVerified(profileCompletionData.isMsisdnVerified, profileCompletionData.msisdn)
         }
+    }
+
+    private fun checkMsisdnVerified(isMsisdnVerified: Boolean, msisdn: String){
+        if (isMsisdnVerified) {
+            tickerPhoneVerification?.visibility = View.GONE
+        } else {
+            tickerPhoneVerification?.visibility = View.VISIBLE
+            tickerPhoneVerification?.setHtmlDescription(
+                getString(R.string.ticker_phone_verification)
+            )
+            tickerPhoneVerification?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    goToAddPhoneBy(PhoneNumberUtil.replace62with0(msisdn))
+                }
+                override fun onDismiss() {}
+            })
+
+        }
+    }
+
+    private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
+        userSession.phoneNumber = profileCompletionData.msisdn
+        userSession.email = profileCompletionData.email
+
+        ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
+
+        renderWarningTickerName(profileCompletionData)
+        renderNameField(profileCompletionData)
+
+        checkBirthDay(profileCompletionData.birthDay)
+        checkGender(profileCompletionData.gender)
+        checkEmail(profileCompletionData)
+        checkMsisdn(profileCompletionData)
 
         profileRoleViewModel.getUserProfileRole()
     }
@@ -585,18 +612,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
         profileInfoViewModel.flush()
     }
 
-    inner class EditUserProfilePhotoListener : View.OnClickListener {
-        override fun onClick(v: View?) {
-            val ctx = context ?: return
-            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
-                maxFileSizeInKB = MAX_FILE_SIZE
-            }
-            val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
-            startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
-        }
-    }
-
     private fun showLoading(isOverlay: Boolean = false) {
         if (isOverlay) {
             overlayView?.visibility = View.VISIBLE
@@ -632,6 +647,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         private const val DEFAULT_NAME = "Toppers-"
         private const val MAX_FILE_SIZE = 2048
         private const val GENDER_MALE = 1
+        private const val GENDER_FEMALE = 2
 
         fun createInstance(bundle: Bundle): SettingProfileFragment {
             val fragment = SettingProfileFragment()
