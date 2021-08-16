@@ -156,6 +156,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
+        const val DELAY_SCROLL_TO_POSITION = 40L
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
@@ -2248,7 +2249,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
                                 val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
-                                recyclerView.stepScrollToPositionWithDelay(finalPosition, 40)
+                                recyclerView.stepScrollToPositionWithDelay(finalPosition, DELAY_SCROLL_TO_POSITION)
                             }
                         }
                     }
