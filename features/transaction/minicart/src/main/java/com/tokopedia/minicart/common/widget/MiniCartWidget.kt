@@ -424,6 +424,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(true)
+        viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 

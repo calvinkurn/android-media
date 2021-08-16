@@ -89,7 +89,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     promos = shopPromos
                             )
                     )
-            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1))
+            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))
 
             try {
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
