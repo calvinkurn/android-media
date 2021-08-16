@@ -128,6 +128,16 @@ interface CommonConstant {
         }
     }
 
+    interface TimerConstant {
+        companion object {
+            const val TIMER_DESC = "%s lagi"
+            const val DAY_TEXT = "hari"
+            const val HOUR_TEXT = "jam"
+            const val MINUTE_TEXT = "menit"
+            const val SECOND_TEXT = "detik"
+        }
+    }
+
     companion object {
         const val UTF_ENCODING = "UTF-8"
         const val COUPON_MIME_TYPE = "text/html"

@@ -318,10 +318,10 @@ object AnalyticsTrackerUtil {
             const val CLICK_SHOP_NAME = "click shop name"
             const val CLICK_PRODUCT_CARD = "click product card"
             const val VIEW_HOMEPAGE = "view homepage"
-
             const val IMPRESSION_RECOM_ACTION = "impression - products"
             const val CLICK_RECOM_ACTION = "click - products"
-
+            const val VIEW_STATUSMATCHING_ON_REWARDS = "view status matching ticker"
+            const val CLICK_STATUSMATCHING_ON_REWARDS = "click status matching ticke"
         }
     }
 

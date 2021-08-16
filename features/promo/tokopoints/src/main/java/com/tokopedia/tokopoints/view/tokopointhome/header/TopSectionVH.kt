@@ -20,16 +20,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
+import com.tokopedia.tokopoints.view.customview.TimerTextView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
@@ -40,7 +39,6 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifyprinciples.Typography
 
 
 class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
@@ -49,7 +47,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var dynamicAction: DynamicItemActionView? = null
     private var mTextMembershipLabel: TextView? = null
     private var mTargetText: TextView? = null
-    private var mTextMembershipValueBottom: TextView? = null
     private var mTextMembershipValue: TextView? = null
     private var mImgBackground: ImageView? = null
     private var mValueMembershipDescription: String? = null
@@ -59,11 +56,11 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var savingDesc: TextView? = null
     private var cardContainer: ConstraintLayout? = null
     private var containerUserSaving: ConstraintLayout? = null
-    private var containerStatusMatching: ConstraintLayout? = null
-    private var tvStatusMatching: Typography? = null
+    private var containerStatusMatching: View? = null
     private var backGroundImage: AppCompatImageView? = null
     private var cardStatusMatching: CardUnify? = null
-    private var confettiAnim: LottieAnimationView?=null
+    private var confettiAnim: LottieAnimationView? = null
+    private var timerTextView: TimerTextView? = null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -80,21 +77,20 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         savingDesc = itemView.findViewById(R.id.tv_saving_desc)
         cardContainer = itemView.findViewById(R.id.container_saving)
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
-        containerStatusMatching = itemView.findViewById(R.id.container_statusmatching)
-        tvStatusMatching = itemView.findViewById(R.id.tv_statusmatching)
+        containerStatusMatching = itemView.findViewById(R.id.status_matching_container)
         backGroundImage = itemView.findViewById(R.id.iv_background)
         cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
         confettiAnim = itemView.findViewById(R.id.confetti_lottie)
+        timerTextView = itemView.findViewById(R.id.timer_text_view)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
-        if (model.userSavingResponse?.userSaving!=null){
-        model.userSavingResponse.userSaving.let {
+        model.userSavingResponse?.userSaving?.let {
             containerUserSaving?.show()
             renderUserSaving(it)
-        }}
+        }
         model.rewardTickerResponse?.let {
             if (!it.rewardsTickerList?.tickerList.isNullOrEmpty()) {
-                containerStatusMatching?.show()
+                cardStatusMatching?.show()
                 renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
         }
@@ -133,7 +129,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         }
 
         ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.profilePicture)
-        mTextMembershipValueBottom?.text = mValueMembershipDescription
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -293,23 +288,47 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     }
 
     private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
+
+        AnalyticsTrackerUtil.sendEvent(
+            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+            AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
+            AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+        )
         cardStatusMatching?.setOnClickListener {
             rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
                 if (url.isNotEmpty()) {
                     RouteManager.route(
                         itemView.context,url)
                 }
+                AnalyticsTrackerUtil.sendEvent(
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_STATUSMATCHING_ON_REWARDS, "",
+                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+                )
             }
         }
         playAnimation()
-        backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
-        tvStatusMatching?.text = rewardTickerResponse?.get(0)?.metadata?.get(0)?.text?.content
-
+        backGroundImage?.setBackgroundResource(R.drawable.ic_reward_tickerbg)
+        timerTextView?.setStatusTimerListener(object : TimerTextView.StatusTimerListener{
+            override fun onTimerFinish() {
+                hideStatusMatching()
+            }
+        })
+        timerTextView?.setTimer(rewardTickerResponse?.get(0)?.metadata?.get(0))
     }
 
     private fun playAnimation(){
         confettiAnim?.repeatCount = ValueAnimator.INFINITE
         confettiAnim?.playAnimation()
+    }
+
+     fun hideStatusMatching() {
+         cardStatusMatching?.hide()
+         containerStatusMatching?.hide()
     }
 
     interface CardRuntimeHeightListener {

@@ -4,84 +4,90 @@ import com.google.gson.annotations.SerializedName
 
 data class RewardTickerListResponse(
 
-	@field:SerializedName("rewardsTickerList")
-	val rewardsTickerList: RewardsTickerList? = null
+    @SerializedName("rewardsTickerList")
+    val rewardsTickerList: RewardsTickerList? = null
 )
 
 data class Image(
 
-	@field:SerializedName("url")
-	val url: String? = null
+    @SerializedName("url")
+    val url: String? = null
 )
 
 data class Link(
 
-	@field:SerializedName("applink")
-	val applink: String? = null,
+    @SerializedName("applink")
+    val applink: String? = null,
 
-	@field:SerializedName("url")
-	val url: String? = null
+    @SerializedName("url")
+    val url: String? = null
 )
 
 data class ResultStatus(
 
-	@field:SerializedName("code")
-	val code: String? = null,
+    @SerializedName("code")
+    val code: String? = null,
 
-	@field:SerializedName("message")
-	val message: List<String?>? = null,
+    @SerializedName("message")
+    val message: List<String?>? = null,
 
-	@field:SerializedName("status")
-	val status: String? = null
+    @SerializedName("status")
+    val status: String? = null
 )
 
 data class Text(
 
-	@field:SerializedName("color")
-	val color: String? = null,
+    @SerializedName("color")
+    val color: String? = null,
 
-	@field:SerializedName("format")
-	val format: String? = null,
+    @SerializedName("format")
+    val format: String? = null,
 
-	@field:SerializedName("content")
-	val content: String? = null
+    @SerializedName("content")
+    val content: String? = null
 )
 
 data class RewardsTickerList(
 
-	@field:SerializedName("resultStatus")
-	val resultStatus: ResultStatus? = null,
+    @SerializedName("resultStatus")
+    val resultStatus: ResultStatus? = null,
 
-	@field:SerializedName("tickerList")
-	val tickerList: List<TickerListItem?>? = null
+    @SerializedName("tickerList")
+    val tickerList: List<TickerListItem?>? = null
 )
 
 data class TickerListItem(
 
-	@field:SerializedName("metadata")
-	val metadata: List<MetadataItem?>? = null,
+    @SerializedName("metadata")
+    val metadata: List<MetadataItem?>? = null,
 
-	@field:SerializedName("id")
-	val id: Int? = null,
+    @SerializedName("id")
+    val id: Int? = null,
 
-	@field:SerializedName("type")
-	val type: String? = null
+    @SerializedName("type")
+    val type: String? = null
 )
 
 data class MetadataItem(
 
-	@field:SerializedName("image")
-	val image: Image? = null,
+    @SerializedName("image")
+    val image: Image? = null,
 
-	@field:SerializedName("link")
-	val link: Link? = null,
+    @SerializedName("link")
+    val link: Link? = null,
 
-	@field:SerializedName("backgroundImageURLDesktop")
-	val backgroundImageURLDesktop: String? = null,
+    @SerializedName("backgroundImageURLDesktop")
+    val backgroundImageURLDesktop: String? = null,
 
-	@field:SerializedName("text")
-	val text: Text? = null,
+    @SerializedName("text")
+    val text: Text? = null,
 
-	@field:SerializedName("backgroundImageURL")
-	val backgroundImageURL: String? = null
+    @SerializedName("backgroundImageURL")
+    val backgroundImageURL: String? = null,
+
+    @SerializedName("timeRemainingSeconds")
+    var timeRemainingSeconds: Long? = null,
+
+    @SerializedName("isShowTime")
+    var isShowTime: Boolean? = false
 )
