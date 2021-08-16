@@ -178,7 +178,7 @@ class SmartBillsViewModel @Inject constructor(
             mutableDeleteSBM.postValue(Success(data))
         }
         ) {
-            mutableCatalogList.postValue(Fail(it))
+            mutableDeleteSBM.postValue(Fail(it))
         }
     }
 

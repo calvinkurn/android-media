@@ -18,6 +18,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -541,4 +542,101 @@ class SmartBillsViewModelTest {
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Fail)
     }
+
+    @Test
+    fun createCatalogIDParam(){
+        //given
+        val platform = 48
+
+        //when
+        val actual = smartBillsViewModel.createCatalogIDParam(platform)
+
+        //then
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_PLATFORM_ID to platform
+        ))
+    }
+
+    @Test
+    fun createParamDeleteSBM(){
+        //given
+        val request = RechargeSBMDeleteBillRequest()
+
+        //when
+        val actual = smartBillsViewModel.createParamDeleteSBM(request)
+
+        //then
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_DELETE_SBM to request
+        ))
+    }
+
+    @Test
+    fun getCatalogAddBills_Success() {
+        //given
+        val catalogs = RechargeCatalogMenuAddBills(listOf(SmartBillsCatalogMenu(id = "1")))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeCatalogMenuAddBills::class.java
+        result[objectType] = catalogs
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.getCatalogAddBills(mapParams)
+
+        //then
+        val actualData = smartBillsViewModel.catalogList.value
+        assert(actualData is Success)
+        val actual = (actualData as Success).data
+        Assert.assertNotNull(actual)
+        Assert.assertEquals(catalogs.response, actual)
+    }
+
+    @Test
+    fun getCatalogAddBills_Fail() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
+        smartBillsViewModel.getCatalogAddBills(mapParams)
+
+        val actualData = smartBillsViewModel.catalogList.value
+        assert(actualData is Fail)
+    }
+
+    @Test
+    fun deleteProductSBM_Success() {
+        //given
+        val deleteSBM = RechargeDeleteSBM(RechargeSBMDeleteBill(message = "Berhasil delete"))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeDeleteSBM::class.java
+        result[objectType] = deleteSBM
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.deleteProductSBM(mapParams)
+
+        //then
+        val actualData = smartBillsViewModel.deleteSBM.value
+        assert(actualData is Success)
+        val actual = (actualData as Success).data
+        Assert.assertNotNull(actual)
+        Assert.assertEquals(deleteSBM, actual)
+    }
+
+    @Test
+    fun deleteProductSBM_Fail() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
+        smartBillsViewModel.deleteProductSBM(mapParams)
+
+        val actualData = smartBillsViewModel.deleteSBM.value
+        assert(actualData is Fail)
+    }
+
 }
