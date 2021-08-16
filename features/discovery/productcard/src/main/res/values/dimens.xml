@@ -103,9 +103,10 @@
 
     <dimen name="product_card_label_best_seller_height">20dp</dimen>
     <dimen name="product_card_label_best_seller_category_side_height">20dp</dimen>
-    <dimen name="product_card_label_best_seller_category_bottom_height">20dp</dimen>
+    <dimen name="product_card_label_best_seller_category_bottom_height">14dp</dimen>
     <dimen name="product_card_label_best_seller_margintop">8dp</dimen>
     <dimen name="product_card_label_best_seller_paddingtop">3dp</dimen>
+    <dimen name="product_card_label_best_seller_category_bottom_margin_vertical">4dp</dimen>
     <dimen name="dp_6">6dp</dimen>
 
     <dimen name="product_card_fulfillment_badge_margin_top">5dp</dimen>
