@@ -682,6 +682,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return analytic
     }
 
+    override fun getRole(): Int {
+        return containerListener?.role ?: -1
+    }
+
     override fun hasFilter(): Boolean {
         return viewModel.hasFilter()
     }

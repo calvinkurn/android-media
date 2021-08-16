@@ -145,4 +145,5 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
+    //TODO: buyer scroll state should not interfere with seller scroll state
 }

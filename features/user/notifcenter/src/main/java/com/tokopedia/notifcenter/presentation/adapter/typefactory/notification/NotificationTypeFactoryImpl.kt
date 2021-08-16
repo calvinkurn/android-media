@@ -122,7 +122,8 @@ class NotificationTypeFactoryImpl constructor(
                     view, notificationListener, notifAdapterListener
             )
             NotificationOrderListViewHolder.LAYOUT -> NotificationOrderListViewHolder(
-                view, notificationListener, notifAdapterListener
+                view, notificationListener, notifAdapterListener,
+                adapterListener as? NotificationOrderListViewHolder.Listener
             )
             else -> createViewHolder(view, viewType)
         }

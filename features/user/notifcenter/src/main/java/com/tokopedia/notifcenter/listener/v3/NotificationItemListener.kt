@@ -35,4 +35,5 @@ interface NotificationItemListener {
     fun amISeller(): Boolean
     fun trackClickOrderListItem(order: Card)
     fun getNotifAnalytic(): NotificationAnalytic
+    fun getRole(): Int
 }

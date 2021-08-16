@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
+import android.os.Parcelable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,18 +18,26 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 import com.tokopedia.notifcenter.util.view.ShadowGenerator
 import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
 
-// TODO: Retain state when user scroll back
 // TODO: Compare cache and network response, update necessary item only
 // TODO: Fix this instrumentation test
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
-    notificationItemListener: NotificationItemListener?,
-    private val adapterListener: NotificationAdapterListener?
+    private val notificationItemListener: NotificationItemListener?,
+    private val adapterListener: NotificationAdapterListener?,
+    private val listener: Listener?
 ) : AbstractViewHolder<NotifOrderListUiModel>(itemView) {
 
     private val rv: RecyclerView? = itemView?.findViewById(R.id.rv_order_list)
     private val typeFactory = DefaultOrderListTypeFactory(notificationItemListener)
     private val rvAdapter = OrderListAdapter(typeFactory)
+    private val rvLm = LinearLayoutManager(
+        itemView?.context, LinearLayoutManager.HORIZONTAL, false
+    )
+
+    interface Listener {
+        fun saveOrderWidgetState(key: String, currentState: Parcelable?)
+        fun getSavedOrderCarouselState(key: String): Parcelable?
+    }
 
     init {
         initRecyclerView()
@@ -39,11 +48,22 @@ class NotificationOrderListViewHolder constructor(
             setHasFixedSize(true)
             setRecycledViewPool(adapterListener?.getNotificationOrderViewPool())
             itemAnimator = null
-            layoutManager = LinearLayoutManager(
-                itemView.context, LinearLayoutManager.HORIZONTAL, false
-            )
+            layoutManager = rvLm
             adapter = rvAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val currentState = rvLm.onSaveInstanceState()
+                        val key = getStateKey()
+                        listener?.saveOrderWidgetState(key, currentState)
+                    }
+                }
+            })
         }
+    }
+
+    private fun getStateKey(): String {
+        return "${notificationItemListener?.getRole()}-$adapterPosition"
     }
 
     override fun bind(element: NotifOrderListUiModel, payloads: MutableList<Any>) {
@@ -57,10 +77,18 @@ class NotificationOrderListViewHolder constructor(
 
     override fun bind(element: NotifOrderListUiModel) {
         updateListData(element)
+        bindScrollState(element)
     }
 
     private fun updateListData(element: NotifOrderListUiModel) {
         rvAdapter.updateData(element.list)
+    }
+
+    private fun bindScrollState(element: NotifOrderListUiModel) {
+        val key = getStateKey()
+        listener?.getSavedOrderCarouselState(key)?.let { previousState ->
+            rvLm.onRestoreInstanceState(previousState)
+        }
     }
 
     companion object {

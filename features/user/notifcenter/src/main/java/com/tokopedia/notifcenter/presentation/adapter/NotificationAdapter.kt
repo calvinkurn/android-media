@@ -17,10 +17,7 @@ import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 
@@ -29,15 +26,25 @@ class NotificationAdapter constructor(
         private val listener: Listener
 ) : BaseListAdapter<Visitable<*>, NotificationTypeFactory>(
         typeFactory
-), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener {
+), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener,
+    NotificationOrderListViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private val orderWidgetCarouselState: ArrayMap<String, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
 
     interface Listener {
         fun hasFilter(): Boolean
+    }
+
+    override fun saveOrderWidgetState(key: String, currentState: Parcelable?) {
+        orderWidgetCarouselState[key] = currentState
+    }
+
+    override fun getSavedOrderCarouselState(key: String): Parcelable? {
+       return orderWidgetCarouselState[key]
     }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
