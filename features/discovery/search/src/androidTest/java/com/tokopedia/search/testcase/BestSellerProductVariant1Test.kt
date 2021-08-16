@@ -2,6 +2,8 @@ package com.tokopedia.search.testcase
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.view.View
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
@@ -13,17 +15,15 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
-import com.tokopedia.search.RecyclerViewHasItemIdlingResource
-import com.tokopedia.search.SearchMockModelConfig
-import com.tokopedia.search.createIntent
-import com.tokopedia.search.disableOnBoarding
-import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.core.StringContains
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -42,6 +42,7 @@ class BestSellerProductVariant1Test {
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val showBottomCard = 2
 
     @Before
     fun setUp() {
@@ -78,7 +79,7 @@ class BestSellerProductVariant1Test {
             recyclerView.getProductListAdapter().itemList.getVariant1BestSellerProduct()
         Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-                bestSellerVariant1Position
+                bestSellerVariant1Position+showBottomCard
             )
         )
         Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
@@ -87,6 +88,13 @@ class BestSellerProductVariant1Test {
                 ViewActions.click()
             )
         )
+        //check label best seller show
+        Espresso.onView(
+            RecyclerViewMatcher(recyclerViewId).atPositionOnView(
+                bestSellerVariant1Position,
+                R.id.labelBestSeller
+            )
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After

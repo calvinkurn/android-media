@@ -23,6 +23,7 @@ import com.tokopedia.search.disableOnBoarding
 import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -87,6 +88,20 @@ class BestSellerProductVariant4Test {
                 ViewActions.click()
             )
         )
+        //check label best seller show
+        Espresso.onView(
+            RecyclerViewMatcher(recyclerViewId).atPositionOnView(
+                bestSellerVariant4Position,
+                R.id.labelBestSeller
+            )
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        //check label category bottom show
+        Espresso.onView(
+            RecyclerViewMatcher(recyclerViewId).atPositionOnView(
+                bestSellerVariant4Position,
+                R.id.textCategoryBottom
+            )
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After

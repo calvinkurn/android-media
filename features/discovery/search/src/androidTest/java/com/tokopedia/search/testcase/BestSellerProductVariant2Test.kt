@@ -18,6 +18,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -37,6 +38,7 @@ class BestSellerProductVariant2Test {
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val showBottomCard = 2
 
     @Before
     fun setUp() {
@@ -73,7 +75,7 @@ class BestSellerProductVariant2Test {
             recyclerView.getProductListAdapter().itemList.getVariant2BestSellerProduct()
         Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-                bestSellerVariant2Position
+                bestSellerVariant2Position+showBottomCard
             )
         )
         Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
@@ -82,6 +84,20 @@ class BestSellerProductVariant2Test {
                 ViewActions.click()
             )
         )
+        //check label best seller show
+        Espresso.onView(
+            RecyclerViewMatcher(recyclerViewId).atPositionOnView(
+                bestSellerVariant2Position,
+                R.id.labelBestSeller
+            )
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        //check label category side show
+        Espresso.onView(
+            RecyclerViewMatcher(recyclerViewId).atPositionOnView(
+                bestSellerVariant2Position,
+                R.id.labelCategorySide
+            )
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After
