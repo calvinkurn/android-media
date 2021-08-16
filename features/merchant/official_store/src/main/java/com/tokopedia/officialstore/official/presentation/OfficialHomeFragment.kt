@@ -31,7 +31,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -45,6 +44,7 @@ import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.officialstore.official.OfficialStoreHelper.extractCategoryId
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -119,7 +119,7 @@ class OfficialHomeFragment :
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
     private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
-    private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
+    private var productRecommendationPerformanceMonitoring: PerformanceMonitoring? = null
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -127,12 +127,10 @@ class OfficialHomeFragment :
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val categoryConst: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, categoryConst)
-                    val categories = category?.categories.toString()
-                    val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
-                    val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
+                    val categoryId = extractCategoryId(category)
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
+                    viewModel.loadMoreProducts(categoryId, page)
 
                     officialHomeMapper.showLoadingMore(adapter)
 
@@ -795,7 +793,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
-            productRecommendationPerformanceMonitoring.stopTrace()
+            productRecommendationPerformanceMonitoring?.stopTrace()
         })
     }
 

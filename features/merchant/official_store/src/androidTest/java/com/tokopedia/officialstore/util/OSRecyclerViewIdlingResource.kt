@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.util
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
@@ -20,7 +21,11 @@ internal class OSRecyclerViewIdlingResource(
     override fun isIdleNow(): Boolean {
         val recyclerView = recyclerView ?: return true
         val isIdle = (recyclerView.adapter as? OfficialHomeAdapter).isContainsProductRecom()
-        if (isIdle) resourceCallback?.onTransitionToIdle()
+        if (isIdle) {
+            Log.d("DevaraFikry", "Id idle now")
+            resourceCallback?.onTransitionToIdle()
+        }
+
 
         return isIdle
     }

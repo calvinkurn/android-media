@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -7,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
+import com.tokopedia.officialstore.official.OfficialStoreHelper.extractCategoryId
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -101,6 +103,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
             getOfficialStoreDynamicChannel(currentSlug, location)
+            loadMoreProducts(extractCategoryId(category), isFirstLoad = true)
         }) {
             _officialStoreBannersResult.value = Fail(it)
             _officialStoreBenefitResult.value = Fail(it)
@@ -108,12 +111,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
+    fun loadMoreProducts(categoryId: String, pageNumber: Int = 1, pageName: String = "official-store", isFirstLoad: Boolean = false) {
         launch {
             try {
+                val pageNumberForLoadMore = if (isFirstLoad) 1 else (pageNumber + 1)
                 withContext(dispatchers.io) {
                     val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
-                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
+                            .getOfficialStoreRecomParams(pageNumberForLoadMore, pageName, categoryId)).toBlocking()
                     _productRecommendation.postValue(Success(recomData.first().get(0)))
                 }
             } catch (e: Throwable) {
