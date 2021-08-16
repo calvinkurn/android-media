@@ -1,8 +1,7 @@
 package com.tokopedia.review.feature.reputationhistory.util
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter
-import com.tokopedia.review.feature.reputationhistory.util.GoldMerchantDateUtils
+
 
 /**
  * Created by normansyahputa on 3/29/17.
