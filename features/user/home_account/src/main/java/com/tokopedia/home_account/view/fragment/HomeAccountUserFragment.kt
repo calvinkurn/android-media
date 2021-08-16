@@ -67,8 +67,6 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
-import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialItemViewHolder
-import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialViewHolder
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
@@ -79,7 +77,6 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -228,10 +225,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetOvoBalance(it.data)
                 }
                 is Fail -> {
-                    onFailedGetOvoBalance()
                 }
             }
         })
@@ -261,17 +256,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             }
         })
 
-        viewModel.userPageAssetConfig.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetUserPageAssetConfig(it.data)
-                }
-                is Fail -> {
-                    onFailedGetUserPageAssetConfig()
-                }
-            }
-        })
-
         viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -286,10 +270,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetTokopointsDrawerList(it.data)
                 }
                 is Fail -> {
-                    onFailedGetTokopointsDrawerList()
                 }
             }
         })
@@ -297,121 +279,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.saldoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetSaldoBalance(it.data)
                 }
                 is Fail -> {
-                    onFailedGetSaldoBalance()
                 }
             }
         })
     }
 
-    private fun onSuccessGetUserPageAssetConfig(userPageAssetConfig: UserPageAssetConfig) {
-        financialAdapter?.removeByType(ErrorFinancialViewHolder.ERROR_TYPE)
-        var ovoUserPageAssetConfigData = UserPageAssetConfigData()
-        var tokopointUserPageAssetConfigData = UserPageAssetConfigData()
-        userPageAssetConfig.userPageAssetConfig.forEach { userPageAssetConfigData ->
-            when (userPageAssetConfigData.assetType) {
-                TOKOPOINT_ASSET_TYPE -> {
-                    tokopointUserPageAssetConfigData = userPageAssetConfigData
-                }
-                OVO_ASSET_TYPE -> {
-                    ovoUserPageAssetConfigData = userPageAssetConfigData
-                }
-            }
-        }
-        when {
-            tokopointUserPageAssetConfigData.enable -> {
-                if (tokopointUserPageAssetConfigData.order > ovoUserPageAssetConfigData.order) {
-                    viewModel.getTokopoints()
-                } else {
-                    viewModel.getOvoBalance()
-                }
-            }
-            else -> {
-                viewModel.getOvoBalance()
-            }
-        }
-        viewModel.getSaldoBalance()
-    }
-
-    private fun onFailedGetUserPageAssetConfig() {
-        ErrorFinancialViewHolder.ERROR_TYPE
-        financialAdapter?.showError()
-        adapter?.notifyDataSetChanged()
-    }
-
-    private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
-        financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
-        val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
-    }
-
-    private fun onFailedGetTokopointsDrawerList() {
-        context?.let {
-            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
-            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
-            financialAdapter?.addSingleItem(mappedData)
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
-    private fun onSuccessGetSaldoBalance(balance: Balance) {
-        context?.let {
-            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
-            val mappedData = mapper.mapSaldo(it, balance)
-            financialAdapter?.addSingleItem(mappedData)
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
-    private fun onFailedGetSaldoBalance() {
-        context?.let {
-            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
-            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO, R.drawable.ic_account_balance)
-            financialAdapter?.addSingleItem(mappedData)
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
-    private fun onSuccessGetOvoBalance(walletModel: WalletModel) {
-        context?.let {
-            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
-            val mappedMember = mapper.mapToFinancialData(it, walletModel)
-            financialAdapter?.addSingleItem(mappedMember)
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
-    private fun onFailedGetOvoBalance() {
-        context?.let {
-            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
-            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_OVO, R.drawable.ic_account_ovo)
-            financialAdapter?.addSingleItem(mappedData)
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
     override fun onMemberErrorClicked() {
         viewModel.getShortcutData()
-    }
-
-    override fun onFinancialErrorClicked(type: Int) {
-        when (type) {
-            ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS -> {
-                viewModel.getTokopoints()
-            }
-            ErrorFinancialItemViewHolder.TYPE_ERROR_OVO -> {
-                viewModel.getOvoBalance()
-            }
-            ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
-                viewModel.getSaldoBalance()
-            }
-            ErrorFinancialViewHolder.ERROR_TYPE -> {
-                viewModel.getUserPageAssetConfig()
-            }
-        }
     }
 
     private fun onFailGetData() {
@@ -520,7 +396,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter, userSession)
+        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession)
         setupList()
         setLoadMore()
         showLoading()
@@ -576,6 +452,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.getBuyerData()
         setupSettingList()
         getFirstRecommendation()
+        balanceAndPointAdapter?.displayShimmer()
     }
 
     private fun onRefresh() {

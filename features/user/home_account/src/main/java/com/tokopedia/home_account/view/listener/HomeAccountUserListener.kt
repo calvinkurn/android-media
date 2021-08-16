@@ -3,7 +3,6 @@ package com.tokopedia.home_account.view.listener
 import android.view.View
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
-import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -25,7 +24,6 @@ interface HomeAccountUserListener {
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
     fun onIconWarningClicked(profile: ProfileDataView)
 
-    fun onFinancialErrorClicked(type: Int)
     fun onMemberErrorClicked()
 
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)

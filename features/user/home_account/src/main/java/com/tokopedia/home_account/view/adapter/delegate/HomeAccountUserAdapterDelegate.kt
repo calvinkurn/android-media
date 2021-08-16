@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
-import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.adapter.viewholder.ProfileViewHolder
