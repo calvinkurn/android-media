@@ -418,6 +418,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
+                    formattedRating = it.rating.ratingScore
+                    totalRatingCount = it.rating.totalRating
+                    totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
         }
