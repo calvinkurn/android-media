@@ -95,6 +95,7 @@ class VoucherListFragment :
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
+        const val INVALID_VOUCHER_ID = 0
         const val IS_SUCCESS_VOUCHER = "is_success"
         const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
@@ -558,7 +559,7 @@ class VoucherListFragment :
                     data?.getIntExtra(SUCCESS_VOUCHER_ID_KEY, 0)?.let { voucherId ->
                         data.getBooleanExtra(UPDATE_VOUCHER_KEY, false)
                             .let { isNeedToShowUpdateDialog ->
-                                if (voucherId != 0) {
+                                if (voucherId != INVALID_VOUCHER_ID) {
                                     showSuccessCreateBottomSheet(voucherId)
                                 } else if (isNeedToShowUpdateDialog) {
                                     showSuccessUpdateToaster()
@@ -1260,7 +1261,7 @@ class VoucherListFragment :
             }
 
             // execute get voucher detail use case to show the bottomsheets
-            if (successVoucherId != 0 && isNeedToShowSuccessDialog && !mViewModel.isSuccessDialogDisplayed()) {
+            if (successVoucherId != INVALID_VOUCHER_ID && isNeedToShowSuccessDialog && !mViewModel.isSuccessDialogDisplayed()) {
                 showSuccessCreateBottomSheet(successVoucherId)
             } else if (isNeedToShowSuccessUpdateDialog) {
                 showSuccessUpdateToaster()
