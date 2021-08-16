@@ -527,7 +527,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         const val MAX_MEASURED_WIDTH = 256
         const val MAX_MEASURED_HEIGHT = 256
         const val API_21 = 21
-        const val API_27 = 21
-        const val API_28 = 21
+        const val API_27 = 27
+        const val API_28 = 28
     }
 }
