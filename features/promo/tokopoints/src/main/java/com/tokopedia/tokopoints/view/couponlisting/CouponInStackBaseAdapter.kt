@@ -27,6 +27,7 @@ import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.EcommerceKeys.Companion.KUPON_ITEMNAME
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
@@ -77,69 +78,6 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         }
     }
 
-    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(vh)
-
-        if (vh is ViewHolder) {
-            val holder = vh as ViewHolder
-
-            val data = items[holder.getAdapterPosition()] ?: return
-
-            if (!holder.isVisited) {
-                val item = HashMap<String, String?>()
-                item["id"] = data.catalogId.toString()
-                item["name"] = data.title
-                item["position"] = holder.getAdapterPosition().toString()
-                item["creative"] = data.title
-                item["creative_url"] = data.imageUrlMobile
-                item["promo_code"] = data.code
-
-                val promotions = HashMap<String, List<Map<String, String?>>>()
-                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-
-                val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
-                promoView["promoView"] = promotions
-
-                var eventLabel = ""
-                if (data.title != null && data.title.isNotEmpty()) {
-                    eventLabel = data.title
-                }
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.itemView.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        eventLabel, promoView)
-                holder.isVisited = true
-            }
-        }
-    }
-
-    private fun sendClickEvent(context: Context, data: CouponValueEntity, position: Int) {
-        val item = HashMap<String, String?>()
-        item["id"] = data.catalogId.toString()
-        item["name"] = data.title
-        item["position"] = position.toString()
-        item["creative"] = data.title
-        item["creative_url"] = data.imageUrlMobile
-        item["promo_code"] = data.code
-
-        val promotions = HashMap<String, List<Map<String, String?>>>()
-        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-
-        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
-        promoClick["promoClick"] = promotions
-
-        var eventLabel = ""
-        if (data.title != null && data.title.isNotEmpty()) {
-            eventLabel = data.title
-        }
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                eventLabel, promoClick)
-    }
-
     override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.tp_item_my_coupon_stacked, parent, false)
@@ -154,16 +92,17 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
     }
 
     private fun setData(holder: ViewHolder, item: CouponValueEntity) {
-        ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.imageUrlMobile)
+        val itemContext = holder.itemView.context
+        ImageHandler.loadImageFitCenter(itemContext, holder.imgBanner, item.imageUrlMobile)
 
         if (item.isNewCoupon) {
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
         } else {
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.usage != null) {
@@ -238,14 +177,19 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
                         holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
 
                         try {
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                         } catch (e: Exception) {
                         }
                         holder.progressTimer.progress = l.toInt() / 1000
-                        holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
+                        try {
+                            holder.value.setPadding(
+                                itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall)
+                            )
+                        } catch (e: java.lang.Exception) {
+                        }
                     }
 
                     override fun onFinish() {
@@ -255,19 +199,19 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
             } else {
                 holder.progressTimer.hide()
                 holder.value.setPadding(0, 0, 0, 0)
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
         } else {
             holder.progressTimer.hide()
-            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
 
         if (item.usage.activeCountDown > 0) {
-            holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
-            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N200), android.graphics.PorterDuff.Mode.SRC_IN)
         } else {
-            holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
-            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.imgLabel.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+            holder.ivMinTxn.setColorFilter(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
         }
 
         if (holder.itemView != null) {
@@ -276,8 +220,72 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.code)
                 (holder.imgBanner.context as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_IN_ADAPTER)
 
-                sendClickEvent(holder.imgBanner.context, item, holder.getAdapterPosition())
+                sendClickEvent(itemContext, item, holder.getAdapterPosition())
             }
         }
+    }
+
+
+    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(vh)
+
+        if (vh is ViewHolder) {
+            val holder = vh as ViewHolder
+
+            val data = items[holder.getAdapterPosition()] ?: return
+
+            if (!holder.isVisited) {
+                val item = HashMap<String, String?>()
+                item["id"] = data.catalogId.toString()
+                item["name"] = String.format(KUPON_ITEMNAME, vh.adapterPosition + 1)
+                item["position"] = (holder.adapterPosition + 1).toString()
+                item["creative"] = data.title
+                item["creative_url"] = data.imageUrlMobile
+                item["promo_code"] = data.code
+
+                val promotions = HashMap<String, List<Map<String, String?>>>()
+                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+
+                val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
+                promoView["promoView"] = promotions
+
+                var eventLabel = ""
+                if (data.title != null && data.title.isNotEmpty()) {
+                    eventLabel = data.title
+                }
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.itemView.context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    eventLabel, promoView)
+                holder.isVisited = true
+            }
+        }
+    }
+
+    private fun sendClickEvent(context: Context, data: CouponValueEntity, position: Int) {
+        val item = HashMap<String, String?>()
+        item["id"] = data.catalogId.toString()
+        item["name"] = String.format(KUPON_ITEMNAME, position+1)
+        item["position"] = (position + 1).toString()
+        item["creative"] = data.title
+        item["creative_url"] = data.imageUrlMobile
+        item["promo_code"] = data.code
+
+        val promotions = HashMap<String, List<Map<String, String?>>>()
+        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
+        promoClick["promoClick"] = promotions
+
+        var eventLabel = ""
+        if (data.title != null && data.title.isNotEmpty()) {
+            eventLabel = data.title
+        }
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+            AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+            eventLabel, promoClick)
     }
 }
