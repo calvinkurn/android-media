@@ -30,14 +30,16 @@ class GetTableDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<TableDataUiModel> {
-        val dataKays: List<DataKeyModel> = (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
+        val dataKays: List<DataKeyModel> =
+            (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetTableDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTableDataResponse>()
-            return tableMapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY, dataKays)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return tableMapper.mapRemoteDataToUiData(data, isFromCache, dataKays)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }

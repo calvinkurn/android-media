@@ -32,15 +32,18 @@ class GetPostDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
-        val dataKays: List<DataKeyModel> = (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
+        val dataKays: List<DataKeyModel> =
+            (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse =
-            graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(
+            listOf(gqlRequest), cacheStrategy
+        )
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
-            return postMapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return postMapper.mapRemoteDataToUiData(data, isFromCache, dataKays)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
