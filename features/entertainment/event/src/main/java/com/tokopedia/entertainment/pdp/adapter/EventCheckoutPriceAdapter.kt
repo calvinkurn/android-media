@@ -19,7 +19,9 @@ class EventCheckoutPriceAdapter : RecyclerView.Adapter<EventCheckoutPriceAdapter
             with(itemView) {
                 tg_event_checkout_summary_packet.text = item.name
                 tg_event_checkout_summary_amount.text = resources.getString(R.string.ent_checkout_summary_amount,item.quantity)
-                tg_event_checkout_summary_price.text = getRupiahFormat(item.price*item.quantity)
+
+                val result = item.price*item.quantity
+                tg_event_checkout_summary_price.text = if(result != 0) getRupiahFormat(result) else resources.getString(R.string.ent_free_price)
             }
         }
     }

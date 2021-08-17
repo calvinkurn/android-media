@@ -337,7 +337,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
 
 
-        tg_event_checkout_summary_price_price.text = getRupiahFormat(metadata.totalPrice)
+        tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != 0) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
         context?.let {
             tg_event_checkout_tnc.makeLinks(

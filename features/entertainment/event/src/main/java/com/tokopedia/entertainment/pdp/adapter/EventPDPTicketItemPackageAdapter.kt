@@ -21,6 +21,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import java.util.*
 
@@ -63,7 +64,8 @@ class EventPDPTicketItemPackageAdapter(
 
                 txtTitle_ticket.text = items.name
                 txtSubtitle_ticket.text = items.description
-                txtPrice_ticket.text = getRupiahFormat(items.salesPrice.toInt())
+                txtPrice_ticket.text = if(items.salesPrice.toIntOrZero() != 0) getRupiahFormat(items.salesPrice.toInt())
+                else resources.getString(R.string.ent_free_price)
 
                 val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
                 val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
