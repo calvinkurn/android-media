@@ -224,12 +224,12 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         super.onViewAttachedToWindow(vh)
         if (vh is ViewHolder) {
             val data = list[vh.getAdapterPosition()] ?: return
-            if (!vh.isVisited && vh.adapterPosition > 0) {
+            if (!vh.isVisited) {
                 val item: MutableMap<String, String?> = HashMap()
                 data as CatalogsValueEntity
                 item["id"] = data.id.toString()
                 item["name"] = data.title
-                item["position"] = vh.adapterPosition.toString()
+                item["position"] = (vh.adapterPosition + 1).toString()
                 item["creative"] = data.title
                 item["creative_url"] = data.imageUrlMobile
                 item["promo_code"] = data.baseCode
@@ -253,7 +253,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         val item: MutableMap<String, String?> = HashMap()
         item["id"] = data.id.toString()
         item["name"] = data.title
-        item["position"] = position.toString()
+        item["position"] = (position + 1).toString()
         item["creative"] = data.title
         item["creative_url"] = data.imageUrlMobile
         item["promo_code"] = data.baseCode
