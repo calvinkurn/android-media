@@ -121,6 +121,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         observeSelectedPrefix()
         observeInquiry()
         observeAddBill()
+        observeNumberNotfound()
     }
 
     private fun getMenuDetailTicker(){
@@ -134,7 +135,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun onInputNumberChanged(inputNumber: String){
-        viewModel.getSelectedOperator(inputNumber)
+        viewModel.getSelectedOperator(inputNumber, resources.getString(R.string.smart_bills_add_bills_number_not_found))
     }
 
     private fun getInquiryData(){
@@ -207,6 +208,14 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     showInquiryBottomSheet(it.data)
                 }
            }
+        }
+    }
+
+    private fun observeNumberNotfound(){
+        observe(viewModel.inputNumberNotFound){
+            if(!it.isNullOrEmpty()){
+                setErrorNumber(true, it)
+            }
         }
     }
 

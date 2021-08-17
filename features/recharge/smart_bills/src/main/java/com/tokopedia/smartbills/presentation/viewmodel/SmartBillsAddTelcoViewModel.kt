@@ -33,6 +33,10 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase
 ): BaseViewModel(dispatcher.io){
 
+    private val mutableInputNumberNotFound = MutableLiveData<String>()
+    val inputNumberNotFound: LiveData<String>
+        get() = mutableInputNumberNotFound
+
     private val mutableListTicker = MutableLiveData<Result<List<TopupBillsTicker>>>()
     val listTicker: LiveData<Result<List<TopupBillsTicker>>>
         get() = mutableListTicker
@@ -86,20 +90,22 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         )
     }
 
-    fun getSelectedOperator(inputNumber: String){
+    fun getSelectedOperator(inputNumber: String, errorNotFound: String){
         if (inputNumber.isEmpty() || inputNumber.length <= NUMBER_MIN_CHECK_VALUE
                 || inputNumber.length > NUMBER_MAX_CHECK_VALUE) return
         try {
-            if (catalogPrefixSelect.value is Success) {
-                val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
-                    inputNumber.startsWith(it.value)
+            catalogPrefixSelect.value.let {
+                if (it is Success) {
+                    val operatorSelected = it.data.rechargeCatalogPrefixSelect.prefixes.single {
+                        inputNumber.startsWith(it.value)
+                    }
+                    mutableSelectedOperator.postValue(operatorSelected)
+                } else {
+                    mutableCatalogPrefixSelect.postValue(it)
                 }
-                mutableSelectedOperator.value = operatorSelected
-            } else if (catalogPrefixSelect.value is Fail) {
-                mutableCatalogPrefixSelect.value = catalogPrefixSelect.value as Fail
             }
         } catch (e: Throwable) {
-
+            mutableInputNumberNotFound.postValue(errorNotFound)
         }
     }
 
