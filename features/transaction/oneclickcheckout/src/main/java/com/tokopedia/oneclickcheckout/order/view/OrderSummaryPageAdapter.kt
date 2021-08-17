@@ -17,6 +17,19 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+
+        const val tickerIndex = 0
+        const val onboardingIndex = 1
+        const val shopIndex = 2
+        const val productStartIndex = 3
+
+        private const val preferenceIndexAddition = 3
+        private const val insuranceIndexAddition = 4
+        private const val promoIndexAddition = 5
+        private const val totalPaymentIndexAddition = 6
+    }
+
     var ticker: TickerData? = null
     var onboarding: OccOnboarding = OccOnboarding()
     var shop: OrderShop = OrderShop()
@@ -27,26 +40,17 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var promo: OrderPromo = OrderPromo()
     var total: OrderTotal = OrderTotal()
 
-    val tickerIndex = 0
-    val onboardingIndex = 1
-    val shopIndex = 2
-    val productStartIndex = 3
-
-    private val preferenceIndexAddition = 3
     val preferenceIndex: Int
         get() = products.size + preferenceIndexAddition
 
-    private val insuranceIndexAddition = 4
     val insuranceIndex: Int
         get() = products.size + insuranceIndexAddition
 
-    private val promoIndexAddition = 5
     val promoIndex: Int
         get() = products.size + promoIndexAddition
 
-    private val totalPaymentIndexAddition = 6
     val totalPaymentIndex: Int
-        get() = products.size + 6
+        get() = products.size + totalPaymentIndexAddition
 
     fun getFirstErrorIndex(): Int {
         if (shop.isError) {

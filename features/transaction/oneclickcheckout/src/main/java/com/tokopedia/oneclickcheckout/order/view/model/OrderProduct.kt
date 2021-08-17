@@ -23,7 +23,6 @@ data class OrderProduct(
         var isFreeOngkirExtra: Boolean = false,
         var weight: Int = 0,
         var weightActual: Int = 0,
-        var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
         var maxCharNote: Int = 0,
         var isEditingNotes: Boolean = false,
@@ -36,7 +35,6 @@ data class OrderProduct(
         var productFinsurance: Int = 0,
         var campaignId: String = "",
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
-        var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
         var variant: String = "",
         var productWarningMessage: String = "",
@@ -67,21 +65,4 @@ data class WholesalePrice(
 data class ProductTrackerData(
         var attribution: String = "",
         var trackerListName: String = ""
-)
-
-data class QuantityUiModel(
-        var minOrderQuantity: Int = 0,
-        var maxOrderQuantity: Int = 0,
-        var maxOrderStock: Int = 0,
-        var orderQuantity: Int = 0
-)
-
-data class ProductTickerMessage(
-        val message: String = "",
-        val replacement: List<ProductTickerMessageReplacement> = emptyList()
-)
-
-data class ProductTickerMessageReplacement(
-        val identifier: String = "",
-        val value: String = ""
 )

@@ -50,5 +50,6 @@ data class OrderShop(
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+        const val WEIGHT_KG_DIVIDER = 1000.0
     }
 }

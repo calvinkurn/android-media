@@ -133,7 +133,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
                 delayChangeCheckboxState?.cancel()
                 delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
+                    delay(DEBOUNCE_TIME)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.cartItemData.isError) {
                             data.isSelected = isChecked
@@ -442,7 +442,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500)
+                    delay(DEBOUNCE_TIME)
                     val newValue = s.toString().replace(".", "").toIntOrZero()
                     if (data.cartItemData.updatedData.quantity != newValue) {
                         validateQty(newValue, data)
@@ -572,5 +572,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         const val LABEL_DISCOUNT = "label diskon"
 
         private const val QUANTITY_REGEX = "[^0-9]"
+
+        private const val DEBOUNCE_TIME = 500L
     }
 }
