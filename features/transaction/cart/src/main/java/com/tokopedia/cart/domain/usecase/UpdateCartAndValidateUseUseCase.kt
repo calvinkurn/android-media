@@ -17,12 +17,20 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
                                                           private val validateUseUseCase: ValidateUsePromoRevampUseCase,
                                                           private val schedulers: ExecutorSchedulers) : com.tokopedia.usecase.UseCase<UpdateAndValidateUseData>() {
 
+    companion object {
+        val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
+        val PARAM_CARTS = "carts"
+
+        const val PARAM_KEY_SOURCE = "source"
+        const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+    }
+
     override fun createObservable(requestParams: RequestParams?): Observable<UpdateAndValidateUseData> {
-        val paramUpdateList = requestParams?.getObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
-        val paramUpdateSource = requestParams?.getString(UpdateCartUseCase.PARAM_KEY_SOURCE, "")
+        val paramUpdateList = requestParams?.getObject(PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
+        val paramUpdateSource = requestParams?.getString(PARAM_KEY_SOURCE, "")
         val requestParamUpdateCart = RequestParams.create()
-        requestParamUpdateCart.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdateList)
-        requestParamUpdateCart.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, paramUpdateSource)
+        requestParamUpdateCart.putObject(PARAM_UPDATE_CART_REQUEST, paramUpdateList)
+        requestParamUpdateCart.putString(PARAM_KEY_SOURCE, paramUpdateSource)
 
         val paramValidateUse = requestParams.getObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as ValidateUsePromoRequest
         val requestParamValidateUse = RequestParams.create()

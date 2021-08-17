@@ -94,6 +94,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       }
                       product_price
                       product_quantity
+                      product_invenage_value
+                      product_switch_invenage
                     }
                   }
                 }

@@ -44,7 +44,7 @@ val registeredGqlFunctions = mapOf(
         "validate_use_promo_revamp" to "promorevamp",
         "crackResult" to "crackresult",
         "gamiCrack" to "gamicrack",
-        "add_to_cart_occ" to "atcocc",
+        "add_to_cart_occ_multi" to "atcoccmulti",
         "one_click_checkout" to "checkoutocc",
         "add_to_cart_v2" to "atc",
         "checkout" to "checkout",

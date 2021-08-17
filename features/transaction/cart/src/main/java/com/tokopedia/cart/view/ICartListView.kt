@@ -5,10 +5,9 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
-import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -23,7 +22,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 
 interface ICartListView : CustomerView {
 
-    fun refreshCart()
+    fun refreshCartWithSwipeToRefresh()
 
     fun getAllShopDataList(): List<CartShopHolderData>
 
@@ -52,7 +51,7 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData)
+    fun renderErrorToShipmentForm(outOfService: OutOfService)
 
     fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
@@ -72,7 +71,7 @@ interface ICartListView : CustomerView {
 
     fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
 
-    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
+    fun onUndoDeleteCartDataSuccess()
 
     fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 

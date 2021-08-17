@@ -1,12 +1,12 @@
 package com.tokopedia.oneclickcheckout.address
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -25,11 +25,9 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetAddressListBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -42,12 +40,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
 
     private var bottomSheet: BottomSheetUnify? = null
 
-    private var searchAddress: SearchBarUnify? = null
-    private var rvAddressList: RecyclerView? = null
-    private var progressBar: LoaderUnify? = null
-
-    private var textSearchError: Typography? = null
-    private var globalErrorLayout: GlobalError? = null
+    private var binding: BottomSheetAddressListBinding? = null
 
     private var adapter: AddressListItemAdapter? = null
     private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -58,8 +51,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         this.fragment = fragment
         selectedId = addressId
         this.addressState = addressState
+        if (!fragment.isAdded) return
         fragment.context?.let { context ->
-            fragment.fragmentManager?.let {
+            fragment.parentFragmentManager.let {
                 bottomSheet?.dismiss()
                 bottomSheet = BottomSheetUnify().apply {
                     isDragable = true
@@ -67,12 +61,12 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     isFullpage = true
                     clearContentPadding = true
                     setTitle(context.getString(R.string.bottom_sheet_title_choose_address))
-                    val child = View.inflate(context, R.layout.bottom_sheet_address_list, null)
+                    val child = BottomSheetAddressListBinding.inflate(LayoutInflater.from(context))
                     setupChild(context, child)
                     fragment.view?.height?.div(2)?.let { height ->
                         customPeekHeight = height
                     }
-                    setChild(child)
+                    setChild(child.root)
                     val actionIconParam = getIconUnifyDrawable(context, IconUnify.ADD)
                     setAction(actionIconParam) {
                         this@AddressListBottomSheet.bottomSheet?.dismiss()
@@ -91,6 +85,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     setOnDismissListener {
                         compositeSubscription.clear()
                         coroutineContext.cancel()
+                        binding = null
                     }
                 }
             }
@@ -105,28 +100,26 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         return "0"
     }
 
-    private fun setupChild(context: Context, child: View) {
-        rvAddressList = child.findViewById(R.id.rv_address_list)
-        progressBar = child.findViewById(R.id.progress_bar)
-        globalErrorLayout = child.findViewById(R.id.global_error)
-        searchAddress = child.findViewById(R.id.search_input_view)
-        textSearchError = child.findViewById(R.id.text_search_error)
+    private fun setupChild(context: Context, binding: BottomSheetAddressListBinding) {
+        this.binding = binding
 
-        adapter = AddressListItemAdapter(getAddressAdapterListener())
-        rvAddressList?.adapter = adapter
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvAddressList?.layoutManager = linearLayoutManager
-        rvAddressList?.clearOnScrollListeners()
-        endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                loadMore()
+        binding.apply {
+            adapter = AddressListItemAdapter(getAddressAdapterListener())
+            rvAddressList.adapter = adapter
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvAddressList.layoutManager = linearLayoutManager
+            rvAddressList.clearOnScrollListeners()
+            endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    loadMore()
+                }
+            }
+            endlessScrollListener?.let {
+                rvAddressList.addOnScrollListener(it)
             }
         }
-        endlessScrollListener?.let {
-            rvAddressList?.addOnScrollListener(it)
-        }
 
-        initSearchView(context)
+        initSearchView(context, binding)
     }
 
     private fun getAddressAdapterListener(): AddressListItemAdapter.OnSelectedListener {
@@ -138,29 +131,31 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         }
     }
 
-    private fun initSearchView(context: Context) {
-        searchAddress?.searchBarTextField?.setOnClickListener {
-            searchAddress?.searchBarTextField?.isCursorVisible = true
-            openSoftKeyboard()
-        }
-        searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchAddress?.clearFocus()
-                searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
-                return@setOnEditorActionListener true
+    private fun initSearchView(context: Context, binding: BottomSheetAddressListBinding) {
+        binding.apply {
+            searchInputView.searchBarTextField.setOnClickListener {
+                searchInputView.searchBarTextField.isCursorVisible = true
+                openSoftKeyboard()
             }
-            return@setOnEditorActionListener false
+            searchInputView.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchInputView.clearFocus()
+                    searchAddress(searchInputView.searchBarTextField.text?.toString() ?: "")
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+            searchInputView.clearListener = {
+                searchAddress("")
+            }
+            searchInputView.searchBarPlaceholder = context.getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
         }
-        searchAddress?.clearListener = {
-            searchAddress("")
-        }
-        searchAddress?.searchBarPlaceholder = context.getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
 
         searchAddress("")
     }
 
     private fun openSoftKeyboard() {
-        searchAddress?.searchBarTextField?.let {
+        binding?.searchInputView?.searchBarTextField?.let {
             (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -187,33 +182,38 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
     }
 
     private fun showGlobalError(type: Int) {
-        globalErrorLayout?.setType(type)
-        globalErrorLayout?.setActionClickListener {
-            searchAddress?.searchBarTextField?.setText("")
-            searchAddress("")
+        binding?.apply {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                searchInputView.searchBarTextField.setText("")
+                searchAddress("")
+            }
+            searchInputView.gone()
+            textSearchError.gone()
+            rvAddressList.gone()
+            globalError.visible()
         }
-        searchAddress?.gone()
-        textSearchError?.gone()
-        rvAddressList?.gone()
-        globalErrorLayout?.visible()
     }
 
     private fun onChangeData(addressList: OccState<AddressListModel>) {
         when (addressList) {
             is OccState.FirstLoad -> {
-                progressBar?.gone()
-                globalErrorLayout?.gone()
-                if (addressList.data.listAddress.isEmpty()) {
-                    textSearchError?.visible()
-                } else {
-                    textSearchError?.gone()
+                binding?.apply {
+                    progressBar.gone()
+                    globalError.gone()
+                    if (addressList.data.listAddress.isEmpty()) {
+                        textSearchError.visible()
+                    } else {
+                        textSearchError.gone()
+                    }
+                    searchInputView.visible()
+                    rvAddressList.scrollToPosition(0)
+                    rvAddressList.visible()
+                    adapter?.setData(addressList.data.listAddress, addressList.data.hasNext
+                            ?: false)
+                    endlessScrollListener?.resetState()
+                    endlessScrollListener?.setHasNextPage(addressList.data.hasNext ?: false)
                 }
-                searchAddress?.visible()
-                rvAddressList?.scrollToPosition(0)
-                rvAddressList?.visible()
-                adapter?.setData(addressList.data.listAddress, addressList.data.hasNext ?: false)
-                endlessScrollListener?.resetState()
-                endlessScrollListener?.setHasNextPage(addressList.data.hasNext ?: false)
             }
 
             is OccState.Success -> {
@@ -223,17 +223,21 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             }
 
             is OccState.Failed -> {
-                progressBar?.gone()
-                addressList.getFailure()?.let { failure ->
-                    handleError(failure.throwable)
+                binding?.apply {
+                    progressBar.gone()
+                    addressList.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
+                    }
                 }
             }
 
             is OccState.Loading -> {
-                progressBar?.visible()
-                rvAddressList?.gone()
-                globalErrorLayout?.gone()
-                textSearchError?.gone()
+                binding?.apply {
+                    progressBar.visible()
+                    rvAddressList.gone()
+                    globalError.gone()
+                    textSearchError.gone()
+                }
             }
         }
     }
@@ -285,7 +289,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
     }
 
     fun loadMore() {
-        if (progressBar?.visibility == View.GONE && !isLoadingMore) {
+        if (binding?.progressBar?.visibility == View.GONE && !isLoadingMore) {
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(

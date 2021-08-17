@@ -14,10 +14,10 @@ class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val 
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(cartId: String) {
+    fun setParams(cartIds: List<String>) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_CART_IDS to listOf(cartId)
+                PARAM_KEY_CART_IDS to cartIds
         )
     }
 
