@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -37,6 +38,17 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val actualShopId = viewModel.getShopId()
 
         Assert.assertEquals(expectedShopId, actualShopId)
+    }
+
+    @Test
+    fun `isLoggedIn should return mock value`() {
+        val mockIsLoggedInValue = true
+        every {
+            userSessionInterface.isLoggedIn
+        } returns mockIsLoggedInValue
+        val actualIsLoggedIn = viewModel.isLoggedIn
+
+        Assert.assertEquals(mockIsLoggedInValue, actualIsLoggedIn)
     }
 
     @Test
@@ -199,7 +211,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when mapShopReviewToReadReviewUiModel should return expected list of ReadReviewUiModel`() {
         val productId = "129123"
         val shopReviews = listOf(
-                ShopReview(reviewID = "1", product = Product(productID = productId)),
+                ShopReview(reviewID = "1", product = Product(productID = productId), attachments = listOf(Attachments())),
                 ShopReview(reviewID = "2", product = Product(productID = productId))
         )
         val isShopViewHolder = true
@@ -612,6 +624,48 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         )
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
         val expectedTopicFilter = setOf(productQualityTopic, shopServiceTopic)
+        val expectedResponse = ShopReviewList()
+
+        onGetShopRatingAndTopicsSuccess_thenReturn(expectedRatingAndTopicResponse)
+
+        viewModel.setShopId(productId)
+
+        verifyGetShopRatingAndTopicsUseCaseExecuted()
+        verifyShopRatingAndTopicSuccessEquals(Success(expectedRatingAndTopicResponse.productrevGetShopRatingAndTopics))
+
+        onGetShopReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilter(selectedFilters, type, false)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter(false)
+
+        verifyGetShopReviewListUseCaseExecuted()
+        verifyShopReviewsSuccessEquals(Success(expectedResponse.productrevGetShopReviewList))
+        Assert.assertEquals(expectedTopicFilter, actualTopicFilter)
+    }
+
+    @Test
+    fun `when selectedTopics from setFilter shop review from topic didn't match, should return empty and reset page and make network call with correct params`() {
+        val productId = anyString()
+        val productQualityTopic = "Kualitas Produk"
+        val shopServiceTopic = "Pelayanan Toko"
+        val productQualityTopicKey = "kualitas"
+        val shopServiceTopicKey = "pelayanan"
+        val expectedRatingAndTopicResponse = ShopRatingAndTopic(
+                ProductrevGetShopRatingAndTopic(
+                        topics = listOf(
+                                ProductTopic(
+                                        formatted = productQualityTopic,
+                                        key = productQualityTopicKey
+                                ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
+                        )
+                )
+        )
+        val emptyDescription = ""
+        val selectedFilters = setOf(
+                ListItemUnify("", emptyDescription)
+        )
+        val type = SortFilterBottomSheetType.TopicFilterBottomSheet
+        val expectedTopicFilter = setOf("")
         val expectedResponse = ShopReviewList()
 
         onGetShopRatingAndTopicsSuccess_thenReturn(expectedRatingAndTopicResponse)
