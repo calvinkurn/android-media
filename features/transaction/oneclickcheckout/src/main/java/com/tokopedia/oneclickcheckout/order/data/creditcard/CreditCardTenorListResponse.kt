@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CreditCardTenorListResponse(
 	@field:SerializedName("creditCardTenorList")
-	val response: CreditCardTenorList = CreditCardTenorList()
+	val ccTenorList: CreditCardTenorList = CreditCardTenorList()
 )
 
 data class CreditCardTenorList(
