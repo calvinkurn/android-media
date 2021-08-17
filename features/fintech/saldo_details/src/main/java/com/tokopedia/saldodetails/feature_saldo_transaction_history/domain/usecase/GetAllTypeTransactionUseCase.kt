@@ -43,8 +43,8 @@ class GetAllTypeTransactionUseCase
         return mutableMapOf(
             PARAM_START_DATE to formattedStartDateStr,
             PARAM_END_DATE to formattedEndDateStr,
-            PARAM_PER_PAGE to 25,
-            PARAM_PAGE to 1
+            PARAM_PER_PAGE to VALUE_PER_PAGE_ITEM,
+            PARAM_PAGE to VALUE_PAGE_ITEM
         )
     }
 
@@ -55,10 +55,14 @@ class GetAllTypeTransactionUseCase
     }
 
     companion object {
-        private val PARAM_START_DATE = "dateFrom"
-        private val PARAM_END_DATE = "dateTo"
-        private val PARAM_PER_PAGE = "maxRows"
-        private val PARAM_PAGE = "page"
+        private const val PARAM_START_DATE = "dateFrom"
+        private const val PARAM_END_DATE = "dateTo"
+        private const val PARAM_PER_PAGE = "maxRows"
+        private const val PARAM_PAGE = "page"
+        private const val VALUE_PER_PAGE_ITEM = 25
+        private const val VALUE_PAGE_ITEM = 1
+
+
     }
 
 }

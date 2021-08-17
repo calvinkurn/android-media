@@ -15,9 +15,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsAnalytics
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.feature_detail_pages.invoice.InvoiceDetailActivity

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.feature_saldo_hold_info.response.SaldoHoldInfoItem
-import com.tokopedia.saldodetails.feature_saldo_hold_info.SaldoInfoItemViewHolder
 
 class SaldoHoldInfoAdapter(val list: ArrayList<SaldoHoldInfoItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

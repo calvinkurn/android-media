@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.commom.di
 
 import android.content.Context
-import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
 import dagger.Module
 import dagger.Provides
 

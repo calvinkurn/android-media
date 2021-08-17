@@ -15,14 +15,13 @@ import java.util.*
 
 class DateRangePickerBottomSheet : BottomSheetUnify() {
 
-    val maxDate = Date()
-    val minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
+    private val maxDate = Date()
+    private val minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
 
-    var defaultDateFrom: Date? = null
-    var defaultDateTo: Date? = null
-
-    var newSelectedDateFrom : Date? = Date()
-    var newSelectedDateTO : Date? = Date()
+    private var defaultDateFrom: Date? = null
+    private var defaultDateTo: Date? = null
+    private var newSelectedDateFrom : Date? = Date()
+    private var newSelectedDateTO : Date? = Date()
 
     lateinit var childView: View
 
@@ -52,7 +51,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childView.layoutParams.height = (getScreenHeight() / 3 * 2)
+        childView.layoutParams.height = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         initCalender()
         unifyButtonSelect.setOnClickListener {
             if (newSelectedDateFrom != null && newSelectedDateTO != null &&
@@ -73,7 +72,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         newSelectedDateTO = defaultDateTo
         calendar_unify.calendarPickerView?.init(minDate, maxDate, arrayListOf())
             ?.inMode(CalendarPickerView.SelectionMode.RANGE)
-            ?.maxRange(30)
+            ?.maxRange(MAX_RANGE)
             ?.withSelectedDates(arrayListOf(defaultDateFrom!!, defaultDateTo!!))
         calendar_unify.calendarPickerView?.selectDateClickListener()
         calendar_unify.calendarPickerView?.outOfRange()
@@ -133,14 +132,17 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         showHeader = true
         isHideable = true
         isFullpage = false
-        customPeekHeight = (getScreenHeight() / 3 * 2)
+        customPeekHeight = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         setTitle("Pilih tanggal")
     }
 
     companion object {
-        val FIFTY_YEAR_MILLIS = (50 * 365 * 24 * 3600 * 1000L)
-        val ARG_DATE_FROM = "ARG_DATE_FROM"
-        val ARG_DATE_TO = "ARG_DATE_TO"
+        const val FIFTY_YEAR_MILLIS = (50 * 365 * 24 * 3600 * 1000L)
+        const val MAX_RANGE = 30L
+        const val ARG_DATE_FROM = "ARG_DATE_FROM"
+        const val ARG_DATE_TO = "ARG_DATE_TO"
+        const val BOTTOM_SHEET_HEIGHT_3 = 3
+        const val BOTTOM_SHEET_HEIGHT_2 = 2
         fun getInstance(dateFrom: Date?, dateTo: Date?): DateRangePickerBottomSheet {
             return DateRangePickerBottomSheet().apply {
                 val bundle = Bundle()
@@ -150,7 +152,6 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
             }
         }
     }
-
 }
 
 interface OnDateRangeSelectListener {

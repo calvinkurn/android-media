@@ -19,12 +19,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsAnalytics
-import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponentInstance
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoWebViewActivity
-import com.tokopedia.saldodetails.feature_saldo_detail.domain.data.GqlMerchantCreditResponse
+import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.feature_saldo_detail.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS
 import com.tokopedia.saldodetails.feature_saldo_detail.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID
+import com.tokopedia.saldodetails.feature_saldo_detail.domain.data.GqlMerchantCreditResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography

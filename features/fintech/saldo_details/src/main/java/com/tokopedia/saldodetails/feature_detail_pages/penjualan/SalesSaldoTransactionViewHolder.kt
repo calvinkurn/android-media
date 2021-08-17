@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FROM_PENJUALAN_SERVER
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.date.DateUtil

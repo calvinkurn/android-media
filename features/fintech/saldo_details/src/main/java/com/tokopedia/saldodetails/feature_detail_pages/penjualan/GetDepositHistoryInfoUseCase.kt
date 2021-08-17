@@ -5,7 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
 import com.tokopedia.saldodetails.commom.domain.query.GQL_DEPOSIT_HISTORY_INVOICE
 import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.FeeDetailData

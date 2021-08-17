@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.di.DispatcherModule
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GqlAllDepositSummaryResponse
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionListResponse
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.usecase.GetAllTypeTransactionUseCase
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.usecase.GetSalesTransactionListUseCase
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.usecase.GetTypeTransactionsUseCase
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GqlAllDepositSummaryResponse
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.*
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.*

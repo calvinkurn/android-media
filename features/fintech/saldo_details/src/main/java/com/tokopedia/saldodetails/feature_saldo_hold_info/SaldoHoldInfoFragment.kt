@@ -10,9 +10,9 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.utils.CurrencyUtils
 import com.tokopedia.saldodetails.feature_saldo_hold_info.SaldoHoldInfoActivity.Companion.TAG
 import com.tokopedia.saldodetails.feature_saldo_hold_info.response.SaldoHoldInfoItem
-import com.tokopedia.saldodetails.commom.utils.CurrencyUtils
 import kotlinx.android.synthetic.main.fragment_container_saldo_info.*
 
 class SaldoHoldInfoFragment : Fragment() {

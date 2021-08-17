@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.saldodetails.feature_detail_pages.penjualan.DepositHistoryInvoiceDetailViewModel
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel.TransactionHistoryViewModel
 import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalDetailViewModel
 import com.tokopedia.saldodetails.feature_merchant_details.priority.MerchantSaldoPriorityViewModel
 import com.tokopedia.saldodetails.feature_saldo_detail.SaldoDetailViewModel
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel.TransactionHistoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

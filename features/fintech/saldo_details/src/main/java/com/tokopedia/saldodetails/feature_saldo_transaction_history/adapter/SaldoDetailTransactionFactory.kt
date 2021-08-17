@@ -2,17 +2,16 @@ package com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
 import com.tokopedia.saldodetails.feature_detail_pages.penjualan.SalesSaldoTransactionViewHolder
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewholder.*
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewholder.*
 
 class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit,
                                     private val retryLoading : () -> Unit,

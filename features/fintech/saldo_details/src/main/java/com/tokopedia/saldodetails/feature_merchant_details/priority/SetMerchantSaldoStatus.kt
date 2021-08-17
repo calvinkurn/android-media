@@ -1,7 +1,7 @@
 package com.tokopedia.saldodetails.feature_merchant_details.priority
 
-import com.tokopedia.saldodetails.commom.utils.GqlUseCaseWrapper
 import com.tokopedia.saldodetails.commom.di.GqlQueryModule
+import com.tokopedia.saldodetails.commom.utils.GqlUseCaseWrapper
 import com.tokopedia.saldodetails.feature_merchant_details.priority.data.GqlSetMerchantSaldoStatus
 import javax.inject.Inject
 import javax.inject.Named

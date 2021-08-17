@@ -2,7 +2,7 @@ package com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-sealed class SaldoResponse()
+sealed class SaldoResponse
 object InitialLoadingState : SaldoResponse()
 data class InitialLoadingError(val throwable: Throwable) : SaldoResponse()
 object LoadingMoreState : SaldoResponse()

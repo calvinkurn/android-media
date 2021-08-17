@@ -22,7 +22,7 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
-        android:text="Simpan"
+        android:text="@string/saldo_save_date"
         android:layout_height="wrap_content"/>
 
 </RelativeLayout>

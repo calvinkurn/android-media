@@ -7,7 +7,7 @@ import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponentInstance
 import com.tokopedia.user.session.UserSession
@@ -49,7 +49,7 @@ class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetails
             intent.putExtra(SUMMARY_ID, summaryId)
             return intent
         }
-        private val TAG = "DETAIL_FRAGMENT"
+        private const val TAG = "DETAIL_FRAGMENT"
 
     }
 }

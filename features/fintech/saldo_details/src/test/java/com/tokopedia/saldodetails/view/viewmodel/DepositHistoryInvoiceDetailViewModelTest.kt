@@ -1,9 +1,9 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.saldodetails.feature_detail_pages.penjualan.GetDepositHistoryInfoUseCase
-import com.tokopedia.saldodetails.feature_detail_pages.penjualan.DepositHistoryInvoiceDetailViewModel
 import com.tokopedia.saldodetails.feature_detail_pages.penjualan.DepositHistoryData
+import com.tokopedia.saldodetails.feature_detail_pages.penjualan.DepositHistoryInvoiceDetailViewModel
+import com.tokopedia.saldodetails.feature_detail_pages.penjualan.GetDepositHistoryInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

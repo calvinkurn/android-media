@@ -122,5 +122,6 @@
     <string name="saldo_cetak">Cetak</string>
     <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
     <string name="saldo_btn_oke">Oke</string>
+    <string name="saldo_save_date">Simpan</string>
 
 </resources>

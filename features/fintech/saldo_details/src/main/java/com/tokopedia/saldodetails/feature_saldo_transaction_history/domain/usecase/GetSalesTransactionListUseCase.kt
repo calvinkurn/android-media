@@ -3,8 +3,8 @@ package com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.usec
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GQLSalesTransactionListResponse
 import com.tokopedia.saldodetails.commom.domain.query.GQL_PENJUALAN_TRANSACTION_LIST
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.GQLSalesTransactionListResponse
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +43,7 @@ class GetSalesTransactionListUseCase
         return mutableMapOf("params"  to mutableMapOf(
             PARAM_START_DATE to formattedStartDateStr,
             PARAM_END_DATE to formattedEndDateStr,
-            PARAM_PER_PAGE to 25,
+            PARAM_PER_PAGE to VALUE_PER_PAGE_ITEM,
             PARAM_PAGE to page,
             PARAM_INVOICE_NUMBER to ""
         ))
@@ -56,11 +56,12 @@ class GetSalesTransactionListUseCase
     }
 
     companion object {
-        private val PARAM_START_DATE = "date_from"
-        private val PARAM_END_DATE = "date_to"
-        private val PARAM_PER_PAGE = "limit"
-        private val PARAM_PAGE = "page"
-        private val PARAM_INVOICE_NUMBER = "invoice_number"
+        private const val PARAM_START_DATE = "date_from"
+        private const val PARAM_END_DATE = "date_to"
+        private const val PARAM_PER_PAGE = "limit"
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_INVOICE_NUMBER = "invoice_number"
+        private const val VALUE_PER_PAGE_ITEM = 25
     }
 
 

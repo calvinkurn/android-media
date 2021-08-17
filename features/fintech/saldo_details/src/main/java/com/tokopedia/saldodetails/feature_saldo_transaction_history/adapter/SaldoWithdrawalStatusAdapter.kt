@@ -3,8 +3,8 @@ package com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalInfoHistory
 import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.SaldoWithdrawalStatusDetailViewHolder
+import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalInfoHistory
 
 class SaldoWithdrawalStatusAdapter(var historyList: ArrayList<WithdrawalInfoHistory>) : RecyclerView.Adapter<SaldoWithdrawalStatusDetailViewHolder>(){
     override fun onCreateViewHolder(

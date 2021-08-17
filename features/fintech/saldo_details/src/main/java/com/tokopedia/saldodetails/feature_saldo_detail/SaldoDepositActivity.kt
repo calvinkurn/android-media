@@ -17,7 +17,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.feature_saldo_detail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE

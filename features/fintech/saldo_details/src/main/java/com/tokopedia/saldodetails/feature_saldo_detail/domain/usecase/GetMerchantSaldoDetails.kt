@@ -2,8 +2,8 @@ package com.tokopedia.saldodetails.feature_saldo_detail.domain.usecase
 
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.saldodetails.commom.utils.GqlUseCaseWrapper
 import com.tokopedia.saldodetails.commom.di.GqlQueryModule
+import com.tokopedia.saldodetails.commom.utils.GqlUseCaseWrapper
 import com.tokopedia.saldodetails.feature_saldo_detail.domain.data.GqlMerchantSaldoDetailsResponse
 import javax.inject.Inject
 import javax.inject.Named

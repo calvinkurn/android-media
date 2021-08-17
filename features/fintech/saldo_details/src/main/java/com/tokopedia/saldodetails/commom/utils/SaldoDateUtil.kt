@@ -1,17 +1,13 @@
 package com.tokopedia.saldodetails.commom.utils
 
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.utils.date.DateUtil
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 
 object SaldoDateUtil {
 
-    val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"
-    val DATE_PATTERN_FROM_PENJUALAN_SERVER = "dd MMM yyyy, HH:mm:ss"
-    val DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm"
+    const val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"
+    const val DATE_PATTERN_FROM_PENJUALAN_SERVER = "dd MMM yyyy, HH:mm:ss"
+    const val DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm"
 
     fun getInitialDateRange(onInitialDateRangeCreated : (startDate : Date, endDate : Date) -> Unit){
         val endCalender = GregorianCalendar.getInstance()

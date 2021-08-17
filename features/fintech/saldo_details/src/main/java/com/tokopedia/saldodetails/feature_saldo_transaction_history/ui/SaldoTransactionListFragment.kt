@@ -10,19 +10,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoDetailTransactionFactory
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoTransactionAdapter
-import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
+import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.feature_detail_pages.penjualan.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.SaldoWithdrawalDetailActivity
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoDetailTransactionFactory
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoTransactionAdapter
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.SalesTransactionDetail
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel.*
-import com.tokopedia.saldodetails.view.fragment.new.*
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel.TransactionHistoryViewModel
+import com.tokopedia.saldodetails.view.fragment.new.SalesTransaction
+import com.tokopedia.saldodetails.view.fragment.new.TransactionType
+import com.tokopedia.saldodetails.view.fragment.new.TransactionTypeMapper
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
@@ -185,7 +186,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
 
 
     companion object {
-        val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
+        const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
         fun getInstance(transactionTitleStr: String): SaldoTransactionListFragment {
             return SaldoTransactionListFragment().apply {

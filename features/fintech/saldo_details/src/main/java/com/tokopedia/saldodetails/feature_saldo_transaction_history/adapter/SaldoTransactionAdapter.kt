@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.TransactionErrorModel
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.TransactionErrorModel
 
 class SaldoTransactionAdapter(adapterTypeFactory: SaldoDetailTransactionFactory) :
     BaseListAdapter<DepositHistoryList, SaldoDetailTransactionFactory>(adapterTypeFactory),

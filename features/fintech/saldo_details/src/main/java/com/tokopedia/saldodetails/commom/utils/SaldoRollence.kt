@@ -4,7 +4,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object SaldoRollence {
 
-    private val KEY_SALDO_REVAMP = "saldo_history_revamp"
+    private const val KEY_SALDO_REVAMP = "saldo_history_revamp"
 
     fun isSaldoRevampEnabled() : Boolean = (KEY_SALDO_REVAMP == RemoteConfigInstance.getInstance()
             .abTestPlatform.getString(KEY_SALDO_REVAMP, ""))

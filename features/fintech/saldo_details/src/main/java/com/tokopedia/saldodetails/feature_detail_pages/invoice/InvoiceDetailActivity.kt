@@ -77,7 +77,7 @@ class InvoiceDetailActivity : BaseSimpleWebViewActivity() {
         try {
             printManager?.print(jobName, printAdapter, builder.build())
         } catch (e: Throwable) {
-            e.printStackTrace()
+            //e.printStackTrace()
         }
     }
 

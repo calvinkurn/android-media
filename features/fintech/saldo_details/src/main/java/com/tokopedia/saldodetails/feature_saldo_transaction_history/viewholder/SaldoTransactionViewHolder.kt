@@ -7,10 +7,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FROM_SERVER
 import com.tokopedia.saldodetails.commom.utils.SaldoRollence
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.domain.data.DepositHistoryList
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil

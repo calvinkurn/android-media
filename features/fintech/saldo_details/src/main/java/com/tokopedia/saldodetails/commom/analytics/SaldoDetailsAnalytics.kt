@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.commom.analytics.analytics
+package com.tokopedia.saldodetails.commom.analytics
 
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
 import com.tokopedia.track.TrackApp

@@ -17,15 +17,15 @@ import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoHistoryPagerAdapter
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.feature_saldo_detail.SaldoDepositFragment
-import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
-import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
+import com.tokopedia.saldodetails.feature_saldo_transaction_history.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.feature_saldo_transaction_history.viewmodel.TransactionHistoryViewModel
+import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
@@ -152,9 +152,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             openCalender()
         }
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
-            transactionHistoryViewModel.getEventLabelForTab(it.getCustomText()).also { actionLabel ->
-                analytics.sendTransactionHistoryEvents(actionLabel)
-            }
+            transactionHistoryViewModel.getEventLabelForTab(it.getCustomText())
+                .also { actionLabel ->
+                    analytics.sendTransactionHistoryEvents(actionLabel)
+                }
         }
     }
 
@@ -181,15 +182,13 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     var coachMark2: CoachMark2? = null
 
     fun showSaleTabCoachMark() {
-        val delayInCoachMark = 500L
-        val penjualanTab = getPenjualanTabView()
-        penjualanTab?.let {
+        getPenjualanTabView()?.also {
             it.postDelayed({
                 coachMark2 = CoachMark2(requireContext())
                 val list = arrayListOf<CoachMark2Item>().apply {
                     add(
                         CoachMark2Item(
-                            penjualanTab,
+                            it,
                             getString(R.string.saldo_penjualan_coachmark_title),
                             getString(R.string.saldo_penjualan_coachmark_desc),
                             CoachMarkContentPosition.BOTTOM.position
@@ -201,13 +200,13 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
                     coachMark2 = null
                     updatePenjualanCoachMarkDisplayed()
                 }
-            }, delayInCoachMark)
+            }, DELAY_COACHMARK)
 
         }
     }
 
     fun updatePenjualanCoachMark() {
-        val xOffset = (-70).toPx()
+        val xOffset = (X_OFFSET).toPx()
         val yOffset = 8.toPx()
         coachMark2?.let {
             val tabView = getPenjualanTabView()
@@ -251,4 +250,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
 
+    companion object {
+        const val X_OFFSET = -70
+        const val DELAY_COACHMARK = 500L
+    }
 }

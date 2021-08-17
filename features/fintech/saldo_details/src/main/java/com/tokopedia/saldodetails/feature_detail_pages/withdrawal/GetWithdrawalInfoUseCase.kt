@@ -5,7 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.analytics.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
 import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
 import com.tokopedia.saldodetails.commom.domain.query.GQL_WITHDRAWAL_DETAIL
 import javax.inject.Inject
