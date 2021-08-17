@@ -3,16 +3,8 @@ package com.tokopedia.saldodetails.commom.utils
 import androidx.annotation.StringDef
 
 sealed class Resources<T>
-class Loading<T> : Resources<T>()
 data class Success<T>(val data : T) : Resources<T>()
 data class ErrorMessage<T,E>(val data : E , @ErrorTypes val type : String = NORMAL) : Resources<T>()
-
-data class AddElements<T>(val data : T) : Resources<T>()
-
-
-sealed class Errors
-
-data class ErrorType<T>(val data : T , @ErrorTypes val type : String = NORMAL) : Errors()
 
 
 

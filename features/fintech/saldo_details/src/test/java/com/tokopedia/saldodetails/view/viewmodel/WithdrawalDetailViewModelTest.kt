@@ -1,9 +1,9 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.GetWithdrawalInfoUseCase
-import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalDetailViewModel
-import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalInfoData
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.GetWithdrawalInfoUseCase
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.WithdrawalDetailViewModel
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.WithdrawalInfoData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

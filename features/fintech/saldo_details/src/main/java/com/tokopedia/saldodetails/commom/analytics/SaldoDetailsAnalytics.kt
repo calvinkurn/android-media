@@ -1,6 +1,6 @@
 package com.tokopedia.saldodetails.commom.analytics
 
-import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
+import com.tokopedia.saldodetails.commom.di.scope.SaldoDetailsScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics

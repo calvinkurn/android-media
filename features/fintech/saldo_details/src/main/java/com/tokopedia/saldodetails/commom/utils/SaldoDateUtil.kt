@@ -41,9 +41,9 @@ object SaldoDateUtil {
 
     fun getLocalLabelColor(serverColorInt: Int): Int {
         return when(serverColorInt){
-            1-> Label.GENERAL_LIGHT_GREEN
-            2-> Label.GENERAL_LIGHT_ORANGE
-            3-> Label.GENERAL_LIGHT_RED
+            1 -> Label.GENERAL_LIGHT_GREEN
+            2 -> Label.GENERAL_LIGHT_ORANGE
+            3 -> Label.GENERAL_LIGHT_RED
             else -> Label.GENERAL_DARK_GREY
         }
     }

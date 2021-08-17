@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.view.fragment.new
+package com.tokopedia.saldodetails.commom.utils
 
 object TransactionTitle{
     const val ALL_TRANSACTION = "Semua"

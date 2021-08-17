@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".feature_saldo_detail.SaldoDepositActivity"
+            android:name=".saldoDetail.SaldoDepositActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -30,7 +30,7 @@
             android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
-            android:name=".feature_intro.SaldoIntroActivity"
+            android:name=".intro.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -49,22 +49,22 @@
 
         </activity>
 
-        <activity android:name=".feature_saldo_hold_info.SaldoHoldInfoActivity"
+        <activity android:name=".saldoHoldInfo.SaldoHoldInfoActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_info_toolbar_title"
             android:theme="@style/Theme.WhiteUnify"/>
 
-        <activity android:name=".feature_detail_pages.withdrawal.SaldoWithdrawalDetailActivity"
+        <activity android:name=".transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_withdrawal_detail_title"
             android:theme="@style/Theme.WhiteUnify"/>
 
-        <activity android:name=".feature_detail_pages.penjualan.SaldoSalesDetailActivity"
+        <activity android:name=".transactionDetailPages.penjualan.SaldoSalesDetailActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_sales_detail_title"
             android:theme="@style/Theme.WhiteUnify"/>
 
-        <activity android:name=".feature_detail_pages.invoice.InvoiceDetailActivity"
+        <activity android:name=".transactionDetailPages.invoice.InvoiceDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
     </application>

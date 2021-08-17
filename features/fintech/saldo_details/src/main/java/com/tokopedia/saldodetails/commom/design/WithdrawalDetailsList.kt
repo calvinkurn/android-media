@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.FeeDetailData
+import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.FeeDetailData
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
