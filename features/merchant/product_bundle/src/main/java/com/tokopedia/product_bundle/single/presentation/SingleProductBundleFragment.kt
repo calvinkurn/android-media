@@ -86,7 +86,6 @@ class SingleProductBundleFragment(
     override fun initInjector() {
         DaggerSingleProductBundleComponent.builder()
                 .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .productBundleModule(ProductBundleModule())
                 .build()
                 .inject(this)
     }

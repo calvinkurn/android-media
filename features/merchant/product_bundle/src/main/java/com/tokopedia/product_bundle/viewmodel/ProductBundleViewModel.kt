@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 class ProductBundleViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getBundleInfoUseCase: GetBundleInfoUseCase
+    private val getBundleInfoUseCase: GetBundleInfoUseCase,
+    private val addToCartBundleUseCase: AddToCartBundleUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {

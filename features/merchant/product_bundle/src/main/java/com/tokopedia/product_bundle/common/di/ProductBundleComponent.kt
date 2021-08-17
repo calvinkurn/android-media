@@ -25,11 +25,12 @@ interface ProductBundleComponent {
 
     fun getCoroutineDispatcher(): CoroutineDispatcher
 
-    fun getGraphqlRepository(): GraphqlRepository
-
     fun gson(): Gson
 
     fun coroutineDispatchers(): CoroutineDispatchers
+
+    @ApplicationContext
+    fun graphqlRepository(): GraphqlRepository
 
     fun inject(productBundleActivity: ProductBundleActivity)
 }

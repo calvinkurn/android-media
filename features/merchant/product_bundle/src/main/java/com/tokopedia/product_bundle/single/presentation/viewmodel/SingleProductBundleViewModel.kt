@@ -6,17 +6,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
-import com.tokopedia.product_bundle.common.data.model.response.*
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.abs
 
 class SingleProductBundleViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers
+        private val dispatcher: CoroutineDispatchers,
+        private val addToCartBundleUseCase: AddToCartBundleUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
@@ -34,13 +40,6 @@ class SingleProductBundleViewModel @Inject constructor(
     private val mDialogError = MutableLiveData<Pair<String, SingleProductBundleErrorEnum>>()
     val dialogError: LiveData<Pair<String, SingleProductBundleErrorEnum>>
         get() = mDialogError
-
-    /*private fun setVariantText(bundleModel: SingleProductBundleUiModel) {
-        val selectedProductId = bundleModel.selectedItems.firstOrNull {
-            it.isSelected
-        }
-        val selectedVariant = bundleModel.items.
-    }*/
 
     fun setBundleInfo(
         context: Context,
@@ -95,6 +94,28 @@ class SingleProductBundleViewModel @Inject constructor(
 
         val remoteErrorMessage = "ouch" // TODO("TODO implemet api call")
         val hasAnotherBundle = selectedData.size > 1 // TODO("Define as const")
+
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                addToCartBundleUseCase.setParams(
+                    AddToCartBundleRequestParams(
+                        shopId = "0",
+                        bundleId = "0",
+                        bundleQty = 1,
+                        selectedProductPdp = "1",
+                        listOf(
+                            ProductDetail(
+                                selectedProductId?.productId.toString(),
+                                quantity = 1,
+                                shopId = "0"
+                            )
+                        )
+                    )
+                )
+                addToCartBundleUseCase.executeOnBackground()
+            }
+        }, onError = {
+        })
 
         when {
             selectedProductId == null -> {
