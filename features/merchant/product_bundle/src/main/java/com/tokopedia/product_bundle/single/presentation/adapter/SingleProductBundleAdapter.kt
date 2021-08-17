@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -23,13 +24,20 @@ class SingleProductBundleAdapter(
     }
 
     private fun setupViewHolderOnClick(viewHolder: SingleProductBundleViewHolder) {
+        viewHolder.radioItem.setOnClickListener {
+            viewHolder.layoutItem.performClick()
+        }
         viewHolder.layoutItem.setOnClickListener {
-            viewHolder.radioItem.isChecked = true
             selectedData.forEachIndexed { index, selectedItem ->
                 selectedItem.isSelected = (index == viewHolder.adapterPosition)
             }
             data.getOrNull(viewHolder.adapterPosition)?.apply {
-                listener.onBundleItemSelected(price, slashPrice, quantity)
+                listener.onBundleItemSelected(
+                    originalPrice,
+                    discountedPrice,
+                    quantity,
+                    preorderDurationWording
+                )
             }
             notifyDataSetChanged()
         }
@@ -56,15 +64,22 @@ class SingleProductBundleAdapter(
         notifyDataSetChanged()
     }
 
-    fun setSelectedVariant(selectedProductId: String, selectedVariantText: String) {
+    fun setSelectedVariant(selectedProductId: String, variantText: String) {
         selectedData.forEachIndexed { index, selectedItem ->
             if (selectedItem.isSelected) {
-                val variant = data[index].getVariantChildFromProductId(selectedProductId)
-                data[index].discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
-                data[index].price = variant?.finalMainPrice.orZero()
-                data[index].slashPrice = variant?.finalPrice.orZero()
-                data[index].selectedVariantText = selectedVariantText
-                listener.onBundleItemSelected(data[index].price, data[index].slashPrice, data[index].quantity)
+                data.getOrNull(index)?.apply {
+                    val variant = getVariantChildFromProductId(selectedProductId)
+                    discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
+                    originalPrice = variant?.finalMainPrice.orZero()
+                    discountedPrice = variant?.finalPrice.orZero()
+                    selectedVariantText = variantText
+                    listener.onBundleItemSelected(
+                        originalPrice,
+                        discountedPrice,
+                        quantity,
+                        preorderDurationWording
+                    )
+                }
 
                 selectedItem.productId = selectedProductId
                 notifyItemChanged(index)
@@ -75,5 +90,10 @@ class SingleProductBundleAdapter(
 
     fun getSelectedData(): List<SingleProductBundleSelectedItem> {
         return selectedData
+    }
+
+    fun getSelectedProductVariant(): ProductVariant? {
+        val index = selectedData.indexOfFirst { it.isSelected }
+        return data.getOrNull(index)?.productVariant
     }
 }

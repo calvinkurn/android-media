@@ -1,149 +1,150 @@
 package com.tokopedia.product_bundle.common.data.model.response
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetBundleInfoResponse(
         @SerializedName("GetBundleInfo")
-        val getBundleInfo: GetBundleInfo = GetBundleInfo()
+        @Expose val getBundleInfo: GetBundleInfo = GetBundleInfo()
 )
 
 data class GetBundleInfo(
         @SerializedName("error")
-        val error: Error = Error(),
+        @Expose val error: Error = Error(),
         @SerializedName("bundleInfo")
-        val bundleInfo: BundleInfo = BundleInfo()
+        @Expose val bundleInfo: List<BundleInfo> = emptyList()
 )
 
 data class BundleInfo(
         @SerializedName("bundleID")
-        val bundleID: Long = 0L,
+        @Expose val bundleID: Long = 0L,
         @SerializedName("groupID")
-        val groupID: Long = 0L,
+        @Expose val groupID: Long = 0L,
         @SerializedName("name")
-        val name: String = "",
+        @Expose val name: String = "",
         @SerializedName("type")
-        val type: String = "",
+        @Expose val type: String = "",
         @SerializedName("status")
-        val status: String = "",
+        @Expose val status: String = "",
         @SerializedName("shopID")
-        val shopID: Int = 0,
+        @Expose val shopID: Int = 0,
         @SerializedName("startTimeUnix")
-        val startTimeUnix: Long = 0L,
+        @Expose val startTimeUnix: Long = 0L,
         @SerializedName("stopTimeUnix")
-        val stopTimeUnix: Long = 0L,
+        @Expose val stopTimeUnix: Long = 0L,
         @SerializedName("warehouseID")
-        val warehouseID: Long = 0L,
+        @Expose val warehouseID: Long = 0L,
         @SerializedName("quota")
-        val quota: Int = 0,
+        @Expose val quota: Int = 0,
         @SerializedName("originalQuota")
-        val originalQuota: Int = 0,
+        @Expose val originalQuota: Int = 0,
         @SerializedName("maxOrder")
-        val maxOrder: Int = 0,
+        @Expose val maxOrder: Int = 0,
         @SerializedName("preorder")
-        val preorder: Preorder = Preorder(),
+        @Expose val preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
-        val bundleItems: List<BundleItem> = listOf()
+        @Expose val bundleItems: List<BundleItem> = listOf()
 )
 
 data class BundleItem(
         @SerializedName("productID")
-        val productID: Long = 0L,
+        @Expose val productID: Long = 0L,
         @SerializedName("name")
-        val name: String = "",
+        @Expose val name: String = "",
         @SerializedName("picURL")
-        val picURL: String = "",
+        @Expose val picURL: String = "",
         @SerializedName("status")
-        val status: String = "",
+        @Expose val status: String = "",
         @SerializedName("quantity")
-        val quantity: Int = 0,
+        @Expose val quantity: Int = 0,
         @SerializedName("bundlePrice")
-        val bundlePrice: Double = 0.0,
+        @Expose val bundlePrice: Double = 0.0,
         @SerializedName("stock")
-        val stock: Long = 0,
+        @Expose val stock: Long = 0,
         @SerializedName("minOrder")
-        val minOrder: Int = 0,
+        @Expose val minOrder: Int = 0,
         @SerializedName("selection")
-        val selections: List<Selection> = listOf(),
+        @Expose val selections: List<Selection> = listOf(),
         @SerializedName("children")
-        val children: List<Child> = listOf(),
+        @Expose val children: List<Child> = listOf(),
         @SerializedName("originalPrice")
-        val originalPrice: Double = 0.0,
+        @Expose val originalPrice: Double = 0.0,
         @SerializedName("productStatus")
-        val productStatus: String = ""
+        @Expose val productStatus: String = ""
 )
 
 data class Selection(
         @SerializedName("productVariantID")
-        val productVariantID: Long = 0L,
+        @Expose val productVariantID: Long = 0L,
         @SerializedName("variantID")
-        val variantID: Long = 0L,
+        @Expose val variantID: Long = 0L,
         @SerializedName("variantUnitID")
-        val variantUnitID: Long = 0L,
+        @Expose val variantUnitID: Long = 0L,
         @SerializedName("position")
-        val position: Long = 0L,
+        @Expose val position: Long = 0L,
         @SerializedName("name")
-        val name: String = "",
+        @Expose val name: String = "",
         @SerializedName("identifier")
-        val identifier: String = "",
+        @Expose val identifier: String = "",
         @SerializedName("option")
-        val options: List<VariantOption> = listOf()
+        @Expose val options: List<VariantOption> = listOf()
 )
 
 data class VariantOption(
         @SerializedName("productVariantOptionID")
-        val productVariantOptionID: Long = 0L,
-        @SerializedName("unitValueID")
-        val unitValueID: Long = 0L,
-        @SerializedName("value")
-        val value: String = "",
+        @Expose val productVariantOptionID: Long = 0L,
+        @SerializedName("unit@Expose valueID")
+        @Expose val unitValueID: Long = 0L,
+        @SerializedName("@Expose value")
+        @Expose val value: String = "",
         @SerializedName("hex")
-        val hex: String = "",
+        @Expose val hex: String = "",
         @SerializedName("picUrl")
-        val picUrl: String = "",
+        @Expose val picUrl: String = "",
         @SerializedName("picUrl100")
-        val picUrl100: String = "",
+        @Expose val picUrl100: String = "",
         @SerializedName("picUrl200")
-        val picUrl200: String = ""
+        @Expose val picUrl200: String = ""
 )
 
 data class Child(
         @SerializedName("productID")
-        val productID: Long = 0L,
+        @Expose val productID: Long = 0L,
         @SerializedName("name")
-        val name: String = "",
+        @Expose val name: String = "",
         @SerializedName("picURL")
-        val picURL: String = "",
+        @Expose val picURL: String = "",
         @SerializedName("minOrder")
-        val minOrder: Int = 0,
+        @Expose val minOrder: Int = 0,
         @SerializedName("bundlePrice")
-        val bundlePrice: Double = 0.0,
+        @Expose val bundlePrice: Double = 0.0,
         @SerializedName("originalPrice")
-        val originalPrice: Double = 0.0,
+        @Expose val originalPrice: Double = 0.0,
         @SerializedName("stock")
-        val stock: Int = 0,
+        @Expose val stock: Int = 0,
         @SerializedName("optionID")
-        val optionIds: List<Long> = listOf()
+        @Expose val optionIds: List<Long> = listOf()
 )
 
 data class Preorder(
         @SerializedName("status")
-        val status: String = "",
+        @Expose val status: String = "",
         @SerializedName("statusNum")
-        val statusNum: Long = 0L,
+        @Expose val statusNum: Long = 0L,
         @SerializedName("processType")
-        val processType: String = "",
+        @Expose val processType: String = "",
         @SerializedName("processTypeNum")
-        val processTypeNum: Int = 0,
+        @Expose val processTypeNum: Int = 0,
         @SerializedName("startTime")
-        val startTime: String = "",
+        @Expose val startTime: String = "",
         @SerializedName("endTime")
-        val endTime: String = "",
+        @Expose val endTime: String = "",
         @SerializedName("orderLimit")
-        val orderLimit: Long = 0L,
+        @Expose val orderLimit: Long = 0L,
         @SerializedName("maxOrder")
-        val maxOrder: Long = 0L,
+        @Expose val maxOrder: Long = 0L,
         @SerializedName("processDay")
-        val processDay: Long = 0L,
+        @Expose val processDay: Long = 0L,
         @SerializedName("processTime")
-        val processTime: Long = 0L
+        @Expose val processTime: String = ""
 )

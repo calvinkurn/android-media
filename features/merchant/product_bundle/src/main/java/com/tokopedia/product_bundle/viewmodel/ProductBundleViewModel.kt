@@ -11,6 +11,7 @@ import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
+import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
@@ -18,7 +19,6 @@ import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMas
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -46,10 +46,10 @@ class ProductBundleViewModel @Inject constructor(
 
     fun getBundleInfo(productId: Long) {
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
-                    squad = "minion ken",
-                    usecase = "getBundleInfo",
+                    squad = GetBundleInfoConstant.SQUAD_VALUE,
+                    usecase = GetBundleInfoConstant.USECASE_VALUE,
                     requestData = RequestData(variantDetail = true, CheckCampaign = true, BundleGroup = true, Preorder = true),
                     productData = ProductData(productID = productId.toString())
                 )

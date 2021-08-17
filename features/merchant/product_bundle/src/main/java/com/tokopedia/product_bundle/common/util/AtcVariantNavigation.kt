@@ -16,7 +16,7 @@ object AtcVariantNavigation {
     }
 
     fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant) {
-        val saveButtonText = fragment.getString(R.string.variant_bottomsheet_action_save)
+        val saveButtonText = fragment.getString(R.string.action_save)
         val cartRedirections = AtcVariantHelper.generateSaveCartRedirection(productVariant, saveButtonText)
             ?: emptyMap()
 
