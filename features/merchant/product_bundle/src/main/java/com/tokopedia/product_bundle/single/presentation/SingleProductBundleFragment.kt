@@ -27,6 +27,7 @@ import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
@@ -36,7 +37,7 @@ import javax.inject.Inject
 
 class SingleProductBundleFragment(
     private var bundleInfo: List<BundleInfo> = emptyList(),
-    private var bundleId: String = "",
+    private var selectedBundleId: String = "",
     private var selectedProductId: Long = 0L
 ) : BaseDaggerFragment(), BundleItemListener {
 
@@ -50,7 +51,7 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedProductId)
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -104,6 +105,19 @@ class SingleProductBundleFragment(
     ) {
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
+    }
+
+    override fun onDataChanged(
+        selectedData: List<SingleProductBundleSelectedItem>,
+        selectedProductVariant: ProductVariant?
+    ) {
+        val selectedProductId = selectedData.firstOrNull {
+            it.isSelected
+        }?.productId
+        if (selectedProductId != null && selectedProductVariant != null) {
+            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId.toString())
+            adapter.setSelectedVariant(selectedProductId, selectedVariantText)
+        }
     }
 
     private fun observeSingleProductBundleUiModel() {
@@ -176,7 +190,12 @@ class SingleProductBundleFragment(
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.apply {
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
-            updateTotalAmount("Rp0", 0, "Rp0", "Rp0")
+            val defaultPrice = context.getString(R.string.single_bundle_default_price)
+            updateTotalAmount(
+                price = defaultPrice,
+                slashPrice = defaultPrice,
+                priceGap = defaultPrice
+            )
             amountCtaView.setOnClickListener {
                 viewModel.checkout(adapter.getSelectedData())
             }
@@ -185,20 +204,20 @@ class SingleProductBundleFragment(
 
     private fun updateTotalPO(totalPOWording: String?) {
         tvBundleSold?.isVisible = totalPOWording != null
-        tvBundleSold?.text = "PO $totalPOWording"
+        tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
     }
 
-    private fun updateTotalAmount(price: String, discount: Int, slashPrice: String, priceGap: String) {
+    private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
         totalAmount?.apply {
             amountView.text = price
-            setTitleText("$discount%", slashPrice)
-            setSubtitleText("Hemat", priceGap)
+            setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
+            setSubtitleText(context.getString(R.string.text_saving), priceGap)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(bundleInfo: List<BundleInfo>, bundleId: String = "", selectedProductId: Long = 0L) =
-            SingleProductBundleFragment(bundleInfo, bundleId, selectedProductId)
+        fun newInstance(bundleInfo: List<BundleInfo>, selectedBundleId: String = "", selectedProductId: Long = 0L) =
+            SingleProductBundleFragment(bundleInfo, selectedBundleId, selectedProductId)
     }
 }

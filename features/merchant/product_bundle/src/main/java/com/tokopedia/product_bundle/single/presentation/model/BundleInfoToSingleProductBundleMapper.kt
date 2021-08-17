@@ -16,9 +16,11 @@ object BundleInfoToSingleProductBundleMapper {
 
     fun mapToSingleProductBundle (
         context: Context, bundleInfo: List<BundleInfo>,
-        selectedProductId: Long) = SingleProductBundleUiModel(
+        selectedBundleId: String,
+        selectedProductId: Long
+    ) = SingleProductBundleUiModel(
         items = mapToBundleItem(context, bundleInfo),
-        selectedItems = mapToSelectedItem(bundleInfo, selectedProductId)
+        selectedItems = mapToSelectedItem(bundleInfo, selectedBundleId, selectedProductId)
     )
 
     private fun getPreorderWording(context: Context, preorder: Preorder): String? {
@@ -53,11 +55,30 @@ object BundleInfoToSingleProductBundleMapper {
         )
     }
 
-    private fun mapToSelectedItem(BundleInfos: List<BundleInfo>, selectedProductId: Long) = BundleInfos.map { bundleInfo ->
+    private fun mapToSelectedItem(
+        BundleInfos: List<BundleInfo>,
+        selectedBundleId: String,
+        selectedProductId: Long
+    ) = BundleInfos.map { bundleInfo ->
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
-            productId = if (bundleItem.selections.isNotEmpty()) "" else bundleItem.productID.toString(),
-            isSelected = bundleItem.children.any { it.productID == selectedProductId }
+            productId = when {
+                bundleItem.children.any { it.productID == selectedProductId } -> {
+                    selectedProductId.toString()
+                }
+                bundleItem.selections.isNotEmpty() -> {
+                    ""
+                }
+                else -> {
+                    bundleItem.productID.toString()
+                }
+            },
+            isSelected = bundleInfo.bundleID.toString() == selectedBundleId
         )
+    }.apply {
+        // autoselect first item, if there is no selected item
+        if (!this.any { it.isSelected }) {
+            this.firstOrNull()?.isSelected = true
+        }
     }
 }
