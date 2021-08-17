@@ -230,12 +230,14 @@ class PlayFragment @Inject constructor(
 
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
-        if (playViewModel.videoPlayer.isYouTube) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
-        } else {
-            fragmentVideoView.safeInit()
-            fragmentVideoView.show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (playViewModel.videoPlayer.isYouTube) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            } else {
+                fragmentVideoView.safeInit()
+                fragmentVideoView.show()
+            }
         }
     }
 
@@ -599,15 +601,17 @@ class PlayFragment @Inject constructor(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (isFreezeOrBanned) {
-            fragmentYouTubeView.safeRelease()
-            fragmentYouTubeView.hide()
-            return
-        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (isFreezeOrBanned) {
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                return@launchWhenResumed
+            }
 
-        if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            }
         }
     }
     //endregion
