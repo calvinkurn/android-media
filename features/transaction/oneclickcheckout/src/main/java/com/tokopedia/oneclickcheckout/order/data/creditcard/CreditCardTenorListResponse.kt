@@ -3,7 +3,11 @@ package com.tokopedia.oneclickcheckout.order.data.creditcard
 import com.google.gson.annotations.SerializedName
 
 data class CreditCardTenorListResponse(
+	@field:SerializedName("creditCardTenorList")
+	val response: CreditCardTenorList = CreditCardTenorList()
+)
 
+data class CreditCardTenorList(
 	@field:SerializedName("error_msg")
 	val errorMsg: String = "",
 
