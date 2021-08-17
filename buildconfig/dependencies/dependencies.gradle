@@ -5,7 +5,7 @@ ext {
     targetSdkVersion = 29
     buildToolsVersion = "30.0.2"
 
-    jacocoVersion = "0.8.6"
+    jacocoVersion = "0.8.7"
     kotlinVersion = "1.5.20"
 
     navigationVersion = "2.3.0"
@@ -311,7 +311,7 @@ ext {
             retrofitMock          : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser    : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker              : 'com.google.dexmaker:dexmaker:1.2',
-            dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.25.1',
+            dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.28.1',
             assertJ               : "org.assertj:assertj-core:1.7.1",
             assertJCore           : 'org.assertj:assertj-core:3.8.0',
             kotlinMockito         : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
