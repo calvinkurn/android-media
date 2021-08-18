@@ -9,6 +9,8 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.constant.FragmentDFConstant.DF_INSTALLER_FRAGMENT_CLASS_PATH
+import com.tokopedia.applink.constant.FragmentDFConstant.SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
@@ -208,7 +210,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
-
+    private const val BUNDLE_KEY_MODULE_ID = "MODULE_ID"
+    private const val BUNDLE_KEY_CLASS_PATH_NAME = "CLASS_PATH_NAME"
     private var manager: SplitInstallManager? = null
     val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
@@ -776,37 +779,30 @@ object DeeplinkDFMapper : CoroutineScope {
         }
     }
 
-    val moduleDFMapper: List<DFP> by lazy {
-        mutableListOf<DFP>().apply {
-            // Test
-            add(DFP({
-                listOf(
-                        "com.example.test_fragment_df.TestDfFragment",
-                        "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment",
-                ).contains(it)
-            }, DF_MERCHANT_SELLER, R.string.applink_title_affiliate))
+    val fragmentDfModuleMapper: List<FragmentDFPattern> by lazy {
+        mutableListOf<FragmentDFPattern>().apply {
+            add(FragmentDFPattern({ it == SHOP_SCORE_DETAIL_FRAGMENT_CLASS_PATH }, DF_MERCHANT_SELLER))
         }
     }
 
     @JvmStatic
-    fun checkIfFragmentIsInstalled(context: Context, className: String): Boolean? {
-        val moduleId = moduleDFMapper.firstOrNull {
+    fun checkIfFragmentIsInstalled(context: Context, className: String): Boolean {
+        val moduleId = fragmentDfModuleMapper.firstOrNull {
             it.logic(className)
         }?.moduleId.orEmpty()
-        return getSplitManager(context)?.installedModules?.contains(moduleId)
+        return getSplitManager(context)?.installedModules?.contains(moduleId) ?: false
     }
 
     @JvmStatic
     fun getFragmentDFDownloader(activity: AppCompatActivity, classPathName: String): Fragment? {
         getSplitManager(activity)?.let {
-            val dfModuleName = moduleDFMapper.firstOrNull {
+            val dfModuleName = fragmentDfModuleMapper.firstOrNull {
                 it.logic(classPathName)
             }
             val bundle = Bundle()
-            bundle.putString("MODULE_ID", dfModuleName?.moduleId.orEmpty())
-            bundle.putString("CLASS_PATH_NAME", classPathName)
-            val dfInstallFragmentClassPathName = "com.tokopedia.dynamicfeatures.DFInstallerFragment"
-            return RouteManager.instantiateFragment(activity, dfInstallFragmentClassPathName, bundle)
+            bundle.putString(BUNDLE_KEY_MODULE_ID, dfModuleName?.moduleId.orEmpty())
+            bundle.putString(BUNDLE_KEY_CLASS_PATH_NAME, classPathName)
+            return RouteManager.instantiateFragment(activity, DF_INSTALLER_FRAGMENT_CLASS_PATH, bundle)
         } ?: return null
     }
 
@@ -823,6 +819,14 @@ class DFP(
         val moduleId: String,
         val moduleNameResourceId: Int,
         val webviewFallbackLogic: ((deeplink: String) -> String)? = null
+)
+
+/**
+ * Class to hold dynamic feature fragment pattern, used for mapping
+ */
+class FragmentDFPattern(
+        val logic: ((deeplink: String) -> Boolean),
+        val moduleId: String
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {
