@@ -1357,7 +1357,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) castView?.show()
+        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
+            analytic.impressCast()
+            castView?.show()
+        }
         else castView?.hide()
     }
     //endregion

@@ -482,6 +482,11 @@ class PlayAnalytic(
     /**
      * Cast
      */
+
+    fun impressCast() {
+        Log.d("<LOG>", "impressCast")
+    }
+
     fun clickCast() {
         Log.d("<LOG>", "clickCast")
         TrackApp.getInstance().gtm.sendGeneralEvent(
