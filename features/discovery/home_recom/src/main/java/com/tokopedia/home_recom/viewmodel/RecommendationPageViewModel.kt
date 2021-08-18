@@ -71,6 +71,7 @@ open class RecommendationPageViewModel @Inject constructor(
         const val POS_PRODUCT_ANCHOR = 0
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "source=recom_google"
+        const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
     }
     /**
      * public variable
@@ -93,7 +94,7 @@ open class RecommendationPageViewModel @Inject constructor(
             queryParam: String) {
         launch (dispatcher.getIODispatcher()) {
             try{
-                val result = awaitAll(
+                var result = awaitAll(
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
                             getPrimaryProductUseCase.setParameter(productId.toInt(), queryParam)
                             getPrimaryProductUseCase.executeOnBackground()
@@ -110,15 +111,17 @@ open class RecommendationPageViewModel @Inject constructor(
                             getRecommendationUseCase.createObservable(params).toBlocking().first()
                         }) {
                             throw it
-                        },
-                        asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_RECOM)
-                            getTopAdsHeadlineUseCase.executeOnBackground()
-                        }) {
-                            throw it
                         }
-                )
-
+                ) as MutableList<Any?>
+                if (eligibleToShowHeadlineCPM(queryParam)) {
+                    val topadsHeadlineResult = asyncCatchError(dispatcher.getIODispatcher(), block = {
+                        getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_RECOM)
+                        getTopAdsHeadlineUseCase.executeOnBackground()
+                    }) {
+                        throw it
+                    }
+                    result.add(topadsHeadlineResult.await())
+                }
                 if (result.isNotEmpty() && !result.all { it == null }) {
                     var anchorProductInfoEntity: PrimaryProductEntity? = null
                     var recommendationWidgets: List<RecommendationWidget>? = listOf()
@@ -137,14 +140,19 @@ open class RecommendationPageViewModel @Inject constructor(
                     if (anchorProductInfo == null && recommendationMappingWidget.isEmpty()) {
                         listVisitable.add(RecommendationErrorDataModel(Exception()))
                     } else {
+                        //append data based on queue
+
+                        //1. append product primary
                         listVisitable.add(ProductInfoDataModel(anchorProductInfo))
+                        //2. append CPM based on rollence
                         topAdsHeadlineResponse?.let {
-                            if (canShowTopadsHeadlineCPM(it))
+                            if (it.displayAds.data.size != 0)
                                 listVisitable.add(
                                         RecommendationCPMDataModel(
                                                 topAdsHeadlineResponse = it,
                                                 parentPosition = POS_CPM))
                         }
+                        //3. append recom list
                         listVisitable.addAll(recommendationMappingWidget)
                     }
                     _recommendationListLiveData.postValue(listVisitable)
@@ -159,9 +167,9 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
-    private fun canShowTopadsHeadlineCPM(response: TopAdsHeadlineResponse): Boolean {
+    private fun eligibleToShowHeadlineCPM(queryParam: String): Boolean {
         if (!RecommendationRollenceController.isRecommendationCPMRollenceVariant()) return false
-        if (response.displayAds.data.size != 0) return true
+        if (queryParam.contains(QUERY_PARAMS_GOOGLE_SHOPPING)) return true
         return false
     }
 
