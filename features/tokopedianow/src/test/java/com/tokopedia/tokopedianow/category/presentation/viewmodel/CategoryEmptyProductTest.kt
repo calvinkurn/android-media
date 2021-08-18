@@ -1,11 +1,17 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.usecase.RequestParams
 import io.mockk.verify
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.Callback {
 
@@ -33,6 +39,18 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
         verify (exactly = count) {
             getCategoryFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
         }
+    }
+
+    override fun `Then assert empty result visitable list`(visitableList: List<Visitable<*>>) {
+        visitableList[2].assertTokonowCategoryGrid()
+    }
+
+    private fun Visitable<*>.assertTokonowCategoryGrid() {
+        assertThat(this, instanceOf(TokoNowCategoryGridUiModel::class.java))
+
+        val categoryGridUiModel = this as TokoNowCategoryGridUiModel
+
+        assertThat(categoryGridUiModel.title, shouldBe(CATEGORY_GRID_TITLE))
     }
 
     @Test
