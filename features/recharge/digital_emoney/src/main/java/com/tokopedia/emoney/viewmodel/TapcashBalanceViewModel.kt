@@ -98,6 +98,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(balanceRawQuery, BalanceTapcash::class.java, mapParam)
+                graphqlRequest.setUrlPath(URL_PATH)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<BalanceTapcash>()
 
@@ -272,11 +273,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         const val CARD_DATA = "cardData"
 
-        private const val TAPCASH_TAG = "TAPCASH"
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 7000
 
-        private const val MAX_WRITE_RESULT_SIZE = 100
-        private const val MAX_WRITE_RESULT_SIZE_V6 = 52
         private const val MAX_SECURE_PURSE_LENGTH = 230
         private const val MAX_16_LENGTH = 16
         private const val MAX_CHALLAGE_LENGTH = 20
@@ -307,6 +305,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 0x01.toByte(),  // P2  Parameter 2
                 0x25.toByte() //  LC Data Field
         )
+
+        const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
     }
 
 }
