@@ -13,6 +13,9 @@ class OrderPromoCard(private val binding: CardOrderPromoBinding,
 
     companion object {
         const val VIEW_TYPE = 6
+
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
     }
 
     fun setupButtonPromo(orderPromo: OrderPromo) {
@@ -54,7 +57,7 @@ class OrderPromoCard(private val binding: CardOrderPromoBinding,
                 }
             }
         }
-        binding.root.alpha = if (orderPromo.isDisabled) 0.5f else 1.0f
+        binding.root.alpha = if (orderPromo.isDisabled) DISABLE_ALPHA else ENABLE_ALPHA
     }
 
     interface OrderPromoCardListener {

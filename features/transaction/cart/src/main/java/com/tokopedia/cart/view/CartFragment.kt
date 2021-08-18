@@ -222,6 +222,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
 
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
+
         const val HAS_ELEVATION = 9
         const val NO_ELEVATION = 0
         const val CART_TRACE = "mp_cart"
@@ -3596,7 +3598,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onExpandAvailableItem(index: Int) {
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
-            if (cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0 > 10) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0 > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
                 cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId
                         ?: "")
             } else {

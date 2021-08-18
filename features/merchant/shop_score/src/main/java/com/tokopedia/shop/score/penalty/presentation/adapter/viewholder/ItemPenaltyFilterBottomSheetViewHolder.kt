@@ -14,9 +14,10 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.ItemChipsFil
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import kotlinx.android.synthetic.main.item_penalty_filter_list.view.*
 
-class ItemPenaltyFilterBottomSheetViewHolder(view: View,
-                                             private val penaltyBottomSheetListener: FilterPenaltyBottomSheetListener
-): AbstractViewHolder<PenaltyFilterUiModel>(view) {
+class ItemPenaltyFilterBottomSheetViewHolder(
+    view: View,
+    private val penaltyBottomSheetListener: FilterPenaltyBottomSheetListener
+) : AbstractViewHolder<PenaltyFilterUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_penalty_filter_list
@@ -25,7 +26,8 @@ class ItemPenaltyFilterBottomSheetViewHolder(view: View,
     private var itemChipsFilterPenaltyAdapter: ItemChipsFilterPenaltyAdapter? = null
 
     override fun bind(element: PenaltyFilterUiModel) {
-        itemChipsFilterPenaltyAdapter = ItemChipsFilterPenaltyAdapter(penaltyBottomSheetListener, element.title)
+        itemChipsFilterPenaltyAdapter =
+            ItemChipsFilterPenaltyAdapter(penaltyBottomSheetListener, element.title)
         with(itemView) {
             tvTitleHeaderPenaltyFilter?.text = element.title
             dividerSomFilter?.showWithCondition(element.isDividerVisible)
@@ -44,9 +46,9 @@ class ItemPenaltyFilterBottomSheetViewHolder(view: View,
     private fun setupChipsAdapter(data: PenaltyFilterUiModel) {
         with(itemView) {
             val layoutManagerChips = ChipsLayoutManager.newBuilder(context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
             rvPenaltyFilter?.also {
                 if (it.itemDecorationCount.isZero()) {
                     it.addItemDecoration(PenaltyFilterItemDecoration())

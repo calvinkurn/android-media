@@ -20,21 +20,28 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_promo_creation_shop_performance.view.*
 
 
-class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener) :
-        RecyclerView.Adapter<ItemFeatureRecommendationAdapter.ItemFeatureRecommendationViewHolder>() {
+class ItemFeatureRecommendationAdapter(
+    private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener) :
+    RecyclerView.Adapter<ItemFeatureRecommendationAdapter.ItemFeatureRecommendationViewHolder>() {
 
-    private val itemRecommendationList = mutableListOf<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>()
+    private val itemRecommendationList =
+        mutableListOf<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>()
 
-    fun setItemRecommendationList(itemRecommendationList: List<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>) {
+    fun setItemRecommendationList(itemRecommendationList:
+                                  List<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>) {
         if (itemRecommendationList.isNullOrEmpty()) return
         this.itemRecommendationList.clear()
         this.itemRecommendationList.addAll(itemRecommendationList)
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFeatureRecommendationViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemFeatureRecommendationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-                R.layout.item_promo_creation_shop_performance, parent, false)
+            R.layout.item_promo_creation_shop_performance, parent, false
+        )
         return ItemFeatureRecommendationViewHolder(view)
     }
 
@@ -54,26 +61,44 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
 
                 ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
 
-                cardContent?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                cardContent?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+                )
 
-                loadImageWithTarget(context, ShopScoreConstant.IC_SQUIRCLE_RECOMMENDATION_URL, {}, MediaTarget(
+                loadImageWithTarget(context,
+                    ShopScoreConstant.IC_SQUIRCLE_RECOMMENDATION_URL,
+                    {},
+                    MediaTarget(
                         findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
                         onReady = { recommendedPromoView, resourceBitmap ->
                             val bitmapRecommended = BitmapDrawable(resources, resourceBitmap)
                             if (context.isDarkMode()) {
-                                val bgColorRecommendPromo = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                                bitmapRecommended.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(bgColorRecommendPromo, BlendModeCompat.SRC_ATOP)
+                                val bgColorRecommendPromo = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                )
+                                bitmapRecommended.colorFilter =
+                                    BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                                        bgColorRecommendPromo,
+                                        BlendModeCompat.SRC_ATOP
+                                    )
                             }
                             recommendedPromoView.background = bitmapRecommended
                         },
                         onFailed = { _, _ ->
                             ivRecommendedPromo?.hide()
                         }
-                ))
+                    ))
 
 
                 setOnClickListener {
-                    itemRecommendationFeatureListener.onItemClickedRecommendationFeature(data.appLinkRecommendation, data.identifier)
+                    itemRecommendationFeatureListener.onItemClickedRecommendationFeature(
+                        data.appLinkRecommendation,
+                        data.identifier
+                    )
                 }
                 itemRecommendationFeatureListener.onItemImpressRecommendationFeature(data.identifier)
             }

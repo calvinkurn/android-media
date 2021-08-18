@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class AvailableGroup(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("user_address_id")
         val userAddressId: Int = 0,
         @SerializedName("shipment_information")

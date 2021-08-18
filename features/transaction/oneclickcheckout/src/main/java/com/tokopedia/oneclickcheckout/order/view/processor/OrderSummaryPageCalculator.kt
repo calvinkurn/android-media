@@ -194,7 +194,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
                     var itemQty = 0
-                    if (product.hasParentId()) {
+                    if (product.hasParentId() && product.wholesalePriceList.isNotEmpty()) {
                         orderCart.products.filter { !it.isError && it.parentId == product.parentId }
                                 .forEach { itemQty += it.orderQuantity }
                     } else {
@@ -279,7 +279,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     }
 
     private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Double, mdrSubsidize: Float): Double {
-        return ceil(subTotal * (mdr / 100.0) - subsidize * (mdrSubsidize / 100.0))
+        return ceil(subTotal * (mdr / PERCENT_DIVIDER) - subsidize * (mdrSubsidize / PERCENT_DIVIDER))
     }
 
     private fun calculateInstallmentDetails(payment: OrderPayment, subTotal: Double, subsidize: Double, discount: Int): OrderPayment {
@@ -302,5 +302,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             }
         }
         return payment.copy(creditCard = payment.creditCard.copy(availableTerms = installments, selectedTerm = selectedInstallmentTerm))
+    }
+
+    companion object {
+        private const val PERCENT_DIVIDER = 100.0
     }
 }

@@ -30,15 +30,8 @@ data class CheckoutRequestGqlData(
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
         @SuppressLint("Invalid Data Type")
-        var leasingId: Int = 0,
-        @SerializedName("feature_type")
-        val featureType: Int = FEATURE_TYPE_TOKONOW
-) {
-
-    companion object {
-        const val FEATURE_TYPE_TOKONOW = 11
-    }
-}
+        var leasingId: Int = 0
+)
 
 data class EgoldGqlData(
         @SerializedName("is_egold")

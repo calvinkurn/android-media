@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.oneclickcheckout.databinding.CardOrderInsuranceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -19,11 +20,11 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         const val VIEW_TYPE = 5
     }
 
-    fun setupInsurance(shipment: OrderShipment) {
+    fun setupInsurance(shipment: OrderShipment, profile: OrderProfile) {
         val insurance = shipment.insurance
         val insuranceData = insurance.insuranceData
         binding.apply {
-            if (insuranceData != null && !shipment.isLoading) {
+            if (insuranceData != null && !shipment.isLoading && !shipment.isDisabled && profile.enable) {
                 setupListeners(insuranceData)
                 when (insuranceData.insuranceType) {
                     InsuranceConstant.INSURANCE_TYPE_MUST -> {
@@ -61,7 +62,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                 } else {
                     tvInsurancePrice.gone()
                 }
-            } else if (insuranceData == null) {
+            } else if (insuranceData == null || shipment.isDisabled || !profile.enable) {
                 setVisibility(View.GONE)
             } else {
                 setVisibility(View.INVISIBLE)
