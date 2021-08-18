@@ -24,6 +24,21 @@
                     android:path="/ingest_stream"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".chucker.ui.activity.NetworkChuckerActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="/chucker"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
