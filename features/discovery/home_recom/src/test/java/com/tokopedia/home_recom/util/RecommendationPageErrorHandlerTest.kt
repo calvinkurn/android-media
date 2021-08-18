@@ -1,10 +1,11 @@
 package com.tokopedia.home_recom.util
 
 import android.content.Context
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -49,7 +50,7 @@ class RecommendationPageErrorHandlerTest{
         val defaultError = "Koneksi timeout. Silakan coba beberapa saat lagi"
         every { context.getString(any()) } returns defaultError
         val throwable = SocketTimeoutException()
-//        assertEquals(RecommendationPageErrorHandler.getErrorMessage(context, throwable), "Koneksi timeout. Silakan coba beberapa saat lagi")
+        assertTrue(RecommendationPageErrorHandler.getErrorMessage(context, throwable).startsWith("Koneksi timeout. Silakan coba beberapa saat lagi"))
     }
 
     @Test
@@ -57,6 +58,6 @@ class RecommendationPageErrorHandlerTest{
         val defaultError = "Tidak ada koneksi internet"
         every { context.getString(any()) } returns defaultError
         val throwable = UnknownHostException()
-//        assertEquals(RecommendationPageErrorHandler.getErrorMessage(context, throwable), "Tidak ada koneksi internet")
+        assertTrue(RecommendationPageErrorHandler.getErrorMessage(context, throwable).startsWith("Tidak ada koneksi internet"))
     }
 }
