@@ -117,7 +117,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         // Add unavailable separator
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(MiniCartSeparatorUiModel.DEFAULT_SEPARATOR_HEIGHT)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
 
@@ -152,7 +152,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         // Add unavailable accordion
         if (totalProductUnavailable > 1) {
             // Add unavailable accordion separator
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(MiniCartSeparatorUiModel.DEFAULT_SEPARATOR_HEIGHT)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
 
             val showLessUnavailableDataWording = miniCartData.data.unavailableSectionAction.find {

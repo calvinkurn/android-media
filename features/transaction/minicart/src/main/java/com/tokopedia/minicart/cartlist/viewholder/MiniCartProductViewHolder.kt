@@ -31,6 +31,10 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_product
+        const val NOTES_CHANGE_DELAY = 250L
+        const val QUANTITY_CHANGE_DELAY = 500L
+        const val ALPHA_FULL = 1.0f
+        const val ALPHA_HALF = 0.5f
     }
 
     private var qtyTextWatcher: TextWatcher? = null
@@ -271,7 +275,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     delayChangeNotes?.cancel()
                     delayChangeNotes = GlobalScope.launch(Dispatchers.Main) {
-                        delay(250)
+                        delay(NOTES_CHANGE_DELAY)
                         val notes = s.toString()
                         element.productNotes = notes
                         listener.onNotesChanged(element.productId, notes)
@@ -392,7 +396,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     delayChangeQty?.cancel()
                     delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                        delay(500)
+                        delay(QUANTITY_CHANGE_DELAY)
                         val newValue = s.toString().replace(".", "").toIntOrZero()
                         if (element.productQty != newValue) {
                             validateQty(newValue, element)
@@ -492,23 +496,23 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.isProductDisabled) {
-                imageProduct.alpha = 0.5f
-                textProductName.alpha = 0.5f
-                textProductVariant.alpha = 0.5f
-                textQtyLeft.alpha = 0.5f
-                labelSlashPricePercentage.alpha = 0.5f
-                textSlashPrice.alpha = 0.5f
-                textProductPrice.alpha = 0.5f
-                layoutProductInfo.alpha = 0.5f
+                imageProduct.alpha = ALPHA_HALF
+                textProductName.alpha = ALPHA_HALF
+                textProductVariant.alpha = ALPHA_HALF
+                textQtyLeft.alpha = ALPHA_HALF
+                labelSlashPricePercentage.alpha = ALPHA_HALF
+                textSlashPrice.alpha = ALPHA_HALF
+                textProductPrice.alpha = ALPHA_HALF
+                layoutProductInfo.alpha = ALPHA_HALF
             } else {
-                imageProduct.alpha = 1.0f
-                textProductName.alpha = 1.0f
-                textProductVariant.alpha = 1.0f
-                textQtyLeft.alpha = 1.0f
-                labelSlashPricePercentage.alpha = 1.0f
-                textSlashPrice.alpha = 1.0f
-                textProductPrice.alpha = 1.0f
-                layoutProductInfo.alpha = 1.0f
+                imageProduct.alpha = ALPHA_FULL
+                textProductName.alpha = ALPHA_FULL
+                textProductVariant.alpha = ALPHA_FULL
+                textQtyLeft.alpha = ALPHA_FULL
+                labelSlashPricePercentage.alpha = ALPHA_FULL
+                textSlashPrice.alpha = ALPHA_FULL
+                textProductPrice.alpha = ALPHA_FULL
+                layoutProductInfo.alpha = ALPHA_FULL
             }
         }
     }
