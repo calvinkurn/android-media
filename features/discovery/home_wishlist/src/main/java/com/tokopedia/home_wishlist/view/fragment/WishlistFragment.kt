@@ -23,8 +23,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
@@ -754,7 +756,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     private fun showOnBoarding() {
         context?.let { context ->
-            if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
                 Handler().postDelayed({
                     val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
                     this.coachMark = CoachMark2(context)
@@ -768,6 +770,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                                 )
                         )
                         coachMark?.showCoachMark(step = coachMarkItems)
+                        CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
                     }
                 }, COACHMARK_SAFE_DELAY)
         }
