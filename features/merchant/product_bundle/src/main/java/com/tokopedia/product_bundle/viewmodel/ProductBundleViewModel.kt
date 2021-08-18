@@ -36,6 +36,8 @@ class ProductBundleViewModel @Inject constructor(
         private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
     }
 
+    var parentProductID: Long = 0L
+
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
 
@@ -46,6 +48,7 @@ class ProductBundleViewModel @Inject constructor(
     val isError: LiveData<Boolean> get() = isErrorLiveData
 
     fun getBundleInfo(productId: Long) {
+        parentProductID = productId
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(

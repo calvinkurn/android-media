@@ -73,6 +73,9 @@ object BundleInfoToSingleProductBundleMapper {
                     bundleItem.productID.toString()
                 }
             },
+            bundleId = bundleInfo.bundleID.toString(),
+            shopId = bundleInfo.shopID.toString(),
+            quantity = bundleItem.minOrder,
             isSelected = bundleInfo.bundleID.toString() == selectedBundleId
         )
     }.apply {

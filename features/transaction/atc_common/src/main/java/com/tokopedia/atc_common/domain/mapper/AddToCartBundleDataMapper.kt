@@ -12,7 +12,7 @@ class AddToCartBundleDataMapper @Inject constructor() {
 
     fun mapAddToCartBundleResponse(response: AddToCartBundleResponse): AddToCartBundleModel {
         return AddToCartBundleModel().apply {
-            success = response.status == "OK" && response.data.success == 1
+            success = response.status == "OK"
             errorMessage = response.errorMessage
             addToCartBundleDataModel = mapAddToCartBundleData(response.data)
         }

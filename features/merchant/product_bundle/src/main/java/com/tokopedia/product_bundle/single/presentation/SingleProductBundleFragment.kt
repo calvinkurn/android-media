@@ -13,19 +13,20 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
-import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
@@ -36,6 +37,7 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
+    private val parentProductID: Long = 0L,
     private var bundleInfo: List<BundleInfo> = emptyList(),
     private var selectedBundleId: String = "",
     private var selectedProductId: Long = 0L
@@ -68,6 +70,7 @@ class SingleProductBundleFragment(
 
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
+        observeAddToCartResult()
         observeToasterError()
         observeDialogError()
     }
@@ -132,6 +135,12 @@ class SingleProductBundleFragment(
         })
     }
 
+    private fun observeAddToCartResult() {
+        viewModel.addToCartResult.observe(viewLifecycleOwner, {
+            requireActivity().finish()
+        })
+    }
+
     private fun observeToasterError() {
         viewModel.toasterError.observe(viewLifecycleOwner, { errorType ->
             val errorMessage = when (errorType) {
@@ -149,24 +158,26 @@ class SingleProductBundleFragment(
     }
 
     private fun observeDialogError() {
-        viewModel.dialogError.observe(viewLifecycleOwner, { errorStruct ->
-            val dialog = DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE)
-            when (errorStruct.second) {
-                SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY -> {
-                    dialog.setTitle(getString(R.string.single_bundle_error_bundle_is_empty))
-                    dialog.setPrimaryCTAText(getString(R.string.action_select_another_bundle))
-                    dialog.setPrimaryCTAClickListener {
-                        //TODO("Add refresh page function")
-                    }
-                }
-                else -> dialog.setTitle(getString(R.string.single_bundle_error_unknown))
+        viewModel.dialogError.observe(viewLifecycleOwner, { dialogStruct ->
+            var dialogAction = SINGLE_ACTION
+            var primaryText = getString(R.string.action_reload)
+            if (dialogStruct.type == SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH) {
+                dialogAction = HORIZONTAL_ACTION
+                primaryText = getString(R.string.action_select_another_bundle)
             }
-            dialog.apply {
-                setDescription(errorStruct.first)
+
+            DialogUnify(requireContext(), dialogAction, NO_IMAGE).apply {
+                setDescription(dialogStruct.message.orEmpty())
+                setPrimaryCTAText(primaryText)
                 setSecondaryCTAText(getString(R.string.action_back))
                 dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
                 setSecondaryCTAClickListener { dismiss() }
-                show()
+                setPrimaryCTAClickListener {
+                    //TODO("Add refresh page function")
+                }
+            }.let {
+                it.setTitle(dialogStruct.title.orEmpty())
+                it.show()
             }
         })
     }
@@ -196,7 +207,7 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                viewModel.checkout(adapter.getSelectedData())
+                viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
             }
         }
     }
@@ -216,7 +227,8 @@ class SingleProductBundleFragment(
 
     companion object {
         @JvmStatic
-        fun newInstance(bundleInfo: List<BundleInfo>, selectedBundleId: String = "", selectedProductId: Long = 0L) =
-            SingleProductBundleFragment(bundleInfo, selectedBundleId, selectedProductId)
+        fun newInstance(parentProductID: Long, bundleInfo: List<BundleInfo>,
+                        selectedBundleId: String = "", selectedProductId: Long = 0L) =
+            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId, selectedProductId)
     }
 }

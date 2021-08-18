@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class SingleProductBundleModule {
+abstract class SingleProductBundleViewModelModule {
 
     @SingleProductBundleScope
     @Binds

@@ -22,6 +22,7 @@
     <string name="action_save">Simpan</string>
     <string name="action_select_another_bundle">Lihat Paket Lain</string>
     <string name="action_oke">Oke</string>
+    <string name="action_reload">Muat ulang</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>
@@ -34,7 +35,6 @@
     <string name="single_bundle_error_bundle_not_selected">Oops, pilih product dulu, ya.</string>
     <string name="single_bundle_error_variant_not_selected">Oops, pilih varian dulu, ya.</string>
     <string name="single_bundle_error_unknown">Terjadi kesalahan!</string>
-    <string name="single_bundle_error_bundle_is_empty">Oops, paketnya habis</string>
     <string name="single_bundle_error_bundle_is_empty_long">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
     <string name="single_bundle_default_price">Rp0</string>
 
