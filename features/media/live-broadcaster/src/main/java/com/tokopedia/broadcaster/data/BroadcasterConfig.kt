@@ -3,14 +3,14 @@ package com.tokopedia.broadcaster.data
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.Streamer
 
-sealed class AudioType {
-    object MIC: AudioType()
-    object PCM: AudioType()
+enum class AudioType(val status: Int) {
+    MIC(1),
+    PCM(2),
 }
 
-sealed class BitrateMode {
-    object LadderAscend: BitrateMode()
-    object LogarithmicDescend: BitrateMode()
+enum class BitrateMode(val status: Int) {
+    LadderAscend(1),
+    LogarithmicDescend(2),
 }
 
 data class BroadcasterConfig(
