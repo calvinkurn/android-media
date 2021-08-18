@@ -26,7 +26,7 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = "click follow from engagement tools widget",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
         )
     }
 
@@ -39,7 +39,7 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = "click daftar pemenang on engagement tools widget",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
         )
     }
 
@@ -52,7 +52,7 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = "click tap terus icon",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
         )
     }
 
