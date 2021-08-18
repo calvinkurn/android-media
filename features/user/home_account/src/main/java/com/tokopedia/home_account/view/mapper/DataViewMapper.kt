@@ -37,12 +37,12 @@ class DataViewMapper @Inject constructor(
         }
 
         return ProfileDataView(
-                name = accountDataModel.profile.fullName,
-                phone = userSession.phoneNumber,
-                email = userSession.email,
-                avatar = accountDataModel.profile.profilePicture,
-                isLinked = linkStatus,
-                isShowLinkStatus = isShowLinkAccount
+            name = accountDataModel.profile.fullName,
+            phone = userSession.phoneNumber,
+            email = userSession.email,
+            avatar = accountDataModel.profile.profilePicture,
+            isLinked = linkStatus,
+            isShowLinkStatus = isShowLinkAccount
         )
     }
 
