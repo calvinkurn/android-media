@@ -165,6 +165,7 @@ class TokoNowHomeFragment: Fragment(),
     private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
+    private var rvHome: RecyclerView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
@@ -615,7 +616,8 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupRecyclerView() {
         context?.let {
-            with(rvHome) {
+            rvHome = view?.findViewById(R.id.rv_home)
+            rvHome?.apply {
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
@@ -644,7 +646,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome.submitProduct(it.data)
+                rvHome?.submitProduct(it.data)
             }
         }
 
@@ -920,7 +922,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadVisibleLayoutData(index: Int?) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
@@ -928,7 +930,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadMoreLayoutData() {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
