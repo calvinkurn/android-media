@@ -4,6 +4,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -53,7 +58,10 @@ public class AnrSupervisorRunnable implements Runnable {
                         // Log
                         AnrException e = new AnrException(
                                 this.mHandler.getLooper().getThread());
-                        NewRelic.recordHandledException(e);
+                        Map<String, String> anrMap = new HashMap<>();
+                        anrMap.put("type", "anr");
+                        anrMap.put("exception" ,e.toString());
+                        ServerLogger.log(Priority.P1, "DEV_ANR_NR", anrMap);
                         e.logProcessMap();
 
                         // Wait until the thread responds again
