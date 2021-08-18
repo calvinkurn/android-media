@@ -1,19 +1,18 @@
 package com.tokopedia.play.view.viewcomponent.realtimenotif
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.graphics.Color
-import android.view.Gravity
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.transition.Slide
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.util.animation.DefaultTransitionListener
+import com.tokopedia.play.util.animation.DefaultAnimatorListener
 import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play_common.util.extension.awaitPreDraw
@@ -41,11 +40,27 @@ class RealTimeNotificationViewComponent(
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private var rtnJob: Job? = null
     private val rtnQueue = MutableSharedFlow<RealTimeNotificationUiModel>(
             extraBufferCapacity = 64,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+
+    private val showListener = object : DefaultAnimatorListener() {
+        override fun onAnimationStart(animation: Animator) {
+            listener.onShowNotification(
+                    this@RealTimeNotificationViewComponent,
+                    rtnBubbleView.measuredHeight.toFloat()
+            )
+        }
+    }
+
+    private val hideListener = object : DefaultAnimatorListener() {
+        override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
+            listener.onHideNotification(this@RealTimeNotificationViewComponent)
+        }
+    }
+
+    private val animatorSet = AnimatorSet()
 
     init {
         initRtnQueue()
@@ -59,25 +74,19 @@ class RealTimeNotificationViewComponent(
         this.lifespanInMs = lifespanInMs
     }
 
-    private suspend fun showAnimated() = suspendAnimation {
-        rtnBubbleView.show()
-    }
-
-    private suspend fun hideAnimated() = suspendAnimation {
-        rtnBubbleView.invisible()
+    fun getRtnHeight(): Int {
+        return rtnBubbleView.measuredHeight
     }
 
     private suspend fun setRealTimeNotification(rtn: RealTimeNotificationUiModel) {
         setNotification(rtn)
-        scope.launch {
-            rootView.awaitPreDraw()
-            val height = rootView.measuredHeight
-            if (isShown()) {
-                listener.onShowNotification(
-                        this@RealTimeNotificationViewComponent,
-                        height.toFloat()
-                )
-            }
+        rtnBubbleView.awaitPreDraw()
+        val height = rtnBubbleView.measuredHeight
+        if (isShown()) {
+            listener.onShowNotification(
+                    this@RealTimeNotificationViewComponent,
+                    height.toFloat()
+            )
         }
     }
 
@@ -96,53 +105,59 @@ class RealTimeNotificationViewComponent(
         rtnBubbleView.setBackgroundColor(bgColor)
     }
 
-    private suspend fun suspendAnimation(viewFn: () -> Unit) = suspendCancellableCoroutine<Unit> { cont ->
-        val animationListener = object : DefaultTransitionListener() {
-            override fun onTransitionEnd(transition: Transition) {
+    private suspend fun runAnimation() = suspendCancellableCoroutine<Unit> { cont ->
+        val animatorListener = object : DefaultAnimatorListener() {
+            override fun onAnimationCancel(animation: Animator) {
+                rtnBubbleView.hide()
+                listener.onHideNotification(this@RealTimeNotificationViewComponent)
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                rtnBubbleView.hide()
                 if (cont.isActive) cont.resume(Unit)
+            }
+
+            override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
+                rtnBubbleView.show()
             }
         }
 
-        val transition = Slide(Gravity.START)
-                .setDuration(SLIDE_DURATION_IN_MS)
-                .addListener(animationListener)
+        val showAnimation = ObjectAnimator.ofFloat(rtnBubbleView, "translationX", -1f * rtnBubbleView.measuredWidth, 0f).apply {
+            duration = SLIDE_DURATION_IN_MS
+            addListener(showListener)
+        }
+
+        val delayAnimation = ValueAnimator.ofInt(0).apply {
+            duration = lifespanInMs
+        }
+
+        val hideAnimation = ObjectAnimator.ofFloat(rtnBubbleView, "translationX", 0f, -1f * rtnBubbleView.measuredWidth).apply {
+            duration = SLIDE_DURATION_IN_MS
+            addListener(hideListener)
+        }
+
+        animatorSet.playSequentially(showAnimation, delayAnimation, hideAnimation)
+        animatorSet.removeAllListeners()
+        animatorSet.addListener(animatorListener)
 
         cont.invokeOnCancellation {
-            transition.removeListener(animationListener)
-            TransitionManager.endTransitions(rtnBubbleView)
+            animatorSet.cancel()
         }
-        TransitionManager.beginDelayedTransition(
-                rtnBubbleView as ViewGroup,
-                transition
-        )
-        viewFn()
+        animatorSet.start()
     }
 
     private fun initRtnQueue() {
-        if (rtnJob?.isActive == true) return
-        rtnJob = scope.launch {
+        scope.launch {
             rtnQueue.collect {
                 setRealTimeNotification(it)
-
-                showAnimated()
-                delay(lifespanInMs)
-
-                listener.onHideNotification(this@RealTimeNotificationViewComponent)
-                hideAnimated()
+                runAnimation()
             }
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        initRtnQueue()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        rtnJob?.cancel()
-        listener.onHideNotification(this@RealTimeNotificationViewComponent)
-        scope.launch { hideAnimated() }
+        animatorSet.cancel()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

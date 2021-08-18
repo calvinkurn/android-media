@@ -96,7 +96,7 @@ class PlayChatListView : ConstraintLayout {
         chatAdapter.setChatList(chatList)
     }
 
-    fun animateTopMask(height: Float) {
+    fun setTopMask(height: Float, animate: Boolean) {
         maskAnimator?.cancel()
 
         val valueAnimator = ValueAnimator.ofFloat(maskHeight.orZero(), height)
@@ -105,7 +105,7 @@ class PlayChatListView : ConstraintLayout {
             maskHeight = value
             postInvalidateOnAnimation()
         }
-        valueAnimator.duration = MASK_DURATION_IN_MS
+        valueAnimator.duration = if (animate) MASK_DURATION_IN_MS else 0
         valueAnimator.start()
 
         maskAnimator = valueAnimator

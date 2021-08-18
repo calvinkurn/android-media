@@ -475,11 +475,11 @@ class PlayUserInteractionFragment @Inject constructor(
      * RealTimeNotification View Component Listener
      */
     override fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float) {
-        chatListView?.animateCutHeight(height + offset8)
+        chatListView?.setMask(height + offset8, true)
     }
 
     override fun onHideNotification(view: RealTimeNotificationViewComponent) {
-        chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
+        chatListView?.setMask(MASK_NO_CUT_HEIGHT, true)
     }
     //endregion
 
@@ -834,7 +834,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderChatListView(state.rtn)
+                renderChatListView(cachedState.isValueChanged(PlayViewerNewUiState::rtn), state.rtn)
             }
         }
     }
@@ -1460,13 +1460,16 @@ class PlayUserInteractionFragment @Inject constructor(
         else rtnView?.invisible()
     }
 
-    private fun renderChatListView(rtn: PlayRtnUiState) {
-        if (rtn.shouldShow) {
-            val rtnHeight = rtnView?.rootView?.measuredHeight
-            if (rtnHeight != null) chatListView?.animateCutHeight(rtnHeight.toFloat() + offset8)
-        } else {
-            chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
+    private fun renderChatListView(isChanged: Boolean, rtn: PlayRtnUiState) {
+        if (!isChanged) return
+        if (!rtn.shouldShow) {
+            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
         }
+//        else {
+//            if (rtnView?.isAnimating() != true) return
+//            val height = rtnView?.getRtnHeight() ?: return
+//            chatListView?.setMask(height.toFloat() + offset8, false)
+//        }
     }
     //endregion
 
