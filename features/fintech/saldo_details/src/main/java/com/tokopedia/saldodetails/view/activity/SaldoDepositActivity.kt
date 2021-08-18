@@ -124,7 +124,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         if (isSeller) {
             val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
                     .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if (isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
+            if (isAutoWithdrawalPageEnable ) {
                 saldoToolbar.apply {
                     addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_setting)
                     rightIcons?.let {
@@ -135,10 +135,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         }
     }
 
-    private fun isAutoWithRollenceActive() : Boolean{
-      return (KEY_ROLLENCE_AUTO_WITHDRAWAL == RemoteConfigInstance.getInstance()
-              .abTestPlatform.getString(KEY_ROLLENCE_AUTO_WITHDRAWAL, ""))
-    }
+
 
     override fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -153,7 +150,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     override fun getTagFragment() = TAG
 
     companion object {
-        private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"
         private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"

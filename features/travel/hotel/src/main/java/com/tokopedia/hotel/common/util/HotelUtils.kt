@@ -30,7 +30,7 @@ class HotelUtils {
             }
 
             //if check in date has passed
-            if (DateUtil.getDayDiffFromToday(updatedCheckInDate) < 1) {
+            if (DateUtil.getDayDiffFromToday(updatedCheckInDate) < 0) {
                 updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
             }
             //if check out date has passed or check out date < check in date

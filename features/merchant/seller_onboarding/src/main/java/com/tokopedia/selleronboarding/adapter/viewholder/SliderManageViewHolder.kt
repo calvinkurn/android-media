@@ -26,37 +26,39 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
 
         const val NO_SPACE_MARGIN = 0
     }
+    
+    private val animationObserver by lazy { 
+        itemView.findViewById<View>(R.id.viewObserver)
+    }
 
     override fun bind(element: SobSliderManageUiModel) {
         with(itemView) {
-            tvSobSliderManageTitle.viewTreeObserver
-                    .addOnDrawListener {
-                        tvSobSliderManageTitle.alpha = itemView.viewObserver.alpha
-                        tvSobSliderManageTitle.translationY = itemView.viewObserver.translationY
-                    }
-            imgSobManage1?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = itemView.viewObserver.scaleX
-                    scaleY = itemView.viewObserver.scaleY
-                    alpha = itemView.viewObserver.alpha
-                }
-            }
-            imgSobManage2?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = itemView.viewObserver.scaleX
-                    scaleY = itemView.viewObserver.scaleY
-                    alpha = itemView.viewObserver.alpha
-                }
-            }
-            imgSobManageBg?.run {
-                loadImage(R.drawable.bg_sob_circle)
-                viewTreeObserver.addOnDrawListener {
-                    alpha = itemView.viewObserver.alpha
-                }
-            }
-
+            setupAnimation()
+            
+            imgSobManageBg?.loadImage(R.drawable.bg_sob_circle)
             setManageImageUrl()
+            
             setupMarginTitleSob { setMarginManageTitle() }
+        }
+    }
+
+    private fun setupAnimation() {
+        with(itemView) {
+            viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderManageTitle?.alpha = animationObserver.alpha
+                tvSobSliderManageTitle?.translationY = animationObserver.translationY
+
+                imgSobManage1?.scaleX = animationObserver.scaleX
+                imgSobManage1?.scaleY = animationObserver.scaleY
+                imgSobManage1?.alpha = animationObserver.alpha
+
+                imgSobManage2?.scaleX = animationObserver.scaleX
+                imgSobManage2?.scaleY = animationObserver.scaleY
+                imgSobManage2?.alpha = animationObserver.alpha
+
+                imgSobManageBg?.alpha = animationObserver.alpha
+                return@addOnPreDrawListener true
+            }
         }
     }
 

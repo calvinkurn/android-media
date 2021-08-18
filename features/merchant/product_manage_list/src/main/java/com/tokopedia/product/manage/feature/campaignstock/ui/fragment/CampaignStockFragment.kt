@@ -278,8 +278,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                               access: ProductManageAccess) {
         vp2_campaign_stock?.run {
             adapter = activity?.let {
-                val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(getStockAllocation.detail.sellable, getVariantResult.variants)
-                    as ArrayList<SellableStockProductUIModel>
+                val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(
+                    getStockAllocation.detail.sellable,
+                    getVariantResult.variants
+                )
 
                 val reservedProduct = getStockAllocation.detail.reserve.map { reserved ->
                     CampaignStockMapper.mapToParcellableReserved(reserved)
