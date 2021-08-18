@@ -697,10 +697,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     if (!GlobalConfig.DEBUG) {
                         crashlytics.recordException(new RuntimeException(e));
                     }
-
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context,
-                            uriData.toString(), true);
-                    context.startActivity(intent);
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
                     context.finish();
                 }
                 if (e instanceof ResponseV4ErrorException) {
@@ -753,9 +750,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                         }
-                        Intent intent = BaseDownloadAppLinkActivity.newIntent(context,
-                                uriData.toString(), true);
-                        context.startActivity(intent);
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uriData.toString());
                     }
                     context.finish();
                 }

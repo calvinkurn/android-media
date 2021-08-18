@@ -188,6 +188,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller info detail with url appLink then should return webview`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview?url=https://www.tokopedia.com/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL + "?url=https://www.tokopedia.com/help", expectedDeepLink)
+    }
+
+    @Test
     fun `check shipping editor appLink then should return tokopedia internal seller shipping editor in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR, expectedDeepLink)
@@ -261,6 +267,22 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check shop setting appLink then should return tokopedia internal shop setting in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/menu-setting"
         val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check sellerapp webview deeplink`() {
+        val queryParam = "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview" + queryParam
+        val appLink = ApplinkConst.SellerApp.WEBVIEW + queryParam
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check sellerapp browser deeplink`() {
+        val queryParam = "?ext=true&titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/browser" + queryParam
+        val appLink = ApplinkConst.SellerApp.BROWSER + queryParam
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }
