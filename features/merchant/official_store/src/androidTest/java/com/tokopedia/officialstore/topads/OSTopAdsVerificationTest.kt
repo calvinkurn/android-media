@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -73,7 +72,6 @@ class OSTopAdsVerificationTest {
             recyclerView = recyclerView,
             limitCountToIdle = 0
         )
-        IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
     }
 
     @After
@@ -84,12 +82,15 @@ class OSTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-        Espresso.onView(withId(R.id.recycler_view)).check(ViewAssertions.matches(
-            isDisplayed()
-        ))
-
+        waitForData()
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val itemAdapter: OfficialHomeAdapter = recyclerView.adapter as OfficialHomeAdapter
+
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        waitForData()
+
         val itemList = itemAdapter.currentList
         topAdsCount = calculateTopAdsCount(itemList)
 

@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -120,7 +119,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
             getOfficialStoreDynamicChannel(currentSlug, location)
-            loadMoreProducts(extractCategoryId(category), isFirstLoad = true)
         }) {
             _officialStoreBannersResult.value = Fail(it)
             _officialStoreBenefitResult.value = Fail(it)
@@ -128,13 +126,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun loadMoreProducts(categoryId: String, pageNumber: Int = 1, pageName: String = "official-store", isFirstLoad: Boolean = false) {
+    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
         launch {
             try {
-                val pageNumberForLoadMore = if (isFirstLoad) 1 else (pageNumber + 1)
                 withContext(dispatchers.io) {
                     val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
-                            .getOfficialStoreRecomParams(pageNumberForLoadMore, pageName, categoryId)).toBlocking()
+                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
                     _productRecommendation.postValue(Success(recomData.first().get(0)))
                 }
             } catch (e: Throwable) {
