@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 
-class BottomSheetShopTooltipScore: BaseBottomSheetShopScore() {
+class BottomSheetShopTooltipScore : BaseBottomSheetShopScore() {
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_skor_performa
 

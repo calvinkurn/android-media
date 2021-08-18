@@ -26,6 +26,8 @@ internal const val LABEL_ETA = "eta"
 internal const val LABEL_FULFILLMENT = "fulfillment"
 internal const val LABEL_CATEGORY = "category"
 internal const val LABEL_COST_PER_UNIT = "costperunit"
+internal const val LABEL_CATEGORY_SIDE = "category_side"
+internal const val LABEL_CATEGORY_BOTTOM = "category_bottom"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
