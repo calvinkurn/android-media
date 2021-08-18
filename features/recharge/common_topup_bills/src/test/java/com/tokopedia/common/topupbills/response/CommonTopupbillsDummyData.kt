@@ -1,6 +1,5 @@
 package com.tokopedia.common.topupbills.response
 
-import com.tokopedia.common.topupbills.CommonTopupBillsViewModelTest
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsCatalog
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
@@ -11,13 +10,13 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
+import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
-import com.tokopedia.common_digital.atc.data.response.AttributesCart
-import com.tokopedia.common_digital.atc.data.response.AutoApplyVoucher
-import com.tokopedia.common_digital.atc.data.response.CrossSellingConfig
-import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.common_digital.atc.data.response.RelationshipsCart
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
@@ -74,6 +73,41 @@ object CommonTopupbillsDummyData {
                                         operatorId = "123"
                                 )
                         )
+                )
+        )
+    }
+
+    fun getSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberData {
+        return TopupBillsSeamlessFavNumberData(
+                seamlessFavoriteNumber = TopupBillsSeamlessFavNumber(
+                        categoryId = "578",
+                        clientNumber = "081288888888",
+                        favoriteNumbers = listOf(
+                                TopupBillsSeamlessFavNumberItem(
+                                        clientNumber = "081288888888",
+                                        clientName = ""
+                                )
+                        ),
+                        operatorId = "123",
+                        productId = "5"
+                )
+        )
+    }
+
+
+    fun modifySeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberModData {
+        return TopupBillsSeamlessFavNumberModData(
+                updateFavoriteDetail = UpdateFavoriteDetail(
+                        categoryID = 578,
+                        clientNumber = "081208120812",
+                        label = "Misael Jonathan",
+                        lastOrderDate = "",
+                        lastUpdated = "",
+                        operatorID = 123,
+                        productID = 123,
+                        subscribed = false,
+                        totalTransaction = 0,
+                        wishlist = false
                 )
         )
     }

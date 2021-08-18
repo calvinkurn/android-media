@@ -77,6 +77,24 @@
             app:typographyType="small"
             app:typographyWeight="bold"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textCategorySide"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_label_best_seller_category_side_height"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textColor="@color/Unify_N700"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Nomor 1 Kategory Anak"
+            android:gravity="start|center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/labelBestSeller"
+            app:layout_constraintBottom_toBottomOf="@id/labelBestSeller"
+            app:layout_constraintStart_toEndOf="@id/labelBestSeller"
+            app:typographyType="small"
+            />
+
         <View
             android:id="@+id/outOfStockOverlay"
             android:layout_width="0dp"

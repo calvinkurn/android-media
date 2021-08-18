@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -79,7 +78,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameListViewModel::class.java)
         }
 

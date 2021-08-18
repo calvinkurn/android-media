@@ -7,6 +7,7 @@
     android:orientation="horizontal"
     android:animateLayoutChanges="true"
     android:background="@color/Unify_N0"
+    android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 

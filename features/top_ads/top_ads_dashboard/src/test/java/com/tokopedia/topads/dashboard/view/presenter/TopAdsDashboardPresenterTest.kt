@@ -198,7 +198,7 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get product data `() {
-        presenter.getGroupProductData(1, 1, "", "", 1, "", "", {}) {}
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
         verify {
             topAdsGetGroupProductDataUseCase.execute(any(), any())
         }
@@ -364,16 +364,16 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get group info success`() {
-        val expected = 10
-        var actual = 0
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(priceBid = expected)
+        val expected = 10.0F
+        var actual = 0.0F
+        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
         val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.priceBid
+            actual = it.daiyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getGroupInfo(res, "", onSuccess)
+        presenter.getGroupInfo(res, "", "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 
