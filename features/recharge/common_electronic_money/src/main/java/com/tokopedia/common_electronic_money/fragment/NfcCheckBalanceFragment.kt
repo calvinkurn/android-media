@@ -202,10 +202,6 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
 
-        val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
-            getString(R.string.emoney_nfc_grpc_label_error)
-        } else errorMessage
-
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.hide()
         }
@@ -213,10 +209,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         tapETollCardView.visibility = View.VISIBLE
 
         if(isGlobalErrorShow){
-            tapETollCardView.showGlobalError(updatedErrorMessage, errorMessageLabel)
+            tapETollCardView.showGlobalError(errorMessage, errorMessageLabel)
         } else {
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
+            tapETollCardView.showErrorState(errorMessage, errorMessageLabel,
                     imageUrl, isButtonShow, mandiriGetSocketTimeout, tapCashWriteFailed)
         }
 

@@ -2907,6 +2907,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
+                som_list_toolbar?.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 som_list_toolbar?.inflateMenu(R.menu.menu_som_list)
                 som_list_toolbar?.title = getString(R.string.title_som_list)
                 som_list_toolbar?.isShowBackButton = showBackButton()

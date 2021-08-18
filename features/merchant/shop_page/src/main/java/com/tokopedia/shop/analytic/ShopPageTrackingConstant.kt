@@ -106,6 +106,7 @@ object ShopPageTrackingConstant {
     const val VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error"
     const val CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success"
     const val SEE_ENTRY_POINT = "see entry point"
+    const val VIEW_COUPON_TOKO_MEMBER = "view coupon tokomember"
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
     const val CLICK_SHARE_BUTTON = "click - share button"
