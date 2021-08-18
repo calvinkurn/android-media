@@ -686,8 +686,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 media.forEach { feedMedia ->
 
                     if (feedMedia.type == TYPE_IMAGE) {
-                        var width : Int = 0
-                        var height : Int = 0
+                        feedMedia.isImageImpressedFirst = true
+                        var width = 0
+                        var height = 0
                         var isInflatedBubbleShowing = false
 
                         val imageItem = getImageView()
@@ -715,19 +716,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
                             feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
                                 val productTagView = PostTagView(context)
-                                productTagView.postDelayed({
+
                                     productTagView.bindData(listener,
                                         feedXMediaTagging,
                                         products,
                                         width,
                                         height,
                                         positionInFeed)
-                                }, TIME_SECOND)
+
 
                                 layout.addView(productTagView)
 
                             }
-                            productTagText.gone()
                             imagePostListener.userImagePostImpression(
                                 positionInFeed,
                                 pageControl.indicatorCurrentPosition
@@ -741,6 +741,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 }
 
                             }, TIME_SECOND)
+                            productTagText.postDelayed({
+                                if (productTagText.isVisible) {
+                                    productTagText.apply {
+                                        if (!isInflatedBubbleShowing) {
+                                            gone()
+                                            animate().alpha(0f)
+                                        }
+                                    }
+                                }
+
+                            }, TIME_FOUR_SEC)
+
 
                             val gd = GestureDetector(
                                 context,

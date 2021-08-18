@@ -20,7 +20,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-private const val PRODUCT_DOT_TIMER = 3000L
+private const val PRODUCT_DOT_TIMER = 4000L
+private const val PRODUCT_DOT_ONE_SEC = 1000L
 private const val POSITION_TOP = 1
 private const val POSITION_BOTTOM = 2
 
@@ -111,7 +112,11 @@ class PostTagView @JvmOverloads constructor(
             0,
             0
         )
-        productTagDot.visible()
+        productTagDot.postDelayed({
+            productTagDot.apply {
+                visible()
+            }
+        }, PRODUCT_DOT_ONE_SEC)
         finalPointerView.invisible()
         productTagExpandedView.invisible()
         productTagDot.postDelayed({
