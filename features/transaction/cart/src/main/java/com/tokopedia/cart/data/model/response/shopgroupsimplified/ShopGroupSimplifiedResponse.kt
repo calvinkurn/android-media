@@ -8,5 +8,5 @@ data class ShopGroupSimplifiedResponse(
         @SerializedName("error_message")
         val errorMessages: List<String> = emptyList(),
         @SerializedName("data")
-        val data: CartDataListResponse = CartDataListResponse()
+        val data: CartData = CartData()
 )

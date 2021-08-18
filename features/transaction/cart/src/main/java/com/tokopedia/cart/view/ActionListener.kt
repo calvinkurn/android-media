@@ -2,12 +2,8 @@ package com.tokopedia.cart.view
 
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.tokopedia.cart.domain.model.cartlist.ActionData
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -76,7 +72,7 @@ interface ActionListener {
 
     fun onSeeErrorProductsClicked()
 
-    fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData)
+    fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, action: Action)
 
     fun onShowTickerTobacco()
 
@@ -90,7 +86,7 @@ interface ActionListener {
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 
-    fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+    fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData)
 
     fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
 

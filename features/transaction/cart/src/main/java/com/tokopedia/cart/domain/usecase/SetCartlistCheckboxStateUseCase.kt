@@ -2,8 +2,6 @@ package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.cart.data.model.request.SetCartlistCheckboxStateRequest
 import com.tokopedia.cart.data.model.response.cartlistcheckboxstate.SetCartlistCheckboxGqlResponse
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlistcheckboxstate.CartlistCheckboxStateData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -14,7 +12,7 @@ import rx.Observable
 import javax.inject.Inject
 
 class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                          private val schedulers: ExecutorSchedulers) : UseCase<CartlistCheckboxStateData>() {
+                                                          private val schedulers: ExecutorSchedulers) : UseCase<Boolean>() {
 
     companion object {
         const val PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST = "PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST"
@@ -27,7 +25,7 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
         cartItemDataList.forEach {
             cartlistCheckboxStateRequestList.add(
                     SetCartlistCheckboxStateRequest(
-                            cartId = it.cartItemData?.originData?.cartId?.toString() ?: "",
+                            cartId = it.cartId,
                             checkboxState = it.isSelected
                     )
             )
@@ -40,7 +38,7 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
         }
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<CartlistCheckboxStateData> {
+    override fun createObservable(requestParams: RequestParams?): Observable<Boolean?>? {
         val params = requestParams?.getObject(PARAM_SET_CARTLIST_CHECKBOX_STATE_REQUEST) as List<SetCartlistCheckboxStateRequest>
         val variables = mapOf(PARAM to params)
 
@@ -51,11 +49,12 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val setCartlistCheckboxData = CartlistCheckboxStateData()
+                    var result: Boolean = false
                     it.getData<SetCartlistCheckboxGqlResponse>(SetCartlistCheckboxGqlResponse::class.java)?.let {
-                        setCartlistCheckboxData.success = it.setCartlistCheckboxStateResponse.data.success == 1
+                        result = it.setCartlistCheckboxStateResponse.data.success == 1
+                        result
                     }
-                    setCartlistCheckboxData
+
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)

@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class Product(
+        @SerializedName("checkbox_state")
+        val isCheckboxState: Boolean = false,
+        @SerializedName("checkbox_show")
+        val isCheckboxShow: Boolean = false,
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("product_information")
@@ -18,8 +24,6 @@ data class Product(
         val sku: String = "",
         @SerializedName("campaign_id")
         val campaignId: String = "",
-        @SerializedName("free_returns")
-        val freeReturns: FreeReturns = FreeReturns(),
         @SerializedName("initial_price")
         val initialPrice: Long = 0,
         @SerializedName("initial_price_fmt")
@@ -115,5 +119,9 @@ data class Product(
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
-        val freeShippingExtra: FreeShipping = FreeShipping()
+        val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("selected_unavailable_action_link")
+        val selectedUnavailableActionLink: String = "",
+        @SerializedName("warehouse_id")
+        val warehouseId: String = ""
 )

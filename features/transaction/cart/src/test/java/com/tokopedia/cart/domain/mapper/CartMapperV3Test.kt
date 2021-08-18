@@ -27,17 +27,17 @@ object CartMapperV3Test : Spek({
 
     Feature("convert cart data list") {
 
-        lateinit var cartDataListResponse: CartDataListResponse
+        lateinit var cartData: CartData
         lateinit var result: CartListData
 
         Scenario("available shops with no error") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(availableCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartData = Gson().fromJson(availableCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should not error") {
@@ -60,11 +60,11 @@ object CartMapperV3Test : Spek({
         Scenario("error shops with no available") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(errorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartData = Gson().fromJson(errorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should error") {
@@ -88,11 +88,11 @@ object CartMapperV3Test : Spek({
         Scenario("available & error shops") {
 
             Given("api response") {
-                cartDataListResponse = Gson().fromJson(availableAndErrorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+                cartData = Gson().fromJson(availableAndErrorCartItemMockData, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should error") {
@@ -116,7 +116,7 @@ object CartMapperV3Test : Spek({
 
     Feature("Bebas Ongkir Extra") {
 
-        lateinit var cartDataListResponse: CartDataListResponse
+        lateinit var cartData: CartData
         lateinit var result: CartListData
 
         val freeShippingBadgeUrl = "bebas.ongkir.com"
@@ -125,7 +125,7 @@ object CartMapperV3Test : Spek({
         Scenario("Shop is has no Bebas Ongkir") {
 
             Given("Shop with no Bebas Ongkir") {
-                cartDataListResponse = CartDataListResponse(
+                cartData = CartData(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
@@ -137,7 +137,7 @@ object CartMapperV3Test : Spek({
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should have empty string as free shipping badge url") {
@@ -148,7 +148,7 @@ object CartMapperV3Test : Spek({
         Scenario("Shop have Bebas Ongkir") {
 
             Given("Shop have Bebas Ongkir") {
-                cartDataListResponse = CartDataListResponse(
+                cartData = CartData(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
@@ -162,7 +162,7 @@ object CartMapperV3Test : Spek({
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should have bebas ongkir url as free shipping badge url") {
@@ -173,7 +173,7 @@ object CartMapperV3Test : Spek({
         Scenario("Shop have Bebas Ongkir Extra") {
 
             Given("Shop have Bebas Ongkir Extra") {
-                cartDataListResponse = CartDataListResponse(
+                cartData = CartData(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
@@ -187,7 +187,7 @@ object CartMapperV3Test : Spek({
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should have bebas ongkir extra url as free shipping badge url") {
@@ -198,7 +198,7 @@ object CartMapperV3Test : Spek({
 
     Feature("Fulfillment") {
 
-        lateinit var cartDataListResponse: CartDataListResponse
+        lateinit var cartData: CartData
         lateinit var result: CartListData
 
         val tokoCabangResponse = TokoCabangInfo("tokocabang", "img.tokocabang.com")
@@ -207,7 +207,7 @@ object CartMapperV3Test : Spek({
         Scenario("Shop is not fulfillment") {
 
             Given("Not Fulfillment Shop") {
-                cartDataListResponse = CartDataListResponse(
+                cartData = CartData(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
@@ -223,7 +223,7 @@ object CartMapperV3Test : Spek({
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should have isFulfillment false") {
@@ -238,7 +238,7 @@ object CartMapperV3Test : Spek({
         Scenario("Shop is fulfillment") {
 
             Given("Fulfillment Shop") {
-                cartDataListResponse = CartDataListResponse(
+                cartData = CartData(
                         availableSection = AvailableSection(
                                 availableGroupGroups = listOf(
                                         AvailableGroup(
@@ -254,7 +254,7 @@ object CartMapperV3Test : Spek({
             }
 
             When("map response") {
-                result = cartMapperV3.convertToCartItemDataList(cartDataListResponse)
+                result = cartMapperV3.convertToCartItemDataList(cartData)
             }
 
             Then("should have isFulfillment true") {

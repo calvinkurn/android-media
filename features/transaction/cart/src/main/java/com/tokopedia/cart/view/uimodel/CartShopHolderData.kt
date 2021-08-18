@@ -1,23 +1,41 @@
 package com.tokopedia.cart.view.uimodel
 
-import android.os.Parcelable
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
-import kotlinx.android.parcel.Parcelize
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
+import java.util.*
 
-@Parcelize
-class CartShopHolderData : Parcelable {
-    var shopGroupAvailableData: ShopGroupAvailableData? = null
-    var isAllSelected: Boolean = false
-        private set
-    var isPartialSelected: Boolean = false
-    var isCollapsible: Boolean = false
-    var isCollapsed: Boolean = false
-    var clickedCollapsedProductIndex: Int = RecyclerView.NO_POSITION
-    var isNeedToRefreshWeight: Boolean = false
+data class CartShopHolderData(
+        var cartString: String = "",
+        var shopId: String = "",
+        var shopName: String = "",
+        var shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+        var isFulfillment: Boolean = false,
+        var fulfillmentName: String = "",
+        var fulfillmentBadgeUrl: String = "",
+        var estimatedTimeArrival: String = "",
+        var productUiModelList: MutableList<CartItemHolderData> = ArrayList(),
+        var isShowPin: Boolean = false,
+        var pinCoachmarkMessage: String = "",
+        var isTokoNow: Boolean = false,
+        var preOrderInfo: String = "",
+        var incidentInfo: String = "",
+        var isFreeShippingExtra: Boolean = false,
+        var freeShippingBadgeUrl: String = "",
+        var maximumWeightWording: String = "",
+        var maximumShippingWeight: Double = 0.0,
+        var totalWeight: Double = 0.0,
+        var isAllSelected: Boolean = false,
+        var isPartialSelected: Boolean = false,
+        var isCollapsible: Boolean = false,
+        var isCollapsed: Boolean = false,
+        var clickedCollapsedProductIndex: Int = -1,
+        var isNeedToRefreshWeight: Boolean = false,
+        var isError: Boolean = false,
+        var promoCodes: List<String> = emptyList()
+) {
+    val shouldValidateWeight: Boolean
+        get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 
-    fun setAllItemSelected(allSelected: Boolean) {
-        this.isAllSelected = allSelected
-        shopGroupAvailableData?.isChecked = allSelected
+    companion object {
+        const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
     }
 }

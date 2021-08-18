@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.ItemCartProductBinding
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
@@ -71,7 +70,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
         fun onCartItemQuantityReseted(position: Int, parentPosition: Int)
-        fun onCartItemProductClicked(cartItemData: CartItemData?)
+        fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData?)
         fun onCartItemQuantityInputFormClicked(qty: String?)
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)

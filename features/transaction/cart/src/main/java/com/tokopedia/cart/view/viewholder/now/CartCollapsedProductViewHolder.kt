@@ -27,12 +27,12 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.cartItemData.originData.pricePlanInt, false)
+        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
         viewBinding.textProductPrice.text = productPrice
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
-        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.cartItemData.originData.productImage)
+        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
             if (parentPosition != RecyclerView.NO_POSITION && position != RecyclerView.NO_POSITION) {
@@ -42,13 +42,13 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
-        val textQuantity = "${cartItemHolderData.cartItemData.updatedData.quantity} barang"
+        val textQuantity = "${cartItemHolderData.quantity} barang"
         viewBinding.textProductQuantity.text = textQuantity
     }
 
     private fun renderVariant(cartItemHolderData: CartItemHolderData) {
-        if (cartItemHolderData.cartItemData.originData.variant.isNotBlank()) {
-            viewBinding.textVariantName.text = cartItemHolderData.cartItemData.originData.variant
+        if (cartItemHolderData.variant.isNotBlank()) {
+            viewBinding.textVariantName.text = cartItemHolderData.variant
             viewBinding.textVariantName.show()
         } else {
             viewBinding.textVariantName.gone()
