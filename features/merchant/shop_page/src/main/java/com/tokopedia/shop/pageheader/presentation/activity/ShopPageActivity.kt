@@ -2,14 +2,8 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BlendModeColorFilter
-import android.os.Build
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,7 +12,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
@@ -38,7 +31,6 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
-import kotlinx.android.synthetic.main.activity_new_shop_page.*
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
 

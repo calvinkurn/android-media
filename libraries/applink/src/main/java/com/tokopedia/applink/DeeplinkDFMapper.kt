@@ -436,7 +436,7 @@ object DeeplinkDFMapper : CoroutineScope {
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT) }, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
-            add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL) }, DF_TRAVEL, R.string.title_hotel, { DFWebviewFallbackUrl.TRAVEL_HOTEL }))
+            add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL)}, DF_TRAVEL, R.string.title_hotel, {DFWebviewFallbackUrl.TRAVEL_HOTEL}))
 
             // User
             add(DFP({ it.startsWith(PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX) }, DF_BASE, R.string.title_applink_campaign_shake_landing))
@@ -551,8 +551,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE_SELLER_APP, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
-            add(DFP({
-                it.startsWith(MERCHANT_SHOP_SCORE)
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                         || it.startsWith(SHOP_SCORE_DETAIL)
                         || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
                         || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
