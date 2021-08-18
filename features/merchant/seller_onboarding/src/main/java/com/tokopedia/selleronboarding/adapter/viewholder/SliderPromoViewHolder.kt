@@ -24,19 +24,23 @@ class SliderPromoViewHolder(itemView: View) : AbstractViewHolder<SobSliderPromoU
         val RES_LAYOUT = R.layout.sob_slider_promo_view_holder
     }
 
+    private val animatorObserver by lazy {
+        itemView.findViewById<View>(R.id.viewObserver)
+    }
+
     override fun bind(element: SobSliderPromoUiModel) {
         with(itemView) {
-            tvSobSliderPromoTitle?.viewTreeObserver?.addOnDrawListener {
-                tvSobSliderPromoTitle.alpha = itemView.viewObserver.alpha
-                tvSobSliderPromoTitle.translationY = itemView.viewObserver.translationY
+            viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderPromoTitle?.alpha = animatorObserver.alpha
+                tvSobSliderPromoTitle?.translationY = animatorObserver.translationY
+
+                imgSobPromo?.scaleX = animatorObserver.scaleX
+                imgSobPromo?.scaleY = animatorObserver.scaleY
+                imgSobPromo?.alpha = animatorObserver.alpha
+
+                return@addOnPreDrawListener true
             }
-            imgSobPromo?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = itemView.viewObserver.scaleX
-                    scaleY = itemView.viewObserver.scaleY
-                    alpha = itemView.viewObserver.alpha
-                }
-            }
+
             imgSobPromo?.loadImage(SobImageSliderUrl.IMG_ADS_PROMOTION) {
                 setPlaceHolder(R.drawable.img_sob_ads_promotion)
             }

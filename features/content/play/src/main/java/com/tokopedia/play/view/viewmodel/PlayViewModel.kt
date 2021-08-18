@@ -181,7 +181,7 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isActive.get() }
+        get() = _uiEvent.filter { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {

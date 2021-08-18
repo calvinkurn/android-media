@@ -32,7 +32,7 @@ class TotalStockEditorViewHolder(itemView: View?,
     private val labelCampaign by lazy { itemView?.labelCampaign }
 
     private val stockTextWatcher by lazy {
-        StockEditorTextWatcher(stockEditor, onTotalStockChanged)
+        StockEditorTextWatcher(stockEditor, emptyStockInfo, onTotalStockChanged)
     }
 
     override fun bind(stock: TotalStockEditorUiModel) {
