@@ -46,7 +46,7 @@ class SellableStockProductViewHolder (itemView: View?,
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
-            label_campaign_stock_inactive.showWithCondition(!element.isActive)
+            label_campaign_stock_inactive?.showWithCondition(!element.isActive)
             ongoingPromotionCountText?.run {
                 showWithCondition(element.isCampaign)
                 if (element.isCampaign) {
@@ -68,7 +68,7 @@ class SellableStockProductViewHolder (itemView: View?,
                         ProductStatus.INACTIVE
                     }
                     val shouldShowInactiveLabel = !isChecked || getInactivityByStock(element)
-                    this@with.label_campaign_stock_inactive.showWithCondition(shouldShowInactiveLabel)
+                    this@with.label_campaign_stock_inactive?.showWithCondition(shouldShowInactiveLabel)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(
                         isVariant = true,
@@ -93,16 +93,17 @@ class SellableStockProductViewHolder (itemView: View?,
         setValue(element.stock.toIntOrZero())
 
         stockEditTextWatcher = getStockTextChangeListener {
-            val stock = if(it.isNotEmpty()) {
-                getValue()
+            val stock: Int
+            if(it.isNotEmpty()) {
+                stock = getValue()
+                toggleQuantityEditorBtn(stock)
+                onVariantStockChanged(element.productId, stock)
             } else {
+                stock = EditProductConstant.MINIMUM_STOCK
                 editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
-                EditProductConstant.MINIMUM_STOCK
+                toggleQuantityEditorBtn(stock)
             }
-            itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())
-            toggleQuantityEditorBtn(stock)
-            element.stock = stock.toString()
-            onVariantStockChanged(element.productId, stock)
+            showHideInactiveLabel(element)
         }
         editText.addTextChangedListener(stockEditTextWatcher)
 
@@ -143,6 +144,15 @@ class SellableStockProductViewHolder (itemView: View?,
 
     private fun showHideInactiveLabel(element: SellableStockProductUIModel) {
         itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())
+    }
+
+    private fun View.showWithCondition(isVisible: Boolean) {
+        visibility =
+            if (isVisible) {
+                View.VISIBLE
+            } else {
+                View.INVISIBLE
+            }
     }
 
     private fun setupStockEditor(element: SellableStockProductUIModel) {
