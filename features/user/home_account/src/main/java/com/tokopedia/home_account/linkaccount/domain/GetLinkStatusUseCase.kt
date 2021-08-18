@@ -18,7 +18,16 @@ class GetLinkStatusUseCase(private val repository: GraphqlRepository)
 
     companion object {
         val query = """
-            
-        """.trimIndent()
+            query link_status(${'$'}linking_type: String!){
+                accountsLinkerStatus(linking_type:${'$'}linking_type){
+                    link_status {
+                        linking_type
+                        status
+                        partner_id
+                    }
+                    error
+                }
+            }
+            """.trimIndent()
     }
 }
