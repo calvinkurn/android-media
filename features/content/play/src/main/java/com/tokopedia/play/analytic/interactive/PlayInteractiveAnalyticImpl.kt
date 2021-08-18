@@ -17,7 +17,11 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
-    override fun clickFollowShopInteractive(channelId: String, channelType: PlayChannelType) {
+    override fun clickFollowShopInteractive(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    ) {
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
@@ -26,7 +30,11 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType) {
+    override fun clickWinnerBadge(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    ) {
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
@@ -35,7 +43,11 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickTapTap(channelId: String, channelType: PlayChannelType) {
+    override fun clickTapTap(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    ) {
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
