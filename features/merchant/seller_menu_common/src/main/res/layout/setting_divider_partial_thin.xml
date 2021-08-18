@@ -11,7 +11,7 @@
         android:id="@+id/thinPartialDivider"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_divider_thin"
-        app:layout_constraintWidth_percent="0.9"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
