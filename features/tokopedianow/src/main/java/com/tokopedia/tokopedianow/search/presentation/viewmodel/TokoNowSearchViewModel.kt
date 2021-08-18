@@ -17,7 +17,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
@@ -202,7 +202,7 @@ class TokoNowSearchViewModel @Inject constructor (
         val generalSearchDataLayer = mapOf(
                 EVENT to EVENT_CLICK_TOKONOW,
                 EVENT_ACTION to GENERAL_SEARCH,
-                EVENT_CATEGORY to TOKONOW_TOP_NAV,
+                EVENT_CATEGORY to TOP_NAV,
                 EVENT_LABEL to eventLabel,
                 KEY_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,

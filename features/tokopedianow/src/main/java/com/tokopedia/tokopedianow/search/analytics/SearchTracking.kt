@@ -92,7 +92,7 @@ object SearchTracking {
     }
 
     object Category {
-        const val TOKONOW_TOP_NAV = "tokonow - top nav"
+        const val TOP_NAV = "top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKONOW_EMPTY_RESULT =
