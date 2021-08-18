@@ -41,6 +41,8 @@ class VoucherListViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private var showBroadCastChatTicker: Boolean = true
+    private var isFreeBroadCastIconVisible: Boolean = false
+    private var isSuccessDialogDisplayed: Boolean = false
 
     private val bcTickerExpirationPeriod = 3 // months
 
@@ -219,6 +221,22 @@ class VoucherListViewModel @Inject constructor(
 
     fun getShowBroadCastChatTicker(): Boolean {
         return showBroadCastChatTicker
+    }
+
+    fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
+        this.isFreeBroadCastIconVisible = (broadCastQuota > 0)
+    }
+
+    fun isFreeBroadCastIconVisible(): Boolean {
+        return isFreeBroadCastIconVisible
+    }
+
+    fun setIsSuccessDialogDisplayed(isDisplayed: Boolean) {
+        this.isSuccessDialogDisplayed = isDisplayed
+    }
+
+    fun isSuccessDialogDisplayed() : Boolean {
+        return isSuccessDialogDisplayed
     }
 
     fun isBroadCastChatTickerExpired(firstTimeVisitLong: Long): Boolean {

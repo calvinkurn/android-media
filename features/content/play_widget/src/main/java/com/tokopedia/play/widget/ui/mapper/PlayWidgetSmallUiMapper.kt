@@ -10,6 +10,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 07/10/20
  */
+
 class PlayWidgetSmallUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
         private val promoLabelMapper: PlayWidgetPromoLabelMapper,

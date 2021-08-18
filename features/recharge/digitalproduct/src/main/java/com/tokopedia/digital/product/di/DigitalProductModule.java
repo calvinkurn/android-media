@@ -11,11 +11,9 @@ import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
-import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
@@ -167,11 +165,5 @@ public class DigitalProductModule {
     @DigitalProductScope
     GetProductsByOperatorIdUseCase provideGetProductsByOperatorIdUseCase(GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
         return new GetProductsByOperatorIdUseCase(getDigitalCategoryByIdUseCase);
-    }
-
-    @Provides
-    @DigitalProductScope
-    DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
-        return retrofit.create(DigitalRestApi.class);
     }
 }
