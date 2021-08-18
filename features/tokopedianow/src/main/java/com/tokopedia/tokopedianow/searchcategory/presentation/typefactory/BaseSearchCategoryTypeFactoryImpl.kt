@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
@@ -23,6 +24,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.EmptyProductViewHolder
@@ -32,6 +34,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Product
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.OutOfCoverageViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.RecommendationCarouselViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
         protected val chooseAddressListener: ChooseAddressListener,
@@ -42,6 +45,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
         protected val productItemListener: ProductItemListener,
         protected val emptyProductListener: EmptyProductListener,
         protected val outOfCoverageListener: OutOfCoverageListener,
+        protected val recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
@@ -64,6 +68,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(outOfCoverageDataView: OutOfCoverageDataView) = OutOfCoverageViewHolder.LAYOUT
 
+    override fun type(recommendationCarouselDataView: RecommendationCarouselDataView) =
+            RecommendationCarouselViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, productItemListener)
@@ -75,6 +82,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
             EmptyProductViewHolder.LAYOUT -> EmptyProductViewHolder(view, emptyProductListener)
             OutOfCoverageViewHolder.LAYOUT -> OutOfCoverageViewHolder(view, outOfCoverageListener)
+            RecommendationCarouselViewHolder.LAYOUT ->
+                RecommendationCarouselViewHolder(view, recommendationCarouselListener)
             else -> super.createViewHolder(view, type)
         }
     }

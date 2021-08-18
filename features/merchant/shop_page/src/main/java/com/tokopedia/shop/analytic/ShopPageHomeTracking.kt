@@ -114,6 +114,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VERTICAL_POSITION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_COUPON_TOKO_MEMBER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
@@ -229,6 +230,20 @@ class ShopPageHomeTracking(
                 SHOP_PAGE_LABEL + shopId,
                 userId,
         )
+    }
+
+    fun impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(
+            shopId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to VIEW_SHOP_PAGE_IRIS,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to VIEW_COUPON_TOKO_MEMBER,
+                EVENT_LABEL to SHOP_PAGE_LABEL + shopId,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+        )
+        sendDataLayerEvent(eventMap)
     }
 
     fun impressionProductPersonalization(

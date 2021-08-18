@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.view
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,9 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -66,10 +70,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.CustomStaggeredGridLayoutManager
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -90,16 +96,17 @@ abstract class BaseSearchCategoryFragment:
         ProductItemListener,
         EmptyProductListener,
         ChooseAddressBottomSheetListener,
-        OutOfCoverageListener {
+        OutOfCoverageListener,
+        SearchCategoryRecommendationCarouselListener {
 
     companion object {
+        protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    protected var recyclerViewLayoutManager: CustomStaggeredGridLayoutManager? = null
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -115,6 +122,7 @@ abstract class BaseSearchCategoryFragment:
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
+    protected val carouselScrollPosition = SparseIntArray()
 
     private var movingPosition = 0
 
@@ -198,7 +206,10 @@ abstract class BaseSearchCategoryFragment:
         val navToolbar = navToolbar ?: return
 
         activity?.let {
-            navToolbar.setupToolbarWithStatusBar(it)
+            navToolbar.setupToolbarWithStatusBar(
+                    activity = it,
+                    applyPadding = false,
+            )
         }
 
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
@@ -208,7 +219,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
-    ): NavRecyclerViewScrollListener {
+    ): RecyclerView.OnScrollListener {
         val toolbarTransitionRangePixel =
                 resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
 
@@ -239,7 +250,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun configureStickyView() {
         val context = context ?: return
-        val top = NavToolbarExt.getFullToolbarHeight(context)
+        val top = NavToolbarExt.getToolbarHeight(context)
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
@@ -312,6 +323,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
+            carouselScrollPosition.clear()
             getViewModel().onViewReloadPage()
         }
     }
@@ -346,14 +358,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        recyclerViewLayoutManager = CustomStaggeredGridLayoutManager()
-        recyclerViewLayoutManager?.gapStrategy = GAP_HANDLING_NONE
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = recyclerViewLayoutManager?.let{ createEndlessScrollListener(it) }
+        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
-        recyclerView?.layoutManager = recyclerViewLayoutManager
+        recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.addProductItemDecoration()
 
         endlessScrollListener?.let {
@@ -421,7 +433,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().errorATCMessageLiveData.observe(this::showErrorATCMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData.observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
-        getViewModel().isRecyclerViewScrollEnabledLiveData.observe(this::updateRecyclerViewScrollable)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
         getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
@@ -429,6 +440,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(this::routeApplink)
         getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
+        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(
+                this::sendAddToCartRecommendationTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -618,14 +632,21 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        val productId = productItemDataView.id
+        val shopId = productItemDataView.shop.id
+
+        openATCVariantBottomSheet(productId, shopId)
+    }
+
+    private fun openATCVariantBottomSheet(productId: String, shopId: String) {
         val context = context ?: return
 
         AtcVariantHelper.goToAtcVariant(
                 context = context,
-                productId = productItemDataView.id,
+                productId = productId,
                 pageSource = "tokonow",
                 isTokoNow = true,
-                shopId = productItemDataView.shop.id,
+                shopId = shopId,
                 trackerCdListName = getCDListName(),
                 startActivitResult = this::startActivityForResult,
         )
@@ -683,10 +704,6 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
-    }
-
-    protected open fun updateRecyclerViewScrollable(isScrollable: Boolean) {
-        recyclerViewLayoutManager?.setScrollEnabled(isScrollable)
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
@@ -763,4 +780,123 @@ abstract class BaseSearchCategoryFragment:
     override fun onLocalizingAddressLoginSuccessBottomSheet() { }
 
     override fun onDismissChooseAddressBottomSheet() { }
+
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
+    }
+
+    override fun onBindRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        getViewModel().onBindRecommendationCarousel(element, adapterPosition)
+    }
+
+    override fun onImpressedRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
+    ) {
+        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
+        trackingQueue?.putEETracking(
+            ProductRecommendationTracking.getImpressionProductTracking(
+                recommendationItem = recomItem,
+                eventCategory = getEventCategory(isOOC),
+                headerTitle = data.recommendationData.title,
+                position = itemPosition,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(isOOC),
+                eventAction = getImpressionEventAction(isOOC),
+                listValue = getListValue(isOOC, recomItem),
+            )
+        )
+    }
+
+    override fun onClickRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
+    ) {
+        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getClickProductTracking(
+                recommendationItem = recomItem,
+                eventCategory = getEventCategory(isOOC),
+                headerTitle = data.recommendationData.title,
+                position = itemPosition,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(isOOC),
+                eventAction = getClickEventAction(isOOC),
+                listValue = getListValue(isOOC, recomItem),
+            )
+        )
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                recomItem.productId.toString(),
+        )
+    }
+
+    override fun onATCNonVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
+    ) {
+        getViewModel().onViewATCRecommendationItemNonVariant(
+                recommendationItem = recomItem,
+                adapterPosition = recommendationCarouselPosition,
+                quantity = quantity,
+        )
+    }
+
+    override fun onAddVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+    ) {
+        val productId = recomItem.productId.toString()
+        val shopId = recomItem.shopId.toString()
+
+        openATCVariantBottomSheet(productId, shopId)
+    }
+
+    protected open fun sendAddToCartRecommendationTrackingEvent(
+            atcTrackingData: Triple<Int, String, RecommendationItem>
+    ) {
+        val (quantity, cartId, recommendationItem) = atcTrackingData
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                position = recommendationItem.position,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(false),
+                headerTitle = "",
+                quantity = quantity,
+                cartId = cartId,
+                eventAction = getAtcEventAction(false),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
+            )
+        )
+    }
+
+    abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
+    abstract fun getImpressionEventAction(isOOC: Boolean): String
+    abstract fun getClickEventAction(isOOC: Boolean): String
+    abstract fun getAtcEventAction(isOOC: Boolean): String
+    abstract fun getEventCategory(isOOC: Boolean): String
+    abstract fun getEventLabel(isOOC: Boolean): String
 }
