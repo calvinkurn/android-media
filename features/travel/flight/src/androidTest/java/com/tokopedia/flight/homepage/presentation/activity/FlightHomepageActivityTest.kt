@@ -145,6 +145,7 @@ class FlightHomepageActivityTest {
         validateTravelVideoTracking()
 
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
 
         departureAirport()
         arrivalAirport()
@@ -235,13 +236,20 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
-    fun validateTravelVideoTracking(){
+    fun validateTravelVideoTracking() {
+        Thread.sleep(1000)
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).check(matches(isDisplayed()))
 
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).perform(click())
+
+        Thread.sleep(1000)
     }
+
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"
