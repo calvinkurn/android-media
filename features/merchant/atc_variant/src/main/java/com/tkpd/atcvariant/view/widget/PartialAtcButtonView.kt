@@ -1,5 +1,7 @@
 package com.tkpd.atcvariant.view
 
+import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tokopedia.config.GlobalConfig
@@ -17,6 +19,18 @@ class PartialAtcButtonView private constructor(val view: View,
     private val btnBuy = view.findViewById<UnifyButton>(R.id.btn_buy_variant)
     private val btnAtc = view.findViewById<UnifyButton>(R.id.btn_atc_variant)
     private var isShopOwner: Boolean = false
+    val shadowDrawable: Drawable? by lazy {
+        view.generateBackgroundWithShadow(
+                backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
+                elevation = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
+                shadowRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1,
+                shadowGravity = Gravity.TOP)
+    }
 
     var visibility: Boolean = false
         set(value) {
@@ -28,6 +42,10 @@ class PartialAtcButtonView private constructor(val view: View,
 
     companion object {
         fun build(_view: View, _buttonListener: PartialAtcButtonListener) = PartialAtcButtonView(_view, _buttonListener)
+    }
+
+    init {
+        view.background = shadowDrawable
     }
 
     fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
