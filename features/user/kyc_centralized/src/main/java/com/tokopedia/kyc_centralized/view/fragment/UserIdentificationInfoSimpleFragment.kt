@@ -24,7 +24,8 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private var projectId = 0
     private var mainView: ConstraintLayout? = null
-    private var loader: LoaderUnify? = null
+//    private var loader: LoaderUnify? = null
+    private var unifyButton: UnifyButton? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,14 +41,15 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
         initViews(view)
-        startKyc()
+//        startKyc()
     }
 
     private fun initViews(view: View) {
         mainView = view.findViewById(R.id.uii_simple_main_view)
         val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
         val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
-        loader = view.findViewById(R.id.uii_simple_loader)
+//        loader = view.findViewById(R.id.uii_simple_loader)
+        unifyButton = view.findViewById(R.id.button_dummy)
 
         mainView?.hide()
         mainImage?.loadImage(KycUrl.ICON_WAITING)
@@ -55,7 +57,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
-        loader?.show()
+        unifyButton?.setOnClickListener {
+            startKyc()
+        }
+//        loader?.show()
     }
 
     private fun startKyc() {
@@ -69,7 +74,8 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         if(requestCode == KYC_REQUEST_CODE) {
             when(resultCode) {
                 Activity.RESULT_OK -> {
-                    loader?.hide()
+//                    loader?.hide()
+                    unifyButton?.hide()
                     mainView?.show()
                 }
                 else -> {
