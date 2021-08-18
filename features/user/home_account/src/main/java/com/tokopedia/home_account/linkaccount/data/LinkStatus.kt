@@ -18,6 +18,8 @@ data class LinkStatus(
     val type: String = "",
     @SerializedName("status")
     val status: String = "",
-    @SerializedName("linked_date")
-    val linkDate: String = ""
+    @SerializedName("partner_id")
+    val partnerId: String = "",
+    @SerializedName("linked_time")
+    val linkedDate: String = ""
 )
