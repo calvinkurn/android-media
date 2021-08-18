@@ -70,8 +70,7 @@ open class RecommendationPageViewModel @Inject constructor(
         const val PARAM_SUCCESS_300 = 300
         const val POS_PRODUCT_ANCHOR = 0
         const val POS_CPM = 1
-        const val HEADLINE_PARAM_RECOM = "recom_google"
-        const val HEADLINE_PARAM_DUMMY = "user_warehouseId=0&with_template=true&source=search&image_square=true&ob=23&related=true&navsource=home&headline_product_count=3&st=product&item=1&unique_id=ee9f26fa14e132f3dcf4f589efaa86bd&image_size=200&src=search&start=0&first_install=true&ep=headline&rows=8&q=iphone&user_districtId=2274&user_id=0&hint=sepeda+lipat&template_id=3%2C4&page=1&device=android&user_cityId=176"
+        const val HEADLINE_PARAM_RECOM = "source=recom_google"
     }
     /**
      * public variable
@@ -113,10 +112,8 @@ open class RecommendationPageViewModel @Inject constructor(
                             throw it
                         },
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            if (RecommendationRollenceController.isRecommendationCPMRollenceVariant()) {
-                                getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_DUMMY)
-                                getTopAdsHeadlineUseCase.executeOnBackground()
-                            }
+                            getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_RECOM)
+                            getTopAdsHeadlineUseCase.executeOnBackground()
                         }) {
                             throw it
                         }
