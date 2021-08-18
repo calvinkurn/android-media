@@ -11,7 +11,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 30/06/21
  */
-@GqlQuery("PostInteractiveTapUseCaseQuery", PostInteractiveTapUseCase.query)
+@GqlQuery(PostInteractiveTapUseCase.QUERY_NAME, PostInteractiveTapUseCase.QUERY)
 class PostInteractiveTapUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
 ): RetryableGraphqlUseCase<PostInteractiveTapResponse>(gqlRepository, 3) {
@@ -30,7 +30,8 @@ class PostInteractiveTapUseCase @Inject constructor(
     companion object {
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_INTERACTIVE_ID = "interactiveID"
-        const val query = """
+        const val QUERY_NAME = "PostInteractiveTapUseCaseQuery"
+        const val QUERY = """
             mutation PostInteractiveTap(${"$$PARAM_CHANNEL_ID"}: String!, ${"$$PARAM_INTERACTIVE_ID"}: String!){
               playInteractiveUserTapSession(input: {
                 channelID: ${"$$PARAM_CHANNEL_ID"},

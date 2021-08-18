@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 01/02/21.
  */
-@GqlQuery("GetChannelStatusUseCaseQuery", GetChannelStatusUseCase.query)
+@GqlQuery(GetChannelStatusUseCase.QUERY_NAME, GetChannelStatusUseCase.QUERY)
 class GetChannelStatusUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
 ): GraphqlUseCase<ChannelStatusResponse>(gqlRepository) {
@@ -26,7 +26,8 @@ class GetChannelStatusUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_CHANNEL_IDS = "channelIds"
-        const val query = """
+        const val QUERY_NAME = "GetChannelStatusUseCaseQuery"
+        const val QUERY = """
             query GetChannelStatus(${'$'}channelIds: [String]){
               playGetChannelsStatus(req: {
                 ids: ${'$'}channelIds

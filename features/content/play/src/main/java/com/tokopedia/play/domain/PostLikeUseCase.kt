@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-05.
  */
-@GqlQuery("PostLikeUseCaseQuery", PostLikeUseCase.query)
+@GqlQuery(PostLikeUseCase.QUERY_NAME, PostLikeUseCase.QUERY)
 class PostLikeUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<Boolean>(graphqlRepository) {
@@ -47,7 +47,8 @@ class PostLikeUseCase @Inject constructor(
 
         private const val PLAY_FEED_SUCCESS = 1
 
-        const val query = """
+        const val QUERY_NAME = "PostLikeUseCaseQuery"
+        const val QUERY = """
             mutation PostLike(${'$'}idPost: Int, ${'$'}action: Int, ${'$'}contentId: Int, ${'$'}contentType: Int, ${'$'}likeType: Int){
                 do_like_kol_post(idPost: ${'$'}idPost, action: ${'$'}action, contentId: ${'$'}contentId, contentType: ${'$'}contentType, likeType: ${'$'}likeType) {
                     error

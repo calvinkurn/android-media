@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/01/21
  */
-@GqlQuery("GetChannelDetailsWithRecomUseCaseQuery", GetChannelDetailsWithRecomUseCase.query)
+@GqlQuery(GetChannelDetailsWithRecomUseCase.QUERY_NAME, GetChannelDetailsWithRecomUseCase.QUERY)
 class GetChannelDetailsWithRecomUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
 ): GraphqlUseCase<ChannelDetailsWithRecomResponse>(gqlRepository) {
@@ -35,7 +35,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
         private const val PARAM_SOURCE_TYPE = "sourceType"
         private const val PARAM_SOURCE_ID = "sourceId"
         private const val PARAM_CURSOR = "cursor"
-        const val query = """
+        const val QUERY_NAME = "GetChannelDetailsWithRecomUseCaseQuery"
+        const val QUERY = """
           query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String, ${'$'}$PARAM_SOURCE_TYPE: String, ${'$'}$PARAM_SOURCE_ID: String){
               playGetChannelDetailsWithRecom(req: {
                 origin_id: ${'$'}$PARAM_CHANNEL_ID,

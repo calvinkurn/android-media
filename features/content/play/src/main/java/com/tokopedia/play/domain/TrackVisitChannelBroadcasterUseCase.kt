@@ -13,7 +13,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 05/02/21.
  */
-@GqlQuery("TrackVisitChannelBroadcasterUseCaseQuery", TrackVisitChannelBroadcasterUseCase.query)
+@GqlQuery(TrackVisitChannelBroadcasterUseCase.QUERY_NAME, TrackVisitChannelBroadcasterUseCase.QUERY)
 class TrackVisitChannelBroadcasterUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers,
@@ -45,7 +45,8 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 
         private const val PARAMS_CHANNEL_ID = "channelId"
 
-        const val query = """
+        const val QUERY_NAME = "TrackVisitChannelBroadcasterUseCaseQuery"
+        const val QUERY = """
             mutation trackVisitChannelBroadcaster(${'$'}channelId: String!) {
               broadcasterReportVisitChannel(channelID: ${'$'}channelId) {
                 success

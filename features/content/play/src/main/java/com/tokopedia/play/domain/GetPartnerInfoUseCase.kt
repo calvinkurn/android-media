@@ -16,7 +16,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-10.
  */
-@GqlQuery("GetPartnerInfoUseCaseQuery", GetPartnerInfoUseCase.query)
+@GqlQuery(GetPartnerInfoUseCase.QUERY_NAME, GetPartnerInfoUseCase.QUERY)
 class GetPartnerInfoUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<ShopInfo>(graphqlRepository) {
@@ -41,8 +41,8 @@ class GetPartnerInfoUseCase @Inject constructor(
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SOURCE = "source"
         private const val SOURCE_VALUE = "gql-play"
-
-        const val query = """
+        const val QUERY_NAME = "GetPartnerInfoUseCaseQuery"
+        const val QUERY = """
             query getShopInfo(${'$'}shopIds: [Int!]!, ${'$'}fields: [String!]!, ${'$'}source: String){
                  shopInfoByID(input: {
                      shopIDs: ${'$'}shopIds,

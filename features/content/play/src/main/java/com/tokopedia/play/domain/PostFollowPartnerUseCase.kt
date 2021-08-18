@@ -15,7 +15,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-10.
  */
-@GqlQuery("PostFollowPartnerUseCaseQuery", PostFollowPartnerUseCase.query)
+@GqlQuery(PostFollowPartnerUseCase.QUERY_NAME, PostFollowPartnerUseCase.QUERY)
 class PostFollowPartnerUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<Boolean>(graphqlRepository) {
@@ -41,7 +41,8 @@ class PostFollowPartnerUseCase @Inject constructor(
         private const val ACTION = "action"
         private const val INPUT = "input"
 
-        const val query = """
+        const val QUERY_NAME = "PostFollowPartnerUseCaseQuery"
+        const val QUERY = """
             mutation followShop(${'$'}input: ParamFollowShop!) {
               followShop(input:${'$'}input){
                 success

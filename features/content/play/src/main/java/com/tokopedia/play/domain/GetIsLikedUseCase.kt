@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-03.
  */
-@GqlQuery("GetIsLikeUseCaseQuery", GetIsLikeUseCase.query)
+@GqlQuery(GetIsLikeUseCase.QUERY_NAME, GetIsLikeUseCase.QUERY)
 class GetIsLikeUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<Boolean>(graphqlRepository) {
@@ -43,8 +43,8 @@ class GetIsLikeUseCase @Inject constructor(
 
         private const val CONTENT_ID = "contentID"
         private const val CONTENT_TYPE = "contentType"
-
-        const val query = """
+        const val QUERY_NAME = "GetIsLikeUseCaseQuery"
+        const val QUERY = """
            query GetIsLiked(${'$'}contentID: Int, ${'$'}contentType: Int) {
                 feedGetIsLikePost(contentID: ${'$'}contentID, contentType: ${'$'}contentType) {
                     error

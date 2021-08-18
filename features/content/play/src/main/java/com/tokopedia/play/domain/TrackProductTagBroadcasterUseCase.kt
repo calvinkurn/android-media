@@ -16,7 +16,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 07/01/21.
  */
-@GqlQuery("TrackProductTagBroadcasterUseCaseQuery", TrackProductTagBroadcasterUseCase.query)
+@GqlQuery(TrackProductTagBroadcasterUseCase.QUERY_NAME, TrackProductTagBroadcasterUseCase.QUERY)
 class TrackProductTagBroadcasterUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers,
@@ -63,7 +63,9 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(
 
         private const val PARAMS_CHANNEL_ID = "channelId"
         private const val PARAMS_PRODUCT_ID = "productIds"
-        const val query = """
+
+        const val QUERY_NAME = "TrackProductTagBroadcasterUseCaseQuery"
+        const val QUERY = """
             mutation trackProductTagBroadcaster(${'$'}channelId: String!, ${'$'}productIds: [String]){
               broadcasterReportTrackViewer(
                 channelID: ${'$'}channelId,

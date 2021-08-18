@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 28/01/21
  */
-@GqlQuery("GetReportSummariesUseCaseQuery", GetReportSummariesUseCase.query)
+@GqlQuery(GetReportSummariesUseCase.QUERY_NAME, GetReportSummariesUseCase.QUERY)
 class GetReportSummariesUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ReportSummaries>(graphqlRepository) {
@@ -30,7 +30,8 @@ class GetReportSummariesUseCase @Inject constructor(
     companion object {
 
         private const val CHANNEL_ID = "channelId"
-        const val query = """
+        const val QUERY_NAME = "GetReportSummariesUseCaseQuery"
+        const val QUERY = """
              query GetReportSummaries(${'$'}channelId: String!){
               broadcasterReportSummariesBulk(channelIDs: [${'$'}channelId]) {
                 reportData {

@@ -11,7 +11,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
-@GqlQuery("GetProductTagItemsUseCaseQuery", GetProductTagItemsUseCase.query)
+@GqlQuery(GetProductTagItemsUseCase.QUERY_NAME, GetProductTagItemsUseCase.QUERY)
 class GetProductTagItemsUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ProductTagging.Response>(graphqlRepository) {
@@ -25,8 +25,8 @@ class GetProductTagItemsUseCase @Inject constructor(
     companion object {
 
         private const val CHANNEL_ID = "channelId"
-
-        const val query = """
+        const val QUERY_NAME = "GetProductTagItemsUseCaseQuery"
+        const val QUERY = """
             query(${'$'}channelId: String){
               playGetTagsItem(req: {channelID:${'$'}channelId}){
                  products{

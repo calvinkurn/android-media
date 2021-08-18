@@ -10,7 +10,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.SocketCredential
 import javax.inject.Inject
 
-@GqlQuery("GetSocketCredentialUseCaseQuery", GetSocketCredentialUseCase.query)
+@GqlQuery(GetSocketCredentialUseCase.QUERY_NAME, GetSocketCredentialUseCase.QUERY)
 class GetSocketCredentialUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<SocketCredential>(graphqlRepository) {
@@ -29,7 +29,8 @@ class GetSocketCredentialUseCase @Inject constructor(
     }
 
     companion object {
-        const val query = """
+        const val QUERY_NAME = "GetSocketCredentialUseCaseQuery"
+        const val QUERY = """
             query GetSocketCredential{
               playGetSocketCredential{
                 gc_token,
