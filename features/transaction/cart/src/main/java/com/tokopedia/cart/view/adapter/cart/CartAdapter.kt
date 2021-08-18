@@ -36,6 +36,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                                       private val sellerCashbackListener: SellerCashbackListener,
                                       private val userSession: UserSessionInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val SELLER_CASHBACK_ACTION_INSERT = 1
+        const val SELLER_CASHBACK_ACTION_UPDATE = 2
+        const val SELLER_CASHBACK_ACTION_DELETE = 3
+    }
+
     private val cartDataList = ArrayList<Any>()
     private var compositeSubscription = CompositeSubscription()
 
@@ -737,7 +743,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun updateShipmentSellerCashback(cashback: Double) {
+    fun updateShipmentSellerCashback(cashback: Double): Pair<Int, Int>? {
         if (cashback > 0) {
             if (shipmentSellerCashbackModel == null || cartDataList.indexOf(shipmentSellerCashbackModel!!) == -1) {
                 var index = 0
@@ -752,7 +758,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     cartDataList.add(++index, it)
-                    notifyItemInserted(index)
+                    return Pair(SELLER_CASHBACK_ACTION_INSERT, index)
                 }
             } else {
                 shipmentSellerCashbackModel?.let {
@@ -760,28 +766,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
-                    if (index != -1) {
-                        notifyItemChanged(index)
-                    }
+                    return Pair(SELLER_CASHBACK_ACTION_UPDATE, index)
                 }
             }
         } else {
             shipmentSellerCashbackModel?.let {
                 val index = cartDataList.indexOf(it)
-                if (index != -1) {
-                    cartDataList.remove(it)
-                    notifyItemRemoved(index)
-                    shipmentSellerCashbackModel = null
-                }
+                cartDataList.remove(it)
+                shipmentSellerCashbackModel = null
+                return Pair(SELLER_CASHBACK_ACTION_DELETE, index)
             }
         }
 
-        shipmentSellerCashbackModel?.let {
-            val index = cartDataList.indexOf(it)
-            if (index != -1) {
-                notifyItemChanged(index)
-            }
-        }
+        return null
     }
 
     fun notifyByProductId(productId: String, isWishlisted: Boolean) {

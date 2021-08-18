@@ -1571,20 +1571,6 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-
-    /**
-     *
-     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
-     *
-     */
-    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
-        trackOpenScreenEventC2s(
-            Screen.HOME_FEED_SCREEN,
-            isLoggedInStatus = isLoggedInStatus.toString(),
-            isFeedEmpty = isFeedEmpty.toString()
-        )
-    }
-
     /**
      *
      *  * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589

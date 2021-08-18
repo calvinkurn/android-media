@@ -188,17 +188,17 @@ public class SplashScreen extends AppCompatActivity {
                         if (!TextUtils.isEmpty(deeplink)) {
                             // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
                             // because we need tracking UTM for those notification applink
-                            String tokopediaDeeplink;
-                            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                                tokopediaDeeplink = deeplink;
-                            } else {
-                                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
-                            }
+                            String tokopediaDeeplink = deeplink;
                             Intent intent = new Intent();
-                            if (URLUtil.isNetworkUrl(tokopediaDeeplink)) {
+                            if (URLUtil.isNetworkUrl(deeplink)) {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                             } else {
+                                if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                                    tokopediaDeeplink = deeplink;
+                                } else {
+                                    tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                                }
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }

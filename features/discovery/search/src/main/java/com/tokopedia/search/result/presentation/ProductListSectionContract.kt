@@ -33,7 +33,7 @@ interface ProductListSectionContract {
         fun removeLoading()
         fun stopTracePerformanceMonitoring()
         fun setAutocompleteApplink(autocompleteApplink: String?)
-        fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?)
+        fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
         fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
         fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView)
