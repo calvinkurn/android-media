@@ -9,6 +9,7 @@ import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
 
 interface LiveBroadcaster {
+    val ingestUrl: String
     val state: BroadcasterState
     val config: BroadcasterConfig
     val connection: BroadcasterConnection

@@ -16,7 +16,7 @@ import kotlin.math.atan
 
 object CameraManager {
 
-    fun getAvailableCameras(context: Context): List<CameraInfo> {
+    fun getAvailableCameras(context: Context): MutableList<CameraInfo> {
         val cameraList: MutableList<CameraInfo> = mutableListOf()
         try {
             val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
