@@ -1261,6 +1261,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleSetChannelActive() {
+        if (!userSession.isLoggedIn) return
         viewModelScope.launch {
             val welcomeFormat = _channelDetail.value.rtnConfigInfo.welcomeNotification
             _uiEvent.emit(ShowRealTimeNotificationEvent(welcomeFormat))

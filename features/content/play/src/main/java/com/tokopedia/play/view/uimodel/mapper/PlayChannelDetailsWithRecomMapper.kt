@@ -95,7 +95,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             welcomeFormatResponse: RealTimeNotification,
             config: ChannelDetailsWithRecomResponse.RealTimeNotificationConfig
     ) = PlayRealTimeNotificationConfig(
-            welcomeNotification = realTimeNotificationMapper.mapRealTimeNotification(
+            welcomeNotification = realTimeNotificationMapper.mapWelcomeFormat(
                     welcomeFormatResponse
             ),
             lifespan = config.lifespan,
