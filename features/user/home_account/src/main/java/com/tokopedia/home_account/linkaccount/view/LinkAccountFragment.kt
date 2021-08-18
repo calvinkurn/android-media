@@ -79,59 +79,10 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         return inflater.inflate(R.layout.fragment_link_account_layout, container, false)
     }
 
-    //For testing purpose only
-    var toggle = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObserver()
-
-        //For testing purpose only
-        toggleData()
-    }
-
-    //For testing purpose only
-    private fun toggleData() {
-        adapter.setItems(
-            listOf(
-                UserAccountDataView(
-                    true,
-                    userSessionInterface.phoneNumber,
-                    "Gojek",
-                    "Linked on Aug 4, 2021"
-                )
-            )
-        )
-        showFooter()
-        binding?.typography?.setOnClickListener {
-            if(toggle) {
-                adapter.setItems(
-                    listOf(
-                        UserAccountDataView(
-                            true,
-                            userSessionInterface.phoneNumber,
-                            "Gojek",
-                            "Linked on Aug 4, 2021"
-                        )
-                    )
-                )
-                showFooter()
-            } else {
-                adapter.setItems(
-                    listOf(
-                        UserAccountDataView(
-                            false,
-                            "Belum terhubung",
-                            "Gojek",
-                            ""
-                        )
-                    )
-                )
-                hideFooter()
-            }
-            toggle = !toggle
-        }
     }
 
     private fun initObserver() {
@@ -145,10 +96,8 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     private fun onSuccessGetLinkStatus(data: LinkStatusResponse) {
         if(data.linkStatus.isNotEmpty()) {
-            val linkStatus = data.linkStatus[0]
-            adapter.setItems(
-                listOf(linkStatus.toUserAccountDataView())
-            )
+            val linkStatus = data.linkStatus.map { it.toUserAccountDataView() }
+            adapter.setItems(linkStatus)
             val isShowFooter = data.linkStatus.any { it.status == "linked" }
             if(isShowFooter){
                 showFooter()
@@ -220,7 +169,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
             isLinked = status == "linked",
             status = if(status == "linked") userSessionInterface.phoneNumber else "Belum terhubung",
             partnerName = "Gojek",
-            linkDate = "Linked on $linkDate"
+            linkDate = "Linked on $linkedDate"
         )
     }
 
