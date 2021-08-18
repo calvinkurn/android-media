@@ -1,0 +1,45 @@
+package com.tokopedia.review.feature.reading.presentation.widget
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import com.tokopedia.review.R
+import com.tokopedia.review.feature.reading.data.ProductTopic
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.Typography
+
+class ReadReviewHighlightedTopic: BaseCustomView {
+
+    constructor(context: Context) : super(context) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init()
+    }
+
+    private var topicRating: Typography? = null
+    private var topicTitle: Typography? = null
+    private var reviewCount: Typography? = null
+
+    private fun init() {
+        View.inflate(context, R.layout.widget_read_review_highlighted_topic, this)
+        bindViews()
+    }
+
+    private fun bindViews() {
+        topicRating = findViewById(R.id.read_review_topic_rating)
+        topicTitle = findViewById(R.id.read_review_highlighted_topic_title)
+        reviewCount = findViewById(R.id.read_review_highlighted_topic_review_count)
+    }
+
+    fun setHighlightedTopic(topic: ProductTopic) {
+        topicRating?.text = String.format(context.getString(R.string.review_reading_rating_format), topic.rating)
+        topicTitle?.text = topic.formatted
+        reviewCount?.text = topic.reviewCount.toString()
+    }
+}

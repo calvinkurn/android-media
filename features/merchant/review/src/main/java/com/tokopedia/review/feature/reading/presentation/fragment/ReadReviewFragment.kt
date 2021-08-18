@@ -767,6 +767,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
+            setHighlightedTopics(ratingAndTopics.topics)
             show()
         }
     }

@@ -31,6 +31,7 @@ class ReadReviewHeader : BaseCustomView {
     companion object {
         const val RATING_STAR_WIDTH = 24
         const val RATING_STAR_HEIGHT = 24
+        const val SHOULD_SHOW_TOPIC_COUNT = 2
     }
 
     constructor(context: Context) : super(context) {
@@ -51,6 +52,8 @@ class ReadReviewHeader : BaseCustomView {
     private var chevron: IconUnify? = null
     private var sortFilter: SortFilter? = null
     private var seeAll: Typography? = null
+    private var topicLeft: ReadReviewHighlightedTopic? = null
+    private var topicRight: ReadReviewHighlightedTopic? = null
 
     var isProductReview: Boolean = true
 
@@ -70,6 +73,8 @@ class ReadReviewHeader : BaseCustomView {
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
         seeAll = findViewById(R.id.read_review_see_all)
+        topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
+        topicRight = findViewById(R.id.read_review_highlighted_topic_right)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
@@ -228,6 +233,16 @@ class ReadReviewHeader : BaseCustomView {
             show()
             setOnClickListener {
                 listener.onSeeAllClicked()
+            }
+        }
+    }
+
+    fun setHighlightedTopics(topics: List<ProductTopic>) {
+        val highlightedTopic = listOf(topicLeft, topicRight)
+        topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
+            highlightedTopic[index]?.apply {
+                setHighlightedTopic(productTopic)
+                show()
             }
         }
     }
