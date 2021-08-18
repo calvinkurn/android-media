@@ -2,6 +2,7 @@ package com.tokopedia.localizationchooseaddress.domain.mapper
 
 import com.tokopedia.localizationchooseaddress.domain.model.*
 import com.tokopedia.localizationchooseaddress.domain.response.*
+import com.tokopedia.localizationchooseaddress.domain.response.ErrorChosenAddress
 import javax.inject.Inject
 
 class ChooseAddressMapper @Inject constructor() {
@@ -10,24 +11,25 @@ class ChooseAddressMapper @Inject constructor() {
         val data = response.addressList
         return data.map {
             ChosenAddressList(
-                    it.addressId.toString(),
-                    it.receiverName,
-                    it.addressName,
-                    it.address1,
-                    it.address2,
-                    it.postalCode,
-                    it.provinceId.toString(),
-                    it.cityId.toString(),
-                    it.districtId.toString(),
-                    it.phone,
-                    it.provinceName,
-                    it.cityName,
-                    it.districtName,
-                    it.status,
-                    it.country,
-                    it.latitude,
-                    it.longitude,
-                    it.isStateChosenAddress
+                it.addressId.toString(),
+                it.receiverName,
+                it.addressName,
+                it.address1,
+                it.address2,
+                it.postalCode,
+                it.provinceId.toString(),
+                it.cityId.toString(),
+                it.districtId.toString(),
+                it.phone,
+                it.provinceName,
+                it.cityName,
+                it.districtName,
+                it.status,
+                it.country,
+                it.latitude,
+                it.longitude,
+                it.isStateChosenAddress,
+                mapTokonowAddress(it.tokonow)
             )
         }
     }
@@ -65,6 +67,7 @@ class ChooseAddressMapper @Inject constructor() {
             longitude = data.longitude
             postalCode = data.postalCode
             tokonowModel = mapTokonow(response.tokonow)
+            errorCode = mapErrorChosenAddress(response.error)
         }
     }
 
@@ -103,6 +106,20 @@ class ChooseAddressMapper @Inject constructor() {
             shopId = response.shopId
             warehouseId = response.warehouseId
         }
+    }
+
+    private fun mapErrorChosenAddress(response: ErrorChosenAddress): ErrorChosenAddressModel {
+        return ErrorChosenAddressModel().apply {
+            code = response.code
+            title = response.title
+        }
+    }
+
+    private fun mapTokonowAddress(response: TokonowAddressList): TokonowAddress {
+       return TokonowAddress().apply {
+           warehouseId = response.warehouseId
+           coverageLabel = response.coverageLabel
+       }
     }
 
     private fun mapKeroDefaultAddress(response: ErrorDefaultAddress): KeroDefaultAddressError{
