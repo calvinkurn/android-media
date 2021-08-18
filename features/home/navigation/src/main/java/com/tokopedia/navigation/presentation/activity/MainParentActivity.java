@@ -144,8 +144,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
     public static final String FEED_PAGE = "FeedPlusContainerFragment";
-    public static final int UOH_MENU = 3;
-    public static final int WISHLIST_MENU = 4;
+    public static final int UOH_MENU = 4;
+    public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
@@ -481,6 +481,9 @@ public class MainParentActivity extends BaseActivity implements
                     bottomNavigation.setSelected(FEED_MENU);
                     break;
                 case OS_MENU:
+                    bottomNavigation.setSelected(OS_MENU);
+                    break;
+                case WISHLIST_MENU:
                     bottomNavigation.setSelected(OS_MENU);
                     break;
                 case ACCOUNT_MENU:
