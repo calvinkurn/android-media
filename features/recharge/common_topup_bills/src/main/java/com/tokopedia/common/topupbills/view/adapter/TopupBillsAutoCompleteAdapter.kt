@@ -14,6 +14,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteHeaderDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import java.lang.IllegalArgumentException
@@ -39,14 +40,6 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-//        val view: View
-//        if (convertView == null) {
-//            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//            view = inflater.inflate(textViewResourceId, null)
-//        } else {
-//            view = convertView
-//        }
-
         /* TODO: [Misael] check ini
         *   val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater*/
 
@@ -59,18 +52,18 @@ class TopupBillsAutoCompleteAdapter(
                 layoutInflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
             }
             TopupBillsAutoCompleteView.CONTACT.type -> {
-                val contact = getItem(position)
                 val view = layoutInflater.inflate(R.layout.item_topup_bills_autocomplete_phonenumber, null)
-                contact?.let {
+                getItem(position)?.let {
                     val contact = it as TopupBillsAutoCompleteContactDataView
                     val tvName = view.findViewById<TextView>(R.id.common_topup_bills_autocomplete_name)
+                    val tvNumber = view.findViewById<TextView>(R.id.common_topup_bills_autocomplete_number)
+
                     if (contact.name.isNotEmpty()) {
                         tvName.text = getSpandableBoldText(contact.name, listener.getFilterText())
                     } else {
                         tvName.hide()
                     }
-                    view.findViewById<TextView>(R.id.common_topup_bills_autocomplete_number)
-                        .text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
+                    tvNumber.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
                 }
                 view
             }
@@ -83,14 +76,14 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (suggestions.isEmpty()) {
-            TopupBillsAutoCompleteView.EMPTY_STATE.type
-        } else {
+        return if (suggestions.size > 1) {
             if (position == 0) {
                 TopupBillsAutoCompleteView.HEADER.type
             } else {
                 TopupBillsAutoCompleteView.CONTACT.type
             }
+        } else {
+            TopupBillsAutoCompleteView.EMPTY_STATE.type
         }
     }
 
@@ -107,6 +100,10 @@ class TopupBillsAutoCompleteAdapter(
         return suggestions.size
     }
 
+    override fun isEnabled(position: Int): Boolean {
+        return getItemViewType(position) == TopupBillsAutoCompleteView.CONTACT.type
+    }
+
     override fun getFilter(): Filter {
         return contactFilter
     }
@@ -114,7 +111,6 @@ class TopupBillsAutoCompleteAdapter(
     val contactFilter = object : Filter() {
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
-            // TODO: [Misael] check kembalian header
             return when (resultValue) {
                 is TopupBillsAutoCompleteContactDataView -> resultValue.phoneNumber
                 else -> ""
@@ -134,7 +130,8 @@ class TopupBillsAutoCompleteAdapter(
                 if (suggestions.isNotEmpty()) {
                     suggestions.add(0, TopupBillsAutoCompleteHeaderDataView())
                 } else {
-                    suggestions.add(TopupBillsAutoCompleteEmptyDataView())
+                    if (!constraint.matches(REGEX_IS_NUMERIC.toRegex()) && itemsAll.isNotEmpty())
+                        suggestions.add(TopupBillsAutoCompleteEmptyDataView())
                 }
 
                 FilterResults().apply {
@@ -176,6 +173,6 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     companion object {
-        private const val REGEX_IS_ALPHANUMERIC_AND_SPACE = "^[a-zA-Z0-9\\s]*$"
+        private const val REGEX_IS_NUMERIC = "^[0-9]*$"
     }
 }

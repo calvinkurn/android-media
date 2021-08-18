@@ -110,6 +110,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
                 clearFilterIfTabNotActive()
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
+                hideShimmering()
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList(it.throwable)

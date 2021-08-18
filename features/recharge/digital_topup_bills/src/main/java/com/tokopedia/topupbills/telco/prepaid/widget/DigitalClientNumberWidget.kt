@@ -58,15 +58,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.textFieldInput.setText("")
             inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
+            it.hide()
+            imgOperator.hide()
+            listener.onClearAutoComplete()
         }
-
         inputNumberField.textFieldInput.run {
             inputType = InputType.TYPE_CLASS_TEXT
             threshold = 1
-//            dropDownHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl9)
-//            isClickable = true
-//            isFocusable = false
-//            clearFocus()
             dropDownVerticalOffset = 10
 
             addTextChangedListener(object : TextWatcher {
@@ -79,15 +77,18 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (count == 0) {
-                        listener.onClearAutoComplete()
-                        imgOperator.visibility = View.GONE
-                        btnClear.visibility = View.GONE
-                    } else {
+                    // TODO: [Docs] diganti gini supaya ketika delete manual icon clear n operator masih ada
+                    if (count != 0) {
                         btnClear.visibility = View.VISIBLE
                         autoCompleteAdapter1.filter.filter(s)
                     }
-                    listener.onRenderOperator()
+
+                    /** [Misael] Delete Soon
+                     * Ini buat bedain text yg dateng dari copas/manually typed.
+                     * kalau copas ngga perlu delay waktu render
+                     *  */
+                    val isManuallyTypedNumber = count <= 1
+                    listener.onRenderOperator(isManuallyTypedNumber)
                 }
             })
 
@@ -133,6 +134,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
             TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
             TopupBillsAutoCompleteContactDataView("Misael7", "085691029101")))
+//        autoCompleteAdapter1.updateItems(mutableListOf())
     }
 
     private fun hideErrorInputNumber() {
@@ -177,16 +179,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         autoCompleteAdapter1 = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_topup_bills_autocomplete_phonenumber,
-            mutableListOf(
-                TopupBillsAutoCompleteContactDataView("Misael1", "081208120812"),
-                TopupBillsAutoCompleteContactDataView("Misael2", "081908190819"),
-                TopupBillsAutoCompleteContactDataView("Misael3", "081999999999"),
-                TopupBillsAutoCompleteContactDataView("Misael4", "08219283903"),
-                TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
-                TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
-                TopupBillsAutoCompleteContactDataView("Misael7", "085691029101"),
-
-            ),
+            mutableListOf(),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return inputNumberField.textFieldInput.text.toString()
@@ -242,7 +235,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     interface ActionListener {
         fun onNavigateToContact()
-        fun onRenderOperator()
+        fun onRenderOperator(isDelayed: Boolean)
         fun onClearAutoComplete()
         fun onClientNumberHasFocus(clientNumber: String)
     }

@@ -20,10 +20,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by nabillasabbaha on 20/05/19.
@@ -103,7 +106,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
                               filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
         launchCatchError(block = {
-            _loadingProductList.postValue(true)
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
@@ -128,6 +130,11 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
             _loadingProductList.postValue(false)
             _productList.postValue(Fail(it))
         }
+    }
+
+    fun setProductListShimmer(isShow: Boolean) {
+        if (_loadingProductList.value != isShow)
+            _loadingProductList.postValue(isShow)
     }
 
     fun setExpandInputNumberView(expand: Boolean) {

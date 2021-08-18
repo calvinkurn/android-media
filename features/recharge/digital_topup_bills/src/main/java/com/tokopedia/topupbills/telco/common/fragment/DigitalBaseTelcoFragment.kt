@@ -52,8 +52,14 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 /**
@@ -311,7 +317,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     private fun onSuccessCustomData() {
         this.operatorData = (viewModel.catalogPrefixSelect.value as Success).data
-        renderProductFromCustomData()
+        renderProductFromCustomData(false)
     }
 
     private fun onErrorCustomData() {
@@ -508,6 +514,21 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         })
     }
 
+    fun <T> debounce(
+        waitMs: Long = 300L,
+        coroutineScope: CoroutineScope,
+        destinationFunction: (T) -> Unit
+    ): (T) -> Unit {
+        var debounceJob: Job? = null
+        return { param: T ->
+            debounceJob?.cancel()
+            debounceJob = coroutineScope.launch {
+                delay(waitMs)
+                destinationFunction(param)
+            }
+        }
+    }
+
     abstract fun onCollapseAppBar()
 
     abstract fun onExpandAppBar()
@@ -520,7 +541,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun renderPromoAndRecommendation()
 
-    protected abstract fun renderProductFromCustomData()
+    protected abstract fun renderProductFromCustomData(isDelayed: Boolean)
 
     protected abstract fun setupCheckoutData()
 

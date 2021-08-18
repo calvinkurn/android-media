@@ -49,6 +49,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
+import java.util.concurrent.Delayed
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -287,16 +288,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 navigateContact()
             }
 
-            override fun onRenderOperator() {
+            override fun onRenderOperator(isDelayed: Boolean) {
                 operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
                         getPrefixOperatorData()
                     } else {
-                        renderProductFromCustomData()
+                        renderProductFromCustomData(isDelayed)
                     }
                 }
             }
 
+            // TODO: [Misael] check ini, dan trackingnya
             override fun onClearAutoComplete() {
                 renderPromoAndRecommendation()
                 topupAnalytics.eventClearInputNumber()
@@ -305,6 +307,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 buyWidget.setVisibilityLayout(false)
             }
 
+            // TODO: [Misael] mgkn ini bisa didelete nanti
             override fun onClientNumberHasFocus(clientNumber: String) {
 //                postpaidClientNumberWidget.clearFocusAutoComplete()
 //                navigateFavoriteNumberPage(
@@ -403,7 +406,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun renderProductFromCustomData() {
+    override fun renderProductFromCustomData(isDelayed: Boolean) {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
                 operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {

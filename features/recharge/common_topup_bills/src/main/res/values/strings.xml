@@ -62,4 +62,6 @@
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
     <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
+    <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
+    <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>
 </resources>
