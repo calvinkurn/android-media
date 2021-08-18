@@ -21,8 +21,10 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -55,6 +57,7 @@ open class RecommendationPageViewModel @Inject constructor(
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
+        private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
@@ -63,6 +66,10 @@ open class RecommendationPageViewModel @Inject constructor(
         const val PARAM_JOB_TIMEOUT = 1000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
+        const val POS_PRODUCT_ANCHOR = 0
+        const val POS_CPM = 1
+        const val HEADLINE_PARAM_RECOM = "recom_google"
+        const val HEADLINE_PARAM_DUMMY = "user_warehouseId=0&with_template=true&source=search&image_square=true&ob=23&related=true&navsource=home&headline_product_count=3&st=product&item=1&unique_id=ee9f26fa14e132f3dcf4f589efaa86bd&image_size=200&src=search&start=0&first_install=true&ep=headline&rows=8&q=iphone&user_districtId=2274&user_id=0&hint=sepeda+lipat&template_id=3%2C4&page=1&device=android&user_cityId=176"
     }
     /**
      * public variable
@@ -100,19 +107,33 @@ open class RecommendationPageViewModel @Inject constructor(
                                     queryParam = queryParam
                             )
                             getRecommendationUseCase.createObservable(params).toBlocking().first()
-                        }){
+                        }) {
+                            throw it
+                        },
+                        asyncCatchError(dispatcher.getIODispatcher(), block = {
+                            getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_DUMMY)
+                            getTopAdsHeadlineUseCase.executeOnBackground()
+                        }) {
                             throw it
                         }
                 )
 
-                if(result.isNotEmpty() && result.size == 2 && !result.all { it == null }){
-                    val anchorProductInfoEntity = result.first() as PrimaryProductEntity?
-                    val recommendationWidgets: List<RecommendationWidget> = result[1] as? List<RecommendationWidget> ?: listOf()
-
+                if (result.isNotEmpty() && !result.all { it == null }) {
+                    var anchorProductInfoEntity: PrimaryProductEntity? = null
+                    var recommendationWidgets: List<RecommendationWidget>? = listOf()
+                    var topAdsHeadlineResponse: TopAdsHeadlineResponse? = null
+                    result.forEach {
+                        when (it) {
+                            is PrimaryProductEntity -> anchorProductInfoEntity = it
+                            is List<*> -> recommendationWidgets = it as? List<RecommendationWidget>
+                            is TopAdsHeadlineResponse -> topAdsHeadlineResponse = it
+                        }
+                    }
                     val listVisitable = mutableListOf<HomeRecommendationDataModel>()
                     val anchorProductInfo = anchorProductInfoEntity?.productRecommendationProductDetail?.data?.get(0)?.recommendation?.getOrNull(0)
-                    val recommendationMappingWidget = recommendationWidgets.mapDataModel()
-                    if(anchorProductInfo == null && recommendationMappingWidget.isEmpty()){
+                    val recommendationMappingWidget = recommendationWidgets?.mapDataModel()
+                            ?: listOf()
+                    if (anchorProductInfo == null && recommendationMappingWidget.isEmpty()) {
                         listVisitable.add(RecommendationErrorDataModel(Exception()))
                     } else {
                         listVisitable.add(ProductInfoDataModel(anchorProductInfo))
