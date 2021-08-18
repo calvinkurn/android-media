@@ -271,7 +271,7 @@ class ShopHomeViewModelTest {
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
-        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null, null, null))
+        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
         viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)

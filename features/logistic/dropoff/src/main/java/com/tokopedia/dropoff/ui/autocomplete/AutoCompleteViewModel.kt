@@ -32,7 +32,7 @@ class AutoCompleteViewModel @Inject constructor(
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword)
+            val autoComplete = repo.getAutoComplete(keyword, "")
             mAutoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }

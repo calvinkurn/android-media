@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
@@ -18,7 +17,6 @@ import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
-import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -57,8 +55,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                .start(this.getApplication());
         executeInBackground();
     }
 

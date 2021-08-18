@@ -26,7 +26,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
-                    channelInfo = mapChannelInfo(it.isLive, it.config),
+                    channelInfo = mapChannelInfo(it.isLive, it.config, it.title),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
                     totalViewInfo = mapTotalViewInfo(),
@@ -44,9 +44,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapChannelInfo(
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
+            title: String
     ) = PlayChannelInfoUiModel(
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            backgroundUrl = configResponse.roomBackground.imageUrl
+            backgroundUrl = configResponse.roomBackground.imageUrl,
+            title
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(

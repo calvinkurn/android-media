@@ -87,7 +87,7 @@ public class ProductDigitalMapper {
     private List<ClientNumber> transformClientNumberList(RechargeCategoryDetail entity) {
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
 
-        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumberType.DEFAULT_TYPE_CONTRACT)) {
+        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumberType.DEFAULT_TYPE_CONTRACT.getValue())) {
             ClientNumber clientNumberCategory = new ClientNumber();
             clientNumberCategory.setName(entity.getClientNumber().getName());
             clientNumberCategory.set_default(entity.getClientNumber().getDefault());

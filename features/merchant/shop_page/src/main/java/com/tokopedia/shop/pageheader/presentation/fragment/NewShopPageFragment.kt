@@ -368,6 +368,7 @@ class NewShopPageFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
+        UniversalShareBottomSheet.clearScreenShotDetector()
         super.onDestroy()
     }
 
@@ -880,6 +881,7 @@ class NewShopPageFragment :
             }
             initViews(view)
         }
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1093,7 +1095,7 @@ class NewShopPageFragment :
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        UniversalShareBottomSheet.getScreenShotDetector()?.start()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1867,7 +1869,7 @@ class NewShopPageFragment :
         linkerShareData?.apply {
             shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
             url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
-            shareUri = replaceLastUrlSegment(shareUri, shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri.orEmpty(), shopBranchLinkDomain)
         }
     }
 
