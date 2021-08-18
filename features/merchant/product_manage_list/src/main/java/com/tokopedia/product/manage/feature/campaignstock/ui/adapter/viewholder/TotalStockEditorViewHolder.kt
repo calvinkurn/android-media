@@ -91,7 +91,7 @@ class TotalStockEditorViewHolder(itemView: View?,
     }
 
     private fun setupCampaignCountText(element: TotalStockEditorUiModel) {
-        val isCampaign = element.isCampaign == true
+        val isCampaign = element.campaignTypeList?.isNullOrEmpty() == false
         ongoingCampaignTypeText?.run {
             showWithCondition(isCampaign)
             element.campaignTypeList?.let { campaignList ->

@@ -282,13 +282,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 val reservedProduct = getStockAllocation.detail.reserve.map { reserved ->
                     CampaignStockMapper.mapToParcellableReserved(reserved)
                 } as ArrayList<ReservedEventInfoUiModel>
-                val isCampaign = otherCampaignStockData.campaign?.isActive == true
 
                 CampaignStockAdapter(it, getFragmentList(
                         getStockAllocation.summary.isVariant,
                         otherCampaignStockData.getIsActive(),
                         getStockAllocation.summary.reserveStock.toIntOrZero(),
-                        isCampaign,
                         sellableProduct,
                         reservedProduct,
                         access
@@ -327,7 +325,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                             summary.isVariant,
                             otherCampaignStockData.getIsActive(),
                             nonVariantStock,
-                            isCampaign,
                             ArrayList(sellableProducts),
                             reservedProduct,
                             access
@@ -387,12 +384,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                      sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                                      isActive: Boolean,
                                      stock: Int,
-                                     isCampaign: Boolean,
                                      access: ProductManageAccess) =
             CampaignMainStockFragment.createInstance(
-                    isVariant, sellableProductUIList,
-                    isActive, stock, isCampaign,
-                    access, source, this)
+                    isVariant, sellableProductUIList, isActive,
+                    stock, access, source, this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,
@@ -402,12 +397,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun getFragmentList(isVariant: Boolean,
                                 isMainStockActive: Boolean,
                                 stock: Int,
-                                isCampaign: Boolean,
                                 sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                                 reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,
                                 access: ProductManageAccess): List<Fragment>{
         return listOf(
-                getMainStockFragment(isVariant, sellableProductUIList, isMainStockActive, stock, isCampaign, access),
+                getMainStockFragment(isVariant, sellableProductUIList, isMainStockActive, stock, access),
                 getReservedStockFragment(isVariant, reservedEventInfoUiList, access)
         )
     }
