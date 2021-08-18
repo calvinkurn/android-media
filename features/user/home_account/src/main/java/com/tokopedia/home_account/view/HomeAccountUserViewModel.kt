@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -120,10 +121,18 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
+    private suspend fun getLinkStatus(): LinkStatusResponse {
+        val params = RequestParams.create().apply {
+            putString("linking_type", "account_linking")
+        }
+        return getLinkStatusUseCase.execute(params)
+    }
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
-//            val linkStatus = getLinkStatusUseCase.execute(RequestParams.EMPTY)
+            val linkStatus = getLinkStatus()
+            accountModel.linkStatus = linkStatus
 
             withContext(dispatcher) {
                 internalBuyerData = accountModel
