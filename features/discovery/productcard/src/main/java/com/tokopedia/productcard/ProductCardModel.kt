@@ -165,6 +165,14 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_BEST_SELLER)
     }
 
+    fun getLabelCategorySide(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_SIDE)
+    }
+
+    fun getLabelCategoryBottom(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_BOTTOM)
+    }
+
     fun getLabelETA(): LabelGroup? {
         return findLabelGroup(LABEL_ETA)
     }
@@ -202,6 +210,12 @@ data class ProductCardModel (
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategorySide() =
+        isShowLabelBestSeller() && getLabelCategorySide()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategoryBottom() =
+        isShowLabelBestSeller() && getLabelCategoryBottom()?.title?.isNotEmpty() == true
 
     fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
 

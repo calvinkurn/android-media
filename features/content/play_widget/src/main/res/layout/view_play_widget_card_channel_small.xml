@@ -142,6 +142,19 @@
             tools:text="10,0 rb"
             />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_giveaway"
+            android:layout_width="@dimen/play_giveaway_icon_size"
+            android:layout_height="@dimen/play_giveaway_icon_size"
+            android:background="@drawable/bg_play_widget_giveaway_badge"
+            android:padding="@dimen/spacing_lvl1"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GIFT"
+            tools:ignore="RtlSymmetry"
+            tools:visibility="visible"
+            />
+
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography

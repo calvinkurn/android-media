@@ -216,6 +216,10 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel) {
+        flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
+    }
+
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                         departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
