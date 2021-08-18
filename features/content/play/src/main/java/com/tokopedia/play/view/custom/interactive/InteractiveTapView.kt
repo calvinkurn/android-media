@@ -137,8 +137,8 @@ class InteractiveTapView : ConstraintLayout {
 
     fun showFollowMode(shouldShow: Boolean) {
         if (shouldShow) {
-            groupLottieTap.invisible()
-            flInteractiveTap.gone() //Invisible to keep the guideline
+            groupLottieTap.invisible() //Invisible to keep the guideline position
+            flInteractiveTap.gone()
             flInteractiveFollow.visible()
 
             tvTapAction.text = context.getString(R.string.play_interactive_tap_action_follow_text)
