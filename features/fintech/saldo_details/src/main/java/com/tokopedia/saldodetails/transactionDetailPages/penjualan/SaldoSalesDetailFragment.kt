@@ -94,7 +94,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     private fun onSuccessSalesDetailLoaded(data: DepositHistoryData) {
         salesDetailData = data
         val transDateStr = DateUtil.formatDate(
-            SaldoDateUtil.DATE_PATTERN_FROM_PENJUALAN_SERVER,
+            SaldoDateUtil.DATE_PATTERN_FROM_SERVER,
             SaldoDateUtil.DATE_PATTERN_FOR_UI,
             data.createdTime,
         )

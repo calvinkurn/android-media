@@ -4,8 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
-import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil.DATE_PATTERN_FROM_PENJUALAN_SERVER
+import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.SalesTransactionDetail
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -38,8 +37,8 @@ class SalesSaldoTransactionViewHolder (itemView: View, val onClick: (Visitable<*
             )
         }
         val transDateStr = DateUtil.formatDate(
-            DATE_PATTERN_FROM_PENJUALAN_SERVER,
-            DATE_PATTERN_FOR_UI,
+            SaldoDateUtil.DATE_PATTERN_FROM_SERVER,
+            SaldoDateUtil.DATE_PATTERN_FOR_UI,
             element.createTime,
         )
         itemView.setOnClickListener { openDetailPage(element) }

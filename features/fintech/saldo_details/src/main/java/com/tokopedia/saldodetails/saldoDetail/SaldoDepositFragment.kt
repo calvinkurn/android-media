@@ -68,31 +68,31 @@ import javax.inject.Inject
 class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
-        val REQUEST_WITHDRAW_CODE = 3333
-        val KEY_CAN_SHOW_BALANCE_COACHMARK = "com.tokopedia.saldodetails.balance_coach_mark"
-        val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
-        val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
-        val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
-        val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
-        val SALDODETAIL_FINTECH_PLT_RENDER_METRICS = "saldodetailfintech_plt_render_metrics"
+        const val REQUEST_WITHDRAW_CODE = 3333
+        const val KEY_CAN_SHOW_BALANCE_COACHMARK = "com.tokopedia.saldodetails.balance_coach_mark"
+        const val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
+        const val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
+        const val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
+        const val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
+        const val SALDODETAIL_FINTECH_PLT_RENDER_METRICS = "saldodetailfintech_plt_render_metrics"
 
-        val IS_SELLER_ENABLED = "is_user_enabled"
-        val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
-        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details"
+        const val IS_SELLER_ENABLED = "is_user_enabled"
+        const val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
+        const val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS = "merchant_credit_details"
 
-        val BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int"
-        val BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int"
-        private val MCL_STATUS_ZERO = 0
-        private val MCL_STATUS_BLOCK1 = 700
-        private val MCL_STATUS_BLOCK2 = 701
-        private val MCL_STATUS_BLOCK3 = 999
-        private val IS_SELLER = "is_seller"
-        val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
-        val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
+        const val BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT = "seller_total_balance_int"
+        const val BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int"
+        private const val MCL_STATUS_ZERO = 0
+        private const val MCL_STATUS_BLOCK1 = 700
+        private const val MCL_STATUS_BLOCK3 = 999
+        private const val PENJUALAN_TAB_INDEX = 2
+        private const val IS_SELLER = "is_seller"
+        const val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
+        const val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
 
-        private val IS_WITHDRAW_LOCK = "is_lock"
-        private val MCL_LATE_COUNT = "late_count"
-        private val FIREBASE_FLAG_STATUS = "is_on"
+        private const val IS_WITHDRAW_LOCK = "is_lock"
+        private const val MCL_LATE_COUNT = "late_count"
+        private const val FIREBASE_FLAG_STATUS = "is_on"
 
         fun createInstance(isSellerEnabled: Boolean): SaldoDepositFragment {
             val saldoDepositFragment = SaldoDepositFragment()
@@ -164,12 +164,12 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             SALDODETAIL_FINTECH_PLT_PREPARE_METRICS,
             SALDODETAIL_FINTECH_PLT_NETWORK_METRICS,
             SALDODETAIL_FINTECH_PLT_RENDER_METRICS
-        ) as PageLoadTimePerformanceInterface
+        )
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var saldoDetailViewModel: SaldoDetailViewModel
+    private lateinit var saldoDetailViewModel: SaldoDetailViewModel
 
     private val isSaldoNativeEnabled: Boolean
         get() = remoteConfig!!.getBoolean(
@@ -191,6 +191,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         performanceInterface.startMonitoring(SALDODETAIL_FINTECH_PLT)
         performanceInterface.startPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        saldoDetailsAnalytics.sendOpenScreenEvent()
     }
 
     override fun onCreateView(
@@ -229,7 +230,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 val list = buildCoachMark() ?: return
                 updateBalanceCoachMarkShown()
                 coachMark.setOnDismissListener {
-                    if (coachMark.currentIndex == 2) {
+                    if (coachMark.currentIndex == PENJUALAN_TAB_INDEX) {
                         showPenjualanCoachMark()
                     }
                 }
@@ -374,18 +375,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                         onUserSaldoBalanceLoaded(it.data.saldo)
                     }
                 }
-                is ErrorMessage<*, *> -> {
-                    onSaldoBalanceLoadingError()
-                    /*if (it.data is Int) {
-                        setRetry(getString(it.data))
-                    } else {
-                        setRetry()
-                    }*/
-                }
-            /*
-                else -> {
-                    setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
-                }*/
+                is ErrorMessage<*, *> -> onSaldoBalanceLoadingError()
             }
         })
 
@@ -767,9 +757,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName() = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -969,32 +957,3 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         performanceInterface.stopMonitoring()
     }
 }
-/*   private fun setRetry() {
-        view?.let { view ->
-            Toaster.build(
-                view,
-                getString(R.string.saldo_network_error),
-                Toaster.LENGTH_INDEFINITE,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.saldo_retry)
-            ) {
-                saldoDetailViewModel.getUserSaldoBalance()
-                saldoHistoryFragment?.onRefresh()
-            }.show()
-        }
-    }
-
-    private fun setRetry(error: String) {
-        view?.let { view ->
-            Toaster.build(
-                view, getString(R.string.saldo_network_error),
-                Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL,
-                error
-            ) {
-                saldoDetailViewModel.getUserSaldoBalance()
-                saldoHistoryFragment?.onRefresh()
-            }.show()
-        }
-    }
-
-*/

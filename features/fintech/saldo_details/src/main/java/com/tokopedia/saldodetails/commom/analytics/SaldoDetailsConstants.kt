@@ -22,12 +22,16 @@ object SaldoDetailsConstants {
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val VALUE_BUSINESS_UNIT = "Payment"
     const val KEY_USER_ID = "userId"
+    const val KEY_SCREEN_NAME = "screenName"
+    const val KEY_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     internal interface Event {
         companion object {
             const val EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite"
             const val EVENT_CLICK_SALDO = "clickSaldo"
             const val EVENT_SALDO_IMPRESSION = "viewSaldoIris"
+            const val EVENT_SALDO_OPEN_SCREEN= "openScreen"
+            const val EVENT= "event"
         }
     }
 

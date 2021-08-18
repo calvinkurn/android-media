@@ -96,4 +96,14 @@ class SaldoDetailsAnalytics @Inject constructor(
             )
         )
     }
+
+    fun sendOpenScreenEvent() {
+        sendGeneralEvent(
+            mutableMapOf(
+                SaldoDetailsConstants.Event.EVENT to SaldoDetailsConstants.Event.EVENT_SALDO_OPEN_SCREEN,
+                SaldoDetailsConstants.KEY_LOGGED_IN_STATUS to userSession.get().isLoggedIn,
+                SaldoDetailsConstants.KEY_SCREEN_NAME to SaldoDetailsConstants.EventLabel.SALDO_PAGE,
+            )
+        )
+    }
 }

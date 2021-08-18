@@ -152,7 +152,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     override fun getTagFragment() = TAG
-    override fun getScreenName() = SaldoDetailsConstants.EventLabel.SALDO_PAGE
+    override fun getScreenName() = null
 
     companion object {
         private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"

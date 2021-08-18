@@ -6,7 +6,6 @@ import java.util.*
 object SaldoDateUtil {
 
     const val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"
-    const val DATE_PATTERN_FROM_PENJUALAN_SERVER = "dd MMM yyyy, HH:mm:ss"
     const val DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm"
 
     fun getInitialDateRange(onInitialDateRangeCreated : (startDate : Date, endDate : Date) -> Unit){
