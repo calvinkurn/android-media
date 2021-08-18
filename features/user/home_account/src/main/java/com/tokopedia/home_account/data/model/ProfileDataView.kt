@@ -11,5 +11,5 @@ data class ProfileDataView(
         val email: String = "",
         val avatar: String = "",
         var isLinked: Boolean = false,
-        var isShowLinkStatus: Boolean = true
+        var isShowLinkStatus: Boolean = false
 )
