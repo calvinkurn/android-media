@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +27,6 @@ import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMas
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -95,7 +92,27 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         setupProductBundleDetailView(view)
         setupProductBundleOverView(view)
 
-        // render product bundle master chips
+        productBundleInfo?.run {
+            if (this.isNotEmpty()) {
+
+                productBundleInfo.forEach { bundleInfo ->
+                    // map product bundle info to master and details
+                    viewModel.mapBundleInfoToBundleMaster(bundleInfo)
+                    viewModel.mapBundleItemsToBundleDetail(bundleInfo.bundleItems)
+                    // TODO: update master - detail map
+
+                }
+
+
+
+
+            }
+        }
+
+
+//        // render product bundle master chips
+//        viewModel.mapBundleInfoToBundleMaster(productBundleInfo)
+
 //        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
 
 //        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -162,19 +179,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 //        }
     }
 
-    private fun subscribeToProductBundleInfo() {
-
-        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val productBundleInfo = result.data
-
-                }
-                is Fail -> {
-
-                }
-            }
-        })
 
 
 //        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->

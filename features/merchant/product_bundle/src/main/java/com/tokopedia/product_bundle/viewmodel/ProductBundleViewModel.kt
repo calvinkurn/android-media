@@ -79,6 +79,13 @@ class ProductBundleViewModel @Inject constructor(
         isErrorLiveData.value = true
     }
 
+    fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
+        return ProductBundleMaster(
+            bundleId = bundleInfo.bundleID,
+            bundleName = bundleInfo.name
+        )
+    }
+
     fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             ProductBundleDetail(

@@ -110,6 +110,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE+"/2147881200?bundleId=3")
+        RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE)
     }
 }
