@@ -31,5 +31,10 @@
     <string name="atc_variant_empty">Habis</string>
     <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
 
+
+    <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
+    <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
+    <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
+
     <string name="pdp_shipping_error_to_home">Ke Home</string>
 </resources>

@@ -212,10 +212,6 @@
     <string name="merchant_product_detail_report_text">Produk bermasalah? Laporkan</string>
     <string name="merchant_product_detail_report_suffix">Laporkan</string>
 
-    <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
-    <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
-    <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
-
     <string name="ticker_out_of_stock_description">Wishlist barang ini untuk bisa diingatkan saat stok kembali tersedia atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
     <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>
     <string name="ticker_product_inactive_description">Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>

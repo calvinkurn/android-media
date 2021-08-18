@@ -207,6 +207,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.toggleFavoriteShop.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_follow_shop_npl))
                     viewModel.updateActivityResult(isFollowShop = true)
                     nplFollowersButton?.setupVisibility = false
                 }
@@ -218,7 +219,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun onFailFavoriteShop(t: Throwable) {
-        view?.showToasterError(getErrorMessage(t), ctaText = getString(com.tokopedia.abstraction.R.string.retry_label)) {
+        showToasterError(getErrorMessage(t), ctaBtn = getString(com.tokopedia.abstraction.R.string.retry_label)) {
             onButtonFollowNplClick()
         }
     }
@@ -362,8 +363,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         })
     }
 
-    private fun showToasterError(message: String, ctaBtn: String = "") {
+    private fun showToasterError(message: String, ctaBtn: String = "", ctaListener: () -> Unit = {}) {
         viewContent?.rootView.showToasterError(message, ctaText = ctaBtn, heightOffset = R.dimen.space_toaster_offsite_atc_variant) {
+            ctaListener.invoke()
         }
     }
 
