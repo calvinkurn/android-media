@@ -23,8 +23,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
@@ -50,6 +50,7 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHS
 import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -119,7 +120,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val navToolbar by lazy { view?.findViewById<NavToolbar>(R.id.navToolbar) }
     private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
+    private var coachMark: CoachMark2? = null
     private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) }
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
@@ -129,6 +130,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
     private var useNewInbox = false
     private var launchSourceWishlist: String = ""
+    private var scrollAfterSubmit = false
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -222,6 +224,14 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         viewModel.getWishlistData(additionalParams = generateWishlistAdditionalParamRequest(), shouldShowInitialPage = true)
         WishlistTracking.openWishlistPage(viewModel.getUserId())
         showOnBoarding()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            viewModel.getWishlistData(navToolbar?.getCurrentSearchbarText() ?: "", generateWishlistAdditionalParamRequest())
+            scrollAfterSubmit = true
+        }
     }
 
     private fun initCartLocalCacheHandler() {
@@ -401,6 +411,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 navToolbar?.hideKeyboard()
+                coachMark?.dismissCoachMark()
             }
         })
     }
@@ -504,6 +515,12 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private fun renderList(list: List<WishlistDataModel>) {
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list)
+        if (scrollAfterSubmit) {
+            recyclerView?.addOneTimeGlobalLayoutListener {
+                recyclerView?.scrollToPosition(0)
+            }
+            scrollAfterSubmit = false
+        }
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
@@ -740,17 +757,17 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
                 Handler().postDelayed({
                     val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
-
+                    this.coachMark = CoachMark2(context)
                     manageMenu?.post {
-                        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                        val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
                         coachMarkItems.add(
-                                CoachMarkItem(
+                                CoachMark2Item(
                                         manageMenu,
                                         context.getString(R.string.wishlist_coach_mark_title),
                                         context.getString(R.string.wishlist_coach_mark_description)
                                 )
                         )
-                        coachMark.show(activity, "wishlist", coachMarkItems)
+                        coachMark?.showCoachMark(step = coachMarkItems)
                     }
                 }, COACHMARK_SAFE_DELAY)
         }

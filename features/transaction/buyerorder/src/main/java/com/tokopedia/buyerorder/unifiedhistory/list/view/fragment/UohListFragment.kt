@@ -305,6 +305,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onRefresh(view: View?) {
+        refreshUohData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            rv_order_list.scrollToPosition(0)
+            refreshUohData()
+        }
+    }
+
+    private fun refreshUohData() {
         onLoadMore = false
         isFetchRecommendation = false
         onLoadMoreRecommendation = false
@@ -517,6 +529,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 IconBuilderFlag(pageSource = pageSource)
             )
             icons.apply {
+                addIcon(IconList.ID_MESSAGE) {}
+                addIcon(IconList.ID_NOTIFICATION) {}
+                addIcon(IconList.ID_CART) {}
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)

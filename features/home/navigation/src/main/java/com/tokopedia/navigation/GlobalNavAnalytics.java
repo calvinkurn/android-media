@@ -17,7 +17,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOMEPAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOME_PAGE;
-import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_NAVIGATION_DRAWER;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_NAVIGATION_MENU;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_ACTION;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_BUSINESSUNIT;
@@ -59,7 +59,7 @@ public class GlobalNavAnalytics {
 
     public void eventBottomNavigationDrawer(String pageName, String buttonName, String userId) {
         Map<String, Object> map = new HashMap<>();
-        map.put(EVENT, CLICK_NAVIGATION_DRAWER);
+        map.put(EVENT, CLICK_NAVIGATION_MENU);
         map.put(EVENT_CATEGORY,String.format("%s %s - %s",BOTTOM, NAV, pageName));
         map.put(EVENT_ACTION, String.format("%s %s %s", CLICK, buttonName.toLowerCase(), NAV));
         map.put(EVENT_LABEL, "");
