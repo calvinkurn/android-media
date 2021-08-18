@@ -19,7 +19,7 @@ class NewAttachProductListItemViewHolder
      private val newCheckableInteractionListener: NewCheckableInteractionListenerWithPreCheckedAction,
      checkableInteractionListener: CheckableInteractionListener)
     : BaseCheckableViewHolder<NewAttachProductItemUiModel>(itemView, checkableInteractionListener),
-        CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+        CompoundButton.OnCheckedChangeListener {
     private var imageView: ImageView = itemView.findViewById(R.id.attach_product_item_image)
     private var nameTextView: TextView = itemView.findViewById(R.id.attach_product_item_name)
     private var checkBox: CheckBox = itemView.findViewById(R.id.attach_product_item_checkbox)
@@ -31,11 +31,11 @@ class NewAttachProductListItemViewHolder
     }
 
     override fun bind(element: NewAttachProductItemUiModel) {
-        checkBox.isClickable = false
-        itemView.setOnClickListener(this)
-        ImageHandler.loadImageRounded2(imageView.context, imageView, element.productImage)
-        nameTextView.text = element.productName
-        priceTextView.text = element.productPrice
+        bindClickable()
+        bindName(element)
+        bindImage(element)
+        bindPrice(element)
+        bindToogle()
     }
 
     override fun setChecked(checked: Boolean) {
@@ -45,8 +45,26 @@ class NewAttachProductListItemViewHolder
         }
     }
 
-    override fun onClick(view: View) {
-        toggle()
+    private fun bindClickable() {
+        checkBox.isClickable = false
+    }
+
+    private fun bindName(element: NewAttachProductItemUiModel) {
+        nameTextView.text = element.productName
+    }
+
+    private fun bindImage(element: NewAttachProductItemUiModel) {
+        ImageHandler.loadImageRounded2(imageView.context, imageView, element.productImage)
+    }
+
+    private fun bindPrice(element: NewAttachProductItemUiModel) {
+        priceTextView.text = element.productPrice
+    }
+
+    private fun bindToogle() {
+        itemView.setOnClickListener {
+            toggle()
+        }
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {

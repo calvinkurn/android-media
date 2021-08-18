@@ -17,6 +17,10 @@ import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListen
 class NewAttachProductListAdapterTypeFactory
     (private val checkableInteractionListener : CheckableInteractionListener)
     : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<NewAttachProductItemUiModel?> {
+
+    private val listener = checkableInteractionListener as
+            NewCheckableInteractionListenerWithPreCheckedAction
+
     override fun type(viewModelNew: NewAttachProductItemUiModel?): Int {
         return NewAttachProductListItemViewHolder.LAYOUT
     }
@@ -31,7 +35,6 @@ class NewAttachProductListAdapterTypeFactory
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == NewAttachProductListItemViewHolder.LAYOUT) {
-            val listener = checkableInteractionListener as NewCheckableInteractionListenerWithPreCheckedAction
             NewAttachProductListItemViewHolder(parent, listener, checkableInteractionListener)
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             NewAttachProductEmptyResultViewHolder(parent)
