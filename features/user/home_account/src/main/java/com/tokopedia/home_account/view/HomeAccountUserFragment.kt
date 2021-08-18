@@ -169,8 +169,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun enableLinkingAccountRollout(): Boolean = true
-//        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+    private fun enableLinkingAccountRollout(): Boolean =
+        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
 
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
@@ -450,7 +450,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, enableLinkingAccountRollout()))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = enableLinkingAccountRollout()))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -619,7 +619,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupSettingList() {
-        addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
+        val userSettingsMenu = menuGenerator.generateUserSettingMenu()
+        userSettingsMenu.items.forEach {
+            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !enableLinkingAccountRollout()) {
+                userSettingsMenu.items.remove(it)
+            }
+        }
+        addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
                 accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
@@ -769,7 +775,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
 
     }
-
 
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
