@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.data.response
+package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -11,10 +11,10 @@ data class GetAdProductResponse(
 ) {
     data class TopadsGetListProductsOfGroup(
 
-            @field:SerializedName("data")
+        @field:SerializedName("data")
             val data: List<DataItem> = listOf(),
-            @field:SerializedName("page")
-            val page:Page = Page()
+        @field:SerializedName("page")
+            val page: Page = Page()
 
     ) {
         @Parcelize
