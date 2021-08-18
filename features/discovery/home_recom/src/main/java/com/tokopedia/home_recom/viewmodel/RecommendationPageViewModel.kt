@@ -10,6 +10,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.util.Response
@@ -137,6 +138,13 @@ open class RecommendationPageViewModel @Inject constructor(
                         listVisitable.add(RecommendationErrorDataModel(Exception()))
                     } else {
                         listVisitable.add(ProductInfoDataModel(anchorProductInfo))
+                        topAdsHeadlineResponse?.let {
+                            if (canShowTopadsHeadlineCPM(it))
+                                listVisitable.add(
+                                        RecommendationCPMDataModel(
+                                                topAdsHeadlineResponse = it,
+                                                parentPosition = POS_CPM))
+                        }
                         listVisitable.addAll(recommendationMappingWidget)
                     }
                     _recommendationListLiveData.postValue(listVisitable)
@@ -145,10 +153,18 @@ open class RecommendationPageViewModel @Inject constructor(
                     _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(TimeoutException())))
                 }
 
-            } catch (t: Exception){
+            } catch (t: Exception) {
                 _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(t)))
             }
         }
+    }
+
+    private fun canShowTopadsHeadlineCPM(response: TopAdsHeadlineResponse): Boolean {
+        var canShowCPM = false
+        if (response.displayAds.data.size != 0) {
+            canShowCPM = true
+        }
+        return canShowCPM
     }
 
     fun getProductTopadsStatus(
