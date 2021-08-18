@@ -67,6 +67,8 @@ class InitialStatePresenter @Inject constructor(
         return UrlParamUtils.isTokoNow(searchParameter)
     }
 
+//    private fun getNavSource() = searchParameter.get(SearchApiConst.NAVSOURCE)
+
     override fun getInitialStateData() {
         val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         initialStateUseCase.execute(
@@ -402,9 +404,10 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteRecentSearchItem(item: BaseItemInitialStateSearch) {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId,
-                item
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            item = item,
+            navSource = ""
         )
         deleteRecentSearchUseCase.execute(
                 params,
@@ -476,8 +479,9 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteAllRecentSearch() {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            navSource = ""
         )
         deleteRecentSearchUseCase.execute(
                 params,
