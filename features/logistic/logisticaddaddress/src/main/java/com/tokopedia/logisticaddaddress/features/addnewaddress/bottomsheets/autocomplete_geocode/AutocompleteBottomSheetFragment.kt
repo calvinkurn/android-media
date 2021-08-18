@@ -2,12 +2,10 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.aut
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.BottomSheets.BottomSheetsState.FULL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.Place
-import com.tokopedia.logisticCommon.util.rxEditText
-import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetAutocompleteBinding
@@ -35,7 +29,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,7 +45,6 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var adapter: AutocompleteBottomSheetAdapter
-    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var token: Token? = null
@@ -120,11 +112,6 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
         setViewListener()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeSubs.clear()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
             val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
@@ -178,8 +165,10 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (binding.layoutSearch.searchBarTextField.text.toString().isNotEmpty()) {
-                       currentSearch = binding.layoutSearch.searchBarTextField.text.toString()
+                    if (binding.layoutSearch.searchBarTextField.text.toString().isEmpty()) {
+                        binding.rvPoiList.visibility = View.GONE
+                    } else {
+                        currentSearch = binding.layoutSearch.searchBarTextField.text.toString()
                         loadAutocomplete(currentSearch)
                     }
                 }
@@ -189,25 +178,6 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
                 }
 
             })
-            /*rxEditText(this).subscribe(object : Subscriber<String>() {
-                override fun onNext(t: String) {
-                    if (t.isNotEmpty()) {
-                        binding.icClose.visibility = View.VISIBLE
-                        setListenerClearBtn()
-                        loadAutocomplete(t)
-                    } else {
-                        binding.icClose.visibility = View.GONE
-                    }
-                }
-
-                override fun onCompleted() {
-                    // no op
-                }
-
-                override fun onError(e: Throwable?) {
-                    // no op
-                }
-            }).toCompositeSubs(compositeSubs)*/
 
             isFocusableInTouchMode = true
             isFocusable = true
