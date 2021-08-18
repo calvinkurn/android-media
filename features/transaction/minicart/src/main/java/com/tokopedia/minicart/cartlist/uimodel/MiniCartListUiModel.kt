@@ -11,6 +11,7 @@ data class MiniCartListUiModel(
         var miniCartWidgetUiModel: MiniCartWidgetData = MiniCartWidgetData(),
         var miniCartSummaryTransactionUiModel: MiniCartSummaryTransactionUiModel = MiniCartSummaryTransactionUiModel(),
         var visitables: MutableList<Visitable<*>> = mutableListOf(),
+        var chatVisitables: MutableList<Visitable<*>> = mutableListOf(),
         var isFirstLoad: Boolean = false,
         var needToCalculateAfterLoad: Boolean = false
 ) {

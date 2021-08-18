@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -31,6 +31,7 @@ interface DynamicProductDetailListener {
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
+    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
     /**
      * ProductSnapshotViewHolder
      */
@@ -79,9 +80,6 @@ interface DynamicProductDetailListener {
      * ProductMerchantVoucherViewHolder
      */
     fun isOwner(): Boolean
-    fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel)
-    fun onItemMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, componentTrackDataModel: ComponentTrackDataModel)
-    fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductShopCredibilityViewHolder

@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.TablePageAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.shc_table_view.view.*
 
 class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
+    private var onSwipeListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
@@ -48,6 +50,9 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
                             refreshTableHeight(view)
                         }
                         this@TableView.tableViewPageControl.setCurrentIndicator(position)
+                        val item = items.getOrNull(position)
+                        val isEmpty = item?.rows?.isEmpty().orTrue()
+                        onSwipeListener?.invoke(position, items.size, isEmpty)
                     }
                 }
             })
@@ -69,6 +74,10 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun addOnSlideImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
         this.slideImpressionListener = onView
+    }
+
+    fun setOnSwipeListener(onSwipe: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
+        this.onSwipeListener = onSwipe
     }
 
     fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {

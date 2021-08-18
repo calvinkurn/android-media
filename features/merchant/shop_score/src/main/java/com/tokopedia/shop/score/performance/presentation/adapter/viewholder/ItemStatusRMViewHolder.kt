@@ -12,9 +12,11 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiMod
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_potential_eligible_status_regular_merchant.view.*
 
-class ItemStatusRMViewHolder(view: View,
-                             private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener) :
-        AbstractViewHolder<ItemStatusRMUiModel>(view) {
+class ItemStatusRMViewHolder(
+    view: View,
+    private val itemPotentialPowerMerchantListener: ItemPotentialRegularMerchantListener
+) :
+    AbstractViewHolder<ItemStatusRMUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_eligible_status_regular_merchant
@@ -31,7 +33,8 @@ class ItemStatusRMViewHolder(view: View,
             tvTitleEligiblePowerMerchant?.text = element.titleRMEligible
             tvDescEligiblePowerMerchant?.text = element.descRMEligible
 
-            tv_pm_potential_value?.text = MethodChecker.fromHtml(getString(R.string.desc_pm_potential))
+            tv_pm_potential_value?.text =
+                MethodChecker.fromHtml(getString(R.string.desc_pm_potential))
             tv_see_all_benefit_pm?.setOnClickListener {
                 itemPotentialPowerMerchantListener.onItemClickedBenefitPotentialRM()
             }
@@ -43,7 +46,12 @@ class ItemStatusRMViewHolder(view: View,
 
     private fun setupBackgroundColor() {
         with(itemView) {
-            containerEligiblePowerMerchant?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            containerEligiblePowerMerchant?.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
             iv_bg_eligible_rm?.showWithCondition(!context.isDarkMode())
         }
     }

@@ -52,9 +52,15 @@ class ReadReviewHeader : BaseCustomView {
     private var sortFilter: SortFilter? = null
     private var seeAll: Typography? = null
 
+    var isProductReview: Boolean = true
+
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_header, this)
         bindViews()
+    }
+
+    fun setIsProductReview(isProductReview: Boolean){
+        this.isProductReview = isProductReview
     }
 
     private fun bindViews() {
@@ -155,7 +161,10 @@ class ReadReviewHeader : BaseCustomView {
 
     private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
         return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
-            SortTypeConstants.MOST_HELPFUL_COPY
+            if(!isProductReview)
+                SortTypeConstants.LATEST_COPY
+            else
+                SortTypeConstants.MOST_HELPFUL_COPY
         } else {
             sortOption.title.toString()
         }

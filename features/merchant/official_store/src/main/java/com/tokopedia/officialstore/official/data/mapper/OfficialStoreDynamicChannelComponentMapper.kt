@@ -13,6 +13,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                 style = ChannelStyle.ChannelOS,
                 name = channel.name,
                 layout = channel.layout,
+                widgetParam = channel.widgetParam,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),
