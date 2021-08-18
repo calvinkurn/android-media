@@ -35,5 +35,6 @@ class RecommendationCPMViewHolder(val view: View, val listener: RecommendationLi
 
     private fun bindItem(element: RecommendationCPMDataModel) {
         topadsCPM?.displayAds(element.topAdsHeadlineResponse.displayAds)
+        topadsCPM?.hideShimmerView()
     }
 }
