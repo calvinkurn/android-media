@@ -49,7 +49,7 @@ class CastAnalyticHelper(
         }
         else {
             val date = Date(Calendar.getInstance().timeInMillis)
-            Log.d("<LOG>", "end : ${format.format(date)}")
+            Log.d("<LOG>", "end : ${format.format(date)} channelId: $channelId channelType: ${channelType.value}")
         }
     }
 }
