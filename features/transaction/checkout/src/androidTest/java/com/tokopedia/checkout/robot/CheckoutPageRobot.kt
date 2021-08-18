@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.robot
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,7 +37,7 @@ class CheckoutPageRobot {
         Thread.sleep(2000)
     }
 
-    private fun scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<Activity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -54,7 +55,7 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<Activity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -72,7 +73,7 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<Activity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -90,7 +91,7 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<ShipmentActivity>,
+    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<Activity>,
                                              recyclerView: RecyclerView,
                                              position: Int) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -105,7 +106,7 @@ class CheckoutPageRobot {
         override fun perform(uiController: UiController, view: View) = ViewActions.click().perform(uiController, view.findViewById(viewId))
     }
 
-    fun clickChooseDuration(activityRule: IntentsTestRule<ShipmentActivity>) {
+    fun clickChooseDuration(activityRule: IntentsTestRule<Activity>) {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
@@ -118,7 +119,7 @@ class CheckoutPageRobot {
         onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
     }
 
-    fun clickPromoButton(activityRule: IntentsTestRule<ShipmentActivity>) {
+    fun clickPromoButton(activityRule: IntentsTestRule<Activity>) {
         val position = scrollRecyclerViewToPromoButton(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
@@ -127,7 +128,7 @@ class CheckoutPageRobot {
         }
     }
 
-    fun clickChoosePaymentButton(activityRule: IntentsTestRule<ShipmentActivity>) {
+    fun clickChoosePaymentButton(activityRule: IntentsTestRule<Activity>) {
         val position = scrollRecyclerViewToChoosePaymentButton(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
@@ -149,7 +150,7 @@ class CheckoutPageRobot {
      * @param eta eta message
      * @param message additional promo message if available
      */
-    fun assertHasSingleShipmentSelected(activityRule: IntentsTestRule<ShipmentActivity>, title: String, originalPrice: String? = null,
+    fun assertHasSingleShipmentSelected(activityRule: IntentsTestRule<Activity>, title: String, originalPrice: String? = null,
                                         discountedPrice: String? = null, eta: String, message: String? = null) {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
