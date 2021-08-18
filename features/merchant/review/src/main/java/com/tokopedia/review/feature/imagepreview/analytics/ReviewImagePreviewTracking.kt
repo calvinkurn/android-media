@@ -18,8 +18,8 @@ object ReviewImagePreviewTracking {
 
     fun trackOnShopReviewLikeReviewClicked(feedbackId: String, isLiked: Boolean, shopId: String) {
         tracker.sendGeneralEvent(getShopReviewTrackEventMap(
-                ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
-                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_LIKE, feedbackId, (!isLiked).toString()),
+                ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
+                String.format(ReviewImagePreviewTrackingConstants.EVENT_LABEL_CLICK_LIKE, feedbackId, (!isLiked).toString()),
                 shopId
         ))
     }
@@ -34,8 +34,8 @@ object ReviewImagePreviewTracking {
 
     fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
         tracker.sendGeneralEvent(getShopReviewTrackEventMap(
-                ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
-                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_SEE_ALL, feedbackId),
+            ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
+                String.format(ReviewImagePreviewTrackingConstants.EVENT_LABEL_CLICK_SEE_ALL, feedbackId),
                 shopId
         ))
     }
@@ -50,8 +50,8 @@ object ReviewImagePreviewTracking {
 
     fun trackShopReviewSwipeImage(feedbackId: String, previousIndex: Int, currentIndex: Int, totalImages: Int, shopId: String) {
         tracker.sendGeneralEvent(getShopReviewTrackEventMap(
-                ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SWIPE,
-                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_SWIPE, feedbackId, getImageSwipeDirection(previousIndex, currentIndex), currentIndex, totalImages),
+            ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SWIPE,
+                String.format(ReviewImagePreviewTrackingConstants.EVENT_LABEL_CLICK_SWIPE, feedbackId, getImageSwipeDirection(previousIndex, currentIndex), currentIndex, totalImages),
                 shopId
         ))
     }

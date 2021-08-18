@@ -54,6 +54,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
+        private const val DEFAULT_VALUE_INDEX = 0
+        private const val POSITION_INDEX_COUNTER = 1
         fun newInstance(
             cacheManagerId: String,
             isFromGallery: Boolean
@@ -88,6 +90,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private var isLikeValueChange: Boolean = false
     private var galleryRoutingData: ReviewGalleryRoutingUiModel = ReviewGalleryRoutingUiModel()
     private var isFromGallery = false
+    private var isProductReview: Boolean = true
 
     private var currentRecyclerViewPosition = 0
     private var currentPage = 0
@@ -234,6 +237,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
                 shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
                 productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
+                isProductReview = get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true
             }
         }
     }
@@ -316,11 +320,15 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
-                    ReviewImagePreviewTracking.trackOnLikeReviewClicked(
-                        productReview.feedbackID,
-                        isLiked(productReview.likeDislike.likeStatus),
-                        productId
-                    )
+                    if (isProductReview) {
+                        ReviewImagePreviewTracking.trackOnLikeReviewClicked(
+                            productReview.feedbackID,
+                            isLiked(productReview.likeDislike.likeStatus),
+                            productId
+                        )
+                    } else {
+                        ReviewImagePreviewTracking.trackOnShopReviewLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), shopId)
+                    }
                     viewModel.toggleLikeReview(
                         productReview.feedbackID,
                         shopId,
@@ -420,7 +428,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun openExpandedReviewBottomSheet() {
-        ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        if (isProductReview) {
+            ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        } else {
+            ReviewImagePreviewTracking.trackOnShopReviewSeeAllClicked(productReview.feedbackID, productId)
+        }
         if (expandedReviewBottomSheet == null) {
             if (isFromGallery) {
                 galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
@@ -539,15 +551,19 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun trackOnSwipeImage(index: Int, previousIndex: Int) {
-        ReviewImagePreviewTracking.trackSwipeImage(
-            if (isFromGallery) productReview.feedbackID else galleryRoutingData.getSelectedReview(
-                index
-            )?.feedbackId ?: "",
-            previousIndex,
-            index,
-            productReview.imageAttachments.size,
-            productId
-        )
+        if (isProductReview) {
+            ReviewImagePreviewTracking.trackSwipeImage(
+                if (isFromGallery) productReview.feedbackID else galleryRoutingData.getSelectedReview(
+                    index
+                )?.feedbackId ?: "",
+                previousIndex,
+                index,
+                productReview.imageAttachments.size,
+                productId
+            )
+            return
+        }
+        ReviewImagePreviewTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
     }
 
     private fun adjustPhotoCount(index: Int) {
