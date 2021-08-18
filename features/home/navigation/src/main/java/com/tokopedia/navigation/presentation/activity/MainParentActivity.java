@@ -398,7 +398,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-        showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
@@ -484,7 +483,7 @@ public class MainParentActivity extends BaseActivity implements
                     bottomNavigation.setSelected(OS_MENU);
                     break;
                 case WISHLIST_MENU:
-                    bottomNavigation.setSelected(OS_MENU);
+                    bottomNavigation.setSelected(WISHLIST_MENU);
                     break;
                 case ACCOUNT_MENU:
                     bottomNavigation.setSelected(ACCOUNT_MENU);
