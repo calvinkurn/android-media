@@ -159,7 +159,7 @@ object ViewUtil {
         set.clone(constraintLayoutParent)
 
         val rect = newLayoutInfo.displayFeatures[0].bounds
-        setupDeviceFeatureLine(set, rect, toolbarId, deviceFeatureId)
+        setupDeviceFeatureLine(set, toolbarId, deviceFeatureId)
 
         if (rect.top == 0) {
             //Device feature is placed vertically
@@ -188,12 +188,9 @@ object ViewUtil {
 
     private fun setupDeviceFeatureLine(
         set: ConstraintSet,
-        rect: Rect,
         @IdRes toolbarId: Int,
         @IdRes deviceFeatureId: Int
     ) {
-//        set.constrainHeight(deviceFeatureId, rect.bottom - rect.top)
-//        set.constrainWidth(deviceFeatureId, rect.right - rect.left)
         set.connect(
             deviceFeatureId, ConstraintSet.START,
             ConstraintSet.PARENT_ID, ConstraintSet.START, 0

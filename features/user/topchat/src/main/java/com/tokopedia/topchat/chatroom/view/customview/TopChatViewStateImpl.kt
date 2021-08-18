@@ -84,7 +84,6 @@ open class TopChatViewStateImpl constructor(
     var blockStatus: BlockedStatus = BlockedStatus()
 
     var roomMenu = LongClickMenu()
-    var allowedToShowTemplate = false
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
@@ -633,22 +632,26 @@ open class TopChatViewStateImpl constructor(
     override fun showTemplateChatIfReady(
         lastMessageBroadcast: Boolean,
         lastMessageSrwBubble: Boolean,
-        amIBuyer: Boolean,
-        separatedTemplateVisible: Boolean
+        amIBuyer: Boolean
     ) {
-        val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
-        allowedToShowTemplate = if (!templateRecyclerView.isVisible &&
-            templateAdapter.hasTemplateChat() &&
-            !isLastMsgFromBroadcastAndIamBuyer &&
-            fragmentView?.shouldShowSrw() == false &&
-            !lastMessageSrwBubble &&
-            !separatedTemplateVisible
-        ) {
+        if (showTemplateIfReadyChecker(lastMessageBroadcast, lastMessageSrwBubble, amIBuyer)) {
             showTemplateChat()
-            true
-        } else {
-            false
         }
+    }
+
+    private fun showTemplateIfReadyChecker(
+        lastMessageBroadcast: Boolean,
+        lastMessageSrwBubble: Boolean,
+        amIBuyer: Boolean,
+        separatedTemplateVisible: Boolean = false
+    ): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
+        return !templateRecyclerView.isVisible &&
+                templateAdapter.hasTemplateChat() &&
+                !isLastMsgFromBroadcastAndIamBuyer &&
+                fragmentView?.shouldShowSrw() == false &&
+                !lastMessageSrwBubble &&
+                !separatedTemplateVisible
     }
 
     override fun attachFragmentView(fragmentView: TopChatContract.View) {
@@ -662,27 +665,30 @@ open class TopChatViewStateImpl constructor(
     fun setTemplate(
             listTemplate: List<Visitable<Any>>?,
             isLastMessageBroadcast: Boolean = false,
-            amIBuyer: Boolean = true,
-            separatedTemplateVisible: Boolean
+            amIBuyer: Boolean = true
     ) {
-        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            allowedToShowTemplate = if (
-                templateAdapter.hasTemplateChat() &&
+            if (setTemplateChecker(isLastMessageBroadcast, amIBuyer)) {
+                showTemplateChat()
+            } else {
+                hideTemplateChat()
+            }
+        }
+    }
+
+    private fun setTemplateChecker(
+        isLastMessageBroadcast: Boolean,
+        amIBuyer: Boolean,
+        separatedTemplateVisible: Boolean = false
+    ): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
+        return templateAdapter.hasTemplateChat() &&
                 !isLastMsgFromBroadcastAndIamBuyer &&
                 (fragmentView?.hasProductPreviewShown() == false ||
                         fragmentView?.hasNoSrw() == true) &&
                 !separatedTemplateVisible
-            ) {
-                showTemplateChat()
-                true
-            } else {
-                hideTemplateChat()
-                false
-            }
-        }
     }
 
     fun showTemplateChat() {

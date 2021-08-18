@@ -5,6 +5,7 @@ import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparat
 
 interface TopChatRoomFlexModeListener {
     fun onClickAnotherChat(msg: ItemChatListPojo)
+    fun onSuccessGetMessageId(msgId: String)
     fun getSeparatedTemplateChat(): TopChatTemplateSeparatedView?
     fun isFlexMode(): Boolean
 }

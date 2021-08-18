@@ -28,7 +28,8 @@ class ChatListAdapter constructor(
 
     var activeChat: Pair<ItemChatListPojo?, Int?> = Pair(null, null)
         set(value) {
-            if(!field.first?.msgId.isNullOrEmpty()) {
+            if(!field.first?.msgId.isNullOrEmpty() &&
+                    field.first?.msgId != value.first?.msgId) {
                 val deactivateChat = field.first
                 deactivateChat?.isActive = false
                 if(deactivateChat != null && field.second != null) {

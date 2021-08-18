@@ -112,6 +112,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
@@ -289,11 +290,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showTemplateChatIfReady() {
-        getViewState().showTemplateChatIfReady(
-            adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
-            !isSeller(),
-            isSeparatedChatTemplateVisible()
-        )
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            getViewState().hideTemplateChat()
+        } else {
+            getViewState().showTemplateChatIfReady(
+                adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
+                !isSeller()
+            )
+        }
     }
 
     override fun hasProductPreviewShown(): Boolean {
@@ -426,6 +430,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initLoadMoreListener()
         onReplyBoxEmpty()
         initKeyboardListener(view)
+        removeAttachmentIfNecessary(savedInstanceState)
     }
 
     private fun setupBackground() {
@@ -625,6 +630,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return {
             this.messageId = it
             loadInitialData()
+            if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = it)
+            }
         }
     }
 
@@ -1132,15 +1140,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
-        showSeparatedChatTemplateIfFlex()
-        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer,
-            separatedTemplateVisible = isSeparatedChatTemplateVisible())
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            hideSeparatedChatTemplate()
+        } else {
+            getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
+        }
     }
 
     override fun onErrorGetTemplate() {
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
-        getViewState().setTemplate(null,
-            separatedTemplateVisible = isSeparatedChatTemplateVisible())
+        getViewState().setTemplate(null)
     }
 
     @OptIn(InternalCoroutinesApi::class)
@@ -2166,6 +2175,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addSrwBubbleToChat() {
+        //Topchat normal device
+        if(chatRoomFlexModeListener?.isFlexMode() == false) {
+            addSrwBubble()
+        } else {
+            //Topchat flexmode & check if messageId match
+            if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                addSrwBubble()
+            }
+        }
+    }
+
+    private fun addSrwBubble() {
         val srwState = rvSrw?.getStateInfo()
         adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
     }
@@ -2211,39 +2232,57 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
             override fun onKeyboardShow() {
-                showSeparatedChatTemplateIfFlex()
                 if(chatRoomFlexModeListener?.isFlexMode() == true) {
                     chatBoxPadding?.show()
+                    showSeparatedChatTemplateIfFlex()
                 }
             }
 
             override fun onKeyboardHide() {
-                chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
-                chatBoxPadding?.hide()
+                hideSeparatedChatTemplate()
             }
         })
     }
 
-    private fun isSeparatedChatTemplateVisible(): Boolean {
-        return chatRoomFlexModeListener?.getSeparatedTemplateChat()?.isVisible?: false
+    private fun viewStateShouldShowTemplate(): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = adapter.isLastMessageBroadcast() && !isSeller()
+        return !isLastMsgFromBroadcastAndIamBuyer &&
+                !shouldShowSrw() &&
+                !adapter.isLastMsgSrwBubble()
     }
 
     private fun showSeparatedChatTemplateIfFlex() {
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (viewStateShouldShowTemplate()) {
+            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.show()
             chatRoomFlexModeListener?.getSeparatedTemplateChat()?.showSeparatedChatTemplate()
         } else {
-            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+            hideSeparatedChatTemplate()
         }
+    }
+
+    private fun hideSeparatedChatTemplate() {
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hide()
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+        chatBoxPadding?.hide()
     }
 
     fun toggleTemplateChatWhenFlex(toggle: Boolean) {
         try {
-            if(!toggle) {
-                getViewState().hideTemplateChat()
-            } else if(toggle && getViewState().allowedToShowTemplate){
-                getViewState().showTemplateChat()
+            if (chatRoomFlexModeListener?.isFlexMode() == true) {
+                if (!toggle) {
+                    getViewState().hideTemplateChat()
+                } else if(toggle && viewStateShouldShowTemplate()) {
+                    getViewState().showTemplateChat()
+                }
             }
         } catch (ignored: Exception) {}
+    }
+
+    private fun removeAttachmentIfNecessary(savedInstance: Bundle?) {
+        val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
+        if(isNecessary) {
+            getViewState().clearAttachmentPreview()
+        }
     }
 
     companion object {

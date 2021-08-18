@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -45,7 +44,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
-import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
@@ -72,16 +70,15 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private var layoutUpdatesJob: Job? = null
     private var displayState: Int = 0
+
+    //messageId for chatroom fragment intent, replaced to applink's parameter when intent doesn't have the extra
     private var messageId: String = "0"
+
     private var chatTemplateSeparatedView: TopChatTemplateSeparatedView? = null
     private var toolbarChatList: Toolbar? = null
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
     }
 
     override fun getNewFragment(): Fragment {
@@ -96,6 +93,9 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             }
             if(currentActiveChat == null) {
                 currentActiveChat = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE)
+            } else {
+                //open another chatroom, remove attachment
+                bundle.putBoolean(Constant.CHAT_REMOVE_ATTACHMENT, true)
             }
         }
 
@@ -151,10 +151,14 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         }
     }
 
+    //TODO: NEED ADJUSTMENT FOR SRW & OTHER ENTRY POINTS
     private fun scanPathQuery(data: Uri?) {
         data?.let {
             val pathSegments = it.pathSegments
             when {
+                (!currentActiveChat.isNullOrEmpty()) -> {
+                    handleIntentChatRoomWithMessageId()
+                }
                 pathSegments.contains(ApplinkConst.Chat.PATH_ASK_SELLER) -> {
                     val toShopId = intent?.data?.lastPathSegment.toZeroStringIfNull()
                     val shopName =
@@ -208,15 +212,18 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, toUserId)
                 }
                 else -> {
-                    if (messageId == ZER0_MESSAGE_ID) {
-                        messageId = intent?.data?.lastPathSegment.toZeroStringIfNull()
-                    }
-                    intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+                    handleIntentChatRoomWithMessageId()
                 }
             }
         }
     }
 
+    private fun handleIntentChatRoomWithMessageId() {
+        if (messageId == ZER0_MESSAGE_ID) {
+            messageId = intent?.data?.lastPathSegment.toZeroStringIfNull()
+        }
+        intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+    }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_chat_room
@@ -265,22 +272,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun setupFlexModeFragments(savedInstanceState: Bundle?) {
-//        if (savedInstanceState == null) {
-//            role = null
-//            currentActiveChat = null
-//            chatRoomFragment = newFragment as TopChatRoomFragment
-//            chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
-//        } else {
-//            chatRoomFragment = (getChatFragment(R.id.chatroom_fragment) as TopChatRoomFragment?)
-//                ?: newFragment as TopChatRoomFragment
-//            chatListFragment = (getChatFragment(R.id.chatlist_fragment) as ChatListInboxFragment?)
-//                ?: ChatListInboxFragment.createFragment(role, currentActiveChat)
-//        }
         if (savedInstanceState == null) {
             role = null
             currentActiveChat = null
         } else {
-            messageId = currentActiveChat?: "0"
+            messageId = currentActiveChat?: ZER0_MESSAGE_ID
         }
         chatRoomFragment = newFragment as TopChatRoomFragment
         chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
@@ -352,6 +348,14 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
             attachChatRoomFragment()
+        }
+    }
+
+    override fun onSuccessGetMessageId(msgId: String) {
+        if(isFlexMode()) {
+            messageId = msgId
+            currentActiveChat = msgId
+            chatListFragment.setCurrentActiveChat(msgId)
         }
     }
 
@@ -427,7 +431,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 )
                 this.setHomeAsUpIndicator(upArrow)
             }
-            this.title = "Chat"
+            this.title = TITLE_CHAT
             toolbar.contentInsetStartWithNavigation = 0
             toolbar.contentInsetEndWithActions = 0
         }
@@ -441,29 +445,27 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             } else {
                 menuInflater.inflate(R.menu.chat_options_menu, menu)
             }
-            menu?.findItem(R.id.menu_chat_search)?.isVisible = true
-            menu?.findItem(R.id.menu_chat_filter)?.isVisible = true
-            menu?.findItem(R.id.menu_chat_setting)?.isVisible = true
+            hideAndDisableDuplicateMenu(menu)
             true
         } else {
             super.onCreateOptionsMenu(menu)
         }
     }
 
+    private fun hideAndDisableDuplicateMenu(menu: Menu?) {
+        menu?.findItem(R.id.menu_chat_search)?.isVisible = true
+        menu?.findItem(R.id.menu_chat_filter)?.isVisible = false
+        menu?.findItem(R.id.menu_chat_filter)?.isEnabled = false
+        menu?.findItem(R.id.menu_chat_setting)?.isVisible = false
+        menu?.findItem(R.id.menu_chat_setting)?.isEnabled = false
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(isFlexMode()) {
-            return when (item.itemId) {
-                R.id.menu_chat_filter -> {
-                    chatListFragment.showFilterDialog()
-                    true
-                }
-                R.id.menu_chat_setting -> {
-                    val intent = ChatSettingActivity.getIntent(this, (role == RoleType.SELLER))
-                    startActivity(intent)
-                    true
-                }
+        return if(isFlexMode()) {
+            when (item.itemId) {
                 R.id.menu_chat_search -> {
                     RouteManager.route(this, ApplinkConstInternalMarketplace.CHAT_SEARCH)
+                    finish()
                     true
                 }
                 android.R.id.home -> {
@@ -473,7 +475,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 else -> super.onOptionsItemSelected(item)
             }
         } else {
-            return super.onOptionsItemSelected(item)
+            super.onOptionsItemSelected(item)
         }
     }
 
@@ -491,13 +493,15 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         val ROLE_SELLER = "shop"
         val ROLE_USER = "user"
         val TAG = TopChatRoomActivity::class.java.name
+        private const val TITLE_CHAT = "Chat"
 
         private const val EMPTY_STATE = 0
         private const val FLAT_STATE = 1
         private const val HALF_OPEN_STATE = 2
         private const val ZER0_MESSAGE_ID = "0"
         private var role: Int? = null
-        private var currentActiveChat: String? = null
+        var currentActiveChat: String? = null
+            private set
     }
 
 }
