@@ -35,14 +35,16 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = this.pathSegments
             val productId = pathSegments.firstOrNull() ?: "0"
             // call getBundleInfo
-            viewModel.getBundleInfo("2147881195".toLongOrZero())
+            viewModel.getBundleInfo("2147881200".toLongOrZero())
         }
 
         observeGetBundleInfoResult()
     }
 
     override fun getNewFragment(): Fragment {
-        return MultipleProductBundleFragment.newInstance()
+        // TODO: add shimmering
+        // TODO: manage initial fragment transaction
+        return MultipleProductBundleFragment.newInstance(listOf())
     }
 
     private fun initInjector() {
@@ -56,16 +58,23 @@ class ProductBundleActivity : BaseSimpleActivity() {
         viewModel.getBundleInfoResult.observe(this, { result ->
             when (result) {
                 is Success -> {
-                    val bundleInfo = result.data
-                    val bundleItems = bundleInfo.getBundleInfo.bundleInfo
-                    val fragment = SingleProductBundleFragment.newInstance(bundleItems)
-
-                    supportFragmentManager.beginTransaction()
-                        .replace(parentViewResourceID, fragment, tagFragment)
-                        .commit()
+                    val productBundleData = result.data
+                    val bundleInfo = productBundleData.getBundleInfo.bundleInfo
+                    if (bundleInfo.isNotEmpty()) {
+                        var productBundleFragment: Fragment? = null
+                        productBundleFragment = if (viewModel.isSingleProductBundle(bundleInfo)) {
+                            SingleProductBundleFragment.newInstance(bundleInfo)
+                        } else {
+                            MultipleProductBundleFragment.newInstance(bundleInfo)
+                        }
+                        supportFragmentManager.beginTransaction()
+                            .replace(parentViewResourceID, productBundleFragment, tagFragment)
+                            .commit()
+                    }
                 }
                 is Fail -> {
                     // log and show error view
+                    // TODO: add error view in activity layout
                 }
             }
         })

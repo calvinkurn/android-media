@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -28,6 +27,7 @@ class ProductBundleViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = 1
         private const val PRODUCT_BUNDLE_STATUS_INACTIVE = -1
         private const val PRODUCT_BUNDLE_STATUS_UPCOMING = 2
@@ -50,7 +50,12 @@ class ProductBundleViewModel @Inject constructor(
                 getBundleInfoUseCase.setParams(
                     squad = GetBundleInfoConstant.SQUAD_VALUE,
                     usecase = GetBundleInfoConstant.USECASE_VALUE,
-                    requestData = RequestData(variantDetail = true, CheckCampaign = true, BundleGroup = true, Preorder = true),
+                    requestData = RequestData(
+                        variantDetail = true,
+                        CheckCampaign = true,
+                        BundleGroup = true,
+                        Preorder = true
+                    ),
                     productData = ProductData(productID = productId.toString())
                 )
                 getBundleInfoUseCase.executeOnBackground()
@@ -74,7 +79,7 @@ class ProductBundleViewModel @Inject constructor(
         isErrorLiveData.value = true
     }
 
-    fun mapProductBundleItemsToProductBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             ProductBundleDetail(
                 productImageUrl = bundleItem.picURL,
@@ -89,10 +94,10 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    private fun getActiveProductBundles(productBundles: List<BundleInfo>): List<BundleInfo> {
-        return productBundles.filter { bundleInfo ->
-            bundleInfo.status.toIntOrZero() == PRODUCT_BUNDLE_STATUS_ACTIVE
-        }
+    fun isSingleProductBundle(bundleInfo: List<BundleInfo>): Boolean {
+        if (bundleInfo.isEmpty()) return false
+        val bundleItems = bundleInfo.first().bundleItems
+        return bundleItems.size == SINGLE_PRODUCT_BUNDLE_ITEM_SIZE
     }
 
     private fun calculateSoldProductBundle(originalQuota: Int, quota: Int): Int {

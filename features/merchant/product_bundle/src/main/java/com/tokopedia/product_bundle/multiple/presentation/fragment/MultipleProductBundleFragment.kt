@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -33,17 +34,19 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
-        ProductBundleMasterItemClickListener,
-        ProductBundleDetailItemClickListener {
+    ProductBundleMasterItemClickListener,
+    ProductBundleDetailItemClickListener {
 
     companion object {
-        @JvmStatic
-        fun newInstance() =
-                MultipleProductBundleFragment().apply {
-                    arguments = Bundle().apply {
+        private const val PRODUCT_BUNDLE_INFO = "PRODUCT_BUNDLE_INFO"
 
-                    }
+        @JvmStatic
+        fun newInstance(productBundleInfo: List<BundleInfo>) =
+            MultipleProductBundleFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
                 }
+            }
     }
 
     @Inject
@@ -70,8 +73,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleOverView: TotalAmount? = null
     private var errorToaster: Snackbar? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiple_product_bundle, container, false)
     }
@@ -79,6 +84,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         soldProductBundleTextView = view.findViewById(R.id.tv_sold_product_bundle)
+
+        var productBundleInfo: ArrayList<BundleInfo>? = null
+        if (arguments != null) {
+            productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
+        }
 
         // init multiple product bundle views
         setupProductBundleMasterView(view)
@@ -97,9 +107,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerMultipleProductBundleComponent.builder()
-                .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .build()
-                .inject(this)
+            .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
+            .build()
+            .inject(this)
     }
 
     private fun setupProductBundleMasterView(view: View) {
@@ -107,7 +117,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleMasterAdapter = ProductBundleMasterAdapter(this)
         productBundleMasterView?.let {
             it.adapter = productBundleMasterAdapter
-            it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            it.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -122,15 +133,24 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private fun setupProductBundleOverView(view: View) {
         productBundleOverView = view.findViewById(R.id.ta_product_bundle_sum)
-        productBundleOverView?.setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
+        productBundleOverView?.setLabelOrder(
+            TotalAmount.Order.TITLE,
+            TotalAmount.Order.AMOUNT,
+            TotalAmount.Order.SUBTITLE
+        )
     }
 
-    private fun updateProductBundleOverView(productBundleOverView: TotalAmount?,
-                                            totalDiscount: Double,
-                                            totalBundlePrice: Double,
-                                            totalPrice: Double,
-                                            totalSaving: Double) {
-        val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount.roundToInt())
+    private fun updateProductBundleOverView(
+        productBundleOverView: TotalAmount?,
+        totalDiscount: Double,
+        totalBundlePrice: Double,
+        totalPrice: Double,
+        totalSaving: Double
+    ) {
+        val totalDiscountText = String.format(
+            getString(R.string.text_discount_in_percentage),
+            totalDiscount.roundToInt()
+        )
         val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
         val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
@@ -160,7 +180,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 //        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->
 //            // render product bundle detail
 //            val productBundleItems = bundleInfo.bundleItems
-//            val productBundleDetails = viewModel.mapProductBundleItemsToProductBundleDetail(productBundleItems)
+//            val productBundleDetails = viewModel.mapBundleItemsToBundleDetail(productBundleItems)
 //            productBundleDetailAdapter?.setProductBundleDetails(productBundleDetails)
 //            // render sold product bundle view
 //            val soldProductBundle = viewModel.getSoldProductBundle()
@@ -180,7 +200,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 //        })
     }
 
-    override fun onProductBundleMasterItemClicked(adapterPosition: Int, productBundleMaster: ProductBundleMaster) {
+    override fun onProductBundleMasterItemClicked(
+        adapterPosition: Int,
+        productBundleMaster: ProductBundleMaster
+    ) {
 //        // update selected bundle state to view model
 //        viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
 //        // deselect the rest of selection except the selected one
