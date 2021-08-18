@@ -87,6 +87,8 @@ object ReviewConstants {
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
+    const val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+    const val ARGS_IS_PRODUCT_REVIEW = "ARGS_IS_PRODUCT_REVIEW"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"

@@ -9,12 +9,12 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.*
 import com.tokopedia.shop.score.penalty.presentation.model.*
 
 class PenaltyPageAdapterFactory(
-        private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener,
-        private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener,
-        private val itemPenaltyErrorListener: ItemPenaltyErrorListener,
-        private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener,
-        private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener
-): BaseAdapterTypeFactory(), PenaltyTypeFactory {
+    private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener,
+    private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener,
+    private val itemPenaltyErrorListener: ItemPenaltyErrorListener,
+    private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener,
+    private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener
+) : BaseAdapterTypeFactory(), PenaltyTypeFactory {
 
     override fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int {
         return ItemPenaltyViewHolder.LAYOUT
@@ -46,12 +46,27 @@ class PenaltyPageAdapterFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(parent, itemPenaltyDetailPenaltyListener)
-            ItemHeaderCardPenaltyViewHolder.LAYOUT -> ItemHeaderCardPenaltyViewHolder(parent, itemHeaderCardPenaltyListener)
+            ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(
+                parent,
+                itemPenaltyDetailPenaltyListener
+            )
+            ItemHeaderCardPenaltyViewHolder.LAYOUT -> ItemHeaderCardPenaltyViewHolder(
+                parent,
+                itemHeaderCardPenaltyListener
+            )
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)
-            ItemPenaltyErrorViewHolder.LAYOUT -> ItemPenaltyErrorViewHolder(parent, itemPenaltyErrorListener)
-            ItemPeriodDateFilterViewHolder.LAYOUT -> ItemPeriodDateFilterViewHolder(parent, itemPeriodDateFilterListener)
-            ItemSortFilterPenaltyViewHolder.LAYOUT -> ItemSortFilterPenaltyViewHolder(parent, itemSortFilterPenaltyListener)
+            ItemPenaltyErrorViewHolder.LAYOUT -> ItemPenaltyErrorViewHolder(
+                parent,
+                itemPenaltyErrorListener
+            )
+            ItemPeriodDateFilterViewHolder.LAYOUT -> ItemPeriodDateFilterViewHolder(
+                parent,
+                itemPeriodDateFilterListener
+            )
+            ItemSortFilterPenaltyViewHolder.LAYOUT -> ItemSortFilterPenaltyViewHolder(
+                parent,
+                itemSortFilterPenaltyListener
+            )
             ItemPenaltyLoadingViewHolder.LAYOUT -> ItemPenaltyLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

@@ -132,7 +132,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     public void addLocationParameterBeforeRequest(Activity activity) {
-
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,
                 LocationServices.getFusedLocationProviderClient(activity
@@ -150,7 +149,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             return null;
         };
     }
-
 
     private void waitForSecondShake() {
         subscription = Observable.interval(0, 1, TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
@@ -210,6 +208,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     @TestOnly
+    public void changeFirstShake(boolean newFirstShake) {
+        isFirstShake = newFirstShake;
+    }
+
+    @TestOnly
     public void onShakeDetectTest(boolean isLongShake, boolean isFirstShake, boolean isDoubleShake) {
         if (isLongShake) {
             onShakeDetectLongShakeTriggered();
@@ -219,5 +222,15 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         } else {
             onShakeDetectNormalShake();
         }
+    }
+
+    @TestOnly
+    public void changeUserSession(UserSessionInterface newUserSession) {
+        userSession = newUserSession;
+    }
+
+    @TestOnly
+    public void changeRemoteConfig(RemoteConfig newRemoteConfig) {
+        remoteConfig = newRemoteConfig;
     }
 }

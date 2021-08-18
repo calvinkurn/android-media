@@ -7,6 +7,10 @@ object RollenceKey {
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
 
+    const val AB_TEST_SHOP_REVIEW = "review_shop"
+    const val OLD_REVIEW_SHOP = "old_review_shop"
+    const val NEW_REVIEW_SHOP = "new_review_shop"
+
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
