@@ -83,6 +83,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObserver()
+        viewModel.getLinkStatus()
     }
 
     private fun initObserver() {
@@ -95,12 +96,14 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     private fun onSuccessGetLinkStatus(data: LinkStatusResponse) {
-        if(data.linkStatus.isNotEmpty()) {
-            val linkStatus = data.linkStatus.map { it.toUserAccountDataView() }
+        if(data.response.linkStatus.isNotEmpty()) {
+            val linkStatus = data.response.linkStatus.map { it.toUserAccountDataView() }
             adapter.setItems(linkStatus)
-            val isShowFooter = data.linkStatus.any { it.status == "linked" }
+            val isShowFooter = data.response.linkStatus.any { it.status == "linked" }
             if(isShowFooter){
                 showFooter()
+            } else {
+                hideFooter()
             }
         }
     }

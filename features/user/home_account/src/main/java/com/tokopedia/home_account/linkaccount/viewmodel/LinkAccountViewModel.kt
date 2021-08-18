@@ -29,7 +29,10 @@ class LinkAccountViewModel @Inject constructor(
 
     fun getLinkStatus() {
         launchCatchError(block = {
-            val result = getLinkStatusUseCase(RequestParams.EMPTY)
+            val params = RequestParams.create().apply {
+                putString("linking_type", "account_linking")
+            }
+            val result = getLinkStatusUseCase(params)
             withContext(dispatcher.main) {
                 _linkStatus.value = Success(result)
             }

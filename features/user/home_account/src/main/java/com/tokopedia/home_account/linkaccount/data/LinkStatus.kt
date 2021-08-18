@@ -7,10 +7,15 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class LinkStatusResponse(
-    @SerializedName("user_id")
-    val userId: String = "",
+    @SerializedName("accountsLinkerStatus")
+    val response: LinkStatusPojo = LinkStatusPojo()
+)
+
+data class LinkStatusPojo(
     @SerializedName("link_status")
-    val linkStatus: ArrayList<LinkStatus> = arrayListOf()
+    val linkStatus: ArrayList<LinkStatus> = arrayListOf(),
+    @SerializedName("error")
+    val error: String = ""
 )
 
 data class LinkStatus(

@@ -132,7 +132,7 @@ class HomeAccountUserViewModel @Inject constructor(
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
             val linkStatus = getLinkStatus()
-            accountModel.linkStatus = linkStatus
+            accountModel.linkStatus = linkStatus.response
 
             withContext(dispatcher) {
                 internalBuyerData = accountModel
