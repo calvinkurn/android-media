@@ -47,6 +47,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
         private const val SPAN_COUNT_2 = 2
+        private const val SPAN_COUNT_3 = 3
         private const val SPAN_SPACING_0 = 0
         private const val SPAN_SPACING_10 = 10
         private const val SPAN_SPACING_20 = 20
@@ -155,8 +156,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     private fun getRecyclerViewDefaultSpanCount(element: DynamicLegoBannerDataModel): Int {
         return when (element.channelModel.channelConfig.layout) {
-            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE, DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> 2
-            else -> 3
+            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE, DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> SPAN_COUNT_2
+            else -> SPAN_COUNT_3
         }
     }
 
