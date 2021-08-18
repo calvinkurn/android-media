@@ -84,6 +84,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
@@ -461,6 +462,39 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         initToolBarMethod?.invoke()
     }
 
+    private fun onResultVariantBottomSheet(data: ProductVariantResult) {
+        if (data.shouldRefreshPreviousPage) {
+            productId = data.selectedProductId
+            //donot run onresume
+            firstOpenPage = true
+            onSwipeRefresh()
+        } else {
+            if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
+                updateCartNotification()
+            } else if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS) {
+                productId = data.selectedProductId
+                onSuccessUpdateAddress()
+                return
+            }
+
+            if (data.isFollowShop) {
+                onSuccessFavoriteShop(true, true)
+            }
+
+            val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(data.mapOfSelectedVariantOption?.values
+                    ?: mutableListOf())
+                    ?: false // means selected variant in bottom sheet is the same in pdp
+            if (pdpUiUpdater?.productSingleVariant == null
+                    || pdpUiUpdater?.productSingleVariant?.isVariantError == true
+                    || data.mapOfSelectedVariantOption == null || isSelectedTheSame) return
+            pdpUiUpdater?.updateVariantSelected(data.mapOfSelectedVariantOption)
+            val variantLevelOne = ProductDetailVariantLogic.determineVariant(data.mapOfSelectedVariantOption
+                    ?: mapOf(), viewModel.variantData)
+            updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
+            scrollVariantToSelectedPosition()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             activity?.let { AdultManager.handleActivityResult(it, requestCode, resultCode, data) }
@@ -468,32 +502,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if (shouldRefreshPreviousPage) {
-                    productId = selectedProductId
-                    //donot run onresume
-                    firstOpenPage = true
-                    onSwipeRefresh()
-                } else {
-                    if (this.requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
-                        updateCartNotification()
-                    } else if (this.requestCode == ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS) {
-                        productId = selectedProductId
-                        onSuccessUpdateAddress()
-                        return@onActivityResultAtcVariant
-                    }
-
-                    val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(mapOfSelectedVariantOption?.values
-                            ?: mutableListOf())
-                            ?: false // means selected variant in bottom sheet is the same in pdp
-                    if (pdpUiUpdater?.productSingleVariant == null
-                            || pdpUiUpdater?.productSingleVariant?.isVariantError == true
-                            || mapOfSelectedVariantOption == null || isSelectedTheSame) return@onActivityResultAtcVariant
-                    pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
-                    val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption
-                            ?: mapOf(), viewModel.variantData)
-                    updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
-                    scrollVariantToSelectedPosition()
-                }
+                onResultVariantBottomSheet(this)
             }
         }
 

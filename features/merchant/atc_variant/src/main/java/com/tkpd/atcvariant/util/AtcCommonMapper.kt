@@ -294,6 +294,7 @@ object AtcCommonMapper {
                                  mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                                  atcMessage: String? = null,
                                  shouldRefreshPreviousPage: Boolean? = null,
+                                 isFollowShop: Boolean? = null,
                                  requestCode: Int? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -303,6 +304,7 @@ object AtcCommonMapper {
         if (parentProductId != null) result.parentProductId = parentProductId
         if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
+        if (isFollowShop != null) result.isFollowShop = isFollowShop
 
         return result
     }

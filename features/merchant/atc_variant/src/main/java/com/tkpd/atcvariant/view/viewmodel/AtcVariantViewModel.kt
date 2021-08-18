@@ -35,6 +35,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,7 +55,8 @@ class AtcVariantViewModel @Inject constructor(
         private val addToCartOccUseCase: AddToCartOccUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val updateCartUseCase: UpdateCartUseCase,
-        private val deleteCartUseCase: DeleteCartUseCase
+        private val deleteCartUseCase: DeleteCartUseCase,
+        private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     companion object {
@@ -94,6 +96,10 @@ class AtcVariantViewModel @Inject constructor(
     private val _restrictionData = MutableLiveData<Result<RestrictionData>>()
     val restrictionData: LiveData<Result<RestrictionData>>
         get() = _restrictionData
+
+    private val _toggleFavoriteShop = MutableLiveData<Result<Boolean>>()
+    val toggleFavoriteShop: LiveData<Result<Boolean>>
+        get() = _toggleFavoriteShop
 
     private var isShopOwner: Boolean = false
 
@@ -182,11 +188,14 @@ class AtcVariantViewModel @Inject constructor(
         return variantDataModel?.mapOfSelectedVariant
     }
 
-    fun updateActivityResult(selectedProductId: String? = null,
-                             mapOfSelectedVariantOption: MutableMap<String, String>? = null,
-                             atcSuccessMessage: String? = null,
-                             shouldRefreshPreviousPage: Boolean? = null,
-                             requestCode: Int? = null) {
+    fun updateActivityResult(
+            selectedProductId: String? = null,
+            mapOfSelectedVariantOption: MutableMap<String, String>? = null,
+            atcSuccessMessage: String? = null,
+            shouldRefreshPreviousPage: Boolean? = null,
+            isFollowShop: Boolean? = null,
+            requestCode: Int? = null
+    ) {
         variantActivityResult = AtcCommonMapper.updateActivityResultData(
                 recentData = variantActivityResult,
                 selectedProductId = selectedProductId,
@@ -194,7 +203,9 @@ class AtcVariantViewModel @Inject constructor(
                 mapOfSelectedVariantOption = mapOfSelectedVariantOption,
                 atcMessage = atcSuccessMessage,
                 shouldRefreshPreviousPage = shouldRefreshPreviousPage,
-                requestCode = requestCode)
+                isFollowShop = isFollowShop,
+                requestCode = requestCode
+        )
     }
 
     fun getSelectedQuantity(productId: String): Int {
@@ -262,6 +273,21 @@ class AtcVariantViewModel @Inject constructor(
             _initialData.postValue(it.asFail())
         }
     }
+
+    fun toggleFavorite(shopId: String) {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val requestParams = ToggleFavoriteUseCase.createParams(shopId, ToggleFavoriteUseCase.FOLLOW_ACTION)
+            val favoriteData = toggleFavoriteUseCase.executeOnBackground(requestParams).followShop
+            if (favoriteData?.isSuccess == true) {
+                _toggleFavoriteShop.postValue(favoriteData.isSuccess.asSuccess())
+            } else {
+                _toggleFavoriteShop.postValue(Throwable(favoriteData?.message.orEmpty()).asFail())
+            }
+        }) {
+            _toggleFavoriteShop.postValue(it.asFail())
+        }
+    }
+
 
     private fun assignReData(restrictionData: RestrictionData?) {
         if (restrictionData == null) {

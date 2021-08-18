@@ -23,11 +23,11 @@ import androidx.core.content.ContextCompat
 object RoundedShadowUtill {
     fun generateBackgroundWithShadow(view: View,
                                      @ColorRes backgroundColor: Int,
-                                     @DimenRes cornerRadius: Int,
+                                     @DimenRes cornerRadius: Int?,
                                      @ColorRes shadowColor: Int,
                                      @DimenRes elevation: Int,
                                      shadowGravity: Int): Drawable {
-        val cornerRadiusValue = view.context.resources.getDimension(cornerRadius)
+        val cornerRadiusValue = if (cornerRadius == null) 0F else view.context.resources.getDimension(cornerRadius)
         val elevationValue = view.context.resources.getDimension(elevation).toInt()
         val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
         val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)

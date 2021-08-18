@@ -39,13 +39,6 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
-    fun providePostFavorite(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)

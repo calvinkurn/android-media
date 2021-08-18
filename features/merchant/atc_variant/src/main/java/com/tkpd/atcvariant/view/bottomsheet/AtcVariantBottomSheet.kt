@@ -200,6 +200,27 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeUpdateCart()
         observeWishlist()
         observeRestrictionData()
+        observeToggleFavorite()
+    }
+
+    private fun observeToggleFavorite() {
+        viewModel.toggleFavoriteShop.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    viewModel.updateActivityResult(isFollowShop = true)
+                    nplFollowersButton?.setupVisibility = false
+                }
+                is Fail -> {
+                    onFailFavoriteShop(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onFailFavoriteShop(t: Throwable) {
+        view?.showToasterError(getErrorMessage(t), ctaText = getString(com.tokopedia.abstraction.R.string.retry_label)) {
+            onButtonFollowNplClick()
+        }
     }
 
     private fun observeRestrictionData() {
@@ -254,7 +275,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             val title = reData.action.firstOrNull()?.title ?: ""
             val desc = reData.action.firstOrNull()?.description ?: ""
-            nplFollowersButton?.renderView(title, desc, shouldShowReShopFollowers)
+            nplFollowersButton?.renderView(title, desc, reData.isEligible)
         }
         nplFollowersButton?.setupVisibility = shouldShowReShopFollowers
     }
@@ -769,5 +790,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onButtonFollowNplClick() {
+        val aggregatorData = viewModel.getVariantAggregatorData()
+        viewModel.toggleFavorite(aggregatorData?.simpleBasicInfo?.shopID ?: "")
     }
 }

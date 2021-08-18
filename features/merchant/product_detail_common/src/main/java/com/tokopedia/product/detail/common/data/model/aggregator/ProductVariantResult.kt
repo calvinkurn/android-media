@@ -22,5 +22,6 @@ data class ProductVariantResult(
          */
         var shouldRefreshPreviousPage: Boolean = false,
         var listOfVariantSelected: List<VariantCategory>? = null,
-        var mapOfSelectedVariantOption: MutableMap<String, String>? = null
+        var mapOfSelectedVariantOption: MutableMap<String, String>? = null,
+        var isFollowShop: Boolean = false
 )
