@@ -13,6 +13,7 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
+import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.mapDataModel
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
@@ -112,8 +113,10 @@ open class RecommendationPageViewModel @Inject constructor(
                             throw it
                         },
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_DUMMY)
-                            getTopAdsHeadlineUseCase.executeOnBackground()
+                            if (RecommendationRollenceController.isRecommendationCPMRollenceVariant()) {
+                                getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_DUMMY)
+                                getTopAdsHeadlineUseCase.executeOnBackground()
+                            }
                         }) {
                             throw it
                         }
@@ -160,11 +163,9 @@ open class RecommendationPageViewModel @Inject constructor(
     }
 
     private fun canShowTopadsHeadlineCPM(response: TopAdsHeadlineResponse): Boolean {
-        var canShowCPM = false
-        if (response.displayAds.data.size != 0) {
-            canShowCPM = true
-        }
-        return canShowCPM
+        if (!RecommendationRollenceController.isRecommendationCPMRollenceVariant()) return false
+        if (response.displayAds.data.size != 0) return true
+        return false
     }
 
     fun getProductTopadsStatus(
