@@ -71,12 +71,12 @@ class InstallmentDetailBottomSheet {
                     listener.onSelectInstallment(installment)
                     dismiss()
                 }
-                viewInstallmentDetailItem.root.alpha = 1.0f
+                viewInstallmentDetailItem.root.alpha = ENABLE_ALPHA
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
-                viewInstallmentDetailItem.root.alpha = 0.5f
+                viewInstallmentDetailItem.root.alpha = DISABLE_ALPHA
             }
             binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
         }
@@ -140,7 +140,7 @@ class InstallmentDetailBottomSheet {
         """.trimIndent()
         binding.webViewTerms.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
         binding.ivExpandTerms.setOnClickListener {
-            val newRotation = if (binding.ivExpandTerms.rotation == 0f) 180f else 0f
+            val newRotation = if (binding.ivExpandTerms.rotation == ROTATION_DEFAULT) ROTATION_REVERSE else ROTATION_DEFAULT
             binding.ivExpandTerms.rotation = newRotation
             if (newRotation == 0f) {
                 binding.webViewTerms.gone()
@@ -157,5 +157,13 @@ class InstallmentDetailBottomSheet {
     interface InstallmentDetailBottomSheetListener {
 
         fun onSelectInstallment(installment: OrderPaymentInstallmentTerm)
+    }
+
+    companion object {
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
+
+        private const val ROTATION_DEFAULT = 0f
+        private const val ROTATION_REVERSE = 180f
     }
 }
