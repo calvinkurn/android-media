@@ -473,6 +473,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
                 clearBboIfExist()
+                if (orderPayment.value.creditCard.isAfpb) {
+                    adjustAdminFee()
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -542,6 +545,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 clearBboIfExist()
+                if (orderPayment.value.creditCard.isAfpb) {
+                    adjustAdminFee()
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -558,6 +564,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updateCartPromo(param)
             globalEvent.value = newGlobalEvent
             if (isSuccess) {
+                if (orderPayment.value.creditCard.isAfpb) {
+                    adjustAdminFee()
+                }
                 onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
             }
         }
