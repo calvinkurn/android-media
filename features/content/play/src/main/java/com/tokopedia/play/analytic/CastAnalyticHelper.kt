@@ -17,11 +17,11 @@ class CastAnalyticHelper(
     private var channelId: String = ""
     private var channelType: PlayChannelType = PlayChannelType.Unknown
 
-    val isRecording: Boolean
+    private val isRecording: Boolean
         get() = startTime != 0L
 
     fun startRecording() {
-        if(startTime != 0L) {
+        if(isRecording) {
             stopRecording()
         }
 
@@ -33,7 +33,7 @@ class CastAnalyticHelper(
     }
 
     fun stopRecording() {
-        if(startTime != 0L) {
+        if(isRecording) {
             val duration = Calendar.getInstance().timeInMillis - startTime
             startTime = 0
             analytic.recordCastDuration(channelId, channelType, duration)
