@@ -84,21 +84,21 @@ class ProfileViewHolder(
                 listener.onLinkingAccountClicked()
             }
 
-//            if(profile.isShowLinkStatus) {
-//                if(profile.isLinked) {
-//                    link_account_profile_btn?.hide()
-//                    account_user_item_profile_link_status?.show()
-//                } else {
-//                    account_user_item_profile_link_status?.hide()
-//                    link_account_profile_btn.show()
-//                    link_account_profile_btn?.setOnClickListener {
-//                        listener.onLinkingAccountClicked()
-//                    }
-//                }
-//            } else {
-//                link_account_profile_btn?.hide()
-//                account_user_item_profile_link_status?.hide()
-//            }
+            if(profile.isShowLinkStatus) {
+                if(profile.isLinked) {
+                    link_account_profile_btn?.hide()
+                    account_user_item_profile_link_status?.show()
+                } else {
+                    account_user_item_profile_link_status?.hide()
+                    link_account_profile_btn.show()
+                    link_account_profile_btn?.setOnClickListener {
+                        listener.onLinkingAccountClicked()
+                    }
+                }
+            } else {
+                link_account_profile_btn?.hide()
+                account_user_item_profile_link_status?.hide()
+            }
         }
     }
 
