@@ -46,6 +46,10 @@ class DynamicLegoBannerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
+        private const val SPAN_COUNT_2 = 2
+        private const val SPAN_SPACING_0 = 0
+        private const val SPAN_SPACING_10 = 10
+        private const val SPAN_SPACING_20 = 20
     }
 
     override fun bind(element: DynamicLegoBannerDataModel) {
@@ -79,7 +83,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
             recyclerView.setHasFixedSize(true)
             if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(defaultSpanCount, 0, true))
+                    GridSpacingItemDecoration(defaultSpanCount, SPAN_SPACING_0, true))
 
             recyclerView.layoutManager = GridLayoutManager(
                     itemView.context,
@@ -91,7 +95,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     element.channelModel,
                     adapterPosition + 1,
                     isCacheData,
-                    isLego4UsingRollenceVariant)
+                    isLego4UsingRollenceVariant,
+                    isLego2UsingRollenceVariant)
             var marginValue = 0
             recyclerView.clearDecorations()
 
@@ -99,19 +104,19 @@ class DynamicLegoBannerViewHolder(itemView: View,
             //need to be deleted after rollence duration end
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego4UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(2, 10, false))
+                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_10, false))
                 marginValue = 0
             }
             //setup for lego 2 banner rollence
             //need to be deleted after rollence duration end
             else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego2UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(2, 10, false))
+                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_10, false))
                 marginValue = 0
             } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(2, 20, false))
+                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_20, false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             }
             //end setup for lego 4 banner rollence
