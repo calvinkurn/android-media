@@ -20,6 +20,7 @@ import java.util.*
 
 object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
+    private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val TYPE_VIDEO = "video"
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
@@ -63,7 +64,7 @@ object FeedScrollListenerNew {
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * 100 / imageView.height
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
 
@@ -99,7 +100,7 @@ object FeedScrollListenerNew {
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * 100 / imageView.height
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             var isStateChanged = false
             if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
