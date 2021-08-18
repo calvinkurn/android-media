@@ -17,7 +17,7 @@
       "event":"clickGroupChat",
       "eventAction":"click daftar pemenang on engagement tools widget",
       "eventCategory":"groupchat room",
-      "eventLabel":"\\d+ - (live|vod) - \\d+",
+      "eventLabel":"\\d+ - (live|vod)",
       "businessUnit":"play",
       "currentSite":"tokopediamarketplace",
       "sessionIris":".*",

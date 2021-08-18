@@ -1366,11 +1366,9 @@ class PlayViewModel @Inject constructor(
         showLeaderboardSheet(height)
 
         val channelData = mChannelData ?: return
-        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return
         playAnalytic.clickWinnerBadge(
             channelId = channelData.id,
-            channelType = channelData.channelInfo.channelType,
-            interactiveId = interactiveId
+            channelType = channelData.channelInfo.channelType
         )
     }
 

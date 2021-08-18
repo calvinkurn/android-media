@@ -13,7 +13,7 @@ interface PlayInteractiveAnalytic {
         interactiveId: String
     )
 
-    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, interactiveId: String)
+    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType)
 
     fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
 }
