@@ -150,7 +150,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     override fun getTagFragment() = TAG
 
     companion object {
-        private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"
         private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
