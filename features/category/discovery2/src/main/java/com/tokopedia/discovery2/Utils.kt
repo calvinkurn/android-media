@@ -12,8 +12,10 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -304,5 +306,10 @@ class Utils {
             return displayMetrics
         }
 
+        fun nextPageAvailable(component: ComponentsItem, productPerPage: Int): Boolean {
+            return component.nextPageKey?.isNotEmpty()
+                ?: (component.getComponentsItem()?.size.isMoreThanZero()
+                        && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
+        }
     }
 }

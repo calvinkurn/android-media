@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
@@ -158,7 +159,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         productLoadState.addAll(productDataList)
-        if (productDataList.size.isMoreThanZero() && productDataList.size.rem(PRODUCT_PER_PAGE) == 0) {
+        if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
             productLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
                 pageEndPoint = components.pageEndPoint
                 parentComponentId = components.id
@@ -185,10 +186,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun isUserLoggedIn() = UserSession(application).isLoggedIn
 
     fun isLastPage(): Boolean {
-        getProductList()?.let {
-            if (it.size.isMoreThanZero() && it.size.rem(PRODUCT_PER_PAGE) == 0) return false
-        }
-        return true
+        return !Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)
     }
 
     fun isLoadingData() = isLoading
