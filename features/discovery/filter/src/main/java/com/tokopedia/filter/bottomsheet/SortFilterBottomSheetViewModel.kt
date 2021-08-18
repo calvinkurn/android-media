@@ -425,7 +425,6 @@ internal class SortFilterBottomSheetViewModel {
         priceFilterViewModel.minPriceFilterValue = minPriceValue.toString()
         priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
 
-        isLoadingMutableLiveData.value = true
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
 
@@ -446,7 +445,6 @@ internal class SortFilterBottomSheetViewModel {
         priceFilterViewModel.maxPriceFilterValue = maxPriceValue.toString()
         priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
 
-        isLoadingMutableLiveData.value = true
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
 
@@ -671,5 +669,9 @@ internal class SortFilterBottomSheetViewModel {
         refreshMapParameter()
 
         categoryFilterViewModel.refreshOptionList()
+    }
+
+    fun onPriceTextOutOfFocus() {
+        isLoadingMutableLiveData.value = true
     }
 }

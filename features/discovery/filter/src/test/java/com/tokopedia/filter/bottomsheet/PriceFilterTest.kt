@@ -193,6 +193,7 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
     private fun `When min price filter edited and applied`(priceFilterViewModel: PriceFilterViewModel, minValue: Int) {
         sortFilterBottomSheetViewModel.onMinPriceFilterEdited(priceFilterViewModel, minValue)
+        sortFilterBottomSheetViewModel.onPriceTextOutOfFocus()
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 
@@ -263,6 +264,7 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
     private fun `When max price filter edited and applied`(priceFilterViewModel: PriceFilterViewModel, maxValue: Int) {
         sortFilterBottomSheetViewModel.onMaxPriceFilterEdited(priceFilterViewModel, maxValue)
+        sortFilterBottomSheetViewModel.onPriceTextOutOfFocus()
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 
