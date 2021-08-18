@@ -14,6 +14,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
@@ -160,4 +161,8 @@ class PlayModule {
 
     @Provides
     fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
+
+    @PlayScope
+    @Provides
+    fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
 }

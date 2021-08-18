@@ -86,7 +86,8 @@ class PlayUserInteractionFragment @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
-        private val castPlayer: CastPlayer
+        private val castPlayer: CastPlayer,
+        private val castAnalyticHelper: CastAnalyticHelper
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -177,7 +178,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
-    private lateinit var castAnalyticHelper: CastAnalyticHelper
 
     /**
      * Animation
@@ -432,7 +432,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
-        castAnalyticHelper = CastAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
