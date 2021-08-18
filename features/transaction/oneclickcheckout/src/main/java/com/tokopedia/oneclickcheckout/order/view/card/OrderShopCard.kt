@@ -104,7 +104,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 shop.hasTriggerViewOverweightTicker = false
             } else if (shop.overweight > 0) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
-                val overweightString = NumberFormat.getNumberInstance(Locale("in", "id")).format(shop.overweight / 1000)
+                val overweightString = NumberFormat.getNumberInstance(Locale("in", "id")).format(shop.overweight / OrderShop.WEIGHT_KG_DIVIDER)
                 tickerOrderShop.setHtmlDescription(shop.maximumWeightWording.replace(MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, overweightString))
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()

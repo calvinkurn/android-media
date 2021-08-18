@@ -886,14 +886,14 @@ class AddEditProductPreviewFragment :
     private fun enablePhotoEdit() {
         addEditProductPhotoButton?.text = getString(R.string.action_add_product_photo)
         addProductPhotoTipsLayout?.hide()
-        productPhotosView?.show()
+        productPhotosView?.animateExpand()
     }
 
     private fun enableDetailEdit() {
         context?.let {
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
-            addEditProductDetailButton?.show()
+            addEditProductDetailButton?.animateExpand()
             dividerDetail?.hide()
         }
     }
@@ -902,7 +902,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
-            addEditProductDescriptionButton?.show()
+            addEditProductDescriptionButton?.animateExpand()
         }
     }
 
@@ -915,23 +915,27 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
-            addEditProductShipmentButton?.show()
+            addEditProductShipmentButton?.animateExpand()
         }
     }
 
     private fun enablePromotionEdit() {
-        editProductPromotionLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
+            editProductPromotionLayout?.animateExpand()
+        } else {
+            editProductPromotionLayout?.animateCollapse()
+        }
     }
 
     private fun enableStatusEdit() {
-        editProductStatusLayout?.show()
+        editProductStatusLayout?.animateExpand()
     }
 
     private fun disableShipmentEdit() {
         context?.let {
             if (addEditProductShipmentButton?.text != getString(R.string.action_change)) {
                 addEditProductShipmentButton?.text = getString(R.string.action_add)
-                addEditProductShipmentButton?.show()
+                addEditProductShipmentButton?.animateExpand()
             }
         }
     }
@@ -940,7 +944,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             if (addEditProductDescriptionButton?.text != getString(R.string.action_change)) {
                 addEditProductDescriptionButton?.text = getString(R.string.action_add)
-                addEditProductDescriptionButton?.show()
+                addEditProductDescriptionButton?.animateExpand()
             }
         }
     }
@@ -1232,16 +1236,16 @@ class AddEditProductPreviewFragment :
         productNameView?.text = detailInputModel.productName
         productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
-        productDetailPreviewLayout?.show()
+        productDetailPreviewLayout?.animateExpand()
     }
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
         if (isVariantEmpty) {
             addEditProductVariantButton?.text = getString(R.string.action_add)
-            addProductVariantTipsLayout?.show()
+            addProductVariantTipsLayout?.animateExpand()
         } else {
             addEditProductVariantButton?.text = getString(R.string.action_change)
-            addProductVariantTipsLayout?.hide()
+            addProductVariantTipsLayout?.animateCollapse()
         }
     }
 

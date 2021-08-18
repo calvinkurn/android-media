@@ -48,7 +48,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         showPayment()
 
-        binding.root.alpha = if (profile.enable) 1.0f else 0.5f
+        binding.root.alpha = if (profile.enable) ENABLE_ALPHA else DISABLE_ALPHA
     }
 
     private fun showPreferenceTicker() {
@@ -671,7 +671,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
         binding.apply {
             if (selectedTerm.isError) {
-                tvInstallmentDetail.alpha = 0.5f
+                tvInstallmentDetail.alpha = DISABLE_ALPHA
                 tvInstallmentErrorMessage.text = binding.root.context.getString(R.string.lbl_installment_error)
                 tvInstallmentErrorAction.text = binding.root.context.getString(R.string.lbl_change_template)
                 tvInstallmentErrorAction.setOnClickListener {
@@ -685,7 +685,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvInstallmentErrorMessage.visible()
                 tvInstallmentErrorAction.visible()
             } else {
-                tvInstallmentDetail.alpha = 1.0f
+                tvInstallmentDetail.alpha = ENABLE_ALPHA
                 tvInstallmentErrorMessage.gone()
                 tvInstallmentErrorAction.gone()
             }
@@ -726,17 +726,17 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun setPaymentErrorAlpha() {
         binding.apply {
-            ivPayment.alpha = 0.5f
-            tvPaymentName.alpha = 0.5f
-            tvPaymentDetail.alpha = 0.5f
+            ivPayment.alpha = DISABLE_ALPHA
+            tvPaymentName.alpha = DISABLE_ALPHA
+            tvPaymentDetail.alpha = DISABLE_ALPHA
         }
     }
 
     private fun setPaymentActiveAlpha() {
         binding.apply {
-            ivPayment.alpha = 1f
-            tvPaymentName.alpha = 1f
-            tvPaymentDetail.alpha = 1f
+            ivPayment.alpha = ENABLE_ALPHA
+            tvPaymentName.alpha = ENABLE_ALPHA
+            tvPaymentDetail.alpha = ENABLE_ALPHA
         }
     }
 
@@ -816,6 +816,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         const val VIEW_TYPE = 4
 
         private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
+
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8
         private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16

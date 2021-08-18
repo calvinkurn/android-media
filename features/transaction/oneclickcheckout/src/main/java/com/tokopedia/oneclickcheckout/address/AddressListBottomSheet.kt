@@ -337,7 +337,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     addressList
                 }
                 if (!isChangeSelection) {
-                    addressListModel.hasNext = addressList.size == 10
+                    addressListModel.hasNext = addressList.size == ADDRESS_LIST_PAGE_LIMIT
                 }
             }
             this@AddressListBottomSheet.addressListModel = addressListModel
@@ -357,5 +357,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         fun onSelect(addressModel: RecipientAddressModel)
 
         fun onAddAddress(token: Token?)
+    }
+
+    companion object {
+        private const val ADDRESS_LIST_PAGE_LIMIT = 10
     }
 }

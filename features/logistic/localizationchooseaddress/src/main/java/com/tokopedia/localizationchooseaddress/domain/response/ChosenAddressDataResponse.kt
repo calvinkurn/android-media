@@ -24,9 +24,7 @@ data class ChosenAddressDataResponse (
         @SerializedName("longitude")
         var longitude: String = "",
         @SerializedName("postal_code")
-        var postalCode: String = "",
-        @SerializedName("error")
-        var error: ErrorChosenAddress = ErrorChosenAddress()
+        var postalCode: String = ""
 )
 
 data class Tokonow(
