@@ -30,7 +30,7 @@ class NetworkChuckerViewModel @Inject constructor(
         launch {
             val result = repository.chuckers()
             withContext(Dispatchers.Main) {
-                _broadcasterLog.value = result.mapToUI()
+                _broadcasterLog.value = result.asReversed().mapToUI()
             }
         }
     }

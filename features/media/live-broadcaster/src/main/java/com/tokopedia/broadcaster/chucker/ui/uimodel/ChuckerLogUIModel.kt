@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChuckerLogUIModel(
+    var url: String = "",
     var connectionId: Int = 0,
     var startTime: Long = 0,
     var endTime: Long = 0,

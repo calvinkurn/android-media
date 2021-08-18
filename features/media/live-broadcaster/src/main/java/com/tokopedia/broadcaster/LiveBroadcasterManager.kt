@@ -161,6 +161,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     override fun start(url: String) {
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
+        mConfig.url = url
         startStream()
     }
 

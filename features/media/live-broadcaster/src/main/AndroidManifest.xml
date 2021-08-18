@@ -26,6 +26,7 @@
         </activity>
         <activity
             android:name=".chucker.ui.activity.NetworkChuckerActivity"
+            android:label="@string/chucker_str_feature_label"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>

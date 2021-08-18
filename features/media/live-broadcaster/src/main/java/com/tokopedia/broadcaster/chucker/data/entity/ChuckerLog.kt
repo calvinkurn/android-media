@@ -13,6 +13,9 @@ data class ChuckerLog(
     @ColumnInfo(name = "id")
     var id: Int = 0,
 
+    @ColumnInfo(name = "url")
+    var url: String = "",
+
     @ColumnInfo(name = "connectionId")
     var connectionId: Int = 0,
 

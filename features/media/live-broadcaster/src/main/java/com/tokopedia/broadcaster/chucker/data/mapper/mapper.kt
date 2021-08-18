@@ -5,6 +5,7 @@ import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
 
 fun ChuckerLog.mapToUI(): ChuckerLogUIModel {
     return ChuckerLogUIModel(
+        url = url,
         connectionId = connectionId,
         startTime = startTime,
         endTime = endTime,
@@ -23,6 +24,7 @@ fun ChuckerLog.mapToUI(): ChuckerLogUIModel {
 fun List<ChuckerLog>.mapToUI(): List<ChuckerLogUIModel> {
     return map {
         ChuckerLogUIModel(
+            url = it.url,
             connectionId = it.connectionId,
             startTime = it.startTime,
             endTime = it.endTime,
@@ -41,6 +43,7 @@ fun List<ChuckerLog>.mapToUI(): List<ChuckerLogUIModel> {
 
 fun ChuckerLogUIModel.mapToData(): ChuckerLog {
     return ChuckerLog(
+        url = url,
         connectionId = connectionId,
         startTime = startTime,
         endTime = endTime,
@@ -59,6 +62,7 @@ fun ChuckerLogUIModel.mapToData(): ChuckerLog {
 fun List<ChuckerLogUIModel>.mapToData(): List<ChuckerLog> {
     return map {
         ChuckerLog(
+            url = it.url,
             connectionId = it.connectionId,
             startTime = it.startTime,
             endTime = it.endTime,
