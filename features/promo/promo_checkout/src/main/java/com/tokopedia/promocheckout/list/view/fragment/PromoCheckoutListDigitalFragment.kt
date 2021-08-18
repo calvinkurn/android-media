@@ -82,11 +82,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive && isABTestPromo()) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+        if(isABTestProduct(categoryId)){
+            showABTestPromo(page)
         }else{
-            hideLoading()
-            promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
+            showPromo(page)
         }
     }
 
@@ -99,9 +98,27 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         super.onDestroyView()
     }
 
+    private fun showABTestPromo(page: Int){
+        if (isCouponActive && isABTestPromo()) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+        }else{
+            hideLoading()
+            promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
+        }
+    }
+
+    private fun showPromo(page: Int){
+        if (isCouponActive) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+        }
+        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
+    }
+
     fun isABTestPromo(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
         .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_COUPON)
             == PROMO_DIGITAL_AB_TEST_COUPON)
+
+    fun isABTestProduct(categoryId: Int): Boolean = (categoryId == CATEGORY_ID_LISTRIK || categoryId == CATEGORY_ID_TELCO_PULSA)
 
     companion object {
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
@@ -110,6 +127,8 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
         private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo"
         private const val PROMO_DIGITAL_AB_TEST_COUPON = "Control_variant"
+        private const val CATEGORY_ID_LISTRIK = 3
+        private const val CATEGORY_ID_TELCO_PULSA = 1
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
