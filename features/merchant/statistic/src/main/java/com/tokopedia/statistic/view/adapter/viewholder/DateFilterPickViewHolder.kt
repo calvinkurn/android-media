@@ -5,9 +5,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
@@ -21,9 +20,9 @@ import java.util.*
  */
 
 class DateFilterPickViewHolder(
-        itemView: View?,
-        private val fm: FragmentManager,
-        private val onClick: (DateFilterItem) -> Unit
+    itemView: View?,
+    private val fm: FragmentManager,
+    private val onClick: (DateFilterItem) -> Unit
 ) : AbstractViewHolder<DateFilterItem.Pick>(itemView) {
 
     companion object {
@@ -64,14 +63,22 @@ class DateFilterPickViewHolder(
         if (datePicker != null) return
 
         datePicker = CalendarPicker.newInstance(element).apply {
-            if (element.type == DateFilterItem.TYPE_PER_WEEK) {
-                val title = itemView.context?.getString(R.string.stc_per_week).orEmpty()
-                setMode(CalendarPickerView.SelectionMode.RANGE)
-                setTitle(title)
-            } else if (element.type == DateFilterItem.TYPE_PER_DAY) {
-                val title = itemView.context?.getString(R.string.stc_per_day).orEmpty()
-                setMode(CalendarPickerView.SelectionMode.SINGLE)
-                setTitle(title)
+            when(element.type) {
+                DateFilterItem.TYPE_PER_WEEK -> {
+                    val title = itemView.context?.getString(R.string.stc_per_week).orEmpty()
+                    setMode(CalendarPickerView.SelectionMode.RANGE)
+                    setTitle(title)
+                }
+                DateFilterItem.TYPE_PER_DAY -> {
+                    val title = itemView.context?.getString(R.string.stc_per_day).orEmpty()
+                    setMode(CalendarPickerView.SelectionMode.SINGLE)
+                    setTitle(title)
+                }
+                DateFilterItem.TYPE_CUSTOM -> {
+                    val title = itemView.context?.getString(R.string.stc_custom_lbl).orEmpty()
+                    setMode(CalendarPickerView.SelectionMode.RANGE)
+                    setTitle(title)
+                }
             }
         }
     }
@@ -89,7 +96,10 @@ class DateFilterPickViewHolder(
         }
 
         datePicker?.setOnDismissListener {
-            setSelectedDate(datePicker?.selectedDates?.firstOrNull(), datePicker?.selectedDates?.lastOrNull())
+            setSelectedDate(
+                datePicker?.selectedDates?.firstOrNull(),
+                datePicker?.selectedDates?.lastOrNull()
+            )
         }
     }
 
@@ -106,11 +116,7 @@ class DateFilterPickViewHolder(
     }
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {
-        if (isShown) {
-            edtStcSingle.visible()
-        } else {
-            edtStcSingle.gone()
-        }
+        edtStcSingle.isVisible = isShown
 
         val lineMarginTop = if (isShown) {
             context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)

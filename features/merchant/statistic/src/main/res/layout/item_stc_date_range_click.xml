@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl0"
-    android:paddingRight="@dimen/layout_lvl0"
-    android:layout_height="wrap_content">
+    android:paddingEnd="@dimen/layout_lvl0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcDateRangeLabel"
@@ -45,10 +43,9 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/dimen_stc_22dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvStcDateRangeLabel" />

@@ -6,12 +6,11 @@ package com.tokopedia.statistic.common
 
 object Const {
 
-    const val DAY_0 = 0
     const val DAY_1 = 1
-    const val DAYS_6 = 6
     const val DAYS_7 = 7
-    const val DAYS_29 = 29
     const val DAYS_30 = 30
+    const val DAYS_31 = 31
+    const val DAYS_90 = 90
     const val DAYS_91 = 91
     const val DAYS_365 = 365
 
