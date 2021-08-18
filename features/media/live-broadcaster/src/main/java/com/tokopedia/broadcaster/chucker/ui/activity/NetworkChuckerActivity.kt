@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.broadcaster.chucker.ui.fragment.NetworkChuckerFragment
+import com.tokopedia.broadcaster.chucker.ui.fragment.chucker.NetworkChuckerFragment
 
 class NetworkChuckerActivity : BaseSimpleActivity() {
 

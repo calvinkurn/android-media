@@ -3,7 +3,7 @@ package com.tokopedia.broadcaster.chucker.di
 import com.tokopedia.broadcaster.chucker.di.module.ChuckerModule
 import com.tokopedia.broadcaster.chucker.di.module.ChuckerViewModelModule
 import com.tokopedia.broadcaster.chucker.di.scope.ChuckerScope
-import com.tokopedia.broadcaster.chucker.ui.fragment.NetworkChuckerFragment
+import com.tokopedia.broadcaster.chucker.ui.fragment.chucker.NetworkChuckerFragment
 import dagger.Component
 
 @ChuckerScope

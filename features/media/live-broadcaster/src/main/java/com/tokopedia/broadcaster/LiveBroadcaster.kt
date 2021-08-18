@@ -1,5 +1,6 @@
 package com.tokopedia.broadcaster
 
+import android.content.Context
 import android.os.Handler
 import android.view.SurfaceView
 import com.tokopedia.broadcaster.listener.BroadcasterListener
@@ -12,7 +13,7 @@ interface LiveBroadcaster {
     val config: BroadcasterConfig
     val connection: BroadcasterConnection
 
-    fun init(handler: Handler)
+    fun init(context: Context, handler: Handler)
     fun prepare(config: BroadcasterConfig? = null)
     fun setListener(listener: BroadcasterListener)
     fun startPreview(surfaceView: SurfaceView)

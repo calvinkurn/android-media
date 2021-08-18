@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.chucker.ui.fragment
+package com.tokopedia.broadcaster.chucker.ui.fragment.chucker
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,20 +9,20 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.broadcaster.chucker.di.DaggerChuckerComponent
 import com.tokopedia.broadcaster.chucker.di.module.ChuckerModule
 import com.tokopedia.broadcaster.chucker.ui.adapter.ChuckerAdapter
+import com.tokopedia.broadcaster.chucker.ui.adapter.ChuckerItemListener
+import com.tokopedia.broadcaster.chucker.ui.fragment.detail.ChuckerDetailBottomSheet
 import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
 import com.tokopedia.broadcaster.chucker.ui.viewmodel.NetworkChuckerViewModel
 import com.tokopedia.broadcaster.databinding.FragmentChuckerBroadcasterBinding
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NetworkChuckerFragment : BaseDaggerFragment() {
+class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var binding by viewBinding<FragmentChuckerBroadcasterBinding>()
-    private val adapter by lazy { ChuckerAdapter() }
+    private val adapter by lazy { ChuckerAdapter(listener = this) }
     private val viewModel by lazy {
         ViewModelProvider(
             this,
@@ -54,13 +54,10 @@ class NetworkChuckerFragment : BaseDaggerFragment() {
         viewModel.broadcasterLog.observe(viewLifecycleOwner, {
             adapter.addItems(it)
         })
+    }
 
-        repeat(20) {
-            viewModel.log(ChuckerLogUIModel(
-                url = "https://test/%.2s".format("abcdefg1234".random().toString()),
-                startTime = System.currentTimeMillis()
-            ))
-        }
+    override fun onLogClicked(model: ChuckerLogUIModel) {
+        ChuckerDetailBottomSheet.create(childFragmentManager, model)
     }
 
     override fun initInjector() {

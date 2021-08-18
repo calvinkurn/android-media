@@ -1,5 +1,9 @@
 package com.tokopedia.broadcaster.data
 
+import android.content.Context
+import com.tokopedia.broadcaster.chucker.data.mapper.mapToData
+import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
+import com.tokopedia.config.GlobalConfig
 import com.wmspanel.libstream.Streamer
 import java.util.*
 import kotlin.math.ceil
@@ -64,7 +68,7 @@ class BroadcasterLogger {
 
     fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    fun update() {
+    fun update(context: Context, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
@@ -84,6 +88,26 @@ class BroadcasterLogger {
             mVideoPacketsLost = videoPacketLost
             mUdpPacketsLost = udpPacketsLost
             mPacketLossIncreased = true
+        }
+
+        if (GlobalConfig.DEBUG) {
+            ChuckerDataSource
+                .instance(context)
+                .logChucker(ChuckerLogUIModel(
+                    url = config.url,
+                    connectionId = mConnectionId?: 0,
+                    startTime = mStartTime,
+                    endTime = mPrevTime,
+                    videoWidth = config.videoWidth,
+                    videoHeight = config.videoHeight,
+                    videoBitrate = config.videoBitrate,
+                    audioType = config.audioType,
+                    audioRate = config.audioRate,
+                    bitrateMode = config.bitrateMode,
+                    fps = getFps(),
+                    bandwidth = getBandwidth(),
+                    traffic = getTraffic(),
+                ).mapToData())
         }
     }
 

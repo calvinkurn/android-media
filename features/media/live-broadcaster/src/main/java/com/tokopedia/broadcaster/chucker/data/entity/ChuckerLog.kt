@@ -13,11 +13,11 @@ data class ChuckerLog(
     @ColumnInfo(name = "id")
     var id: Int = 0,
 
-    @ColumnInfo(name = "url")
-    var url: String = "",
-
     @ColumnInfo(name = "connectionId")
     var connectionId: Int = 0,
+
+    @ColumnInfo(name = "url")
+    var url: String = "",
 
     @ColumnInfo(name = "startTime")
     var startTime: Long = 0,
@@ -43,13 +43,19 @@ data class ChuckerLog(
     @ColumnInfo(name = "bitrateMode")
     var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
 
-    @ColumnInfo(name = "ipDevice")
-    var ipDevice: String = "",
-
     @ColumnInfo(name = "appVersion")
     var appVersion: String = "",
 
     @ColumnInfo(name = "userId")
     var userId: String = "",
+
+    @ColumnInfo(name = "fps")
+    var fps: String = "",
+
+    @ColumnInfo(name = "bandwith")
+    var bandwidth: String = "",
+
+    @ColumnInfo(name = "traffic")
+    var traffic: String = "",
 
 )

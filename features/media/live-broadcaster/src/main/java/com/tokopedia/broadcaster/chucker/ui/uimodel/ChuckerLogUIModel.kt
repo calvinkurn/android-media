@@ -17,7 +17,9 @@ data class ChuckerLogUIModel(
     var audioType: AudioType = AudioType.MIC,
     var audioRate: Int = 0,
     var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
-    var ipDevice: String = "",
     var appVersion: String = "",
     var userId: String = "",
+    var fps: String = "",
+    var bandwidth: String = "",
+    var traffic: String = "",
 ) : Parcelable

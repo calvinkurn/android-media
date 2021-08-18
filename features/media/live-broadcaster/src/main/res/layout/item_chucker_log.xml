@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="@dimen/sp_16"
+        android:textColor="@color/black"
         android:textStyle="bold"
         tools:text="rtmp://localhost" />
 
@@ -29,5 +30,26 @@
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_8"
         tools:text="date" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatImageView"
+        android:layout_width="@dimen/dp_4"
+        android:layout_height="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_8"
+        android:src="@drawable/live_broadcaster_ic_delimeter"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_start_date"
+        app:layout_constraintStart_toEndOf="@+id/txt_start_date"
+        app:layout_constraintTop_toTopOf="@+id/txt_start_date" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txt_fps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_start_date"
+        app:layout_constraintStart_toEndOf="@+id/appCompatImageView"
+        app:layout_constraintTop_toTopOf="@+id/txt_start_date"
+        tools:text="fps" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

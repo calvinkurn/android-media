@@ -1,5 +1,6 @@
 package com.tokopedia.broadcaster
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -8,6 +9,7 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
+import com.tokopedia.broadcaster.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BitrateMode
 import com.tokopedia.broadcaster.data.BroadcasterLogger
 import com.tokopedia.broadcaster.listener.BroadcasterListener
@@ -16,6 +18,7 @@ import com.tokopedia.broadcaster.state.isError
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.broadcaster.utils.retry
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.*
 import kotlinx.coroutines.*
@@ -26,6 +29,8 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.ladderAscend a
 import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.logarithmicDescend as logarithmicDescendMode
 
 class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScope {
+
+    private var mContext: Context? = null
 
     private var streamer: StreamerGL? = null
     private var mListener: BroadcasterListener? = null
@@ -120,8 +125,9 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     override val state: BroadcasterState
         get() = mState
 
-    override fun init(handler: Handler) {
+    override fun init(context: Context, handler: Handler) {
         this.mHandler = handler
+        this.mContext = context
     }
 
     override fun prepare(config: BroadcasterConfig?) {
@@ -159,6 +165,13 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     }
 
     override fun start(url: String) {
+        // showing debug notif for tracking chucker of live broadcaster
+        if (GlobalConfig.DEBUG) {
+            mContext?.let {
+                ChuckerNotification.build(it, url)
+            }
+        }
+
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
         mConfig.url = url
@@ -345,12 +358,12 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mLogger.update()
+                    mContext?.let { mLogger.update(it, mConfig) }
                     mListener?.onUpdateLivePusherStatistic(mLogger)
                 }
             }
 
-        }, 1000, 1000)
+        }, DELAYED_TIME, PERIOD_TIME)
     }
 
     private fun cancelStatsJob() {
@@ -358,4 +371,10 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
             statisticUpdateTimer?.cancel()
         } catch (ignored: Exception) { }
     }
+
+    companion object {
+        private const val DELAYED_TIME = 1000L
+        private const val PERIOD_TIME = 1000L
+    }
+
 }
