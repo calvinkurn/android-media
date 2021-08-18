@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -195,14 +194,15 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
     }
 
     private fun observeVariantStock() {
-        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer { isAllStockEmpty ->
-            val shouldShowWarning = isAllStockEmpty && isVariant
-            showVariantWarningTickerWithCondition(shouldShowWarning)
-        })
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner,
+            { isAllStockEmpty ->
+                val shouldShowWarning = isAllStockEmpty && isVariant
+                showVariantWarningTickerWithCondition(shouldShowWarning)
+            })
     }
 
     private fun observeStockInfo() {
-        mViewModel.showStockInfo.observe(viewLifecycleOwner, Observer { showStockInfo ->
+        mViewModel.showStockInfo.observe(viewLifecycleOwner, { showStockInfo ->
             showHideStockInfo(showStockInfo)
         })
     }
@@ -224,21 +224,7 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
-        updateStockEditorItem(totalStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
-    }
-
-    private fun updateStockEditorItem(totalStock: Int) {
-        adapter.apply {
-            getRecyclerView(view)?.post {
-                data.firstOrNull { it is TotalStockEditorUiModel }?.let {
-                    val item = TotalStockEditorUiModel(totalStock, isCampaign, access, sellableProductList.firstOrNull()?.campaignTypeList)
-                    val index = data.indexOf(it)
-                    data[index] = item
-                    notifyItemChanged(index)
-                }
-            }
-        }
     }
 
     private fun onActiveStockChanged(isActive: Boolean) {
@@ -263,19 +249,14 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
             getRecyclerView(view)?.post {
                 val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
                 val tickerUiModel = createTickerUiModel(shouldShowWarning)
-                val isTickerEmpty = tickerUiModel.tickerList.isEmpty()
 
-                if (ticker == null) {
-                    if (!isTickerEmpty) {
+                if(tickerUiModel.tickerList.isNotEmpty()) {
+                    if (ticker == null) {
                         data.add(ITEM_TICKER_POSITION, tickerUiModel)
                         notifyItemInserted(ITEM_TICKER_POSITION)
-                    }
-                } else {
-                    val index = data.indexOf(ticker)
-                    if (isTickerEmpty) {
-                        data.removeAt(index)
-                        notifyItemRemoved(index)
+
                     } else {
+                        val index = data.indexOf(ticker)
                         data[index] = tickerUiModel
                         notifyItemChanged(index)
                     }

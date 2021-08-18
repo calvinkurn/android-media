@@ -9,6 +9,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantCampaignTypeToProduct
 import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
@@ -17,7 +18,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 object CampaignStockMapper {
 
     fun mapToParcellableSellableProduct(sellableList: List<GetStockAllocationDetailSellable>,
-                                        productVariantList: List<ProductVariant>): List<SellableStockProductUIModel> {
+                                        productVariantList: List<ProductVariant>): ArrayList<SellableStockProductUIModel> {
         val sellableSequence = sellableList.asSequence()
         val productVariantSequence = productVariantList.asSequence().apply {
             sortedWith(compareBy {
@@ -25,25 +26,28 @@ object CampaignStockMapper {
             })
         }
         val isAllStockEmpty = sellableList.all { it.stock.toIntOrZero() == 0 }
-        return sellableSequence
-                .filter { sellable ->
-                    productVariantSequence.any { product -> product.id == sellable.productId } }
-                .sortedWith(compareBy {
-                    it.productId.toIntOrZero()
-                })
-                .zip(productVariantSequence) { sellable, variant ->
-                    SellableStockProductUIModel(
-                            productId = sellable.productId,
-                            productName = sellable.productName,
-                            stock = sellable.stock,
-                            isActive = variant.status == ProductStatus.ACTIVE,
-                            isAllStockEmpty = isAllStockEmpty,
-                            access = variant.access,
-                            isCampaign = variant.isCampaign,
-                            campaignTypeList = mapVariantCampaignTypeToProduct(variant.campaignTypeList)
-                        )
-                }
-                .toList()
+        val sellableProducts = sellableSequence
+            .filter { sellable ->
+                productVariantSequence.any { product -> product.id == sellable.productId }
+            }
+            .sortedWith(compareBy {
+                it.productId.toIntOrZero()
+            })
+            .zip(productVariantSequence) { sellable, variant ->
+                SellableStockProductUIModel(
+                    productId = sellable.productId,
+                    productName = sellable.productName,
+                    stock = sellable.stock,
+                    isActive = variant.status == ProductStatus.ACTIVE,
+                    isAllStockEmpty = isAllStockEmpty,
+                    access = variant.access,
+                    isCampaign = variant.isCampaign,
+                    campaignTypeList = ProductManageVariantMapper.mapVariantCampaignTypeToProduct(
+                        variant.campaignTypeList
+                    )
+                )
+            }.toList()
+        return ArrayList(sellableProducts)
     }
 
 

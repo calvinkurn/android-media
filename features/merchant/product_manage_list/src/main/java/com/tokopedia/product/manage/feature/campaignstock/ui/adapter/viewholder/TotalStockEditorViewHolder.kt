@@ -36,7 +36,7 @@ class TotalStockEditorViewHolder(itemView: View?,
     private val ongoingCampaignTypeText by lazy { itemView?.findViewById<Typography>(R.id.tv_campaign_stock_count) }
 
     private val stockTextWatcher by lazy {
-        StockEditorTextWatcher(stockEditor, onTotalStockChanged)
+        StockEditorTextWatcher(stockEditor, emptyStockInfo, onTotalStockChanged)
     }
 
     override fun bind(stock: TotalStockEditorUiModel) {
