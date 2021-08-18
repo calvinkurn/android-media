@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.shc_partial_shimmering_progress_widget.vie
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class ProgressViewHolder(view: View?, private val listener: Listener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
+class ProgressViewHolder(view: View?, private val listener: Listener) :
+    AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_progress_card_widget
@@ -76,7 +77,11 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
         with(progressWidgetUiModel) {
             itemView.addOnImpressionListener(impressHolder) {
-                listener.sendProgressImpressionEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
+                listener.sendProgressImpressionEvent(
+                    dataKey,
+                    data?.colorState?.name.orEmpty(),
+                    data?.value.orZero()
+                )
             }
         }
     }
@@ -84,7 +89,11 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
             if (RouteManager.route(itemView.context, appLink)) {
-                listener.sendProgressCtaClickEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
+                listener.sendProgressCtaClickEvent(
+                    dataKey,
+                    data?.colorState?.name.orEmpty(),
+                    data?.value.orZero()
+                )
             }
         }
     }
@@ -98,12 +107,12 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     }
 
     private fun setupProgressBar(
-            progressTitle: String,
-            currentProgressText: String,
-            maxProgressText: String,
-            currentProgress: Int,
-            maxProgress: Int,
-            state: ShopScorePMWidget.State
+        progressTitle: String,
+        currentProgressText: String,
+        maxProgressText: String,
+        currentProgress: Int,
+        maxProgress: Int,
+        state: ShopScorePMWidget.State
     ) = with(itemView.shopScoreProgress) {
         setProgressTitle(progressTitle)
         setCurrentProgressText(currentProgressText)

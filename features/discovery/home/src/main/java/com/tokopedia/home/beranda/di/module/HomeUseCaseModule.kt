@@ -264,12 +264,6 @@ class HomeUseCaseModule {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
     }
 
-    @Provides
-    @HomeScope
-    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
-        return GetDisplayHeadlineAds(graphqlUseCase)
-    }
-
     @HomeScope
     @Provides
     fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {

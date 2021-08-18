@@ -32,10 +32,11 @@ class YouTubeViewViewModelTest {
     fun `test for video id`() {
         every { componentsItem.data } returns null
         assert(viewModel.getVideoId().value == null)
-        every { componentsItem.data?.get(0) } returns null
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
         assert(viewModel.getVideoId().value == null)
         val item = DataItem()
-        every { componentsItem.data?.get(0) } returns item
+        list.add(item)
         assert(viewModel.getVideoId().value === item)
     }
 }
