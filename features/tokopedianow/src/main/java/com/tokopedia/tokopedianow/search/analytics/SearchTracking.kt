@@ -605,6 +605,7 @@ object SearchTracking {
                 "dimension40", TOKONOW_BROAD_MATCH,
                 "quantity", quantity,
                 "shop_id", shop.id,
+                "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }
     }
