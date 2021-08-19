@@ -57,7 +57,7 @@ object RollenceKey {
 
 
     //Recommendation page section
-    const val RECOM_PAGE_CPM_EXP = "ShopAdsIM"
+    const val RECOM_PAGE_CPM_EXP = "ShopAdsIM2"
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
