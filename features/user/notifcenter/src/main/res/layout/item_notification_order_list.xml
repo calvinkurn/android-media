@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:paddingStart="@dimen/notif_dp_12"
+        android:paddingEnd="@dimen/notif_dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlSymmetry"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:orientation="horizontal" />
 
