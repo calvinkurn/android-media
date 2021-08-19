@@ -484,6 +484,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun updateCart() {
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+            if (orderPayment.value.creditCard.isAfpb) adjustAdminFee()
         }
     }
 
@@ -741,8 +742,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun adjustAdminFee() {
-        // if loading applied, it will show loading dialog many times
-        // globalEvent.value = OccGlobalEvent.Loading
         val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
             userSession.userId, orderTotal.value, orderCart)
         launch(executorDispatchers.immediate) {
