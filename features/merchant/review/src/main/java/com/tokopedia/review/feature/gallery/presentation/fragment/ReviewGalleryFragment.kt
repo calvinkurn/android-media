@@ -333,16 +333,22 @@ class ReviewGalleryFragment :
     private fun goToImagePreview(reviewGalleryUiModel: ReviewGalleryUiModel) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(KEY_REVIEW_GALLERY_ROUTING_DATA, ReviewGalleryRoutingUiModel(
-                viewModel.getProductId(),
-                currentPage,
-                viewModel.getImageCount(),
-                adapter.data,
-                reviewGalleryUiModel.imageNumber,
-                viewModel.getShopId()
-            ))
+            cacheManager.put(
+                KEY_REVIEW_GALLERY_ROUTING_DATA, ReviewGalleryRoutingUiModel(
+                    viewModel.getProductId(),
+                    currentPage,
+                    getImageCount(),
+                    adapter.data,
+                    reviewGalleryUiModel.imageNumber,
+                    viewModel.getShopId()
+                )
+            )
             startActivity(ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true))
         }
+    }
+
+    private fun getImageCount(): Long {
+        return (viewModel.reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
     }
 
 }

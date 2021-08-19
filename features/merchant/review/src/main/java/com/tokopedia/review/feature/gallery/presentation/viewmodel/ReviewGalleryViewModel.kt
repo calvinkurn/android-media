@@ -61,10 +61,6 @@ class ReviewGalleryViewModel @Inject constructor(
         currentPage.value = page
     }
 
-    fun getImageCount(): Long {
-        return (_reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
-    }
-
     private fun getRating(productId: String) {
         launchCatchError(block = {
             getProductRatingUseCase.setParams(productId)

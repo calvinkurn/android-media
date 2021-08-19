@@ -26,5 +26,6 @@ abstract class ReviewImagePreviewViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ReviewImagePreviewViewModel(toggleLikeReviewUseCase, getReviewImagesUseCase, CoroutineTestDispatchersProvider)
+        viewModel.reviewImages.observeForever {  }
     }
 }

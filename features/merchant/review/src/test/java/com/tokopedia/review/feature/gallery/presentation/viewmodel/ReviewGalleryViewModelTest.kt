@@ -75,6 +75,7 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
         viewModel.setPage(page)
 
+        Assert.assertEquals("", viewModel.getShopId())
         verifyGetReviewImagesUseCaseExecuted()
         verifyReviewImagesSuccessEquals(Success(expectedResponse.productrevGetReviewImage))
     }
@@ -88,6 +89,7 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
         viewModel.setPage(page)
 
+        Assert.assertEquals("", viewModel.getShopId())
         verifyGetReviewImagesUseCaseExecuted()
         verifyReviewImagesErrorEquals(Fail(expectedResponse))
     }
