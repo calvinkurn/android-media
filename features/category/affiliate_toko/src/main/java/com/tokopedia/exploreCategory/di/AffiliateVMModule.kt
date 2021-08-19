@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
-import com.tokopedia.exploreCategory.viewmodel.AffiliateViewModel
+import com.tokopedia.exploreCategory.viewmodel.AffiliateHomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,7 +19,7 @@ abstract class AffiliateVMModule {
     @Binds
     @IntoMap
     @AffiliateScope
-    @ViewModelKey(AffiliateViewModel::class)
-    internal abstract fun affiliateViewModel(viewModel: AffiliateViewModel): ViewModel
+    @ViewModelKey(AffiliateHomeViewModel::class)
+    internal abstract fun affiliateViewModel(viewModel: AffiliateHomeViewModel): ViewModel
 
 }
