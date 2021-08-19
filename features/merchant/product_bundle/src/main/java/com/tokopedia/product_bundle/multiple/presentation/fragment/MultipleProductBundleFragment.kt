@@ -12,7 +12,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -27,23 +30,24 @@ import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMas
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
-        ProductBundleMasterItemClickListener,
-        ProductBundleDetailItemClickListener {
+    ProductBundleMasterItemClickListener,
+    ProductBundleDetailItemClickListener {
 
     companion object {
-        @JvmStatic
-        fun newInstance() =
-                MultipleProductBundleFragment().apply {
-                    arguments = Bundle().apply {
+        private const val PRODUCT_BUNDLE_INFO = "PRODUCT_BUNDLE_INFO"
+        private const val INVALID_PROCESS_DAY = 0
 
-                    }
+        @JvmStatic
+        fun newInstance(productBundleInfo: List<BundleInfo>) =
+            MultipleProductBundleFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
                 }
+            }
     }
 
     @Inject
@@ -57,7 +61,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModelProvider.get(ProductBundleViewModel::class.java)
     }
 
-    private var soldProductBundleTextView: Typography? = null
+    private var processDayTextView: Typography? = null
 
     // product bundle master components
     private var productBundleMasterView: RecyclerView? = null
@@ -70,33 +74,57 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleOverView: TotalAmount? = null
     private var errorToaster: Snackbar? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiple_product_bundle, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        soldProductBundleTextView = view.findViewById(R.id.tv_sold_product_bundle)
+        processDayTextView = view.findViewById(R.id.tv_po_process_day)
+
+        var productBundleInfo: ArrayList<BundleInfo>? = null
+        if (arguments != null) {
+            productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
+        }
 
         // init multiple product bundle views
         setupProductBundleMasterView(view)
         setupProductBundleDetailView(view)
         setupProductBundleOverView(view)
 
-//        // render product bundle master chips
-//        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
-//        // simulate get the first bundle information
-//        val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
-//        // get recommended product bundle info
-//        viewModel.getBundleInfo(recommendedBundleId)
+        productBundleInfo?.run {
+            if (this.isNotEmpty()) {
+                productBundleInfo.forEach { bundleInfo ->
+                    // map product bundle info to master and details
+                    val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
+                    val bundleDetail = viewModel.mapBundleItemsToBundleDetail(bundleInfo.bundleItems)
+                    // update product bundle map
+                    viewModel.updateProductBundleMap(bundleMaster, bundleDetail)
+                }
+                // get product bundle master from the map - single source of truth
+                val productBundleMasters = viewModel.getProductBundleMasters()
+                // render product bundle master chips
+                productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters)
+
+                // update the process day
+                val processDay = viewModel.getPreOrderProcessDay().toInt()
+                renderProcessDayView(processDay)
+
+                // set initial product bundle selection
+                val defaultSelection = viewModel.getDefaultProductBundleSelection(productBundleMasters)
+                defaultSelection?.run {
+                    viewModel.setSelectedProductBundleMaster(defaultSelection)
+                }
+            }
+        }
+
+        observeLiveData()
 
 //        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-
-        // observe data from view model
-        subscribeToProductBundleInfo()
-        subscribeToErrorState()
     }
 
     override fun getScreenName(): String {
@@ -105,9 +133,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerMultipleProductBundleComponent.builder()
-                .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .build()
-                .inject(this)
+            .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
+            .build()
+            .inject(this)
+    }
+
+    private fun observeLiveData() {
+        viewModel.selectedProductBundleMaster.observe(viewLifecycleOwner, Observer { productBundleMaster ->
+            val productBundleDetails =  viewModel.getProductBundleDetail(productBundleMaster)
+            productBundleDetails?.run {
+                productBundleDetailAdapter?.setProductBundleDetails(this)
+            }
+        })
     }
 
     private fun setupProductBundleMasterView(view: View) {
@@ -130,14 +167,31 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private fun setupProductBundleOverView(view: View) {
         productBundleOverView = view.findViewById(R.id.ta_product_bundle_sum)
-        productBundleOverView?.setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
+        productBundleOverView?.setLabelOrder(
+            TotalAmount.Order.TITLE,
+            TotalAmount.Order.AMOUNT,
+            TotalAmount.Order.SUBTITLE
+        )
+        productBundleOverView?.amountCtaView?.setOnClickListener {
+            viewModel.addProductBundleToCart()
+        }
     }
 
-    private fun updateProductBundleOverView(productBundleOverView: TotalAmount?,
-                                            totalDiscount: Double,
-                                            totalBundlePrice: Double,
-                                            totalPrice: Double,
-                                            totalSaving: Double) {
+    private fun renderProcessDayView(processDay: Int) {
+        if (processDay == -1) processDayTextView?.invisible()
+        else {
+            processDayTextView?.text = processDay.toString()
+            processDayTextView?.visible()
+        }
+    }
+
+    private fun updateProductBundleOverView(
+        productBundleOverView: TotalAmount?,
+        totalDiscount: Double,
+        totalBundlePrice: Double,
+        totalPrice: Double,
+        totalSaving: Double
+    ) {
         val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount.roundToInt())
         val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
@@ -145,63 +199,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setTitleText(totalDiscountText, totalBundlePriceText)
         productBundleOverView?.amountView?.text = totalPriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
-//        productBundleOverView?.amountCtaView?.setOnClickListener {
-//            viewModel.addProductBundleToCart()
-//        }
-    }
-
-    private fun subscribeToProductBundleInfo() {
-
-        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val productBundleInfo = result.data
-
-                }
-                is Fail -> {
-
-                }
-            }
-        })
-
-
-//        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->
-//            // render product bundle detail
-//            val productBundleItems = bundleInfo.bundleItems
-//            val productBundleDetails = viewModel.mapProductBundleItemsToProductBundleDetail(productBundleItems)
-//            productBundleDetailAdapter?.setProductBundleDetails(productBundleDetails)
-//            // render sold product bundle view
-//            val soldProductBundle = viewModel.getSoldProductBundle()
-//            soldProductBundleTextView?.text = String.format(getString(R.string.text_sold_product_bundle), soldProductBundle)
-//            // render product bundle overview section
-//            val totalPrice = viewModel.calculateTotalPrice(productBundleItems)
-//            val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleItems)
-//            val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
-//            val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
-//            updateProductBundleOverView(
-//                    productBundleOverView = productBundleOverView,
-//                    totalDiscount = totalDiscount,
-//                    totalBundlePrice = totalBundlePrice,
-//                    totalPrice = totalPrice,
-//                    totalSaving = totalSaving
-//            )
-//        })
-    }
-
-    private fun subscribeToErrorState() {
-        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (isError) errorToaster?.show()
-        })
     }
 
     override fun onProductBundleMasterItemClicked(adapterPosition: Int, productBundleMaster: ProductBundleMaster) {
-//        // update selected bundle state to view model
-//        viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
-//        // deselect the rest of selection except the selected one
-//        productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
-//        // get product bundle detail
-//        val bundleId = productBundleMaster.bundleId
-//        viewModel.getBundleInfo(bundleId)
+        // update selected bundle state to view model
+        viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
+        // deselect the rest of selection except the selected one
+        productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
+        // update the process day
+        val processDay = viewModel.getPreOrderProcessDay().toInt()
+        renderProcessDayView(processDay)
     }
 
     override fun onProductVariantSpinnerClicked(productBundleItem: BundleItem) {
