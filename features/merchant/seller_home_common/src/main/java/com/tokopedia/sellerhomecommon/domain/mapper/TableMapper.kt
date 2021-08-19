@@ -1,8 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
-import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -15,7 +15,8 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/06/20
  */
 
-class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
+class TableMapper @Inject constructor() :
+    BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
     companion object {
         /**
@@ -33,14 +34,17 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         private const val APOSTROPHE = "\""
     }
 
-    override fun mapRemoteDataToUiData(response: GetTableDataResponse, isFromCache: Boolean): List<TableDataUiModel> {
+    override fun mapRemoteDataToUiData(
+        response: GetTableDataResponse,
+        isFromCache: Boolean
+    ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.map {
             TableDataUiModel(
-                    dataKey = it.dataKey,
-                    error = it.errorMsg,
-                    dataSet = getTableDataSet(it.data),
-                    isFromCache = isFromCache,
-                    showWidget = it.showWidget.orFalse()
+                dataKey = it.dataKey,
+                error = it.errorMsg,
+                dataSet = getTableDataSet(it.data),
+                isFromCache = isFromCache,
+                showWidget = it.showWidget.orFalse()
             )
         }
     }
@@ -52,14 +56,25 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         var rows = mutableListOf<TableRowsUiModel>()
         val rowCount = data.rows.size
         data.rows.forEachIndexed { i, row ->
-            val firstTextColumn = row.columns.firstOrNull { it.type == COLUMN_TEXT || it.type == COLUMN_HTML }
+            val firstTextColumn = row.columns.firstOrNull {
+                it.type == COLUMN_TEXT || it.type == COLUMN_HTML
+            }
             row.columns.forEachIndexed { j, col ->
                 if (j < headers.size) {
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
-                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(col.value, width, firstTextColumn == col)
+                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
+                            col.value,
+                            width,
+                            firstTextColumn == col
+                        )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        else -> TableRowsUiModel.RowColumnHtml(col.value, width, firstTextColumn == col, getColorFromHtml(col.value)) //it's COLUMN_HTML
+                        else -> TableRowsUiModel.RowColumnHtml(
+                            col.value,
+                            width,
+                            firstTextColumn == col,
+                            getColorFromHtml(col.value)
+                        ) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
                 }
@@ -101,11 +116,13 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
             val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
 
             val colorString =
-                    when {
-                        htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
-                        htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(htmlString)
-                        else -> null
-                    }
+                when {
+                    htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
+                    htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(
+                        htmlString
+                    )
+                    else -> null
+                }
 
             if (colorString.isNullOrEmpty()) {
                 null
@@ -129,8 +146,8 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         // We remove background-color style attribute to be able to substring the color of the text only
         val colorWithoutBackgroundColor = htmlString.replace(BACKGROUND_COLOR, "")
         return colorWithoutBackgroundColor.substringAfter(COLOR)
-                .substringBefore("\"").substringBefore(";")
-                .replace("[^A-Za-z0-9#]+".toRegex(), "")
+            .substringBefore("\"").substringBefore(";")
+            .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
 
 }

@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.ui.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.product.detail.di.*
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
-import com.tokopedia.product.warehouse.di.ProductWarehouseModule
 import dagger.Component
 
 /**
@@ -15,7 +14,6 @@ import dagger.Component
     ProductDetailModule::class,
     ViewModelModule::class,
     GqlRawQueryModule::class,
-    ProductWarehouseModule::class,
     ProductWishlistModule::class,
     ProductUserSessionModuleMock::class],
         dependencies = [BaseAppComponent::class])

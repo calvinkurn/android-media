@@ -6,6 +6,10 @@ import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
@@ -15,6 +19,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -56,7 +61,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>) {
+    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>, allProdIds: ArrayList<String?>?) {
         val listViewEvent: MutableMap<String, Any> = HashMap()
         listViewEvent["af_content_id"] = prodIds
         listViewEvent["af_currency"] = "IDR"
@@ -68,6 +73,16 @@ object SearchTracking {
             listViewEvent["af_success"] = "fail"
         }
         TrackApp.getInstance().appsFlyer.sendTrackEvent("af_search", listViewEvent)
+
+        //add branch search event
+        allProdIds?.let {
+            LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(
+                    LinkerConstants.EVENT_SEARCH,
+                    it
+                )
+            )
+        }
     }
 
     @JvmStatic
@@ -944,5 +959,21 @@ object SearchTracking {
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
                 )
         )
+    }
+
+    @JvmStatic
+    fun trackEventGeneralSearchShop(generalSearchTrackingShop: GeneralSearchTrackingShop) {
+        val generalSearchShopDataLayer = DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH_SHOP,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingShop.eventLabel,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingShop.pageSource,
+                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingShop.relatedKeyword,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
     }
 }
