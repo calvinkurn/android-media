@@ -55,7 +55,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
     private var staticDimen8dp: Int? = 0
-    private var delayMilis: Long = 200
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -188,7 +187,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                         mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.loadData(input, 1)
-                        }, delayMilis)
+                        }, DELAY_MILIS)
                     }
                 }
 
@@ -367,6 +366,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         private const val NOT_SUCCESS = "not success"
 
         private const val MIN_TEXT_LENGTH = 4
+        private const val DELAY_MILIS: Long = 200
 
     }
 }
