@@ -41,6 +41,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var isLoading: Boolean = false
     private var input: String = ""
+    private var page: Int = 1
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -221,8 +222,8 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
                         input = binding.layoutSearch.searchBarTextField.text.toString()
                         mIsInitialLoading = true
                         handler.postDelayed({
-                            presenter.loadData(input, 1)
-                        }, 200)
+                            presenter.loadData(input, page)
+                        }, DELAY_MILIS)
                     }
                 }
 
@@ -262,7 +263,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
 
     companion object {
 
-        private const val DEBOUNCE: Long = 700
+        private const val DELAY_MILIS: Long = 200
 
         @JvmStatic
         fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
