@@ -31,7 +31,8 @@ class StickyLoginViewModel @Inject constructor(
                     it.layout == StickyLoginConstant.LAYOUT_FLOATING
                 }
                 if (tickers.isNotEmpty()) {
-                    _stickyContent.postValue(Success(it.response))
+                    val stickyLoginFloating = StickyLoginTickerDataModel(tickers)
+                    _stickyContent.postValue(Success(stickyLoginFloating))
                 } else {
                     _stickyContent.postValue(Fail(Throwable(ERROR_DATA_NOT_FOUND)))
                 }
