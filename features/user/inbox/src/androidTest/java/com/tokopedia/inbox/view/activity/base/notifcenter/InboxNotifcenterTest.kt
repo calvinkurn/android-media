@@ -6,9 +6,12 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
@@ -17,8 +20,8 @@ import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
+
 
 abstract class InboxNotifcenterTest : InboxTest() {
 
@@ -63,9 +66,52 @@ abstract class InboxNotifcenterTest : InboxTest() {
  * All user action goes here
  */
 object NotifcenterAction {
+
     fun scrollNotificationToPosition(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
-            scrollToPosition<RecyclerView.ViewHolder>(position)
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(position, scrollTo())
+        )
+    }
+
+    fun smoothScrollNotificationTo(position: Int) {
+        onView(withId(R.id.recycler_view)).perform(
+            object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return isDisplayingAtLeast(90)
+                }
+
+                override fun getDescription(): String {
+                    return "smooth scroll notification"
+                }
+
+                override fun perform(uiController: UiController?, view: View?) {
+                    (view as? RecyclerView)?.apply {
+                        smoothScrollToPosition(position)
+                    }
+                    uiController?.loopMainThreadForAtLeast(500)
+                }
+
+            }
+        )
+    }
+
+    fun smoothScrollOrderWidgetTo(position: Int) {
+        onView(withId(R.id.rv_order_list)).perform(
+            object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return isDisplayingAtLeast(90)
+                }
+
+                override fun getDescription(): String {
+                    return "smooth scroll order widget"
+                }
+
+                override fun perform(uiController: UiController?, view: View?) {
+                    (view as? RecyclerView)?.smoothScrollToPosition(position)
+                    uiController?.loopMainThreadForAtLeast(500)
+                }
+
+            }
         )
     }
 
@@ -157,6 +203,15 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.rv_order_list)
                 .atPositionOnView(position, R.id.tp_order_title)
         ).check(matches(withText(msg)))
+    }
+
+    fun assertOrderWidgetCardAt(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.rv_order_list)
+                .atPositionOnView(position, R.id.ll_card_uoh)
+        ).check(matches(matcher))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {

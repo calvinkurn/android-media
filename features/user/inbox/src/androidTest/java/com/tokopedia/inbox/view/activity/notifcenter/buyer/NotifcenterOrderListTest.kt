@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.filters.FlakyTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
@@ -145,5 +147,24 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
-    //TODO: buyer scroll state should not interfere with seller scroll state
+    @Test
+    @FlakyTest
+    fun should_retain_last_position_when_user_scrolled_down_and_back_to_it() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.response = notifOrderListUseCase.fifteenOrderWidgetResponse
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.fifteenNotifications
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.smoothScrollOrderWidgetTo(14)
+        NotifcenterAction.smoothScrollNotificationTo(14)
+        NotifcenterAction.smoothScrollNotificationTo(0)
+
+        // Then
+        NotifcenterAssertion.assertOrderWidgetCardAt(
+            14, isDisplayed()
+        )
+    }
 }
