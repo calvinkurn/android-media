@@ -195,7 +195,7 @@ object CartUiModelMapper {
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
                     isAllSelected = cartData.isGlobalCheckboxState
-                    isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                    isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
                 }
