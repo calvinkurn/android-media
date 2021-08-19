@@ -79,6 +79,11 @@ class InstallmentDetailBottomSheet {
                     viewInstallmentDetailItem.root.alpha = 1.0f
                 }
             }
+            if (creditCardTenorListData.tenorList.size > 1) {
+                binding.tvInstallmentMessage.gone()
+            } else {
+                binding.tvInstallmentMessage.visible()
+            }
         } else {
             val installmentDetails = creditCard.availableTerms
             for (i in installmentDetails.lastIndex downTo 0) {
