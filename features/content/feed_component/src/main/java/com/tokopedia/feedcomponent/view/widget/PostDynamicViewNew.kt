@@ -1192,6 +1192,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (!fromSlide) {
             carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
