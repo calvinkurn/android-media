@@ -168,7 +168,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         this.PRODUCT_PRICE = getTotalPrice(hashItemMap).toString()
 
         if (getTotalQuantity(hashItemMap) > EMPTY_QTY) {
-            val price = if(getTotalPrice(hashItemMap) != 0) getRupiahFormat(getTotalPrice(hashItemMap)) else getString(R.string.ent_free_price)
+            val price = if(getTotalPrice(hashItemMap) != ZERO_PRICE) getRupiahFormat(getTotalPrice(hashItemMap)) else getString(R.string.ent_free_price)
             setTotalPrice(price)
             showViewBottom(AMOUNT_TICKET > EMPTY_QTY)
         } else {
@@ -511,6 +511,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
 
         const val EMPTY_QTY = 0
+        const val ZERO_PRICE = 0
         const val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000L
         const val DELAY_TIME = 200L

@@ -64,7 +64,7 @@ class EventPDPTicketItemPackageAdapter(
 
                 txtTitle_ticket.text = items.name
                 txtSubtitle_ticket.text = items.description
-                txtPrice_ticket.text = if(items.salesPrice.toIntOrZero() != 0) getRupiahFormat(items.salesPrice.toInt())
+                txtPrice_ticket.text = if(items.salesPrice.toIntOrZero() != ZERO_PRICE) getRupiahFormat(items.salesPrice.toInt())
                 else resources.getString(R.string.ent_free_price)
 
                 val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
@@ -236,5 +236,6 @@ class EventPDPTicketItemPackageAdapter(
     companion object {
         const val EMPTY_QTY = 0
         const val MIN_QTY = 1
+        const val ZERO_PRICE = 0
     }
 }

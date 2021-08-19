@@ -81,7 +81,7 @@ class PackageParentViewHolder(
             false -> Html.fromHtml("${getString(R.string.ent_checkout_price_expand)} <b>$salesPrice </b>")
         }
 
-        if(value.salesPrice.toIntOrZero() == 0){
+        if(value.salesPrice.toIntOrZero() == ZERO_PRICE){
             subtitle = Html.fromHtml("<b>${getString(R.string.ent_free_price)} </b>")
         }
 
@@ -111,5 +111,7 @@ class PackageParentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket
+
+        const val ZERO_PRICE = 0
     }
 }
