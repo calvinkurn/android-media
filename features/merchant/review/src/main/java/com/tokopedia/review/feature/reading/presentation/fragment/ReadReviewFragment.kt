@@ -958,7 +958,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             val satisfactionRateInt = (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
                 it.isDigit()
             }.orEmpty()
-            context?.getString(R.string.review_reading_product_satisfaction_rate, satisfactionRateInt) ?: "$satisfactionRateInt% pembeli puas belanja barang ini"
+            "$satisfactionRateInt% pembeli puas belanja barang ini"
         } else {
             val satisfactionRateInt = (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
                 it.isDigit()
