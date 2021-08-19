@@ -65,6 +65,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/spacing_lvl1"
                 android:layout_marginRight="@dimen/spacing_lvl1"
+                android:contentDescription="@string/topchat_desc_checkmark"
                 tools:srcCompat="@drawable/ic_chat_read" />
 
             <com.tokopedia.unifyprinciples.Typography
