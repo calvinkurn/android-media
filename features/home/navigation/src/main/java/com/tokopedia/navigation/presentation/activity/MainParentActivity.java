@@ -1232,7 +1232,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isFirstNavigationImpression = false;
 
-        if (position != FEED_MENU) {
+        if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
             Intent intent = new Intent(BROADCAST_VISIBLITY);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
