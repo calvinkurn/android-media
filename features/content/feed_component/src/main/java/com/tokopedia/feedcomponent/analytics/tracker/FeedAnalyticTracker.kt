@@ -705,10 +705,9 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed)
             ),
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
-                shopId,
-                postPosition
+                shopId
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -739,10 +738,9 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, isVideo)
             ),
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
-                shopId,
-                "1"
+                shopId
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -913,7 +911,7 @@ class FeedAnalyticTracker
             ),
             DataLayer.mapOf(CLICK, mapOf(
                 "actionField" to mapOf(
-                    "list" to "feed - ${getPostType(type, isFollowed)}"
+                    "list" to "/feed - ${getPostType(type, isFollowed)}"
                 ),
                 "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed)
             )
@@ -1560,17 +1558,17 @@ class FeedAnalyticTracker
         trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
     }
 
-    /**
-     *
-     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
-     *
-     */
-    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
-        trackOpenScreenEventC2s(
-            Screen.HOME_FEED_SCREEN,
-            isLoggedInStatus = isLoggedInStatus.toString(),
-            isFeedEmpty = isFeedEmpty.toString()
+    fun userVisitsFeed(isLoggedInStatus: Boolean) {
+
+        val map = mapOf(
+            KEY_EVENT to OPEN_SCREEN,
+            "isLoggedInStatus" to isLoggedInStatus.toString(),
+            KEY_EVENT_SCREEN_NAME to "/feed",
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_EVENT_USER_ID to userSessionInterface.userId
         )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     /**

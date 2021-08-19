@@ -136,6 +136,11 @@ object ApplinkConstInternalGlobal {
 
     const val PARAM_CALL_BACK = "callBack"
 
+    // UserIdentificationInfoSimpleActivity
+    // tokopedia-android-internal://global/user-identification-only
+    @JvmField
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
+
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
     const val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"

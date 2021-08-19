@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.common
 
 import com.tokopedia.url.TokopediaUrl
 
-object ProductDetailCommonConstant{
+object ProductDetailCommonConstant {
     const val PARAM_PRODUCT_ID = "productID"
     const val PARAM_PDP_SESSION = "pdpSession"
     const val PARAM_SHOP_ID = "shopID"
@@ -32,7 +32,7 @@ object ProductDetailCommonConstant{
     const val PRODUCT_ID_PARAM = "productId"
     const val INCLUDE_UI_PARAM = "includeUI"
 
-    val URL_APPLY_LEASING =   "${TokopediaUrl.getInstance().WEB}kredit-motor/kalkulator?productID=%s"
+    val URL_APPLY_LEASING = "${TokopediaUrl.getInstance().WEB}kredit-motor/kalkulator?productID=%s"
 
     //notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
@@ -45,6 +45,12 @@ object ProductDetailCommonConstant{
     const val VALUE_TEASER_TRACKING_REGISTER = "on"
     const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
     const val VALUE_TEASER_SOURCE = "pdp"
+
+    const val VALUE_TOKONOW = "tokonow"
+    const val VALUE_OFFICIAL_STORE = "official_store"
+    const val VALUE_GOLD_MERCHANT = "gold_merchant"
+    const val VALUE_REGULER = "reguler"
+
 
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
@@ -84,6 +90,7 @@ object ProductDetailCommonConstant{
     const val ATC_UPDATE_BUTTON = 10
 
     const val REQUEST_CODE_CHECKOUT = 12382
+    const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
@@ -95,6 +102,14 @@ object ProductDetailCommonConstant{
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
 
+    const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    const val VALUE_NONE_OTHER= "none/other"
+
+    const val KEY_PRODUCT_DETAIL = "product detail"
+
+    //shipping error code
+    const val SHIPPING_ERROR_WEIGHT = 50503
     const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
 
 }

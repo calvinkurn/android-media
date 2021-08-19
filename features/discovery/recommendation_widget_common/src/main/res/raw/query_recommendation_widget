@@ -18,6 +18,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       campaign{
         appLandingPageLink
         landingPageLink
+        thematicID
         assets {
           banner{
             apps

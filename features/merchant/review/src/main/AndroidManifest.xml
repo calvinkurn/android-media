@@ -41,7 +41,6 @@
         <activity
             android:name="com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation_review"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -179,6 +178,11 @@
                 <data
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_review"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_review"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

@@ -16,8 +16,6 @@ object ApplinkConsInternalDigital {
 
     //new cart checkout applink
     const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
-    //old cart checkout applink
-    const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
 
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
@@ -41,4 +39,6 @@ object ApplinkConsInternalDigital {
     const val PRODUCT_TEMPLATE_WITH_CATEGORY_ID = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id={category_id}&menu_id={menu_id}&template={template}"
 
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
+    const val SEARCH_NUMBER = "$INTERNAL_DIGITAL/searchnumber"
+    const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favoritenumber"
 }
