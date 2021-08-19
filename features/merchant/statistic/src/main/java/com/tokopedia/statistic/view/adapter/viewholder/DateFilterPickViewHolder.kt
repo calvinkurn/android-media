@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.view.bottomsheet.CalendarPicker
 import com.tokopedia.statistic.view.model.DateFilterItem
@@ -63,7 +64,7 @@ class DateFilterPickViewHolder(
         if (datePicker != null) return
 
         datePicker = CalendarPicker.newInstance(element).apply {
-            when(element.type) {
+            when (element.type) {
                 DateFilterItem.TYPE_PER_WEEK -> {
                     val title = itemView.context?.getString(R.string.stc_per_week).orEmpty()
                     setMode(CalendarPickerView.SelectionMode.RANGE)
@@ -108,7 +109,7 @@ class DateFilterPickViewHolder(
             element?.startDate = startDate
             element?.endDate = endDate
             itemView.edtStcSingle.valueStr = if (element?.type == DateFilterItem.TYPE_PER_DAY) {
-                DateTimeUtil.format(startDate.time, "dd MMM yyyy")
+                DateTimeUtil.format(startDate.time, Const.FORMAT_DD_MM_YYYY)
             } else {
                 DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
             }

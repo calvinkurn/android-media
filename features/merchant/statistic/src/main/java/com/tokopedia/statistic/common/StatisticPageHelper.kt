@@ -335,8 +335,8 @@ object StatisticPageHelper {
         val maxDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAY_1.toLong()))
         return DateFilterItem.Pick(
             label,
-            maxDate,
-            maxDate,
+            null,
+            null,
             type = DateFilterItem.TYPE_CUSTOM,
             calendarPickerMinDate = minDate,
             calendarPickerMaxDate = maxDate
@@ -352,17 +352,17 @@ object StatisticPageHelper {
         with(calendar) {
             firstDayOfWeek = Calendar.MONDAY
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+            set(Calendar.HOUR_OF_DAY, Const.EMPTY)
+            set(Calendar.MINUTE, Const.EMPTY)
+            set(Calendar.SECOND, Const.EMPTY)
+            set(Calendar.MILLISECOND, Const.EMPTY)
         }
         var firstDateOfWeek = calendar.time
         var lastDateOfWeek = Date()
 
         if (isOnlyCompletedWeek) {
-            val sevenDaysMillis = TimeUnit.DAYS.toMillis(7)
-            val sixDaysMillis = TimeUnit.DAYS.toMillis(6)
+            val sevenDaysMillis = TimeUnit.DAYS.toMillis(Const.DAYS_7.toLong())
+            val sixDaysMillis = TimeUnit.DAYS.toMillis(Const.DAYS_6.toLong())
             val firstDateOfWeekTimeStamp = calendar.time.time.minus(sevenDaysMillis)
             firstDateOfWeek = Date(firstDateOfWeekTimeStamp)
             lastDateOfWeek = Date(firstDateOfWeekTimeStamp.plus(sixDaysMillis))
@@ -388,7 +388,7 @@ object StatisticPageHelper {
             Date()
         } else {
             Date().apply {
-                val millisOf31Days = TimeUnit.DAYS.toMillis(31)
+                val millisOf31Days = TimeUnit.DAYS.toMillis(Const.DAYS_31.toLong())
                 time = time.minus(millisOf31Days)
             }
         }
