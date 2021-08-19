@@ -18,6 +18,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteEmptyDat
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteHeaderDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import java.lang.IllegalArgumentException
+import java.util.ArrayList
 
 class TopupBillsAutoCompleteAdapter(
     @get:JvmName("getContext_") val context: Context,
@@ -146,10 +147,9 @@ class TopupBillsAutoCompleteAdapter(
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults) {
             if (results.count > 0) {
-                clear()
-                val filteredList = results.values as ArrayList<TopupBillsAutoComplete>
-                for (contact in filteredList) add(contact)
                 notifyDataSetChanged()
+            } else {
+                notifyDataSetInvalidated()
             }
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.common.fragment
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -9,6 +10,7 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AlphaAnimation
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer

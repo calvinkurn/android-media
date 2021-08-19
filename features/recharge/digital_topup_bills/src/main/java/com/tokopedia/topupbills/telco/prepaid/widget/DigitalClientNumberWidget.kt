@@ -6,6 +6,8 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -92,11 +94,24 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
             })
 
+            setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    hideSoftKeyboard()
+                }
+            }
 
             setOnClickListener {
                 it?.run {
                     listener.onClientNumberHasFocus(inputNumberField.textFieldInput.text.toString())
                 }
+            }
+
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    clearFocus()
+                    hideSoftKeyboard()
+                }
+                true
             }
         }
 
@@ -231,6 +246,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             return phoneNumberWithPrefix
         }
         return ""
+    }
+
+    fun hideSoftKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(this.windowToken, 0)
     }
 
     interface ActionListener {

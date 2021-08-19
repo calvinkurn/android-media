@@ -75,6 +75,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val positionScrollItem: LiveData<Int>
         get() = _positionScrollItem
 
+    private val _inputWidgetFocus = MutableLiveData<Boolean>()
+    val inputWidgetFocus: LiveData<Boolean>
+        get() = _inputWidgetFocus
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
@@ -101,6 +105,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setSelectedFilter(filter: ArrayList<HashMap<String, Any>>) {
         _selectedFilter.postValue(filter)
+    }
+
+    fun setInputWidgetFocus(isFocus: Boolean) {
+        _inputWidgetFocus.postValue(isFocus)
     }
 
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,

@@ -156,6 +156,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 ) showDynamicSpacer() else hideDynamicSpacer()
             }
         })
+
+        sharedModelPrepaid.inputWidgetFocus.observe(viewLifecycleOwner, Observer { isFocus ->
+            if (!isFocus) {
+                telcoClientNumberWidget.clearFocus()
+            }
+        })
     }
 
     private fun showDynamicSpacer() {
@@ -197,6 +203,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         subscribeUi()
         initViewPager()
         buyWidget.setBuyButtonLabel(getString(R.string.telco_pick_product))
+
+        viewPager.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                telcoClientNumberWidget.hideSoftKeyboard()
+            }
+        }
 
         //load data
         getCatalogMenuDetail()
@@ -406,6 +418,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 hitTrackingForInputNumber(selectedOperator)
                 if (operatorId != selectedOperator.operator.id) {
                     operatorId = selectedOperator.operator.id
+                    productId = 0
+                    sharedModelPrepaid.setVisibilityTotalPrice(false)
                     telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
                     renderProductViewPager()
                     getProductListData(isDelayed)
@@ -478,9 +492,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClientNumberHasFocus(clientNumber: String) {
-            operatorId = ""
-            productId = 0
-            sharedModelPrepaid.setVisibilityTotalPrice(false)
+//            operatorId = ""
+//            productId = 0
+//            sharedModelPrepaid.setVisibilityTotalPrice(false)
 
 //            telcoClientNumberWidget.clearFocusAutoComplete()
 
