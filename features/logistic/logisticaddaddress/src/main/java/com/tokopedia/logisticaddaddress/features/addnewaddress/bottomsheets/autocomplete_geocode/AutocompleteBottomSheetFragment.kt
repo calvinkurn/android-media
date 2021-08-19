@@ -41,8 +41,8 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
     private var currentSearch: String = ""
     private var actionListener: ActionListener? = null
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
-    private val defaultLat: Double by lazy { -6.175794 }
-    private val defaultLong: Double by lazy { 106.826457 }
+    private val defaultLat: Double by lazy { DEFAULT_LAT }
+    private val defaultLong: Double by lazy { DEFAULT_LONG }
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
@@ -312,6 +312,9 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
         private const val CURRENT_LAT = "CURRENT_LAT"
         private const val CURRENT_LONG = "CURRENT_LONG"
         private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+
+        private const val DEFAULT_LAT = -6.175794
+        private const val DEFAULT_LONG = 106.826457
 
         fun newInstance(currentLat: Double, currentLong: Double, currentSearch: String, isLogisticLabel: Boolean): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
