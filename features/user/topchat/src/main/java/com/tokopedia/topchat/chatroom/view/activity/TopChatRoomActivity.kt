@@ -151,7 +151,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         }
     }
 
-    //TODO: NEED ADJUSTMENT FOR SRW & OTHER ENTRY POINTS
     private fun scanPathQuery(data: Uri?) {
         data?.let {
             val pathSegments = it.pathSegments
@@ -223,6 +222,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             messageId = intent?.data?.lastPathSegment.toZeroStringIfNull()
         }
         intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     override fun getLayoutRes(): Int {
