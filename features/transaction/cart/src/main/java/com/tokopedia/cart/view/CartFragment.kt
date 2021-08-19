@@ -947,7 +947,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isChecked = binding?.topLayout?.checkboxGlobal?.isChecked ?: return
         if (isCheckUncheckDirectAction) {
             cartAdapter.setAllAvailableItemCheck(isChecked)
-            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+            dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
             dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
             setGlobalDeleteVisibility()
             cartPageAnalytics.eventCheckUncheckGlobalCheckbox(isChecked)
@@ -1579,7 +1579,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(index, checked)
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         onNeedToUpdateViewItem(index)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
@@ -1631,7 +1631,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun updateStateAfterCheckChanged() {
         dPresenter.setHasPerformChecklistChange(true)
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
         validateGoToCheckout()
@@ -1648,9 +1648,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int) {
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
         cartShopHolderData?.let {
+            val isChecked = !cartItemHolderData.isSelected
             it.productUiModelList.forEachIndexed { index, data ->
                 if (data.bundleId == cartItemHolderData.bundleId) {
-                    cartAdapter.setItemSelected(index, parentPosition, !cartItemHolderData.isSelected)
+                    cartAdapter.setItemSelected(index, parentPosition, isChecked)
                 }
             }
             updateStateAfterCheckChanged()
@@ -1733,7 +1734,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onNeedToRecalculate() {
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
     }
 
     override fun showProgressLoading() {
@@ -1991,7 +1992,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         renderCartAvailableItems(cartData)
         renderCartUnavailableItems(cartData)
 
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
 
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
@@ -2786,7 +2787,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         notifyBottomCartParent()
 */
     }
