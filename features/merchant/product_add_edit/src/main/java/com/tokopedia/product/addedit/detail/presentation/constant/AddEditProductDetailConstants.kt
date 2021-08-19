@@ -48,5 +48,6 @@ class AddEditProductDetailConstants {
         const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
         // price recommendation
         const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
+        const val MAX_LENGTH_PRICE = 9
     }
 }
