@@ -33,7 +33,7 @@ class ProductBundleMasterAdapter(private val clickListener: ProductBundleMasterI
         holderBundle.bindData(productBundleMasterList[position], productBundleChipsStates[position])
     }
 
-    fun setProductBundleMasterList(productBundleMasterList: List<ProductBundleMaster>) {
+    fun setProductBundleMasters(productBundleMasterList: List<ProductBundleMaster>) {
         this.productBundleMasterList = productBundleMasterList
         this.productBundleChipsStates = ArrayList(productBundleMasterList.mapIndexed { index, _ ->
             if (index == 0) SELECTED

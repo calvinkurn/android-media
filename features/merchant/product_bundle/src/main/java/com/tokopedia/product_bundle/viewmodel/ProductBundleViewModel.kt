@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -14,6 +13,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,12 +29,17 @@ class ProductBundleViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
+        private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = 1
         private const val PRODUCT_BUNDLE_STATUS_INACTIVE = -1
         private const val PRODUCT_BUNDLE_STATUS_UPCOMING = 2
         private const val PRODUCT_BUNDLE_STATUS_EXPIRED = -2
         private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
+        private const val PREORDER_TYPE_DAY: Int = 1
+        private const val PREORDER_TYPE_MONTH: Int = 2
     }
+
+    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     var parentProductID: Long = 0L
 
@@ -54,7 +59,12 @@ class ProductBundleViewModel @Inject constructor(
                 getBundleInfoUseCase.setParams(
                     squad = GetBundleInfoConstant.SQUAD_VALUE,
                     usecase = GetBundleInfoConstant.USECASE_VALUE,
-                    requestData = RequestData(variantDetail = true, CheckCampaign = true, BundleGroup = true, Preorder = true),
+                    requestData = RequestData(
+                        variantDetail = true,
+                        CheckCampaign = true,
+                        BundleGroup = true,
+                        Preorder = true
+                    ),
                     productData = ProductData(productID = productId.toString())
                 )
                 getBundleInfoUseCase.executeOnBackground()
@@ -65,20 +75,35 @@ class ProductBundleViewModel @Inject constructor(
         })
     }
 
+    fun getDefaultProductBundleSelection(productBundleMasters: List<ProductBundleMaster>): ProductBundleMaster? {
+        return productBundleMasters.firstOrNull()
+    }
+
     fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
         this.selectedProductBundleMasterLiveData.value = productBundleMaster
     }
 
-    fun getSoldProductBundle(): Int {
-        return this.selectedProductBundleMasterLiveData.value?.soldProductBundle ?: 0
+    fun getPreOrderProcessDay(): Long {
+        return this.selectedProductBundleMasterLiveData.value?.processDay ?: 0L
+    }
+
+    fun getTimeUnitWording(processTypeNum: Int): String {
+        return ""
     }
 
     fun addProductBundleToCart() {
-        // simulate error response from the API
-        isErrorLiveData.value = true
+
     }
 
-    fun mapProductBundleItemsToProductBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
+        return ProductBundleMaster(
+            bundleId = bundleInfo.bundleID,
+            bundleName = bundleInfo.name,
+            processDay = bundleInfo.preorder.processDay
+        )
+    }
+
+    fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             ProductBundleDetail(
                 productImageUrl = bundleItem.picURL,
@@ -93,18 +118,30 @@ class ProductBundleViewModel @Inject constructor(
         }
     }
 
-    private fun getActiveProductBundles(productBundles: List<BundleInfo>): List<BundleInfo> {
-        return productBundles.filter { bundleInfo ->
-            bundleInfo.status.toIntOrZero() == PRODUCT_BUNDLE_STATUS_ACTIVE
-        }
+    fun updateProductBundleMap(bundleMaster: ProductBundleMaster, bundleDetail: List<ProductBundleDetail>) {
+        productBundleMap[bundleMaster] = bundleDetail
+    }
+
+    fun getProductBundleMasters(): List<ProductBundleMaster> {
+        return productBundleMap.keys.toList()
+    }
+
+    fun getProductBundleDetail(productBundleMaster: ProductBundleMaster): List<ProductBundleDetail>? {
+        return productBundleMap[productBundleMaster]
+    }
+
+    fun isSingleProductBundle(bundleInfo: List<BundleInfo>): Boolean {
+        if (bundleInfo.isEmpty()) return false
+        val bundleItems = bundleInfo.first().bundleItems
+        return bundleItems.size == SINGLE_PRODUCT_BUNDLE_ITEM_SIZE
     }
 
     private fun calculateSoldProductBundle(originalQuota: Int, quota: Int): Int {
         return originalQuota - quota
     }
 
-    fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Double {
-        return ((originalPrice - bundlePrice) * 100 / originalPrice)
+    fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Int {
+        return DiscountUtil.getDiscountPercentage(originalPrice, bundlePrice)
     }
 
     fun calculateTotalPrice(productBundleItems: List<BundleItem>): Double {
@@ -117,9 +154,5 @@ class ProductBundleViewModel @Inject constructor(
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {
         return originalPrice - bundlePrice
-    }
-
-    fun isProductBundleSoldOut() {
-
     }
 }

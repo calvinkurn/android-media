@@ -42,7 +42,9 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return MultipleProductBundleFragment.newInstance()
+        // TODO: add shimmering
+        // TODO: manage initial fragment transaction
+        return MultipleProductBundleFragment.newInstance(listOf())
     }
 
     private fun initInjector() {
@@ -56,17 +58,24 @@ class ProductBundleActivity : BaseSimpleActivity() {
         viewModel.getBundleInfoResult.observe(this, { result ->
             when (result) {
                 is Success -> {
-                    val bundleInfo = result.data
-                    val bundleItems = bundleInfo.getBundleInfo.bundleInfo
-                    val parentProductID = viewModel.parentProductID
-                    val fragment = SingleProductBundleFragment.newInstance(parentProductID, bundleItems)
-
-                    supportFragmentManager.beginTransaction()
-                        .replace(parentViewResourceID, fragment, tagFragment)
-                        .commit()
+                    val productBundleData = result.data
+                    val bundleInfo = productBundleData.getBundleInfo.bundleInfo
+                    if (bundleInfo.isNotEmpty()) {
+                        var productBundleFragment: Fragment? = null
+                        productBundleFragment = if (viewModel.isSingleProductBundle(bundleInfo)) {
+                            val parentProductID = viewModel.parentProductID
+                            SingleProductBundleFragment.newInstance(parentProductID, bundleInfo)
+                        } else {
+                            MultipleProductBundleFragment.newInstance(bundleInfo)
+                        }
+                        supportFragmentManager.beginTransaction()
+                            .replace(parentViewResourceID, productBundleFragment, tagFragment)
+                            .commit()
+                    }
                 }
                 is Fail -> {
                     // log and show error view
+                    // TODO: add error view in activity layout
                 }
             }
         })

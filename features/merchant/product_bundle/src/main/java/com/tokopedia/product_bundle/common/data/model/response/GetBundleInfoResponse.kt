@@ -1,7 +1,9 @@
 package com.tokopedia.product_bundle.common.data.model.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GetBundleInfoResponse(
         @SerializedName("GetBundleInfo")
@@ -15,6 +17,7 @@ data class GetBundleInfo(
         @Expose val bundleInfo: List<BundleInfo> = emptyList()
 )
 
+@Parcelize
 data class BundleInfo(
         @SerializedName("bundleID")
         @Expose val bundleID: Long = 0L,
@@ -44,8 +47,9 @@ data class BundleInfo(
         @Expose val preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
         @Expose val bundleItems: List<BundleItem> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class BundleItem(
         @SerializedName("productID")
         @Expose val productID: Long = 0L,
@@ -71,8 +75,9 @@ data class BundleItem(
         @Expose val originalPrice: Double = 0.0,
         @SerializedName("productStatus")
         @Expose val productStatus: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Selection(
         @SerializedName("productVariantID")
         @Expose val productVariantID: Long = 0L,
@@ -88,8 +93,9 @@ data class Selection(
         @Expose val identifier: String = "",
         @SerializedName("option")
         @Expose val options: List<VariantOption> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class VariantOption(
         @SerializedName("productVariantOptionID")
         @Expose val productVariantOptionID: Long = 0L,
@@ -105,8 +111,9 @@ data class VariantOption(
         @Expose val picUrl100: String = "",
         @SerializedName("picUrl200")
         @Expose val picUrl200: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Child(
         @SerializedName("productID")
         @Expose val productID: Long = 0L,
@@ -124,8 +131,9 @@ data class Child(
         @Expose val stock: Int = 0,
         @SerializedName("optionID")
         @Expose val optionIds: List<Long> = listOf()
-)
+): Parcelable
 
+@Parcelize
 data class Preorder(
         @SerializedName("status")
         @Expose val status: String = "",
@@ -147,4 +155,4 @@ data class Preorder(
         @Expose val processDay: Long = 0L,
         @SerializedName("processTime")
         @Expose val processTime: String = ""
-)
+): Parcelable

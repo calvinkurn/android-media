@@ -6,5 +6,5 @@ class ProductBundleDetail(
     val productName: String = "",
     val originalPrice: Double = 0.0,
     val bundlePrice: Double = 0.0,
-    val discountAmount: Double = 0.0
+    val discountAmount: Int = 0
 )
