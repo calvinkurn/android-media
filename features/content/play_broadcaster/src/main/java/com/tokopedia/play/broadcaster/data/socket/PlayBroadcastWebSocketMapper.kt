@@ -5,6 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.play.broadcaster.data.type.PlaySocketEnum
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
@@ -32,6 +33,7 @@ class PlayBroadcastWebSocketMapper(private val response: WebSocketResponse) {
             PlaySocketEnum.Chat.value -> convertToModel(response.jsonObject, Chat::class.java)
             PlaySocketEnum.Freeze.value -> convertToModel(response.jsonObject, Freeze::class.java)
             PlaySocketEnum.Banned.value -> convertToModel(response.jsonObject, Banned::class.java)
+            PlaySocketEnum.ChannelInteractive.value -> convertToModel(response.jsonObject, ChannelInteractive::class.java)
             else -> null
         }
     }

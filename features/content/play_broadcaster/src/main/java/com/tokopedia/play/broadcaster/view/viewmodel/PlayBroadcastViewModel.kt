@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -514,13 +515,13 @@ class PlayBroadcastViewModel @Inject constructor(
             }.executeOnBackground()
 
             val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
-            handleActiveInteractive(currentInteractive)
+            handleActiveInteractiveFromNetwork(currentInteractive)
         } catch (e: Throwable) {
             _observableInteractiveState.value = getNoPreviousInitInteractiveState()
         }
     }
 
-    private suspend fun handleActiveInteractive(interactive: PlayCurrentInteractiveModel) {
+    private suspend fun handleActiveInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         when (val status = interactive.timeStatus) {
             is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
                 timeToStartInMs = status.timeToStartInMs,
@@ -665,6 +666,10 @@ class PlayBroadcastViewModel @Inject constructor(
                         _observableEvent.value = eventUiModel
                     }
                 }
+            }
+            is ChannelInteractive -> {
+                val currentInteractive = channelInteractiveMapper.mapInteractive(result)
+                handleActiveInteractiveFromNetwork(currentInteractive)
             }
         }
     }

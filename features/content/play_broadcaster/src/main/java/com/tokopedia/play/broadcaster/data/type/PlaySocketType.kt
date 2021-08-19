@@ -17,5 +17,6 @@ enum class PlaySocketEnum(val value: String) {
     ProductTag("PRODUCT_TAG"),
     Banned("MODERATE"),
     Chat("MESG"),
-    Freeze("FREEZE")
+    Freeze("FREEZE"),
+    ChannelInteractive("CHANNEL_INTERACTIVE"),
 }
