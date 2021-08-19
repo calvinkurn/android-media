@@ -7,6 +7,8 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -99,7 +101,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
                 verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageGreen(addToCartExternalModel.message[0])
-                    view.refreshCart()
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }
@@ -125,7 +127,7 @@ object CartListPresenterAddToCartExternalTest : Spek({
                 verifyOrder {
                     view.hideProgressLoading()
                     view.showToastMessageRed(exception)
-                    view.refreshCart()
+                    view.refreshCartWithSwipeToRefresh()
                 }
             }
         }

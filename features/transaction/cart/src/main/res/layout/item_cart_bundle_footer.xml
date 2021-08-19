@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/button_delete_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_name="DELETE"
+        app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_unavailable_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_0"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Lihat Produk Serupa"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qty_editor_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

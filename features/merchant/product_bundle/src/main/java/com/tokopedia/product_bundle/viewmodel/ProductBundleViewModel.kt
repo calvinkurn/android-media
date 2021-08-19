@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 class ProductBundleViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getBundleInfoUseCase: GetBundleInfoUseCase
+    private val getBundleInfoUseCase: GetBundleInfoUseCase,
+    private val addToCartBundleUseCase: AddToCartBundleUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -39,6 +41,8 @@ class ProductBundleViewModel @Inject constructor(
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
+    var parentProductID: Long = 0L
+
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
 
@@ -49,6 +53,7 @@ class ProductBundleViewModel @Inject constructor(
     val isError: LiveData<Boolean> get() = isErrorLiveData
 
     fun getBundleInfo(productId: Long) {
+        parentProductID = productId
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(

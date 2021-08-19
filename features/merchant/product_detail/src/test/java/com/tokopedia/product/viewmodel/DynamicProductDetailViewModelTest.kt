@@ -1,6 +1,7 @@
 package com.tokopedia.product.viewmodel
 
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -598,7 +599,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -624,7 +625,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -650,7 +651,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -676,7 +677,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -684,17 +685,17 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
         coVerify(inverse = true) {
@@ -710,17 +711,17 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on error occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         coVerify(inverse = true) {

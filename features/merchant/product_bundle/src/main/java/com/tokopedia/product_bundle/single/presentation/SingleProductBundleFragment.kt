@@ -13,20 +13,22 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
-import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
@@ -35,8 +37,9 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
+    private val parentProductID: Long = 0L,
     private var bundleInfo: List<BundleInfo> = emptyList(),
-    private var bundleId: String = "",
+    private var selectedBundleId: String = "",
     private var selectedProductId: Long = 0L
 ) : BaseDaggerFragment(), BundleItemListener {
 
@@ -50,7 +53,7 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedProductId)
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +70,7 @@ class SingleProductBundleFragment(
 
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
+        observeAddToCartResult()
         observeToasterError()
         observeDialogError()
     }
@@ -85,7 +89,6 @@ class SingleProductBundleFragment(
     override fun initInjector() {
         DaggerSingleProductBundleComponent.builder()
                 .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .productBundleModule(ProductBundleModule())
                 .build()
                 .inject(this)
     }
@@ -106,6 +109,19 @@ class SingleProductBundleFragment(
         updateTotalPO(preorderDurationWording)
     }
 
+    override fun onDataChanged(
+        selectedData: List<SingleProductBundleSelectedItem>,
+        selectedProductVariant: ProductVariant?
+    ) {
+        val selectedProductId = selectedData.firstOrNull {
+            it.isSelected
+        }?.productId
+        if (selectedProductId != null && selectedProductVariant != null) {
+            val selectedVariantText = viewModel.getVariantText(selectedProductVariant, selectedProductId.toString())
+            adapter.setSelectedVariant(selectedProductId, selectedVariantText)
+        }
+    }
+
     private fun observeSingleProductBundleUiModel() {
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
             swipeRefreshLayout?.isRefreshing = false
@@ -116,6 +132,12 @@ class SingleProductBundleFragment(
     private fun observeTotalAmountUiModel() {
         viewModel.totalAmountUiModel.observe(viewLifecycleOwner, {
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
+        })
+    }
+
+    private fun observeAddToCartResult() {
+        viewModel.addToCartResult.observe(viewLifecycleOwner, {
+            requireActivity().finish()
         })
     }
 
@@ -136,24 +158,26 @@ class SingleProductBundleFragment(
     }
 
     private fun observeDialogError() {
-        viewModel.dialogError.observe(viewLifecycleOwner, { errorStruct ->
-            val dialog = DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE)
-            when (errorStruct.second) {
-                SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY -> {
-                    dialog.setTitle(getString(R.string.single_bundle_error_bundle_is_empty))
-                    dialog.setPrimaryCTAText(getString(R.string.action_select_another_bundle))
-                    dialog.setPrimaryCTAClickListener {
-                        //TODO("Add refresh page function")
-                    }
-                }
-                else -> dialog.setTitle(getString(R.string.single_bundle_error_unknown))
+        viewModel.dialogError.observe(viewLifecycleOwner, { dialogStruct ->
+            var dialogAction = SINGLE_ACTION
+            var primaryText = getString(R.string.action_reload)
+            if (dialogStruct.type == SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH) {
+                dialogAction = HORIZONTAL_ACTION
+                primaryText = getString(R.string.action_select_another_bundle)
             }
-            dialog.apply {
-                setDescription(errorStruct.first)
+
+            DialogUnify(requireContext(), dialogAction, NO_IMAGE).apply {
+                setDescription(dialogStruct.message.orEmpty())
+                setPrimaryCTAText(primaryText)
                 setSecondaryCTAText(getString(R.string.action_back))
                 dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
                 setSecondaryCTAClickListener { dismiss() }
-                show()
+                setPrimaryCTAClickListener {
+                    //TODO("Add refresh page function")
+                }
+            }.let {
+                it.setTitle(dialogStruct.title.orEmpty())
+                it.show()
             }
         })
     }
@@ -176,29 +200,35 @@ class SingleProductBundleFragment(
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.apply {
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
-            updateTotalAmount("Rp0", 0, "Rp0", "Rp0")
+            val defaultPrice = context.getString(R.string.single_bundle_default_price)
+            updateTotalAmount(
+                price = defaultPrice,
+                slashPrice = defaultPrice,
+                priceGap = defaultPrice
+            )
             amountCtaView.setOnClickListener {
-                viewModel.checkout(adapter.getSelectedData())
+                viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
             }
         }
     }
 
     private fun updateTotalPO(totalPOWording: String?) {
         tvBundleSold?.isVisible = totalPOWording != null
-        tvBundleSold?.text = "PO $totalPOWording"
+        tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
     }
 
-    private fun updateTotalAmount(price: String, discount: Int, slashPrice: String, priceGap: String) {
+    private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
         totalAmount?.apply {
             amountView.text = price
-            setTitleText("$discount%", slashPrice)
-            setSubtitleText("Hemat", priceGap)
+            setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
+            setSubtitleText(context.getString(R.string.text_saving), priceGap)
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(bundleInfo: List<BundleInfo>, bundleId: String = "", selectedProductId: Long = 0L) =
-            SingleProductBundleFragment(bundleInfo, bundleId, selectedProductId)
+        fun newInstance(parentProductID: Long, bundleInfo: List<BundleInfo>,
+                        selectedBundleId: String = "", selectedProductId: Long = 0L) =
+            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId, selectedProductId)
     }
 }

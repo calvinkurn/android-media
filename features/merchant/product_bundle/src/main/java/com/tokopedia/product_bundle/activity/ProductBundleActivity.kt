@@ -35,7 +35,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = this.pathSegments
             val productId = pathSegments.firstOrNull() ?: "0"
             // call getBundleInfo
-            viewModel.getBundleInfo("2147881200".toLongOrZero())
+            viewModel.getBundleInfo(productId.toLongOrZero())
         }
 
         observeGetBundleInfoResult()
@@ -63,7 +63,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     if (bundleInfo.isNotEmpty()) {
                         var productBundleFragment: Fragment? = null
                         productBundleFragment = if (viewModel.isSingleProductBundle(bundleInfo)) {
-                            SingleProductBundleFragment.newInstance(bundleInfo)
+                            val parentProductID = viewModel.parentProductID
+                            SingleProductBundleFragment.newInstance(parentProductID, bundleInfo)
                         } else {
                             MultipleProductBundleFragment.newInstance(bundleInfo)
                         }

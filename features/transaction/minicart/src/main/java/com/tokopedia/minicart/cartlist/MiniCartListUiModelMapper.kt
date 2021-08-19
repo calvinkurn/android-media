@@ -221,7 +221,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productPrice = cartDetail.product.productPrice
             productInformation = cartDetail.product.productInformation
             productNotes = cartDetail.product.productNotes
-            productQty = cartDetail.product.productQuantity
+            productQty = if (cartDetail.product.productSwitchInvenage == 0) {
+                cartDetail.product.productQuantity
+            } else {
+                min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
+            }
             productWeight = cartDetail.product.productWeight
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = if (cartDetail.product.productSwitchInvenage == 0) {

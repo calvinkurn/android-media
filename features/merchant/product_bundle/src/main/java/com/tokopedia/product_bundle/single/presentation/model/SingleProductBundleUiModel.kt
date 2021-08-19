@@ -28,14 +28,15 @@ data class SingleProductBundleItem (
 ) {
         val hasVariant: Boolean = (productVariant != null)
 
-        fun getProductVariant() = productVariant?.variants.orEmpty()
-
         fun getVariantChildFromProductId(productId: String) = productVariant?.children?.find {
                 it.productId == productId
         }
 }
 
 data class SingleProductBundleSelectedItem (
+        var bundleId: String = "",
         var productId: String = "",
+        val shopId: String = "",
+        val quantity: Int = 0,
         var isSelected: Boolean = false
 )
