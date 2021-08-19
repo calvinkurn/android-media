@@ -104,6 +104,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var isAddressListFlow: Boolean = false
     //flag variable to support warehous location, ex: for tokonow
     private var isSupportWarehouseLoc: Boolean = true
+    //flag variable to differentiate state from tokonow or not
+    private var isTokonow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +136,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         if (userSession.isLoggedIn) {
             initData()
         } else {
-            setViewState(false)
+            setViewState(userSession.isLoggedIn)
         }
     }
 
@@ -277,7 +279,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        viewModel.getChosenAddressList(source)
+        isTokonow = source.contains(TOKONOW, ignoreCase = true)
+        viewModel.getChosenAddressList(source, isTokonow)
     }
 
     private fun initObserver() {
@@ -285,7 +288,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             when (it) {
                 is Success -> {
                     adapter.updateData(it.data)
-                    setViewState(true)
+                    setViewState(userSession.isLoggedIn)
                 }
 
                 is Fail -> {
@@ -519,6 +522,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val IS_LOCALIZATION = "is_localization"
         const val IS_SUCCESS = "success"
         const val IS_NOT_SUCCESS = "not success"
+        const val TOKONOW = "tokonow"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399

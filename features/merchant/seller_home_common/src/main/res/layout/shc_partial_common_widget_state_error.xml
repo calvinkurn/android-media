@@ -8,22 +8,20 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgWidgetOnError"
         android:layout_width="@dimen/shc_dimen_110dp"
         android:layout_height="@dimen/shc_dimen_80dp"
-        tools:src="@drawable/unify_globalerrors_connection"
-        android:contentDescription="@string/shc_content_desc_image_error" />
+        android:contentDescription="@string/shc_content_desc_image_error"
+        tools:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:gravity="center"
         android:maxLines="1"
         android:text="@string/shc_failed_to_load_information"

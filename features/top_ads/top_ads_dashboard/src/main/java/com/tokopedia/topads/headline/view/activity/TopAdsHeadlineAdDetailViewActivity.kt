@@ -57,6 +57,7 @@ import kotlin.math.abs
 private const val click_edit_icon = "click - edit on detail iklan toko"
 private const val click_toggle_icon = "click - toggle on detail iklan toko"
 private const val view_detail_iklan = "view - detail iklan toko"
+private const val HEADLINE_DETAIL_PAGE = "topads.headlineDetail"
 class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener {
 
     private var dataStatistic: DataStatistic? = null
@@ -65,7 +66,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
-    private var priceDaily = 0
+    private var priceDaily = 0.0F
     private var groupTotal = 0
     private var isDataChanged = false
 
@@ -118,8 +119,12 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         loadStatisticsData()
     }
 
-    override fun renderGraph() {
+    override fun renderGraph(position: Int) {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun handleDateClick(customDateText: String) {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,25 +189,25 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
+        viewModel.getGroupInfo(resources, groupId.toString(), HEADLINE_DETAIL_PAGE, ::onSuccessGroupInfo)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
-        priceDaily = data.priceDaily
+        priceDaily = data.daiyBudget
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
         btn_switch.setOnCheckedChangeListener(this)
-        if (priceDaily == 0) {
+        if (priceDaily == 0.0F) {
             progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
             progress_status2.visibility = View.GONE
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
 
@@ -238,7 +243,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
         private fun loadStatisticsData() {
             if (startDate == null || endDate == null) return
-            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString())
+            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString(), 0)
         }
 
         private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
