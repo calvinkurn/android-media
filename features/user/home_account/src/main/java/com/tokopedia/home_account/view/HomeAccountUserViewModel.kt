@@ -122,10 +122,8 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private suspend fun getLinkStatus(): LinkStatusResponse {
-        val params = RequestParams.create().apply {
-            putString("linking_type", "account_linking")
-        }
-        return getLinkStatusUseCase.execute(params)
+        val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
+        return getLinkStatusUseCase(params)
     }
 
     fun getBuyerData() {

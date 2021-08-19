@@ -162,7 +162,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     private fun goToLinkPage() {
         activity?.run {
-            Toaster.build(requireView(), getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT) ?: "", Toaster.LENGTH_LONG).show()
+//            Toaster.build(requireView(), getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT) ?: "", Toaster.LENGTH_LONG).show()
             RouteManager.route(activity, ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
         }
     }
@@ -177,7 +177,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     companion object {
-        const val BASE_URL = "http://accounts.tokopedia.com/accounts-link/v1/gojek-auth"
+        const val BASE_URL = "https://accounts-staging.tokopedia.com/accounts-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
         fun getLinkAccountUrl(context: Context, redirectionApplink: String): String? {

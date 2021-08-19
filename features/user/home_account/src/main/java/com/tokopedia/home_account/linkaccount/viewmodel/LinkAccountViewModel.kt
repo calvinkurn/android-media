@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -21,7 +19,7 @@ import javax.inject.Inject
 
 class LinkAccountViewModel @Inject constructor(
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io), LifecycleObserver {
 
     private val _linkStatus = MutableLiveData<Result<LinkStatusResponse>>()
@@ -29,13 +27,9 @@ class LinkAccountViewModel @Inject constructor(
 
     fun getLinkStatus() {
         launchCatchError(block = {
-            val params = RequestParams.create().apply {
-                putString("linking_type", "account_linking")
-            }
+            val params = getLinkStatusUseCase.createParams(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
             val result = getLinkStatusUseCase(params)
-            withContext(dispatcher.main) {
-                _linkStatus.value = Success(result)
-            }
+            _linkStatus.postValue(Success(result))
         }, onError = {
             _linkStatus.postValue(Fail(it))
         })

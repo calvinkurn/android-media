@@ -1162,10 +1162,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     override fun onLinkingAccountClicked() {
-        Toaster.build(requireView(), LinkAccountFragment.getLinkAccountUrl(
-            requireActivity(),
-            ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
-        ) ?: "", Toaster.LENGTH_LONG).show()
+//        Toaster.build(requireView(), LinkAccountFragment.getLinkAccountUrl(
+//            requireActivity(),
+//            ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+//        ) ?: "", Toaster.LENGTH_LONG).show()
 
         RouteManager.route(activity, ApplinkConst.WEBVIEW,
             LinkAccountFragment.getLinkAccountUrl(requireContext(), ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
