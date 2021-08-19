@@ -10,7 +10,7 @@ data class ReviewGalleryUiModel(
     val feedbackId: String = "",
     val fullImageUrl: String = "",
     val reviewerName: String = "",
-    val isLiked: Boolean = false,
+    var isLiked: Boolean = false,
     val totalLiked: Long = 0L,
     val review: String = "",
     val reviewTime: String = "",

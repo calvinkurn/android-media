@@ -237,7 +237,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
                 shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
                 productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
-                isProductReview = get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true
+                isProductReview =
+                    get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true
             }
         }
     }
@@ -327,7 +328,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             productId
                         )
                     } else {
-                        ReviewImagePreviewTracking.trackOnShopReviewLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), shopId)
+                        ReviewImagePreviewTracking.trackOnShopReviewLikeReviewClicked(
+                            productReview.feedbackID,
+                            isLiked(productReview.likeDislike.likeStatus),
+                            shopId
+                        )
                     }
                     viewModel.toggleLikeReview(
                         productReview.feedbackID,
@@ -364,7 +369,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(toggleLikeReviewResponse) {
             updateLikeCount(totalLike)
             updateLikeButton(isLiked())
-            updateLikeStatus(likeStatus)
+            updateLikeStatus(reviewId, likeStatus)
             isLikeValueChange = true
         }
     }
@@ -399,7 +404,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         reviewImagePreviewDetail?.setLikeCount(totalLike.toString())
     }
 
-    private fun updateLikeStatus(likeStatus: Int) {
+    private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
+        if (isFromGallery) {
+            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.isLiked = isLiked(likeStatus)
+            return
+        }
         productReview.likeDislike = productReview.likeDislike.copy(likeStatus = likeStatus)
     }
 
@@ -431,7 +440,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         if (isProductReview) {
             ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
         } else {
-            ReviewImagePreviewTracking.trackOnShopReviewSeeAllClicked(productReview.feedbackID, productId)
+            ReviewImagePreviewTracking.trackOnShopReviewSeeAllClicked(
+                productReview.feedbackID,
+                productId
+            )
         }
         if (expandedReviewBottomSheet == null) {
             if (isFromGallery) {
@@ -536,12 +548,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             selectedReview.isLiked,
                             productId
                         )
-//                            viewModel.toggleLikeReview(
-//                                selectedReview.feedbackId,
-//                                shopId,
-//                                productId,
-//                                productReview.likeDislike.likeStatus
-//                            )
+                        viewModel.toggleLikeReview(
+                            selectedReview.feedbackId,
+                            shopId,
+                            productId,
+                            mapToLikeStatus(selectedReview.isLiked)
+                        )
                     }
                     setLikeButtonImage(selectedReview.isLiked)
                 }
@@ -563,7 +575,13 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             )
             return
         }
-        ReviewImagePreviewTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
+        ReviewImagePreviewTracking.trackShopReviewSwipeImage(
+            productReview.feedbackID,
+            previousIndex,
+            index,
+            productReview.imageAttachments.size,
+            shopId
+        )
     }
 
     private fun adjustPhotoCount(index: Int) {
@@ -575,5 +593,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun updateHasNextPage(hasNextPage: Boolean) {
         endlessScrollListener?.setHasNextPage(hasNextPage)
+    }
+
+    private fun mapToLikeStatus(isLiked: Boolean): Int {
+        return if (isLiked) LikeDislike.LIKED else 0
     }
 }
