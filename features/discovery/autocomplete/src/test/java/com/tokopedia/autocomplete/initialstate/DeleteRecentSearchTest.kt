@@ -71,7 +71,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have the deleted keyword in recent search`(item: BaseItemInitialStateSearch) {
-        val recentSearchDataView = slotDeletedVisitableList.captured.find { it is RecentSearchDataView } as RecentSearchDataView
+        val recentSearchDataView = slotDeletedVisitableList.last().find { it is RecentSearchDataView } as RecentSearchDataView
         assert(!recentSearchDataView.list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
@@ -94,7 +94,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have shop in recent search`(item: BaseItemInitialStateSearch) {
-        val newList = slotDeletedVisitableList.captured
+        val newList = slotDeletedVisitableList.last()
         assert(newList[3] is RecentSearchDataView) {
             "Should be RecentSearchDataView"
         }
@@ -123,7 +123,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list still have RecentSearchSeeMoreDataView`() {
-        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.last().find { it is RecentSearchSeeMoreDataView }
         assert(recentSearchSeeMoreDataView != null) {
             "Visitable list should have SeeMoreRecentSearchDataView"
         }
@@ -149,7 +149,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`() {
-        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.last().find { it is RecentSearchSeeMoreDataView }
         assert(recentSearchSeeMoreDataView == null) {
             "Visitable list should not have SeeMoreRecentSearchDataView"
         }
@@ -194,7 +194,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have recent search anymore`() {
-        val list = slotDeletedVisitableList.captured
+        val list = slotDeletedVisitableList.last()
         Assert.assertTrue(list[0] is RecentViewTitleDataView)
         Assert.assertTrue(list[1] is RecentViewDataView)
         Assert.assertTrue(list[2] is PopularSearchTitleDataView)
