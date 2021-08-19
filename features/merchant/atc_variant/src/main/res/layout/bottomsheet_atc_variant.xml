@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="base_atc_variant_re_button, base_atc_btn"/>
+        app:constraint_referenced_ids="shop_followers_container, base_atc_btn" />
 
     <include
         android:id="@+id/base_atc_btn"
@@ -37,15 +37,15 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
-    <include
+    <ViewStub
         android:id="@+id/base_atc_variant_re_button"
-        layout="@layout/layout_button_npl_follow"
+        android:inflatedId="@+id/shop_followers_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
-        android:visibility="gone"
-        tools:visibility="visible"
+        android:layout="@layout/layout_button_npl_follow"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

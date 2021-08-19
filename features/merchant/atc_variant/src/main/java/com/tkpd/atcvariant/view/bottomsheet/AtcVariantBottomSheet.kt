@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -91,7 +92,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 .build()
         AtcVariantAdapter(asyncDifferConfig, adapterFactory)
     }
-
     private var viewContent: View? = null
     private var nplFollowersButton: PartialButtonShopFollowersView? = null
 
@@ -154,7 +154,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
         viewContent?.let {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
-            nplFollowersButton = PartialButtonShopFollowersView.build(it.findViewById(R.id.base_atc_variant_re_button), this)
         }
         setChild(viewContent)
         setupRv(viewContent)
@@ -228,12 +227,23 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.restrictionData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    if (nplFollowersButton == null) {
+                        setupReViewStub()
+                    }
                     renderRestrictionBottomSheet(it.data)
                 }
                 is Fail -> {
                     nplFollowersButton?.setupVisibility = false
                 }
             }
+        }
+    }
+
+    private fun setupReViewStub() {
+        val viewRe: ViewStub? = viewContent?.findViewById(R.id.base_atc_variant_re_button)
+        val reView = viewRe?.inflate()
+        reView?.let {
+            nplFollowersButton = PartialButtonShopFollowersView.build(it, this)
         }
     }
 
