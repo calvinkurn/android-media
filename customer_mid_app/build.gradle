@@ -223,6 +223,9 @@ dependencies {
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk
 
+    //new relic sdk
+    implementation rootProject.ext.miscDependencies.newRelic
+
     // unify dependencies
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
