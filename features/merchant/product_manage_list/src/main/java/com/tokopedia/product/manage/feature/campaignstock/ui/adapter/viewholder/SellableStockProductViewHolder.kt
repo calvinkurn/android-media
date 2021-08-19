@@ -46,9 +46,9 @@ class SellableStockProductViewHolder (itemView: View?,
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
-            label_campaign_stock_inactive?.showWithCondition(!element.isActive)
+            label_campaign_stock_inactive?.visibleWithCondition(!element.isActive)
             ongoingPromotionCountText?.run {
-                showWithCondition(element.isCampaign)
+                visibleWithCondition(element.isCampaign)
                 if (element.isCampaign) {
                     element.campaignTypeList?.let { campaignList ->
                         text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
@@ -68,7 +68,7 @@ class SellableStockProductViewHolder (itemView: View?,
                         ProductStatus.INACTIVE
                     }
                     val shouldShowInactiveLabel = !isChecked || getInactivityByStock(element)
-                    this@with.label_campaign_stock_inactive?.showWithCondition(shouldShowInactiveLabel)
+                    this@with.label_campaign_stock_inactive?.visibleWithCondition(shouldShowInactiveLabel)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(
                         isVariant = true,
@@ -143,10 +143,10 @@ class SellableStockProductViewHolder (itemView: View?,
     }
 
     private fun showHideInactiveLabel(element: SellableStockProductUIModel) {
-        itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())
+        itemView.label_campaign_stock_inactive?.visibleWithCondition(getInactivityByStock(element) || getInactivityByStatus())
     }
 
-    private fun View.showWithCondition(isVisible: Boolean) {
+    private fun View.visibleWithCondition(isVisible: Boolean) {
         visibility =
             if (isVisible) {
                 View.VISIBLE
