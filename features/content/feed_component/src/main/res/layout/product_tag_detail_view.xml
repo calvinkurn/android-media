@@ -40,7 +40,7 @@
         android:src="@drawable/ic_down"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_expanded_card"
-        android:contentDescription="@string/content_product_tag_up"
+        android:contentDescription="@string/content_product_tag_down"
         tools:visibility="visible"
         />
     <androidx.cardview.widget.CardView

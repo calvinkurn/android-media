@@ -24,6 +24,8 @@ private const val PRODUCT_DOT_TIMER = 4000L
 private const val PRODUCT_DOT_ONE_SEC = 1000L
 private const val POSITION_TOP = 1
 private const val POSITION_BOTTOM = 2
+private const val POINTER_HEIGHT = 8
+private const val BUBBLE_HEIGHT = 52
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
@@ -128,9 +130,9 @@ class PostTagView @JvmOverloads constructor(
            bubbleMarginStart = setProductTagBubbleStartMargin(w)
 
             if (position == POSITION_BOTTOM) {
-                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop + 8.toPx(), 0, 0)
+                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop + POINTER_HEIGHT.toPx(), 0, 0)
             } else {
-                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop - 52.toPx(), 0, 0)
+                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop - BUBBLE_HEIGHT.toPx(), 0, 0)
             }
 
             productTagExpandedView.setOnClickListener {
