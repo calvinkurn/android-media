@@ -689,7 +689,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         feedMedia.isImageImpressedFirst = true
                         var width = 0
                         var height = 0
-                        var isInflatedBubbleShowing = false
 
                         val imageItem = getImageView()
                         feedMedia.imageView = imageItem
@@ -699,7 +698,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
                                 products.isNotEmpty()
                             )
-
 
                             val bitmapDrawable = postImage.drawable.toBitmap()
                             width = bitmapDrawable.width
@@ -715,14 +713,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 )
                             )
                             feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
-                                val productTagView = PostTagView(context)
+                                val productTagView = PostTagView(context, feedXMediaTagging)
 
+                                productTagView.postDelayed({
                                     productTagView.bindData(listener,
-                                        feedXMediaTagging,
                                         products,
                                         width,
                                         height,
                                         positionInFeed)
+
+                                }, TIME_SECOND)
 
 
                                 layout.addView(productTagView)
@@ -732,27 +732,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 positionInFeed,
                                 pageControl.indicatorCurrentPosition
                             )
-                            productTagText.postDelayed({
-                                if (products.isNotEmpty()) {
-                                    productTagText.apply {
-                                        visible()
-                                        animate().alpha(1f).start()
-                                    }
-                                }
-
-                            }, TIME_SECOND)
-                            productTagText.postDelayed({
-                                if (productTagText.isVisible) {
-                                    productTagText.apply {
-                                        if (!isInflatedBubbleShowing) {
-                                            gone()
-                                            animate().alpha(0f)
-                                        }
-                                    }
-                                }
-
-                            }, TIME_FOUR_SEC)
-
 
                             val gd = GestureDetector(
                                 context,
@@ -771,7 +750,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             if (view is PostTagView) {
                                                 val item = (view as PostTagView)
                                                 productTagBubbleShowing = item.showExpandedView()
-                                                isInflatedBubbleShowing = item.getExandedViewVisibility()
                                             }
                                         }
                                         if (!productTagText.isVisible) {
@@ -1255,11 +1233,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindImage(products: List<FeedXProduct>, media: FeedXMedia) {
+        var isInflatedBubbleShowing = false
         val imageItem = media.imageView
         imageItem?.run {
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
+            val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+
             productTagText.gone()
+            for (i in 0 until layout.childCount) {
+                var view = layout.getChildAt(i)
+                if (view is PostTagView) {
+                    val item = (view as PostTagView)
+                    item.resetView()
+                }
+            }
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
@@ -1275,8 +1263,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 handlerHide = Handler(Looper.getMainLooper())
             handlerHide?.postDelayed({
                 productTagText.apply {
-                    gone()
-                    animate().alpha(0f).start()
+                    if (!shouldContinueToShowLihatProduct(layout)) {
+                        gone()
+                        animate().alpha(0f).start()
+                    }
                 }
             }, TIME_FOUR_SEC)
         }
@@ -1300,5 +1290,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         videoItem?.layoutParams = param
         return videoItem
+    }
+
+    private fun shouldContinueToShowLihatProduct(layout: ConstraintLayout) : Boolean{
+        var isInflatedBubbleShowing = false
+        for (i in 0 until layout.childCount) {
+            var view = layout.getChildAt(i)
+            if (view is PostTagView) {
+                val item = (view as PostTagView)
+                isInflatedBubbleShowing = item.getExpandedViewVisibility()
+            }
+        }
+        return isInflatedBubbleShowing
     }
 }

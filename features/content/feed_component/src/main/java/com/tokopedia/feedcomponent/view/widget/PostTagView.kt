@@ -27,6 +27,7 @@ private const val POSITION_BOTTOM = 2
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
+    feedXMediaTagging: FeedXMediaTagging,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
@@ -52,6 +53,7 @@ class PostTagView @JvmOverloads constructor(
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
+        this.feedXTag = feedXMediaTagging
         val view =
             LayoutInflater.from(context).inflate(R.layout.product_tag_detail_view, this, true)
         val params = LinearLayout.LayoutParams(
@@ -75,19 +77,17 @@ class PostTagView @JvmOverloads constructor(
     }
     fun bindData(
         dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
-        feedXMediaTagging: FeedXMediaTagging,
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
         positionInFeed: Int
     ) {
         this.listener = dynamicPostListener
-        this.dotMarginStart = convertDpToPixel((width * feedXMediaTagging.posX), context)
-        this.dotMarginTop = convertDpToPixel((height * (1 - feedXMediaTagging.posY)), context)
+        this.dotMarginStart = convertDpToPixel((width * feedXTag.posX), context)
+        this.dotMarginTop = convertDpToPixel((height * (1 - feedXTag.posY)), context)
         this.postImageHeight = height
         this.postImageWidth = convertDpToPixel(width.toFloat(), context)
-        this.feedXTag = feedXMediaTagging
-        val product = products[feedXMediaTagging.tagIndex]
+        val product = products[feedXTag.tagIndex]
 
         productViewName.text = product.name
 
@@ -112,18 +112,6 @@ class PostTagView @JvmOverloads constructor(
             0,
             0
         )
-        productTagDot.postDelayed({
-            productTagDot.apply {
-                visible()
-            }
-        }, PRODUCT_DOT_ONE_SEC)
-        finalPointerView.invisible()
-        productTagExpandedView.invisible()
-        productTagDot.postDelayed({
-            productTagDot.apply {
-                gone()
-            }
-        }, PRODUCT_DOT_TIMER)
 
         finalPointerView.doOnLayout {
             finalPointerView.setMargin(
@@ -149,6 +137,9 @@ class PostTagView @JvmOverloads constructor(
                 listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
             }
         }
+        productTagDot.invisible()
+        productTagExpandedView.invisible()
+        finalPointerView.invisible()
 
     }
 
@@ -170,7 +161,7 @@ class PostTagView @JvmOverloads constructor(
 
     }
 
-    fun getExandedViewVisibility(): Boolean {
+    fun getExpandedViewVisibility(): Boolean {
         return productTagExpandedView.isVisible
 
     }
@@ -198,6 +189,26 @@ class PostTagView @JvmOverloads constructor(
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             visible()
         }
+    }
+
+    fun resetView(){
+        if (productTagExpandedView.isVisible && finalPointerView.isVisible){
+            productTagExpandedView.hide()
+            finalPointerView.hide()
+        }
+
+        if (!productTagDot.isVisible)
+            productTagDot.postDelayed({
+                productTagDot.apply {
+                    visible()
+                }
+            }, PRODUCT_DOT_ONE_SEC)
+
+        productTagDot.postDelayed({
+            productTagDot.apply {
+                gone()
+            }
+        }, PRODUCT_DOT_TIMER)
     }
 }
 
