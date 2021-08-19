@@ -78,6 +78,7 @@ class InstallmentDetailBottomSheet {
                     }
                     viewInstallmentDetailItem.root.alpha = 1.0f
                 }
+                binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
             }
             if (creditCardTenorListData.tenorList.size > 1) {
                 binding.tvInstallmentMessage.gone()
@@ -109,7 +110,6 @@ class InstallmentDetailBottomSheet {
                     viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                     viewInstallmentDetailItem.root.alpha = 0.5f
                 }
-                binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
             }
             if (installmentDetails.size > 1) {
                 binding.tvInstallmentMessage.gone()
