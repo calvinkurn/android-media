@@ -8,7 +8,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastStateListener
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -148,7 +147,7 @@ class PlayViewModel @Inject constructor(
         get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE, true)
 
     private val isInteractiveAllowed: Boolean
-        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral && isInteractiveRemoteConfigEnabled
+        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
 
@@ -715,7 +714,7 @@ class PlayViewModel @Inject constructor(
                 castPlayerHelper.castPlay(
                     channelId = channelData.id,
                     title = videoStream.title,
-                    partnerName = channelData.partnerInfo.basicInfo.name,
+                    partnerName = channelData.partnerInfo.name,
                     coverUrl = channelData.channelInfo.coverUrl,
                     videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
                                     channelData.videoMetaInfo.videoPlayer.params.videoUrl
