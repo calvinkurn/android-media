@@ -10,15 +10,14 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
+import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
+import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
-import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
-import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -35,6 +34,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
@@ -43,8 +43,12 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketClosedReason
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import java.util.*
@@ -72,7 +76,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val playSocket: PlayBroadcastSocket,
+        private val playBroadcastWebSocket: PlayBroadcastWebSocket,
         private val playBroadcastMapper: PlayBroadcastMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
@@ -208,6 +212,8 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, viewModelScope)
     private var isLiveStarted: Boolean = false
+
+    private var socketJob: Job? = null
 
     init {
         _observableChatList.value = mutableListOf()
@@ -410,7 +416,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun stopLiveStream(shouldNavigate: Boolean = false) {
-        playSocket.destroy()
+        closeWebSocket()
         countDownTimer.stop()
         livePusher.stop()
         livePusher.stopPreview()
@@ -508,16 +514,24 @@ class PlayBroadcastViewModel @Inject constructor(
             }.executeOnBackground()
 
             val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
-            when (val status = currentInteractive.timeStatus) {
-                is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(timeToStartInMs = status.timeToStartInMs, durationInMs = status.interactiveDurationInMs, title = currentInteractive.title)
-                is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
-                is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
-                else -> {
-                    _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-                }
-            }
+            handleActiveInteractive(currentInteractive)
         } catch (e: Throwable) {
             _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+        }
+    }
+
+    private suspend fun handleActiveInteractive(interactive: PlayCurrentInteractiveModel) {
+        when (val status = interactive.timeStatus) {
+            is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
+                timeToStartInMs = status.timeToStartInMs,
+                durationInMs = status.interactiveDurationInMs,
+                title = interactive.title
+            )
+            is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
+            is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
+            else -> {
+                _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+            }
         }
     }
 
@@ -583,50 +597,75 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun startWebSocket() {
         viewModelScope.launch {
-            val socketCredential =  withContext(dispatcher.io) {
-                return@withContext getSocketCredentialUseCase.executeOnBackground()
+            val socketCredential = try {
+                withContext(dispatcher.io) {
+                    return@withContext getSocketCredentialUseCase.executeOnBackground()
+                }
+            } catch (e: Throwable) {
+                GetSocketCredentialResponse.SocketCredential()
             }
 
-            playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
+            socketJob = launch {
+                playBroadcastWebSocket.listenAsFlow()
+                    .collect {
+                        handleWebSocketResponse(it, channelId, socketCredential)
+                    }
+            }
 
-        fun connectWebSocket(): Job = viewModelScope.launch(dispatcher.io) {
-            playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
-            playSocket.socketInfoListener(object : PlaySocketInfoListener{
-                override fun onReceive(data: PlaySocketType) {
-                    when(data) {
-                        is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(data))
-                        is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(data)
-                        is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(data)
-                        is LiveDuration -> restartLiveDuration(data)
-                        is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(data))
-                        is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(data))
-                        is Freeze -> {
-                            if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
-                                val eventUiModel = playBroadcastMapper.mapFreezeEvent(data, _observableEvent.value)
-                                if (eventUiModel.freeze) {
-                                    stopLiveStream()
-                                    _observableEvent.value = eventUiModel
-                                }
-                            }
-                        }
-                        is Banned -> {
-                            if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
-                                val eventUiModel = playBroadcastMapper.mapBannedEvent(data, _observableEvent.value)
-                                if (eventUiModel.banned) {
-                                    stopLiveStream()
-                                    _observableEvent.value = eventUiModel
-                                }
-                            }
-                        }
+            connectWebSocket(channelId,socketCredential)
+        }
+    }
+
+    private fun connectWebSocket(channelId: String, socketCredential: GetSocketCredentialResponse.SocketCredential) {
+        playBroadcastWebSocket.connectSocket(channelId, socketCredential.gcToken)
+    }
+
+    private fun closeWebSocket() {
+        playBroadcastWebSocket.close()
+        socketJob?.cancel()
+    }
+
+    private suspend fun handleWebSocketResponse(
+        response: WebSocketAction,
+        channelId: String,
+        socketCredential: GetSocketCredentialResponse.SocketCredential
+    ) {
+        when (response) {
+            is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message)
+            is WebSocketAction.Closed -> if (response.reason == WebSocketClosedReason.Error) connectWebSocket(channelId, socketCredential)
+        }
+    }
+
+    private suspend fun handleWebSocketMessage(message: WebSocketResponse) {
+        val result = withContext(dispatcher.computation) {
+            val socketMapper = PlayBroadcastWebSocketMapper(message)
+            socketMapper.map()
+        }
+        when(result) {
+            is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
+            is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
+            is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
+            is LiveDuration -> restartLiveDuration(result)
+            is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
+            is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
+            is Freeze -> {
+                if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
+                    val eventUiModel = playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
+                    if (eventUiModel.freeze) {
+                        stopLiveStream()
+                        _observableEvent.value = eventUiModel
                     }
                 }
-
-                    override fun onError(throwable: Throwable) {
-                        connectWebSocket()
-                    }
-                })
             }
-            connectWebSocket()
+            is Banned -> {
+                if (_observableLiveDurationState.value !is PlayTimerState.Finish) {
+                    val eventUiModel = playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
+                    if (eventUiModel.banned) {
+                        stopLiveStream()
+                        _observableEvent.value = eventUiModel
+                    }
+                }
+            }
         }
     }
 
