@@ -41,6 +41,7 @@ data class CartItemHolderData(
         var maxNotesLength: Int = 0,
         var isBundlingItem: Boolean = false,
         var bundlingItemPosition: Int = 0,
+        var bundleId: String = "",
         var bundleImageUrl: String = "",
         var bundleTitle: String = "",
         var bundlePrice: Long = 0L,

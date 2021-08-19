@@ -1,11 +1,13 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.PromoSummaryData
@@ -74,6 +76,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val followShopUseCase: FollowShopUseCase,
+                                            private val addToCartBundleUseCase: AddToCartBundleUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null

@@ -1065,12 +1065,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?) {
+    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin()
         val cartItemDatas = mutableListOf<CartItemHolderData>()
-        cartItemHolderData?.let {
-            cartItemDatas.add(it)
-        }
+        cartItemDatas.add(cartItemHolderData)
         val allCartItemDataList = cartAdapter.allCartItemData
 
         if (cartItemDatas.size > 0) {
@@ -1093,12 +1091,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.resetQuantity(position, parentPosition)
     }
 
-    override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData?) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData?.productName
-                ?: "")
-        cartItemHolderData?.productId?.let {
-            routeToProductDetailPage(it)
-        }
+    override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        routeToProductDetailPage(cartItemHolderData.productId)
     }
 
     override fun onDisabledCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1621,10 +1616,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityInputFormClicked(qty: String?) {
-        qty?.let {
-            cartPageAnalytics.eventClickAtcCartClickInputQuantity(it)
-        }
+    override fun onCartItemQuantityInputFormClicked(qty: String) {
+        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
     }
 
     override fun onCartItemLabelInputRemarkClicked() {
@@ -1632,13 +1625,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean) {
+        cartAdapter.setItemSelected(position, parentPosition, !checked)
+        updateStateAfterCheckChanged()
+    }
+
+    private fun updateStateAfterCheckChanged() {
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
         setCheckboxGlobalState()
         setGlobalDeleteVisibility()
-
         validateGoToCheckout()
-        cartAdapter.setItemSelected(position, parentPosition, checked)
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
@@ -1647,6 +1643,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
+    }
+
+    override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
+        cartShopHolderData?.let {
+            it.productUiModelList.forEachIndexed { index, data ->
+                if (data.bundleId == cartItemHolderData.bundleId) {
+                    cartAdapter.setItemSelected(index, parentPosition, !cartItemHolderData.isSelected)
+                }
+            }
+            updateStateAfterCheckChanged()
+        }
     }
 
     private fun setCheckboxGlobalState() {
@@ -1674,16 +1682,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String?, cartId: String?, imageView: ImageView?) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId
-                ?: "")
-        imageView?.let {
-            setProductImageAnimationData(it, false)
-        }
-
+    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+        setProductImageAnimationData(imageView, false)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId ?: "", cartId
-                ?: "", isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -3122,13 +3125,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean?) {
+    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean) {
         validateGoToCheckout()
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
-        } else if (isTokoNow == true) {
+        } else if (isTokoNow) {
             if (tokoNowProductUpdater == null) {
                 compositeSubscription.add(
                         Observable.create({ e: Emitter<Boolean> ->
@@ -3283,13 +3286,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         // No-op
     }
 
-    override fun onCartItemShowRemainingQty(productId: String?) {
-        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId ?: "")
+    override fun onCartItemShowRemainingQty(productId: String) {
+        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId)
     }
 
-    override fun onCartItemShowInformationLabel(productId: String?, informationLabel: String?) {
-        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId
-                ?: "", informationLabel ?: "")
+    override fun onCartItemShowInformationLabel(productId: String, informationLabel: String) {
+        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId, informationLabel)
     }
 
     override fun reCollapseExpandedDeletedUnavailableItems() {
@@ -3320,6 +3322,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         return null
+    }
+
+    override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
+        routeToApplink(cartItemHolderData.editBundleApplink)
     }
 
 }

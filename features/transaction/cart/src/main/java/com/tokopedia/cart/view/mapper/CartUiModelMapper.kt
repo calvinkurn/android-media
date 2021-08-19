@@ -123,8 +123,8 @@ object CartUiModelMapper {
                 }
                 maximumWeightWording = availableGroup.shop.maximumWeightWording
                 maximumShippingWeight = availableGroup.shop.maximumShippingWeight
-                isAllSelected = cartData.isGlobalCheckboxState
-                isCollapsible = cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
+                isAllSelected = availableGroup.checkboxState
+                isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
@@ -300,6 +300,7 @@ object CartUiModelMapper {
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = cartDetail.bundleDetail.bundleMaxOrder
                 quantity = cartDetail.bundleDetail.bundleQty
+                bundleId = cartDetail.bundleDetail.bundleId
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel

@@ -353,7 +353,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val extraWeight = (currentWeight - maximumWeight) / 1000
             val descriptionText = cartShopHolderData.maximumWeightWording
             if (extraWeight > 0 && descriptionText.isNotEmpty()) {
-                with(binding.llWarningAndError) {
+                with(binding) {
                     tickerWarning.tickerTitle = null
                     tickerWarning.setTextDescription(descriptionText.replace(CartShopHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
                     tickerWarning.tickerType = TYPE_WARNING
@@ -361,20 +361,19 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     tickerWarning.closeButtonVisibility = View.GONE
                     tickerWarning.show()
                     tickerWarning.post {
-                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        binding.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        binding.llWarningAndError.tickerWarning.requestLayout()
+                        binding.tickerWarning.requestLayout()
                     }
-                    layoutError.gone()
-                    layoutWarning.show()
-                    root.show()
                 }
             } else {
-                with(binding.llWarningAndError) {
+                with(binding) {
                     tickerWarning.gone()
-                    layoutWarning.gone()
-                    root.gone()
                 }
+            }
+        } else {
+            with(binding) {
+                tickerWarning.gone()
             }
         }
     }
@@ -383,11 +382,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val position = adapterPosition
         if (position != RecyclerView.NO_POSITION) {
             binding.rvCartItem.post {
-                if (binding.llWarningAndError.tickerWarning.isVisible) {
-                    binding.llWarningAndError.tickerWarning.post {
+                if (binding.tickerWarning.isVisible) {
+                    binding.tickerWarning.post {
                         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
                                 ?: 0
-                        val tickerHeight = binding.llWarningAndError.tickerWarning.height
+                        val tickerHeight = binding.tickerWarning.height
                         val totalOffset = calculateScrollOffset(productIndex, tickerHeight + paddingOffset)
                         actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
                     }

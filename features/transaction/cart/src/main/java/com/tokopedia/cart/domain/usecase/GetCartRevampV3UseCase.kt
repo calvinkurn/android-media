@@ -833,7 +833,7 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
                       "message": ""
                     },
                     "has_promo_list": false,
-                    "checkbox_state": false
+                    "checkbox_state": true
                   },
                   {
                     "user_address_id": 0,
@@ -1154,7 +1154,7 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
                       "message": ""
                     },
                     "has_promo_list": false,
-                    "checkbox_state": false
+                    "checkbox_state": true
                   }
                 ]
               },
@@ -1179,7 +1179,7 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
                 "description": "Gunakan promo Tokopedia",
                 "quantity_label": ""
               },
-              "global_checkbox_state": false,
+              "global_checkbox_state": true,
               "tickers": [],
               "hashed_email": "984b8b5cb46134207c1808c6a04e29e8",
               "promo": {

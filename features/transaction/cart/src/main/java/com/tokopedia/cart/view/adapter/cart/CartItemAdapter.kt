@@ -66,22 +66,24 @@ class CartItemAdapter(private val actionListener: ActionListener,
     }
 
     interface ActionListener {
-        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?)
+        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
         fun onCartItemQuantityReseted(position: Int, parentPosition: Int)
-        fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData?)
-        fun onCartItemQuantityInputFormClicked(qty: String?)
+        fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
+        fun onCartItemQuantityInputFormClicked(qty: String)
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)
-        fun onWishlistCheckChanged(productId: String?, cartId: String?, imageView: ImageView?)
+        fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int)
+        fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView)
         fun onNeedToRefreshSingleShop(parentPosition: Int)
         fun onNeedToRefreshWeight(parentPosition: Int)
         fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
-        fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean?)
+        fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean)
         fun onEditNoteDone(position: Int)
-        fun onCartItemShowRemainingQty(productId: String?)
-        fun onCartItemShowInformationLabel(productId: String?, informationLabel: String?)
+        fun onCartItemShowRemainingQty(productId: String)
+        fun onCartItemShowInformationLabel(productId: String, informationLabel: String)
+        fun onEditBundleClicked(cartItemHolderData: CartItemHolderData)
     }
 }
