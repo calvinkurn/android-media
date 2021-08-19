@@ -181,10 +181,10 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
-//    @Override
-//    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-//        return null;
-//    }
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        return null;
+    }
 
     @Override
     public void onAppsFlyerInit() {
