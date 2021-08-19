@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -230,7 +231,8 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun bindHeaderBody(attachment: HeaderCtaButtonAttachment) {
-        setMessage(attachment.ctaButton.body)
+        val htmlMsg = MethodChecker.fromHtml(attachment.ctaButton.body)
+        setMessage(htmlMsg)
     }
 
     private fun bindHeaderTitle(attachment: HeaderCtaButtonAttachment) {
