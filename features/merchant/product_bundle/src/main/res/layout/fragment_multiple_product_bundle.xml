@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@id/rv_product_bundle_master" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_sold_product_bundle"
+        android:id="@+id/tv_po_process_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/unify_space_16"
@@ -44,7 +44,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sold_product_bundle" />
+        app:layout_constraintTop_toBottomOf="@id/tv_po_process_day" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/du_bottom"

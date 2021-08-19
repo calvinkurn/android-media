@@ -33,7 +33,11 @@ class ProductBundleViewModel @Inject constructor(
         private const val PRODUCT_BUNDLE_STATUS_UPCOMING = 2
         private const val PRODUCT_BUNDLE_STATUS_EXPIRED = -2
         private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
+        private const val PREORDER_TYPE_DAY: Int = 1
+        private const val PREORDER_TYPE_MONTH: Int = 2
     }
+
+    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
@@ -66,23 +70,31 @@ class ProductBundleViewModel @Inject constructor(
         })
     }
 
+    fun getDefaultProductBundleSelection(productBundleMasters: List<ProductBundleMaster>): ProductBundleMaster? {
+        return productBundleMasters.firstOrNull()
+    }
+
     fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
         this.selectedProductBundleMasterLiveData.value = productBundleMaster
     }
 
-    fun getSoldProductBundle(): Int {
-        return this.selectedProductBundleMasterLiveData.value?.soldProductBundle ?: 0
+    fun getPreOrderProcessDay(): Long {
+        return this.selectedProductBundleMasterLiveData.value?.processDay ?: 0L
+    }
+
+    fun getTimeUnitWording(processTypeNum: Int): String {
+        return ""
     }
 
     fun addProductBundleToCart() {
-        // simulate error response from the API
-        isErrorLiveData.value = true
+
     }
 
     fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
         return ProductBundleMaster(
             bundleId = bundleInfo.bundleID,
-            bundleName = bundleInfo.name
+            bundleName = bundleInfo.name,
+            processDay = bundleInfo.preorder.processDay
         )
     }
 
@@ -99,6 +111,18 @@ class ProductBundleViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun updateProductBundleMap(bundleMaster: ProductBundleMaster, bundleDetail: List<ProductBundleDetail>) {
+        productBundleMap[bundleMaster] = bundleDetail
+    }
+
+    fun getProductBundleMasters(): List<ProductBundleMaster> {
+        return productBundleMap.keys.toList()
+    }
+
+    fun getProductBundleDetail(productBundleMaster: ProductBundleMaster): List<ProductBundleDetail>? {
+        return productBundleMap[productBundleMaster]
     }
 
     fun isSingleProductBundle(bundleInfo: List<BundleInfo>): Boolean {
@@ -125,9 +149,5 @@ class ProductBundleViewModel @Inject constructor(
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {
         return originalPrice - bundlePrice
-    }
-
-    fun isProductBundleSoldOut() {
-
     }
 }
