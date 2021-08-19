@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.R
+import com.tokopedia.unifyprinciples.Typography
 
 private const val DEFAULT_HEIGHT = 56f
 private const val DEFAULT_ICON_PADDING = 2
@@ -312,7 +313,7 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.addView(imageContainer)
 
             // add text view to show title
-            val title = TextView(context)
+            val title = Typography(context)
             title.maxLines = 1
             title.ellipsize = TextUtils.TruncateAt.END;
             title.layoutParams = txtLayoutParam
