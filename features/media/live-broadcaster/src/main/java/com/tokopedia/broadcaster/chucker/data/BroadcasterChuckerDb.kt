@@ -31,7 +31,7 @@ abstract class BroadcasterChuckerDb : RoomDatabase() {
                     context.applicationContext,
                     BroadcasterChuckerDb::class.java,
                     databaseName
-                ).build().also {
+                ).fallbackToDestructiveMigration().build().also {
                     instance = it
                 }
             }
