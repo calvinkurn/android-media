@@ -46,6 +46,10 @@ class SingleProductBundleViewModel @Inject constructor(
     val dialogError: LiveData<SingleProductBundleDialogModel>
         get() = mDialogError
 
+    private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val pageError: LiveData<SingleProductBundleErrorEnum>
+        get() = mPageError
+
     fun setBundleInfo(
         context: Context,
         bundleInfo: List<BundleInfo>,
@@ -57,8 +61,10 @@ class SingleProductBundleViewModel @Inject constructor(
 
         if (bundleModel.items.isEmpty()) {
             mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+            mPageError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
         } else {
             mSingleProductBundleUiModel.value = bundleModel
+            mPageError.value = SingleProductBundleErrorEnum.NO_ERROR
         }
     }
 

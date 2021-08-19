@@ -14,10 +14,13 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -26,6 +29,7 @@ import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
+import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -49,6 +53,7 @@ class SingleProductBundleFragment(
     private var tvBundleSold: Typography? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var totalAmount: TotalAmount? = null
+    private var geBundlePage: GlobalError? = null
     private var adapter = SingleProductBundleAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,12 +72,14 @@ class SingleProductBundleFragment(
         setupTotalSold(view)
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
+        setupGlobalError(view)
 
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
         observeAddToCartResult()
         observeToasterError()
         observeDialogError()
+        observePageError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -173,12 +180,22 @@ class SingleProductBundleFragment(
                 dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
                 setSecondaryCTAClickListener { dismiss() }
                 setPrimaryCTAClickListener {
-                    //TODO("Add refresh page function")
+                    refreshPage()
                 }
             }.let {
                 it.setTitle(dialogStruct.title.orEmpty())
                 it.show()
             }
+        })
+    }
+
+    private fun observePageError() {
+        viewModel.pageError.observe(viewLifecycleOwner, { errorType ->
+            val isError = errorType != SingleProductBundleErrorEnum.NO_ERROR
+            geBundlePage?.isVisible = isError
+            swipeRefreshLayout?.isVisible = !isError
+            tvBundleSold?.isVisible = !isError
+            totalAmount?.isVisible = !isError
         })
     }
 
@@ -212,6 +229,19 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun setupGlobalError(view: View) {
+        geBundlePage = view.findViewById(R.id.ge_bundle_page)
+        geBundlePage?.apply {
+            errorIllustration.loadImageWithoutPlaceholder(BUNDLE_EMPTY_IMAGE_URL)
+            errorTitle.text = getString(R.string.single_bundle_error_bundle)
+            errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
+            errorAction.text = getString(R.string.action_back_to_pdp)
+            errorAction.setOnClickListener {
+                refreshPage()
+            }
+        }
+    }
+
     private fun updateTotalPO(totalPOWording: String?) {
         tvBundleSold?.isVisible = totalPOWording != null
         tvBundleSold?.text = getString(R.string.preorder_prefix, totalPOWording)
@@ -223,6 +253,11 @@ class SingleProductBundleFragment(
             setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
             setSubtitleText(context.getString(R.string.text_saving), priceGap)
         }
+    }
+
+    private fun refreshPage() {
+        val productBundleActivity = requireActivity() as ProductBundleActivity
+        productBundleActivity.refreshPage()
     }
 
     companion object {
