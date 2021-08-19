@@ -380,6 +380,7 @@ class ProductTabFragment : BaseDaggerFragment() {
                     groupFilterSheet.getSelectedStatusId(), groupFilterSheet.getSelectedAdPlacementType())
         }
         setFilterCount()
+        (activity as TopAdsGroupDetailViewActivity).getBidForKeywords(adIds)
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
     }
 
