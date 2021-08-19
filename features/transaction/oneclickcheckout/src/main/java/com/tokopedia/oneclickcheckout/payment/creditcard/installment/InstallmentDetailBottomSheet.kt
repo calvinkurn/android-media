@@ -55,25 +55,26 @@ class InstallmentDetailBottomSheet {
         val inflater = LayoutInflater.from(fragment.context)
         val viewInstallmentDetailItem = ItemInstallmentDetailBinding.inflate(inflater)
         if (creditCard.isAfpb) {
-            creditCardTenorListData.tenorList.forEach { tenor ->
-                if (tenor.type.equals(CC_TYPE_TENOR_FULL, true)) {
+            for (i in creditCardTenorListData.tenorList.lastIndex downTo 0) {
+                val installmentAfpb = creditCardTenorListData.tenorList[i]
+                if (installmentAfpb.type.equals(CC_TYPE_TENOR_FULL, true)) {
                     viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
-                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount.toDouble(), false).removeDecimalSuffix()
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.amount.toDouble(), false).removeDecimalSuffix()
                 } else {
-                    viewInstallmentDetailItem.tvInstallmentDetailName.text = "${tenor.type}x Cicilan 0%"
-                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount.toDouble(), false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.tvInstallmentDetailName.text = "${installmentAfpb.type}x Cicilan 0%"
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.amount.toDouble(), false).removeDecimalSuffix())
                 }
 
-                if (tenor.disable) {
-                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = tenor.desc
+                if (installmentAfpb.disable) {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = installmentAfpb.desc
                     viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
                     viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                     viewInstallmentDetailItem.root.alpha = 0.5f
                 } else {
-                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.fee.toDouble(), false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.fee.toDouble(), false).removeDecimalSuffix())
                     viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
                     viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-                        listener.onSelectInstallment(mapAfpbToInstallmentTerm(tenor))
+                        listener.onSelectInstallment(mapAfpbToInstallmentTerm(installmentAfpb))
                         dismiss()
                     }
                     viewInstallmentDetailItem.root.alpha = 1.0f
@@ -110,6 +111,7 @@ class InstallmentDetailBottomSheet {
                     viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                     viewInstallmentDetailItem.root.alpha = 0.5f
                 }
+                binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
             }
             if (installmentDetails.size > 1) {
                 binding.tvInstallmentMessage.gone()
