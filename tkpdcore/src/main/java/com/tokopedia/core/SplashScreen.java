@@ -17,7 +17,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -38,8 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import timber.log.Timber;
-
 
 /**
  * modified by m.normansyah
@@ -53,7 +50,6 @@ public class SplashScreen extends AppCompatActivity {
     public static final int DATABASE_VERSION = 7;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
-    private PasswordGenerator Pgenerator;
     protected View decorView;
 
     protected RemoteConfig remoteConfig;
@@ -113,22 +109,12 @@ public class SplashScreen extends AppCompatActivity {
             messageMap.put("fingerprint", Build.FINGERPRINT);
             ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
         }
-        Pgenerator = new PasswordGenerator(SplashScreen.this);
-        InitNew();
         registerFCMDeviceID(status);
         return true;
     }
 
     protected void moveToHome() {
         finishSplashScreen();
-    }
-
-    private void InitNew() {
-        if (Pgenerator.getAppId() == null) {
-            Pgenerator.generateAPPID(status -> {
-
-            });
-        }
     }
 
     private GCMHandlerListener getGCMHandlerListener() {
@@ -188,17 +174,17 @@ public class SplashScreen extends AppCompatActivity {
                         if (!TextUtils.isEmpty(deeplink)) {
                             // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
                             // because we need tracking UTM for those notification applink
-                            String tokopediaDeeplink;
-                            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                                tokopediaDeeplink = deeplink;
-                            } else {
-                                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
-                            }
+                            String tokopediaDeeplink = deeplink;
                             Intent intent = new Intent();
-                            if (URLUtil.isNetworkUrl(tokopediaDeeplink)) {
+                            if (URLUtil.isNetworkUrl(deeplink)) {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                             } else {
+                                if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                                    tokopediaDeeplink = deeplink;
+                                } else {
+                                    tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                                }
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
