@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.domain
 
 import com.google.gson.Gson
 import com.tokopedia.mediauploader.MockUploaderResponse
-import com.tokopedia.mediauploader.data.UploaderServices
+import com.tokopedia.mediauploader.data.FileUploadServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.usecase.RequestParams
@@ -30,7 +30,7 @@ class MediaUploaderUseCaseTest: Spek({
 
     Feature("data policy use case") {
 
-        val services = mockk<UploaderServices>()
+        val services = mockk<FileUploadServices>()
         val useCase = MediaUploaderUseCase(services)
 
         useCase.progressCallback = object : ProgressCallback {
@@ -41,7 +41,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             When("create param") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
+                requestParams = useCase.createParams(uploadUrl, filePath, "60")
             }
             Then("it should return upload url correctly") {
                 assert(requestParams.getString("url", "") == uploadUrl)
@@ -63,7 +63,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             Given("set param with upload url and file path") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
+                requestParams = useCase.createParams(uploadUrl, filePath, "60")
             }
 
             Given("upload network services") {
@@ -92,7 +92,7 @@ class MediaUploaderUseCaseTest: Spek({
                 .baseUrl(mockWebServer.url(uploadUrl))
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
                 .build()
-                .create(UploaderServices::class.java)
+                .create(FileUploadServices::class.java)
 
         Scenario("request upload image with network service") {
             Given("upload id data response") {
