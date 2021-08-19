@@ -59,11 +59,11 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                                       orderStatusId: String): ProductListUiModel {
         val productList =
                 if (haveProductBundle) {
-                    mapProductList(products, orderId, orderStatusId)
-                } else {
                     bundleDetail?.nonBundleList?.let { nonBundleProducts ->
                         mapProductList(nonBundleProducts, orderId, orderStatusId)
                     }.orEmpty()
+                } else {
+                    mapProductList(products, orderId, orderStatusId)
                 }
         val productBundlingList =
                 if (haveProductBundle) {

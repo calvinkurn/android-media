@@ -119,7 +119,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         return map { bundleProduct ->
             BuyerNormalProductUiModel(
                     productId = bundleProduct.productId.toString(),
-                    productThumbnailUrl = bundleProduct.thumbnail,
+                    productThumbnailUrl = bundleProduct.picture,
                     productName = bundleProduct.productName,
                     productPrice = bundleProduct.productPrice.toCurrencyFormatted()
             )
