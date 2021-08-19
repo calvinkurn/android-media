@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChuckerLogUIModel(
+    var id: Int = 0,
     var url: String = "",
     var connectionId: Int = 0,
     var startTime: Long = 0,
@@ -16,6 +17,7 @@ data class ChuckerLogUIModel(
     var videoBitrate: Int = 0,
     var audioType: AudioType = AudioType.MIC,
     var audioRate: Int = 0,
+    var audioBitrate: Int = 0,
     var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
     var appVersion: String = "",
     var userId: String = "",

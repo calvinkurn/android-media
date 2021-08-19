@@ -3,9 +3,10 @@ package com.tokopedia.broadcaster.chucker.data.mapper
 import com.tokopedia.broadcaster.chucker.data.entity.ChuckerLog
 import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
 
-fun List<ChuckerLog>.mapToUI(): List<ChuckerLogUIModel> {
+fun List<ChuckerLog>.mapToUI(): MutableList<ChuckerLogUIModel> {
     return map {
         ChuckerLogUIModel(
+            id = it.id,
             url = it.url,
             connectionId = it.connectionId,
             fps = it.fps,
@@ -18,11 +19,12 @@ fun List<ChuckerLog>.mapToUI(): List<ChuckerLogUIModel> {
             videoBitrate = it.videoBitrate,
             audioType = it.audioType,
             audioRate = it.audioRate,
+            audioBitrate = it.audioBitrate,
             bitrateMode = it.bitrateMode,
             appVersion = it.appVersion,
             userId = it.userId
         )
-    }.toList()
+    }.toMutableList()
 }
 
 fun ChuckerLogUIModel.mapToData(): ChuckerLog {
@@ -39,6 +41,7 @@ fun ChuckerLogUIModel.mapToData(): ChuckerLog {
         videoBitrate = videoBitrate,
         audioType = audioType,
         audioRate = audioRate,
+        audioBitrate = audioBitrate,
         bitrateMode = bitrateMode,
         appVersion = appVersion,
         userId = userId

@@ -40,6 +40,9 @@ data class ChuckerLog(
     @ColumnInfo(name = "audioRate")
     var audioRate: Int = 0,
 
+    @ColumnInfo(name = "audioBitrate")
+    var audioBitrate: Int = 0,
+
     @ColumnInfo(name = "bitrateMode")
     var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
 
