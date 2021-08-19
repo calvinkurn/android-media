@@ -58,7 +58,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -110,6 +112,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     internal val viewModel by lazy { viewModelProvider.get(WishlistViewModel::class.java) }
@@ -176,6 +179,26 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         return remoteConfigInstance.abTestPlatform
     }
 
+    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
+        if (!::firebaseRemoteConfig.isInitialized) {
+            context?.let {
+                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                return firebaseRemoteConfig
+            }
+            return null
+        } else {
+            return firebaseRemoteConfig
+        }
+    }
+
+    private fun isAutoRefreshEnabled(): Boolean {
+        return try {
+            return getFirebaseRemoteConfig()?.getBoolean(RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH)?:false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:
@@ -198,6 +221,11 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        launchAutoRefresh()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -230,8 +258,15 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            viewModel.getWishlistData(navToolbar?.getCurrentSearchbarText() ?: "", generateWishlistAdditionalParamRequest())
+        launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
+        if (isVisibleToUser && isAutoRefreshEnabled()) {
+            viewModel.getWishlistData(
+                navToolbar?.getCurrentSearchbarText() ?: "",
+                generateWishlistAdditionalParamRequest()
+            )
             scrollAfterSubmit = true
         } else {
             coachMark?.dismissCoachMark()

@@ -184,6 +184,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -247,6 +249,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var activityOrderHistory = ""
     private var searchQuery = ""
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -295,6 +298,26 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         return remoteConfigInstance.abTestPlatform
     }
 
+    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
+        if (!::firebaseRemoteConfig.isInitialized) {
+            context?.let {
+                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                return firebaseRemoteConfig
+            }
+            return null
+        } else {
+            return firebaseRemoteConfig
+        }
+    }
+
+    private fun isAutoRefreshEnabled(): Boolean {
+        return try {
+            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)?:false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:
@@ -317,6 +340,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        launchAutoRefresh()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_uoh_list, container, false)
     }
@@ -333,7 +361,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
+        launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
+        if (isVisibleToUser && isAutoRefreshEnabled()) {
             rv_order_list.scrollToPosition(0)
             refreshUohData()
         }
