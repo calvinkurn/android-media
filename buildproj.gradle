@@ -23,21 +23,15 @@ allprojects {
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
+    //handle new relic keep in JDK 8
     afterEvaluate { Project p ->
-        List<String> androidPlugins = ["android", "com.android.application", "android-library", "com.android.library",
-                                       "com.android.test", "com.android.feature", "com.android.dynamic-feature", "com.android.instantapp"]
+        List<String> newRelicPlugins = ["com.newrelic", "com.newrelic.agent.android"]
 
-        boolean isAndroidProject = false
-        for(String s: androidPlugins) {
+        for(String s: newRelicPlugins) {
             if (p.plugins.findPlugin(s)) {
-                isAndroidProject = true
-                break;
-            }
-        }
-
-        if (!isAndroidProject) {
-            p.tasks.withType(JavaCompile).all {
-                it.options.compilerArgs += ['--release', '8']
+                p.tasks.withType(JavaCompile).all {
+                    it.options.compilerArgs += ['--release', '8']
+                }
             }
         }
     }
