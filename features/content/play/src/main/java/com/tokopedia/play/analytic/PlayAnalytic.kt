@@ -578,7 +578,7 @@ class PlayAnalytic(
     }
 
     fun recordCastDuration(duration: Long) {
-        Log.d("<LOG>", "recordCastDuration : $duration, channelId: $channelId, channelType: $channelType")
+        Log.d("<LOG>", "recordCastDuration : $duration, channelId: $channelId, channelType: ${mChannelType.value}")
         /**
          * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
          * So, it will send tracking from the previous screen
@@ -588,7 +588,7 @@ class PlayAnalytic(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                 KEY_EVENT_ACTION to "chromecast disconnected",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value} - $duration",
+                KEY_EVENT_LABEL to "$channelId - ${mChannelType.value} - $duration",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
