@@ -1314,7 +1314,10 @@ class NewShopPageFragment :
             setupSearchbar(
                     hints = listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProductPage()
+                        if (GlobalConfig.isSellerApp())
+                            redirectToShopSearchProductPage()
+                        else
+                            redirectToSearchAutoCompletePage()
                     }
             )
         }

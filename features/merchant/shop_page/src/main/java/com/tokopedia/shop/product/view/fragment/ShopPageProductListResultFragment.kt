@@ -36,6 +36,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_PAGE_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_PAGE_TITLE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -89,7 +92,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
 import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
-import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -160,6 +162,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var partialShopNplFollowersViewLayout: View? = null
     private var partialShopNplFollowersView: PartialButtonShopFollowersView? = null
+    private var srpPageId = ""
+    private var srpPageTitle = ""
+    private var navSource = ""
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -249,6 +254,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
             isShopPageProductSearchResultTrackerAlreadySent = savedInstanceState.getBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, false)
         }
+        getIntentData()
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortId ?: "")
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
@@ -273,6 +279,17 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             (it as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         observeLiveData()
+    }
+
+    private fun getIntentData() {
+        activity?.intent?.data?.let { it ->
+            it.getQueryParameter(SRP_PAGE_ID)?.let { srpPageId ->
+                sourceRedirection = SEARCH_AUTOCOMPLETE_PAGE_SOURCE
+                this@ShopPageProductListResultFragment.srpPageId = srpPageId
+            }
+            srpPageTitle = it.getQueryParameter(SRP_PAGE_TITLE).orEmpty()
+            navSource = it.getQueryParameter(NAVSOURCE).orEmpty()
+        }
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -469,10 +486,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
                     if(!isShopPageProductSearchResultTrackerAlreadySent) {
-                        when (sourceRedirection) {
-                            ShopSearchProductFragment.SEARCH_SUBMIT_RESULT_REDIRECTION -> sendShopPageProductSearchResultTracker(productList.isEmpty())
-                            ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(productList.isEmpty())
-                        }
+                        sendShopPageSearchResultTracker(it.data)
                     }
                     renderProductList(productList, hasNextPage, totalProductData)
                     if(!isAlreadyCheckRestrictionInfo) {
@@ -543,7 +557,31 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
     }
 
-    private fun sendShopPageProductSearchResultTracker(isProductResultListEmpty: Boolean) {
+    private fun sendShopPageSearchResultTracker(productResponseUiModel: GetShopProductUiModel) {
+        when (sourceRedirection) {
+            ShopSearchProductFragment.SEARCH_SUBMIT_RESULT_REDIRECTION -> sendShopPageProductSubmitSearchResultTracker(
+                    productResponseUiModel.listShopProductUiModel.isEmpty()
+            )
+            ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(
+                    productResponseUiModel.listShopProductUiModel.isEmpty()
+            )
+            SEARCH_AUTOCOMPLETE_PAGE_SOURCE -> sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel.totalProductData)
+        }
+    }
+
+    private fun sendShopPageProductAutoCompleteSearchResultTracker(totalProduct: Int) {
+        shopPageTracking?.sendShopPageAutoCompleteSearchResultTracker(
+                keyword,
+                "",
+                "",
+                navSource,
+                shopId.orEmpty(),
+                totalProduct,
+                shopName.orEmpty()
+        )
+    }
+
+    private fun sendShopPageProductSubmitSearchResultTracker(isProductResultListEmpty: Boolean) {
         isShopPageProductSearchResultTrackerAlreadySent = true
         shopPageTracking?.sendShopPageProductSearchResultTracker(
                 isMyShop, keyword, isProductResultListEmpty, customDimensionShopPage
@@ -695,7 +733,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
-                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
+                    shopName.orEmpty(),
+                    navSource
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -741,7 +781,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
-                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
+                    shopName.orEmpty(),
+                    navSource
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(
@@ -1172,7 +1214,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         val SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT = "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
-
+        private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
         @JvmStatic
         fun createInstance(shopId: String,
                            shopRef: String?,
