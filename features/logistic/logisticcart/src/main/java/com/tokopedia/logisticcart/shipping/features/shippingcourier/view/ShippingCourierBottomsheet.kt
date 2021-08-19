@@ -1,229 +1,211 @@
-package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
+package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
-import android.app.Activity;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.logisticcart.R;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.unifycomponents.BottomSheetUnify;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import kotlin.Unit;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.res.Resources
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
+class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourierAdapterListener {
 
-public class ShippingCourierBottomsheet implements ShippingCourierContract.View, ShippingCourierAdapterListener {
+    private var llContent: LinearLayout? = null
+    private var rvCourier: RecyclerView? = null
+    private var llNetworkErrorView: LinearLayout? = null
+    private var pbLoading: ProgressBar? = null
 
-    public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
-    public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
-    public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
-    public static final String ARGUMENT_PRE_ORDER_MODEL = "ARGUMENT_PRE_ORDER_MODEL";
+    private var activity: Activity? = null
+    private var bottomSheet: BottomSheetUnify? = null
+    private var bundle: Bundle? = null
+    private var shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener? = null
 
-    private LinearLayout llContent;
-    private RecyclerView rvCourier;
-    private LinearLayout llNetworkErrorView;
-    private ProgressBar pbLoading;
-
-    private Activity activity;
-    private BottomSheetUnify bottomSheet;
-    private Bundle bundle;
-    private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
-    private List<ShippingCourierUiModel> mCourierModelList = new ArrayList<>();
-    private PreOrderModel mPreOrderModel;
-    private RecipientAddressModel mRecipientAddress;
+    private var mCourierModelList: List<ShippingCourierUiModel> = ArrayList()
+    private var mPreOrderModel: PreOrderModel? = null
+    private var mRecipientAddress: RecipientAddressModel? = null
 
     @Inject
-    ShippingCourierAdapter shippingCourierAdapter;
-    @Inject
-    ShippingCourierConverter courierConverter;
+    lateinit var shippingCourierAdapter: ShippingCourierAdapter
 
-    public void show(Activity activity,
-                     FragmentManager fragmentManager,
-                     ShippingCourierBottomsheetListener shippingCourierBottomsheetListener,
-                     List<ShippingCourierUiModel> shippingCourierUiModels,
-                     RecipientAddressModel recipientAddressModel,
-                     int cartPosition) {
-        this.activity = activity;
-        this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
-        initData(shippingCourierUiModels, recipientAddressModel, cartPosition);
-        initBottomSheet(activity);
-        initView(activity);
-        bottomSheet.show(fragmentManager, this.getClass().getSimpleName());
+    @Inject
+    lateinit var courierConverter: ShippingCourierConverter
+
+    fun show(activity: Activity,
+             fragmentManager: FragmentManager,
+             shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
+             shippingCourierUiModels: List<ShippingCourierUiModel>?,
+             recipientAddressModel: RecipientAddressModel?,
+             cartPosition: Int) {
+        this.activity = activity
+        this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
+        initData(shippingCourierUiModels, recipientAddressModel, cartPosition)
+        initBottomSheet(activity)
+        initView(activity)
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
-    private void initData(List<ShippingCourierUiModel> shippingCourierUiModels, RecipientAddressModel recipientAddressModel, int cartPosition) {
-        bundle = new Bundle();
+    private fun initData(shippingCourierUiModels: List<ShippingCourierUiModel>?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int) {
+        bundle = Bundle()
         if (shippingCourierUiModels != null) {
-            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
-            bundle.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels.get(0).getPreOrderModel());
+            bundle!!.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, ArrayList(shippingCourierUiModels))
+            bundle!!.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels[0].preOrderModel)
         }
-        bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
-        bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
+        bundle!!.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
+        bundle!!.putInt(ARGUMENT_CART_POSITION, cartPosition)
     }
 
-    private void initBottomSheet(Activity activity) {
-        bottomSheet = new BottomSheetUnify();
-        bottomSheet.setShowCloseIcon(true);
-        bottomSheet.setTitle(activity.getString(R.string.title_shipment_courier_bottomsheet));
-        bottomSheet.setClearContentPadding(true);
-        bottomSheet.setCustomPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels / 2);
-        bottomSheet.setDragable(true);
-        bottomSheet.setHideable(true);
-        bottomSheet.setCloseClickListener(view -> {
+    private fun initBottomSheet(activity: Activity) {
+        bottomSheet = BottomSheetUnify()
+        bottomSheet?.showCloseIcon = true
+        bottomSheet?.setTitle(activity.getString(R.string.title_shipment_courier_bottomsheet))
+        bottomSheet?.clearContentPadding = true
+        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        bottomSheet?.isDragable = true
+        bottomSheet?.isHideable = true
+        bottomSheet?.setCloseClickListener {
             if (shippingCourierBottomsheetListener != null) {
-                shippingCourierBottomsheetListener.onCourierShipmentRecpmmendationCloseClicked();
+                shippingCourierBottomsheetListener!!.onCourierShipmentRecommendationCloseClicked()
             }
-            bottomSheet.dismiss();
-            return Unit.INSTANCE;
-        });
-    }
-
-    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel) {
-        hideLoading();
-        if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
-            mCourierModelList = shippingCourierUiModels;
-            mPreOrderModel = preOrderModel;
-            setupRecyclerView(cartPosition);
-        } else {
-            showErrorPage(activity.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition);
+            bottomSheet?.dismiss()
         }
     }
 
-    private void initializeInjector() {
-        ShippingCourierComponent component = DaggerShippingCourierComponent.builder()
-                .shippingCourierModule(new ShippingCourierModule())
-                .build();
-
-        component.inject(this);
+    fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>?,
+                                     cartPosition: Int, shipmentCartItemModel: ShipmentCartItemModel, preOrderModel: PreOrderModel?) {
+        hideLoading()
+        if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
+            mCourierModelList = shippingCourierUiModels
+            mPreOrderModel = preOrderModel
+            setupRecyclerView(cartPosition)
+        } else {
+            showErrorPage(activity!!.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition)
+        }
     }
 
-
-    public void initView(Activity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_shipment_courier_choice, null);
-
-        llContent = view.findViewById(R.id.ll_content);
-        rvCourier = view.findViewById(R.id.rv_courier);
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
-        pbLoading = view.findViewById(R.id.pb_loading);
-
-        bottomSheet.setChild(view);
-
-        initializeInjector();
-        loadData();
+    private fun initializeInjector() {
+        val component = DaggerShippingCourierComponent.builder()
+                .shippingCourierModule(ShippingCourierModule())
+                .build()
+        component.inject(this)
     }
 
-    private void loadData() {
+    @SuppressLint("InflateParams")
+    private fun initView(activity: Activity) {
+        val inflater = activity.layoutInflater
+        val view = inflater.inflate(R.layout.fragment_shipment_courier_choice, null)
+        llContent = view.findViewById(R.id.ll_content)
+        rvCourier = view.findViewById(R.id.rv_courier)
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
+        pbLoading = view.findViewById(R.id.pb_loading)
+        bottomSheet?.setChild(view)
+        initializeInjector()
+        loadData()
+    }
+
+    private fun loadData() {
         if (bundle != null) {
-            mRecipientAddress = bundle.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-            int cartPosition = bundle.getInt(ARGUMENT_CART_POSITION);
-            List<ShippingCourierUiModel> shippingCourierUiModels = bundle.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
-            mPreOrderModel = bundle.getParcelable(ARGUMENT_PRE_ORDER_MODEL);
+            mRecipientAddress = bundle!!.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
+            val cartPosition = bundle!!.getInt(ARGUMENT_CART_POSITION)
+            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = bundle!!.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
+            mPreOrderModel = bundle!!.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
             if (shippingCourierUiModels != null) {
-                mCourierModelList = shippingCourierUiModels;
-                setupRecyclerView(cartPosition);
+                mCourierModelList = shippingCourierUiModels
+                setupRecyclerView(cartPosition)
             } else {
-                showLoading();
+                showLoading()
             }
         }
     }
 
-    private void setupRecyclerView(int cartPosition) {
-        shippingCourierAdapter.setShippingCourierAdapterListener(this);
-        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel);
-        shippingCourierAdapter.setCartPosition(cartPosition);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                activity, LinearLayoutManager.VERTICAL, false);
-        rvCourier.setLayoutManager(linearLayoutManager);
-        rvCourier.setAdapter(shippingCourierAdapter);
+    private fun setupRecyclerView(cartPosition: Int) {
+        shippingCourierAdapter.setShippingCourierAdapterListener(this)
+        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel)
+        shippingCourierAdapter.setCartPosition(cartPosition)
+        val linearLayoutManager = LinearLayoutManager(
+                activity, LinearLayoutManager.VERTICAL, false)
+        rvCourier?.layoutManager = linearLayoutManager
+        rvCourier?.adapter = shippingCourierAdapter
     }
 
-    @Override
-    public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, int cartPosition, boolean isNeedPinpoint) {
-        ProductData productData = shippingCourierUiModel.getProductData();
-        int spId = shippingCourierUiModel.getProductData().getShipperProductId();
-        if (shippingCourierUiModel.getProductData().getError() != null) {
+    override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
+        val productData = shippingCourierUiModel.productData
+        val spId = shippingCourierUiModel.productData.shipperProductId
+        if (shippingCourierUiModel.productData.error != null) {
             // Not updating when it has Error Pinpoint Needed
-            if (!shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
-                courierConverter.updateSelectedCourier(mCourierModelList, spId);
+            if (shippingCourierUiModel.productData.error.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                courierConverter.updateSelectedCourier(mCourierModelList, spId)
             }
         } else {
-            courierConverter.updateSelectedCourier(mCourierModelList, spId);
+            courierConverter.updateSelectedCourier(mCourierModelList, spId)
         }
-        CourierItemData courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel);
-        boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
+        val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
+        val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
         if (shippingCourierBottomsheetListener != null) {
-            shippingCourierBottomsheetListener.onCourierChoosen(
+            shippingCourierBottomsheetListener!!.onCourierChoosen(
                     shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
-                    !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
+                    !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint)
         }
-        bottomSheet.dismiss();
+        bottomSheet?.dismiss()
     }
 
-    @Override
-    public boolean isToogleYearEndPromotionOn() {
+    override fun isToogleYearEndPromotionOn(): Boolean {
         if (activity != null) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
+            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
         }
-        return false;
+        return false
     }
 
-    @Override
-    public void showLoading() {
-        llContent.setVisibility(View.GONE);
-        llNetworkErrorView.setVisibility(View.GONE);
-        pbLoading.setVisibility(View.VISIBLE);
+    override fun showLoading() {
+        llContent?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.GONE
+        pbLoading?.visibility = View.VISIBLE
     }
 
-    @Override
-    public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
-        llNetworkErrorView.setVisibility(View.GONE);
-        llContent.setVisibility(View.VISIBLE);
+    override fun hideLoading() {
+        pbLoading?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.GONE
+        llContent?.visibility = View.VISIBLE
     }
 
-    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition) {
-        pbLoading.setVisibility(View.GONE);
-        llContent.setVisibility(View.GONE);
-        llNetworkErrorView.setVisibility(View.VISIBLE);
-        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message,
-                () -> {
-                    showLoading();
-                    if (shippingCourierBottomsheetListener != null) {
-                        shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition);
-                    }
-                });
+    private fun showErrorPage(message: String, shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int) {
+        pbLoading?.visibility = View.GONE
+        llContent?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.VISIBLE
+        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
+            showLoading()
+            if (shippingCourierBottomsheetListener != null) {
+                shippingCourierBottomsheetListener!!.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
+            }
+        }
     }
 
+    companion object {
+        const val ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST"
+        const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
+        const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"
+        const val ARGUMENT_PRE_ORDER_MODEL = "ARGUMENT_PRE_ORDER_MODEL"
+    }
 }

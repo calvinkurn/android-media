@@ -2051,7 +2051,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierShipmentRecpmmendationCloseClicked() {
+    public void onCourierShipmentRecommendationCloseClicked() {
         sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
     }
 
