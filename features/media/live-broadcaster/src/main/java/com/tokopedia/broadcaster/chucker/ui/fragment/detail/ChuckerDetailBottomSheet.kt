@@ -62,6 +62,7 @@ class ChuckerDetailBottomSheet : BottomSheetDialogFragment() {
             <b>videoBitrate</b>: ${detailModel.videoBitrate}<br>
             <b>audioType</b>: ${detailModel.audioType}<br>
             <b>audioRate</b>: ${detailModel.audioRate}<br>
+            <b>audioBitrate</b>: ${detailModel.audioBitrate}<br>
             <b>bitrateMode</b>: ${detailModel.bitrateMode}<br>
             <b>appVersion</b>: ${detailModel.appVersion}<br>
             <b>userId</b>: ${detailModel.userId}<br>

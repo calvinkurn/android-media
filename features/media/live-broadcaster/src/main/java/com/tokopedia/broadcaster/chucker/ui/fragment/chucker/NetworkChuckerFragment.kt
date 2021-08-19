@@ -52,7 +52,7 @@ class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
 
     private fun initObservable() {
         viewModel.broadcasterLog.observe(viewLifecycleOwner, {
-            adapter.addItems(it)
+            adapter.updateItems(it)
         })
     }
 
