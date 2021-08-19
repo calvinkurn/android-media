@@ -39,7 +39,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams;
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
@@ -689,7 +688,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void navigateToDigitalCart(DigitalCheckoutPassData digitalCheckoutPassData) {
-        Intent intent = RouteManager.getIntent(getActivity(), DigitalCheckoutUtil.Companion.getApplinkCartDigital(getActivity()));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CHECKOUT_DIGITAL);
         intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassData);
         startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL);
     }
