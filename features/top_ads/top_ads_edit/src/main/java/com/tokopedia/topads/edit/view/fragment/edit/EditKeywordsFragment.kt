@@ -359,7 +359,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
                 minSuggestedBidRekomendasi.visibility = View.VISIBLE
                 setMessageErrorField("", "", false, true)
-                actionEnable(false)
+                actionEnable(true)
             }
             result > maxBid.toDouble() -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
