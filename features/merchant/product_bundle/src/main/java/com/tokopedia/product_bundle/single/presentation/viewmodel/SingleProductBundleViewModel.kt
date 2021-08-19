@@ -1,22 +1,29 @@
 package com.tokopedia.product_bundle.single.presentation.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
-import com.tokopedia.product_bundle.common.data.model.response.*
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.*
+import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_QTY
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.abs
 
 class SingleProductBundleViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers
+        private val dispatcher: CoroutineDispatchers,
+        private val addToCartBundleUseCase: AddToCartBundleUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
@@ -27,17 +34,32 @@ class SingleProductBundleViewModel @Inject constructor(
     val totalAmountUiModel: LiveData<TotalAmountUiModel>
         get() = mTotalAmountUiModel
 
+    private val mAddToCartResult = MutableLiveData<AddToCartBundleDataModel>()
+    val addToCartResult: LiveData<AddToCartBundleDataModel>
+        get() = mAddToCartResult
+
     private val mToasterError = MutableLiveData<SingleProductBundleErrorEnum>()
     val toasterError: LiveData<SingleProductBundleErrorEnum>
         get() = mToasterError
 
-    private val mDialogError = MutableLiveData<Pair<String, SingleProductBundleErrorEnum>>()
-    val dialogError: LiveData<Pair<String, SingleProductBundleErrorEnum>>
+    private val mDialogError = MutableLiveData<SingleProductBundleDialogModel>()
+    val dialogError: LiveData<SingleProductBundleDialogModel>
         get() = mDialogError
 
-    fun setBundleInfo(context: Context, bundleInfo: List<BundleInfo>, selectedProductId: Long) {
-        mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
-            .mapToSingleProductBundle(context, bundleInfo, selectedProductId)
+    fun setBundleInfo(
+        context: Context,
+        bundleInfo: List<BundleInfo>,
+        selectedBundleId: String,
+        selectedProductId: Long
+    ) {
+        val bundleModel = BundleInfoToSingleProductBundleMapper
+            .mapToSingleProductBundle(context, bundleInfo, selectedBundleId, selectedProductId)
+
+        if (bundleModel.items.isEmpty()) {
+            mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+        } else {
+            mSingleProductBundleUiModel.value = bundleModel
+        }
     }
 
     fun getVariantText(selectedProductVariant: ProductVariant, selectedProductId: String): String {
@@ -74,157 +96,68 @@ class SingleProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun checkout(selectedData: List<SingleProductBundleSelectedItem>) {
-        val selectedProductId = selectedData.firstOrNull {
+    fun validateAndCheckout(parentProductID: Long, selectedDataList: List<SingleProductBundleSelectedItem>) {
+        val selectedData = selectedDataList.firstOrNull {
             it.isSelected
         }
 
-        val remoteErrorMessage = "ouch" // TODO("TODO implemet api call")
-        val hasAnotherBundle = selectedData.size > 1 // TODO("Define as const")
-
         when {
-            selectedProductId == null -> {
+            selectedData == null -> {
                 // data not selected
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED
+                return
             }
-            selectedProductId.productId.isEmpty() -> {
+            selectedData.productId.isEmpty() -> {
                 // variant not selected
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
+                return
             }
-            remoteErrorMessage.isNotEmpty() -> {
-                // displaying server error
-                if (hasAnotherBundle) {
-                    mDialogError.value = Pair(
-                        remoteErrorMessage,
-                        SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
-                    )
-                } else {
-                    mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
-                }
-            }
-            else -> {
-                Log.e("checkout", selectedProductId.toString())
-            }
+            else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
+                selectedData.shopId, selectedData.quantity)
         }
     }
 
-    /*
-    Begin of Dummy model function generator
-    */
-
-    /*fun generateBundleInfo() = BundleInfo(
-        name = "Singel bundle",
-        preorder = Preorder(
-            status = "ACTIVE",
-            processTypeNum = 1,
-            processTime = 19
-        ),
-        bundleItems = listOf(
-            BundleItem(
-                productID = 123450L,
-                name = "Bundle 1",
-                picURL = "https://placekitten.com/200/300",
-                minOrder = 2,
-                bundlePrice = 2000.0,
-                originalPrice = 2300.0,
-                status = "SHOW",
-                selections = listOf(
-                    Selection(
-                        productVariantID = 6000,
-                        variantID = 29,
-                        name = "ukuran",
-                        identifier = "size",
-                        options = listOf(
-                            VariantOption(
-                                10,
-                                10,
-                                "S",
-                                ""
-                            ),
-                            VariantOption(
-                                11,
-                                10,
-                                "M",
-                                ""
-                            ),
-                        ),
-
-                        ),
-                    Selection(
-                        productVariantID = 6001,
-                        variantID = 1,
-                        name = "warna",
-                        identifier = "color",
-                        options = listOf(
-                            VariantOption(
-                                1,
-                                1,
-                                "Putih",
-                                ""
-                            ),
-                            VariantOption(
-                                2,
-                                1,
-                                "Hitam",
-                                ""
-                            ),
-                        ),
-
+    private fun addToCart(
+        parentProductID: Long,
+        bundleId: String,
+        productId: String,
+        shopId: String,
+        quantity: Int
+    ) {
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                addToCartBundleUseCase.setParams(
+                    AddToCartBundleRequestParams(
+                        shopId = shopId,
+                        bundleId = bundleId,
+                        bundleQty = BUNDLE_QTY,
+                        selectedProductPdp = parentProductID.toString(),
+                        listOf(
+                            ProductDetail(
+                                productId,
+                                quantity = quantity,
+                                shopId = shopId
+                            )
                         )
-                ),
-                children = listOf(
-                    Child(
-                        productID = 123451L,
-                        originalPrice = 10000.0,
-                        bundlePrice = 9000.0,
-                        stock = 10,
-                        minOrder = 1,
-                        optionIds = listOf(10, 1),
-                        name = "child 1",
-                        picURL = "https://placekitten.com/200/300"
-                    ),
-                    Child(
-                        productID = 123452L,
-                        originalPrice = 10000.0,
-                        bundlePrice = 8000.0,
-                        stock = 10,
-                        minOrder = 1,
-                        optionIds = listOf(10, 2),
-                        name = "child 2",
-                        picURL = "https://placekitten.com/200/200"
-                    ),
-                    Child(
-                        productID = 123453L,
-                        originalPrice = 10000.0,
-                        bundlePrice = 9000.0,
-                        stock = 10,
-                        minOrder = 1,
-                        optionIds = listOf(11, 1),
-                        name = "child 3",
-                        picURL = "https://placekitten.com/200/300"
-                    ),
-                    Child(
-                        productID = 123454L,
-                        originalPrice = 10000.0,
-                        bundlePrice = 8000.0,
-                        stock = 10,
-                        minOrder = 1,
-                        optionIds = listOf(11, 2),
-                        name = "child 4",
-                        picURL = "https://placekitten.com/200/200"
-                    ),
+                    )
                 )
-            ),
-            BundleItem(
-                productID = 123451L,
-                name = "Bundle 2",
-                picURL = "https://placekitten.com/200/200",
-                minOrder = 2,
-                bundlePrice = 2000.0,
-                originalPrice = 2300.0,
-                status = "SHOW"
+                addToCartBundleUseCase.executeOnBackground()
+            }
+            if (result.data.isNotEmpty()) {
+                mAddToCartResult.value = result
+            } else {
+                mDialogError.value = SingleProductBundleDialogModel(
+                    title = result.message.firstOrNull(),
+                    message = result.message.lastOrNull(),
+                    type = SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH
+                )
+            }
+        }, onError = {
+            mDialogError.value = SingleProductBundleDialogModel(
+                message = it.localizedMessage,
+                type = SingleProductBundleDialogModel.DialogType.DIALOG_NORMAL
             )
-        )
-    )*/
+        })
+    }
 
 }

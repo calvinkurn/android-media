@@ -61,6 +61,7 @@ class SingleProductBundleAdapter(
                 selectedData: List<SingleProductBundleSelectedItem>) {
         this.data = data
         this.selectedData = selectedData
+        listener.onDataChanged(getSelectedData(), getSelectedProductVariant())
         notifyDataSetChanged()
     }
 

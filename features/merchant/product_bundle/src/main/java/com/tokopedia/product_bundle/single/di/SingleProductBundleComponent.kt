@@ -6,7 +6,8 @@ import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragm
 import dagger.Component
 
 @SingleProductBundleScope
-@Component(modules = [ProductBundleModule::class, SingleProductBundleModule::class], dependencies = [ProductBundleComponent::class])
+@Component(modules = [ProductBundleModule::class, SingleProductBundleViewModelModule::class],
+    dependencies = [ProductBundleComponent::class])
 interface SingleProductBundleComponent {
     fun inject(singleProductBundleFragment: SingleProductBundleFragment)
 }

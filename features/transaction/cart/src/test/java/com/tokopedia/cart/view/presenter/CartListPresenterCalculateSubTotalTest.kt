@@ -11,6 +11,8 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -250,38 +252,6 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("5", 1004.0, 1004.0, false, false, false)
-                }
-            }
-        }
-
-        Scenario("some item error") {
-
-            Given("error in unselected items") {
-                firstItemFirst.isSelected = true
-                secondItemFirstData.isError = true
-                firstShop.isPartialSelected = true
-
-                secondShopData.isError = true
-            }
-
-            Given("cart data list") {
-                every { view.getAllAvailableCartDataList() } answers {
-                    cartShops.flatMap {
-                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
-                    }.map {
-                        it.cartItemData
-                    }
-                }
-            }
-
-            When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops)
-            }
-
-            Then("should have 1000 subtotal, 100 cashback and selected all item") {
-                verify {
-                    view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("1", 1000.0, 1000.0, true, false, false)
                 }
             }
         }

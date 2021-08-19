@@ -6,6 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
+import kotlin.math.min
 
 class MiniCartSimplifiedMapper @Inject constructor() {
 
@@ -51,7 +52,11 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             cartId = cartDetail.cartId
                             productId = cartDetail.product.productId
                             productParentId = cartDetail.product.parentId
-                            quantity = cartDetail.product.productQuantity
+                            quantity = if (cartDetail.product.productSwitchInvenage == 0) {
+                                cartDetail.product.productQuantity
+                            } else {
+                                min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
+                            }
                             notes = cartDetail.product.productNotes
                             campaignId = cartDetail.product.campaignId
                             attribution = cartDetail.product.productTrackerData.attribution

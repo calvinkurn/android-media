@@ -35,7 +35,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = this.pathSegments
             val productId = pathSegments.firstOrNull() ?: "0"
             // call getBundleInfo
-            viewModel.getBundleInfo("2147881195".toLongOrZero())
+            viewModel.getBundleInfo(productId.toLongOrZero())
         }
 
         observeGetBundleInfoResult()
@@ -58,7 +58,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 is Success -> {
                     val bundleInfo = result.data
                     val bundleItems = bundleInfo.getBundleInfo.bundleInfo
-                    val fragment = SingleProductBundleFragment.newInstance(bundleItems)
+                    val parentProductID = viewModel.parentProductID
+                    val fragment = SingleProductBundleFragment.newInstance(parentProductID, bundleItems)
 
                     supportFragmentManager.beginTransaction()
                         .replace(parentViewResourceID, fragment, tagFragment)
