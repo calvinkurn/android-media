@@ -33,6 +33,22 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/actionbar" />
 
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/non_group_tiker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:tickerType="information"
+        app:tickerShapeType="loose"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_layout"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/non_group_list"
         android:layout_width="match_parent"
@@ -41,7 +57,7 @@
         android:layout_marginTop="@dimen/dp_12"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_layout"
+        app:layout_constraintTop_toBottomOf="@id/non_group_tiker"
         tools:itemCount="2"
         tools:listitem="@layout/topads_dash_item_non_group_card" />
 

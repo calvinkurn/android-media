@@ -2,11 +2,19 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
+import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -42,6 +50,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -78,6 +87,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _officialStoreFeaturedShopResult by lazy {
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
+
+    val featuredShopResult: LiveData<Result<FeaturedShopDataModel>>
+        get() = _featuredShopResult
+    val _featuredShopResult by lazy { MutableLiveData<Result<FeaturedShopDataModel>>() }
+
+    val featuredShopRemove: LiveData<FeaturedShopDataModel>
+        get() = _featuredShopRemove
+    val _featuredShopRemove by lazy { MutableLiveData<FeaturedShopDataModel>() }
 
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
@@ -160,7 +177,15 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
-            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+            val result = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
+            _officialStoreDynamicChannelResult.postValue(Success(result))
+            result.forEach {
+                //call external api
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
+                    getDisplayTopAdsHeader(FeaturedShopDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
+                }
+            }
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))
         }
@@ -224,6 +249,26 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
+    private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
+        launchCatchError(coroutineContext, block={
+            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+            val data = getDisplayHeadlineAds.executeOnBackground()
+            if(data.isEmpty()){
+                _featuredShopRemove.value = featuredShopDataModel
+            } else {
+                _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                        channelModel = featuredShopDataModel.channelModel.copy(
+                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                        ),
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page)
+                )
+            }
+        }){
+            _featuredShopRemove.value = featuredShopDataModel
+        }
+    }
+
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
     fun getUserId() = userSessionInterface.userId
@@ -234,5 +279,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         addWishListUseCase.unsubscribe()
         topAdsWishlishedUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
+        getDisplayHeadlineAds.cancelJobs()
     }
 }
