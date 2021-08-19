@@ -235,6 +235,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         if (listBuyerProductBundlingUiModel != null) {
             setNormalProductList()
+            if (listNormalProductBundlingUiModel?.isNotEmpty() == true) {
+                label_product_name?.text = listNormalProductBundlingUiModel?.firstOrNull()?.productName.orEmpty()
+                label_price?.text = listNormalProductBundlingUiModel?.firstOrNull()?.productPrice.orEmpty()
+                iv_product?.loadImage(listNormalProductBundlingUiModel?.firstOrNull()?.productThumbnailUrl.orEmpty())
+            }
             label_see_all_products?.run {
                 val totalItems = listNormalProductBundlingUiModel?.count().orZero()
                 if (totalItems > 1) {
@@ -680,6 +685,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.observe(viewLifecycleOwner) { normalProductList ->
             normalProductList?.let {
                 setNormalProductList(it)
+                if (listNormalProductBundlingUiModel?.isNotEmpty() == true) {
+                    label_product_name?.text = listNormalProductBundlingUiModel?.firstOrNull()?.productName.orEmpty()
+                    label_price?.text = listNormalProductBundlingUiModel?.firstOrNull()?.productPrice.orEmpty()
+                    iv_product?.loadImage(listNormalProductBundlingUiModel?.firstOrNull()?.productThumbnailUrl.orEmpty())
+                }
                 label_see_all_products?.run {
                     val totalItems = listNormalProductBundlingUiModel?.count().orZero()
                     if (totalItems > 1) {
@@ -844,8 +854,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun setNormalProductList(normalProductList: List<BuyerNormalProductUiModel> = listOf()) {
-        val productItems = normalProductList + listProduct.mapToNormalProductItems() +
-                listBuyerProductBundlingUiModel?.mapBundlingToNormalProductItems().orEmpty()
+        val productItems = listBuyerProductBundlingUiModel?.mapBundlingToNormalProductItems().orEmpty() +
+                normalProductList + listProduct.mapToNormalProductItems()
         val filteredProductItems = productItems.filterSameIdAndPrice()
         listNormalProductBundlingUiModel = filteredProductItems
     }

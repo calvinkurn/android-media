@@ -92,6 +92,6 @@ object Utils {
             setScale(0, RoundingMode.HALF_UP)
         }
         val values = CurrencyFormatHelper.convertToRupiah(value.toString())
-        return "$CURRENCY_RUPIAH $values"
+        return "$CURRENCY_RUPIAH$values"
     }
 }
