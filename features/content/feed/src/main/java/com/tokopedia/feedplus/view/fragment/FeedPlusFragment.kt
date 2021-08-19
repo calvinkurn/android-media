@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +45,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -146,7 +148,9 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -652,6 +656,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             triggerNewFeedNotification()
                         }
                     } else if (intent.action == BROADCAST_VISIBLITY) {
+                        resetImagePostWhenFragmentNotVisible()
                         isFeedPageShown = false
                     }
                 }
@@ -974,6 +979,37 @@ class FeedPlusFragment : BaseDaggerFragment(),
         unRegisterNewFeedReceiver()
         analytics.sendPendingAnalytics()
         feedAnalytics.sendPendingAnalytics()
+        resetImagePostWhenFragmentNotVisible()
+    }
+
+    private fun resetImagePostWhenFragmentNotVisible(){
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(adapter.getList(), i)
+            if (isImageCard(adapter.getList(), i)) {
+                if (item != null) {
+                    Objects.requireNonNull(adapter)
+                        .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_POST_VISIBLE)
+                }
+            }
+        }
+    }
+    private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+        try {
+            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+        } catch (e: Exception) {
+            e.localizedMessage
+        }
+        return null
+    }
+
+    private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+        return (list.size > position && list[position] is DynamicPostUiModel && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
+                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+            it.type == TYPE_IMAGE
+        } != null))
     }
 
     private fun registerNewFeedReceiver() {

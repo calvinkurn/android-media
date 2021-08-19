@@ -4,9 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
@@ -26,6 +24,7 @@ private const val POSITION_TOP = 1
 private const val POSITION_BOTTOM = 2
 private const val POINTER_HEIGHT = 8
 private const val BUBBLE_HEIGHT = 52
+private const val DOT_HALF_DIMEN = 8
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
@@ -51,19 +50,16 @@ class PostTagView @JvmOverloads constructor(
     private var postImageWidth: Int = 0
     private var postImageHeight: Int = 0
     private var position: Int = 0
-    private lateinit var feedXTag: FeedXMediaTagging
+    private var feedXTag: FeedXMediaTagging
+    private var initialBubbleVisible: Boolean
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
         this.feedXTag = feedXMediaTagging
+        initialBubbleVisible = false
         val view =
             LayoutInflater.from(context).inflate(R.layout.product_tag_detail_view, this, true)
-        val params = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
 
-        view.layoutParams = params
         view.run {
             productTagDot = findViewById(R.id.product_tag_dot)
             productTagPointerTop = findViewById(R.id.product_tag_top_pointer)
@@ -114,30 +110,32 @@ class PostTagView @JvmOverloads constructor(
             0,
             0
         )
+        productTagExpandedView.setOnClickListener {
+            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
+        }
 
-        finalPointerView.doOnLayout {
+        productTagExpandedView.doOnLayout {
+            val w = productTagExpandedView.width
+            bubbleMarginStart = setProductTagBubbleStartMargin(w)
+
+            if (position == POSITION_BOTTOM) {
+                productTagExpandedView.setMargin(bubbleMarginStart,
+                    dotMarginTop + POINTER_HEIGHT.toPx(),
+                    0,
+                    0)
+            } else {
+                productTagExpandedView.setMargin(bubbleMarginStart,
+                    (dotMarginTop - DOT_HALF_DIMEN.toPx()) - BUBBLE_HEIGHT.toPx(),
+                    0,
+                    0)
+            }
+
             finalPointerView.setMargin(
-                dotMarginStart,
+                dotMarginStart - DOT_HALF_DIMEN.toPx(),
                 0,
                 0,
                 0
             )
-
-        }
-
-       productTagExpandedView.doOnLayout {
-           val w = productTagExpandedView.width
-           bubbleMarginStart = setProductTagBubbleStartMargin(w)
-
-            if (position == POSITION_BOTTOM) {
-                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop + POINTER_HEIGHT.toPx(), 0, 0)
-            } else {
-                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop - BUBBLE_HEIGHT.toPx(), 0, 0)
-            }
-
-            productTagExpandedView.setOnClickListener {
-                listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
-            }
         }
         productTagDot.invisible()
         productTagExpandedView.invisible()
@@ -155,6 +153,17 @@ class PostTagView @JvmOverloads constructor(
         } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
             finalPointerView.gone()
             productTagExpandedView.gone()
+        } else if (!initialBubbleVisible) {
+            val params = productTagExpandedView.layoutParams as MarginLayoutParams
+            if (position == POSITION_BOTTOM) {
+                params.setMargins(bubbleMarginStart, dotMarginTop + POINTER_HEIGHT.toPx(), 0, 0)
+            } else {
+                params.setMargins(bubbleMarginStart, dotMarginTop - BUBBLE_HEIGHT.toPx(), 0, 0)
+
+            }
+            productTagExpandedView.layoutParams = params
+            finalPointerView.visible()
+            productTagExpandedView.visible()
         } else {
             finalPointerView.visible()
             productTagExpandedView.visible()
@@ -198,17 +207,28 @@ class PostTagView @JvmOverloads constructor(
             productTagExpandedView.hide()
             finalPointerView.hide()
         }
+        if(!initialBubbleVisible){
+            productTagDot.setMargin(
+                dotMarginStart,
+                dotMarginTop,
+                0,
+                0
+            )
+        }
 
         if (!productTagDot.isVisible)
             productTagDot.postDelayed({
                 productTagDot.apply {
-                    visible()
+                    if (!(productTagExpandedView.isVisible || finalPointerView.isVisible))
+                        visible()
+                    initialBubbleVisible = true
                 }
             }, PRODUCT_DOT_ONE_SEC)
 
         productTagDot.postDelayed({
             productTagDot.apply {
-                gone()
+                if (isVisible)
+                    gone()
             }
         }, PRODUCT_DOT_TIMER)
     }
