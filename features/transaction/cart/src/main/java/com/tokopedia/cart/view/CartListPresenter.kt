@@ -92,7 +92,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     // Store last validate use response from cart page
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
-    var isLastApplyResponseStillValid = true
+    var isLastApplyResponseStillValid = false
 
     // Store last validate use request for clearing promo if got akamai error
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
@@ -174,7 +174,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun onSuccessGetCartList(cartData: CartData, initialLoad: Boolean) {
         view?.let {
-            setLastApplyValid()
+            val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData
+            if (lastApplyData.codes.isNotEmpty() && lastApplyData.listVoucherOrders.isNotEmpty()) {
+                setLastApplyValid()
+            }
             setValidateUseLastResponse(null)
             setUpdateCartAndValidateUseLastResponse(null)
             if (!initialLoad) {
