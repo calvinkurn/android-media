@@ -13,7 +13,7 @@ import dagger.Component
     GqlRawQueryModule::class,
     ProductWishlistModule::class,
     ProductDetailUserModule::class,
-    ProductDetailModuleTesting::class],
+    ProductDetailDevModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailComponent {
     fun inject(fragment: DynamicProductDetailFragment)

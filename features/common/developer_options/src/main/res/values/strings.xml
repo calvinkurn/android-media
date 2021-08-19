@@ -2,6 +2,7 @@
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
     <string name="ab_test_rollence_title">Ab Test Rollence Editor</string>
+    <string name="pdp_dev_option_title">Product Dev Option</string>
 
     <string name="screen_name">Developer page</string>
 
@@ -16,13 +17,16 @@
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
+    <string name="pdp_product_id_edittext_placeholder">Product Id</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
     <string name="ab_test_rollence_revision_version_prefix">Revision version: %d</string>
 
     <string name="access_token">Access Token</string>
+    <string name="pdp_dev">Product Detail Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
     <string name="reset_onboarding">Reset OnBoarding</string>
     <string name="test_onboarding">Test OnBoarding</string>

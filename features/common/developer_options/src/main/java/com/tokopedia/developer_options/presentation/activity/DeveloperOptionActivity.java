@@ -94,8 +94,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
     String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
 
-    String PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY = "layoutIdSharedPref";
-    String PDP_LAYOUT_ID_STRING_KEY = "layoutIdTest";
 
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
@@ -345,6 +343,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+            Intent intent = new Intent(this, ProductDetailDevActivity.class);
+            startActivity(intent);
+        });
+
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -445,13 +448,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        TextFieldUnify layoutIdEditText = findViewById(R.id.pdp_layout_id_edittext);
-        findViewById(R.id.pdp_layout_id_btn).setOnClickListener(v -> {
-            getSharedPreferences(PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY).edit()
-                    .putString(PDP_LAYOUT_ID_STRING_KEY, layoutIdEditText.getTextFieldInput().getText().toString()).apply();
-            String messageSuccess = "Layout ID PDP Applied : " + layoutIdEditText.getTextFieldInput().getText().toString()
-            Toast.makeText(DeveloperOptionActivity.this, messageSuccess, Toast.LENGTH_SHORT).show();
-        });
+
     }
 
     private void setupNewInboxAbButton() {
