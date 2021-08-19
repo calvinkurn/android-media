@@ -294,4 +294,23 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }
+
+    private fun mapToMilestoneWidget(widget: WidgetModel, isFromCache: Boolean): RecommendationWidgetUiModel {
+        return RecommendationWidgetUiModel(
+            id = (widget.id ?: 0L).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
 }

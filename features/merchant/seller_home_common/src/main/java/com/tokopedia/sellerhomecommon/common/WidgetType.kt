@@ -19,6 +19,7 @@ object WidgetType {
     const val MULTI_LINE_GRAPH = "multiTrendline"
     const val ANNOUNCEMENT = "announcement"
     const val RECOMMENDATION = "recommendation"
+    const val MILESTONE = "milestone"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
