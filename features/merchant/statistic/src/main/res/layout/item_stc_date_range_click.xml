@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
@@ -54,6 +54,6 @@
         android:id="@+id/verLineStcDefault"
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:background="@color/light_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
