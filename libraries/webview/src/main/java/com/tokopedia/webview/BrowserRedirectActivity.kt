@@ -26,7 +26,7 @@ class BrowserRedirectActivity: AppCompatActivity() {
 
     fun getCallingIntentOpenBrowser(context: Context?, uri: Uri): Intent {
         val webUrl =  uri.getQueryParameter(KEY_URL)?.decode() ?: TokopediaUrl.getInstance().WEB
-        val ext = uri.getQueryParameter(KEY_EXT)?.toBoolean() ?: false
+        val ext = "true" == uri.getQueryParameter(KEY_EXT)
         val webUri = Uri.parse(webUrl)
 
         val destinationIntent = Intent(Intent.ACTION_VIEW)

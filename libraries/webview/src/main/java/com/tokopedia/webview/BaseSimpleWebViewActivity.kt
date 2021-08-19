@@ -158,7 +158,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     fun goPreviousActivity() {
-        if (isTaskRoot || intent.data?.host == ApplinkConst.WEBVIEW_PARENT_HOME_HOST) {
+        if (isTaskRoot || intent.data?.pathSegments?.joinToString() == ApplinkConst.WEBVIEW_PARENT_HOME_HOST) {
             RouteManager.route(this, ApplinkConst.HOME)
             finish()
         } else {
