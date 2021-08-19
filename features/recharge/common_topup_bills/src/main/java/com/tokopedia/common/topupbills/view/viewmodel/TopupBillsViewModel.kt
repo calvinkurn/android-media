@@ -343,11 +343,8 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
-        var (servicePlan, paramSource) = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString())) {
-            FAVORITE_NUMBER_SERVICE_PLAN_POSTPAID to FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID
-        } else {
-            FAVORITE_NUMBER_SERVICE_PLAN_PREPAID to FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-        }
+        var paramSource = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString()))
+            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
 
         return mapOf(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
@@ -355,7 +352,7 @@ class TopupBillsViewModel @Inject constructor(
                 FAVORITE_NUMBER_PARAM_CATEGORY_IDS to categoryIds,
                 FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
-                FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to servicePlan,
+                FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
                 FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
                 FAVORITE_NUMBER_PARAM_LIMIT to FAVORITE_NUMBER_LIMIT
             )
@@ -370,11 +367,9 @@ class TopupBillsViewModel @Inject constructor(
         label: String,
         isDelete: Boolean
     ): Map<String, Any> {
-        var paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR) {
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID
-        } else {
-            FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-        }
+        var paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR)
+            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+
         return mapOf(
             FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
                 FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
@@ -484,8 +479,6 @@ class TopupBillsViewModel @Inject constructor(
 
         const val NULL_RESPONSE = "null response"
 
-        const val FAVORITE_NUMBER_SERVICE_PLAN_POSTPAID = "1"
-        const val FAVORITE_NUMBER_SERVICE_PLAN_PREPAID = "0"
         const val CATEGORY_ID_PASCABAYAR = 9
 
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
