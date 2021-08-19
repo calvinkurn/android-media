@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.fragment
+        package com.tokopedia.home_account.view.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -54,6 +54,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -61,6 +62,9 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.*
+import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
+import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.DEFAULT_TYPE
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
@@ -71,6 +75,7 @@ import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.C
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
+import com.tokopedia.home_account.view.mapper.UiModelMapper
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -149,7 +154,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     var appBarCollapseListener: onAppBarCollapseListener? = null
     var isNeedRefreshProfileItems = true
     var coachMark: CoachMark2? = null
+    var balanceAndPointLocalLoad: LocalLoad? = null
     var memberLocalLoad: LocalLoad? = null
+    var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
     var memberTitle: Typography? = null
     var memberIcon: ImageUnify? = null
@@ -222,15 +229,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             }
         })
 
-        viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> {
-                }
-            }
-        })
-
         viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -259,40 +257,63 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-
+                    onSuccessGetCentralizedAssetConfig(it.data)
                 }
                 is Fail -> {
-
+                    onFailedGetCentralizedAssetConfig(it.throwable)
                 }
             }
         })
 
-        viewModel.tokopointsDrawerList.observe(viewLifecycleOwner, Observer {
+        viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
+                is ResultBalanceAndPoint.Success -> {
+                    onSuccessGetBalanceAndPoint(it.data, it.partnerCode)
                 }
-                is Fail -> {
-                }
-            }
-        })
-
-        viewModel.saldoBalance.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> {
+                is ResultBalanceAndPoint.Fail -> {
+                    onFailedGetBalanceAndPoint(it.throwable, it.partnerCode)
                 }
             }
         })
     }
 
-    override fun onMemberErrorClicked() {
+    private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
+        balanceAndPointCardView?.show()
+        balanceAndPointLocalLoad?.hide()
+        val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
+        centralizedUserAssetConfig.assetConfig.forEach {
+            balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
+            viewModel.getBalanceAndPoint(it.id)
+        }
+        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
+    }
+
+    private fun onFailedGetCentralizedAssetConfig(throwable: Throwable) {
+        balanceAndPointCardView?.hide()
+        balanceAndPointLocalLoad?.show()
+    }
+
+    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance, partnerCode: String) {
+        balanceAndPointAdapter?.changeItemBySameId(UiModelMapper.getBalanceAndPointUiModel(balanceAndPoint))
+    }
+
+    private fun onFailedGetBalanceAndPoint(throwable: Throwable, partnerCode: String) {
+        balanceAndPointAdapter?.changeItemTypeById(partnerCode, DEFAULT_TYPE)
+    }
+
+    private fun onMemberErrorClicked() {
         viewModel.getShortcutData()
+    }
+
+    private fun onBalanceAndPointErrorClicked() {
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
     }
 
     private fun onFailGetData() {
         memberCardView?.hide()
         memberLocalLoad?.show()
+        balanceAndPointCardView?.hide()
+        balanceAndPointLocalLoad?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
@@ -318,6 +339,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
         memberLocalLoad?.hide()
         memberCardView?.show()
+        balanceAndPointLocalLoad?.hide()
+        balanceAndPointCardView?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
@@ -434,11 +457,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun getProfileData() {
-        if (showHomeAccountTokopoints()) {
-            viewModel.getUserPageAssetConfig()
-        } else {
-            viewModel.getSaldoBalance()
-        }
+        balanceAndPointAdapter?.displayShimmer()
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
         viewModel.getShortcutData()
     }
 
@@ -452,7 +472,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.getBuyerData()
         setupSettingList()
         getFirstRecommendation()
-        balanceAndPointAdapter?.displayShimmer()
     }
 
     private fun onRefresh() {
@@ -895,6 +914,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         if (position == 0) {
             initMemberLocalLoad(itemView)
             initMemberTitle(itemView)
+
+            initBalanceAndPointLocalLoad(itemView)
         }
     }
 
@@ -941,7 +962,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun initMemberLocalLoad(itemView: View) {
-        itemView.findViewById<LocalLoad>(R.id.home_account_local_load)?.let {
+        itemView.findViewById<LocalLoad>(R.id.home_account_member_local_load)?.let {
             memberLocalLoad = it
             memberLocalLoad?.refreshBtn?.setOnClickListener {
                 memberLocalLoad?.progressState = !(memberLocalLoad?.progressState ?: false)
@@ -951,6 +972,20 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
 
         itemView.findViewById<CardUnify>(R.id.home_account_member_card)?.let {
             memberCardView = it
+        }
+    }
+
+    private fun initBalanceAndPointLocalLoad(itemView: View) {
+        itemView.findViewById<LocalLoad>(R.id.home_account_balance_and_point_local_load)?.let {
+            balanceAndPointLocalLoad = it
+            balanceAndPointLocalLoad?.refreshBtn?.setOnClickListener {
+                balanceAndPointLocalLoad?.progressState = !(balanceAndPointLocalLoad?.progressState ?: false)
+                onBalanceAndPointErrorClicked()
+            }
+        }
+
+        itemView.findViewById<CardUnify>(R.id.home_account_balance_and_point_card)?.let {
+            balanceAndPointCardView = it
         }
     }
 
@@ -1238,6 +1273,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS = "android_user_home_account_tokopoints"
+
+        private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

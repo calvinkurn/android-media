@@ -206,5 +206,6 @@ object AccountConstants {
     object WALLET {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
+        const val GOPAYLATER = "gopaylater"
     }
 }

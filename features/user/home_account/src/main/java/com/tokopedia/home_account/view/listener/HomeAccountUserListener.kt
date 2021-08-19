@@ -24,8 +24,6 @@ interface HomeAccountUserListener {
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
     fun onIconWarningClicked(profile: ProfileDataView)
 
-    fun onMemberErrorClicked()
-
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)

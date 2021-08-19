@@ -10,11 +10,11 @@ data class CentralizedUserAssetDataModel(
 
 data class CentralizedUserAssetConfig(
     @SerializedName("asset_config_vertical") @Expose
-    val assetConfigVertical: AssetConfig = AssetConfig(),
+    val assetConfigVertical: List<AssetConfig> = listOf(),
     @SerializedName("asset_config_horizontal") @Expose
-    val assetConfigHorizontal: AssetConfig = AssetConfig(),
+    val assetConfigHorizontal: List<AssetConfig> = listOf(),
     @SerializedName("asset_config") @Expose
-    val assetConfig: AssetConfig = AssetConfig(),
+    val assetConfig: List<AssetConfig> = listOf(),
 )
 
 data class AssetConfig(

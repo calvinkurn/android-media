@@ -62,7 +62,7 @@ class BalanceAndPointItemViewHolder(
     }
 
     private fun setSubtitleText(id: String?, type: Int, text: String?) {
-        val subtitle = if (type == FAILED_TO_LOAD_TYPE) {
+        val subtitle = if (type == FAILED_TO_LOAD_TYPE || type == NOT_LINKED_TYPE) {
             when (id) {
                 OVO_BALANCE_ID -> {
                     "OVO"

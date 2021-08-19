@@ -2,9 +2,11 @@ package com.tokopedia.home_account.domain.query
 
 object GetCentralizedUserAssetConfigQuery {
 
+    private const val entryPoint = "\$entryPoint"
+
     val query: String = """
-        query {
-          GetCentralizedUserAssetConfig(entryPoint:"user_page"){
+        query get_centralized_user_asset_config($entryPoint: String!){
+          GetCentralizedUserAssetConfig(entryPoint:$entryPoint){
             asset_config_horizontal {
               title
               subtitle_color

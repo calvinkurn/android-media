@@ -28,10 +28,10 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
     companion object {
         val LAYOUT = R.layout.home_account_item_member
 
-        val TYPE_DEFAULT = 1
-        val TYPE_TOKOMEMBER = 2
-        val TYPE_TOPQUEST = 3
-        val TYPE_KUPON_SAYA = 4
+        const val TYPE_DEFAULT = 1
+        const val TYPE_TOKOMEMBER = 2
+        const val TYPE_TOPQUEST = 3
+        const val TYPE_KUPON_SAYA = 4
     }
 
 }

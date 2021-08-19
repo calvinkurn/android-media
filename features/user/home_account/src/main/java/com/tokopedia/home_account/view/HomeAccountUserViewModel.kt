@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
@@ -38,6 +39,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
         private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
+        private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
         private val walletPref: WalletPref,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -89,6 +91,10 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _centralizedUserAssetConfig = MutableLiveData<Result<CentralizedUserAssetConfig>>()
     val centralizedUserAssetConfig: LiveData<Result<CentralizedUserAssetConfig>>
         get() = _centralizedUserAssetConfig
+
+    private val _balanceAndPoint = MutableLiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>()
+    val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
+        get() = _balanceAndPoint
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -206,15 +212,29 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getCentralizedUserAssetConfig() {
+    fun getCentralizedUserAssetConfig(entryPoint: String) {
         launchCatchError(block = {
-            val result = getCentralizedUserAssetConfigUseCase(Unit)
+            val params = getCentralizedUserAssetConfigUseCase.getParams(entryPoint)
+            val result = getCentralizedUserAssetConfigUseCase(params)
 
             withContext(dispatcher.main) {
                 _centralizedUserAssetConfig.value = Success(result.data)
             }
         }, onError = {
             _centralizedUserAssetConfig.value = Fail(it)
+        })
+    }
+
+    fun getBalanceAndPoint(partnerCode: String) {
+        launchCatchError(block = {
+            val params = getBalanceAndPointUseCase.getParams(partnerCode)
+            val result = getBalanceAndPointUseCase(params)
+
+            withContext(dispatcher.main) {
+                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, partnerCode)
+            }
+        }, onError = {
+            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, partnerCode)
         })
     }
 

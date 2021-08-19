@@ -25,20 +25,35 @@ class HomeAccountBalanceAndPointAdapter(
         addItemsAndAnimateChanges(list)
     }
 
-    fun hideShimmer(index: Int, item: BalanceAndPointUiModel) {
-        val shimmerItem = getItem(index)
-        if (shimmerItem is BalanceAndPointShimmerUiModel) {
-            removeItemAt(index)
-            addItem(index, item)
-            notifyItemChanged(index)
+    fun showPlaceholderBalanceAndPoints(items: List<BalanceAndPointUiModel>) {
+        clearAllItems()
+        addItemsAndAnimateChanges(items)
+    }
+
+    fun changeItemBySameId(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is BalanceAndPointUiModel) {
+                if (it.id == balanceAndPointUiModel.id) {
+                    val position = items.indexOf(it)
+                    removeItemAt(position)
+                    addItem(position, balanceAndPointUiModel)
+                    notifyItemChanged(position)
+                }
+            }
         }
     }
 
-    fun changeItemType(index: Int, type: Int) {
-        val item = getItem(index)
-        if (item is BalanceAndPointUiModel) {
-            item.type = type
-            notifyItemChanged(index)
+    fun changeItemTypeById(id: String, type: Int) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is BalanceAndPointUiModel) {
+                if (it.id == id) {
+                    val position = items.indexOf(it)
+                    it.type = type
+                    notifyItemChanged(position)
+                }
+            }
         }
     }
 }
