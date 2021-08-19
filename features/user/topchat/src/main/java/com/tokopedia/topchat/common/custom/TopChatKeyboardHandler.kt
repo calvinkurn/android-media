@@ -19,7 +19,7 @@ class TopChatKeyboardHandler (
 
     private fun isKeyboardShowing(): Boolean {
         val diff = view.rootView.height - view.height
-        return diff > THRESHOLD_DIFF
+        return diff > THRESHOLD_DIFF * view.rootView.height
     }
 
     interface OnKeyBoardVisibilityChangeListener {
@@ -28,6 +28,6 @@ class TopChatKeyboardHandler (
     }
 
     companion object {
-        private const val THRESHOLD_DIFF = 400
+        private const val THRESHOLD_DIFF = 0.25
     }
 }

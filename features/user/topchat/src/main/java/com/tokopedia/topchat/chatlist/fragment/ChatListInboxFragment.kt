@@ -120,6 +120,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private var broadCastButton: FloatingActionButton? = null
     private var containerListener: InboxFragmentContainer? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
+    var stopTryingIndicator = false
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -512,7 +513,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
-        setCurrentActiveChat()
+        setIndicatorCurrentActiveChat()
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
@@ -644,6 +645,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     ) {
         if(element.msgId != adapter?.activeChat?.first?.msgId) {
             adapter?.notifyItemChanged(itemPosition, element)
+            adapter?.deselectActiveChatIndicator(element)
             adapter?.activeChat = lastActiveChat
             chatRoomFlexModeListener?.onClickAnotherChat(element)
         }
@@ -860,20 +862,23 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return activity is TopChatRoomActivity
     }
 
-    fun setCurrentActiveChat(msgId: String? = null) {
+    fun setIndicatorCurrentActiveChat(msgId: String? = null) {
         if(isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
             val currentActiveChat = if(msgId.isNullOrEmpty()) {
                 arguments?.getString(Constant.CHAT_CURRENT_ACTIVE)
             } else {
                 msgId
             }
-            if(currentActiveChat != null && currentActiveChat != adapter?.activeChat?.first?.msgId) {
+            if(currentActiveChat != null &&
+                currentActiveChat != adapter?.activeChat?.first?.msgId
+            ) {
                 val pair = adapter?.getItemPosition(currentActiveChat)
                 if(pair?.first != null && pair.second != null) {
                     val activateChat = pair.first
                     activateChat?.isActive = true
                     adapter?.notifyItemChanged(pair.second!!, activateChat)
                     adapter?.activeChat = pair
+                    if(!stopTryingIndicator) stopTryingIndicator = true
                 }
             }
         }

@@ -358,7 +358,20 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         if(isFlexMode()) {
             messageId = msgId
             currentActiveChat = msgId
-            chatListFragment.setCurrentActiveChat(msgId)
+            checkPeriodicallyUntilListRendered(msgId)
+        }
+    }
+
+    private fun checkPeriodicallyUntilListRendered(msgId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            while(!chatListFragment.stopTryingIndicator) {
+                if (!chatListFragment.adapter?.list.isNullOrEmpty() &&
+                    chatListFragment.adapter?.activeChat != null )
+                {
+                    chatListFragment.setIndicatorCurrentActiveChat(msgId)
+                }
+                delay(DELAY)
+            }
         }
     }
 
@@ -498,6 +511,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         val TAG = TopChatRoomActivity::class.java.name
         private const val TITLE_CHAT = "Chat"
 
+        private const val DELAY = 1000L
         private const val EMPTY_STATE = 0
         private const val FLAT_STATE = 1
         private const val HALF_OPEN_STATE = 2

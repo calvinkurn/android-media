@@ -27,17 +27,6 @@ class ChatListAdapter constructor(
 ) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
     var activeChat: Pair<ItemChatListPojo?, Int?> = Pair(null, null)
-        set(value) {
-            if(!field.first?.msgId.isNullOrEmpty() &&
-                    field.first?.msgId != value.first?.msgId) {
-                val deactivateChat = field.first
-                deactivateChat?.isActive = false
-                if(deactivateChat != null && field.second != null) {
-                    notifyItemChanged(field.second!!, deactivateChat)
-                }
-            }
-            field = value
-        }
 
     override fun isContainData(): Boolean {
         return visitables.size > 0 && !hasEmptyModel()
@@ -290,5 +279,16 @@ class ChatListAdapter constructor(
             }
         }
         return Pair(null, null)
+    }
+
+    fun deselectActiveChatIndicator(currentActiveChat: ItemChatListPojo) {
+        if(!activeChat.first?.msgId.isNullOrEmpty() &&
+            activeChat.first?.msgId != currentActiveChat.msgId) {
+            val deactivateChat = activeChat.first
+            deactivateChat?.isActive = false
+            if(deactivateChat != null && activeChat.second != null) {
+                notifyItemChanged(activeChat.second!!, deactivateChat)
+            }
+        }
     }
 }
