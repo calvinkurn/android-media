@@ -450,7 +450,6 @@ class TopupBillsViewModel @Inject constructor(
 
         const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
         const val FAVORITE_NUMBER_PARAM_SOURCE = "source"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP = "pdp_favorite_list"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_IDS = "category_ids"
         const val FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION = "min_last_transaction"
         const val FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION = "min_total_transaction"
