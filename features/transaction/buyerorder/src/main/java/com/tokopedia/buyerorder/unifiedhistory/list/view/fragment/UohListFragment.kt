@@ -151,6 +151,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -180,7 +183,7 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -243,6 +246,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -282,6 +286,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val MINUS_30 = -30
         const val MINUS_90 = -90
         private const val MIN_30_DAYS = -30
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun isNavRevamp(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:
+            (getAbTestPlatform().getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -499,6 +522,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         uoh_navtoolbar?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )),
                 editorActionCallback = {query ->
@@ -512,6 +536,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                         }
                         else -> {
+                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
                             triggerSearch()
                         }
                     }
@@ -532,7 +557,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                if (isNavRevamp()) {
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
             }
             it.setIcon(icons)
         }

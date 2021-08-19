@@ -185,8 +185,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String OS_KEY_MOBILE = "mobile";
     public static final String PAGE_OS_HOMEPAGE = "OS Homepage";
     public static final String PAGE_FEED = "Feed";
-    public static final String PAGE_DAFTAR_TRANSAKSI = "Daftar Transaksi";
-    public static final String PAGE_WISHLIST = "Wishlist";
+    public static final String PAGE_DAFTAR_TRANSAKSI = "transaction page";
+    public static final String PAGE_WISHLIST = "wishlist page";
     public static final int RANK_SHOP_SHORTCUT = 3;
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;

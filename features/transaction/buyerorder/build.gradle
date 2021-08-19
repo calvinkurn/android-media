@@ -91,6 +91,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
 
     // ui test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

@@ -72,9 +72,9 @@
             <LinearLayout
                 android:id="@+id/layout_search"
                 android:tag="@string/tag_navigation_toolbar_searchbar"
-                tools:visibility="visible"
                 android:visibility="gone"
                 android:gravity="center"
+                tools:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
                 app:layout_constraintStart_toEndOf="@id/nav_icon_back"
                 app:layout_constraintTop_toTopOf="parent"
@@ -114,8 +114,27 @@
                     android:textColorHint="@color/Unify_N700_68"
                     android:background="@null"
                     android:layout_weight="1"/>
-
             </LinearLayout>
+
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:tag="@string/tag_navigation_toolbar_searchbar"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
+                app:layout_constraintStart_toEndOf="@id/nav_icon_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_width="0dp"
+                android:background="@drawable/nav_toolbar_searchbar_bg_corner"
+                android:layout_height="@dimen/dp_36"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_4"
+                android:id="@+id/et_searchbar_unify"
+                app:search_bar_show_icon="false"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_icon_list"

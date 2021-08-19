@@ -11,6 +11,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
@@ -18,6 +21,8 @@ import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.searchbar.util.NavUtil
+import com.tokopedia.unifycomponents.SearchBarUnify
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -35,10 +40,12 @@ class NavSearchbarController(val view: View,
                              val editorActionCallback: ((hint: String)-> Unit)?
 ) : CoroutineScope {
     var etSearch: EditText? = null
+    var etSearchbarUnify: SearchBarUnify? = null
 
     init {
         view.layout_search.visibility = VISIBLE
         etSearch = view.et_search
+        etSearchbarUnify = view.findViewById(R.id.et_searchbar_unify)
     }
     private lateinit var animationJob: Job
 
@@ -50,6 +57,8 @@ class NavSearchbarController(val view: View,
             isShowTransition: Boolean,
             durationAutoTransition: Long
     ) {
+        etSearchbarUnify?.gone()
+        etSearch?.visible()
         if (::animationJob.isInitialized) {
             animationJob.cancel()
         }
@@ -76,8 +85,10 @@ class NavSearchbarController(val view: View,
 
     fun setEditableSearchbar(hint: String) {
         setEditorActionListener()
-        etSearch?.hint = hint
-        etSearch?.addTextChangedListener(
+        etSearchbarUnify?.visible()
+        etSearch?.gone()
+        etSearchbarUnify?.searchBarPlaceholder = hint
+        etSearchbarUnify?.searchBarTextField?.addTextChangedListener(
             onTextChanged = { text, start, count, after ->
                 navSearchbarInterface?.invoke(
                     text, start, count, after
@@ -87,22 +98,26 @@ class NavSearchbarController(val view: View,
     }
 
     private fun setEditorActionListener() {
-        etSearch?.isFocusableInTouchMode = true;
-        etSearch?.isFocusable = true;
-        etSearch?.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        etSearch?.setOnFocusChangeListener { v, hasFocus ->
+        etSearchbarUnify?.isFocusableInTouchMode = true;
+        etSearchbarUnify?.isFocusable = true;
+        etSearchbarUnify?.searchBarTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        etSearchbarUnify?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 NavToolbarTracking.clickNavToolbarComponent(
                     pageName = topNavComponentListener.getPageName(),
                     componentName = IconList.NAME_SEARCH_BAR,
                     userId = topNavComponentListener.getUserId(),
-                    keyword = etSearch?.text.toString()
+                    keyword = etSearchbarUnify?.searchBarTextField?.text.toString()
                 )
             }
         }
-        etSearch?.setOnEditorActionListener { _, actionId, _ ->
+        etSearchbarUnify?.searchBarIcon?.setOnClickListener {
+            etSearchbarUnify?.searchBarTextField?.text?.clear()
+            editorActionCallback?.invoke("")
+        }
+        etSearchbarUnify?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                editorActionCallback?.invoke(etSearch?.text.toString())
+                editorActionCallback?.invoke(etSearchbarUnify?.searchBarTextField?.text.toString())
                 true
             } else false
         }

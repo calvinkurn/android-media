@@ -233,6 +233,8 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         if (isVisibleToUser) {
             viewModel.getWishlistData(navToolbar?.getCurrentSearchbarText() ?: "", generateWishlistAdditionalParamRequest())
             scrollAfterSubmit = true
+        } else {
+            coachMark?.dismissCoachMark()
         }
     }
 
@@ -327,13 +329,13 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 editorActionCallback = { query ->
                     when {
                         query.isBlank() -> {
-                            view?.let { context?.let { it1 -> navToolbar?.hideKeyboard() } }
                             viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
                         }
                         else -> {
                             viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
                         }
                     }
+                    view?.let { context?.let { it1 -> navToolbar?.hideKeyboard() } }
                 }
             )
             var pageSource = ""
@@ -345,23 +347,16 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = pageSource)
-            ).addIcon(getInboxIcon()) {}
-            if (!useNewInbox) {
-                icons.addIcon(IconList.ID_NOTIFICATION) {}
-            }
+            )
             icons.apply {
+                addIcon(IconList.ID_MESSAGE) {}
+                addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                if (isNavRevamp()) {
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
             }
             it.setIcon(icons)
-        }
-    }
-
-    private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
         }
     }
 
