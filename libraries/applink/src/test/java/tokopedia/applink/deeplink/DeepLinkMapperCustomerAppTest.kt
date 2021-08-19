@@ -1892,6 +1892,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
+    @Test
+    fun `check manual ads creation applink`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, expectedDeepLink)
+    }
+
     private fun setRemoteConfig(isEnabled: Boolean) {
         every {
             FirebaseRemoteConfigInstance.get(mockk(relaxed = true)).getBoolean(any())
