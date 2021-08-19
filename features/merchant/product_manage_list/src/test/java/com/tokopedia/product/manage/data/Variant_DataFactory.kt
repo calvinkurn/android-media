@@ -54,7 +54,7 @@ fun createProductVariant(
         pictures: List<Picture> = emptyList(),
         isAllStockEmpty: Boolean = true,
         access: ProductManageAccess = createShopOwnerAccess(),
-        campaignTypeList: List<CampaignType>?
+        campaignTypeList: List<CampaignType>? = emptyList()
 ): ProductVariant {
     return ProductVariant(id, name, status, combination, isPrimary, isCampaign, price, sku, stock, pictures, isAllStockEmpty, access, campaignTypeList)
 }

@@ -21,7 +21,7 @@ fun createProduct(
     pictures: List<Picture>? = emptyList(),
     topAds: ProductTopAds? = null,
     isCampaign: Boolean = false,
-    campaignTypeList: List<ProductCampaignType>?
+    campaignTypeList: List<ProductCampaignType>? = emptyList()
 ): Product {
     return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList)
 }
@@ -44,7 +44,7 @@ fun createProductUiModel(
     topAds: TopAdsInfo? = null,
     access: ProductManageAccess? = createShopOwnerAccess(),
     isCampaign: Boolean = false,
-    campaignTypeList: List<ProductCampaignType>?
+    campaignTypeList: List<ProductCampaignType>? = emptyList()
 ): ProductUiModel {
     return ProductUiModel(
         id,
