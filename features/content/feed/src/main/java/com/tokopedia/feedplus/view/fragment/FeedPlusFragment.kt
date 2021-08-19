@@ -201,8 +201,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
 
-    private var isUserEventTrackerDoneTrack = false
     private var isUserEventTrackerDoneOnResume = false
+    private var isFeedPageShown = false
 
     private lateinit var shareData: LinkerData
     private lateinit var reportBottomSheet: ReportBottomSheet
@@ -257,6 +257,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val TRUE = "true"
         private const val FEED_DETAIL = "feedcommunicationdetail"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
+        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
@@ -641,11 +642,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
-                if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
-                    val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
-                    if (isHaveNewFeed) {
-                        newFeed.visible()
-                        triggerNewFeedNotification()
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
+                        if (intent.extras == null || intent.extras?.isEmpty == true)
+                            isFeedPageShown = true
+                        if (isHaveNewFeed) {
+                            newFeed.visible()
+                            triggerNewFeedNotification()
+                        }
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+                        isFeedPageShown = false
                     }
                 }
             }
@@ -749,6 +756,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         if (layoutManager != null) {
             layoutManager = null
+        }
+        if (::productTagBS.isInitialized) {
+            productTagBS.onDestroy()
         }
         TopAdsHeadlineActivityCounter.page = 1
     }
@@ -957,7 +967,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
-        isUserEventTrackerDoneOnResume = true
+        if (isFeedPageShown)
+            isUserEventTrackerDoneOnResume = true
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()
@@ -969,6 +980,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
 
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
@@ -2310,7 +2322,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         sendMoEngageOpenFeedEvent()
-        sendFeedPlusScreenTracking()
         stopTracePerformanceMon()
     }
 
@@ -2607,19 +2618,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val cache = LocalCacheHandler(it, KEY_FEED)
             cache.putString(KEY_FEED_FIRST_PAGE_CURSOR, firstPageCursor)
             cache.applyEditor()
-        }
-    }
-
-    private fun sendFeedPlusScreenTracking() {
-        if (!isUserEventTrackerDoneTrack) {
-            val isEmptyFeed = !hasFeed()
-
-            feedAnalytics.eventOpenFeedPlusFragment(
-                userSession.isLoggedIn,
-                isEmptyFeed
-            )
-
-            isUserEventTrackerDoneTrack = true
         }
     }
 

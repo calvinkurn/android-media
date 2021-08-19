@@ -25,13 +25,14 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_flight_homepage.*
+import com.tokopedia.utils.date.DateUtil
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.text.SimpleDateFormat
 
 /**
  * @author by furqan on 04/08/2020
@@ -144,9 +145,11 @@ class FlightHomepageActivityTest {
         validateTravelVideoTracking()
 
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
 
         departureAirport()
         arrivalAirport()
+        selectTodayDate()
         switchTrip()
         setPassengersCount()
         setPassengersClass()
@@ -176,6 +179,21 @@ class FlightHomepageActivityTest {
         // click on Palembang, to set Palembang as Arrival Airport
         onView(withText("Palembang, Indonesia")).perform(click())
         Thread.sleep(1000)
+    }
+
+    private fun selectTodayDate() {
+        Thread.sleep(1000)
+
+        // click departure date
+        onView(withId(R.id.tvFlightDepartureDate)).perform(click())
+        Thread.sleep(500)
+
+        // select today
+        val sdf = SimpleDateFormat("d")
+        val dateToday = sdf.format(DateUtil.getCurrentDate())
+        onView(getElementFromMatchAtPosition(withText(dateToday), 0)).perform(click())
+
+        Thread.sleep(3000)
     }
 
     private fun switchTrip() {
@@ -218,13 +236,20 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
-    fun validateTravelVideoTracking(){
+    fun validateTravelVideoTracking() {
+        Thread.sleep(1000)
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).check(matches(isDisplayed()))
 
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).perform(click())
+
+        Thread.sleep(1000)
     }
+
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"
