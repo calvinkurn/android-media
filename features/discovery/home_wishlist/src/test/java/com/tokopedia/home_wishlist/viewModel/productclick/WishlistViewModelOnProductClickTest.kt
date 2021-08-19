@@ -54,7 +54,7 @@ class WishlistViewModelOnProductClickTest {
 
         // Wishlist viewmodel onProductClick called
         wishlistViewModel.onProductClick(
-                productId,
+                productId.toLong(),
                 parentPosition,
                 position
         )

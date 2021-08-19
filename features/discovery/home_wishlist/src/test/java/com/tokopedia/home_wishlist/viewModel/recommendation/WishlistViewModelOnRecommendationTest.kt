@@ -9,6 +9,7 @@ import com.tokopedia.home_wishlist.viewModel.givenGetImageData
 import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -75,11 +76,11 @@ class WishlistViewModelOnRecommendationTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = 33, isWishlist = wishlistedInitialState),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = 11.toLong()),
+                        RecommendationItem(productId = 22.toLong()),
+                        RecommendationItem(productId = 33.toLong(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = 44.toLong()),
+                        RecommendationItem(productId = 55.toLong())
                 )
         )
 
@@ -164,11 +165,11 @@ class WishlistViewModelOnRecommendationTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = 11.toLong()),
+                        RecommendationItem(productId = 22.toLong()),
+                        RecommendationItem(productId = mockProductId.toLongOrZero(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = 44.toLong()),
+                        RecommendationItem(productId = 55.toLong())
                 )
         )
 
@@ -248,11 +249,11 @@ class WishlistViewModelOnRecommendationTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = 11.toLong()),
+                        RecommendationItem(productId = 22.toLong()),
+                        RecommendationItem(productId = mockProductId.toLongOrZero(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = 44.toLong()),
+                        RecommendationItem(productId = 55.toLong())
                 )
         )
 
@@ -333,11 +334,11 @@ class WishlistViewModelOnRecommendationTest {
         // Get recommendation usecase returns recommendation data
         getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                 listOf(
-                        RecommendationItem(productId = 11),
-                        RecommendationItem(productId = 22),
-                        RecommendationItem(productId = mockProductId.toInt(), isWishlist = wishlistedInitialState),
-                        RecommendationItem(productId = 44),
-                        RecommendationItem(productId = 55)
+                        RecommendationItem(productId = 11.toLong()),
+                        RecommendationItem(productId = 22.toLong()),
+                        RecommendationItem(productId = mockProductId.toLongOrZero(), isWishlist = wishlistedInitialState),
+                        RecommendationItem(productId = 44.toLong()),
+                        RecommendationItem(productId = 55.toLong())
                 )
         )
 
