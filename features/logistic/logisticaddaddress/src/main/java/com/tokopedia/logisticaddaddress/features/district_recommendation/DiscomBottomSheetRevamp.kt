@@ -55,6 +55,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
     private var staticDimen8dp: Int? = 0
+    private var page: Int = 1
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -186,7 +187,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                         input = viewBinding.searchPageInput.searchBarTextField.text.toString()
                         mIsInitialLoading = true
                         handler.postDelayed({
-                            presenter.loadData(input, 1)
+                            presenter.loadData(input, page)
                         }, DELAY_MILIS)
                     }
                 }
