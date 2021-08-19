@@ -93,9 +93,9 @@ data class Selection(
 data class VariantOption(
         @SerializedName("productVariantOptionID")
         @Expose val productVariantOptionID: Long = 0L,
-        @SerializedName("unit@Expose valueID")
+        @SerializedName("unitValueID")
         @Expose val unitValueID: Long = 0L,
-        @SerializedName("@Expose value")
+        @SerializedName("value")
         @Expose val value: String = "",
         @SerializedName("hex")
         @Expose val hex: String = "",

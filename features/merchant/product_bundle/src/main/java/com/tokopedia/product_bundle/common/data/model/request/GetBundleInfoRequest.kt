@@ -35,12 +35,12 @@ data class RequestData(
 
 data class ProductInfo(
     @SerializedName("Picture")
-    val picture: Boolean = false,
+    val picture: Boolean = true,
 )
 
 data class InventoryDetail(
     @SerializedName("Required")
-    val required: Boolean = false,
+    val required: Boolean = true,
     @SerializedName("UserLocation")
     val userLocation: UserLocation = UserLocation()
 )

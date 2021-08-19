@@ -71,4 +71,9 @@ class ProductBundleActivity : BaseSimpleActivity() {
             }
         })
     }
+
+    fun refreshPage() {
+        val productId = viewModel.parentProductID
+        viewModel.getBundleInfo(productId)
+    }
 }
