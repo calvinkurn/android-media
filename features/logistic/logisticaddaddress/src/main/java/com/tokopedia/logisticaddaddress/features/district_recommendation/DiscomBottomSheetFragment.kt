@@ -1,18 +1,17 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
@@ -24,21 +23,15 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
-import rx.Emitter
-import rx.Observable
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class DiscomBottomSheetFragment : BottomSheets(),
+class DiscomBottomSheetFragment : BottomSheetUnify(),
         PopularCityAdapter.ActionListener,
         DiscomContract.View,
         DiscomNewAdapter.ActionListener {
@@ -55,8 +48,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
     }
     private var mIsInitialLoading: Boolean = false
-    private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
-    private val handler = Handler()
     private lateinit var actionListener: ActionListener
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
@@ -71,6 +62,10 @@ class DiscomBottomSheetFragment : BottomSheets(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    init {
+        isFullpage = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -80,27 +75,39 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
     }
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_district_recommendation
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun initView(view: View) {
-        binding = BottomsheetDistrictRecommendationBinding.bind(view)
-        prepareLayout(view)
+    fun initView() {
+        binding = BottomsheetDistrictRecommendationBinding.inflate(LayoutInflater.from(context), null, false)
+        setChild(binding.root)
+        setTitle(getString(R.string.kota_kecamatan))
+        setCloseClickListener {
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
+            dismiss()
+        }
+
+        prepareLayout()
         initInjector()
         setViewListener()
     }
 
-    private fun prepareLayout(view: View) {
+    private fun prepareLayout() {
         binding.llListDistrict.visibility = View.GONE
 
         val cityList = resources.getStringArray(R.array.cityList)
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+        val chipsLayoutManager = ChipsLayoutManager.newBuilder(binding.root.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
 
-        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(view.context)
+        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(binding.root.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
@@ -123,30 +130,12 @@ class DiscomBottomSheetFragment : BottomSheets(),
             adapter = listDistrictAdapter
         }
 
-        binding.etSearchDistrictRecommendation.setSelection(binding.etSearchDistrictRecommendation.text.length)
+        binding.layoutSearch.searchBarTextField.setSelection(binding.layoutSearch.searchBarTextField.text.length)
     }
 
     override fun onDetach() {
         super.onDetach()
         presenter.detach()
-        mCompositeSubs.unsubscribe()
-    }
-
-    override fun title(): String {
-        return getString(R.string.kota_kecamatan)
-    }
-
-    override fun state(): BottomSheetsState {
-        return BottomSheetsState.FULL
-    }
-
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
-            onCloseButtonClick()
-        }
     }
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
@@ -172,18 +161,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        if (active) binding.icClose.visibility = View.INVISIBLE
-        else {
-            binding.icClose.visibility = View.VISIBLE
-            binding.icClose.setOnClickListener {
-                binding.etSearchDistrictRecommendation.setText("")
-                binding.llListDistrict.visibility = View.GONE
-                binding.llPopularCity.visibility = View.VISIBLE
-                popularCityAdapter.notifyDataSetChanged()
-                binding.icClose.visibility = View.GONE
-            }
-        }
-        binding.progressBar.visibility = if (active) View.VISIBLE else View.INVISIBLE
+        //no-op
     }
 
     override fun showEmpty() {
@@ -198,8 +176,8 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onCityChipClicked(city: String) {
-        binding.etSearchDistrictRecommendation.setText(city)
-        binding.etSearchDistrictRecommendation.setSelection(city.length)
+        binding.layoutSearch.searchBarTextField.setText(city)
+        binding.layoutSearch.searchBarTextField.setSelection(city.length)
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
@@ -219,22 +197,41 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     private fun setViewListener() {
-        binding.etSearchDistrictRecommendation.isFocusableInTouchMode = true
-        watchTextRx(binding.etSearchDistrictRecommendation)
-                .subscribe { s ->
-                    if (s.isNotEmpty()) {
-                        input = s
+        binding.layoutSearch.searchBarTextField.isFocusableInTouchMode = true
+
+        binding.layoutSearch.searchBarTextField.run {
+            addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    //no-op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (binding.layoutSearch.searchBarTextField.text.toString().isEmpty()) {
+                        binding.llListDistrict.visibility = View.GONE
+                        binding.tvDescInputDistrict.visibility = View.GONE
+                        binding.llPopularCity.visibility =View.VISIBLE
+                        popularCityAdapter.notifyDataSetChanged()
+                    }
+                    else {
+                        input = binding.layoutSearch.searchBarTextField.text.toString()
                         mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.loadData(input, 1)
                         }, 200)
-                    } else {
-                        binding.icClose.visibility = View.GONE
-                        binding.tvDescInputDistrict.visibility = View.GONE
-                        binding.llPopularCity.visibility = View.VISIBLE
-                        binding.llListDistrict.visibility = View.GONE
                     }
-                }.toCompositeSubs()
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    //no-op
+                }
+
+            })
+        }
 
         binding.rvListDistrict.addOnScrollListener(mEndlessListener)
     }
@@ -247,29 +244,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
                 dismiss()
             }
         }
-    }
-
-    private fun watchTextRx(view: EditText): Observable<String> {
-        return Observable
-                .create({ emitter: Emitter<String> ->
-                    view.addTextChangedListener(object : TextWatcher {
-                        override fun afterTextChanged(editable: Editable?) {
-                            emitter.onNext(editable.toString())
-                        }
-
-                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    })
-                }, Emitter.BackpressureMode.NONE)
-                .filter { t -> t.isEmpty() || t.length > 2 }
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    private fun Subscription.toCompositeSubs() {
-        mCompositeSubs.add(this)
     }
 
     fun getDistrict(data: Address) {

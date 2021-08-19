@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,17 +29,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
-import rx.Emitter
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DiscomBottomSheetRevamp: BottomSheetUnify(),
-        ZipCodeChipsAdapter.ActionListener,
-        PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
+    ZipCodeChipsAdapter.ActionListener,
+    PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
@@ -68,8 +61,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
             presenter.loadData(input, page + 1)
         }
     }
-
-    private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
 
     private var fm: FragmentManager? = null
 
@@ -100,13 +91,12 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     override fun onDetach() {
         super.onDetach()
         presenter.detach()
-        mCompositeSubs.unsubscribe()
     }
 
     private fun initInjector() {
         DaggerDistrictRecommendationComponent.builder()
-                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
         presenter.attach(this)
     }
 
@@ -134,14 +124,14 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding) {
         val cityList = resources.getStringArray(R.array.cityList)
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding.root.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
 
         chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding.root.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
 
         ViewCompat.setLayoutDirection(viewBinding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
 
@@ -207,21 +197,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
             })
         }
-
-/*        watchTextRx(viewBinding.searchPageInput.searchBarTextField)
-                .subscribe { s ->
-                    if (s.isNotEmpty()) {
-                        input = s
-                        mIsInitialLoading = true
-                        handler.postDelayed({
-                            presenter.loadData(input, 1)
-                        }, 200)
-                    } else {
-                        viewBinding.tvDescInputDistrict.visibility = View.GONE
-                        viewBinding.llPopularCity.visibility = View.VISIBLE
-                        viewBinding.rvListDistrict.visibility = View.GONE
-                    }
-                }.toCompositeSubs()*/
 
         viewBinding.rvListDistrict.addOnScrollListener(mEndlessListener)
 
@@ -342,7 +317,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
             llPopularCity.visibility = View.GONE
 
             cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-             etKodepos.textFieldInput.apply {
+            etKodepos.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
