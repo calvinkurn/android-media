@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewholder
 
+import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
@@ -49,11 +50,21 @@ class CategoryAisleViewHolder(
     }
 
     init {
-        val drawable = ContextCompat.getDrawable(
-            itemView.context,
-            R.drawable.tokopedianow_ic_aisle_background,
-        )
-        aisleContainer?.background = drawable
+        setContainerBackground(itemView)
+    }
+
+    private fun setContainerBackground(itemView: View) {
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+
+            val drawable = ContextCompat.getDrawable(
+                itemView.context,
+                R.drawable.tokopedianow_ic_aisle_background,
+            )
+            aisleContainer?.background = drawable
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
     }
 
     override fun bind(aisle: CategoryAisleDataView) {
