@@ -531,8 +531,12 @@ class PlayAnalytic(
         )
     }
 
-    fun recordCastDuration(channelId: String, channelType: PlayChannelType, duration: Long) {
-        Log.d("<LOG>", "recordCastDuration : $duration")
+    fun recordCastDuration(duration: Long) {
+        Log.d("<LOG>", "recordCastDuration : $duration, channelId: $channelId, channelType: $channelType")
+        /**
+         * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
+         * So, it will send tracking from the previous screen
+         */
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
