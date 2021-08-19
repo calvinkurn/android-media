@@ -23,4 +23,19 @@ data class ChannelModel(
         const val CHANNEL_HOME = "home"
         const val CHANNEL_OS = "os"
     }
+    fun isChannelBeautyFest() : Boolean {
+        return when(id) {
+            "129362",
+            "129363",
+            "129364",
+            "129365",
+            "129366",
+            "129367",
+            "129368",
+            "129369",
+            "129370",
+            "129371" -> true
+            else -> false
+        }
+    }
 }

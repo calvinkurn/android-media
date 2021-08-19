@@ -18,6 +18,7 @@
         android:id="@+id/view_background_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
+        android:src="@drawable/bg_header_home"
         android:scaleType="fitXY"/>
 
     <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
