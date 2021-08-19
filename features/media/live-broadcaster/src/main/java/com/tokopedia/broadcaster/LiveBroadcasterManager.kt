@@ -115,7 +115,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
 
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
-        mConfig.url = url
+        mConfig.ingestUrl = url
         startStream()
     }
 

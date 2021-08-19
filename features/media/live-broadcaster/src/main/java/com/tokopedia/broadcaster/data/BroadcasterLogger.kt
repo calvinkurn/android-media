@@ -94,7 +94,7 @@ class BroadcasterLogger {
             ChuckerDataSource
                 .instance(context)
                 .logChucker(ChuckerLogUIModel(
-                    url = config.url,
+                    url = config.ingestUrl,
                     connectionId = mConnectionId?: 0,
                     startTime = mStartTime,
                     endTime = mPrevTime,

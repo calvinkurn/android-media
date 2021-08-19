@@ -14,7 +14,7 @@ enum class BitrateMode(val status: Int) {
 }
 
 data class BroadcasterConfig(
-    var url: String = "",
+    var ingestUrl: String = "",
     var videoWidth: Int = 1280,
     var videoHeight: Int = 720,
     var fps: Float = 30.0f,
