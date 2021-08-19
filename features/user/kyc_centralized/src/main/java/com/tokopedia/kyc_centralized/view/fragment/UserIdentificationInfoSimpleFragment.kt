@@ -24,8 +24,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private var projectId = 0
     private var mainView: ConstraintLayout? = null
-//    private var loader: LoaderUnify? = null
-    private var unifyButton: UnifyButton? = null
+    private var loader: LoaderUnify? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,15 +40,27 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
         initViews(view)
-//        startKyc()
+        if(checkRedirectToKyc(savedInstanceState)) {
+            startKyc()
+        }
+    }
+
+    private fun checkRedirectToKyc(savedInstanceState: Bundle?): Boolean {
+        return if(savedInstanceState?.getBoolean(KYC_FLOW_REDIRECTION) == true) {
+            false
+        } else {
+            val savedState = Bundle()
+            savedState.putBoolean(KYC_FLOW_REDIRECTION, true)
+            onSaveInstanceState(savedState)
+            true
+        }
     }
 
     private fun initViews(view: View) {
         mainView = view.findViewById(R.id.uii_simple_main_view)
         val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
         val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
-//        loader = view.findViewById(R.id.uii_simple_loader)
-        unifyButton = view.findViewById(R.id.button_dummy)
+        loader = view.findViewById(R.id.uii_simple_loader)
 
         mainView?.hide()
         mainImage?.loadImage(KycUrl.ICON_WAITING)
@@ -57,10 +68,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
-        unifyButton?.setOnClickListener {
-            startKyc()
-        }
-//        loader?.show()
+        loader?.show()
     }
 
     private fun startKyc() {
@@ -74,8 +82,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         if(requestCode == KYC_REQUEST_CODE) {
             when(resultCode) {
                 Activity.RESULT_OK -> {
-//                    loader?.hide()
-                    unifyButton?.hide()
+                    loader?.hide()
                     mainView?.show()
                 }
                 else -> {
@@ -92,5 +99,6 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"
         private const val KYC_REQUEST_CODE = 9902
+        private const val KYC_FLOW_REDIRECTION = "KycFlowRedirection"
     }
 }
