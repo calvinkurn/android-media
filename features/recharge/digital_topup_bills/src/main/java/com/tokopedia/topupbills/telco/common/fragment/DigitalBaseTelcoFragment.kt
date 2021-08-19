@@ -387,7 +387,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             activity,
             pageContainer,
             errMsg,
-            "${getString(R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
             null,
             DEFAULT_ICON_RES
         ) {
