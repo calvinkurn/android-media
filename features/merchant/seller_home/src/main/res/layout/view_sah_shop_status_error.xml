@@ -9,10 +9,10 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_card_height"
         android:background="@drawable/bg_other_rounded"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.925"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_sah_other_status_reload"

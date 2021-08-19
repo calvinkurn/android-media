@@ -181,7 +181,7 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isActive.get() }
+        get() = _uiEvent.filter { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -766,7 +766,7 @@ class PlayViewModel @Inject constructor(
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
                 .orEmpty()
-        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        val entry = shownBottomSheets.minByOrNull { it.value.deepLevel }
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
@@ -1366,7 +1366,10 @@ class PlayViewModel @Inject constructor(
         showLeaderboardSheet(height)
 
         val channelData = mChannelData ?: return
-        playAnalytic.clickWinnerBadge(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        playAnalytic.clickWinnerBadge(
+            channelId = channelData.id,
+            channelType = channelData.channelInfo.channelType
+        )
     }
 
     private fun handleTapTapAction() {
@@ -1375,7 +1378,12 @@ class PlayViewModel @Inject constructor(
         }
 
         val channelData = mChannelData ?: return
-        playAnalytic.clickTapTap(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return
+        playAnalytic.clickTapTap(
+            channelId = channelData.id,
+            channelType = channelData.channelInfo.channelType,
+            interactiveId = interactiveId
+        )
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1406,7 +1414,12 @@ class PlayViewModel @Inject constructor(
         }
 
         val channelData = mChannelData ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
+        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return@needLogin
+        playAnalytic.clickFollowShopInteractive(
+            channelData.id,
+            channelData.channelInfo.channelType,
+            interactiveId
+        )
     }
 
     private fun handleClickPartnerName() {
