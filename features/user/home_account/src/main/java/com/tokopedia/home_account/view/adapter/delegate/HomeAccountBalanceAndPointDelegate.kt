@@ -15,8 +15,6 @@ class HomeAccountBalanceAndPointDelegate(private val balanceAndPointListener: Ba
     ) {
 
     override fun onBindViewHolder(item: BalanceAndPointUiModel, holder: BalanceAndPointItemViewHolder) {
-        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = true
         holder.bind(item)
     }
 

@@ -112,12 +112,40 @@ class ProfileViewHolder(
 
     private fun setupBalanceAndPointAdapter(itemView: View) {
         itemView.home_account_balance_and_point_rv?.adapter = balanceAndPointAdapter
-        itemView.home_account_balance_and_point_rv?.layoutManager = SpanningLinearLayoutManager(
+        itemView.home_account_balance_and_point_rv?.setHasFixedSize(true)
+        val layoutManager = SpanningLinearLayoutManager(
             itemView.home_account_balance_and_point_rv?.context,
             LinearLayoutManager.HORIZONTAL,
-            false,
-            minWidth = 180
+            false
         )
+        val verticalDivider =
+            ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
+        if (itemView.context?.isDarkMode() == true) {
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_dark),
+                PorterDuff.Mode.SRC_IN
+            )
+        } else {
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_light),
+                PorterDuff.Mode.SRC_IN
+            )
+        }
+        val dividerItemDecoration = DividerItemDecoration(
+            itemView.home_account_balance_and_point_rv.context,
+            layoutManager.orientation
+        )
+
+        verticalDivider?.run {
+            dividerItemDecoration.setDrawable(this)
+        }
+
+        if (itemView.home_account_balance_and_point_rv.itemDecorationCount < 1) {
+            itemView.home_account_balance_and_point_rv.addItemDecoration(dividerItemDecoration)
+        }
+        itemView.home_account_balance_and_point_rv?.layoutManager = layoutManager
+
+        itemView.home_account_balance_and_point_rv?.isLayoutFrozen = true
     }
 
     private fun setupMemberAdapter(itemView: View) {

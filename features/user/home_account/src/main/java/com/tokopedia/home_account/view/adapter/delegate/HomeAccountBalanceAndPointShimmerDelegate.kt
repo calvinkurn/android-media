@@ -17,8 +17,6 @@ class HomeAccountBalanceAndPointShimmerDelegate() :
     ) {
 
     override fun onBindViewHolder(item: BalanceAndPointShimmerUiModel, holder: BalanceAndPointShimmerViewHolder) {
-        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = true
     }
 
     override fun onCreateViewHolder(
