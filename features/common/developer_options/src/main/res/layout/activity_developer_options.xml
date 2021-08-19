@@ -312,6 +312,29 @@
             app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/pdp_layout_id_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:text_field_placeholder="@string/pdp_layout_id_edittext_placeholder"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/pdp_layout_id_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/pdp_layout_id"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/et_route_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -15,6 +15,9 @@
     <string name="remote_config_edit_btn_save">Save</string>
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
+    <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
+
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
     <string name="ab_test_rollence_revision_version_prefix">Revision version: %d</string>

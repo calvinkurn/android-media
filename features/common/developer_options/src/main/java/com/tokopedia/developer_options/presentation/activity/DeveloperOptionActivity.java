@@ -94,6 +94,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
     String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
 
+    String PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY = "layoutIdSharedPref";
+    String PDP_LAYOUT_ID_STRING_KEY = "layoutIdTest";
+
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
@@ -440,6 +443,14 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        TextFieldUnify layoutIdEditText = findViewById(R.id.pdp_layout_id_edittext);
+        findViewById(R.id.pdp_layout_id_btn).setOnClickListener(v -> {
+            getSharedPreferences(PDP_LAYOUT_ID_TEST_SHARED_PREF_KEY).edit()
+                    .putString(PDP_LAYOUT_ID_STRING_KEY, layoutIdEditText.getTextFieldInput().getText().toString()).apply();
+            String messageSuccess = "Layout ID PDP Applied : " + layoutIdEditText.getTextFieldInput().getText().toString()
+            Toast.makeText(DeveloperOptionActivity.this, messageSuccess, Toast.LENGTH_SHORT).show();
         });
     }
 
