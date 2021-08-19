@@ -27,6 +27,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    testImplementation project(path: ':libraries:unit_test')
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
