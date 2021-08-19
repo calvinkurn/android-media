@@ -33,6 +33,9 @@ class TableMapper @Inject constructor() :
         private const val COLOR = "color"
         private const val BACKGROUND_COLOR = "background-color"
         private const val APOSTROPHE = "\""
+
+        private const val CONST_ZERO = 0
+        private const val CONST_ONE = 1
     }
 
     override fun mapRemoteDataToUiData(
@@ -57,7 +60,7 @@ class TableMapper @Inject constructor() :
     ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
             var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
-            maxDisplay = if (maxDisplay == 0) {
+            maxDisplay = if (maxDisplay == CONST_ZERO) {
                 MAX_ROWS_PER_PAGE
             } else {
                 maxDisplay
@@ -83,6 +86,9 @@ class TableMapper @Inject constructor() :
         val tableRows = data.rows
         var rows = mutableListOf<TableRowsUiModel>()
         val rowCount = tableRows.size
+
+        val zeroRowCount = CONST_ZERO
+        val oneRowCount = CONST_ONE
         tableRows.forEachIndexed { i, row ->
             val firstTextColumn = row.columns.firstOrNull {
                 it.type == COLUMN_TEXT || it.type == COLUMN_HTML
@@ -108,11 +114,11 @@ class TableMapper @Inject constructor() :
                 }
             }
 
-            if (i.plus(1).rem(maxRowsPerPage) == 0 && rowCount >= maxRowsPerPage) {
+            if (i.plus(oneRowCount).rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
-            } else if (i == rowCount.minus(1)) {
+            } else if (i == rowCount.minus(oneRowCount)) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
             }
@@ -123,8 +129,9 @@ class TableMapper @Inject constructor() :
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
         val firstHeader = headers.firstOrNull { it.title.isNotBlank() }
+        val noWidth = CONST_ZERO
         return headers.map { header ->
-            val headerWidth = if (header.width < 0) 0 else header.width
+            val headerWidth = if (header.width < noWidth) noWidth else header.width
             return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
         }
     }
@@ -167,7 +174,7 @@ class TableMapper @Inject constructor() :
         val colorFromFont = htmlString.substringAfter(COLOR)
         val indexOfFirstApostrophe = colorFromFont.indexOf(APOSTROPHE)
         val indexOfSecondApostrophe = colorFromFont.indexOf(APOSTROPHE, indexOfFirstApostrophe + 1)
-        return colorFromFont.substring(indexOfFirstApostrophe + 1, indexOfSecondApostrophe)
+        return colorFromFont.substring(indexOfFirstApostrophe + CONST_ONE, indexOfSecondApostrophe)
     }
 
     private fun getColorFromStyleAttribute(htmlString: String): String {
