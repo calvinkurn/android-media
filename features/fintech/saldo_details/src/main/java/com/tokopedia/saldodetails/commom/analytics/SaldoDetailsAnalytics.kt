@@ -98,11 +98,10 @@ class SaldoDetailsAnalytics @Inject constructor(
     }
 
     fun sendOpenScreenEvent() {
-        sendGeneralEvent(
+        analyticTracker.sendScreenAuthenticated(SaldoDetailsConstants.EventLabel.SALDO_PAGE,
             mutableMapOf(
-                SaldoDetailsConstants.Event.EVENT to SaldoDetailsConstants.Event.EVENT_SALDO_OPEN_SCREEN,
-                SaldoDetailsConstants.KEY_LOGGED_IN_STATUS to userSession.get().isLoggedIn,
-                SaldoDetailsConstants.KEY_SCREEN_NAME to SaldoDetailsConstants.EventLabel.SALDO_PAGE,
+                SaldoDetailsConstants.KEY_BUSINESS_UNIT to SaldoDetailsConstants.VALUE_BUSINESS_UNIT,
+                SaldoDetailsConstants.KEY_CURRENT_SITE to SaldoDetailsConstants.VALUE_CURRENT_SITE
             )
         )
     }
