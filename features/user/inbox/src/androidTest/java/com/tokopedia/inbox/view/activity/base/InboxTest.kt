@@ -164,4 +164,10 @@ object InboxAssertion {
             matches(withText(text))
         )
     }
+
+    fun assertInboxTitle(text: String) {
+        onView(withId(R.id.toolbar_title)).check(
+            matches(withText(text))
+        )
+    }
 }

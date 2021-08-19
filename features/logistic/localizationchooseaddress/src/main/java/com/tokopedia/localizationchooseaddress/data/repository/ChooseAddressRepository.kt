@@ -15,8 +15,9 @@ import javax.inject.Inject
 
 class ChooseAddressRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository){
 
-    suspend fun getChosenAddressList(source: String): GetChosenAddressListQglResponse {
-        val param = mapOf("source" to source)
+    suspend fun getChosenAddressList(source: String, isTokonow: Boolean): GetChosenAddressListQglResponse {
+        val param = mapOf("source" to source,
+            "is_tokonow_request" to isTokonow)
         val request = GraphqlRequest(ChooseAddressQuery.getChosenAddressList,
                 GetChosenAddressListQglResponse::class.java, param)
         return gql.getResponse(request)

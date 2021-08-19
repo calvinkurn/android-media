@@ -293,12 +293,22 @@
     <string name="mvc_share_message_public">Gunakan Voucher %s untuk belanja lebih hemat di toko %s.</string>
     <string name="mvc_success_create_title">Yay! Voucher %s berhasil ditambahkan</string>
     <string name="mvc_success_create_desc">Segera bagikan Voucher kamu, ya</string>
+    <string name="mvc_voucher_scheduled_title">Yay, voucher dijadwalkan!</string>
+    <string name="mvc_voucher_period_info">Voucher \"%s\" aktif pada %s</string>
+    <string name="mvc_via_broadcast">Lewat Broadcast</string>
+    <string name="mvc_via_social_media">Lewat Sosial Media</string>
+    <string name="mvc_social_media_examples">Whatsapp, Instagram, Twitter, dll</string>
+    <string name="mvc_free">Gratis</string>
+    <string name="mvc_increase_voucher_usage">Tingkatkan penggunaan voucher 3x lipat.</string>
+    <string name="mvc_success_create_header">Selanjutnya, bagikan vouchermu, yuk!</string>
     <string name="mvc_success_active_info">Voucher akan aktif pada:</string>
     <string name="mvc_success_toaster">1 voucher berhasil ditambahkan</string>
     <string name="mvc_success_update_toaster">Voucher berhasil diubah</string>
     <string name="mvc_success_download_voucher">Download Voucher Toko berhasil</string>
     <string name="mvc_fail_download_voucher">Download Voucher Toko tidak berhasil</string>
     <string name="mvc_fail_download_voucher_suffix">. Cek koneksi internet.</string>
+    <string name="mvc_voucher_type_image_content_desc">Gambar tipe voucher</string>
+    <string name="mvc_btn_mvc_more_content_desc">tombol lebih banyak opsi</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_total_quota">/%s</string>

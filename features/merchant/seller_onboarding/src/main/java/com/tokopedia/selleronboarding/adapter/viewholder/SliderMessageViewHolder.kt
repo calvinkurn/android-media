@@ -22,42 +22,41 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
         val RES_LAYOUT = R.layout.sob_slider_message_view_holder
     }
 
+    private val observer by lazy {
+        itemView.findViewById<View>(R.id.viewObserver)
+    }
+
     override fun bind(element: SobSliderMessageUiModel) {
         with(itemView) {
-            val observer = itemView.findViewById<View>(R.id.viewObserver)
-            tvSobSliderMessageTitle?.viewTreeObserver?.addOnDrawListener {
-                tvSobSliderMessageTitle.alpha = observer.alpha
-                tvSobSliderMessageTitle.translationY = itemView.viewObserver.translationY
-            }
-            imgSobMessage1?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = observer.scaleX
-                    scaleY = observer.scaleY
-                    alpha = observer.alpha
-                }
-            }
-            imgSobMessage2?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = observer.scaleX
-                    scaleY = observer.scaleY
-                    alpha = observer.alpha
-                }
-            }
-            imgSobMessage3?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = observer.scaleX
-                    scaleY = observer.scaleY
-                    alpha = observer.alpha
-                }
-            }
-            imgSobMessageBg?.run {
-                loadImage(R.drawable.bg_sob_circle)
-                viewTreeObserver.addOnDrawListener {
-                    alpha = observer.alpha
-                }
-            }
+            setupAnimation()
+
+            imgSobMessageBg?.loadImage(R.drawable.bg_sob_circle)
             setMessageImageUrl()
             setupMarginTitleSob { setMarginMessageTitle() }
+        }
+    }
+
+    private fun setupAnimation() {
+        with(itemView) {
+            viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderMessageTitle?.alpha = observer.alpha
+                tvSobSliderMessageTitle?.translationY = itemView.viewObserver.translationY
+
+                imgSobMessage1?.scaleX = observer.scaleX
+                imgSobMessage1?.scaleY = observer.scaleY
+                imgSobMessage1?.alpha = observer.alpha
+
+                imgSobMessage2?.scaleX = observer.scaleX
+                imgSobMessage2?.scaleY = observer.scaleY
+                imgSobMessage2?.alpha = observer.alpha
+
+                imgSobMessage3?.scaleX = observer.scaleX
+                imgSobMessage3?.scaleY = observer.scaleY
+                imgSobMessage3?.alpha = observer.alpha
+
+                imgSobMessageBg?.alpha = observer.alpha
+                return@addOnPreDrawListener true
+            }
         }
     }
 

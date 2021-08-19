@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -99,7 +98,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
         }
     }
@@ -186,7 +185,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             val intent =
                 RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
             val extras = Bundle()
-            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
+            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
