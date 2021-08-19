@@ -48,7 +48,8 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_filter_penalty
 
-    override fun getTitleBottomSheet(): String = getString(R.string.title_penalty_filter_bottom_sheet)
+    override fun getTitleBottomSheet(): String =
+        getString(R.string.title_penalty_filter_bottom_sheet)
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
@@ -62,7 +63,11 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
         getComponent(PenaltyComponent::class.java)?.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         showKnob = true
         isDragable = true
         isHideable = true
@@ -94,7 +99,12 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
         super.onDestroy()
     }
 
-    override fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int) {
+    override fun onChipsFilterItemClick(
+        nameFilter: String,
+        chipType: String,
+        chipTitle: String,
+        position: Int
+    ) {
         when (nameFilter) {
             ShopScoreConstant.TITLE_SORT -> {
                 viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
@@ -106,8 +116,14 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     }
 
     private fun getDataCacheFromManager() {
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)) }
-        val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
+        val cacheManager = context?.let {
+            SaveInstanceCacheManager(
+                it,
+                arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)
+            )
+        }
+        val filterTypePenalty =
+            cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
                 ?: FilterTypePenaltyUiModelWrapper()
         viewModelShopPenalty.getFilterPenalty(filterTypePenalty.penaltyFilterList)
     }
