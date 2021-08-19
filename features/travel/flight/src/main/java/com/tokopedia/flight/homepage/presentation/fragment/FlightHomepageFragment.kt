@@ -86,7 +86,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels /1.1f).toInt()
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
 
         activity?.run {
@@ -358,7 +358,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     slideToShow = 1.0f
                     setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
                 } else {
-                    slideToShow = 1.1f
+                    slideToShow = BANNER_SHOW_SIZE
                     autoplay = true
                     infinite = true
                 }
@@ -578,6 +578,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         // Banner Ratio = 414 : 139
         private const val BANNER_WIDTH_RATIO = 414f
         private const val BANNER_HEIGHT_RATIO = 139f
+        private const val BANNER_SHOW_SIZE = 1.1f
 
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
