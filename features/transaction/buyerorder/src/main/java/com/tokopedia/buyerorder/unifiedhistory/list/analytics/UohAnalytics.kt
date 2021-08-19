@@ -37,7 +37,7 @@ object UohAnalytics {
     private const val NAME = "name"
     private const val ITEM_NAME = "item_name"
     private const val ID = "id"
-    private const val ITEM_ID = "id"
+    private const val ITEM_ID = "item_id"
     private const val PRICE = "price"
     private const val BRAND = "brand"
     private const val ITEM_BRAND = "item_brand"

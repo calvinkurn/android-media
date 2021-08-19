@@ -27,32 +27,31 @@ import java.util.concurrent.TimeUnit
             @MediaUploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .addInterceptor(NetworkTimeOutInterceptor())
-                .also {
-                    // adding tkpdAuth and fingerprint interceptor
-                    (context as? NetworkRouter?)?.let { router ->
-                        it.addInterceptor(FingerprintInterceptor(router, userSession))
-                        it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
-                    }
-
-                    if (GlobalConfig.isAllowDebuggingTools()) {
-                        it.addInterceptor(ChuckerInterceptor(context))
-                    }
+            .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .addInterceptor(NetworkTimeOutInterceptor())
+            .also {
+                // adding tkpdAuth and fingerprint interceptor
+                (context as? NetworkRouter?)?.let { router ->
+                    it.addInterceptor(FingerprintInterceptor(router, userSession))
+                    it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
                 }
+
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    it.addInterceptor(ChuckerInterceptor(context))
+                }
+            }
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(Gson())
-                )
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(Gson()))
     }
 
     companion object {
