@@ -41,7 +41,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputat
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
-import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
+import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationPenaltyFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.unifycomponents.TabsUnify;
 import com.tokopedia.user.session.UserSession;
@@ -61,16 +61,15 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
-    public static final String GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     public static final int TAB_SELLER_INBOX_REVIEW = 1;
-    private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
     private Fragment inboxReviewFragment;
+    private Fragment sellerReputationPenaltyFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
@@ -86,7 +85,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private boolean goToReputationHistory;
     private boolean goToBuyerReview;
-    private boolean goToInboxReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
@@ -101,7 +99,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
-        goToInboxReview = getIntent().getBooleanExtra(GO_TO_INBOX_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
@@ -131,14 +128,14 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
-            if(isExistParamTab(tab)) {
+            if (isExistParamTab(tab)) {
                 reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, goToReputationHistory);
             } else {
                 reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
             }
             reviewSellerFragment.setArguments(reviewSellerBundle);
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
-            sellerReputationFragment = SellerReputationFragment.createInstance();
+            sellerReputationPenaltyFragment = SellerReputationPenaltyFragment.newInstance();
         }
     }
 
@@ -155,8 +152,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 if (position != selectedTabPosition[0]) {
                     List<Fragment> fragmentList = getFragmentList();
                     for (int i = 0; i < fragmentList.size(); i++) {
-                        Fragment fragment= fragmentList.get(i);
-                        if(fragment instanceof InboxReviewFragment) {
+                        Fragment fragment = fragmentList.get(i);
+                        if (fragment instanceof InboxReviewFragment) {
                             OnTabChangeListener onTabChangeListener = (OnTabChangeListener) fragmentList.get(i);
                             onTabChangeListener.onTabChange(position);
                         }
@@ -225,7 +222,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         }
 
         if (GlobalConfig.isSellerApp()) {
-            if (sellerReputationFragment != null) {
+            if (sellerReputationPenaltyFragment != null) {
                 indicator.addNewTab(getString(R.string.title_reputation_history));
             }
         }
@@ -278,15 +275,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     }
 
     private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            layoutParams.setMarginStart(start);
-            layoutParams.setMarginEnd(end);
-            layoutParams.leftMargin = start;
-            layoutParams.rightMargin = end;
-        } else {
-            layoutParams.leftMargin = start;
-            layoutParams.rightMargin = end;
-        }
+        layoutParams.setMarginStart(start);
+        layoutParams.setMarginEnd(end);
     }
 
     public List<Fragment> getFragmentList() {
@@ -295,7 +285,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             fragmentList.add(reviewSellerFragment);
             fragmentList.add(inboxReviewFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            fragmentList.add(sellerReputationFragment);
+            fragmentList.add(sellerReputationPenaltyFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
