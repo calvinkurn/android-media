@@ -299,8 +299,9 @@ object CartUiModelMapper {
             if (isBundlingItem) {
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = cartDetail.bundleDetail.bundleMaxOrder
-                quantity = cartDetail.bundleDetail.bundleQty
+                quantity = product.productQuantity
                 bundleId = cartDetail.bundleDetail.bundleId
+                bundleQuantity = cartDetail.bundleDetail.bundleQty
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel

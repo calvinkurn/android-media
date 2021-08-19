@@ -502,7 +502,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 cartShopHolderData.productUiModelList.forEach { cartItemHolderData ->
                     if (!cartItemHolderData.isError && cartItemHolderData.isSelected) {
                         allCartItemDataList.add(cartItemHolderData)
-                        val quantity = cartItemHolderData.quantity
+                        val quantity =
+                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                                else cartItemHolderData.quantity
+
                         val weight = cartItemHolderData.productWeight
                         shopWeight += quantity * weight
                     }
@@ -602,14 +605,19 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
 
         for (cartItemHolderData in allCartItemDataList) {
-            var itemQty = cartItemHolderData.quantity
+            var itemQty =
+                    if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                    else cartItemHolderData.quantity
             totalItemQty += itemQty
             if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
                 for (cartItemHolderDataTmp in allCartItemDataList) {
                     if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
                             cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice) {
-                        itemQty += cartItemHolderDataTmp.quantity
+                        val tmpQty =
+                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                                else cartItemHolderData.quantity
+                        itemQty += tmpQty
                     }
                 }
             }

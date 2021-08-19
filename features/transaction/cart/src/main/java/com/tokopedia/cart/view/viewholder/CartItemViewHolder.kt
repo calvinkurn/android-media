@@ -510,7 +510,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         qtyEditorProduct.autoHideKeyboard = true
         qtyEditorProduct.minValue = data.minOrder
         qtyEditorProduct.maxValue = data.maxOrder
-        qtyEditorProduct.setValue(data.quantity)
+        if (data.isBundlingItem) {
+            qtyEditorProduct.setValue(data.bundleQuantity)
+        } else {
+            qtyEditorProduct.setValue(data.quantity)
+        }
         if (qtyTextWatcher != null) {
             // reset listener
             qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
@@ -525,12 +529,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     delay(500)
                     val newValue = s.toString().replace(".", "").toIntOrZero()
-                    if (data.quantity != newValue) {
+                    val previousQuantity = if (data.isBundlingItem) data.bundleQuantity else data.quantity
+                    if (previousQuantity != newValue) {
                         validateQty(newValue, data)
                         if (newValue != 0) {
-                            data.quantity = newValue
-                            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(data?.isTokoNow)
-                            data.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+                            actionListener?.onCartItemQuantityChanged(data, parentPosition, newValue)
+                            handleRefreshType(data, viewHolderListener, parentPosition)
                         }
                     }
                 }

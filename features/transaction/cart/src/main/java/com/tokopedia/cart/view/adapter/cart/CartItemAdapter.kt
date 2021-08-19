@@ -80,7 +80,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onNeedToRefreshWeight(parentPosition: Int)
         fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
-        fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean)
+        fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int, newQuantity: Int)
         fun onEditNoteDone(position: Int)
         fun onCartItemShowRemainingQty(productId: String)
         fun onCartItemShowInformationLabel(productId: String, informationLabel: String)

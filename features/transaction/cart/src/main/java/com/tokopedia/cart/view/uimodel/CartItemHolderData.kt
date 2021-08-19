@@ -47,6 +47,7 @@ data class CartItemHolderData(
         var bundlePrice: Long = 0L,
         var bundleSlashPriceLabel: String = "",
         var bundleOriginalPrice: Long = 0L,
+        var bundleQuantity: Int = 0,
         var editBundleApplink: String = "",
 
         // Analytics data

@@ -1650,7 +1650,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartShopHolderData?.let {
             val isChecked = !cartItemHolderData.isSelected
             it.productUiModelList.forEachIndexed { index, data ->
-                if (data.bundleId == cartItemHolderData.bundleId) {
+                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId) {
                     cartAdapter.setItemSelected(index, parentPosition, isChecked)
                 }
             }
@@ -3126,13 +3126,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean) {
+    override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int, newQuantity: Int) {
+        if (cartItemHolderData.isBundlingItem) {
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
+            cartShopHolderData?.let {
+                it.productUiModelList.forEach {
+                    if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId) {
+                        it.bundleQuantity = newQuantity
+                    }
+                }
+            }
+        } else {
+            cartItemHolderData.quantity = newQuantity
+        }
+
         validateGoToCheckout()
         val params = generateParamValidateUsePromoRevamp()
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
-        } else if (isTokoNow) {
+        } else if (cartItemHolderData.isTokoNow) {
             if (tokoNowProductUpdater == null) {
                 compositeSubscription.add(
                         Observable.create({ e: Emitter<Boolean> ->
