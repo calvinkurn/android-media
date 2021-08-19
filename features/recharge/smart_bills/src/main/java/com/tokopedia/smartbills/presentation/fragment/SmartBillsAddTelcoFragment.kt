@@ -236,6 +236,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if(!errorMessage.isNullOrEmpty()){
+                        commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                         view?.let {
                             Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -351,9 +352,17 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
         text_field_sbm_product_number.apply {
             show()
-            setOnClickListener {
-                commonTopUpBillsAnalytic.clickInputFieldTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
-            }
+            textFieldInput.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_UP -> {
+                            commonTopUpBillsAnalytic.clickInputFieldTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                        }
+                    }
+                    return v?.onTouchEvent(event) ?: true
+                }
+            })
+
             textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     text_field_sbm_product_number.getFirstIcon().hide()

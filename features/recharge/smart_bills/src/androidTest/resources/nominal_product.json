@@ -1,0 +1,1123 @@
+[
+  {
+    "data": {
+      "rechargeCatalogProductInputMultiTab": {
+        "productInputs": [
+          {
+            "label": "Pulsa",
+            "needEnquiry": false,
+            "isShowingProduct": true,
+            "enquiryFields": [],
+            "product": {
+              "id": 6,
+              "name": "product_id",
+              "text": "Input Nominal",
+              "placeholder": "",
+              "validations": [],
+              "dataCollections": [
+                {
+                  "name": "",
+                  "products": [
+                    {
+                      "id": "3443",
+                      "attributes": {
+                        "price": "Rp16.500",
+                        "detail": "Masa berlaku 20 hari.",
+                        "info": "Rp 16.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "68",
+                      "attributes": {
+                        "price": "Rp26.500",
+                        "detail": "Masa berlaku 30 hari",
+                        "info": "Rp 26.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "3445",
+                      "attributes": {
+                        "price": "Rp31.500",
+                        "detail": "Masa berlaku 30 hari.",
+                        "info": "Rp 31.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "747",
+                      "attributes": {
+                        "price": "Rp41.500",
+                        "detail": "Masa berlaku 30 hari",
+                        "info": "Rp41.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "69",
+                      "attributes": {
+                        "price": "Rp51.500",
+                        "detail": "Masa berlaku 45 hari",
+                        "info": "Rp51.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "3015",
+                      "attributes": {
+                        "price": "Rp76.500",
+                        "detail": "Masa berlaku 45 hari",
+                        "info": "Rp 76.500",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "70",
+                      "attributes": {
+                        "price": "Rp100.000",
+                        "detail": "Masa berlaku 60 hari",
+                        "info": "Rp100.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "114",
+                      "attributes": {
+                        "price": "Rp150.000",
+                        "detail": "Masa berlaku 120 hari",
+                        "info": "Rp150.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "115",
+                      "attributes": {
+                        "price": "Rp200.000",
+                        "detail": "Masa berlaku 150 hari",
+                        "info": "Rp200.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "116",
+                      "attributes": {
+                        "price": "Rp300.000",
+                        "detail": "Masa berlaku 180 hari",
+                        "info": "Rp300.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "117",
+                      "attributes": {
+                        "price": "Rp500.000",
+                        "detail": "Masa berlaku 240 hari",
+                        "info": "Rp500.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "118",
+                      "attributes": {
+                        "price": "Rp1.000.000",
+                        "detail": "Masa berlaku 330 hari",
+                        "info": "Rp1.000.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "filterTagComponents": []
+          },
+          {
+            "label": "Paket Data",
+            "needEnquiry": false,
+            "isShowingProduct": true,
+            "enquiryFields": [],
+            "product": {
+              "id": 8,
+              "name": "product_id",
+              "text": "Input Nominal",
+              "placeholder": "",
+              "validations": [],
+              "dataCollections": [
+                {
+                  "name": "Rekomendasi Untukmu",
+                  "products": [
+                    {
+                      "id": "316",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Kuota Data 1GB, Masa Aktif 30 Hari",
+                        "info": "Rp25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Internet OMG",
+                  "products": [
+                    {
+                      "id": "9944",
+                      "attributes": {
+                        "price": "Rp105.000",
+                        "detail": "12 GB Kuota Utama + 2GB MAXtream. ",
+                        "info": "Rp 105.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6642",
+                      "attributes": {
+                        "price": "Rp30.000",
+                        "detail": "700MB hingga 2GB KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 30.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6644",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2.5GB + 1GB OMG! hingga 5.5GB + 1GB OMG! KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6646",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "3.5GB + 2GB OMG! hingga 8.5GB + 2GB OMG! KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6647",
+                      "attributes": {
+                        "price": "Rp100.000",
+                        "detail": "9.5GB + 2GB OMG! hingga 18GB + 2GB OMG! KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 100.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6795",
+                      "attributes": {
+                        "price": "Rp150.000",
+                        "detail": "17.5GB + 2GB OMG! hingga 32GB + 2GB OMG! KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 150.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "6798",
+                      "attributes": {
+                        "price": "Rp200.000",
+                        "detail": "39GB + 2GB OMG! hingga 63GB + 2GB OMG! KUOTA INTERNET SESUAI ZONA USER , SILAHKAN CEK di *363*46#",
+                        "info": "Rp 200.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Kuota Utama",
+                  "products": [
+                    {
+                      "id": "4178",
+                      "attributes": {
+                        "price": "Rp100.000",
+                        "detail": "10GB Kuota Utama + 100 SMS + 100 Menit Nelpon (On Net) + 2GB VideoMax. Masa aktif 30 hari. ",
+                        "info": "Rp 100.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1952",
+                      "attributes": {
+                        "price": "Rp200.000",
+                        "detail": "50GB Kuota Utama + 2GB OMG! Masa aktif 30 hari. ",
+                        "info": "Rp 200.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "146",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "Data 800MB - 1.5GB + 1GB midnight + 3GB OMG!",
+                        "info": "Rp50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Yang Terbaru",
+                  "products": [
+                    {
+                      "id": "7200",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Langganan Disney+ Hotstar 1 bulan, 3GB Kuota Maxstream. Jika kuota MAXstream habis pelanggan dapat membeli kuota tambahan. Masa berlaku 30 hari. Jika masa aktif paket ini belum berakhir, pembelian paket Disney+ Hotstar selanjutnya akan gagal dan tidak menambah masa aktif paket yang sudah ada.",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7202",
+                      "attributes": {
+                        "price": "Rp55.000",
+                        "detail": "Langganan Disney+ Hotstar 3 bulan, 3GB Kuota Maxstream per bulan. Jika kuota MAXstream habis pelanggan dapat membeli kuota tambahan. Masa berlaku 90 hari. Jika masa aktif paket ini belum berakhir, pembelian paket Disney+ Hotstar selanjutnya akan gagal dan tidak menambah masa aktif paket yang sudah ada.",
+                        "info": "Rp 55.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7204",
+                      "attributes": {
+                        "price": "Rp85.000",
+                        "detail": "Langganan Disney+ Hotstar 6 bulan, 3GB Kuota Maxstream per bulan. Jika kuota MAXstream habis pelanggan dapat membeli kuota tambahan. Masa berlaku 180 hari. Jika masa aktif paket ini belum berakhir, pembelian paket Disney+ Hotstar selanjutnya akan gagal dan tidak menambah masa aktif paket yang sudah ada.",
+                        "info": "Rp 85.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7206",
+                      "attributes": {
+                        "price": "Rp145.000",
+                        "detail": "Langganan Disney+ Hotstar 12 bulan, 3GB Kuota Maxstream per bulan. Jika kuota MAXstream habis pelanggan dapat membeli kuota tambahan. Masa berlaku 360 hari. Jika masa aktif paket ini belum berakhir, pembelian paket Disney+ Hotstar selanjutnya akan gagal dan tidak menambah masa aktif paket yang sudah ada.",
+                        "info": "Rp 145.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "GameMAX",
+                  "products": [
+                    {
+                      "id": "8564",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "1GB Kuota Utama + 0.5GB YouTube + 30GB Games & Voucher Mobile Legends. Masa aktif 30 hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8606",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "1GB Kuota Utama + 0.5GB YouTube + 30GB Games & Voucher Free Fire. Masa aktif 30 hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8636",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "1GB Kuota Utama + 0.5GB YouTube + 30GB Games & Voucher AoV. Masa aktif 30 hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8612",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "1GB Kuota Utama + 0.5GB YouTube + 30GB Games & Voucher Rise of Nowlins. Masa aktif 30 hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8570",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "1GB Kuota Utama + 0.5GB YouTube + 30GB Games & Voucher Google Play. Masa aktif 30 hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8566",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2GB Kuota Utama + 1.5GB YouTube + 30GB Games & Voucher Mobile Legends. Masa aktif 30 hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8608",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2GB Kuota Utama + 1.5GB YouTube + 30GB Games & Voucher Free Fire. Masa aktif 30 hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8638",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2GB Kuota Utama + 1.5GB YouTube + 30GB Games & Voucher AoV. Masa aktif 30 hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8614",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2GB Kuota Utama + 1.5GB YouTube + 30GB Games & Voucher Rise of Nowlins. Masa aktif 30 hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8572",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "2GB Kuota Utama + 1.5GB YouTube + 30GB Games & Voucher Google Play. Masa aktif 30 hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8568",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "4GB Kuota Utama + 2GB YouTube + 30GB Games & Voucher Mobile Legends. Masa aktif 30 hari",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8610",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "4GB Kuota Utama + 2GB YouTube + 30GB Games & Voucher Free Fire. Masa aktif 30 hari",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8640",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "4GB Kuota Utama + 2GB YouTube + 30GB Games & Voucher AoV. Masa aktif 30 hari",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8616",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "4GB Kuota Utama + 2GB YouTube + 30GB Games & Voucher Rise of Nowlins. Masa aktif 30 hari",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "8574",
+                      "attributes": {
+                        "price": "Rp75.000",
+                        "detail": "4GB Kuota Utama + 2GB YouTube + 30GB Games & Voucher Google Play. Masa aktif 30 hari",
+                        "info": "Rp 75.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Single Zone",
+                  "products": [
+                    {
+                      "id": "4176",
+                      "attributes": {
+                        "price": "Rp85.000",
+                        "detail": "Broadband Single Zone 8GB+2GB Video",
+                        "info": "Rp 85.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4175",
+                      "attributes": {
+                        "price": "Rp68.000",
+                        "detail": "Broadband Single Zone 4.5GB+2GB Video",
+                        "info": "Rp 68.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Entertainment",
+                  "products": [
+                    {
+                      "id": "7045",
+                      "attributes": {
+                        "price": "Rp100.000",
+                        "detail": "Kuota MaxStream 20 GB + Kuota All Net 4 GB, Masa Berlaku 30 Hari.",
+                        "info": "Rp 100.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7047",
+                      "attributes": {
+                        "price": "Rp150.000",
+                        "detail": "Kuota MaxStream 30 GB + Kuota All Net 10 GB, Masa Berlaku 30 Hari. ",
+                        "info": "Rp 150.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7041",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Kuota MaxStream 5 GB + Kuota All Net 1 GB, Masa Berlaku 30 Hari",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "7043",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "Kuota MaxStream 12GB + Kuota All Net 3 GB , Masa Berlaku 30 Hari",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4722",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Data Package 1.25GB kuota nasional, 0.25GB kuota YouTube, 5 GB Music Apps DPI (Spotify, JOOX, Langit Music, Resso, Deezer, Smule, WeSing, and Starmaker)",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "Paket Bicara",
+                  "products": [
+                    {
+                      "id": "9110",
+                      "attributes": {
+                        "price": "Rp135.000",
+                        "detail": "Hingga 10,200 menit ke Sesama Telkomsel + 200 menit ke Semua Operator. Masa Aktif 30 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#. ",
+                        "info": "Rp 135.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "9107",
+                      "attributes": {
+                        "price": "Rp85.000",
+                        "detail": "Hingga 3900 menit ke Sesama Telkomsel + 100 menit ke Semua Operator. Masa Aktif 30 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#",
+                        "info": "Rp 85.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "3017",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Hingga 950 menit Nelpon ke sesama Telkomsel + 50 menit Nelpon ke semua operator. Masa aktif 7 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "9209",
+                      "attributes": {
+                        "price": "Rp20.000",
+                        "detail": "Hingga 700 menit ke Sesama Telkomsel + 25 menit ke Semua Operator. Masa Aktif 3 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#",
+                        "info": "Rp 20.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "3562",
+                      "attributes": {
+                        "price": "Rp105.000",
+                        "detail": "Nelpon ke sesama Telkomsel hingga 10100 menit. Masa aktif 30 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#. ",
+                        "info": "Rp 105.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "3560",
+                      "attributes": {
+                        "price": "Rp40.000",
+                        "detail": "Nelpon ke sesama Telkomsel hingga 3700 menit. Masa aktif 7 hari. KUOTA SESUAI ZONA USER, SILAHKAN CEK di *363*46#",
+                        "info": "Rp 40.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "MAX",
+                  "products": [
+                    {
+                      "id": "1963",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "500MB Kuota Utama + 2.5GB Games (Mobile Legends, AOV, dan LINE Let's Get Rich) + 1 Game Voucher (1 Kristal AOV/Let's Get Rich Special Cube/3 hari All Access Pass/Talent Coin Vain Glory/Point Blank Strike Voucher) Penukaran di *363*678# Masa aktif 30 hari.",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": {
+                          "id": "0"
+                        },
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "10015",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Data Package 1.25GB kuota nasional, 0.25GB kuota YouTube, 5GB Music Apps DPI Smule, Bonus Voucher Smule VIP 30 Days",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "10013",
+                      "attributes": {
+                        "price": "Rp25.000",
+                        "detail": "Data Package 1.25GB, kuota nasional, 0.25GB kuota YouTube, 5 GB Music Apps DPI (Spotify, JOOX, Langit Music, Resso, Deezer, Smule, WeSing, and Starmaker)",
+                        "info": "Rp 25.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "filterTagComponents": [
+              {
+                "name": "filter_tag_kuota",
+                "text": "Kuota",
+                "param_name": "filter_tag_kuota",
+                "data_collections": [
+                  {
+                    "key": "1157",
+                    "value": "< 1GB"
+                  },
+                  {
+                    "key": "1158",
+                    "value": "1-5GB"
+                  },
+                  {
+                    "key": "1159",
+                    "value": "6GB-10GB"
+                  },
+                  {
+                    "key": "1160",
+                    "value": "11-20GB"
+                  },
+                  {
+                    "key": "1161",
+                    "value": "> 20GB"
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_feature",
+                "text": "Feature",
+                "param_name": "filter_tag_feature",
+                "data_collections": [
+                  {
+                    "key": "613",
+                    "value": "Telepon"
+                  },
+                  {
+                    "key": "1131",
+                    "value": "Produk Promo"
+                  },
+                  {
+                    "key": "1133",
+                    "value": "Kerja/Belajar"
+                  },
+                  {
+                    "key": "620",
+                    "value": "Exclusive"
+                  },
+                  {
+                    "key": "1132",
+                    "value": "Hiburan "
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_tipe_kuota",
+                "text": "Tipe Kuota",
+                "param_name": "filter_tag_tipe_kuota",
+                "data_collections": [
+                  {
+                    "key": "1135",
+                    "value": "Mingguan"
+                  },
+                  {
+                    "key": "1138",
+                    "value": "Unlimited"
+                  },
+                  {
+                    "key": "622",
+                    "value": "Kuota Malam"
+                  },
+                  {
+                    "key": "623",
+                    "value": "Kuota Utama"
+                  },
+                  {
+                    "key": "621",
+                    "value": "Kuota Tambahan"
+                  },
+                  {
+                    "key": "1134",
+                    "value": "Harian"
+                  },
+                  {
+                    "key": "1136",
+                    "value": "Bulanan"
+                  },
+                  {
+                    "key": "1137",
+                    "value": "Berlangganan"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Roaming",
+            "needEnquiry": false,
+            "isShowingProduct": true,
+            "enquiryFields": [],
+            "product": {
+              "id": 7,
+              "name": "product_id",
+              "text": "Input Nominal",
+              "placeholder": "",
+              "validations": [],
+              "dataCollections": [
+                {
+                  "name": "",
+                  "products": [
+                    {
+                      "id": "1084",
+                      "attributes": {
+                        "price": "Rp50.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 200MB, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 50.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1086",
+                      "attributes": {
+                        "price": "Rp120.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 1GB, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 120.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1076",
+                      "attributes": {
+                        "price": "Rp70.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 200MB + 50 SMS + 50 Menit bicara ke semua operator, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.<b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                        "info": "Rp 70.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1078",
+                      "attributes": {
+                        "price": "Rp200.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia  dengan kuota 1GB + 200 SMS + 200 Menit bicara ke semua operator, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                        "info": "Rp 200.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1080",
+                      "attributes": {
+                        "price": "Rp350.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 2.5GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 7 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                        "info": "Rp 350.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1082",
+                      "attributes": {
+                        "price": "Rp425.000",
+                        "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 5GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan. </b>",
+                        "info": "Rp 425.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1072",
+                      "attributes": {
+                        "price": "Rp275.000",
+                        "detail": "Internetan sepuasnya dengan kuota 5GB, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 275.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1074",
+                      "attributes": {
+                        "price": "Rp375.000",
+                        "detail": "Internetan sepuasnya dengan kuota 10GB, masa aktif 14 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 375.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "1070",
+                      "attributes": {
+                        "price": "Rp340.000",
+                        "detail": "Internetan sepuasnya dengan kuota 5GB + 30 SMS + 60 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 340.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4647",
+                      "attributes": {
+                        "price": "Rp550.000",
+                        "detail": "Internetan sepuasnya dengan kuota 10GB + 45 SMS + 45 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 550.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4663",
+                      "attributes": {
+                        "price": "Rp350.000",
+                        "detail": "",
+                        "info": "Rp 350,000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4648",
+                      "attributes": {
+                        "price": "Rp350.000",
+                        "detail": "Internetan sepuasnya dengan kuota 5GB, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 350.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4651",
+                      "attributes": {
+                        "price": "Rp200.000",
+                        "detail": "Internetan sepuasnya dengan kuota 1GB + 200 SMS + 200 Menit Telepon, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 200.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4658",
+                      "attributes": {
+                        "price": "Rp425.000",
+                        "detail": "Internetan sepuasnya dengan kuota 5GB + 500 SMS + 500 Menit Telepon, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 425.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    },
+                    {
+                      "id": "4649",
+                      "attributes": {
+                        "price": "Rp70.000",
+                        "detail": "Internetan sepuasnya dengan kuota 200MB +50 SMS + 50 Menit Telepon, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                        "info": "Rp 70.000",
+                        "product_labels": [],
+                        "promo": null,
+                        "operator_id": 12
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "filterTagComponents": [
+              {
+                "name": "filter_tag_benua",
+                "text": "Benua",
+                "param_name": "filter_tag_Benua",
+                "data_collections": [
+                  {
+                    "key": "1141",
+                    "value": "Australia"
+                  },
+                  {
+                    "key": "1139",
+                    "value": "Asia"
+                  },
+                  {
+                    "key": "1140",
+                    "value": "Eropa"
+                  },
+                  {
+                    "key": "1142",
+                    "value": "Amerika"
+                  },
+                  {
+                    "key": "1143",
+                    "value": "Umroh"
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_hari",
+                "text": "Hari",
+                "param_name": "filter_tag_Hari",
+                "data_collections": [
+                  {
+                    "key": "1151",
+                    "value": "1 Hari"
+                  },
+                  {
+                    "key": "1152",
+                    "value": "3 Hari"
+                  },
+                  {
+                    "key": "1153",
+                    "value": "7 Hari"
+                  },
+                  {
+                    "key": "1154",
+                    "value": "9 Hari"
+                  },
+                  {
+                    "key": "1155",
+                    "value": "14 Hari"
+                  },
+                  {
+                    "key": "1156",
+                    "value": "30 Hari"
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_kuota",
+                "text": "Kuota",
+                "param_name": "filter_tag_Kuota",
+                "data_collections": [
+                  {
+                    "key": "1144",
+                    "value": "<1GB"
+                  },
+                  {
+                    "key": "1145",
+                    "value": "1GB-5GB"
+                  },
+                  {
+                    "key": "1146",
+                    "value": "6GB-10GB"
+                  },
+                  {
+                    "key": "1147",
+                    "value": ">10GB"
+                  }
+                ]
+              },
+              {
+                "name": "filter_tag_tipe_kuota",
+                "text": "Tipe Kuota",
+                "param_name": "filter_tag_Tipe Kuota",
+                "data_collections": [
+                  {
+                    "key": "1148",
+                    "value": "Telepon "
+                  },
+                  {
+                    "key": "1149",
+                    "value": "Internet"
+                  },
+                  {
+                    "key": "1150",
+                    "value": "SMS"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]
