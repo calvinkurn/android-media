@@ -447,8 +447,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 }
             }
         });
-
-
     }
 
     private void setupNewInboxAbButton() {
