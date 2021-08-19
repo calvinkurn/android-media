@@ -53,11 +53,9 @@ public class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final long DISMISS_TIME = 10000;
-    protected Boolean isAllowFetchDepartmentView = false;
 
     protected UserSessionInterface userSessionInterface;
 
-    private Boolean isPause = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
 
     @Override
