@@ -46,6 +46,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
         private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
+        private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -536,10 +537,11 @@ class SellerHomeViewModel @Inject constructor(
         val barChartDataFlow = groupedWidgets.getWidgetDataByType<BarChartDataUiModel>(WidgetType.BAR_CHART)
         val multiLineGraphDataFlow = groupedWidgets.getWidgetDataByType<MultiLineGraphDataUiModel>(WidgetType.MULTI_LINE_GRAPH)
         val recommendationDataFlow = groupedWidgets.getWidgetDataByType<RecommendationDataUiModel>(WidgetType.RECOMMENDATION)
+        val milestoneDataFlow = groupedWidgets.getWidgetDataByType<MilestoneDataUiModel>(WidgetType.MILESTONE)
 
         return combine(lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
                 carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
-                barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow) { widgetDataList ->
+                barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
         }
@@ -571,6 +573,7 @@ class SellerHomeViewModel @Inject constructor(
                                 WidgetType.BAR_CHART -> getBarChartData(it)
                                 WidgetType.MULTI_LINE_GRAPH -> getMultiLineGraphData(it)
                                 WidgetType.RECOMMENDATION -> getRecommendationData(it)
+                                WidgetType.MILESTONE -> getMilestoneData(it)
                                 else -> null
                             }
                         }.orEmpty()
@@ -757,6 +760,17 @@ class SellerHomeViewModel @Inject constructor(
             _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
         }
         return getRecommendationUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getMilestoneData(widgets: List<BaseWidgetUiModel<*>>): List<MilestoneDataUiModel> {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
+        val params = GetMilestoneDataUseCase.createParams(dataKeys)
+        getMilestoneDataUseCase.get().params = params
+        withContext(dispatcher.main) {
+            _startWidgetCustomMetricTag.value = SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
+        }
+        return getMilestoneDataUseCase.get().executeOnBackground()
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {
