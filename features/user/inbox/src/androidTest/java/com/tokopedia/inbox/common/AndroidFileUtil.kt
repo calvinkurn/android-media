@@ -28,12 +28,16 @@ object AndroidFileUtil {
             resId: Int,
             typeOfT: Type
     ): T {
-        val context = InstrumentationRegistry
-                .getInstrumentation()
-                .context
-        val stringFile = InstrumentationMockHelper.getRawString(
-                context, resId
-        )
+        val stringFile = fileContent(resId)
         return CommonUtil.fromJson(stringFile, typeOfT)
+    }
+
+    fun fileContent(resId: Int): String {
+        val context = InstrumentationRegistry
+            .getInstrumentation()
+            .context
+        return InstrumentationMockHelper.getRawString(
+            context, resId
+        )
     }
 }

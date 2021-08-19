@@ -6,15 +6,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_credit_card.R
-import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
+import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCGqlQuery
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -68,7 +66,7 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
 
     private fun initViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
         }
     }
@@ -81,7 +79,7 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
 
     private fun initView() {
         descBankList.text = getString(R.string.cc_desc_bank_list)
-        rechargeCCViewModel.getListBank(RechargeCCGqlQuery.creditCardBankList, 26)
+        rechargeCCViewModel.getListBank(RechargeCCGqlQuery.creditCardBankList, CATEGORY_ID)
         rechargeCCViewModel.rechargeCCBankList.observe(this, Observer {
             adapter = CreditCardBankAdapter(it.bankList)
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -92,5 +90,9 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
         })
 
         creditCardAnalytics.impressionBankList(categoryId,"none", userSession.userId)
+    }
+
+    companion object {
+        private const val CATEGORY_ID = 26
     }
 }

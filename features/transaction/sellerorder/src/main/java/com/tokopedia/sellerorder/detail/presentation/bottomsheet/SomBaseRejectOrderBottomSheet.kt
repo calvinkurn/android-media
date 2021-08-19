@@ -1,9 +1,12 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.Toaster
 
 abstract class SomBaseRejectOrderBottomSheet(

@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,13 +20,14 @@ import javax.inject.Inject
 class GetAdsUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GetAdProductResponse>(graphqlRepository) {
 
 
-    fun setParams(page:Int,groupId: Int?) {
+    fun setParams(page:Int,groupId: String?, source: String) {
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_ID] = Integer.parseInt(userSession.shopId)
+        queryMap[ParamObject.SHOP_ID] = userSession.shopId
         queryMap[ParamObject.TYPE] = ParamObject.PRODUCT
         queryMap[ParamObject.PAGE] = page
         queryMap[ParamObject.PER_PAGE] = 20
         queryMap[ParamObject.GROUPID] = groupId
+        queryMap[ParamObject.SOURCE] = source
         setRequestParams(queryMap)
     }
 

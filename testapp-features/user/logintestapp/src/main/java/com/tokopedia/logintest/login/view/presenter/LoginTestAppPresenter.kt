@@ -47,7 +47,7 @@ class LoginTestAppPresenter @Inject constructor(private val registerCheckTestApp
         LoginTestAppContract.Presenter, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.io
+        get() = dispatcherProvider.main
 
     private lateinit var viewEmailPhone: LoginTestAppContract.View
 
@@ -80,9 +80,9 @@ class LoginTestAppPresenter @Inject constructor(private val registerCheckTestApp
                         email, password), LoginTokenSubscriber(userSession,
                         { view.onSuccessLoginEmail() },
                         view.onErrorLoginEmail(email),
-                        {},
-                        {},
-                        {}))
+                        {view.onShowPopupError(it, null) },
+                        {view.onGoToActivationPage(it) },
+                        {view.onGoToSecurityQuestion()}))
             } else {
                 viewEmailPhone.stopTrace()
             }
@@ -109,16 +109,22 @@ class LoginTestAppPresenter @Inject constructor(private val registerCheckTestApp
                         loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                         val tokenResult = loginTokenV2UseCase.executeOnBackground()
 
-                        LoginV2Mapper(userSession).map(tokenResult,
+                        LoginV2Mapper(userSession).map(tokenResult.loginToken,
                                 onSuccessLoginToken = {
                                     view.onSuccessLoginEmail()
                                 },
                                 onErrorLoginToken = {
                                     view.onErrorLoginEmail(email).invoke(it)
                                 },
-                                onShowPopupError = {},
-                                onGoToActivationPage = {},
-                                onGoToSecurityQuestion = {}
+                                onShowPopupError = {
+                                    view.onShowPopupError(null, it)
+                                },
+                                onGoToActivationPage = {
+                                    view.onGoToActivationPage(it)
+                                },
+                                onGoToSecurityQuestion = {
+                                    view.onGoToSecurityQuestion()
+                                }
                         )
                     }
                 } else {

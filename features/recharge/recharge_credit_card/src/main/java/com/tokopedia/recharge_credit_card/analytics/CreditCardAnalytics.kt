@@ -10,9 +10,16 @@ import java.util.*
 
 class CreditCardAnalytics(val iris: Iris) {
 
+    fun openCCScreen() {
+        val customDimension: MutableMap<String, String> = HashMap()
+        customDimension[DigitalTrackingConst.Label.BUSINESS_UNIT] = DigitalTrackingConst.Value.RECHARGE_BU
+        customDimension[DigitalTrackingConst.Label.CURRENTSITE] = DigitalTrackingConst.Value.RECHARGE_SITE
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(CC_SCREEN_NAME, customDimension)
+    }
+
     fun impressionInitialPage(userId: String) {
         val map = TrackAppUtils.gtmData(
-                EVENT_HOMEPAGE,
+                VIEW_DIGITAL_IRIS,
                 CATEGORY_HOMEPAGE,
                 ACTION_IMPRESSION_INITIAL,
                 getCategoryName()
@@ -115,7 +122,7 @@ class CreditCardAnalytics(val iris: Iris) {
 
         const val EVENT_CC = "clickDigitalCC"
         const val EVENT_CC_IRIS = "viewDigitalCCIris"
-        const val EVENT_HOMEPAGE = "viewHomepage"
+        const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
 
         const val ACTION_IMPRESSION_INITIAL = "view pdp page"
         const val ACTION_IMPRESSION_BANKLIST = "impression of bank list"
@@ -124,7 +131,7 @@ class CreditCardAnalytics(val iris: Iris) {
         const val ACTION_TO_SHOW_CONFIRMATION = "click confirmation to checkout"
 
         const val BUSINESS_UNIT_RECHARGE = "recharge"
-        const val CURRENT_SITE_RECHARGE = "tokopediadigital"
-
+        const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
+        const val CC_SCREEN_NAME = "/digital/Kartu Kredit"
     }
 }

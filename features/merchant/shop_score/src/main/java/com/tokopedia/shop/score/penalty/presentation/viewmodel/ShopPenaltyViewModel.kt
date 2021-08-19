@@ -24,10 +24,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopPenaltyViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val getShopPenaltySummaryTypesUseCase: GetShopPenaltySummaryTypesUseCase,
-        private val getShopPenaltyDetailUseCase: GetShopPenaltyDetailUseCase,
-        private val penaltyMapper: PenaltyMapper
+    private val dispatchers: CoroutineDispatchers,
+    private val getShopPenaltySummaryTypesUseCase: GetShopPenaltySummaryTypesUseCase,
+    private val getShopPenaltyDetailUseCase: GetShopPenaltyDetailUseCase,
+    private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _penaltyPageData = MutableLiveData<Result<PenaltyDataWrapper>>()
@@ -38,29 +38,39 @@ class ShopPenaltyViewModel @Inject constructor(
     val filterPenaltyData: LiveData<Result<List<PenaltyFilterUiModel>>>
         get() = _filterPenaltyData
 
-    val shopPenaltyDetailMediator = MediatorLiveData<Result<Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>>>()
+    val shopPenaltyDetailMediator =
+        MediatorLiveData<Result<Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>>>()
     val shopPenaltyDetailData: LiveData<Result<Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>>>
         get() = shopPenaltyDetailMediator
 
-    private val _updateSortFilterSelected = MutableLiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>()
+    private val _updateSortFilterSelected =
+        MutableLiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>()
     val updateSortSelectedPeriod: LiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>
         get() = _updateSortFilterSelected
 
     private val _resetFilterResult = MutableLiveData<Result<List<PenaltyFilterUiModel>>>()
     val resetFilterResult: LiveData<Result<List<PenaltyFilterUiModel>>> = _resetFilterResult
 
-    private val _updateFilterSelected = MutableLiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>>()
-    val updateFilterSelected: LiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>> = _updateFilterSelected
+    private val _updateFilterSelected =
+        MutableLiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>>()
+    val updateFilterSelected: LiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>> =
+        _updateFilterSelected
 
     private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
-    private var itemSortFilterWrapperList = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
+    private var itemSortFilterWrapperList =
+        mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
 
     private val _typeFilterData = MutableLiveData<Int>()
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
     private val _dateFilterData = MutableLiveData<Pair<String, String>>()
 
-    private var startDate = format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var startDate =
+        format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var startDateSummary =
+        format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var endDateSummary =
+        format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var typeId = 0
     private var sortBy = 0
 
@@ -68,8 +78,10 @@ class ShopPenaltyViewModel @Inject constructor(
         initPenaltyDetail()
     }
 
-    fun setItemSortFilterWrapperList(penaltyFilterList: List<PenaltyFilterUiModel>,
-                                     sortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>) {
+    fun setItemSortFilterWrapperList(
+        penaltyFilterList: List<PenaltyFilterUiModel>,
+        sortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>
+    ) {
         this.itemSortFilterWrapperList = sortFilterItemPeriodList.toMutableList()
         this.penaltyFilterUiModel = penaltyFilterList.toMutableList()
     }
@@ -93,8 +105,10 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getDataPenalty() {
         launchCatchError(block = {
             val penaltySummaryTypeResponse = asyncCatchError(block = {
-                getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(
-                        startDate, endDate)
+                getShopPenaltySummaryTypesUseCase.requestParams =
+                    GetShopPenaltySummaryTypesUseCase.createParams(
+                        startDateSummary, endDateSummary
+                    )
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))
@@ -103,7 +117,13 @@ class ShopPenaltyViewModel @Inject constructor(
 
             val penaltyDetailResponse = asyncCatchError(block = {
                 getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
-                        ShopScorePenaltyDetailParam(startDate = startDate, endDate = endDate, typeID = typeId, sort = sortBy))
+                    ShopScorePenaltyDetailParam(
+                        startDate = startDate,
+                        endDate = endDate,
+                        typeID = typeId,
+                        sort = sortBy
+                    )
+                )
                 getShopPenaltyDetailUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))
@@ -116,16 +136,18 @@ class ShopPenaltyViewModel @Inject constructor(
             penaltySummaryTypeData?.let { penaltySummary ->
                 penaltyDetailData?.also { penaltyDetail ->
                     val penaltyMapperData = penaltyMapper.mapToPenaltyData(
-                            penaltySummary,
-                            penaltyDetail,
-                            sortBy,
-                            typeId,
-                            Pair(startDate, endDate)
+                        penaltySummary,
+                        penaltyDetail,
+                        sortBy,
+                        typeId,
+                        Pair(startDate, endDate)
                     )
 
                     penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList()
-                            ?: mutableListOf()
-                    itemSortFilterWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel).toMutableList()
+                        ?: mutableListOf()
+                    itemSortFilterWrapperList =
+                        penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
+                            .toMutableList()
                     _penaltyPageData.postValue(Success(penaltyMapperData))
                 }
             }
@@ -155,13 +177,13 @@ class ShopPenaltyViewModel @Inject constructor(
         launchCatchError(block = {
             val penaltyDetail = withContext(dispatchers.io) {
                 getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
-                        ShopScorePenaltyDetailParam(
-                                page = page,
-                                startDate = startDate,
-                                endDate = endDate,
-                                typeID = typeId,
-                                sort = sortBy
-                        )
+                    ShopScorePenaltyDetailParam(
+                        page = page,
+                        startDate = startDate,
+                        endDate = endDate,
+                        typeID = typeId,
+                        sort = sortBy
+                    )
                 )
                 penaltyMapper.mapToItemPenaltyList(getShopPenaltyDetailUseCase.executeOnBackground())
             }
@@ -208,7 +230,8 @@ class ShopPenaltyViewModel @Inject constructor(
                     chipsFilterPenaltyUiModel.isSelected = false
                 }
             }
-            val chipsUiModelList = penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList
+            val chipsUiModelList =
+                penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList
                     ?: listOf()
             _updateFilterSelected.value = Success(Pair(chipsUiModelList, titleFilter))
         }, onError = {
@@ -220,8 +243,10 @@ class ShopPenaltyViewModel @Inject constructor(
         launchCatchError(block = {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
                 if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected = true
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected = false
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected =
+                        true
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected =
+                        false
                 } else {
                     penaltyFilterUiModel.chipsFilerList.map {
                         it.isSelected = false

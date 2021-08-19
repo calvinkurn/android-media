@@ -126,36 +126,6 @@ class PlayViewModelCreatePageTest {
     }
 
     @Test
-    fun `given channel data is set, when page is created, then partner info value should be the same as in channel data`() {
-        val partnerName = "Penjual Sakti"
-        val isFollowed = true
-
-        val channelData = channelDataBuilder.buildChannelData(
-                partnerInfo = partnerInfoBuilder.buildCompleteData(
-                        basicInfo = partnerInfoBuilder.buildPlayPartnerBasicInfo(
-                                name = partnerName
-                        ),
-                        followInfo = partnerInfoBuilder.buildPlayPartnerFollowInfo(
-                                isFollowed = isFollowed
-                        )
-                )
-        )
-
-        val expectedModel = partnerInfoBuilder.buildCompleteData(
-                basicInfo = partnerInfoBuilder.buildPlayPartnerBasicInfo(name = partnerName),
-                followInfo = partnerInfoBuilder.buildPlayPartnerFollowInfo(isFollowed = isFollowed)
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            partnerInfoResult
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
     fun `given channel data is set, when page is created, then cart info value should be the same as in channel data`() {
         val shouldShowCart = true
         val itemInCartCount = 95
@@ -276,8 +246,11 @@ class PlayViewModelCreatePageTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            pinnedResult
+            pinnedMessageResult
                     .isEqualTo(expectedModel)
+
+            pinnedProductResult
+                    .isEqualTo(channelData.pinnedInfo.pinnedProduct)
         }
     }
 

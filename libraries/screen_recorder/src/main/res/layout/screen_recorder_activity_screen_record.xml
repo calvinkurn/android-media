@@ -6,21 +6,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/Unify_N0"
     tools:context=".ScreenRecorderActivity">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/screen_recorder_default_padding"
-        android:textSize="16sp"
+        android:textColor="@color/Unify_N700"
         android:textAlignment="center"
         android:gravity="center"
-        android:text="@string/screen_record_info_requesting_permissions"/>
+        android:text="@string/screen_record_info_requesting_permissions"
+        app:typographyType="body_2"
+        />
 
-    <Button
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkboxRecordMic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/screen_record_mic_record_option"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnActivate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/screen_recorder_button_activate_text"/>
+        android:layout_margin="@dimen/screen_recorder_default_padding"
+        android:text="@string/screen_recorder_button_activate_text"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>

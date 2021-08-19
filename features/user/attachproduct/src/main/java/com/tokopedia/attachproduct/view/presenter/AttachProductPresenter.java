@@ -38,8 +38,8 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     }
 
     @Override
-    public void loadProductData(String query, String shopId, int page) {
-        useCase.execute(AttachProductUseCase.createRequestParams(query, shopId, page),
+    public void loadProductData(String query, String shopId, int page, String warehouseId) {
+        useCase.execute(AttachProductUseCase.createRequestParams(query, shopId, page, warehouseId),
                 new AttachProductGetProductListSubscriber(view));
     }
 
@@ -67,7 +67,9 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
                     product.getProductUrl(),
                     product.getProductImage(),
                     product.getProductPrice(),
-                    product.getProductName()
+                    product.getProductName(),
+                    product.getOriginalPrice(),
+                    product.getDiscountPercentage()
             ));
         }
         activityContract.finishActivityWithResult(resultProducts);

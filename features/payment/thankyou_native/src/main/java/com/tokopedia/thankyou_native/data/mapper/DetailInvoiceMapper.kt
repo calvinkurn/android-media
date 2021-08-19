@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.PREV_ORDER_AMOUNT_VA
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -50,12 +51,31 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
     private fun addTotalFee() {
         val totalFee = TotalFee(thanksPageData.orderAmountStr, arrayListOf())
+        var fee = 0L
         thanksPageData.feeDetailList?.forEach {
+            fee += it.amount
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
             totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
         }
+        if (thanksPageData.combinedAmount > 0) {
+            getPreviousVAOrderAmount(fee)?.let {
+                totalFee.feeDetailList.add(it)
+            }
+        }
         if (totalFee.feeDetailList.isNotEmpty())
             visitableList.add(totalFee)
+    }
+
+    private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
+         if (thanksPageData.combinedAmount > 0) {
+            val previousAmount = thanksPageData.combinedAmount - thanksPageData.amount
+            if(previousAmount>0){
+                val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
+                    false)
+                return FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
+            }
+        }
+        return null
     }
 
     private fun addPaymentInfo() {
@@ -68,10 +88,21 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            val amountStr = if(paymentDetail.amountCombine > 0)
+                                paymentDetail.amountCombineStr
+                            else paymentDetail.amountStr
             paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
-                    paymentDetail.amountStr, paymentDetail.gatewayCode))
+                    amountStr, paymentDetail.gatewayCode))
         }
-        visitableList.add(PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList))
+
+        val totalPayment: String = if (thanksPageData.combinedAmount > 0)
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.combinedAmount,
+                    false)
+        else CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount,
+                false)
+
+        val paymentInfo = PaymentInfo(totalPayment, paymentModeList = paymentModeMapList)
+        visitableList.add(paymentInfo)
     }
 
     private fun addCashBackEarned() {
@@ -89,12 +120,12 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 PaymentDeductionKey.CASHBACK_STACKED -> {
                     val cashBackMap = CashBackMap(THANK_STACKED_CASHBACK_TITLE, it.amountStr,
                             it.itemDesc, isBBICashBack = false, isStackedCashBack = true)
-                    if(cashBackMapList.size>0){
+                    if (cashBackMapList.size > 0) {
                         val tempCashBackList = arrayListOf<CashBackMap>()
                         tempCashBackList.add(cashBackMap)
                         tempCashBackList.addAll(cashBackMapList)
                         cashBackMapList = tempCashBackList
-                    }else{
+                    } else {
                         cashBackMapList.add(cashBackMap)
                     }
                 }
@@ -180,5 +211,6 @@ object PaymentDeductionKey {
     const val CASHBACK_STACKED = "cashback_stacked"
 
     const val THANK_STACKED_CASHBACK_TITLE = "Dapat cashback senilai"
+    const val PREV_ORDER_AMOUNT_VA = "Total Transaksi Sebelumnya"
 }
 

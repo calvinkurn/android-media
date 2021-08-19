@@ -13,14 +13,12 @@ import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.data.model.FlightErrorResponse
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl
-import com.tokopedia.flight.common.data.source.FlightAuthInterceptor
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi
 import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier
 import com.tokopedia.flight.common.di.scope.FlightScope
 import com.tokopedia.flight.common.domain.FlightRepository
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase
@@ -66,14 +64,12 @@ class FlightModule {
     @FlightScope
     @Provides
     fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            flightAuthInterceptor: FlightAuthInterceptor,
                             @FlightChuckQualifier chuckInterceptor: Interceptor,
                             @FlightQualifier okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(ErrorResponseInterceptor(FlightErrorResponse::class.java))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -161,10 +157,6 @@ class FlightModule {
     @Provides
     fun provideComboDao(flightSearchRoomDb: FlightSearchRoomDb): FlightComboDao =
             flightSearchRoomDb.flightComboDao()
-
-    @FlightScope
-    @Provides
-    fun provideFlightDateUtil(): FlightDateUtil = FlightDateUtil()
 
     @FlightScope
     @Provides

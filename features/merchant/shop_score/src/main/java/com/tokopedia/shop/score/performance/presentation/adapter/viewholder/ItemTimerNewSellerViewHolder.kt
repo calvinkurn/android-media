@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
@@ -16,8 +15,10 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSelle
 import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
 
-class ItemTimerNewSellerViewHolder(view: View,
-                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+class ItemTimerNewSellerViewHolder(
+    view: View,
+    private val itemTimerNewSellerListener: ItemTimerNewSellerListener
+) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
@@ -25,11 +26,14 @@ class ItemTimerNewSellerViewHolder(view: View,
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
-            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
+            containerTimerNewSeller?.loadImage(
+                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller?.targetDate = element?.effectiveDate
 
-            tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
-                    element?.effectiveDateText.orEmpty())
+            tv_shop_performance_new_seller?.text = getString(
+                R.string.title_shop_performance_become_existing_seller,
+                element?.effectiveDateText.orEmpty()
+            )
         }
 
         setIconVideoClickListener()
@@ -44,7 +48,9 @@ class ItemTimerNewSellerViewHolder(view: View,
                     if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
                         itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
                     } else {
-                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
+                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(
+                            GMCommonUrl.SHOP_INTERRUPT_PAGE
+                        )
                     }
                 }
             }
@@ -61,7 +67,8 @@ class ItemTimerNewSellerViewHolder(view: View,
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
-            if (tv_watch_video?.isVisible == true || ic_video_shop_performance_learn?.isVisible == true) {
+            if (tv_watch_video?.isVisible == true ||
+                ic_video_shop_performance_learn?.isVisible == true) {
                 itemTimerNewSellerListener.onImpressWatchVideo()
             }
         }

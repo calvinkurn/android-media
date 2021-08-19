@@ -37,6 +37,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                                       private val sellerCashbackListener: SellerCashbackListener,
                                       private val userSession: UserSessionInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val SELLER_CASHBACK_ACTION_INSERT = 1
+        const val SELLER_CASHBACK_ACTION_UPDATE = 2
+        const val SELLER_CASHBACK_ACTION_DELETE = 3
+    }
+
     private val cartDataList = ArrayList<Any>()
     private var compositeSubscription = CompositeSubscription()
 
@@ -70,8 +76,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if ((data.isPartialSelected || data.isAllSelected)) {
                         data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                if (cartItemHolderData.isSelected && cartItemHolderData.cartItemData?.isError == false) {
-                                    cartItemHolderData.cartItemData?.let { cartItemData ->
+                                if (cartItemHolderData.isSelected && !cartItemHolderData.cartItemData.isError) {
+                                    cartItemHolderData.cartItemData.let { cartItemData ->
                                         cartItemDataList.add(cartItemData)
                                     }
                                 }
@@ -107,7 +113,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         val cartItemHolderDataList = data.shopGroupAvailableData?.cartItemDataList
                         cartItemHolderDataList?.let {
                             for (cartItemHolderData in it) {
-                                cartItemHolderData.cartItemData?.let { cartItemData ->
+                                cartItemHolderData.cartItemData.let { cartItemData ->
                                     cartItemDataList.add(cartItemData)
                                 }
                             }
@@ -135,7 +141,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     is CartShopHolderData -> {
                         data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                cartItemHolderData.cartItemData?.let {
+                                cartItemHolderData.cartItemData.let {
                                     cartItemDataList.add(it)
                                 }
                             }
@@ -192,8 +198,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     is CartShopHolderData -> {
                         data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                productIdList.add(cartItemHolderData.cartItemData?.originData?.productId
-                                        ?: "")
+                                productIdList.add(cartItemHolderData.cartItemData.originData.productId)
                             }
                         }
                     }
@@ -470,7 +475,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
         for (shopGroupAvailableData in shopGroupAvailableDataList) {
-            if (shopGroupAvailableData.cartItemDataList?.size ?: 0 > 0) {
+            if (shopGroupAvailableData.cartItemDataList.size > 0) {
                 val cartShopHolderData = CartShopHolderData()
                 cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
                 if (shopGroupAvailableData.isError) {
@@ -478,8 +483,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 } else {
                     if (shopGroupAvailableData.isChecked) {
                         cartShopHolderData.setAllItemSelected(true)
-                    } else if (shopGroupAvailableData.cartItemDataList?.size ?: 0 > 1) {
-                        shopGroupAvailableData.cartItemDataList?.let {
+                    } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
+                        shopGroupAvailableData.cartItemDataList.let {
                             for (cartItemHolderData in it) {
                                 if (cartItemHolderData.isSelected) {
                                     cartShopHolderData.isPartialSelected = true
@@ -769,7 +774,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             for (cartItemHolderData in it) {
                                 if (cartItemHolderData.isSelected) {
                                     checkedCount++
-                                    if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData?.isError == true) {
+                                    if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
                                         canProcess = false
                                         break
                                     }
@@ -787,7 +792,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         for (any in cartDataList) {
             if (any is CartShopHolderData && (any.isAllSelected || any.isPartialSelected)) {
                 any.shopGroupAvailableData?.cartItemDataList?.forEach {
-                    if (!it.errorFormItemValidationMessage.isNullOrBlank()) {
+                    if (it.errorFormItemValidationMessage.isNotBlank()) {
                         canProcess = false
                         return@forEach
                     }
@@ -802,7 +807,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun updateShipmentSellerCashback(cashback: Double) {
+    fun updateShipmentSellerCashback(cashback: Double): Pair<Int, Int>? {
         if (cashback > 0) {
             if (shipmentSellerCashbackModel == null || cartDataList.indexOf(shipmentSellerCashbackModel!!) == -1) {
                 var index = 0
@@ -817,7 +822,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     cartDataList.add(++index, it)
-                    notifyItemInserted(index)
+                    return Pair(SELLER_CASHBACK_ACTION_INSERT, index)
                 }
             } else {
                 shipmentSellerCashbackModel?.let {
@@ -825,28 +830,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
-                    if (index != -1) {
-                        notifyItemChanged(index)
-                    }
+                    return Pair(SELLER_CASHBACK_ACTION_UPDATE, index)
                 }
             }
         } else {
             shipmentSellerCashbackModel?.let {
                 val index = cartDataList.indexOf(it)
-                if (index != -1) {
-                    cartDataList.remove(it)
-                    notifyItemRemoved(index)
-                    shipmentSellerCashbackModel = null
-                }
+                cartDataList.remove(it)
+                shipmentSellerCashbackModel = null
+                return Pair(SELLER_CASHBACK_ACTION_DELETE, index)
             }
         }
 
-        shipmentSellerCashbackModel?.let {
-            val index = cartDataList.indexOf(it)
-            if (index != -1) {
-                notifyItemChanged(index)
-            }
-        }
+        return null
     }
 
     fun notifyByProductId(productId: String, isWishlisted: Boolean) {
@@ -856,8 +852,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val cartShopHolderData = cartDataList[i] as CartShopHolderData
                 cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                     for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData?.originData?.productId == productId) {
-                            cartItemHolderData.cartItemData?.originData?.isWishlisted = isWishlisted
+                        if (cartItemHolderData.cartItemData.originData.productId == productId) {
+                            cartItemHolderData.cartItemData.originData.isWishlisted = isWishlisted
                             notifyItemChanged(i)
                             break
                         }
@@ -1005,7 +1001,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
                     obj.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
-                            cartItemHolderData.cartItemData?.originData?.let { data ->
+                            cartItemHolderData.cartItemData.originData.let { data ->
                                 if (cartIds.contains(data.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
                                     if (!toBeUpdatedIndex.contains(i)) {
@@ -1131,7 +1127,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     } else {
                         // If normal / non error item not empty, adjust error ticker item wording count
                         cartItemTickerErrorHolderData?.let {
-                            it.cartTickerErrorData?.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                            it.cartTickerErrorData.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
                             toBeUpdatedIndex.add(cartDataList.indexOf(it))
                         }
                     }

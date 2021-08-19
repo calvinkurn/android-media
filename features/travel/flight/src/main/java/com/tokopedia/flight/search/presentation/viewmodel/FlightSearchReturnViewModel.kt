@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.search.domain.FlightSearchJouneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -137,10 +138,8 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
         if (departureModel.routeList.isNotEmpty() && returnModel.routeList.isNotEmpty()) {
             val lastDepartureRoute = departureModel.routeList[departureModel.routeList.size - 1]
             val firstReturnRoute = returnModel.routeList[0]
-            val departureArrivalTime = FlightDateUtil.stringToDate(
-                    FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.arrivalTimestamp)
-            val returnDepartureTime = FlightDateUtil.stringToDate(
-                    FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.departureTimestamp)
+            val departureArrivalTime = lastDepartureRoute.arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+            val returnDepartureTime = firstReturnRoute.departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
             val different = returnDepartureTime.time - departureArrivalTime.time
             return if (different >= 0) {
                 val hours = different / ONE_HOUR

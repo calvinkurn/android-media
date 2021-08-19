@@ -10,6 +10,10 @@ data class GetStateChosenAddressQglResponse (
 data class GetStateChosenAddressResponse(
         @SerializedName("data")
         var data: ChosenAddressDataResponse = ChosenAddressDataResponse(),
+        @SerializedName("tokonow")
+        var tokonow: Tokonow = Tokonow(),
+        @SerializedName("kero_addr_error")
+        var error: ErrorChosenAddress = ErrorChosenAddress(),
         @SerializedName("status")
         var status: String = "",
         @SerializedName("server_process_time")

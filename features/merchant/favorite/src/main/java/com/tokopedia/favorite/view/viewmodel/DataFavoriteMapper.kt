@@ -5,7 +5,6 @@ import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.FavoriteShopItem
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author madi on 4/6/17.
@@ -35,8 +34,8 @@ object DataFavoriteMapper {
         return elementList
     }
 
-    fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopViewModel {
-        val topAdsShopViewModel = TopAdsShopViewModel()
+    fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopUiModel {
+        val topAdsShopViewModel = TopAdsShopUiModel()
         val viewModelTopAdsShopItemList = ArrayList<TopAdsShopItem>()
         val topAdsShopItemList = topAdsShop.topAdsShopItemList
 

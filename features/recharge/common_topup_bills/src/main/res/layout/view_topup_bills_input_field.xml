@@ -30,13 +30,14 @@
         android:id="@+id/input_info"
         android:layout_width="@dimen/input_field_info_icon_size"
         android:layout_height="@dimen/input_field_info_icon_size"
-        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/input_label"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_info_black"
+        tools:ignore="contentDescription"
         tools:visibility="visible" />
 
     <com.tokopedia.common.topupbills.widget.TopupBillsBackEditText
@@ -57,31 +58,34 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_label" />
 
-    <Button
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_clear_input"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:background="@drawable/common_topup_bg_topup_close"
+        android:paddingTop="@dimen/spacing_lvl1"
         android:paddingBottom="@dimen/spacing_lvl2"
         android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N200"
+        app:icon_color_night_enable="@color/Unify_N200"
+        app:icon_name="CLEAR"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="@+id/ac_input"
         app:layout_constraintTop_toTopOf="@+id/ac_input"
         tools:visibility="visible" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_input_dropdown"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N400"
+        app:icon_color_night_enable="@color/Unify_N400"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="@+id/ac_input"
         app:layout_constraintTop_toTopOf="@+id/ac_input"
-        app:srcCompat="@drawable/ic_dropdown_arrow"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

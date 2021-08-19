@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
@@ -43,13 +44,7 @@ class PostListViewHolder(
 
     private var dataKey: String = ""
 
-    private val pagerAdapter by lazy {
-        PostListPagerAdapter {
-            if (RouteManager.route(itemView.context, it.appLink)) {
-                listener.sendPosListItemClickEvent(dataKey, it.title)
-            }
-        }
-    }
+    private var pagerAdapter: PostListPagerAdapter? = null
 
     override fun bind(element: PostListWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
@@ -141,6 +136,7 @@ class PostListViewHolder(
         }
 
         element.data?.run {
+            initPagerAdapter(element)
             hideErrorLayout()
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
@@ -154,6 +150,14 @@ class PostListViewHolder(
                 showEmptyState(element)
             } else {
                 setupPostPager(postPagers)
+            }
+        }
+    }
+
+    private fun initPagerAdapter(element: PostListWidgetUiModel) {
+        pagerAdapter = PostListPagerAdapter {
+            if (RouteManager.route(itemView.context, it.appLink)) {
+                listener.sendPosListItemClickEvent(element, it)
             }
         }
     }
@@ -297,15 +301,15 @@ class PostListViewHolder(
             }
         }
 
-        if (pagerAdapter.itemCount <= 0) {
-            pagerAdapter.setItems(pagers)
-            pagerAdapter.notifyDataSetChanged()
+        if (pagers != pagerAdapter?.pagers) {
+            pagerAdapter?.pagers = pagers
+            pagerAdapter?.notifyDataSetChanged()
         }
     }
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendPosListItemClickEvent(dataKey: String, title: String) {}
+        fun sendPosListItemClickEvent(element: PostListWidgetUiModel, post: PostItemUiModel) {}
 
         fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {}
 

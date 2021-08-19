@@ -209,7 +209,9 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
                 val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
-                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock, source)
+                    ProductManageTracking.eventClickAllocationSaveStock(
+                        this, isMainStock, source, mViewModel.productId, mViewModel.shopId
+                    )
                 }
             }
         }
@@ -276,8 +278,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                               access: ProductManageAccess) {
         vp2_campaign_stock?.run {
             adapter = activity?.let {
-                val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(getStockAllocation.detail.sellable, getVariantResult.variants)
-                    as ArrayList<SellableStockProductUIModel>
+                val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(
+                    getStockAllocation.detail.sellable,
+                    getVariantResult.variants
+                )
 
                 val reservedProduct = getStockAllocation.detail.reserve.map { reserved ->
                     CampaignStockMapper.mapToParcellableReserved(reserved)

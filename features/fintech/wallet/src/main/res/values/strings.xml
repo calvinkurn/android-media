@@ -17,4 +17,8 @@
     <string name="wallet_activation_ovo_btn_activate">Buat Akun OVO Baru</string>
     <string name="wallet_activation_ovo_btn_change_number">Ubah Nomor Ponsel Sekarang</string>
     <string name="wallet_button_label_cancel">Batal</string>
+    <string name="wallet_ovo_kamu_belum_aktif">OVO kamu belum aktif</string>
+ <string name="wallet_ovo_activation_desc">Lakukan aktivasi segera karena diskon ini berlaku untuk pembayaran dengan OVO.</string>
+ <string name="wallet_aktivasi_ovo">Aktivasi OVO</string>
+ <string name="wallet_learn_more">Pelajari Selengkapnya</string>
 </resources>

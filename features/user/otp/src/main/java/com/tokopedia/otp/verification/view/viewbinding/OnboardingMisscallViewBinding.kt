@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -21,6 +22,7 @@ class OnboardingMisscallViewBinding @Inject constructor() : BaseOtpViewBinding()
 
     var containerView: View? = null
     var imgAnimation: LottieAnimationView? = null
+    var img: ImageUnify? = null
     var title: Typography? = null
     var subtitle: Typography? = null
     var btnCallMe: UnifyButton? = null
@@ -30,6 +32,7 @@ class OnboardingMisscallViewBinding @Inject constructor() : BaseOtpViewBinding()
             layoutInflater.inflate(layoutResId, container, false).apply {
                 containerView = findViewById(R.id.container)
                 imgAnimation = findViewById(R.id.img_animation_miscall_onboarding)
+                img = findViewById(R.id.img_miscall_onboarding)
                 title = findViewById(R.id.title)
                 subtitle = findViewById(R.id.subtitle)
                 btnCallMe = findViewById(R.id.btn_call_me)

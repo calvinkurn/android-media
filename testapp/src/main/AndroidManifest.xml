@@ -17,6 +17,7 @@
         tools:replace="label,android:allowBackup,android:theme"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:resizeableActivity="true"
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity"
@@ -27,6 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.tokopedia.tkpd.ErrorMessageActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -45,7 +48,7 @@
             android:authorities="com.tokopedia.tkpd.provider"
             android:grantUriPermissions="true"
             android:exported="false"
-            tools:replace="android:authorities">bg_button_enable.xml
+            tools:replace="android:authorities">
             <meta-data
                 tools:replace="android:resource"
                 android:name="android.support.FILE_PROVIDER_PATHS"

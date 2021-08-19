@@ -37,7 +37,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String)
     fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String)
     fun onClickMixTopBannerItem(applink: String)
-    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
+    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String = "")
 
     fun onClickMixLeftBannerImage(channel: Channel, position: Int)
     fun onMixLeftBannerImpressed(channel: Channel, position: Int)
@@ -49,6 +49,12 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
     fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
+
+    //featured shop OS
+    fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
+    fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
+    fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
+    fun goToApplink(applink: String)
 
     fun getOSCategory(): Category?
     fun isLogin(): Boolean

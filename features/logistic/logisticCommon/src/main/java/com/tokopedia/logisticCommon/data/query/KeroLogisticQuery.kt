@@ -3,8 +3,8 @@ package com.tokopedia.logisticCommon.data.query
 object KeroLogisticQuery {
 
     val autoComplete = """
-        query KeroMapsAutoComplete(${'$'}param: String!) {
-          kero_maps_autocomplete(input: ${'$'}param) {
+        query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String) {
+          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng) {
             error_code
             data {
               predictions {
@@ -140,6 +140,79 @@ object KeroLogisticQuery {
             error_code
           }
         }
+    """.trimIndent()
+
+    val kero_add_address_query = """
+        mutation Autofill(${'$'}input: KeroAgentAddressInput!) {
+          kero_add_address(input: ${'$'}input) {
+            data {
+              addr_id
+              is_success
+            }
+            status
+            config
+            server_process_time
+          }
+        }
+        """.trimIndent()
+
+    val kero_addr_get_default = """
+        query KeroAddrGetDefaultAddress(${'$'}source: String!) {
+          KeroAddrGetDefaultAddress(source: ${'$'}source) {
+            data {
+              addr_id
+              receiver_name
+              addr_name
+              address_1
+              address_2
+              postal_code
+              province
+              city
+              district
+              phone
+              province_name
+              city_name
+              district_name
+              status
+              country
+              latitude
+              longitude
+            }
+            kero_addr_error {
+              code
+              detail
+            }
+            status
+            server_process_time
+            config
+          }
+        }
+    """.trimIndent()
+
+    val kero_district_boundary = """
+        query keroGetDistrictBoundaryArray(${'$'}districtId: Int!) {
+          keroGetDistrictBoundaryArray(input: {
+            district_id: ${'$'}districtId
+          }) {
+            type
+            properties {
+              id
+              name
+            }
+            geometry {
+              type
+              coordinates
+              crs {
+                type
+                properties {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+
     """.trimIndent()
 
 }

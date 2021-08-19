@@ -106,8 +106,17 @@ object ShopPageTrackingConstant {
     const val VIEW_TOASTER_UNFOLLOW_ERROR = "view toaster unfollow error"
     const val CLICK_CEK_TOASTER_SUCCESS = "click cek toaster success"
     const val SEE_ENTRY_POINT = "see entry point"
+    const val VIEW_COUPON_TOKO_MEMBER = "view coupon tokomember"
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
+    const val CLICK_SHARE_BUTTON = "click - share button"
+    const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
+    const val CLICK_SHARE_BOTTOM_SHEET_OPTION = "click - sharing channel"
+    const val CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION = "click - channel share bottom sheet - screenshot"
+    const val VIEW_SHARE_BOTTOM_SHEET = "view on sharing channel"
+    const val VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET = "view - screenshot share bottom sheet"
+
 
     //label
     const val CLICK_TAB = "click tab"
@@ -138,6 +147,7 @@ object ShopPageTrackingConstant {
     const val BUSINESS_UNIT = "businessUnit"
     const val PHYSICAL_GOODS = "physical goods"
     const val HOME_AND_BROWSE = "home & browse"
+    const val SHARING_EXPERIENCE = "sharingexperience"
     const val CURRENT_SITE = "currentSite"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val SEE_ALL = "see all"
@@ -168,6 +178,7 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_PRODUCT_RECOMMENDATION = "impression - " + PRODUCT_RECOMMENDATION
     const val WIDGET_TYPE_CAROUSELL = "carousell"
     const val WIDGET_TYPE_BUY_AGAIN = "buy it again"
+    const val WIDGET_TYPE_REMINDER = "reminder"
     const val BUYER_RECOMMENDATION = "rekomendasi untuk anda"
     const val SEARCH_PRODUCT = "search product"
     const val SEARCH_PRODUCT_RESULT = "search result"
@@ -303,4 +314,8 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion"
     const val CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion"
     const val SEARCH_NO_RESULT = "search - no result"
+
+    const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
+    const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
+
 }

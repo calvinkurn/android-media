@@ -94,7 +94,7 @@ open class AddPinFragment : BaseDaggerFragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length == 6) {
+                if (s?.length == PIN_LENGTH) {
                     if (isConfirmPin) {
                         if (s.toString() == pin) {
                             if (isSkipOtp) {
@@ -246,24 +246,17 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> {
-                        data?.extras?.run {
-                            this.getString(ApplinkConstInternalGlobal.PARAM_UUID)?.let { uuid ->
-                                if (uuid.isNotEmpty()) {
-                                    showLoading()
-                                    addChangePinViewModel.addPin(uuid)
-                                }
-                            }
-                        }
-                    }
+        if(requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION &&
+            resultCode == Activity.RESULT_OK) {
+            data?.extras?.run {
+                val uuid = this.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                if(uuid.isNotEmpty()) {
+                    showLoading()
+                    addChangePinViewModel.addPin(uuid)
                 }
             }
-            Activity.RESULT_CANCELED -> {
-                trackingPinUtil.trackFailedInputConfirmationPin(getString(R.string.error_from_cotp))
-            }
+        } else {
+            trackingPinUtil.trackFailedInputConfirmationPin(getString(R.string.error_from_cotp))
         }
     }
 
@@ -310,9 +303,11 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun showKeyboard() {
         inputPin?.pinTextField?.let { view ->
             view.post {
-                if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                if (view.requestFocus() && context != null) {
+                    val systemService = context?.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    if(systemService != null && systemService is InputMethodManager) {
+                        systemService.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                    }
                 }
             }
         }
@@ -347,6 +342,7 @@ open class AddPinFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val OTP_TYPE_PHONE_VERIFICATION = 124
 
+        const val PIN_LENGTH = 6
         fun createInstance(bundle: Bundle): AddPinFragment {
             val fragment = AddPinFragment()
             fragment.arguments = bundle

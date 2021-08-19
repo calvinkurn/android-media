@@ -47,8 +47,16 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         handleLihatSemuaHeader()
+        handleErrorState()
         fetchProductCarouselData()
+    }
+
+    private fun handleErrorState() {
+        if(components.verticalProductFailState){
+            productLoadError.value = true
+        }
     }
 
     private fun handleLihatSemuaHeader() {
@@ -71,12 +79,19 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchProductCarouselData() {
         launchCatchError(block = {
             productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+            components.shouldRefreshComponent = null
             setProductsList()
         }, onError = {
-            components.noOfPagesLoaded = 0
-            components.pageLoadedCounter = 1
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
             productLoadError.value = true
         })
+    }
+
+    fun resetComponent(){
+        components.noOfPagesLoaded = 0
+        components.pageLoadedCounter = 1
     }
 
     private suspend fun setProductsList() {
@@ -193,6 +208,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             isLoading = false
             productCarouselList.value = it
             syncData.value = true
+        }
+    }
+
+    fun areFitterApplied():Boolean{
+        return ((components.selectedSort != null && components.selectedFilters != null) &&
+            (components.selectedSort?.isNotEmpty() == true ||
+                    components.selectedFilters?.isNotEmpty() == true))
+    }
+
+    fun getErrorStateComponent():ComponentsItem{
+        return ComponentsItem(name = ComponentNames.ProductListEmptyState.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.ProductListEmptyState.componentName
         }
     }
 }

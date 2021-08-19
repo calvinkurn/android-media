@@ -12,11 +12,11 @@ import java.util.concurrent.Semaphore
 
 
 class ResourceDownloadRunnable(
-        val task: TaskDownloadProperties,
-        private val client: OkHttpClient,
-        database: ResourceDB
+    val task: TaskDownloadProperties,
+    private val client: OkHttpClient,
+    database: ResourceDB
 ) :
-        Runnable {
+    Runnable {
     private lateinit var filePath: String
     private val resourceEntryDao = database.resourceEntryDao
     private val url = task.getDownloadUrl()
@@ -93,7 +93,7 @@ class ResourceDownloadRunnable(
                 task.handleDownloadState(DOWNLOAD_STATE_STARTED)
                 val entry = readEntryFromDatabase()
                 if (entry != null) {
-                    task.setByteBuffer(fileFromAbsolutePath(entry.absolutePath))
+                    task.setByteBuffer(entry)
                     task.handleDownloadState(DOWNLOAD_STATE_SKIPPED)
                     semaphore.release()
                 } else {
@@ -139,29 +139,38 @@ class ResourceDownloadRunnable(
         }
     }
 
-    fun fileFromAbsolutePath(absolutePath: String): ByteArray {
-        return File(absolutePath).inputStream().readBytes()
+    fun fileFromAbsolutePath(absolutePath: String): ByteArray? {
+        return try {
+            File(absolutePath).inputStream().readBytes()
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    private fun readEntryFromDatabase(): ResourceEntry? {
+    private fun readEntryFromDatabase(): ByteArray? {
 
         val entry = resourceEntryDao.getResourceEntry(fileName)
         return entry?.let {
+            val byteArray = fileFromAbsolutePath(it.absolutePath)
+            if(byteArray == null) {
+                resourceEntryDao.deleteEntry(fileName)
+                return null
+            }
             resourceEntryDao.updateLastAccess(System.currentTimeMillis(), fileName)
-            it
+            byteArray
         }
     }
 
     private fun writeEntryToDatabase() {
         resourceEntryDao.createResourceEntry(
-                ResourceEntry(
-                        fileName,
-                        filePath,
-                        "",
-                        task.resourceVersion(),
-                        System.currentTimeMillis(),
-                        System.currentTimeMillis()
-                )
+            ResourceEntry(
+                fileName,
+                filePath,
+                "",
+                task.resourceVersion(),
+                System.currentTimeMillis(),
+                System.currentTimeMillis()
+            )
         )
     }
 

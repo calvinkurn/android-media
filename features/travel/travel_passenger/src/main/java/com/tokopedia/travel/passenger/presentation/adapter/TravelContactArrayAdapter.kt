@@ -54,7 +54,11 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
     }
 
     override fun getItem(position: Int): TravelContactListModel.Contact? {
-        return suggestions.get(position)
+        return if (suggestions.isNotEmpty() && suggestions.size > position) {
+            suggestions[position]
+        } else {
+            null
+        }
     }
 
     override fun getCount(): Int {
@@ -65,7 +69,7 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
         return contactFilter
     }
 
-    val contactFilter = object: Filter() {
+    val contactFilter = object : Filter() {
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
             return (resultValue as TravelContactListModel.Contact).fullName

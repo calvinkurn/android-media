@@ -33,7 +33,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify list impression data`() {
         val recentViewItemList = slotRecentViewItemList.captured
-        val recentSearchItemList = slotRecentSearchItemList.captured
+        val recentSearchItemList = slotRecentSearchItemList.last()
         val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
@@ -114,7 +114,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify list impression data`(initialStateData: List<InitialStateData>) {
         val recentViewItemList = slotRecentViewItemList.captured
-        val recentSearchItemList = slotRecentSearchItemList.captured
+        val recentSearchItemList = slotRecentSearchItemList.last()
         val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
@@ -140,7 +140,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify recent search impressed the hidden item`(initialStateData: List<InitialStateData>) {
-        val recentSearchItemList = slotRecentSearchItemList.captured
+        val recentSearchItemList = slotRecentSearchItemList.last()
 
         val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items).takeLast(2)
 
@@ -153,7 +153,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Given view already get initial state`(listInitialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify view interaction for load data failed with exception`()
     }
 
     private fun `Then verify initial state view will call showInitialStateResult behavior`() {

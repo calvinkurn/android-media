@@ -252,28 +252,4 @@ object WebViewHelper {
         } else null
     }
 
-    /**
-     * get Intent Action_VIEW for specific uri.
-     * will return null if the intent is browser
-     * will return action_view intent if the intent will be open other than browser.
-     */
-    @JvmStatic
-    fun externalAppIntentNotBrowser(context: Context, uri: Uri): Intent? {
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        val resolveInfoOriginal: List<ResolveInfo> =
-            context.packageManager.queryIntentActivities(intent, 0)
-
-        if (resolveInfoOriginal.isEmpty()) {
-            return null
-        }
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(EXAMPLE_DOMAIN))
-        val resolveInfoBrowser = context.packageManager.queryIntentActivities(browserIntent, 0)
-
-        val resolveInfoNative = resolveInfoOriginal.filterNot {
-            resolveInfoBrowser.contains(it)
-        }
-        return if (resolveInfoNative.isNotEmpty()) {
-            intent
-        } else null
-    }
 }

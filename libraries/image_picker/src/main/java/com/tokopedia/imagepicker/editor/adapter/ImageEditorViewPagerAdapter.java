@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditPreviewFragment;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -21,20 +22,25 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<ArrayList<String>> edittedImagePaths;
 
     private ArrayList<Integer> currentEditStepIndexList;
+    private UserSessionInterface userSession;
     private int minResolution;
     private boolean isCirclePreview;
 
-    public ImageEditorViewPagerAdapter(FragmentManager fm,
-                                       ArrayList<ArrayList<String>> edittedImagePaths,
-                                       ArrayList<Integer> currentEditStepIndexList,
-                                       int minResolution,
-                                       ArrayList<ArrayList<ImageRatioType>> ratioTypeList,
-                                       boolean isCirclePreview) {
+    public ImageEditorViewPagerAdapter(
+            FragmentManager fm,
+            ArrayList<ArrayList<String>> edittedImagePaths,
+            ArrayList<Integer> currentEditStepIndexList,
+            int minResolution,
+            ArrayList<ArrayList<ImageRatioType>> ratioTypeList,
+            boolean isCirclePreview,
+            UserSessionInterface userSession
+    ) {
         super(fm);
         this.edittedImagePaths = edittedImagePaths;
         this.currentEditStepIndexList = currentEditStepIndexList;
         this.minResolution = minResolution;
         this.isCirclePreview = isCirclePreview;
+        this.userSession = userSession;
     }
 
     public void setEdittedImagePaths(ArrayList<ArrayList<String>> edittedImagePaths) {
@@ -49,7 +55,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         int currentStepPosition = currentEditStepIndexList.get(position);
         String localImagePath = edittedImagePaths.get(position).get(currentStepPosition);
-        return ImageEditPreviewFragment.newInstance(position, localImagePath, minResolution, isCirclePreview);
+        return ImageEditPreviewFragment.newInstance(position, localImagePath, minResolution, isCirclePreview, userSession);
     }
 
     @Override

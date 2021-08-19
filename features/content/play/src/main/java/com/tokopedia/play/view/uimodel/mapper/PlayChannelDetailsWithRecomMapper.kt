@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
-                    channelInfo = mapChannelInfo(it.isLive, it.config, it.coverUrl),
+                    channelInfo = mapChannelInfo(it.isLive, it.config, it.title, it.coverUrl),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
                     totalViewInfo = mapTotalViewInfo(),
@@ -34,7 +35,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, it.title, extraParams),
-                    statusInfo = mapChannelStatusInfo(it.config, it.title)
+                    statusInfo = mapChannelStatusInfo(it.config, it.title),
+                    leaderboardInfo = mapLeaderboardInfo()
             )
         }
     }
@@ -42,19 +44,20 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapChannelInfo(
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
+            title: String,
             coverUrl: String
     ) = PlayChannelInfoUiModel(
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             backgroundUrl = configResponse.roomBackground.imageUrl,
+            title = title,
             coverUrl = coverUrl
     )
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
-            basicInfo = PlayPartnerBasicInfoUiModel(
-                    id = partnerResponse.id.toLongOrZero(),
-                    name = htmlTextTransformer.transform(partnerResponse.name),
-                    type = PartnerType.getTypeByValue(partnerResponse.type),
-            )
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
+            id = partnerResponse.id.toLongOrZero(),
+            name = htmlTextTransformer.transform(partnerResponse.name),
+            type = PartnerType.getTypeByValue(partnerResponse.type),
+            status = PlayPartnerFollowStatus.Unknown,
     )
 
     private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
@@ -107,14 +110,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             )
     )
 
-    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
+    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = pinnedMessageResponse.title,
     )
 
-    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(
+    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedProductUiModel(
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = configResponse.pinnedProductConfig.pinTitle,
             hasPromo = configResponse.hasPromo,
@@ -200,6 +203,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return if (isFreezed) PlayStatusType.Freeze
         else PlayStatusType.Active
     }
+
+    private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
 
     companion object {
         private const val MS_PER_SECOND = 1000

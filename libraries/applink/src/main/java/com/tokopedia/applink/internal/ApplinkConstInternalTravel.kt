@@ -19,9 +19,7 @@ object ApplinkConstInternalTravel {
 
     const val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
 
-    const val HOTEL_OLD_SRP = "$INTERNAL_HOTEL/result/oldsrp"
-
-    const val HOTEL_MAP_SRP = "$INTERNAL_HOTEL/result/map"
+    const val HOTEL_SRP = "$INTERNAL_HOTEL/result"
 
     const val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"
 

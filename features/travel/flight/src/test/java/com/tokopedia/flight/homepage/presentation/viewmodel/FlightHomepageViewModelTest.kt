@@ -10,7 +10,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.BANNER_DATA
 import com.tokopedia.flight.dummy.TICKER_DATA
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
@@ -25,6 +24,9 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.trimDate
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -684,6 +686,44 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
+    fun onReverseAirportChanged_changeDashboardData() {
+        // given
+        val departureAirport = FlightAirportModel()
+        departureAirport.cityName = "Jakarta"
+        departureAirport.airportCode = "CGK"
+        departureAirport.airportName = "Bandara International Soekarno Hatta"
+        departureAirport.cityCode = ""
+        departureAirport.cityId = ""
+        departureAirport.cityAirports = arrayListOf()
+
+        val arrivalAirport = FlightAirportModel()
+        arrivalAirport.cityName = "Banda Aceh"
+        arrivalAirport.airportCode = "BTJ"
+        arrivalAirport.airportName = "Bandara International Sultan Iskandar Muda"
+        arrivalAirport.cityCode = ""
+        arrivalAirport.cityId = ""
+        arrivalAirport.cityAirports = arrayListOf()
+
+        // when
+        flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
+
+        // then
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityName shouldBe departureAirport.cityName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportCode shouldBe departureAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportName shouldBe departureAirport.airportName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityCode shouldBe departureAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityId shouldBe departureAirport.cityId
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityAirports shouldBe departureAirport.cityAirports
+
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityName shouldBe arrivalAirport.cityName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportCode shouldBe arrivalAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportName shouldBe arrivalAirport.airportName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityCode shouldBe arrivalAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityId shouldBe arrivalAirport.cityId
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityAirports shouldBe arrivalAirport.cityAirports
+    }
+
+    @Test
     fun onClassChanged_withNullDashboardData_shouldDoNothing() {
         // given
         val flightClassModel = FlightClassModel(1, "Ekonomi")
@@ -782,14 +822,11 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForDeparture_shouldReturnPairDate() {
         // given
-        val maxDateCalendar = FlightDateUtil.currentCalendar
-        maxDateCalendar.time = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
-        maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
-        maxDateCalendar.set(Calendar.SECOND, FlightSearchUniversalViewModel.DEFAULT_LAST_SEC)
+        val maxDateCalendar = DateUtil.getCurrentCalendar()
+        maxDateCalendar.time = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+                .trimDate()
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -801,7 +838,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForReturn_shouldReturnPairDate() {
         // given
-        val departureDate = FlightDateUtil.currentDate
+        val departureDate = DateUtil.getCurrentDate()
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
@@ -813,7 +850,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_validDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -825,7 +863,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_dateMoreThanOneYear() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -837,7 +876,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_dateBeforeToday() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, -1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, -1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -849,8 +889,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateReturnDate_validDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -862,8 +904,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateReturnDate_returnDateMoreThanOneYear() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -875,8 +919,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_returnDateBeforeDepartureDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 3)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 3)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -1050,7 +1096,7 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun validateSendTrackingVideoBannerImpression_LoggedIn(){
+    fun validateSendTrackingVideoBannerImpression_LoggedIn() {
         val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { userSessionInterface.userId } returns "dummy user id"
@@ -1065,7 +1111,7 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun validateSendTrackingVideoBannerImpression_NotLoggedIn(){
+    fun validateSendTrackingVideoBannerImpression_NotLoggedIn() {
         val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
         coEvery { userSessionInterface.isLoggedIn } returns false
 
@@ -1079,7 +1125,7 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun validateSendTrackingVideoBannerClick_LoggedIn(){
+    fun validateSendTrackingVideoBannerClick_LoggedIn() {
         val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { userSessionInterface.userId } returns "dummy user id"
@@ -1094,7 +1140,7 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun validateSendTrackingVideoBannerClick_NotLoggedIn(){
+    fun validateSendTrackingVideoBannerClick_NotLoggedIn() {
         val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
         coEvery { userSessionInterface.isLoggedIn } returns false
 

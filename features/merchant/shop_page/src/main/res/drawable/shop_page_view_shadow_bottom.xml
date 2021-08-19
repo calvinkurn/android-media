@@ -5,7 +5,7 @@
     <!-- Background -->
     <item android:bottom="10dp">
         <shape>
-            <solid android:color="@color/Unify_N0" />
+            <solid android:color="@color/Unify_Background" />
         </shape>
     </item>
 

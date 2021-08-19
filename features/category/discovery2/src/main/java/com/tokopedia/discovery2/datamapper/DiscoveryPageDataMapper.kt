@@ -13,12 +13,14 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
+const val SHIMMER_ITEMS_LIST_SIZE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
@@ -110,7 +112,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             }
 
             ComponentNames.QuickFilter.componentName -> {
-                listComponents.add(component.copy())
+                listComponents.add(component)
+                component.properties?.targetId?.let {
+                    getComponent(it,component.pageEndPoint).apply {
+                        this?.parentFilterComponentId = component.id
+                    }
+                }
             }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
@@ -120,9 +127,35 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     listComponents.add(component)
                 }
             }
+            ComponentNames.Video.componentName -> {
+                addAutoPlayController(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun addAutoPlayController(component: ComponentsItem) {
+        if (component.autoPlayController == null) {
+            val autoplayComponent: ComponentsItem = getAutoPlayComponent(component)
+            autoplayComponent.autoPlayController?.videoIdSet?.add(component.id)
+            component.autoPlayController = autoplayComponent.autoPlayController
+        } else if (getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) == null) {
+            setComponent(
+                AutoPlayController.AUTOPLAY_ID,
+                component.pageEndPoint,
+                ComponentsItem().apply { autoPlayController = component.autoPlayController })
+        }
+    }
+
+    private fun getAutoPlayComponent(component: ComponentsItem): ComponentsItem {
+        return getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) ?: run {
+            ComponentsItem().apply {
+                autoPlayController = AutoPlayController(component.id)
+                setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
+            }
+        }
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
@@ -262,7 +295,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 })
                 component.needPagination = true
                 component.userAddressData = localCacheModel
-                listComponents.addAll(List(10) {
+                listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
                     ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
                     }

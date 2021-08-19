@@ -6,6 +6,15 @@ package com.tokopedia.analyticsdebugger.cassava.data
 object ThanosJourneyList {
     val journeyList: List<Pair<String, String>> =
             arrayListOf(
-                    Pair("31", "Search Result Page - Impression & Click")
+                    Pair("47", "Purchase Platform : PP - Transaction (OCC)"),
+                    Pair("44", "Purchase Platform : PP - Transaction (Regular Checkout)"),
+                    Pair("42", "User/Account: Login Biometrics"),
+                    Pair("33", "Communication and Media : TopChat - SRW"),
+                    Pair("30", "Communication and Media : TopChat - Notif Center"),
+                    Pair("25", "Communication and Media : TopChat - Report Chat"),
+                    Pair("23", "Communication and Media : TopChat - Attach and Send"),
+                    Pair("15", "Communication and Media : TopChat - Order Creation"),
+                    Pair("11", "Communication and Media : TopChat - SRW"),
+                    Pair("7", "Communication and Media : Search Result Page - Impression & Click")
             )
 }

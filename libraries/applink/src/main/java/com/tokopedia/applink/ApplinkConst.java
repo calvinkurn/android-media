@@ -84,6 +84,7 @@ public interface ApplinkConst {
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
+    String RECHARGE_SUBHOMEPAGE_HOME_NEW = "tokopedia://recharge/home?platform_id=31";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
@@ -333,6 +334,8 @@ public interface ApplinkConst {
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
+    String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -393,6 +396,8 @@ public interface ApplinkConst {
     String ACCOUNT = "tokopedia://account";
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
+    String TELEPHONY_MASKING = "tokopedia://telephony-masking";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -443,6 +448,7 @@ public interface ApplinkConst {
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
+        String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String SALES = "sellerapp://sales";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
@@ -475,6 +481,15 @@ public interface ApplinkConst {
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
+    }
+
+    interface TokopediaNow {
+        String HOME = "tokopedia://now";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 = "11515028";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
+        String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
+        String SEARCH = "tokopedia://now/search";
+        String CATEGORY = "tokopedia://now/category";
     }
 
     interface Query {
@@ -557,6 +572,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
         String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
         String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
+        String TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID = "TKPD_ATTACH_PRODUCT_WAREHOUSE_ID";
     }
 
     interface Notification {

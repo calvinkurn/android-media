@@ -36,7 +36,9 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
     val TAG = "CmDialogHandler"
     val callbackProvider = GratifPopupCallbackProvider(dataConsumer)
 
-    fun showPushDialog(activity: Activity, gratificationId: String, screenName: String) {
+    fun showPushDialog(activity: Activity, gratificationId: String?, screenName: String) {
+        if(gratificationId.isNullOrEmpty()) return
+
         val tempWeakActivity = WeakReference(activity)
         gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH,
                 callbackProvider.getCallbackTypePush(gratificationPresenter, tempWeakActivity), screenName)

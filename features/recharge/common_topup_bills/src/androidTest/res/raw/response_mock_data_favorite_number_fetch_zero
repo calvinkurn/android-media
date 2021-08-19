@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "rechargeFetchFavoriteNumber": {
+        "client_number": "",
+        "operator_id": 0,
+        "product_id": 0,
+        "category_id": 0,
+        "list": [
+
+        ]
+      }
+    }
+  }
+]

@@ -1,47 +1,15 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.url.TokopediaUrl
-
 object ProductDetailConstant {
-    @JvmField
-    var BASE_REST_URL = TokopediaUrl.getInstance().WS
-
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-
-    //report product
-    const val PATH_PRODUCT_ACTION = "v4/action/product/"
 
     const val PARAM_PRODUCT_ID = "product_id"
 
-    const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
-    const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
-
-    const val VALUE_NEW_ETALASE = "new"
-
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
-
-    //waarehouse product
-    const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
-    const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
-
-    const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
-    const val KEY_NORMAL_BUTTON = "normal"
-    const val KEY_OCS_BUTTON = "ocs"
-    const val KEY_OCC_BUTTON = "occ"
-    const val KEY_CHAT = "chat"
-    const val KEY_BYME = "byme"
-    const val KEY_REMIND_ME = "remind_me"
-    const val KEY_CHECK_WISHLIST = "check_wishlist"
-    const val KEY_BUTTON_PRIMARY = "primary"
-    const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
-    const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
-    const val KEY_BUTTON_DISABLE = "disabled"
-    const val KEY_BUTTON_SECONDARY = "secondary"
-    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
@@ -66,14 +34,12 @@ object ProductDetailConstant {
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
     const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
     const val REQUEST_CODE_LOGIN = 561
-    const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
-    const val REQUEST_CODE_MERCHANT_VOUCHER = 564
-    const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
@@ -85,21 +51,22 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
-    const val PRODUCT_INFO = "product_info"
+    const val MINI_SOCIAL_PROOF_STOCK = "mini_social_proof_stock"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
-    const val SHOP_VOUCHER = "shop_voucher"
     const val SHIPMENT = "shipment"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
+    const val MINI_VARIANT_OPTIONS = "mini_variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
+    const val PDP_7 = "pdp_7"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -117,7 +84,12 @@ object ProductDetailConstant {
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
+    const val MINI_SHOP_WIDGET = "mini_shop_widget"
+    const val CATEGORY_CAROUSEL = "category_carousel"
 
+    const val BEST_SELLER = "best_seller"
+    const val STOCK_ASSURANCE = "stock_assurance"
+    const val ONE_LINERS = "one_liners"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -133,7 +105,7 @@ object ProductDetailConstant {
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
-
+    const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -146,23 +118,6 @@ object ProductDetailConstant {
 
     //Save Instance State
     const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
-
-    //Button Action
-    const val BUY_BUTTON = 1
-    const val ATC_BUTTON = 2
-    const val OCS_BUTTON = 3
-    const val OCC_BUTTON = 4
-    const val LEASING_BUTTON = 5
-    const val TRADEIN_BUTTON = 6
-    const val TRADEIN_AFTER_DIAGNOSE = 7
-    const val REMIND_ME_BUTTON = 8
-    const val CHECK_WISHLIST_BUTTON = 9
-
-    const val REQUEST_CODE_CHECKOUT = 12382
-
-    //OVO
-    const val OVO_INACTIVE_STATUS = 1;
-    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1
@@ -186,16 +141,6 @@ object ProductDetailConstant {
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
 
-    const val KEY_PRODUCT_DETAIL = "product detail"
-
-    //bo type
-    const val NO_BEBAS_ONGKIR = 0
-    const val BEBAS_ONGKIR_NORMAL = 1
-    const val BEBAS_ONGKIR_EXTRA = 2
-
-    //shipping error code
-    const val SHIPPING_ERROR_WEIGHT = 50503
-
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
@@ -209,4 +154,13 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
+
+    const val DEFAULT_ATC_MAX_ORDER = 100
+    const val DEFAULT_MIN_QTY = 1
+
+    const val VARIANT_SCROLL_DELAY = 200L
+    const val LOG_MAX_LENGTH = 1000
+    const val TOOLBAR_ELEVATION = 10F
+
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
 }

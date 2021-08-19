@@ -3,8 +3,8 @@ package com.tokopedia.recommendation_widget_common.domain.request
 internal class GetRecommendationUseCaseRequest {
     companion object {
         val widgetListQuery = """
-            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!) {
-                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs) {
+            query productRecommendation(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean) {
+                  productRecommendationWidget(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow) {
                     data {
                       tID
                       source
@@ -20,6 +20,16 @@ internal class GetRecommendationUseCaseRequest {
                         nextPage
                         prevPage
                         hasNext
+                      }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        thematicID
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                       }
                       recommendation {
                         id
@@ -80,6 +90,7 @@ internal class GetRecommendationUseCaseRequest {
                             key
                             value
                         }
+                        parentID
                       }
                     }
                   }
@@ -101,6 +112,15 @@ internal class GetRecommendationUseCaseRequest {
                        pageName
                        pagination{
                             hasNext
+                       }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                        }
                        recommendation {
                            id
