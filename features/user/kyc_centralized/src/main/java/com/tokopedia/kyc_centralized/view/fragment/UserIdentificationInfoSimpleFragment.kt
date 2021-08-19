@@ -25,6 +25,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private var projectId = 0
     private var mainView: ConstraintLayout? = null
     private var loader: LoaderUnify? = null
+    private var isFirstTimeOpen = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,19 +41,9 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
         initViews(view)
-        if(checkRedirectToKyc(savedInstanceState)) {
+        if(isFirstTimeOpen) {
             startKyc()
-        }
-    }
-
-    private fun checkRedirectToKyc(savedInstanceState: Bundle?): Boolean {
-        return if(savedInstanceState?.getBoolean(KYC_FLOW_REDIRECTION) == true) {
-            false
-        } else {
-            val savedState = Bundle()
-            savedState.putBoolean(KYC_FLOW_REDIRECTION, true)
-            onSaveInstanceState(savedState)
-            true
+            isFirstTimeOpen = false
         }
     }
 
@@ -99,6 +90,5 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"
         private const val KYC_REQUEST_CODE = 9902
-        private const val KYC_FLOW_REDIRECTION = "KycFlowRedirection"
     }
 }
