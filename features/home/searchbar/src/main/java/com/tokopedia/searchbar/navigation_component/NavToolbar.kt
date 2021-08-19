@@ -109,6 +109,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var invertSearchBarColor: Boolean = false
     private var lifecycleOwner: LifecycleOwner? = null
     private var useCentralizedIconNotification = mapOf<Int, Boolean>()
+    private var searchbarType: Int? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -336,6 +337,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 navSearchbarInterface = navSearchbarInterface,
                 editorActionCallback = editorActionCallback
         )
+        this.searchbarType = searchbarType
         searchbarTypeValidation(
             searchbarType = searchbarType,
             ifClickSearchbarType = {
@@ -502,7 +504,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun getCurrentSearchbarText(): String {
-        return navSearchBarController.etSearch?.text?.toString()?:""
+        if (searchbarType == SearchBarType.TYPE_CLICK) {
+            return navSearchBarController.etSearch?.text?.toString()?:""
+        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
+            return navSearchBarController.etSearchbarUnify?.searchBarTextField?.text?.toString()?:""
+        }
+        return ""
     }
 
     private fun applyStatusBarPadding() {
