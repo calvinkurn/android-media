@@ -21,8 +21,8 @@ internal class OSRecyclerViewIdlingResource(
     override fun getName() = name
 
     override fun isIdleNow(): Boolean {
-        val activity = activity ?: return true
-        val recyclerView = activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        val activity = activity ?: return false
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)?: return false
 
         val isIdle = (recyclerView.adapter as? OfficialHomeAdapter).isContainsProductRecom()
         if (isIdle) resourceCallback?.onTransitionToIdle()
