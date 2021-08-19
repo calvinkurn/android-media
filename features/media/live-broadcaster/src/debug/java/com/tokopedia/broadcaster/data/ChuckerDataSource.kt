@@ -2,6 +2,7 @@ package com.tokopedia.broadcaster.data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.tokopedia.broadcaster.chucker.data.BroadcasterChuckerDb
 import com.tokopedia.broadcaster.chucker.data.entity.ChuckerLog
 import com.tokopedia.broadcaster.chucker.data.repository.ChuckerLogRepository
@@ -25,7 +26,7 @@ class ChuckerDataSource(
         ChuckerLogRepositoryImpl(dbDao)
     }
 
-    override fun chuckers(): List<ChuckerLog> {
+    override fun chuckers(): LiveData<List<ChuckerLog>> {
         return dataSource.chuckers()
     }
 
