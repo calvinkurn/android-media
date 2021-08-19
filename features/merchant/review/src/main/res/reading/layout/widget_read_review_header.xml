@@ -79,18 +79,26 @@
         app:layout_constraintStart_toEndOf="@id/read_review_highlighted_topic_left"
         app:layout_constraintTop_toTopOf="@id/read_review_highlighted_topic_left" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/read_review_header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="read_review_highlighted_topic_left, read_review_highlighted_topic_right, read_review_see_all, read_review_rating_and_review_count" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/read_review_filter_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
         android:background="@color/Unify_N75"
-        app:layout_constraintTop_toBottomOf="@id/read_review_highlighted_topic_right" />
+        app:layout_constraintTop_toBottomOf="@id/read_review_header_barrier" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/read_review_sort_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintTop_toBottomOf="@id/read_review_filter_divider"
         app:sort_filter_relationship="AND"
