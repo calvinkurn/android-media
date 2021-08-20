@@ -286,7 +286,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BEAUTY_FEST_TRUE = 1
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
         private const val MILLIS_IN_SECOND = 1000L
-        private const val DELAY_HEADER_TIMER  = 4000L
+        private const val DELAY_HEADER_TIMER  = 3000L
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
