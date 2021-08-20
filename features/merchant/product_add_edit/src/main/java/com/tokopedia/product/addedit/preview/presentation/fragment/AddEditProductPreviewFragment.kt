@@ -51,6 +51,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_OPEN_BOTTOMSHEET
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
@@ -135,6 +136,9 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1637,13 +1641,32 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupProductLimitationViews() {
-        if (!RollenceUtil.getProductLimitationRollence()) return
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
-        val htmlDescription = getString(R.string.label_product_limitation_ticker, productLimitStartDate)
-        productLimitationTicker?.apply {
-            setHtmlDescription(htmlDescription)
-            showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
-        }
+        val tickers = listOf(
+            TickerData(
+                description = getString(R.string.label_product_limitation_ticker, productLimitStartDate),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            ),
+            TickerData(
+                description = getString(R.string.label_product_limitation_ticker_more_info),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+        )
+
+        val adapter = TickerPagerAdapter(context,tickers)
+        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                if (linkUrl.startsWith(KEY_OPEN_BOTTOMSHEET)) {
+                    productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+                    productLimitationBottomSheet?.setIsSavingToDraft(false)
+                    productLimitationBottomSheet?.show(childFragmentManager)
+                } else {
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                }
+            }
+        })
+        productLimitationTicker?.addPagerView(adapter, tickers)
+        productLimitationTicker?.showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
     }
 
     private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
@@ -1651,6 +1674,8 @@ class AddEditProductPreviewFragment :
             productLimitationTicker?.gone()
             return
         }
+
+        if (!RollenceUtil.getProductLimitationRollence()) return
 
         productLimitationModel.apply {
             productLimitationBottomSheet = ProductLimitationBottomSheet(actionItems, isEligible, limitAmount)
@@ -1676,12 +1701,6 @@ class AddEditProductPreviewFragment :
                     startActivity(intent)
                 }
             }
-        }
-
-        productLimitationTicker?.setOnClickListener {
-            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
-            productLimitationBottomSheet?.setIsSavingToDraft(false)
-            productLimitationBottomSheet?.show(childFragmentManager)
         }
 
         // launch bottomsheet automatically when fragment loaded
