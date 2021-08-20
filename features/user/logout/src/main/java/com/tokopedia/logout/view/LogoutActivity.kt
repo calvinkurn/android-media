@@ -216,7 +216,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearBeautyFest() {
-        val beautyPref =  applicationContext.getSharedPreferences(ConstantKey.BeautyFest.KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
+        val beautyPref =  applicationContext.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
         beautyPref.edit().clear().apply()
     }
 
@@ -284,5 +284,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val OCC_DATA_PREF = "occ_remove_profile_ticker"
         private const val INVALID_TOKEN = "Token tidak valid."
+        private const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
     }
 }

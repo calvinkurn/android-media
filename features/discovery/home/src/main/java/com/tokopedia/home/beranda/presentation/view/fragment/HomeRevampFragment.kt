@@ -285,6 +285,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BEAUTY_FEST_FALSE = 0
         private const val BEAUTY_FEST_TRUE = 1
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
+        private const val MILLIS_IN_SECOND = 1000L
+        private const val DELAY_HEADER_TIMER  = 4000L
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1328,8 +1330,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
+                        //load data from latest update with delay 4 seconds
                         if (timer != null) timer?.cancel()
-                        timer = object : CountDownTimer(4000, 1000) {
+                        timer = object : CountDownTimer(DELAY_HEADER_TIMER, MILLIS_IN_SECOND) {
                             override fun onTick(l: Long) {}
                             override fun onFinish() {
                                 val beautyFest = getBeautyFest(data.list)
@@ -1572,9 +1575,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
 
             if (isLoading) {
+                //displaying shimmer and hide header
                 loaderHeaderImage.visible()
                 backgroundViewImage.gone()
             } else {
+                //displaying header and hide shimmer
                 if (isBeautyFest) {
                     if (currentContext.isDarkMode()) {
                         backgroundViewImage.setColorFilter(
