@@ -1494,7 +1494,9 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
         if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
-            analytic.impressCast()
+            val currentVisibility = castView?.isHidden() ?: true
+            if(currentVisibility) analytic.impressCast()
+
             castView?.show()
         }
         else castView?.hide()
