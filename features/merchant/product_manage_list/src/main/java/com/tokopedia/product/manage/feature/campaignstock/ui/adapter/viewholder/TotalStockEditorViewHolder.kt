@@ -95,7 +95,7 @@ class TotalStockEditorViewHolder(itemView: View?,
         ongoingCampaignTypeText?.run {
             showWithCondition(isCampaign)
             element.campaignTypeList?.let { campaignList ->
-                text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
+                text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), campaignList.count().orZero())
                 setOnClickListener {
                     onOngoingPromotionClicked(campaignList)
                 }
