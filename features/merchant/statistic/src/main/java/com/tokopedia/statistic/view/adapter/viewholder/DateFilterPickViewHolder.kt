@@ -75,7 +75,7 @@ class DateFilterPickViewHolder(
                     setMode(CalendarPickerView.SelectionMode.SINGLE)
                     setTitle(title)
                 }
-                DateFilterItem.TYPE_CUSTOM -> {
+                DateFilterItem.TYPE_CUSTOM, DateFilterItem.TYPE_CUSTOM_SAME_MONTH -> {
                     val title = itemView.context?.getString(R.string.stc_custom_lbl).orEmpty()
                     setMode(CalendarPickerView.SelectionMode.RANGE)
                     setTitle(title)

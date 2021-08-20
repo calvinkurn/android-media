@@ -162,7 +162,7 @@ object StatisticPageHelper {
                 getDateFilterPerDay(context, Const.DAYS_365),
                 getDateFilterPerWeek(context, false, Const.DAYS_365),
                 getFilterPerMonth(context, true, Const.DAYS_365),
-                getDateFilterCustom(context, Const.DAYS_90),
+                getDateFilterCustom(context, Const.DAYS_90, DateFilterItem.TYPE_CUSTOM),
                 DateFilterItem.ApplyButton
             )
         }
@@ -206,7 +206,7 @@ object StatisticPageHelper {
                 getDateFilterPerDay(context, Const.DAYS_365),
                 getDateFilterPerWeek(context, false, Const.DAYS_365),
                 getFilterPerMonth(context, true, Const.DAYS_365),
-                getDateFilterCustom(context, Const.DAYS_31),
+                getDateFilterCustom(context, Const.DAYS_31, DateFilterItem.TYPE_CUSTOM_SAME_MONTH),
                 DateFilterItem.ApplyButton
             )
         }
@@ -329,7 +329,7 @@ object StatisticPageHelper {
         )
     }
 
-    private fun getDateFilterCustom(context: Context, minDaysCount: Int): DateFilterItem.Pick {
+    private fun getDateFilterCustom(context: Context, minDaysCount: Int, type: Int): DateFilterItem.Pick {
         val label = context.getString(R.string.stc_custom_lbl)
         val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
         val maxDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAY_1.toLong()))
@@ -337,7 +337,7 @@ object StatisticPageHelper {
             label,
             null,
             null,
-            type = DateFilterItem.TYPE_CUSTOM,
+            type = type,
             calendarPickerMinDate = minDate,
             calendarPickerMaxDate = maxDate
         )

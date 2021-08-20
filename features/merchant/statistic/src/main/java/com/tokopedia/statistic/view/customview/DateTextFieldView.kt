@@ -44,20 +44,19 @@ class DateTextFieldView(
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            tvStcDateText.setTextColor(
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+            )
         }
 
     var valueStr: String = ""
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvStcDateText.setTextColor(
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            )
         }
-
-    fun setText(value: String) {
-        tvStcDateText.text = value
-        tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-    }
 
     var labelGravity: Int = Gravity.START
         set(value) {

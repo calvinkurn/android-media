@@ -34,6 +34,7 @@ sealed class DateFilterItem(
         const val TYPE_BUTTON = 6
         const val TYPE_DIVIDER = 7
         const val TYPE_CUSTOM = 8
+        const val TYPE_CUSTOM_SAME_MONTH = 9
     }
 
     fun getHeaderSubTitle(context: Context): String {

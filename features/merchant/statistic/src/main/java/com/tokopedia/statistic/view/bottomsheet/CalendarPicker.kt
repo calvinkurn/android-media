@@ -172,11 +172,64 @@ class CalendarPicker : BottomSheetUnify() {
     }
 
     private fun selectDateRange(cpv: CalendarPickerView) {
-        if (filterItem?.type == DateFilterItem.TYPE_PER_WEEK) {
-            selectPerWeekDateRange(cpv)
-        } else if (filterItem?.type == DateFilterItem.TYPE_CUSTOM) {
-            selectCustomDateRange(cpv)
+        when (filterItem?.type) {
+            DateFilterItem.TYPE_PER_WEEK -> {
+                selectPerWeekDateRange(cpv)
+            }
+            DateFilterItem.TYPE_CUSTOM -> {
+                selectCustomDateRange(cpv)
+            }
+            DateFilterItem.TYPE_CUSTOM_SAME_MONTH -> {
+                selectCustomDateRangeSameMonth(cpv)
+            }
         }
+    }
+
+    private fun selectCustomDateRangeSameMonth(cpv: CalendarPickerView) {
+        if (cpv.selectedDates.isNotEmpty()) {
+            val selected: Date = cpv.selectedDates.first()
+            if (cpv.selectedDates.size == Const.DAY_1) {
+                updateMaxDate(cpv, selected)
+                selectDate(cpv, selected)
+
+                val isMaxDate = getMaxDateStatus(selected)
+                if (isMaxDate) {
+                    this.selectedDates = cpv.selectedDates
+                    dismiss()
+                }
+            } else {
+                this.selectedDates = cpv.selectedDates
+                dismiss()
+            }
+        }
+    }
+
+    private fun getMaxDateStatus(selected: Date): Boolean {
+        val maxMonth = Calendar.getInstance(Locale.getDefault())
+        maxMonth.time = selected
+        maxMonth.set(Calendar.DAY_OF_MONTH, maxMonth.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val isMaxMonth = selected == maxMonth.time
+
+        val maxDate: Date = if (maxMonth.time.time > maxDate.time) {
+            maxDate
+        } else {
+            maxMonth.time
+        }
+        val maxDateStr = DateTimeUtil.format(maxDate.time, Const.FORMAT_DD_MM_YYYY)
+        val selectedStr = DateTimeUtil.format(selected.time, Const.FORMAT_DD_MM_YYYY)
+        return isMaxMonth || maxDateStr == selectedStr
+    }
+
+    private fun updateMaxDate(cpv: CalendarPickerView, selected: Date) {
+        val cal = Calendar.getInstance(Locale.getDefault())
+        cal.time = selected
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val maxDate: Date = if (cal.time.time > maxDate.time) {
+            maxDate
+        } else {
+            cal.time
+        }
+        cpv.init(selected, maxDate, emptyList()).inMode(mode)
     }
 
     private fun selectCustomDateRange(cpv: CalendarPickerView) {
@@ -268,7 +321,7 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun showStartDate(date: Date) {
         val formattedDate = DateTimeUtil.format(date.time, Const.FORMAT_DD_MM_YYYY)
-        childView?.edtStcStartDate?.setText(formattedDate)
+        childView?.edtStcStartDate?.valueStr = formattedDate
     }
 
     private fun showEndDate(date: Date) {
