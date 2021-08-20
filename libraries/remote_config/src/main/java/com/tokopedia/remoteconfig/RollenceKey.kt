@@ -7,6 +7,10 @@ object RollenceKey {
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
 
+    const val AB_TEST_SHOP_REVIEW = "review_shop"
+    const val OLD_REVIEW_SHOP = "old_review_shop"
+    const val NEW_REVIEW_SHOP = "new_review_shop"
+
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
@@ -57,4 +61,11 @@ object RollenceKey {
     const val EXPERIMENT_NAME_REVIEW_PRODUCT_READING = "review_pdp"
     const val VARIANT_NEW_REVIEW_PRODUCT_READING = "new_review_pdp"
     const val VARIANT_OLD_REVIEW_PRODUCT_READING = "old_review_pdp"
+
+
+    //Recommendation page section
+    const val RECOM_PAGE_CPM_EXP = "ShopAdsIM2"
+    const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
+    const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
+    // end of Recommendation page section
 }

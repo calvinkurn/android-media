@@ -46,6 +46,17 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
     }
 
     @Test
+    fun should_hide_order_list_when_app_is_seller() {
+        // Given
+        startInboxActivity(true)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(NotificationOrderListViewHolder::class.java))
+        )
+    }
+
+    @Test
     fun should_show_cached_version_order_list_when_cache_data_is_exist() {
         // Given
         val delay = 10_000L
