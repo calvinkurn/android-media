@@ -134,11 +134,11 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
         val segments = uri.pathSegments
         val productId = segments.first()
-//        val newUri = if(goToNewReadProductReview()) {
-            val newUri =UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
-//        } else {
-//            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
-//        }
+        val newUri = if(goToNewReadProductReview()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+        } else {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
+        }
         return Uri.parse(newUri)
                 .buildUpon()
                 .build()
@@ -392,7 +392,7 @@ object DeeplinkMapperMerchant {
         }
     }
 
-    fun goToNewReadProductReview(): Boolean {
+    private fun goToNewReadProductReview(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
