@@ -25,8 +25,8 @@ class ChooseAddressRepository @Inject constructor(@ApplicationContext private va
 
     suspend fun setStateChosenAddress(status: Int?, addressId: Int?, receiverName: String?, addressName: String?, latitude: String?,
                                       longitude: String?, districtId: Int?, postalCode: String?, isTokonow: Boolean): SetStateChosenAddressQqlResponse {
-        var latitudeParam = if (latitude == "0.0") "" else latitude
-        var longitudeParam = if (longitude == "0.0") "" else longitude
+        val latitudeParam = if (latitude == "0.0") "" else latitude
+        val longitudeParam = if (longitude == "0.0") "" else longitude
         val param = mapOf("input" to mapOf(
                 "status" to status,
                 "addr_id" to addressId,
