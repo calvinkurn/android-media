@@ -328,7 +328,11 @@ object BitmapHelper {
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
     fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int, type: Int): Bitmap? {
-        var scaleValue = 1f
+        var scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
+            1.0f
+        } else {
+            2.0f
+        }
 
         var thresholdMaxWidth = if (type == Constant.TYPE_WATERMARK_TOPED) {
             1.0f
@@ -338,23 +342,11 @@ object BitmapHelper {
 
         val inWidth = this.width
         val inHeight = this.height
-        var newHeight = inHeight * scaleValue
+        val newHeight = inHeight * scaleValue
 
         val ratio = inHeight.toFloat() / inWidth
-//        if (mainBitmap.height <= mainBitmap.width) {
-//            newHeight = mainBitmap.height * scaleValue
-//        }
-//        else {
-//            newHeight = mainBitmap.width * scaleValue
-//        }
-
-//        while (newHeight / ratio > mainBitmap.width * thresholdMaxWidth) {
-//            scaleValue -= 0.01f
-//            newHeight = inHeight * scaleValue
-//        }
-//
         val newWidth = newHeight / ratio
-//
+
         val scaleWidth = newWidth / inWidth
         val scaleHeight = newHeight / inHeight
 

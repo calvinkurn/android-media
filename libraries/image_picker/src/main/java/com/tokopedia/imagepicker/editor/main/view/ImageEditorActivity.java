@@ -24,6 +24,8 @@ import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
@@ -34,8 +36,6 @@ import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.unifycomponents.TextFieldUnify;
-import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -45,7 +45,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -114,8 +113,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private ItemSelectionWidget watermarkItemSelection;
     private Typography titleWatermarkStyle;
-    private TextFieldUnify textFieldColor;
-    private UnifyButton btnColor;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -147,6 +144,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     //save state if watermark is rendered
     private boolean isSetWatermark = false;
+    private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -248,8 +246,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         watermarkItemSelection = findViewById(R.id.watermark_item_selection);
         titleWatermarkStyle = findViewById(R.id.txt_title_item);
-        textFieldColor = findViewById(R.id.et_color);
-        btnColor = findViewById(R.id.btn_color);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -259,14 +255,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutContrast = findViewById(R.id.layout_contrast);
         layoutWatermark = findViewById(R.id.layout_watermark);
         tvActionTitle = findViewById(R.id.tv_action_title);
-
-        btnColor.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                getCurrentFragment().setWatermark(textFieldColor.getTextFieldInput().getText().toString());
-            }
-        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -327,6 +315,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     isSetWatermark = false;
                     fragment.cancelWatermark();
+                    titleWatermarkStyle.setVisibility(View.GONE);
                     break;
                 case ACTION_BRIGHTNESS:
                     fragment.cancelBrightness();
@@ -361,28 +350,34 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_ROTATE:
                     if (fragment != null) {
                         fragment.rotateAndSaveImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_ROTATION);
                     }
                     break;
                 case ACTION_CROP:
                 case ACTION_CROP_ROTATE:
                     if (fragment != null) {
                         fragment.cropAndSaveImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_CROP);
                     }
                     break;
                 case ACTION_WATERMARK:
                     if (fragment != null) {
                         fragment.saveWatermarkImage();
+                        titleWatermarkStyle.setVisibility(View.GONE);
+                        trackClickSave(getLabelWatermark());
                         isSetWatermark = false;
                     }
                     break;
                 case ACTION_BRIGHTNESS:
                     if (fragment != null) {
                         fragment.saveBrightnessImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_BRIGHTNESS);
                     }
                     break;
                 case ACTION_CONTRAST:
                     if (fragment != null) {
                         fragment.saveContrastImage();
+                        trackClickSave(ImageEditorTrackingConstant.LABEL_CONTRAST);
                     }
                     break;
             }
@@ -551,12 +546,15 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     break;
                 case ACTION_WATERMARK:
                     if (fragment != null && !isSetWatermark) {
+                        hideAllControls();
+                        setLastStateWatermarkImage();
                         isSetWatermark = true;
-                        fragment.setWatermark("#FFFFFFF");
+                        if (watermarkItemSelection.hasData()) {
+                            setWatermarkDataFromAdapter();
+                        } else {
+                            fragment.setWatermark();
+                        }
                     }
-
-                    hideAllControls();
-                    setLastStateWatermarkImage();
                     layoutWatermark.setVisibility(View.VISIBLE);
 
                     tvActionTitle.setText(getString(R.string.watermark));
@@ -748,9 +746,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         Constant.TYPE_WATERMARK_TOPED
                 ), (bitmap, type) -> {
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
+                    watermarkType = type;
                 }
         );
-        titleWatermarkStyle.setText(getString(R.string.editor_watermark_item));
+        titleWatermarkStyle.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -834,6 +833,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public void onThumbnailItemClicked(String imagePath, int position) {
         if (viewPager.getCurrentItem() != position) {
             viewPager.setCurrentItem(position);
+            watermarkItemSelection.clearData();
         }
     }
 
@@ -1169,5 +1169,31 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             ImagePickerGlobalSettings.onImageEditorContinue.invoke();
         }
     }
+
+    private void trackClickSave(String label) {
+        ImageEditorTracking.onSaveEditImage(label, userSession.getUserId());
+    }
+
+    private String getLabelWatermark() {
+        String label = "";
+        switch (watermarkType) {
+            case Constant.TYPE_WATERMARK_TOPED:
+                return ImageEditorTrackingConstant.LABEL_WATERMARK_DESIGN_ONE;
+            case Constant.TYPE_WATERMARK_CENTER_TOPED:
+                return ImageEditorTrackingConstant.LABEL_WATERMARK_DESGIN_TWO;
+            default:
+                break;
+        }
+        return label;
+    }
+
+    private void setWatermarkDataFromAdapter() {
+        Bitmap[] bitmapWatermark = new Bitmap[watermarkItemSelection.getData().size()];
+        for (int i = 0; i < watermarkItemSelection.getData().size(); i++) {
+            bitmapWatermark[i] = watermarkItemSelection.getData().get(i).getPlaceholderBitmap();
+        }
+        getCurrentFragment().onSuccessGetWatermarkImage(bitmapWatermark);
+    }
+
 
 }

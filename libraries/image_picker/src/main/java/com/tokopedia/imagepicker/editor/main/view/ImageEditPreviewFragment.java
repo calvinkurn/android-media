@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
@@ -266,7 +268,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         lastStateImage = gestureCropImageView.getViewBitmap();
     }
 
-    public void setWatermark(String color) {
+    public void setWatermark() {
         cancelWatermark();
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
@@ -275,22 +277,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
                 userSession.getShopName() :
                 userSession.getName();
 
-        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap, color);
+        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }
-
-
-
-//    public void setWatermark() {
-//        cancelWatermark();
-//
-//        Bitmap bitmap = gestureCropImageView.getViewBitmap();
-//
-//        String userInfo = userSession.hasShop() ?
-//                userSession.getShopName() :
-//                userSession.getName();
-//
-//        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
-//    }
 
     public int getImageIndex() {
         return imageIndex;

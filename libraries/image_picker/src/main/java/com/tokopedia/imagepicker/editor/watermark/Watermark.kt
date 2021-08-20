@@ -33,7 +33,6 @@ data class Watermark(
     var isCombine: Boolean,
     var onlyWatermark: Boolean,
     var type: Int,
-    var color: String? = null
 ) {
 
     init {
@@ -234,25 +233,11 @@ data class Watermark(
                     textLength = textLength,
                     this.type
                 )
-        try {
-            if (!color.isNullOrEmpty()) {
-                scaledWatermarkBitmap = scaledWatermarkBitmap!!.changeColor(Color.parseColor(color!!))
-            }
 
-            else {
-                if (!backgroundImg!!.isDark()) {
-                    scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                        .changeColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G400))
-                }
-            }
-        } catch (e: Exception) {
-            println("cek error $e")
+        if (!backgroundImg!!.isDark()) {
+            scaledWatermarkBitmap = scaledWatermarkBitmap!!
+                .changeColor(MethodChecker.getColor(context, R.color.Green_G500))
         }
-
-//        if (!backgroundImg!!.isDark()) {
-//            scaledWatermarkBitmap = scaledWatermarkBitmap!!
-//                .changeColor(MethodChecker.getColor(context, R.color.Green_G400))
-//        }
 
         // merge the main bitmap with scaled watermark bitmap
         outputImage = mapWatermarkType(this.type)

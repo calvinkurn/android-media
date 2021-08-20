@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.data.ItemSelection
+import com.tokopedia.imagepicker.videorecorder.utils.clear
 import com.tokopedia.imagepicker.videorecorder.utils.hide
 import com.tokopedia.imagepicker.videorecorder.utils.show
 import com.tokopedia.imagepicker.videorecorder.utils.visible
@@ -17,8 +18,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 
 class EditorItemSelectionAdapter constructor(
-    private val items: List<ItemSelection> = mutableListOf(),
-    private val listener: EditorItemSelectionListener? = null
+    val items: MutableList<ItemSelection> = mutableListOf(),
+    private var listener: EditorItemSelectionListener? = null
 ) : RecyclerView.Adapter<EditorItemSelectionAdapter.EditorItemSelectionViewHolder>() {
 
     private var selectedPosition = 0
@@ -38,6 +39,22 @@ class EditorItemSelectionAdapter constructor(
             onItemSelected(item, position)
         }
     }
+
+    fun setListener(listenerItem: EditorItemSelectionListener?) {
+        listener =  listenerItem
+    }
+
+    fun clear() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
+    fun updateAll(list: List<ItemSelection>) {
+        items.clear()
+        items.addAll(list)
+        notifyDataSetChanged()
+    }
+
 
     private fun onItemSelected(item: ItemSelection, position: Int) {
         if (position < 0) return
