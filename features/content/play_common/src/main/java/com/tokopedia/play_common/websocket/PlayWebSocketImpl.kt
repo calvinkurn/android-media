@@ -89,8 +89,4 @@ class PlayWebSocketImpl(
                 .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
     }
-
-    companion object {
-        private const val DEFAULT_PING = 10000L
-    }
 }

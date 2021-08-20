@@ -31,7 +31,5 @@ class PlayChannelWebSocket @Inject constructor(
         private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
-
-        const val KEY_GROUPCHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
     }
 }

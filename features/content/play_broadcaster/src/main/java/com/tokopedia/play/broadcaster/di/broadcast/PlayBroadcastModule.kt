@@ -9,13 +9,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.user.session.UserSession

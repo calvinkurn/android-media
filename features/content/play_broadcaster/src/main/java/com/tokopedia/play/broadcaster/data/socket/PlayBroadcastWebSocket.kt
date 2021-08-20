@@ -16,11 +16,11 @@ class PlayBroadcastWebSocket @Inject constructor(
 
     fun connectSocket(channelId: String, gcToken: String) {
         val wsBaseUrl = cacheHandler.getString(
-            KEY_GROUP_CHAT_PREFERENCES,
+            KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
             TokopediaUrl.getInstance().WS_PLAY
         )
         val wsFullUrl = buildString {
-            append("$wsBaseUrl$KEY_GROUP_CHAT_PATH$channelId")
+            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId")
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
 
@@ -28,7 +28,8 @@ class PlayBroadcastWebSocket @Inject constructor(
     }
 
     companion object {
-        const val KEY_GROUP_CHAT_PREFERENCES = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter"
-        private const val KEY_GROUP_CHAT_PATH = "/ws/groupchat?channel_id="
+        private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
+
+        private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
     }
 }
