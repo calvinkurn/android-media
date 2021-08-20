@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -6,19 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.ProductCardListView
-import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 
-class HomeProductCardViewHolder(
+class TokoNowProductCardViewHolder(
     itemView: View,
-    private val tokoNowView: TokoNowView?,
-    private val listener: HomeProductCardListener?
-): AbstractViewHolder<HomeProductCardUiModel>(itemView) {
+    private val listener: TokoNowProductCardListener?
+): AbstractViewHolder<TokoNowProductCardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,7 +23,7 @@ class HomeProductCardViewHolder(
 
     private val productCard = itemView.findViewById<ProductCardListView?>(R.id.productCardView)
 
-    override fun bind(data: HomeProductCardUiModel) {
+    override fun bind(data: TokoNowProductCardUiModel) {
         productCard?.apply {
             setProductModel(data.product)
             setOnClickListener {
@@ -35,7 +31,7 @@ class HomeProductCardViewHolder(
                 listener?.onProductCardClicked(adapterPosition, data)
             }
             setAddVariantClickListener {
-                goToAtcVariant(data)
+                listener?.onAddVariantClicked(data)
             }
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
@@ -50,7 +46,7 @@ class HomeProductCardViewHolder(
         }
     }
 
-    private fun goToProductDetail(data: HomeProductCardUiModel) {
+    private fun goToProductDetail(data: TokoNowProductCardUiModel) {
         RouteManager.route(
             itemView.context,
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -58,22 +54,10 @@ class HomeProductCardViewHolder(
         )
     }
 
-    private fun goToAtcVariant(data: HomeProductCardUiModel) {
-        (tokoNowView?.getFragmentPage() as? TokoNowHomeFragment)?.let { view ->
-            AtcVariantHelper.goToAtcVariant(
-                context = itemView.context,
-                productId = data.productId,
-                pageSource = TokoNowHomeFragment.SOURCE,
-                isTokoNow = true,
-                shopId = data.shopId,
-                startActivitResult = view::startActivityForResult
-            )
-        }
-    }
-
-    interface HomeProductCardListener {
-        fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int)
-        fun onProductCardImpressed(data: HomeProductCardUiModel)
-        fun onProductCardClicked(position: Int, data: HomeProductCardUiModel)
+    interface TokoNowProductCardListener {
+        fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int)
+        fun onProductCardImpressed(data: TokoNowProductCardUiModel)
+        fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel)
+        fun onAddVariantClicked(data: TokoNowProductCardUiModel)
     }
 }

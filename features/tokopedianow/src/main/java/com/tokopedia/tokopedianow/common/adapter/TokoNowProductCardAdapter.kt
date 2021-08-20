@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.adapter
+package com.tokopedia.tokopedianow.common.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -6,34 +6,36 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
-import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeProductCardAdapter.*
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder.*
+import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
 
-class HomeProductCardAdapter(
-    typeFactory: HomeProductCardAdapterTypeFactory,
-) : BaseTokopediaNowListAdapter<HomeProductCardUiModel, HomeProductCardAdapterTypeFactory>(typeFactory, HomeProductCardDiffer()) {
+class TokoNowProductCardAdapter(
+    typeFactory: TokoNowProductCardAdapterTypeFactory,
+) : BaseTokopediaNowListAdapter<TokoNowProductCardUiModel, TokoNowProductCardAdapterTypeFactory>(typeFactory, TokoNowProductCardDiffer()) {
 
-    class HomeProductCardAdapterTypeFactory(
-        private val tokoNowView: TokoNowView?,
-        private val listener: HomeProductCardListener?
-        ) : BaseAdapterTypeFactory(), HomeProductCardTypeFactory {
-        override fun type(dataModel: HomeProductCardUiModel) = HomeProductCardViewHolder.LAYOUT
+    class TokoNowProductCardAdapterTypeFactory(
+        private val listener: TokoNowProductCardListener?
+    ) : BaseAdapterTypeFactory(), TokoNowProductCardTypeFactory {
+
+        override fun type(dataModel: TokoNowProductCardUiModel) = TokoNowProductCardViewHolder.LAYOUT
 
         override fun createViewHolder(
             parent: View,
             type: Int
         ): AbstractViewHolder<out Visitable<*>> {
             return when (type) {
-                HomeProductCardViewHolder.LAYOUT -> HomeProductCardViewHolder(parent, tokoNowView, listener)
+                TokoNowProductCardViewHolder.LAYOUT -> TokoNowProductCardViewHolder(
+                    parent,
+                    listener
+                )
                 else -> super.createViewHolder(parent, type)
             }
         }
     }
 
-    class HomeProductCardDiffer : BaseTokopediaNowDiffer() {
+    class TokoNowProductCardDiffer : BaseTokopediaNowDiffer() {
         private var oldList: List<Visitable<*>> = emptyList()
         private var newList: List<Visitable<*>> = emptyList()
 
@@ -41,7 +43,7 @@ class HomeProductCardAdapter(
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
 
-            return if (oldItem is HomeProductCardUiModel && newItem is HomeProductCardUiModel) {
+            return if (oldItem is TokoNowProductCardUiModel && newItem is TokoNowProductCardUiModel) {
                 oldItem.productId == newItem.productId
             } else {
                 oldItem == newItem
@@ -66,7 +68,7 @@ class HomeProductCardAdapter(
         }
     }
 
-    interface HomeProductCardTypeFactory {
-        fun type(dataModel: HomeProductCardUiModel): Int
+    interface TokoNowProductCardTypeFactory {
+        fun type(dataModel: TokoNowProductCardUiModel): Int
     }
 }

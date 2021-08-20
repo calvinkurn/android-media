@@ -18,9 +18,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -291,7 +292,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @HomeLayoutType type: String = HomeLayoutType.RECENT_PURCHASE
-): HomeProductCardUiModel {
-    return HomeProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+): TokoNowProductCardUiModel {
+    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

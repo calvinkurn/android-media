@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.graphics.Rect
 import android.view.View
@@ -13,18 +13,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeProductCardAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeProductCardAdapter.*
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRecentPurchaseUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder.*
+import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter
+import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
 import com.tokopedia.unifyprinciples.Typography
 
-class HomeRecentPurchaseViewHolder(
+class TokoNowRecentPurchaseViewHolder(
     itemView: View,
-    private val tokoNowView: TokoNowView?,
-    private val listener: HomeProductCardListener?
-) : AbstractViewHolder<HomeRecentPurchaseUiModel>(itemView) {
+    private val listener: TokoNowProductCardListener?
+) : AbstractViewHolder<TokoNowRecentPurchaseUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -37,7 +35,7 @@ class HomeRecentPurchaseViewHolder(
     private var rvProduct: RecyclerView? = null
 
     private val adapter by lazy {
-        HomeProductCardAdapter(HomeProductCardAdapterTypeFactory(tokoNowView, listener))
+        TokoNowProductCardAdapter(TokoNowProductCardAdapterTypeFactory(listener))
     }
 
     init {
@@ -47,7 +45,7 @@ class HomeRecentPurchaseViewHolder(
         rvProduct = itemView.findViewById(R.id.rvProduct)
     }
 
-    override fun bind(data: HomeRecentPurchaseUiModel) {
+    override fun bind(data: TokoNowRecentPurchaseUiModel) {
         when(data.state) {
             TokoNowLayoutState.LOADING -> {
                 hideAllView()
@@ -61,11 +59,11 @@ class HomeRecentPurchaseViewHolder(
         }
     }
 
-    private fun initView(data: HomeRecentPurchaseUiModel) {
+    private fun initView(data: TokoNowRecentPurchaseUiModel) {
         tvTitle?.text = data.title
         tvTitle?.setType(Typography.HEADING_4)
         rvProduct?.apply {
-            adapter = this@HomeRecentPurchaseViewHolder.adapter
+            adapter = this@TokoNowRecentPurchaseViewHolder.adapter
             layoutManager = createLinearLayoutManager()
         }
         adapter.submitList(data.productList)
@@ -111,7 +109,7 @@ class HomeRecentPurchaseViewHolder(
         }
     }
 
-    fun submitList(data: HomeRecentPurchaseUiModel?) {
+    fun submitList(data: TokoNowRecentPurchaseUiModel?) {
         data?.productList?.let {
             adapter.submitList(it)
         }
