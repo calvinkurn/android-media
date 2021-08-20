@@ -2,6 +2,7 @@ package com.tokopedia.review.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,7 +23,7 @@ class ReviewModule {
 
     @ReviewScope
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @ReviewScope
     @Provides
