@@ -3776,9 +3776,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             bundleId, bundleType, productInfoP1, componentTrackDataModel
         )
         val productId = productInfoP1?.basic?.productID
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE)
-        intent.putExtra("", productId)
-        startActivity(intent)
+        RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
     }
 
     override fun onClickProductInBundling(
