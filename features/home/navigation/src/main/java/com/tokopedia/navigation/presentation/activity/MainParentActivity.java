@@ -230,8 +230,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private boolean isNewNavigation;
 
-    private int tempTargetPosition = HOME_MENU;
-
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -662,7 +660,7 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            int position = tempTargetPosition;
+            int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
                 for (int i = 0; i < fragmentList.size(); i++) {
                     Fragment frag = fragmentList.get(i);
@@ -1269,7 +1267,6 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         if ((position == CART_MENU || position == UOH_MENU || position == WISHLIST_MENU) && !presenter.get().isUserLogin()) {
-            this.tempTargetPosition = position;
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
