@@ -328,7 +328,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
-        if (layoutId.isEmpty()) {
+        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
             requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
         }
 
