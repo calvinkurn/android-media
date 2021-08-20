@@ -569,6 +569,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun clearData() {
         userSession.logoutSession()
+        clearBeautyFest()
     }
 
     private fun onLoginEmailClick() {
@@ -1988,6 +1989,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun colorTickerWarning(): String {
         return getString(R.string.color_ticker_warning)
+    }
+
+    private fun clearBeautyFest() {
+        val beautyPref = requireContext().getSharedPreferences("KEY_BEAUTY_FEST", Context.MODE_PRIVATE)
+        beautyPref.edit().clear().apply()
     }
 
     companion object {
