@@ -16,7 +16,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
@@ -117,9 +116,8 @@ class FlightHomepageActivityTest {
             onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
             Thread.sleep(1000)
             if (getBannerItemCount() > 1)
-                onView(withId(R.id.banner_recyclerview))
-                        .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(
-                                getBannerItemCount() - 1))
+                onView(withId(R.id.banner_recyclerview)).perform(swipeLeft())
+                onView(withId(R.id.banner_recyclerview)).perform(click())
         } else {
             Thread.sleep(1000)
             onView(withId(R.id.banner_recyclerview)).check(matches(Matchers.not(isDisplayed())))
@@ -130,8 +128,8 @@ class FlightHomepageActivityTest {
         Thread.sleep(2000)
 
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+            onView(withId(R.id.banner_recyclerview)).perform(swipeRight())
+            onView(withId(R.id.banner_recyclerview)).perform(click())
         }
     }
 
