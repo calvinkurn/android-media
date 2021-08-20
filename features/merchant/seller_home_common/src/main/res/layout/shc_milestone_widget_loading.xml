@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerShcMilestoneError"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tvShcMilestoneLoadingStateTitle"
+        android:layout_width="@dimen/shc_dimen_164dp"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tvShcMilestoneLoadingItem1"
+        android:layout_width="@dimen/shc_dimen_260dp"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:corners="5"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingStateTitle"
+        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingStateTitle" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tvShcMilestoneLoadingItem2"
+        android:layout_width="@dimen/shc_dimen_125dp"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:corners="5"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem1"
+        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tvShcMilestoneLoadingItem3"
+        android:layout_width="@dimen/shc_dimen_312dp"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:corners="5"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem2"
+        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMilestoneItemWidget"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/shc_milestone_widget_loading_item"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

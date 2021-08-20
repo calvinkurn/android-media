@@ -6,15 +6,21 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.utils.SellerHomeCommonPreferenceManager
 import javax.inject.Inject
 
-class MilestoneMapper @Inject constructor() {
+class MilestoneMapper @Inject constructor(private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager) {
 
     fun mapMilestoneResponseToUiModel(
         data: List<MilestoneData>,
         isFromCache: Boolean
     ): List<MilestoneDataUiModel> {
         return data.map {
+            val missionMilestone = mapGetMilestoneMission(it.mission)
+                    .zip(listOf(mapGetMilestoneFinish(it.finishMission)))
+                    .flatMap { item ->
+                        listOf(item.first, item.second)
+                    }
             MilestoneDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 error = it.errorMsg.orEmpty(),
@@ -25,10 +31,10 @@ class MilestoneMapper @Inject constructor() {
                 backgroundColor = it.backgroundColor.orEmpty(),
                 backgroundImageUrl = it.backgroundImageUrl.orEmpty(),
                 showNumber = it.showNumber.orFalse(),
+                isShowMission = sellerHomeCommonPreferenceManager.getIsShowMilestoneWidget(),
                 isError = it.error.orFalse(),
                 milestoneProgressbar = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissionUiModel = mapGetMilestoneMission(it.mission),
-                milestoneFinishMissionUiModel = mapGetMilestoneFinish(it.finishMission),
+                milestoneMissionUiModel = missionMilestone,
                 milestoneCtaUiModel = mapGetMilestoneCta(it.cta)
             )
         }
@@ -38,6 +44,7 @@ class MilestoneMapper @Inject constructor() {
         return missionData.map {
             val buttonMissionData = it.button
             MilestoneMissionUiModel(
+                itemMissionKey = BaseMilestoneMissionUiModel.MISSION_KEY,
                 imageUrl = it.imageUrl,
                 title = it.title,
                 subTitle = it.subtitle,
@@ -56,10 +63,11 @@ class MilestoneMapper @Inject constructor() {
     private fun mapGetMilestoneFinish(finishData: MilestoneData.FinishMission): MilestoneFinishMissionUiModel {
         val buttonFinishData = finishData.button
         return MilestoneFinishMissionUiModel(
+            itemMissionKey = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
             imageUrl = finishData.imageUrl,
             title = finishData.title,
             subTitle = finishData.subtitle,
-            buttonFinishMission = MilestoneFinishMissionUiModel.ButtonFinishMission(
+            buttonMission = MilestoneFinishMissionUiModel.ButtonFinishMission(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,
                 urlType = buttonFinishData.urlType,
