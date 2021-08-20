@@ -5,16 +5,21 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.util.animation.DefaultAnimatorListener
 import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
+import com.tokopedia.play_common.util.extension.awaitLayout
+import com.tokopedia.play_common.util.extension.awaitMeasured
+import com.tokopedia.play_common.util.extension.awaitNextGlobalLayout
 import com.tokopedia.play_common.util.extension.awaitPreDraw
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
@@ -47,16 +52,26 @@ class RealTimeNotificationViewComponent(
 
     private val showListener = object : DefaultAnimatorListener() {
         override fun onAnimationStart(animation: Animator) {
-            listener.onShowNotification(
-                    this@RealTimeNotificationViewComponent,
-                    rtnBubbleView.measuredHeight.toFloat()
-            )
+            if (isShown()) {
+                listener.onShowNotification(
+                        this@RealTimeNotificationViewComponent,
+                        rtnBubbleView.measuredHeight.toFloat()
+                )
+            }
+        }
+
+        override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+            animation.removeListener(this)
         }
     }
 
     private val hideListener = object : DefaultAnimatorListener() {
         override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
             listener.onHideNotification(this@RealTimeNotificationViewComponent)
+        }
+
+        override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+            animation.removeListener(this)
         }
     }
 
@@ -81,13 +96,6 @@ class RealTimeNotificationViewComponent(
     private suspend fun setRealTimeNotification(rtn: RealTimeNotificationUiModel) {
         setNotification(rtn)
         rtnBubbleView.awaitPreDraw()
-        val height = rtnBubbleView.measuredHeight
-        if (isShown()) {
-            listener.onShowNotification(
-                    this@RealTimeNotificationViewComponent,
-                    height.toFloat()
-            )
-        }
     }
 
     private fun setNotification(notification: RealTimeNotificationUiModel) {
@@ -108,12 +116,11 @@ class RealTimeNotificationViewComponent(
     private suspend fun runAnimation() = suspendCancellableCoroutine<Unit> { cont ->
         val animatorListener = object : DefaultAnimatorListener() {
             override fun onAnimationCancel(animation: Animator) {
-                rtnBubbleView.hide()
                 listener.onHideNotification(this@RealTimeNotificationViewComponent)
             }
 
             override fun onAnimationEnd(animation: Animator) {
-                rtnBubbleView.hide()
+                rtnBubbleView.invisible()
                 if (cont.isActive) cont.resume(Unit)
             }
 
@@ -122,7 +129,7 @@ class RealTimeNotificationViewComponent(
             }
         }
 
-        val showAnimation = ObjectAnimator.ofFloat(rtnBubbleView, "translationX", -1f * rtnBubbleView.measuredWidth, 0f).apply {
+        val showAnimation = ObjectAnimator.ofFloat(rtnBubbleView, View.TRANSLATION_X, -1f * rtnBubbleView.measuredWidth, 0f).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(showListener)
         }
@@ -131,11 +138,12 @@ class RealTimeNotificationViewComponent(
             duration = lifespanInMs
         }
 
-        val hideAnimation = ObjectAnimator.ofFloat(rtnBubbleView, "translationX", 0f, -1f * rtnBubbleView.measuredWidth).apply {
+        val hideAnimation = ObjectAnimator.ofFloat(rtnBubbleView, View.TRANSLATION_X, 0f, -1f * rtnBubbleView.measuredWidth).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(hideListener)
         }
 
+        animatorSet.cancel()
         animatorSet.playSequentially(showAnimation, delayAnimation, hideAnimation)
         animatorSet.removeAllListeners()
         animatorSet.addListener(animatorListener)
