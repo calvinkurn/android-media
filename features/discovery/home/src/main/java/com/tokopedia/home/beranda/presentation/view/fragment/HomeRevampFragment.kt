@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -98,6 +99,8 @@ import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.constant.ConstantKey.BeautyFest.KEY_BEAUTY_FEST
+import com.tokopedia.home.constant.ConstantKey.BeautyFest.KEY_IS_BEAUTY_FEST
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.widget.FloatingTextButton
@@ -280,6 +283,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
+        private const val BEAUTY_FEST_TRUE = 0
+        private const val BEAUTY_FEST_FALSE = 1
+        private const val BEAUTY_FEST_NOT_QUALIFY = 2
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1506,8 +1512,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderTopBackground(isLoading = true, isBeautyFest = false)
+        initialLoadHeader()
         observeSearchHint()
+    }
+
+    private fun initialLoadHeader() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
+            when (sharedPrefs.getInt(KEY_IS_BEAUTY_FEST, BEAUTY_FEST_NOT_QUALIFY)) {
+                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                else -> renderTopBackground(isLoading = true, isBeautyFest = false)
+            }
+        }
     }
 
     private fun renderTopBackground(isLoading: Boolean, isBeautyFest: Boolean) {
@@ -1538,7 +1555,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
-                                R.color.cantik_fest_dark
+                                R.color.beauty_fest_dark
                             )
                         )
                     }
@@ -1546,7 +1563,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
-                                R.color.cantik_fest_light
+                                R.color.beauty_fest_light
                             )
                         )
                     }
@@ -1574,9 +1591,46 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (needToPerformanceMonitoring(isProcessingAtf) && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache)
             }
-            renderTopBackground(isLoading = false, isBeautyFest = false)
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
+            val beautyFest = getBeautyFest(data)
+            saveBeautyFest(beautyFest)
+            when (beautyFest) {
+                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                else -> {
+                    context?.let {
+                        sharedPrefs = it.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
+                        when (sharedPrefs.getInt(KEY_IS_BEAUTY_FEST, BEAUTY_FEST_NOT_QUALIFY)) {
+                            BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                            BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                            else -> renderTopBackground(isLoading = true, isBeautyFest = false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getBeautyFest(data: List<Visitable<*>>) : Int {
+        return if(!Gson().toJson(data).toString().contains("channelModel"))
+            BEAUTY_FEST_NOT_QUALIFY
+        else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+            BEAUTY_FEST_TRUE
+        else
+            BEAUTY_FEST_FALSE
+    }
+
+    private fun saveBeautyFest(beautyFest: Int) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                KEY_BEAUTY_FEST, Context.MODE_PRIVATE
+            )
+            sharedPrefs.run {
+                edit()
+                    .putInt(KEY_IS_BEAUTY_FEST, beautyFest)
+                    .apply()
+            }
         }
     }
 

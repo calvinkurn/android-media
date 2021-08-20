@@ -33,6 +33,7 @@ import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
@@ -176,6 +177,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
+        clearBeautyFest()
         logoutFacebook()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
@@ -211,6 +213,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             setResult(Activity.RESULT_OK)
             finish()
         }
+    }
+
+    private fun clearBeautyFest() {
+        val beautyPref =  applicationContext.getSharedPreferences(ConstantKey.BeautyFest.KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
+        beautyPref.edit().clear().apply()
     }
 
     private fun logoutGoogleAccountIfExist() {

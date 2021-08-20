@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
         android:src="@drawable/bg_header_home"
+        android:visibility="visible"
         android:scaleType="fitXY"/>
 
     <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -100,14 +101,14 @@
         android:background="@color/Unify_G500"
         android:visibility="invisible" />
 
-    <fragment
-        android:id="@+id/floating_egg_fragment"
-        android:name="com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="floating_egg"
-        app:draggable="true"
-        app:margin_bottom="@dimen/new_margin_sm" />
+<!--    <fragment-->
+<!--        android:id="@+id/floating_egg_fragment"-->
+<!--        android:name="com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:tag="floating_egg"-->
+<!--        app:draggable="true"-->
+<!--        app:margin_bottom="@dimen/new_margin_sm" />-->
 
   </FrameLayout>
 

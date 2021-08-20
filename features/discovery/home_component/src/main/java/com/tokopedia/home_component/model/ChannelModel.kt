@@ -23,8 +23,7 @@ data class ChannelModel(
         const val CHANNEL_HOME = "home"
         const val CHANNEL_OS = "os"
     }
-    fun isChannelBeautyFest() : Boolean {
-        return when(id) {
+    val isChannelBeautyFest : Boolean = when(id) {
             "129362",
             "129363",
             "129364",
@@ -37,5 +36,4 @@ data class ChannelModel(
             "129371" -> true
             else -> false
         }
-    }
 }
