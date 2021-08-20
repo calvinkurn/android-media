@@ -1,0 +1,24 @@
+{
+  "readme": "Smart bills management Add Telco Pre",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click x detail tagihan",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click tambah tagihan ini",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}
