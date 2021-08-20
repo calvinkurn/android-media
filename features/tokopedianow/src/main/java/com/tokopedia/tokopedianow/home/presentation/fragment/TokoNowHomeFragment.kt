@@ -656,7 +656,6 @@ class TokoNowHomeFragment: Fragment(),
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
-                viewModelTokoNow.setProductAddToCartQuantity(it.data)
             }
         }
 
