@@ -2,6 +2,7 @@ package com.tokopedia.product_bundle.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResp
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.common.util.InventoryError
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,12 +41,15 @@ class ProductBundleViewModel @Inject constructor(
         private const val PREORDER_TYPE_MONTH: Int = 2
     }
 
-    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
-
     var parentProductID: Long = 0L
+
+    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
+    val inventoryError = Transformations.map(getBundleInfoResultLiveData) { result ->
+        InventoryError() // TODO('implement error mapper')
+    }
 
     private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
     val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData

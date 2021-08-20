@@ -6,11 +6,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
+import com.tokopedia.product_bundle.common.util.InventoryErrorType
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -39,6 +44,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         }
 
         observeGetBundleInfoResult()
+        observeInventoryError()
     }
 
     override fun getNewFragment(): Fragment {
@@ -79,6 +85,26 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 }
             }
         })
+    }
+
+    private fun observeInventoryError() {
+        viewModel.inventoryError.observe(this, { errorResult ->
+            if (errorResult.type != InventoryErrorType.NO_ERROR) {
+                showDialog(errorResult.type.toString())
+            }
+        })
+    }
+
+    private fun showDialog(message: String) {
+        DialogUnify(this, HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.dialog_error_title_empty))
+            setDescription(message)
+            setPrimaryCTAText(getString(R.string.dialog_error_action_empty_variant))
+            setSecondaryCTAText(getString(R.string.action_back))
+            dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            setSecondaryCTAClickListener { finish() }
+            setPrimaryCTAClickListener { dismiss() }
+        }.show()
     }
 
     fun refreshPage() {
