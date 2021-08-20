@@ -1228,6 +1228,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean menuClicked(int index, int id) {
         int position = getPositionFragmentByMenu(index);
+        if (index != currentSelectedFragmentPosition) {
+            currentFragment.setUserVisibleHint(false);
+        }
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             if (isNewNavigation) {

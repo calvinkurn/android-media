@@ -30,8 +30,9 @@ class UohListActivity: BaseSimpleActivity() {
         return UohListFragment.newInstance(bundle)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
+    override fun onNewIntent(newIntent: Intent?) {
+        super.onNewIntent(newIntent)
+        this.intent = newIntent
         inflateFragment()
     }
 
