@@ -1655,10 +1655,10 @@ class AddEditProductPreviewFragment :
             )
         )
 
-        val adapter = TickerPagerAdapter(context,tickers)
+        val adapter = TickerPagerAdapter(context, tickers)
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                if (linkUrl.startsWith(KEY_OPEN_BOTTOMSHEET)) {
+                if (linkUrl == KEY_OPEN_BOTTOMSHEET) {
                     productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
                     productLimitationBottomSheet?.setIsSavingToDraft(false)
                     productLimitationBottomSheet?.show(childFragmentManager)
