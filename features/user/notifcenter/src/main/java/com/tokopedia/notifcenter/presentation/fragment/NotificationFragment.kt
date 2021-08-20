@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -122,7 +123,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun loadData(page: Int) {
         if (page == 1) {
-            if (!hasFilter()) {
+            if (!hasFilter() && !GlobalConfig.isSellerApp()) {
                 viewModel.loadNotifOrderList(containerListener?.role)
             }
             viewModel.loadFirstPageNotification(
