@@ -105,12 +105,14 @@ class InstallmentDetailBottomSheet {
 
             if (installmentAfpb.disable) {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = installmentAfpb.desc
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
+                println("++ selectedTerm.isSelected = "+creditCard.selectedTerm?.isSelected)
+                // viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.root.alpha = 0.5f
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.fee.toDouble(), false).removeDecimalSuffix())
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
+                println("++ selectedTerm.isSelected = "+creditCard.selectedTerm?.isSelected)
+                // viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
                     listener.onSelectInstallment(mapAfpbToInstallmentTerm(installmentAfpb))
                     dismiss()
