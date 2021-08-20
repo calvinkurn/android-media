@@ -35,27 +35,23 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if (uri != null && uri.lastPathSegment!= null) {
-            propertyId = uri.lastPathSegment.toLongOrZero()
-            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
-            if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
-            if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0
-            if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toInt() ?: 0
+        try{
+            if (uri != null && uri.lastPathSegment!= null) {
+                propertyId = uri.lastPathSegment.toLongOrZero()
+                if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
+                if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
+                if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0
+                if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toInt() ?: 0
 
-            showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
+                showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
 
-        } else {
-            with(intent) {
-                checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
-                checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
-                propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
-                roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
-                adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
-                destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
-                destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
-                isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+            } else {
+                getDefaultData()
             }
+        }catch (exception: Exception){
+            getDefaultData()
         }
+
         checkParameter()
 
         super.onCreate(savedInstanceState)
@@ -66,6 +62,19 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkInDate, checkOutDate)
         checkInDate = updatedCheckInCheckOutDate.first
         checkOutDate = updatedCheckInCheckOutDate.second
+    }
+
+    private fun getDefaultData(){
+        with(intent) {
+            checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
+            checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
+            propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
+            roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
+            adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
+            destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
+            destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
+            isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+        }
     }
 
     override fun shouldShowOptionMenu(): Boolean = true
