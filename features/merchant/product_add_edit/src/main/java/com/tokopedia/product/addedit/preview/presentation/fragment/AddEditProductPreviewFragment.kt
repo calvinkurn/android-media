@@ -1641,6 +1641,8 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupProductLimitationViews() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
+
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
         val tickers = listOf(
             TickerData(
@@ -1674,8 +1676,6 @@ class AddEditProductPreviewFragment :
             productLimitationTicker?.gone()
             return
         }
-
-        if (!RollenceUtil.getProductLimitationRollence()) return
 
         productLimitationModel.apply {
             productLimitationBottomSheet = ProductLimitationBottomSheet(actionItems, isEligible, limitAmount)
