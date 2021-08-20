@@ -287,6 +287,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
         private const val MILLIS_IN_SECOND = 1000L
         private const val DELAY_HEADER_TIMER  = 3000L
+        private var isFromLogin = false
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1330,7 +1331,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
-                        if(!data.isCache) {
+                        if(!data.isCache && !isFromLogin) {
                             val beautyFest = getBeautyFest(data.list)
                             //save beauty fest in shared preferences
                             saveBeautyFest(beautyFest)
@@ -1341,6 +1342,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 else -> initialLoadHeader()
                             }
                         }
+                        else {
+                            isFromLogin = false
+                        }
+
 
 //                        //load data from latest update with delay 4 seconds
 //                        if (timer != null) timer?.cancel()
@@ -2129,6 +2134,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     })
             }
             REQUEST_CODE_LOGIN -> {
+                isFromLogin = true
                 activity?.let {
                     val intentNewUser =
                         RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
