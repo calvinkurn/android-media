@@ -136,6 +136,7 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
+    var isFromLogin = false
 
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData

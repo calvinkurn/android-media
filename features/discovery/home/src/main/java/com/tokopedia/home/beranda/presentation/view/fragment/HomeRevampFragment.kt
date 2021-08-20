@@ -287,7 +287,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
         private const val MILLIS_IN_SECOND = 1000L
         private const val DELAY_HEADER_TIMER  = 3000L
-        private var isFromLogin = false
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1059,6 +1058,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
                     renderTopBackground(isLoading = true, isBeautyFest = false)
+                    getHomeViewModel().isFromLogin = true
                 }
             }
 
@@ -1331,7 +1331,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
-                        if(!data.isCache && !isFromLogin) {
+                        if(!data.isCache && !getHomeViewModel().isFromLogin) {
                             val beautyFest = getBeautyFest(data.list)
                             //save beauty fest in shared preferences
                             saveBeautyFest(beautyFest)
@@ -1343,7 +1343,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             }
                         }
                         else {
-                            isFromLogin = false
+                            getHomeViewModel().isFromLogin = false
                         }
 
 
@@ -1548,6 +1548,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
             )
             renderTopBackground(isLoading = true, isBeautyFest = false)
+            getHomeViewModel().isFromLogin = true
         })
     }
 
@@ -1925,6 +1926,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
         renderTopBackground(isLoading = true, isBeautyFest = false)
+        getHomeViewModel().isFromLogin = true
     }
 
     private fun onGoToCreateShop() {
@@ -2134,7 +2136,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     })
             }
             REQUEST_CODE_LOGIN -> {
-                isFromLogin = true
+                getHomeViewModel().isFromLogin = true
                 activity?.let {
                     val intentNewUser =
                         RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -2953,6 +2955,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
             renderTopBackground(isLoading = true, isBeautyFest = false)
+            getHomeViewModel().isFromLogin = true
         }
     }
 
