@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.*
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.usecase.GetAllTypeTransactionUseCase
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.usecase.GetSalesTransactionListUseCase
@@ -204,5 +205,22 @@ class TransactionHistoryViewModelTest {
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is SaldoHistoryResponse)
 
     }
+
+    @Test
+    fun `Test eventLabel for analytics`() {
+        assert(viewModel.getEventLabelForTab("Saldo Refund") == SaldoDetailsConstants.Action.SALDO_REFUND_TAB_CLICK)
+        assert(viewModel.getEventLabelForTab("Saldo Penghasilan") == SaldoDetailsConstants.Action.SALDO_PENGHASILAN_TAB_CLICK)
+        assert(viewModel.getEventLabelForTab("Penjualan") == SaldoDetailsConstants.Action.SALDO_PENJUALAN_TAB_CLICK)
+
+        assert(viewModel.getEventLabelForDetail("Saldo Refund") == SaldoDetailsConstants.Action.SALDO_REFUND_DETAIL_CLICK)
+        assert(viewModel.getEventLabelForDetail("Saldo Penghasilan") == SaldoDetailsConstants.Action.SALDO_PENGHASILAN_DETAIL_CLICK)
+        assert(viewModel.getEventLabelForDetail("Penjualan") == SaldoDetailsConstants.Action.SALDO_SALES_DETAIL_CLICK)
+
+        assert(viewModel.getEventLabelForList(SalesTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_SALES_LIST)
+        assert(viewModel.getEventLabelForList(AllTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
+        assert(viewModel.getEventLabelForList(RefundTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
+        assert(viewModel.getEventLabelForList(IncomeTransaction) == SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST)
+    }
+
 
 }

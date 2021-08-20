@@ -273,6 +273,7 @@ class TransactionHistoryViewModel @Inject constructor(
         return when (tabTitle) {
             TransactionTitle.SALDO_REFUND -> SaldoDetailsConstants.Action.SALDO_REFUND_TAB_CLICK
             TransactionTitle.SALDO_INCOME -> SaldoDetailsConstants.Action.SALDO_PENGHASILAN_TAB_CLICK
+            TransactionTitle.SALDO_SALES -> SaldoDetailsConstants.Action.SALDO_PENJUALAN_TAB_CLICK
             else -> ""
         }
     }
