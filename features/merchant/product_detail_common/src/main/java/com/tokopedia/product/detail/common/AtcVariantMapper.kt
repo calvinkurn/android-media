@@ -15,16 +15,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
-    fun getSelectedVariantName(listOfVariantCategory: List<VariantCategory>?, selectedChild: VariantChild?): List<String> {
-        val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }
-                ?: listOf()
-        return if (selected.isEmpty()) {
-            selectedChild?.name?.split("- ")?.lastOrNull()?.split(',') ?: listOf()
-        } else {
-            selected
-        }
-    }
-
     /**
      * Determine wether variant is select fully or not
      * fully means select 2 of 2 variant / 1 of 1 variant

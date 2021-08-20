@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
+import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
 
@@ -50,5 +51,10 @@ data class ProductVariantAggregator(
 
         @SerializedName("restrictionInfo")
         @Expose
-        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse()
+        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+
+        @SerializedName("uniqueSellingPoint")
+        @Expose
+        var uniqueSellingPoint: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang()
+
 )

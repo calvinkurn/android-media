@@ -28,6 +28,8 @@ data class ProductVariantAggregatorUiData(
 
         var reData: RestrictionInfoResponse = RestrictionInfoResponse(),
 
+        var uspImageUrl:String = "",
+
         //region only for tracker
         var simpleBasicInfo: SimpleBasicInfo = SimpleBasicInfo(),
 

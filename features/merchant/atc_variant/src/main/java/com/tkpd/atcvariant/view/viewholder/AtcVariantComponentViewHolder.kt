@@ -29,7 +29,7 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
         element.listOfVariantCategory?.let {
             rvVariant?.adapter = variantContainerAdapter
             rvVariant?.itemAnimator = null
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.setData(it)
         }
     }
@@ -37,16 +37,15 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     override fun bind(element: VariantComponentDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         element.listOfVariantCategory?.let {
-            renderTxt(element)
+            renderStockWording(element)
             variantContainerAdapter?.variantContainerData = it
             variantContainerAdapter?.notifyItemRangeChanged(0, it.size, 1)
         }
     }
 
-    private fun renderTxt(element: VariantComponentDataModel) = with(view) {
-        val textColor = getHexColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
-        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label, textColor)).spannedString
-        txtEmptyStock?.showWithCondition(element.isEmptyStock)
+    private fun renderStockWording(element: VariantComponentDataModel) = with(view) {
+        txtEmptyStock?.text = HtmlLinkHelper(context, element.emptyOrInnactiveCopy).spannedString
+        txtEmptyStock?.showWithCondition(element.emptyOrInnactiveCopy.isNotEmpty())
     }
 
     private fun getHexColor(resColor: Int): String {

@@ -45,6 +45,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                             }
                           }
                     }
+                    uniqueSellingPoint{
+                       bebasOngkirExtra{
+                          icon
+                       }
+                    }
                     bebasOngkir {
                           products{
                             productID
@@ -100,6 +105,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         picture {
@@ -114,6 +120,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           stockWordingHTML
                           minimumOrder
                           maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isCOD
                         isWishlist
@@ -271,7 +279,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 shopType = data.shopInfo.shopType,
                 boData = data.bebasOngkir,
                 rates = data.ratesEstimate,
-                reData = data.restrictionInfo
+                reData = data.restrictionInfo,
+                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon
         )
     }
 }

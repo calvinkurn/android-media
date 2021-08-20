@@ -247,6 +247,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         isCOD
@@ -262,6 +263,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWordingHTML
                           minimumOrder
                           maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isWishlist
                         campaignInfo {

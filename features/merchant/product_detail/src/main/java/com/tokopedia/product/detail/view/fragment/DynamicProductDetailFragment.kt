@@ -103,7 +103,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
-import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
+import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
@@ -2166,7 +2166,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         boData = p2Data?.bebasOngkir ?: BebasOngkir(),
                         rates = p2Data?.ratesEstimate ?: listOf(),
                         restrictionData = p2Data?.restrictionInfo,
-                        isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false
+                        isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
+                        uspImageUrl = p2Data?.uspImageUrl ?: ""
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
@@ -2279,7 +2280,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
 
             DynamicProductDetailTracking.BottomSheetErrorShipment.impressShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title)
-            ProductDetailBottomSheetBuilderCommon.getShippingErrorBottomSheet(
+            ProductDetailCommonBottomSheetBuilder.getShippingErrorBottomSheet(
                     it,
                     bottomSheetData,
                     rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,

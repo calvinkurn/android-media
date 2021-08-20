@@ -7,11 +7,13 @@ import com.tkpd.atcvariant.data.uidata.ProductHeaderData
 import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
+import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -20,7 +22,9 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Yehezkiel on 07/05/21
  */
 
-class AtcVariantHeaderViewHolder(private val view: View, private val listener: AtcVariantListener) : AbstractViewHolder<VariantHeaderDataModel>(view) {
+class AtcVariantHeaderViewHolder(private val view: View,
+                                 private val listener: AtcVariantListener,
+                                 private val atcVarBottomSheetListener: AtcVariantBottomSheetListener) : AbstractViewHolder<VariantHeaderDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.atc_variant_header_viewholder
@@ -40,7 +44,7 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
         loadImage(element.productImage)
         loadDescription(element.headerData)
         renderVariantName(element.variantTitle)
-        renderTokoCabang(element.isTokoCabang)
+        renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
     }
 
     override fun bind(element: VariantHeaderDataModel, payloads: MutableList<Any>) {
@@ -50,7 +54,7 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
         }
 
         renderVariantName(element.variantTitle)
-        renderTokoCabang(element.isTokoCabang)
+        renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
         when (payloads[0] as Int) {
             PAYLOAD_UPDATE_IMAGE_ONLY -> {
                 loadImage(element.productImage)
@@ -61,9 +65,14 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
         }
     }
 
-    private fun renderTokoCabang(isTokoCabang: Boolean) = with(view) {
-        txtTokoCabang.shouldShowWithAction(isTokoCabang) {
-            txtTokoCabang.text = context.getString(R.string.atc_variant_tokocabang)
+    private fun renderTokoCabang(isTokoCabang: Boolean, uspImageUrl: String) = with(view) {
+        txtTokoCabang?.run {
+            shouldShowWithAction(isTokoCabang) {
+                text = HtmlLinkHelper(context, context.getString(R.string.atc_variant_tokocabang)).spannedString
+                setOnClickListener {
+                    atcVarBottomSheetListener.onTokoCabangClicked(uspImageUrl)
+                }
+            }
         }
     }
 
@@ -117,5 +126,4 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
             labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage.toString())
         }
     }
-
 }

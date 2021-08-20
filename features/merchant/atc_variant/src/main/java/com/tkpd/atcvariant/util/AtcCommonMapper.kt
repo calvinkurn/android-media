@@ -182,10 +182,9 @@ object AtcCommonMapper {
                        initialSelectedVariant: MutableMap<String, String>,
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
-                       totalStock: Int,
                        selectedQuantity: Int,
-                       variantTitle: List<String>,
-                       shouldShowDeleteButton: Boolean): List<AtcVariantVisitable>? {
+                       shouldShowDeleteButton: Boolean,
+                       uspImageUrl: String): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -197,8 +196,9 @@ object AtcCommonMapper {
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
-                        variantTitle = variantTitle,
+                        variantTitle = selectedChild?.optionName ?: listOf(),
                         isTokoCabang = selectedProductFulfillment,
+                        uspImageUrl = uspImageUrl,
                         headerData = headerData.second)
         ).also {
             idCounter += 1
@@ -209,7 +209,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive))
+                        emptyOrInnactiveCopy = selectedChild?.stock?.stockCopy ?: "")
         ).also {
             idCounter += 1
         }
@@ -251,7 +251,6 @@ object AtcCommonMapper {
                         selectedProductFulfillment: Boolean,
                         isTokoNow: Boolean,
                         selectedQuantity: Int,
-                        variantTitle: List<String>,
                         shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
 
         return oldList.map {
@@ -260,7 +259,7 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive)
+                            emptyOrInnactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
@@ -277,8 +276,11 @@ object AtcCommonMapper {
                         it.copy(productImage = variantImage)
                     } else {
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first, productId = selectedVariantChild?.productId
-                                ?: "", headerData = headerData.second, isTokoCabang = selectedProductFulfillment, variantTitle = variantTitle)
+                        it.copy(productImage = headerData.first,
+                                productId = selectedVariantChild?.productId ?: "",
+                                headerData = headerData.second,
+                                isTokoCabang = selectedProductFulfillment,
+                                variantTitle = selectedVariantChild?.optionName ?: listOf())
                     }
                 }
                 else -> {
@@ -373,7 +375,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: ""
+                productStock = selectedChild?.stock?.stockFmt ?: ""
         )
         return productImage to headerData
     }

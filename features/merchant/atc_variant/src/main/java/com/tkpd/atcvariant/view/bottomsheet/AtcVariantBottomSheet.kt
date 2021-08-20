@@ -49,7 +49,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_C
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
+import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
@@ -67,7 +67,12 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtcButtonListener, PartialButtonShopFollowersListener, HasComponent<AtcVariantComponent> {
+class AtcVariantBottomSheet : BottomSheetUnify(),
+        AtcVariantListener,
+        PartialAtcButtonListener,
+        PartialButtonShopFollowersListener,
+        AtcVariantBottomSheetListener,
+        HasComponent<AtcVariantComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -86,7 +91,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var loadingProgressDialog: ProgressDialog? = null
 
     private val compositeSubscription by lazy { CompositeSubscription() }
-    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription) }
+    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription, this) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
                 .build()
@@ -682,7 +687,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
 
-            ProductDetailBottomSheetBuilderCommon.getShippingErrorBottomSheet(
+            ProductDetailCommonBottomSheetBuilder.getShippingErrorBottomSheet(
                     it,
                     bottomSheetData,
                     rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,
@@ -734,7 +739,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private fun openChooseAddressBottomSheet(listener: ChooseAddressBottomSheet.ChooseAddressBottomSheetListener) {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(listener)
-        chooseAddressBottomSheet.show(childFragmentManager, ProductDetailBottomSheetBuilderCommon.ATC_VAR_SHIPPING_CHOOSE_ADDRESS_TAG)
+        chooseAddressBottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.ATC_VAR_SHIPPING_CHOOSE_ADDRESS_TAG)
     }
 
     private fun goToWishlist() {
@@ -805,4 +810,23 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         val aggregatorData = viewModel.getVariantAggregatorData()
         viewModel.toggleFavorite(aggregatorData?.simpleBasicInfo?.shopID ?: "")
     }
+
+    override fun onTokoCabangClicked(uspImageUrl: String) {
+        context?.let {
+            val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
+            val productId = adapter.getHeaderDataModel()?.productId ?: ""
+            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId) ?: ""
+
+            val bottomSheet = if (isTokoNow) {
+                ProductDetailCommonBottomSheetBuilder.getUspTokoNowBottomSheet(it)
+            } else {
+                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
+            }
+            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
+        }
+    }
+}
+
+interface AtcVariantBottomSheetListener{
+    fun onTokoCabangClicked(uspImageUrl:String)
 }

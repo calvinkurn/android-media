@@ -134,7 +134,7 @@ class AtcVariantViewModel @Inject constructor(
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
             val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
-            val variantTitle = AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild)
+
             //We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
                     oldList = (_initialData.value as Success).data,
@@ -146,7 +146,6 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     isTokoNow = isTokoNow,
                     selectedQuantity = selectedQuantity,
-                    variantTitle = variantTitle,
                     shouldShowDeleteButton = shouldShowDeleteButton)
 
             _initialData.postValue(list.asSuccess())
@@ -225,7 +224,7 @@ class AtcVariantViewModel @Inject constructor(
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
-            val selectedChild = aggregatorData?.variantData?.autoSelectIfParent(aggregatorParams.productId)
+            val selectedChild = getVariantData()?.autoSelectIfParent(aggregatorParams.productId)
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
             val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
@@ -233,13 +232,12 @@ class AtcVariantViewModel @Inject constructor(
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             //generate variant component and data, initial render need to determine selected option
-            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(aggregatorData?.variantData, selectedChild)
-            val processedVariant = AtcVariantMapper.processVariant(aggregatorData?.variantData, initialSelectedOptionIds)
+            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(getVariantData(), selectedChild)
+            val processedVariant = AtcVariantMapper.processVariant(getVariantData(), initialSelectedOptionIds)
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")
             val shouldShowDeleteButton = minicartData?.get(selectedChild?.productId ?: "") != null
-            val variantTitle = AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild)
 
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
@@ -248,10 +246,9 @@ class AtcVariantViewModel @Inject constructor(
                     initialSelectedVariant = initialSelectedOptionIds,
                     processedVariant = processedVariant,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
-                    totalStock = aggregatorData?.variantData?.totalStockChilds ?: 0,
                     selectedQuantity = selectedQuantity,
-                    variantTitle = variantTitle,
-                    shouldShowDeleteButton = shouldShowDeleteButton)
+                    shouldShowDeleteButton = shouldShowDeleteButton,
+                    uspImageUrl = aggregatorData?.uspImageUrl ?: "")
 
             //generate restriction data (shop followers or exclusive campaign)
             val restrictionData = aggregatorData?.reData?.getReByProductId(productId = selectedChild?.productId

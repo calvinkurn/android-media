@@ -15,6 +15,7 @@ data class VariantHeaderDataModel(
         val productId: String = "",
         val variantTitle: List<String> = listOf(),
         val isTokoCabang: Boolean = false,
+        val uspImageUrl: String = "",
         val headerData: ProductHeaderData = ProductHeaderData()
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position

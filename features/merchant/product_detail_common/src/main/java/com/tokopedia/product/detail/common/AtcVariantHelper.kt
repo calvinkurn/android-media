@@ -60,6 +60,7 @@ object AtcVariantHelper {
                         rates: List<P2RatesEstimate>?,
                         restrictionData: RestrictionInfoResponse?,
                         isFavorite: Boolean = false,
+                        uspImageUrl: String = "",
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -85,7 +86,8 @@ object AtcVariantHelper {
                         ),
                         shopType = productInfoP1.shopTypeString,
                         boData = boData ?: BebasOngkir(),
-                        reData = updatedReData
+                        reData = updatedReData,
+                        uspImageUrl = uspImageUrl
                 ),
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
@@ -129,6 +131,7 @@ object AtcVariantHelper {
             }
         } ?: listOf()
 
-        return restrictionData?.copy(restrictionData = manipulateRestrictionShopFollowers) ?: RestrictionInfoResponse()
+        return restrictionData?.copy(restrictionData = manipulateRestrictionShopFollowers)
+                ?: RestrictionInfoResponse()
     }
 }
