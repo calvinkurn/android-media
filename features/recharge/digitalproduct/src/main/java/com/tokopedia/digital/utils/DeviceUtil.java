@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.digital.newcart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.user.session.UserSession;
 
 import java.net.Inet4Address;
@@ -90,13 +89,6 @@ public class DeviceUtil {
         requestBodyIdentifier.setUserId(userSession.getUserId());
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
-    }
-
-    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam(String afUniqueId, String adsId) {
-        RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
-        requestBodyAppsFlyer.setAppsflyerId(afUniqueId);
-        requestBodyAppsFlyer.setDeviceId(adsId);
-        return requestBodyAppsFlyer;
     }
 
     public static String validatePrefixClientNumber(String phoneNumber) {

@@ -16,8 +16,6 @@ import kotlinx.coroutines.launch
 class SlicePermission {
 
     companion object {
-        const val RECHARGE_SLICE_AUTHORITY = "com.tokopedia.tkpd.recharge_slice"
-        const val TRAVEL_SLICE_AUTHORITY = "com.tokopedia.tkpd.travel_slice"
         const val SELLER_ORDER_AUTHORITY = "com.tokopedia.seller.action.slices"
     }
 

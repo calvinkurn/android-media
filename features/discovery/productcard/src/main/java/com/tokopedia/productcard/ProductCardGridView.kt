@@ -11,12 +11,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -55,8 +55,26 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
                 productCardModel
         )
 
+        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
+        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
+        renderLabelBestSeller(
+            isShowBestSeller,
+            labelBestSeller,
+            productCardModel
+        )
+
+        renderLabelBestSellerCategorySide(
+            isShowCategorySide,
+            textCategorySide,
+            productCardModel
+        )
+
+        renderLabelBestSellerCategoryBottom(
+            isShowCategoryBottom,
+            textCategoryBottom,
+            productCardModel
+        )
 
         renderOutOfStockView(productCardModel)
 
