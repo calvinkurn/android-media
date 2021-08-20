@@ -78,6 +78,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val STATUS_BAR_LIGHT = 0
             const val STATUS_BAR_DARK = 1
         }
+        private const val COLOR_225F = 225f
     }
 
     //public variable
@@ -257,7 +258,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = true
 
             if (lineShadow) {
-                setBackgroundAlpha(225f)
+                setBackgroundAlpha(COLOR_225F)
                 divider?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
