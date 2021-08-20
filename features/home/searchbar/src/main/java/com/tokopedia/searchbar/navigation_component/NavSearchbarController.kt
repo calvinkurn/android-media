@@ -108,14 +108,6 @@ class NavSearchbarController(val view: View,
         iconClear?.clearAnimation()
         iconClear?.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(INITIAL_ANIMATION_DURATION)?.start()
 
-        val scale = ObjectAnimator.ofPropertyValuesHolder(
-            iconClear,
-            PropertyValuesHolder.ofFloat(SCALE_X_PROPERTY, HIDE_SCALE),
-            PropertyValuesHolder.ofFloat(SCALE_Y_PROPERTY, HIDE_SCALE)
-        )
-        scale.duration = DEFAULT_SCALE_DURATION
-        scale.repeatCount = REPEAT_COUNT
-        scale.repeatMode = ObjectAnimator.REVERSE
         etSearch?.addTextChangedListener(
             onTextChanged = { text, start, count, after ->
                 navSearchbarInterface?.invoke(
