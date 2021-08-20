@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -27,6 +28,11 @@ class UohListActivity: BaseSimpleActivity() {
             bundle.putAll(intent.extras)
         }
         return UohListFragment.newInstance(bundle)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        inflateFragment()
     }
 
     private fun scanPathQuery(data: Uri?) {

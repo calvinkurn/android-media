@@ -504,12 +504,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun getCurrentSearchbarText(): String {
-        if (searchbarType == SearchBarType.TYPE_CLICK) {
-            return navSearchBarController.etSearch?.text?.toString()?:""
-        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
-            return navSearchBarController.etSearchbarUnify?.searchBarTextField?.text?.toString()?:""
-        }
-        return ""
+        return navSearchBarController.etSearch?.text?.toString()?:""
     }
 
     private fun applyStatusBarPadding() {
