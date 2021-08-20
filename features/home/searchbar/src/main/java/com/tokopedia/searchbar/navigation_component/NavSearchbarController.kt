@@ -44,6 +44,20 @@ class NavSearchbarController(val view: View,
                                                       after: Int) -> Unit)? = null,
                              val editorActionCallback: ((hint: String)-> Unit)?
 ) : CoroutineScope {
+
+    companion object {
+        private const val HIDE_SCALE = 0f
+        private const val SHOW_SCALE = 1f
+
+        private const val INITIAL_ANIMATION_DURATION = 0L
+        private const val SCALE_X_PROPERTY = "scaleX"
+        private const val SCALE_Y_PROPERTY = "scaleY"
+        private const val DEFAULT_SCALE_DURATION = 150L
+        private const val REPEAT_COUNT = 1
+        private const val CLEAR_ICON_ANIM_DURATION = 200L
+    }
+
+    private lateinit var animationJob: Job
     var etSearch: EditText? = null
     var iconClear: IconUnify? = null
 
@@ -52,7 +66,6 @@ class NavSearchbarController(val view: View,
         etSearch = view.et_search
         iconClear = view.findViewById(R.id.icon_clear)
     }
-    private lateinit var animationJob: Job
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -93,15 +106,15 @@ class NavSearchbarController(val view: View,
         etSearch?.visible()
         etSearch?.hint = hint
         iconClear?.clearAnimation()
-        iconClear?.animate()?.scaleX(0f)?.scaleY(0f)?.setDuration(200)?.start()
+        iconClear?.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(INITIAL_ANIMATION_DURATION)?.start()
 
         val scale = ObjectAnimator.ofPropertyValuesHolder(
             iconClear,
-            PropertyValuesHolder.ofFloat("scaleX", 0f),
-            PropertyValuesHolder.ofFloat("scaleY", 0f)
+            PropertyValuesHolder.ofFloat(SCALE_X_PROPERTY, HIDE_SCALE),
+            PropertyValuesHolder.ofFloat(SCALE_Y_PROPERTY, HIDE_SCALE)
         )
-        scale.duration = 150
-        scale.repeatCount = 1
+        scale.duration = DEFAULT_SCALE_DURATION
+        scale.repeatCount = REPEAT_COUNT
         scale.repeatMode = ObjectAnimator.REVERSE
         etSearch?.addTextChangedListener(
             onTextChanged = { text, start, count, after ->
@@ -112,10 +125,10 @@ class NavSearchbarController(val view: View,
                 iconClear?.visible()
                 if(TextUtils.isEmpty(text)) {
                     iconClear?.clearAnimation()
-                    iconClear?.animate()?.scaleX(0f)?.scaleY(0f)?.setDuration(200)?.start()
+                    iconClear?.animate()?.scaleX(HIDE_SCALE)?.scaleY(HIDE_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
                 } else {
                     iconClear?.clearAnimation()
-                    iconClear?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(200)?.start()
+                    iconClear?.animate()?.scaleX(SHOW_SCALE)?.scaleY(SHOW_SCALE)?.setDuration(CLEAR_ICON_ANIM_DURATION)?.start()
                 }
             }
         )

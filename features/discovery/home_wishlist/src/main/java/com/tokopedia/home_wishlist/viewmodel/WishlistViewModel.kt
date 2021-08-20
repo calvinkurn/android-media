@@ -81,9 +81,6 @@ open class WishlistViewModel @Inject constructor(
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
     private val wishlistCountData = WishlistLiveData<Int>(0)
 
-    private val recommendationPositionInPage = 4
-    private val maxItemInPage = 21
-
     private var keywordSearch: String = ""
 
     var currentPage = 1
@@ -1022,5 +1019,7 @@ open class WishlistViewModel @Inject constructor(
         private const val WISHLIST_ADS_COUNT = 1
         private const val WISHLIST_SOURCE = "6"
         private const val CAROUEL_INSTANCE_IN_PAGE = 4
+        private const val recommendationPositionInPage = 4
+        private const val maxItemInPage = 21
     }
 }

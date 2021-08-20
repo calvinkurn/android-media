@@ -268,7 +268,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 generateWishlistAdditionalParamRequest()
             )
             scrollAfterSubmit = true
-        } else {
+        } else if (coachmarkIsAvailable()) {
             coachMark?.dismissCoachMark()
         }
     }
@@ -277,6 +277,10 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         activity?.let {
             cartLocalCacheHandler = LocalCacheHandler(it, CACHE_CART)
         }
+    }
+
+    private fun coachmarkIsAvailable(): Boolean {
+        return coachMark != null
     }
 
     override fun onPause() {
@@ -443,7 +447,9 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 navToolbar?.hideKeyboard()
-                coachMark?.dismissCoachMark()
+                if (coachmarkIsAvailable()) {
+                    coachMark?.dismissCoachMark()
+                }
             }
         })
     }

@@ -568,7 +568,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                         }
                         else -> {
-                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                            view?.let { context?.let { it1 -> uoh_navtoolbar?.hideKeyboard() } }
                             triggerSearch()
                         }
                     }
