@@ -850,39 +850,30 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-
         activity?.let {
-            if (data != null && requestCode == RegisterConstants.Request.REQUEST_LOGIN_GOOGLE) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                task?.let { taskGoogleSignInAccount ->
-                    handleGoogleSignInResult(taskGoogleSignInAccount)
-                }
-            } else if (requestCode == RegisterConstants.Request.REQUEST_REGISTER_EMAIL) {
-                onActivityResultRegisterEmail(resultCode)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_SECURITY_QUESTION) {
-                onActivityResultSecurityQuestion(resultCode, data)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE) {
-                onActivityResultVerifyPhoneRegister(resultCode, data)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE) {
-                processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_ADD_PIN) {
-                registerInitialViewModel.getUserInfoAfterAddPin()
-            } else if (requestCode == RegisterConstants.Request.REQUEST_VERIFY_PHONE_TOKOCASH) {
-                onActivityResultVerifyPhoneTokoCash(resultCode, data)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
-                onActivityResultChooseAccount(resultCode, data)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_CHANGE_NAME) {
-                onActivityResultChangeName(resultCode)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_OTP_VALIDATE) {
-                onActivityResultOtpValidate(resultCode, data)
-            } else if (requestCode == RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE) {
-                onActivityResultPendingOtpValidate(resultCode, data)
-            } else if (requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED) {
-                phoneNumber?.run { goToRegisterWithPhoneNumber(this) }
-            } else {
-                super.onActivityResult(requestCode, resultCode, data)
+            callbackManager.onActivityResult(requestCode, resultCode, data)
+
+            when(requestCode) {
+                RegisterConstants.Request.REQUEST_LOGIN_GOOGLE -> { onActivityResultLoginGoogle(data) }
+                RegisterConstants.Request.REQUEST_REGISTER_EMAIL -> { onActivityResultRegisterEmail(resultCode) }
+                RegisterConstants.Request.REQUEST_SECURITY_QUESTION -> { onActivityResultSecurityQuestion(resultCode, data) }
+                RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE -> { onActivityResultVerifyPhoneRegister(resultCode, data) }
+                RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE -> { processAfterAddNameRegisterPhone(data?.extras) }
+                RegisterConstants.Request.REQUEST_ADD_PIN -> { registerInitialViewModel.getUserInfoAfterAddPin() }
+                RegisterConstants.Request.REQUEST_VERIFY_PHONE_TOKOCASH -> { onActivityResultVerifyPhoneTokoCash(resultCode, data) }
+                RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT -> { onActivityResultChooseAccount(resultCode, data) }
+                RegisterConstants.Request.REQUEST_CHANGE_NAME -> { onActivityResultChangeName(resultCode) }
+                RegisterConstants.Request.REQUEST_OTP_VALIDATE -> { onActivityResultOtpValidate(resultCode, data) }
+                RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE -> { onActivityResultPendingOtpValidate(resultCode, data) }
+                ExternalRegisterConstants.REQUEST_OVO_REGISTER -> { onActivityResultOvoRegistration(resultCode) }
+                else -> { super.onActivityResult(requestCode, resultCode, data) }
             }
+        }
+    }
+
+    private fun onActivityResultLoginGoogle(data: Intent?) {
+        GoogleSignIn.getSignedInAccountFromIntent(data)?.let { taskGoogleSignInAccount ->
+            handleGoogleSignInResult(taskGoogleSignInAccount)
         }
     }
 
@@ -1021,6 +1012,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             Activity.RESULT_CANCELED -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
             }
+        }
+    }
+
+    private fun onActivityResultOvoRegistration(resultCode: Int) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            phoneNumber?.run { goToRegisterWithPhoneNumber(this) }
         }
     }
 
