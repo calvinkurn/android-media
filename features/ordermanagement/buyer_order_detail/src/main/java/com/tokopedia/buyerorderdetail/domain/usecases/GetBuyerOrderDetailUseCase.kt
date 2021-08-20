@@ -112,16 +112,18 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     bundle_quantity
                     bundle_subtotal_price
                     order_detail {
-                      order_id
-                      order_dtl_id
                       product_id
+                      order_detail_id
                       product_name
-                      quantity
-                      product_price
-                      subtotal_price
-                      notes
                       thumbnail
-                      bundle_id
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category
+                      category_id
                       button {
                         key
                         display_name
@@ -143,15 +145,18 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                   }
                   non_bundle {
-                    order_id
                     product_id
+                    order_detail_id
                     product_name
-                    quantity
-                    product_price
-                    subtotal_price
-                    notes
                     thumbnail
-                    bundle_id
+                    price
+                    price_text
+                    quantity
+                    total_price
+                    total_price_text
+                    notes
+                    category
+                    category_id
                     button {
                       key
                       display_name

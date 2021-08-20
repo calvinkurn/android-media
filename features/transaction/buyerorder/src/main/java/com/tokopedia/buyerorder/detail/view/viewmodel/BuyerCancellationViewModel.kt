@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.common.ResourceProvider
-import com.tokopedia.buyerorder.common.util.BuyerUtils.toCurrencyFormatted
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonParam
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -119,9 +118,9 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         return map { bundleProduct ->
             BuyerNormalProductUiModel(
                     productId = bundleProduct.productId.toString(),
-                    productThumbnailUrl = bundleProduct.thumbnail,
+                    productThumbnailUrl = bundleProduct.picture,
                     productName = bundleProduct.productName,
-                    productPrice = bundleProduct.productPrice.toCurrencyFormatted()
+                    productPrice = bundleProduct.productPrice
             )
         }
     }

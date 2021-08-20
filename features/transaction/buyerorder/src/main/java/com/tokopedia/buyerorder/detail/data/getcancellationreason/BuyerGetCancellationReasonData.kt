@@ -137,11 +137,11 @@ data class BuyerGetCancellationReasonData(
 
 							@SerializedName("product_price")
 							@Expose
-							val productPrice: Double = 0.0,
+							val productPrice: String = "",
 
-							@SerializedName("thumbnail")
+							@SerializedName("picture")
 							@Expose
-							val thumbnail: String
+							val picture: String
 					)
 				}
 			}

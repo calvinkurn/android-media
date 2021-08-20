@@ -13,7 +13,7 @@ object BuyerRequestCancellationIntentParamKey {
     const val PRODUCT_BUNDLE_NAME = "bundle_name"
     const val PRODUCT_BUNDLE_ORDER_DETAIL = "order_detail"
     const val PRODUCT_BUNDLE_ITEM_ID = "product_id"
-    const val PRODUCT_BUNDLE_ITEM_THUMBNAIL = "product_thumbnail"
+    const val PRODUCT_BUNDLE_ITEM_THUMBNAIL = "thumbnail"
     const val PRODUCT_BUNDLE_ITEM_NAME = "product_name"
     const val PRODUCT_BUNDLE_ITEM_PRICE = "product_price"
     const val SHOP_ID = "shop_id"
