@@ -33,7 +33,6 @@ import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
