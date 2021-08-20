@@ -1329,7 +1329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
                         if (timer != null) timer!!.cancel()
-                        timer = object : CountDownTimer(6000, 1000) {
+                        timer = object : CountDownTimer(4000, 1000) {
                             override fun onTick(l: Long) {}
                             override fun onFinish() {
                                 val beautyFest = getBeautyFest(data.list)
