@@ -200,6 +200,9 @@ data class DataItem(
         @SerializedName("shop_id")
         var shopId: String? = "",
 
+        @SerializedName("shop_ids")
+        var shopIds: List<Int>? = null,
+
         @SerializedName("basecode")
         val basecode: String? = "",
 

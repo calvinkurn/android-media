@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<com.tokopedia.mvcwidget.views.MvcView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/disco_single_mv"
+    android:visibility="gone">
+</com.tokopedia.mvcwidget.views.MvcView>
+
+</FrameLayout>
