@@ -569,7 +569,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun clearData() {
         userSession.logoutSession()
-        clearBeautyFest()
     }
 
     private fun onLoginEmailClick() {
@@ -1058,6 +1057,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
+        clearBeautyFest()
 
         if (emailPhoneEditText?.text?.isNotBlank() == true)
             userSession.autofillUserData = emailPhoneEditText?.text.toString()
