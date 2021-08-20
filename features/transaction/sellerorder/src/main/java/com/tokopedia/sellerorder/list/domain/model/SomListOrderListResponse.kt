@@ -125,11 +125,11 @@ data class SomListOrderListResponse(
                                 @SerializedName("product_name")
                                 @Expose
                                 override val productName: String = "",
-                                @SerializedName("thumbnail")
+                                @SerializedName("picture")
                                 @Expose
                                 override val picture: String = "",
                                 @Expose
-                                @SerializedName("quantity")
+                                @SerializedName("product_qty")
                                 override val productQty: Int = 1
                         ): Product
                     }

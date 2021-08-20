@@ -30,6 +30,11 @@ class OrderListMapper @Inject constructor() {
                     } else {
                         mapProductList(it.orderProduct)
                     },
+                    productCount = if (it.haveProductBundle) {
+                        it.bundleDetail?.totalProduct.orZero()
+                    } else {
+                        it.orderProduct.distinctBy { it.productId }.size
+                    },
                     orderResi = it.orderResi,
                     orderStatusId = it.orderStatusId.takeIf { it.isNotBlank() }?.toInt().orZero(),
                     status = it.status,

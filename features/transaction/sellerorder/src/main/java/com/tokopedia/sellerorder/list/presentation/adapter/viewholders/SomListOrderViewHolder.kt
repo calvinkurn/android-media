@@ -206,8 +206,8 @@ open class SomListOrderViewHolder(
                     showWithCondition(productVariant.isNotBlank())
                 }
                 tvSomListProductExtra.apply {
-                    text = getString(R.string.som_list_more_products, (element.getTotalProduct() - 1).toString())
-                    showWithCondition(element.orderProduct.size > 1)
+                    text = getString(R.string.som_list_more_products, (element.productCount - 1).toString())
+                    showWithCondition(element.productCount > 1)
                 }
             }
         }

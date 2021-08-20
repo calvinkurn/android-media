@@ -55,8 +55,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
 
     companion object {
         val QUERY_SOM_DETAIL = """
-            query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!){
-              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang){
+            query GetSOMDetail(${'$'}orderID: String!, ${'$'}lang: String!) {
+              get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang) {
                 order_id
                 status
                 status_text
@@ -67,7 +67,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 checkout_date
                 payment_date
                 notes
-                products{
+                products {
                   id
                   order_detail_id
                   name
@@ -76,17 +76,17 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   quantity
                   note
                 }
-                customer{
+                customer {
                   id
                   name
                   image
                   phone
                 }
-                dropshipper{
+                dropshipper {
                   phone
                   name
                 }
-                shipment{
+                shipment {
                   id
                   name
                   product_id
@@ -97,7 +97,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   awb_text_color
                   awb_upload_url
                 }
-                shipment_change{
+                shipment_change {
                   id
                   name
                   product_id
@@ -105,15 +105,15 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   is_same_day
                   awb
                 }
-                booking_info{
-                  driver{
+                booking_info {
+                  driver {
                     name
                     phone
                     photo
                     license_number
                     tracking_url
                   }
-                  pickup_point{
+                  pickup_point {
                     store_code
                     district_id
                     address
@@ -121,7 +121,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     store_name
                     pickup_code
                   }
-                  online_booking{
+                  online_booking {
                     booking_code
                     state
                     message
@@ -129,7 +129,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     barcode_type
                   }
                 }
-                receiver{
+                receiver {
                   name
                   phone
                   street
@@ -138,20 +138,20 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   city
                   province
                 }
-                deadline{
+                deadline {
                   text
                   color
                 }
-                insurance{
+                insurance {
                   type
                   name
                   note
                 }
-                warehouse{
+                warehouse {
                   warehouse_id
                   fulfill_by
                 }
-                exclusive_promo{
+                exclusive_promo {
                   amount
                   note
                 }
@@ -161,41 +161,41 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   reason
                   status
                 }
-                flag_order_type{
+                flag_order_type {
                   is_order_cod
                   is_order_now
                   is_order_kelontong
                   is_order_sampai
                   is_order_trade_in
                 }
-                flag_order_meta{
-                    is_free_shipping_campaign
-                    is_topads
-                    is_tokocabang
-                    is_shipping_printed
-                    is_broadcast_chat
+                flag_order_meta {
+                  is_free_shipping_campaign
+                  is_topads
+                  is_tokocabang
+                  is_shipping_printed
+                  is_broadcast_chat
                 }
-                label_info{
+                label_info {
                   flag_name
                   flag_color
                   flag_background
                 }
-                logistic_info{
-                  all{
+                logistic_info {
+                  all {
                     id
                     priority
                     description
                     info_text_short
                     info_text_long
                   }
-                   priority{
+                  priority {
                     id
                     priority
                     description
                     info_text_short
                     info_text_long
                   }
-                   others{
+                  others {
                     id
                     priority
                     description
@@ -253,22 +253,22 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     bundle_quantity
                     bundle_subtotal_price
                     order_detail {
-                      order_dtl_id
-                      product_id
-                      product_name
+                      order_detail_id
+                      id
+                      name
                       quantity
-                      product_price
-                      notes
+                      price_text
+                      note
                       thumbnail
                     }
                   }
                   non_bundle {
-                    order_dtl_id
-                    product_id
-                    product_name
+                    order_detail_id
+                    id
+                    name
                     quantity
-                    product_price
-                    notes
+                    price_text
+                    note
                     thumbnail
                   }
                 }

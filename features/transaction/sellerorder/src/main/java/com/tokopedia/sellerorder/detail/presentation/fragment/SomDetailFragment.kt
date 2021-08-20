@@ -602,7 +602,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                                 orderDetailId = it.orderDetailId,
                                 name = it.name,
                                 thumbnail = it.thumbnail,
-                                priceText = Utils.parseRupiah(it.priceText),
+                                priceText = it.priceText,
                                 quantity = bundle.bundleQuantity * it.quantity,
                                 note = it.note
                         )

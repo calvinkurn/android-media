@@ -106,15 +106,15 @@ class SomListGetOrderListUseCase @Inject constructor(
                       order_detail {
                         product_id
                         product_name
-                        thumbnail
-                        quantity
+                        picture
+                        product_qty
                       }
                     }
                     non_bundle {
                       product_id
                       product_name
-                      thumbnail
-                      quantity
+                      picture
+                      product_qty
                     }
                   }
                 }
