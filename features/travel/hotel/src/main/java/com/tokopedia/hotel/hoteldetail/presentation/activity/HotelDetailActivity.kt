@@ -46,12 +46,20 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
 
             } else {
-                getDefaultData()
+                with(intent) {
+                    checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
+                    checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
+                    propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
+                    roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
+                    adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
+                    destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
+                    destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
+                    isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+                }
             }
-        }catch (exception: Exception){
-            getDefaultData()
+        }catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
-
         checkParameter()
 
         super.onCreate(savedInstanceState)
@@ -62,19 +70,6 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkInDate, checkOutDate)
         checkInDate = updatedCheckInCheckOutDate.first
         checkOutDate = updatedCheckInCheckOutDate.second
-    }
-
-    private fun getDefaultData(){
-        with(intent) {
-            checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
-            checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
-            propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
-            roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
-            adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
-            destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
-            destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
-            isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
-        }
     }
 
     override fun shouldShowOptionMenu(): Boolean = true

@@ -57,8 +57,8 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
                 hotelSearchModel = intent.getParcelableExtra(HotelSearchMapFragment.ARG_HOTEL_SEARCH_MODEL)
                     ?: HotelSearchModel()
             }
-        } catch (exception: Exception){
-            getDefaultData()
+        } catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
 
         checkParameter()
@@ -81,15 +81,6 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(hotelSearchModel.checkIn, hotelSearchModel.checkOut)
         hotelSearchModel.checkIn = updatedCheckInCheckOutDate.first
         hotelSearchModel.checkOut = updatedCheckInCheckOutDate.second
-    }
-
-    private fun getDefaultData(){
-        with(intent) {
-            hotelSearchModel.checkIn  = getStringExtra(PARAM_CHECK_IN) ?: ""
-            hotelSearchModel.checkOut = getStringExtra(PARAM_CHECK_OUT) ?: ""
-            hotelSearchModel.room = getIntExtra(PARAM_ROOM, 1)
-            hotelSearchModel.adult = getIntExtra(PARAM_ADULT, 1)
-        }
     }
 
     companion object {

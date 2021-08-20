@@ -17,8 +17,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var name: String = ""
     private var checkIn: String = ""
     private var checkOut: String = ""
-    private var room: Int = 0
-    private var adult: Int = 0
+    private var room: Int = 1
+    private var adult: Int = 1
     private var searchId: String = ""
     private var searchType: String = ""
 
@@ -44,8 +44,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
 
                 name = name.replace(SPACE_ENCODED, " ")
             }
-        }catch (exception: Exception){
-            getDefaultData()
+        }catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
         checkParameter()
 
@@ -76,15 +76,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkIn, checkOut)
         checkIn = updatedCheckInCheckOutDate.first
         checkOut = updatedCheckInCheckOutDate.second
-    }
-
-    private fun getDefaultData(){
-        with(intent) {
-            checkIn = getStringExtra(PARAM_CHECK_IN) ?: ""
-            checkOut = getStringExtra(PARAM_CHECK_OUT) ?: ""
-            room = getIntExtra(PARAM_ROOM, 1)
-            adult = getIntExtra(PARAM_ADULT, 1)
-        }
     }
 
     companion object {
