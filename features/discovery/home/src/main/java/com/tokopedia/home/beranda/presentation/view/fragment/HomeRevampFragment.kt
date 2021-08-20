@@ -1328,7 +1328,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
-                        if (timer != null) timer!!.cancel()
+                        if (timer != null) timer?.cancel()
                         timer = object : CountDownTimer(4000, 1000) {
                             override fun onTick(l: Long) {}
                             override fun onFinish() {
