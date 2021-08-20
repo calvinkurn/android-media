@@ -20,6 +20,8 @@ import com.tokopedia.topchat.R
 
 
 object ViewUtil {
+
+    @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
             view: View?,
             @ColorRes backgroundColor: Int,
