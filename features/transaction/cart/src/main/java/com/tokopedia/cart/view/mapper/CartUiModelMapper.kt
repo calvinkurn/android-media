@@ -70,7 +70,9 @@ object CartUiModelMapper {
         var errorItemCount = 0
         cartData.unavailableSections.forEach { unavailableSection ->
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
-                errorItemCount += unavailableGroup.cartDetails.size
+                unavailableGroup.cartDetails.forEach { cartDetail ->
+                    errorItemCount += cartDetail.products.size
+                }
             }
         }
 
@@ -138,7 +140,7 @@ object CartUiModelMapper {
     fun mapUnavailableShopUiModel(context: Context?, cartData: CartData): Pair<List<Any>, DisabledAccordionHolderData?> {
         val unavailableSectionList = mutableListOf<Any>()
 
-        val disabledItemHeaderUiModel = mapDisabledItemHeaderUiModel(cartData.totalProductError)
+        val disabledItemHeaderUiModel = mapDisabledItemHeaderUiModel(cartData)
         unavailableSectionList.add(disabledItemHeaderUiModel)
 
         var showAccordion = false
@@ -213,9 +215,18 @@ object CartUiModelMapper {
         return Pair(unavailableSectionList, null)
     }
 
-    private fun mapDisabledItemHeaderUiModel(disabledProductCount: Int): DisabledItemHeaderHolderData {
+    private fun mapDisabledItemHeaderUiModel(cartData: CartData): DisabledItemHeaderHolderData {
+        var errorItemCount = 0
+        cartData.unavailableSections.forEach { unavailableSection ->
+            unavailableSection.unavailableGroups.forEach { unavailableGroup ->
+                unavailableGroup.cartDetails.forEach { cartDetail ->
+                    errorItemCount += cartDetail.products.size
+                }
+            }
+        }
+
         return DisabledItemHeaderHolderData(
-                disabledItemCount = disabledProductCount
+                disabledItemCount = errorItemCount
         )
     }
 
