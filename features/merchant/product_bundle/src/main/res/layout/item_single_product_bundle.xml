@@ -30,15 +30,26 @@
         app:unify_image_corner_radius="8"
         app:unify_image_type="rect" />
 
+    <com.tokopedia.product_bundle.common.customview.ErrorLabelView
+        android:id="@+id/tv_variant_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:visibility="gone"
+        app:errorlabel_text="@string/error_empty_variant"
+        app:layout_constraintLeft_toRightOf="@id/iv_item_image"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_item_bundle_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         tool:labelTitle="Paket isi 3"
         app:labelType="general_light_green"
         app:layout_constraintStart_toEndOf="@+id/iv_item_image"
-        app:layout_constraintTop_toTopOf="@+id/iv_item_image" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_variant_empty" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_title"

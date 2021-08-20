@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.common.view
+package com.tokopedia.product_bundle.common.customview
 
 import android.content.Context
 import android.graphics.Canvas
