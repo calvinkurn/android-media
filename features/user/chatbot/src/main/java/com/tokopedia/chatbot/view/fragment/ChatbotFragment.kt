@@ -39,6 +39,16 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
+import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
+import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
+import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
+import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
+import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
+import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_IMAGE
+import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
+import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
+import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -125,11 +135,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun clearChatText() {
         replyEditText.setText("")
     }
-
-    val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
-    val REQUEST_CODE_CHAT_IMAGE = 115
-    val REQUEST_SUBMIT_FEEDBACK = 909
-    val REQUEST_SUBMIT_CSAT = 911
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
@@ -184,19 +189,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onEmojiClick(view: View?) {
         when (view?.id) {
             R.id.btn_inactive_1 -> {
-                onClickEmoji(1)
+                onClickEmoji(RATING_ONE)
             }
             R.id.btn_inactive_2 -> {
-                onClickEmoji(2)
+                onClickEmoji(RATING_TWO)
             }
             R.id.btn_inactive_3 -> {
-                onClickEmoji(3)
+                onClickEmoji(RATING_THREE)
             }
             R.id.btn_inactive_4 -> {
-                onClickEmoji(4)
+                onClickEmoji(RATING_FOUR)
             }
             R.id.btn_inactive_5 -> {
-                onClickEmoji(5)
+                onClickEmoji(RATING_FIVE)
             }
         }
     }
@@ -716,7 +721,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return ImageUploadViewModel(
                 messageId,
                 opponentId,
-                (System.currentTimeMillis() / 1000).toString(),
+                (System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
         )
