@@ -36,6 +36,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.lottie
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
