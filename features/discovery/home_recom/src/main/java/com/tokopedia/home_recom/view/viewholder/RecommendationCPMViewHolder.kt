@@ -24,9 +24,8 @@ class RecommendationCPMViewHolder(val view: View, val listener: RecommendationLi
         bindItem(element)
     }
 
-    override fun bind(element: RecommendationCPMDataModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        bindView()
+    override fun bind(element: RecommendationCPMDataModel, payloads: MutableList<Any>) {
+        bind(element)
     }
 
     private fun bindView() {
