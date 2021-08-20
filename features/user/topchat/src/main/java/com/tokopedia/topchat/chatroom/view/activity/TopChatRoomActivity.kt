@@ -183,6 +183,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, "")
                     intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopId)
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, toShopId)
+                    role = RoleType.BUYER
                 }
                 pathSegments.contains(ApplinkConst.Chat.PATH_ASK_BUYER) -> {
                     val toUserId = intent?.data?.lastPathSegment.toZeroStringIfNull()
@@ -209,6 +210,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, "")
                     intent.putExtra(ApplinkConst.Chat.TO_USER_ID, toUserId)
                     intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, toUserId)
+                    role = RoleType.SELLER
                 }
                 else -> {
                     handleIntentChatRoomWithMessageId()
