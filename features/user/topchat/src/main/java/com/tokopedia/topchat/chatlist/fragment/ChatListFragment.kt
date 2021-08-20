@@ -597,7 +597,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         onUserVisibleChanged(isVisibleToUser)
     }
 
-    override fun onScrollToTop() {}
+    override fun onScrollToTop() {
+        getRecyclerView(view)?.smoothScrollToPosition(0)
+    }
 
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")

@@ -320,7 +320,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onScrollToTop() {
-        recyclerView?.smoothScrollToPosition(0)
+        scrollView?.smoothScrollTo(0, 0)
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
