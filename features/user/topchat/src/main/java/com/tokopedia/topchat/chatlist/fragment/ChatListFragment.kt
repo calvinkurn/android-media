@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -64,6 +65,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
@@ -517,6 +519,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
+            intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
+            intent.putExtra(Constant.CHAT_USER_ROLE_KEY, getRole())
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
         }
@@ -788,6 +792,14 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         menu?.findItem(R.id.menu_chat_search)?.isVisible = isShow
         menu?.findItem(R.id.menu_chat_filter)?.isVisible = isShow
         menu?.findItem(R.id.menu_chat_setting)?.isVisible = isShow
+    }
+
+    private fun getRole(): Int {
+        return if(isTabSeller()) {
+            RoleType.SELLER
+        } else {
+            RoleType.BUYER
+        }
     }
 
     companion object {
