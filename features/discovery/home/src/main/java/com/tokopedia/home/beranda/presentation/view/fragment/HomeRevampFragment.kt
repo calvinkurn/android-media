@@ -114,9 +114,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -334,6 +332,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var backgroundViewImage: ImageView
+    private lateinit var loaderHeaderImage: FrameLayout
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
@@ -611,6 +610,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
+        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
@@ -1540,15 +1540,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         layoutParams.height =
                             resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
                         backgroundViewImage.layoutParams = layoutParams
+                        loaderHeaderImage.layoutParams = layoutParams
                     }
 
             if (isLoading) {
-                backgroundViewImage.setColorFilter(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.Unify_N100
-                    )
-                )
+                loaderHeaderImage.visible()
+                backgroundViewImage.gone()
             } else {
                 if (isBeautyFest) {
                     if (currentContext.isDarkMode()) {
@@ -1582,6 +1579,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         .dontAnimate()
                         .into(backgroundViewImage)
                 }
+                loaderHeaderImage.gone()
+                backgroundViewImage.visible()
             }
         }
     }
