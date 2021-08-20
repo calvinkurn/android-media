@@ -21,7 +21,7 @@ data class Product (
     val isCampaign: Boolean,
     @Expose
     @SerializedName("price")
-    val price: Int,
+    val price: Double,
     @Expose
     @SerializedName("sku")
     val sku: String,

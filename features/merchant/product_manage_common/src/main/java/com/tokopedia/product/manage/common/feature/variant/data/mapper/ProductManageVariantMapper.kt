@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
@@ -81,7 +82,7 @@ object ProductManageVariantMapper {
                     it.status,
                     it.combination,
                     it.isPrimary,
-                    it.price,
+                    it.price.toInt().orZero(),
                     it.sku,
                     it.stock,
                     it.pictures
