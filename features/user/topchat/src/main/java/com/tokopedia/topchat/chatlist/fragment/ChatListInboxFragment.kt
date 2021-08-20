@@ -122,6 +122,8 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
 
+    private var currentActiveMessageId: String? = null
+
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "chatlist"
@@ -513,7 +515,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
-        setIndicatorCurrentActiveChat()
+        setIndicatorCurrentActiveChat(currentActiveMessageId)
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
@@ -648,6 +650,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             adapter?.deselectActiveChatIndicator(element)
             adapter?.activeChat = lastActiveChat
             chatRoomFlexModeListener?.onClickAnotherChat(element)
+            currentActiveMessageId = element.msgId
         }
     }
 
@@ -869,9 +872,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             } else {
                 msgId
             }
-            if(currentActiveChat != null &&
-                currentActiveChat != adapter?.activeChat?.first?.msgId
-            ) {
+            if(currentActiveChat != null) {
                 val pair = adapter?.getItemPosition(currentActiveChat)
                 if(pair?.first != null && pair.second != null) {
                     val activateChat = pair.first
@@ -879,6 +880,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                     adapter?.notifyItemChanged(pair.second!!, activateChat)
                     adapter?.activeChat = pair
                     if(!stopTryingIndicator) stopTryingIndicator = true
+                    currentActiveMessageId = currentActiveChat
                 }
             }
         }
