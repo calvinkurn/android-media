@@ -1,4 +1,4 @@
-package com.tokopedia.play.data.websocket.revamp
+package com.tokopedia.play_common.websocket
 
 import kotlinx.coroutines.flow.Flow
 

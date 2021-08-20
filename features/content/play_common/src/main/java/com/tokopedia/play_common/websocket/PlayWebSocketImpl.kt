@@ -1,14 +1,11 @@
-package com.tokopedia.play.data.websocket.revamp
+package com.tokopedia.play_common.websocket
 
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.DEFAULT_PING
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.flow.*
 import okhttp3.*
 import okio.ByteString
@@ -30,8 +27,7 @@ class PlayWebSocketImpl(
         client = clientBuilder.build()
     }
 
-    private val gson: Gson
-        get() = GsonSingleton.instance
+    private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
             extraBufferCapacity = 50
