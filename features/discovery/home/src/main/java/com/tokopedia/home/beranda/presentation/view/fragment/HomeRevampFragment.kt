@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
@@ -281,8 +282,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
-        private const val BEAUTY_FEST_TRUE = 0
-        private const val BEAUTY_FEST_FALSE = 1
+        private const val BEAUTY_FEST_FALSE = 0
+        private const val BEAUTY_FEST_TRUE = 1
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
 
         @JvmStatic
@@ -1052,6 +1053,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
+                    renderTopBackground(isLoading = true, isBeautyFest = false)
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
                 }
@@ -1317,6 +1319,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeData() {
+        var timer: CountDownTimer? = null
         getHomeViewModel().homeLiveData.observe(
             viewLifecycleOwner,
             Observer { data: HomeDataModel? ->
@@ -1324,6 +1327,30 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (data.list.isNotEmpty()) {
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
+
+                        if (timer != null) timer!!.cancel()
+                        timer = object : CountDownTimer(1000, 1000) {
+                            override fun onTick(l: Long) {}
+                            override fun onFinish() {
+                                val beautyFest = getBeautyFest(data.list)
+                                saveBeautyFest(beautyFest)
+
+                                when (beautyFest) {
+                                    BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                                    BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                                    else -> {
+                                        context?.let {
+                                            sharedPrefs = it.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
+                                            when (sharedPrefs.getInt(KEY_IS_BEAUTY_FEST, BEAUTY_FEST_NOT_QUALIFY)) {
+                                                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                                                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                                                else -> renderTopBackground(isLoading = true, isBeautyFest = false)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }.start()
                     }
                 }
             })
@@ -1504,6 +1531,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observePlayWidgetReminderEvent() {
         getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+            renderTopBackground(isLoading = true, isBeautyFest = false)
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
                 REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
@@ -1592,22 +1620,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
-            val beautyFest = getBeautyFest(data)
-            saveBeautyFest(beautyFest)
-            when (beautyFest) {
-                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-                else -> {
-                    context?.let {
-                        sharedPrefs = it.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
-                        when (sharedPrefs.getInt(KEY_IS_BEAUTY_FEST, BEAUTY_FEST_NOT_QUALIFY)) {
-                            BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-                            BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-                            else -> renderTopBackground(isLoading = true, isBeautyFest = false)
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -1891,6 +1903,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToLogin() {
+        renderTopBackground(isLoading = true, isBeautyFest = false)
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -2919,6 +2932,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 )
             }
         } else {
+            renderTopBackground(isLoading = true, isBeautyFest = false)
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
