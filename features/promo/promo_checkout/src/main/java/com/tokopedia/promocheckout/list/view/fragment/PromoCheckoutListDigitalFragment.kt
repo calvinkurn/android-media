@@ -125,8 +125,8 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
         private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
 
-        private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo"
-        private const val PROMO_DIGITAL_AB_TEST_COUPON = "Control_variant"
+        private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo_v2"
+        private const val PROMO_DIGITAL_AB_TEST_COUPON = "control_variant"
         private const val CATEGORY_ID_LISTRIK = 3
         private const val CATEGORY_ID_TELCO_PULSA = 1
 
