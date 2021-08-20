@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewaction.smoothScrollTo
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
@@ -75,43 +76,13 @@ object NotifcenterAction {
 
     fun smoothScrollNotificationTo(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
-            object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return isDisplayingAtLeast(90)
-                }
-
-                override fun getDescription(): String {
-                    return "smooth scroll notification"
-                }
-
-                override fun perform(uiController: UiController?, view: View?) {
-                    (view as? RecyclerView)?.apply {
-                        smoothScrollToPosition(position)
-                    }
-                    uiController?.loopMainThreadForAtLeast(500)
-                }
-
-            }
+            smoothScrollTo(position)
         )
     }
 
     fun smoothScrollOrderWidgetTo(position: Int) {
         onView(withId(R.id.rv_order_list)).perform(
-            object : ViewAction {
-                override fun getConstraints(): Matcher<View> {
-                    return isDisplayingAtLeast(90)
-                }
-
-                override fun getDescription(): String {
-                    return "smooth scroll order widget"
-                }
-
-                override fun perform(uiController: UiController?, view: View?) {
-                    (view as? RecyclerView)?.smoothScrollToPosition(position)
-                    uiController?.loopMainThreadForAtLeast(500)
-                }
-
-            }
+            smoothScrollTo(position)
         )
     }
 
