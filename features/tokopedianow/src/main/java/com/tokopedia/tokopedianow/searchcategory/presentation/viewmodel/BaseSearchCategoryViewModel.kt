@@ -757,8 +757,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewGetProductCount(option: Option) {
-        val mapParameter = queryParam + mapOf(option.key to option.value)
+        val queryParamWithoutOption = queryParam.toMutableMap().apply { removeOption(option) }
+        val mapParameter = queryParamWithoutOption + mapOf(option.key to option.value)
         onViewGetProductCount(mapParameter)
+    }
+
+    private fun MutableMap<String, String>.removeOption(option: Option) {
+        remove(option.key)
+        remove(OptionHelper.getKeyRemoveExclude(option))
     }
 
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
@@ -768,8 +774,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
-        queryParamMutable.remove(chosenCategoryFilter.key)
-        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(chosenCategoryFilter))
+        queryParamMutable.removeOption(chosenCategoryFilter)
 
         filterController.refreshMapParameter(queryParam)
     }
