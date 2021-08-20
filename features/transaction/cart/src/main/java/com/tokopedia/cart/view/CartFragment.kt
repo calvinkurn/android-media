@@ -1067,14 +1067,25 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin()
-        val cartItemDatas = mutableListOf<CartItemHolderData>()
-        cartItemDatas.add(cartItemHolderData)
         val allCartItemDataList = cartAdapter.allCartItemData
+        val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
+        if (cartItemHolderData.isBundlingItem) {
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            cartShopHolderData?.let {
+                it.productUiModelList.forEach { product ->
+                    if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId) {
+                        toBeDeletedProducts.add(product)
+                    }
+                }
+            }
+        } else {
+            toBeDeletedProducts.add(cartItemHolderData)
+        }
 
-        if (cartItemDatas.size > 0) {
-            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
+        if (toBeDeletedProducts.size > 0) {
+            dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedProducts, false, false)
             cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
-                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
+                    dPresenter.generateDeleteCartDataAnalytics(toBeDeletedProducts)
             )
         }
     }
@@ -1087,8 +1098,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
     }
 
-    override fun onCartItemQuantityReseted(position: Int, parentPosition: Int) {
-        cartAdapter.resetQuantity(position, parentPosition)
+    override fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData) {
+        cartAdapter.resetQuantity(position, cartItemHolderData)
     }
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -1624,8 +1635,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickAtcCartClickTulisCatatan()
     }
 
-    override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean) {
-        cartAdapter.setItemSelected(position, parentPosition, !checked)
+    override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
+        cartAdapter.setItemSelected(position, cartItemHolderData)
         updateStateAfterCheckChanged()
     }
 
@@ -1645,13 +1656,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
     }
 
-    override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
+    override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
         cartShopHolderData?.let {
-            val isChecked = !cartItemHolderData.isSelected
             it.productUiModelList.forEachIndexed { index, data ->
                 if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId) {
-                    cartAdapter.setItemSelected(index, parentPosition, isChecked)
+                    cartAdapter.setItemSelected(index, cartItemHolderData)
                 }
             }
             updateStateAfterCheckChanged()
@@ -1718,14 +1728,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onNeedToRefreshSingleShop(parentPosition: Int) {
-        onNeedToUpdateViewItem(parentPosition)
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
+        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (data != null) {
+            onNeedToUpdateViewItem(index)
+        }
     }
 
-    override fun onNeedToRefreshWeight(parentPosition: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
-        cartShopHolderData?.isNeedToRefreshWeight = true
-        onNeedToUpdateViewItem(parentPosition)
+    override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
+        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (data != null) {
+            data.isNeedToRefreshWeight = true
+            onNeedToUpdateViewItem(index)
+        }
     }
 
     override fun onNeedToRefreshMultipleShop() {
@@ -2216,7 +2231,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderTickerError(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty() && cartData.unavailableSections.isNotEmpty()) {
-            val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(activity, cartData)
+            val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(cartData)
             cartAdapter.addItem(cartItemTickerErrorHolderData)
         }
     }
@@ -2595,7 +2610,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
-        val updateListResult = cartAdapter.removeCartItemById(deletedCartIds, context)
+        val updateListResult = cartAdapter.removeProductByCartId(deletedCartIds)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
         hideProgressLoading()
@@ -2665,7 +2680,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
+        val updateListResult = cartAdapter.removeProductByCartId(listOf(cartId))
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
         setTopLayoutVisibility()
@@ -2739,8 +2754,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processGetWishlistData()
     }
 
-    private fun removeLocalCartItem(updateListResult: Pair<ArrayList<Int>, ArrayList<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
+    private fun removeLocalCartItem(updateListResult: Pair<List<Int>, List<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
         // Todo : remove deleted item locally, then refresh cart
+        updateListResult.first.forEach {
+            onNeedToRemoveViewItem(it)
+        }
+        updateListResult.second.forEach {
+            onNeedToUpdateViewItem(it)
+        }
+
 /*
         updateListResult.first.forEach {
             onNeedToRemoveViewItem(it)
@@ -3128,9 +3150,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int, newQuantity: Int) {
+    override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach {
                     if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId) {
@@ -3231,34 +3253,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onExpandAvailableItem(index: Int) {
         // Todo : revamp collapse - expand handling
-/*
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
-        if (cartShopHolderData != null) {
-            if (cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0 > 10) {
-                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId
-                        ?: "")
-            } else {
-                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId
-                        ?: "")
-            }
-            cartShopHolderData.isCollapsed = false
-            onNeedToUpdateViewItem(index)
-        }
-*/
     }
 
-    override fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int) {
+    override fun onCollapsedProductClicked(clickedProductIndex: Int) {
         // Todo : revamp collapse - expand handling
-/*
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentIndex)
-        if (cartShopHolderData != null) {
-            cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopGroupAvailableData?.shopId
-                    ?: "")
-            cartShopHolderData.isCollapsed = false
-            cartShopHolderData.clickedCollapsedProductIndex = clickedProductIndex
-            onNeedToUpdateViewItem(parentIndex)
-        }
-*/
     }
 
     override fun scrollToClickedExpandedProduct(index: Int, offset: Int) {
@@ -3292,10 +3290,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             cartAdapter.expandDisabledItems()
         }
-    }
-
-    override fun onEditNoteDone(parentPosition: Int) {
-        onNeedToUpdateViewItem(parentPosition)
     }
 
     override fun onCashbackUpdated(amount: Int) {

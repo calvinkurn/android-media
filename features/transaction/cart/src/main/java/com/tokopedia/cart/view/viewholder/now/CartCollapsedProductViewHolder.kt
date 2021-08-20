@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
-class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener, val parentPosition: Int) : RecyclerView.ViewHolder(viewBinding.root) {
+class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_product
@@ -35,8 +35,8 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
         ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
-            if (parentPosition != RecyclerView.NO_POSITION && position != RecyclerView.NO_POSITION) {
-                actionListener.onCollapsedProductClicked(parentPosition, position)
+            if (position != RecyclerView.NO_POSITION) {
+                actionListener.onCollapsedProductClicked(position)
             }
         }
     }

@@ -347,8 +347,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -364,22 +364,24 @@
             android:text="@string/label_move_to_wishlist"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:visibility="visible" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_delete_cart"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_NN500"
             app:icon_name="DELETE"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_unavailable_action"

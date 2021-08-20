@@ -127,7 +127,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderExpandedCartItems(cartShopHolderData: CartShopHolderData) {
-        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener, adapterPosition)
+        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener)
         cartItemAdapter.addDataList(cartShopHolderData.productUiModelList)
         val linearLayoutManager = LinearLayoutManager(binding.rvCartItem.context)
         binding.rvCartItem.layoutManager = linearLayoutManager
@@ -144,7 +144,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
         val maxIndex = min(10, cartShopHolderData.productUiModelList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
-        cartCartCollapsedProductAdapter.parentPosition = adapterPosition
         cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.productUiModelList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         binding.rvCartItem.layoutManager = layoutManager

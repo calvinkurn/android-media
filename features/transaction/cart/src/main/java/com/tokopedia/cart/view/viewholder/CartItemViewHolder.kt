@@ -8,9 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +20,6 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -35,7 +32,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     private var context: Context? = null
     private var viewHolderListener: ViewHolderListener? = null
 
-    private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var delayChangeCheckboxState: Job? = null
     private var delayChangeQty: Job? = null
@@ -69,18 +65,17 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         qtyTextWatcher = null
     }
 
-    fun bindData(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener, dataSize: Int) {
+    fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener, dataSize: Int) {
         this.viewHolderListener = viewHolderListener
-        this.parentPosition = parentPosition
         this.dataSize = dataSize
 
         renderProductInfo(data)
-        renderLeftAnchor(data, parentPosition)
-        renderQuantity(data, parentPosition, viewHolderListener)
+        renderLeftAnchor(data)
+        renderQuantity(data, viewHolderListener)
         renderProductAction(data)
     }
 
-    private fun renderLeftAnchor(data: CartItemHolderData, parentPosition: Int) {
+    private fun renderLeftAnchor(data: CartItemHolderData) {
         if (data.isBundlingItem) {
             with(binding) {
                 checkboxProduct.gone()
@@ -91,7 +86,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.START, R.id.v_bundling_product_separator, ConstraintSet.END, marginStart)
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.TOP, R.id.container_product_information, ConstraintSet.TOP, 0)
                 constraintSet.applyTo(containerProductInformation)
-                renderCheckBoxBundle(data, parentPosition)
+                renderCheckBoxBundle(data)
 
                 val params = vBundlingProductSeparator.layoutParams as ViewGroup.MarginLayoutParams
                 if (data.isError) {
@@ -110,7 +105,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.START, R.id.checkbox_product, ConstraintSet.END, marginStart)
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.TOP, R.id.container_product_information, ConstraintSet.TOP, 0)
                 constraintSet.applyTo(containerProductInformation)
-                renderCheckBoxProduct(data, parentPosition)
+                renderCheckBoxProduct(data)
             }
         }
     }
@@ -146,7 +141,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         binding.buttonDeleteCart.show()
     }
 
-    private fun renderCheckBoxProduct(data: CartItemHolderData, parentPosition: Int) {
+    private fun renderCheckBoxProduct(data: CartItemHolderData) {
         val checkboxProduct = binding.checkboxProduct
         if (data.isError) {
             checkboxProduct.gone()
@@ -168,8 +163,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
-                                actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                                viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
+                                actionListener?.onCartItemCheckChanged(adapterPosition, data)
+                                viewHolderListener?.onNeedToRefreshSingleShop(data)
                             }
                         }
                     }
@@ -178,7 +173,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         }
     }
 
-    private fun renderCheckBoxBundle(data: CartItemHolderData, parentPosition: Int) {
+    private fun renderCheckBoxBundle(data: CartItemHolderData) {
         val checkboxBundle = binding.checkboxBundle
         if (data.isError) {
             checkboxBundle.gone()
@@ -201,8 +196,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                     delay(500L)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (adapterPosition != RecyclerView.NO_POSITION) {
-                            actionListener?.onBundleItemCheckChanged(data, parentPosition)
-                            viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
+                            actionListener?.onBundleItemCheckChanged(data)
+                            viewHolderListener?.onNeedToRefreshSingleShop(data)
                         }
                     }
                 }
@@ -268,14 +263,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
     private fun renderProductName(data: CartItemHolderData) {
         binding.textProductName.text = Html.fromHtml(data.productName)
-        binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
+        binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
     }
 
     private fun renderImage(data: CartItemHolderData) {
         data.productImage.let {
             binding.iuImageProduct.loadImage(it)
         }
-        binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
+        binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
     }
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
@@ -525,7 +520,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         }
     }
 
-    private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
+    private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
             qtyEditorProduct.gone()
@@ -558,8 +553,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                     if (previousQuantity != newValue) {
                         validateQty(newValue, data)
                         if (newValue != 0) {
-                            actionListener?.onCartItemQuantityChanged(data, parentPosition, newValue)
-                            handleRefreshType(data, viewHolderListener, parentPosition)
+                            actionListener?.onCartItemQuantityChanged(data, newValue)
+                            handleRefreshType(data, viewHolderListener)
                         }
                     }
                 }
@@ -617,15 +612,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         }
     }
 
-    private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
+    private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         if (data.wholesalePriceData.isNotEmpty()) {
             if (data.isPreOrder) {
                 viewHolderListener?.onNeedToRefreshAllShop()
             } else {
-                viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
+                viewHolderListener?.onNeedToRefreshSingleShop(data)
             }
         } else if (data.shouldValidateWeight) {
-            viewHolderListener?.onNeedToRefreshWeight(parentPosition)
+            viewHolderListener?.onNeedToRefreshWeight(data)
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
@@ -653,7 +648,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun getOnClickProductItemListener(
-            @SuppressLint("RecyclerView") position: Int, parentPosition: Int,
+            @SuppressLint("RecyclerView") position: Int,
             data: CartItemHolderData): View.OnClickListener {
         return View.OnClickListener {
             if (position != RecyclerView.NO_POSITION) {
@@ -666,9 +661,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
-        fun onNeedToRefreshSingleShop(parentPosition: Int)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
 
-        fun onNeedToRefreshWeight(parentPosition: Int)
+        fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshAllShop()
 

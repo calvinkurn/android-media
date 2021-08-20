@@ -65,8 +65,7 @@ object CartUiModelMapper {
         )
     }
 
-    fun mapTickerErrorUiModel(context: Context?, cartData: CartData): CartItemTickerErrorHolderData {
-        val errorInfo = context?.getString(R.string.cart_error_message) ?: ""
+    fun mapTickerErrorUiModel(cartData: CartData): CartItemTickerErrorHolderData {
         var errorItemCount = 0
         cartData.unavailableSections.forEach { unavailableSection ->
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
@@ -77,7 +76,7 @@ object CartUiModelMapper {
         }
 
         return CartItemTickerErrorHolderData(
-                errorInfo = String.format(errorInfo, errorItemCount)
+                errorProductCount = errorItemCount
         )
     }
 
@@ -277,7 +276,7 @@ object CartUiModelMapper {
                 errorType = unavailableSection.title
                 selectedUnavailableActionId = unavailableSection.selectedUnavailableActionId
                 selectedUnavailableActionLink = product.selectedUnavailableActionLink
-                actionsData = cartData.unavailableSectionAction
+                actionsData = unavailableSection.actions
                 isError = true
             } else {
                 actionsData = cartData.availableSection.actions

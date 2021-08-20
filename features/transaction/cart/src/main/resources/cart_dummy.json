@@ -115,7 +115,7 @@
               "shop_id": 6778692,
               "user_id": 70399913,
               "admin_ids": [],
-              "shop_name": "elizabethsatu",
+              "shop_name": "SHOP 1",
               "shop_image": "https://images.tokopedia.net/img/seller_no_logo_0.png",
               "shop_url": "https://www.tokopedia.com/elizabethsatu",
               "shop_status": 1,
@@ -156,7 +156,7 @@
               "maximum_shipping_weight": 0
             },
             "promo_codes": [],
-            "cart_string": "6778692-45-6987195",
+            "cart_string": "123-000-001",
             "cart_details": [
               {
                 "bundle_detail": {
@@ -181,7 +181,7 @@
                     "errors": [],
                     "checkbox_state": true,
                     "checkbox_show": true,
-                    "cart_id": 2838636113,
+                    "cart_id": 9999991,
                     "product_id": 10000001,
                     "product_alias": "cyp-tetra",
                     "parent_id": 0,
@@ -189,7 +189,7 @@
                     "campaign_id": 0,
                     "event_id": 0,
                     "is_big_campaign": false,
-                    "product_name": "cyp - tetra",
+                    "product_name": "Product Available 1",
                     "product_description": "",
                     "product_price_fmt": "Rp50.000.001",
                     "product_price": 4000,
@@ -217,6 +217,7 @@
                     "product_preorder": {},
                     "product_cashback": "",
                     "product_min_order": 1,
+                    "product_max_order": 30000,
                     "product_invenage_value": 999999,
                     "product_switch_invenage": 1,
                     "currency_rate": 1,
@@ -391,7 +392,7 @@
               "shop_id": 6370771,
               "user_id": 70588522,
               "admin_ids": [],
-              "shop_name": "TX Shop PM",
+              "shop_name": "SHOP 2",
               "shop_image": "https://images.tokopedia.net/img/seller_no_logo_3.png",
               "shop_url": "https://www.tokopedia.com/txshoppm",
               "shop_status": 1,
@@ -448,7 +449,7 @@
               "maximum_shipping_weight": 0
             },
             "promo_codes": [],
-            "cart_string": "6370771-0-6595013",
+            "cart_string": "123-000-002",
             "cart_details": [
               {
                 "bundle_detail": {
@@ -476,7 +477,7 @@
                     "checkbox_state": true,
                     "checkbox_show": true,
                     "errors": [],
-                    "cart_id": 2838636113,
+                    "cart_id": 9999992,
                     "product_id": 10000002,
                     "product_alias": "cyp-tetra",
                     "parent_id": 0,
@@ -484,7 +485,7 @@
                     "campaign_id": 0,
                     "event_id": 0,
                     "is_big_campaign": false,
-                    "product_name": "cyp - tetra",
+                    "product_name": "Product Available 2",
                     "product_description": "",
                     "product_price_fmt": "Rp50.000.001",
                     "product_price": 1000,
@@ -621,7 +622,7 @@
                     "errors": [],
                     "checkbox_state": true,
                     "checkbox_show": false,
-                    "cart_id": 2492518130,
+                    "cart_id": 9999993,
                     "product_id": 10000003,
                     "product_alias": "cyp-kotak-kosong",
                     "parent_id": 0,
@@ -629,7 +630,7 @@
                     "campaign_id": 0,
                     "event_id": 0,
                     "is_big_campaign": false,
-                    "product_name": "cyp - kotak kosong",
+                    "product_name": "Product Available 3",
                     "product_description": "produk dummy. jangan dibeli!!!",
                     "product_price_fmt": "Rp50.000",
                     "product_price": 2000,
@@ -767,13 +768,13 @@
                 "messages": []
               },
               {
-                "cart_id": 2492518130,
                 "products": [
                   {
                     "checkbox_state": true,
                     "checkbox_show": true,
+                    "cart_id": 9999994,
                     "product_id": 10000004,
-                    "product_name": "cyp - kotak kosong",
+                    "product_name": "Product Available 4",
                     "product_alias": "cyp-kotak-kosong",
                     "parent_id": 0,
                     "sku": "",
@@ -1005,9 +1006,9 @@
       ],
       "unavailable_section": [
         {
-          "title": "Barang ini dilarang",
+          "title": "Barang ini dilarang : 1",
           "selected_unavailable_action_id": 6,
-          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS",
+          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS : 1",
           "action": [
             {
               "id": 1,
@@ -1045,7 +1046,7 @@
                 "shop_id": 2596159,
                 "user_id": 19889746,
                 "admin_ids": [],
-                "shop_name": "BERKAT TOPED",
+                "shop_name": "SHOP 3",
                 "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/10/18/2596159/2596159_89280fe9-1b72-4c9a-93c8-1445e4ceb87f.jpg",
                 "shop_url": "https://www.tokopedia.com/grouceries",
                 "shop_status": 1,
@@ -1078,7 +1079,7 @@
                 "shop_domain": "grouceries"
               },
               "promo_codes": [],
-              "cart_string": "2596159-0-109685",
+              "cart_string": "123-000-003",
               "cart_details": [
                 {
                   "bundle_detail": {
@@ -1103,7 +1104,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999995,
                       "product_id": 10000005,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -1111,10 +1112,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 1",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 100,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,
@@ -1281,9 +1282,9 @@
           ]
         },
         {
-          "title": "Barang ini dilarang",
+          "title": "Barang ini dilarang : 2",
           "selected_unavailable_action_id": 6,
-          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS",
+          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS : 2",
           "action": [
             {
               "id": 1,
@@ -1321,7 +1322,7 @@
                 "shop_id": 2596159,
                 "user_id": 19889746,
                 "admin_ids": [],
-                "shop_name": "BERKAT TOPED",
+                "shop_name": "SHOP 4",
                 "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/10/18/2596159/2596159_89280fe9-1b72-4c9a-93c8-1445e4ceb87f.jpg",
                 "shop_url": "https://www.tokopedia.com/grouceries",
                 "shop_status": 1,
@@ -1354,7 +1355,7 @@
                 "shop_domain": "grouceries"
               },
               "promo_codes": [],
-              "cart_string": "2596159-0-109685",
+              "cart_string": "123-000-004",
               "cart_details": [
                 {
                   "bundle_detail": {
@@ -1379,7 +1380,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999996,
                       "product_id": 10000006,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -1387,10 +1388,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 2",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 200,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,
@@ -1524,7 +1525,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999997,
                       "product_id": 10000007,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -1532,10 +1533,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 3",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 300,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,
@@ -1669,7 +1670,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999998,
                       "product_id": 10000008,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -1677,10 +1678,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 4",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 400,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,
@@ -1847,9 +1848,9 @@
           ]
         },
         {
-          "title": "Barang ini dilarang",
+          "title": "Barang ini dilarang : 3",
           "selected_unavailable_action_id": 6,
-          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS",
+          "unavailable_description": "Tidak bisa dibeli melalui aplikasi Android dan iOS : 3",
           "action": [
             {
               "id": 1,
@@ -1887,7 +1888,7 @@
                 "shop_id": 2596159,
                 "user_id": 19889746,
                 "admin_ids": [],
-                "shop_name": "BERKAT TOPED",
+                "shop_name": "SHOP 5",
                 "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/10/18/2596159/2596159_89280fe9-1b72-4c9a-93c8-1445e4ceb87f.jpg",
                 "shop_url": "https://www.tokopedia.com/grouceries",
                 "shop_status": 1,
@@ -1920,7 +1921,7 @@
                 "shop_domain": "grouceries"
               },
               "promo_codes": [],
-              "cart_string": "2596159-0-109685",
+              "cart_string": "123-000-005",
               "cart_details": [
                 {
                   "bundle_detail": {
@@ -1945,7 +1946,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999999,
                       "product_id": 10000009,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -1953,10 +1954,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 5",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 500,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,
@@ -2090,7 +2091,7 @@
                       "errors": [],
                       "checkbox_state": true,
                       "checkbox_show": true,
-                      "cart_id": 2838636113,
+                      "cart_id": 9999910,
                       "product_id": 10000010,
                       "product_alias": "cyp-tetra",
                       "parent_id": 0,
@@ -2098,10 +2099,10 @@
                       "campaign_id": 0,
                       "event_id": 0,
                       "is_big_campaign": false,
-                      "product_name": "cyp - tetra",
+                      "product_name": "Product Unavailable 6",
                       "product_description": "",
                       "product_price_fmt": "Rp50.000.001",
-                      "product_price": 4000,
+                      "product_price": 600,
                       "product_original_price": 0,
                       "product_price_original_fmt": "",
                       "is_slash_price": false,

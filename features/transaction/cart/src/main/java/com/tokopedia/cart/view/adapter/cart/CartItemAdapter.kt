@@ -10,8 +10,7 @@ import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.ViewHolderListener
 
-class CartItemAdapter(private val actionListener: ActionListener,
-                      private val parentPosition: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
+class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
 
     private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
 
@@ -27,7 +26,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val holderView = holder as CartItemViewHolder
         val data = cartItemHolderDataList[position]
-        holderView.bindData(data, parentPosition, this, cartItemHolderDataList.size)
+        holderView.bindData(data, this, cartItemHolderDataList.size)
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
@@ -50,14 +49,14 @@ class CartItemAdapter(private val actionListener: ActionListener,
         actionListener.onNeedToRecalculate()
     }
 
-    override fun onNeedToRefreshSingleShop(parentPosition: Int) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
         actionListener.onNeedToRecalculate()
-        actionListener.onNeedToRefreshSingleShop(parentPosition)
+        actionListener.onNeedToRefreshSingleShop(cartItemHolderData)
     }
 
-    override fun onNeedToRefreshWeight(parentPosition: Int) {
+    override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
         actionListener.onNeedToRecalculate()
-        actionListener.onNeedToRefreshWeight(parentPosition)
+        actionListener.onNeedToRefreshWeight(cartItemHolderData)
     }
 
     override fun onNeedToRefreshAllShop() {
@@ -69,19 +68,18 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
-        fun onCartItemQuantityReseted(position: Int, parentPosition: Int)
+        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityInputFormClicked(qty: String)
         fun onCartItemLabelInputRemarkClicked()
-        fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)
-        fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int)
+        fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
+        fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
         fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView)
-        fun onNeedToRefreshSingleShop(parentPosition: Int)
-        fun onNeedToRefreshWeight(parentPosition: Int)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
+        fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
-        fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, parentPosition: Int, newQuantity: Int)
-        fun onEditNoteDone(position: Int)
+        fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int)
         fun onCartItemShowRemainingQty(productId: String)
         fun onCartItemShowInformationLabel(productId: String, informationLabel: String)
         fun onEditBundleClicked(cartItemHolderData: CartItemHolderData)
