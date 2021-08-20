@@ -1330,22 +1330,34 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
-                        //load data from latest update with delay 4 seconds
-                        if (timer != null) timer?.cancel()
-                        timer = object : CountDownTimer(DELAY_HEADER_TIMER, MILLIS_IN_SECOND) {
-                            override fun onTick(l: Long) {}
-                            override fun onFinish() {
-                                val beautyFest = getBeautyFest(data.list)
-                                //save beauty fest in shared preferences
-                                saveBeautyFest(beautyFest)
+                        if(!data.isCache) {
+                            val beautyFest = getBeautyFest(data.list)
+                            //save beauty fest in shared preferences
+                            saveBeautyFest(beautyFest)
 
-                                when (beautyFest) {
-                                    BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-                                    BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-                                    else -> initialLoadHeader()
-                                }
+                            when (beautyFest) {
+                                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+                                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                                else -> initialLoadHeader()
                             }
-                        }.start()
+                        }
+
+//                        //load data from latest update with delay 4 seconds
+//                        if (timer != null) timer?.cancel()
+//                        timer = object : CountDownTimer(DELAY_HEADER_TIMER, MILLIS_IN_SECOND) {
+//                            override fun onTick(l: Long) {}
+//                            override fun onFinish() {
+//                                val beautyFest = getBeautyFest(data.list)
+//                                //save beauty fest in shared preferences
+//                                saveBeautyFest(beautyFest)
+//
+//                                when (beautyFest) {
+//                                    BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
+//                                    BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+//                                    else -> initialLoadHeader()
+//                                }
+//                            }
+//                        }.start()
                     }
                 }
             })
