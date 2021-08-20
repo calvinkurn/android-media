@@ -54,6 +54,7 @@ import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
+import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -410,7 +411,6 @@ class PlayVideoFragment @Inject constructor(
                         }
                     }
                 }
-                else -> {}
             }
         })
     }
