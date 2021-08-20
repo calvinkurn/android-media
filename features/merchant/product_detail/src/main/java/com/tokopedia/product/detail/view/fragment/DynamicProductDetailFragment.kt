@@ -3771,11 +3771,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel?
     ) {
-        // TODO vindo - pass the productId to bundle page
         val productInfoP1 = viewModel.getDynamicProductInfoP1
         DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
             bundleId, bundleType, productInfoP1, componentTrackDataModel
         )
+        val productId = productInfoP1?.basic?.productID
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE)
+        intent.putExtra("", productId)
+        startActivity(intent)
     }
 
     override fun onClickProductInBundling(
