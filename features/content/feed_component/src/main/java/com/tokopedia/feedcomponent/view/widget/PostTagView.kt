@@ -86,7 +86,7 @@ class PostTagView @JvmOverloads constructor(
         positionInFeed: Int
     ) {
         this.listener = dynamicPostListener
-        this.dotMarginStart = convertDpToPixel((width * feedXTag.posX), context)
+        this.dotMarginStart = convertDpToPixel((width * (1 - feedXTag.posX)), context)
         this.dotMarginTop = convertDpToPixel((height * (1 - feedXTag.posY)), context)
         this.postImageHeight = height
         this.postImageWidth = convertDpToPixel(width.toFloat(), context)
