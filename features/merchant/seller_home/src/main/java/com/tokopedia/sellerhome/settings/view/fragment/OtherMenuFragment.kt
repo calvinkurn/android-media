@@ -39,6 +39,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
@@ -64,7 +65,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    OtherMenuViewHolder.Listener, StatusBarCallback,
+    SettingTrackingListener, SellerHomeFragmentListener {
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s"
@@ -314,6 +317,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onKreditTopAdsRefresh() {
         otherMenuViewModel.getKreditTopAds()
+    }
+
+    override fun onScrollToTop() {
+        recyclerView?.smoothScrollToPosition(0)
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {

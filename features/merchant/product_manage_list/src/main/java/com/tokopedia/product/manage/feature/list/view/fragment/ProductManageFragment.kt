@@ -135,6 +135,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
@@ -171,7 +172,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditPriceFragment.OnFinishedListener,
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
-        ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener {
+        ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
+        SellerHomeFragmentListener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -1908,6 +1910,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
+    }
+
+    override fun onScrollToTop() {
+        recycler_view?.smoothScrollToPosition(0)
     }
 
     @Suppress("NAME_SHADOWING")

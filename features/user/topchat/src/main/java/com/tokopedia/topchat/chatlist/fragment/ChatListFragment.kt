@@ -597,6 +597,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         onUserVisibleChanged(isVisibleToUser)
     }
 
+    override fun onScrollToTop() {}
+
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")
         chatTabListContract?.notifyViewCreated()

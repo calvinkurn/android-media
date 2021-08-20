@@ -141,7 +141,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onPageClickedAgain() {
-        rv?.scrollToPosition(0)
+        rv?.smoothScrollToPosition(0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -233,6 +233,10 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLifecycleObserver()
+    }
+
+    override fun onScrollToTop() {
+        onPageClickedAgain()
     }
 
     private fun setupLifecycleObserver() {

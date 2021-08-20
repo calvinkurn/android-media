@@ -45,6 +45,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -124,7 +125,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
     SomFilterBottomSheet.SomFilterFinishListener,
     SomListOrderEmptyViewHolder.SomListEmptyStateListener,
-    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener {
+    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener,
+    SellerHomeFragmentListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -830,6 +832,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         } else {
             false
         }
+    }
+
+    override fun onScrollToTop() {
+        rvSomList?.smoothScrollToPosition(0)
     }
 
     private fun setupBuyerRequestCancelBottomSheet(

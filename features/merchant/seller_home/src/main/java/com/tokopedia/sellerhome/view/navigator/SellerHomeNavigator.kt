@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -236,6 +237,9 @@ class SellerHomeNavigator(
     private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
         hideAllPages(transaction)
         fragment?.let {
+            if (it.isVisible) {
+                (it as? SellerHomeFragmentListener)?.onScrollToTop()
+            }
             transaction.show(it)
         }
     }
