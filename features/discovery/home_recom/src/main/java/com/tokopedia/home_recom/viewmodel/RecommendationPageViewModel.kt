@@ -70,7 +70,7 @@ open class RecommendationPageViewModel @Inject constructor(
         const val PARAM_SUCCESS_300 = 300
         const val POS_PRODUCT_ANCHOR = 0
         const val POS_CPM = 1
-        const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&user_id=%s&q="
+        const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
     }
     /**
@@ -114,8 +114,9 @@ open class RecommendationPageViewModel @Inject constructor(
                         }
                 ) as MutableList<Any?>
                 if (eligibleToShowHeadlineCPM(queryParam)) {
+                    val newParams = HEADLINE_PARAM_RECOM + userSessionInterface.userId
                     val topadsHeadlineResult = asyncCatchError(dispatcher.getIODispatcher(), block = {
-                        getTopAdsHeadlineUseCase.setParams(HEADLINE_PARAM_RECOM.format(userSessionInterface.userId))
+                        getTopAdsHeadlineUseCase.setParams(newParams)
                         getTopAdsHeadlineUseCase.executeOnBackground()
                     }) {
                         throw it
