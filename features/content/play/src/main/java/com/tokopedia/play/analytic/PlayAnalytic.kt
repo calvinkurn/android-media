@@ -530,7 +530,7 @@ class PlayAnalytic(
      */
 
     fun impressCast() {
-        Log.d("<LOG>", "impressCast")
+        Log.d("<TRACK>", "impressCast")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
@@ -546,7 +546,7 @@ class PlayAnalytic(
     }
 
     fun clickCast() {
-        Log.d("<LOG>", "clickCast")
+        Log.d("<TRACK>", "clickCast")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
@@ -561,8 +561,8 @@ class PlayAnalytic(
         )
     }
 
-    fun connectCast(isSuccess: Boolean) {
-        Log.d("<LOG>", "connectCast : $isSuccess")
+    fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
+        Log.d("<TRACK>", "connectCast : $isSuccess, channelId: $id, channelType: ${type.value}")
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
@@ -578,7 +578,7 @@ class PlayAnalytic(
     }
 
     fun recordCastDuration(duration: Long) {
-        Log.d("<LOG>", "recordCastDuration : $duration, channelId: $channelId, channelType: ${mChannelType.value}")
+        Log.d("<TRACK>", "recordCastDuration : $duration, channelId: $channelId, channelType: ${mChannelType.value}")
         /**
          * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
          * So, it will send tracking from the previous screen

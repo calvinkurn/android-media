@@ -909,15 +909,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
-            cast.previousState == PlayCastState.CONNECTING -> {
-                val isSuccess = cast.currentState == PlayCastState.CONNECTED
-                analytic.connectCast(isSuccess)
-
-                if(isSuccess) {
-                    castAnalyticHelper.startRecording()
-                }
+            cast.connectFailed() -> {
+                analytic.connectCast(false)
             }
             cast.currentState == PlayCastState.CONNECTED -> {
+                val channelData = playViewModel.latestCompleteChannelData
+                analytic.connectCast(true, channelData.id, channelData.channelInfo.channelType)
                 castAnalyticHelper.startRecording()
             }
             cast.previousState == PlayCastState.CONNECTED -> {

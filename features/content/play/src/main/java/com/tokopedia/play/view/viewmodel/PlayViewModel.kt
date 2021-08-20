@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -688,6 +689,7 @@ class PlayViewModel @Inject constructor(
         checkLeaderboard(channelData.id)
 
         addCastStateListener(castContext)
+        Log.d("<LOG>", "focusPage")
         setCastState(castPlayerHelper.mapCastState(castContext.castState))
     }
 
@@ -1560,6 +1562,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private val castStateListener = CastStateListener {
+        Log.d("<LOG>", "castStateListener")
         setCastState(castPlayerHelper.mapCastState(it))
     }
 
@@ -1580,6 +1583,7 @@ class PlayViewModel @Inject constructor(
             model.previousState = model.currentState
             model.currentState = castState
         }
+        Log.d("<LOG>", "$model")
         _observableCastState.value = model
     }
 
