@@ -1,11 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +28,14 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
+import rx.Emitter
+import rx.Observable
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -49,6 +59,8 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
         }
     }
     private var mIsInitialLoading: Boolean = false
+    private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
+    private val handler = Handler()
     private lateinit var actionListener: ActionListener
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
@@ -137,6 +149,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     override fun onDetach() {
         super.onDetach()
         presenter.detach()
+        mCompositeSubs.unsubscribe()
     }
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
@@ -198,43 +211,49 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     }
 
     private fun setViewListener() {
+
         binding.layoutSearch.searchBarTextField.isFocusableInTouchMode = true
-
-        binding.layoutSearch.searchBarTextField.run {
-            addTextChangedListener(object: TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    //no-op
+        watchTextRx(binding.layoutSearch.searchBarTextField)
+            .subscribe { s ->
+                if (s.isNotEmpty()) {
+                    input = s
+                    mIsInitialLoading = true
+                    handler.postDelayed({
+                        presenter.loadData(input, page)
+                    }, 200)
+                } else {
+                    binding.tvDescInputDistrict.visibility = View.GONE
+                    binding.llPopularCity.visibility = View.VISIBLE
+                    binding.llListDistrict.visibility = View.GONE
                 }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (binding.layoutSearch.searchBarTextField.text.toString().isEmpty()) {
-                        binding.llListDistrict.visibility = View.GONE
-                        binding.tvDescInputDistrict.visibility = View.GONE
-                        binding.llPopularCity.visibility =View.VISIBLE
-                        popularCityAdapter.notifyDataSetChanged()
-                    }
-                    else {
-                        input = binding.layoutSearch.searchBarTextField.text.toString()
-                        mIsInitialLoading = true
-                        handler.postDelayed({
-                            presenter.loadData(input, page)
-                        }, DELAY_MILIS)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    //no-op
-                }
-
-            })
-        }
+            }.toCompositeSubs()
 
         binding.rvListDistrict.addOnScrollListener(mEndlessListener)
+
+    }
+
+
+    private fun watchTextRx(view: EditText): Observable<String> {
+        return Observable
+            .create({ emitter: Emitter<String> ->
+                view.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(editable: Editable?) {
+                        emitter.onNext(editable.toString())
+                    }
+
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                })
+            }, Emitter.BackpressureMode.NONE)
+            .filter { t -> t.isEmpty() || t.length > 2 }
+            .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun Subscription.toCompositeSubs() {
+        mCompositeSubs.add(this)
     }
 
     override fun onDistrictItemClicked(districtModel: Address) {
@@ -263,7 +282,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
 
     companion object {
 
-        private const val DELAY_MILIS: Long = 200
+        private const val DEBOUNCE: Long = 700
 
         @JvmStatic
         fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
