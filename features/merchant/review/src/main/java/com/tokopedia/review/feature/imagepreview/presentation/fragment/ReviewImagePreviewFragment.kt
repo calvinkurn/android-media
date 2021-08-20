@@ -26,7 +26,9 @@ import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
@@ -385,6 +387,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     ?: ""
             }
         )
+        galleryRoutingData.loadedReviews.addAll(mapToUiModel(productrevGetReviewImage))
         updateHasNextPage(productrevGetReviewImage.hasNext)
     }
 
@@ -597,5 +600,52 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun mapToLikeStatus(isLiked: Boolean): Int {
         return if (isLiked) LikeDislike.LIKED else 0
+    }
+
+    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
+        val reviewImages = mutableListOf<ReviewGalleryUiModel>()
+        productrevGetReviewImage.reviewImages.forEachIndexed { index, reviewImage ->
+            reviewImages.add(
+                getReviewGalleryUiModelBasedOnDetail(
+                    productrevGetReviewImage.detail,
+                    reviewImage.feedbackId,
+                    reviewImage.imageId,
+                    reviewImage.imageNumber
+                )
+            )
+        }
+        return reviewImages
+    }
+
+    private fun getReviewGalleryUiModelBasedOnDetail(
+        detail: Detail,
+        feedbackId: String,
+        attachmentId: String,
+        imageNumber: Int
+    ): ReviewGalleryUiModel {
+        var reviewGalleryUiModel = ReviewGalleryUiModel()
+        detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                rating = this.rating,
+                variantName = this.variantName,
+                reviewerName = this.user.fullName,
+                isLiked = this.isLiked,
+                totalLiked = this.totalLike,
+                review = this.review,
+                reviewTime = this.createTimestamp,
+                isReportable = this.isReportable
+            )
+        }
+        detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                imageUrl = this.thumbnailURL,
+                fullImageUrl = this.fullsizeURL
+            )
+        }
+        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            feedbackId = feedbackId,
+            imageNumber = imageNumber
+        )
+        return reviewGalleryUiModel
     }
 }

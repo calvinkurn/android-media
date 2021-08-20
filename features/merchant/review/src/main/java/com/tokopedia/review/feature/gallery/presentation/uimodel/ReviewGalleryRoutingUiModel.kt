@@ -6,7 +6,7 @@ data class ReviewGalleryRoutingUiModel(
     val productId: String = "",
     val page: Int = 0,
     val totalImageCount: Long = 0L,
-    val loadedReviews: List<ReviewGalleryUiModel> = listOf(),
+    val loadedReviews: MutableList<ReviewGalleryUiModel> = mutableListOf(),
     val currentPosition: Int = 0,
     val shopId: String = ""
 ) {
