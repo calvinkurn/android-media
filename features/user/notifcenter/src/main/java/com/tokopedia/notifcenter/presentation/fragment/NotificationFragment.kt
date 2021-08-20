@@ -123,7 +123,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun loadData(page: Int) {
         if (page == 1) {
-            if (!hasFilter() && GlobalConfig.APPLICATION_TYPE != GlobalConfig.SELLER_APPLICATION) {
+            if (!hasFilter() && isMainApp()) {
                 viewModel.loadNotifOrderList(containerListener?.role)
             }
             viewModel.loadFirstPageNotification(
@@ -724,6 +724,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return View.OnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
+    }
+
+    private fun isMainApp(): Boolean {
+        return GlobalConfig.APPLICATION_TYPE != GlobalConfig.SELLER_APPLICATION
     }
 
     companion object {
