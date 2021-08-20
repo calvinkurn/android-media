@@ -62,6 +62,8 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk

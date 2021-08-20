@@ -9,7 +9,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -42,6 +44,8 @@ open class CategoryTestFixtures {
     protected val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
     protected val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
+    protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
+    protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
@@ -82,6 +86,8 @@ open class CategoryTestFixtures {
                 updateCartUseCase,
                 deleteCartUseCase,
                 getWarehouseUseCase,
+                getRecommendationUseCase,
+                getCategoryListUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
                 userSession,

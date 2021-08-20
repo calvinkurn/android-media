@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -29,6 +30,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -176,6 +178,34 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         voucherGameExtraParam.operatorId.toIntOrNull()?.let {
             operators.firstOrNull { opr -> opr.id == it }?.let {
                 navigateToProductList(it.attributes)
+            }
+        }
+    }
+
+    override fun showGetListError(throwable: Throwable) {
+        hideLoading()
+
+        updateStateScrollListener()
+
+        if (adapter.itemCount > 0) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                context, throwable, ErrorHandler.Builder().build())
+            val errorNetworkModel = ErrorNetworkModel()
+
+            errorNetworkModel.run {
+                errorMessage = errMsg
+                subErrorMessage = "${getString(
+                    com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+                onRetryListener = ErrorNetworkModel.OnRetryListener {
+                    showLoading()
+                    loadInitialData()
+                }
+            }
+            adapter.run {
+                setErrorNetworkModel(errorNetworkModel)
+                showErrorNetwork()
             }
         }
     }
