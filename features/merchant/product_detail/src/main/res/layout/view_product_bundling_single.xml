@@ -48,10 +48,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
+        android:visibility="gone"
         app:labelType="general_light_red"
         app:layout_constraintLeft_toRightOf="@id/product_bundling_single_price"
         app:layout_constraintTop_toTopOf="@id/product_bundling_single_price"
-        tools:text="10%" />
+        tools:text="10%"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_single_slash"

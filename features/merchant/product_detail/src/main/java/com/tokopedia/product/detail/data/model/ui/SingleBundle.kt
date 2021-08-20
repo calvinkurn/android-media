@@ -32,10 +32,21 @@ class SingleBundle(parent: View) {
         label.text = item.quantity
         name.text = item.name
         price.text = item.bundlePrice
-        discount.text = item.discountPercentage
-        slash.apply {
-            text = item.originalPrice
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+
+        val itemDiscount = item.discountPercentage
+        if (itemDiscount.isBlank()) {
+            slash.hide()
+            discount.hide()
+            price.text = item.originalPrice
+        } else {
+            slash.show()
+            discount.show()
+            discount.text = itemDiscount
+            price.text = item.bundlePrice
+            slash.apply {
+                text = item.originalPrice
+                paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            }
         }
     }
 
