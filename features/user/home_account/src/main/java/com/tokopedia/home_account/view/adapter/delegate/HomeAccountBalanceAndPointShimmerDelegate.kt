@@ -13,7 +13,7 @@ import com.tokopedia.home_account.view.listener.BalanceAndPointListener
 
 class HomeAccountBalanceAndPointShimmerDelegate() :
     TypedAdapterDelegate<BalanceAndPointShimmerUiModel, Any, BalanceAndPointShimmerViewHolder>(
-        FundsAndInvestmentViewHolder.LAYOUT
+        BalanceAndPointShimmerViewHolder.LAYOUT
     ) {
 
     override fun onBindViewHolder(item: BalanceAndPointShimmerUiModel, holder: BalanceAndPointShimmerViewHolder) {

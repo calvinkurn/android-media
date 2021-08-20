@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.HomeAccountItemBalanceAndPointBinding
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
@@ -19,9 +20,9 @@ class BalanceAndPointItemViewHolder(
 
     fun bind(item: BalanceAndPointUiModel?) {
         setImage(item?.urlImage)
-        setTitleText(item?.type ?: 0, item?.title)
-        setSubtitleText(item?.id, item?.type ?: 0, item?.subtitle)
-        setClickLitener(item?.type ?: 0, balanceAndPointListener)
+        setTitleText(item?.type ?: DEFAULT_TYPE, item?.title)
+        setSubtitleText(item?.id, item?.type ?: DEFAULT_TYPE, item?.subtitle)
+        setClickLitener(item?.type ?: DEFAULT_TYPE, balanceAndPointListener)
     }
 
     private fun setImage(url: String?) {
@@ -35,7 +36,7 @@ class BalanceAndPointItemViewHolder(
             }
             NOT_LINKED_TYPE -> {
                 setTitleToGreen()
-                "Aktivasi"
+                "Aktifkan"
             }
             ZERO_BALANCE_TYPE -> {
                 setTitleToGreen()
@@ -64,16 +65,16 @@ class BalanceAndPointItemViewHolder(
     private fun setSubtitleText(id: String?, type: Int, text: String?) {
         val subtitle = if (type == FAILED_TO_LOAD_TYPE || type == NOT_LINKED_TYPE) {
             when (id) {
-                OVO_BALANCE_ID -> {
+                AccountConstants.WALLET.OVO -> {
                     "OVO"
                 }
-                GOPAY_BALANCE_ID -> {
+                AccountConstants.WALLET.GOPAY -> {
                     "GoPay"
                 }
-                TOKOPOINT_BALANCE_ID -> {
+                AccountConstants.WALLET.TOKOPOINT -> {
                     "Tokopoint"
                 }
-                SALDO_BALANCE_ID -> {
+                AccountConstants.WALLET.SALDO -> {
                     "Saldo Tokopedia"
                 }
                 else -> {
@@ -95,11 +96,6 @@ class BalanceAndPointItemViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_account_item_balance_and_point
-
-        const val OVO_BALANCE_ID = "ovo"
-        const val GOPAY_BALANCE_ID = "gopay"
-        const val TOKOPOINT_BALANCE_ID = "tokopoint"
-        const val SALDO_BALANCE_ID = "saldo"
 
         const val DEFAULT_TYPE = 0
         const val NOT_LINKED_TYPE = 1

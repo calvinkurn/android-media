@@ -65,6 +65,8 @@ import com.tokopedia.home_account.view.adapter.*
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
 import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder
 import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.DEFAULT_TYPE
+import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.FAILED_TO_LOAD_TYPE
+import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.NOT_LINKED_TYPE
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
@@ -306,7 +308,17 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun onBalanceAndPointErrorClicked() {
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
+        displayBalanceAndPointLocalLoad(false)
+//        balanceAndPointAdapter?.displayShimmer()
+
+        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(
+            listOf(
+                BalanceAndPointUiModel(AccountConstants.WALLET.OVO, "Rp1.000", "2.000.000 Points", AccountConstants.Url.OVO_ICON, NOT_LINKED_TYPE),
+                BalanceAndPointUiModel(AccountConstants.WALLET.SALDO, "Rp100.000.000", "Saldo Tokopedia", AccountConstants.Url.SALDO_ICON, DEFAULT_TYPE),
+                BalanceAndPointUiModel(AccountConstants.WALLET.TOKOPOINT, "Rp10.000.000", "(1.000.000 Points)", AccountConstants.Url.TOKOPOINTS_ICON, FAILED_TO_LOAD_TYPE),
+            )
+        )
+
     }
 
     private fun onFailGetData() {
@@ -383,6 +395,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
 
     private fun hideLoading() {
         home_account_shimmer_layout?.hide()
+    }
+
+    private fun displayBalanceAndPointLocalLoad(isShow: Boolean) {
+        if(isShow) {
+            balanceAndPointLocalLoad?.show()
+            balanceAndPointCardView?.hide()
+        } else {
+            balanceAndPointLocalLoad?.hide()
+            balanceAndPointCardView?.show()
+        }
     }
 
     private fun setupStatusBar() {

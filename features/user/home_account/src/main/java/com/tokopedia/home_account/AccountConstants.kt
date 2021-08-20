@@ -207,5 +207,7 @@ object AccountConstants {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
+        const val TOKOPOINT = "tokopoint"
+        const val SALDO = "saldo"
     }
 }

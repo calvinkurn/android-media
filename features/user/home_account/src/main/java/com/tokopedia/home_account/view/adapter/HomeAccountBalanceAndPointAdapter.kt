@@ -27,6 +27,7 @@ class HomeAccountBalanceAndPointAdapter(
 
     fun showPlaceholderBalanceAndPoints(items: List<BalanceAndPointUiModel>) {
         clearAllItems()
+        notifyDataSetChanged()
         addItemsAndAnimateChanges(items)
     }
 
