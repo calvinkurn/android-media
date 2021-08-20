@@ -390,14 +390,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
-            }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)){
+            } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
                 prepareOpenWebView(uri);
-            } else{
+            } else {
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
-        }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
+        } else if (uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
             prepareOpenWebView(uri);
         } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
@@ -472,16 +472,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri), isAmp);
-        campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(activity, campaign);
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CAMPAIGN,
-                AppEventTracking.Category.CAMPAIGN,
-                AppEventTracking.Action.DEEPLINK,
-                campaignUri
-        ).getEvent());
+        TrackApp.getInstance().getGTM().sendCampaign(activity, campaignUri, screenName, isAmp);
     }
 
     private void prepareOpenWebView(Uri uriData) {
@@ -615,7 +606,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isTokopediaNowShopId(String shopId) {
-        if(TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
             return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID);
         } else {
             return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1) || shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2);

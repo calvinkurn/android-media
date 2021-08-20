@@ -19,6 +19,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 
@@ -52,16 +53,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun init(intent: Intent) {
-        intent.data?.run {
-            url = WebViewHelper.getEncodedUrlCheckSecondUrl(this, getQueryParameter(KEY_URL)?.decode() ?: "")
+        intent.data?.let { uri ->
+            url = WebViewHelper.getEncodedUrlCheckSecondUrl(
+                uri,
+                uri.getQueryParameter(KEY_URL)?.decode() ?: ""
+            )
 
-            showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
-            allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            needLogin = getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
-            pullToRefresh = getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: false
-            webViewTitle = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
+            showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
+            allowOverride = uri.getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
+            needLogin = uri.getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
+            pullToRefresh = uri.getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: false
+            webViewTitle = uri.getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
+
+            trackCampaign(uri)
         }
         logWebViewApplink()
+    }
+
+    //track campaign in case there is utm/gclid in url
+    fun trackCampaign(uri: Uri) {
+        TrackApp.getInstance().gtm.sendCampaign(this, uri.toString(), screenName, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -101,7 +112,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun reloadWebViewIfNeeded() {
         val needReload = try {
-            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+            PersistentCacheManager.instance.get(
+                KEY_CACHE_RELOAD_WEBVIEW,
+                Int::class.javaPrimitiveType!!,
+                0
+            ) == 1
         } catch (e: Exception) {
             false
         }
@@ -209,12 +224,20 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (domain.isNotEmpty()) {
             val baseDomain = getBaseDomain(domain)
             if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
-                if(!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
-                    ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "browser", "domain" to domain, "url" to url))
+                if (!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
+                    ServerLogger.log(
+                        Priority.P1,
+                        "WEBVIEW_OPENED",
+                        mapOf("type" to "browser", "domain" to domain, "url" to url)
+                    )
                     redirectToNativeBrowser()
                     return
                 }
-                ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "webview", "domain" to domain, "url" to url))
+                ServerLogger.log(
+                    Priority.P1,
+                    "WEBVIEW_OPENED",
+                    mapOf("type" to "webview", "domain" to domain, "url" to url)
+                )
             }
         }
     }
@@ -241,8 +264,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         try {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
             val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-            if(whiteListedDomainsCsv.isNotBlank()) {
-                whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            if (whiteListedDomainsCsv.isNotBlank()) {
+                whiteListedDomains =
+                    Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
             }
         } catch (e: Exception) {
             whiteListedDomains = WhiteListedDomains()

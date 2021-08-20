@@ -112,16 +112,6 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check browser appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.BROWSER, "")
-    }
-
-    @Test
-    fun `check webview appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.WEBVIEW, "")
-    }
-
-    @Test
     fun `check voucher list appLink then should return tokopedia internal voucher list in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/voucher-list"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_LIST, expectedDeepLink)
