@@ -18,6 +18,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
@@ -69,6 +70,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
+        renderAlpha(data)
         renderProductInfo(data)
         renderLeftAnchor(data)
         renderQuantity(data, viewHolderListener)
@@ -242,12 +244,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         with(binding) {
             textBundleTitle.text = data.bundleTitle
             textBundlePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.bundlePrice, false).removeDecimalSuffix()
+
             if (data.bundleSlashPriceLabel.isNotBlank()) {
                 labelBundleSlashPricePercentage.text = data.bundleSlashPriceLabel
                 labelBundleSlashPricePercentage.show()
             } else {
                 labelBundleSlashPricePercentage.gone()
             }
+
             if (data.bundleOriginalPrice > 0) {
                 textBundleSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.bundleOriginalPrice, false).removeDecimalSuffix()
                 textBundleSlashPrice.paintFlags = binding.textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -255,8 +259,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             } else {
                 textBundleSlashPrice.gone()
             }
-            textChangeBundle.setOnClickListener {
-                actionListener?.onEditBundleClicked(data)
+
+            if (data.isError) {
+                textChangeBundle.gone()
+            } else {
+                textChangeBundle.show()
+                textChangeBundle.setOnClickListener {
+                    actionListener?.onEditBundleClicked(data)
+                }
             }
         }
     }
@@ -657,6 +667,19 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         }
     }
 
+    private fun renderAlpha(cartItemHolderData: CartItemHolderData) {
+        with(binding) {
+            if (cartItemHolderData.isError) {
+                productBundlingInfo.alpha = ALPHA_HALF
+                containerProductInformation.alpha = ALPHA_HALF
+            } else {
+                productBundlingInfo.alpha = ALPHA_FULL
+                containerProductInformation.alpha = ALPHA_FULL
+            }
+        }
+    }
+
+
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
@@ -675,6 +698,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"
 
-        private const val QUANTITY_REGEX = "[^0-9]"
+        const val ALPHA_HALF = 0.5f
+        const val ALPHA_FULL = 1.0f
     }
 }

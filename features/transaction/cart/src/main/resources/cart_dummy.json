@@ -222,7 +222,10 @@
                     "product_switch_invenage": 1,
                     "currency_rate": 1,
                     "product_price_currency": 1,
-                    "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                    "product_image": {
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                    },
+                    "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                     "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                     "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                     "product_notes": "",
@@ -517,7 +520,10 @@
                     "product_switch_invenage": 1,
                     "currency_rate": 1,
                     "product_price_currency": 1,
-                    "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                    "product_image": {
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                    },
+                    "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                     "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                     "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                     "product_notes": "",
@@ -662,7 +668,10 @@
                     "product_switch_invenage": 1,
                     "currency_rate": 1,
                     "product_price_currency": 1,
-                    "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
+                    "product_image": {
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                    },
+                    "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                     "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
                     "product_all_images": "[{\"file_name\":\"70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800\",\"file_path\":\"product-1/2019/7/12/70588522\",\"status\":2}]",
                     "product_notes": "",
@@ -835,8 +844,9 @@
                     "currency_rate": 1,
                     "product_price_currency": 1,
                     "product_image": {
-                      "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
                     },
+                    "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                     "product_all_images": "[{\"file_name\":\"70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800\",\"file_path\":\"product-1/2019/7/12/70588522\",\"status\":2}]",
                     "product_notes": "",
                     "product_quantity": 2,
@@ -1144,7 +1154,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
@@ -1420,7 +1433,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
@@ -1565,7 +1581,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
@@ -1710,7 +1729,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
@@ -1986,7 +2008,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
@@ -2131,7 +2156,10 @@
                       "product_switch_invenage": 1,
                       "currency_rate": 1,
                       "product_price_currency": 1,
-                      "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
+                      "product_image": {
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800"
+                      },
+                      "product_image_src_100_square": "https://assets.tokopedia.net/assets-tokopedia-lite/v2/arael/kratos/36c1015e.png",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/5/70588522/70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760",
                       "product_all_images": "[{\"file_name\":\"70588522_c5cf67db-92a6-4d3d-8c99-de0d2a79bbd7_760_760\",\"file_path\":\"product-1/2020/3/5/70588522\",\"status\":2}]",
                       "product_notes": "",
