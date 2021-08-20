@@ -243,6 +243,12 @@ class TokoNowHomeViewModel @Inject constructor(
                     setItemStateToLoading(item)
                     getLayoutComponentData(layout, warehouseId, localCacheModel)
 
+                    if (layout is HomeProductRecomUiModel || layout is TokoNowRecentPurchaseUiModel) {
+                        miniCartSimplifiedData?.let {
+                            setMiniCartAndProductQuantity(it)
+                        }
+                    }
+
                     val data = HomeLayoutListUiModel(
                         items = homeLayoutItemList,
                         state = TokoNowLayoutState.LOAD_MORE
