@@ -872,8 +872,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onActivityResultLoginGoogle(data: Intent?) {
-        GoogleSignIn.getSignedInAccountFromIntent(data)?.let { taskGoogleSignInAccount ->
-            handleGoogleSignInResult(taskGoogleSignInAccount)
+        data?.let {
+            GoogleSignIn.getSignedInAccountFromIntent(it)?.let { taskGoogleSignInAccount ->
+                handleGoogleSignInResult(taskGoogleSignInAccount)
+            }
         }
     }
 
