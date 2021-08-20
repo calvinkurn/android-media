@@ -1152,7 +1152,7 @@ class TokoNowHomeFragment: Fragment(),
             //set the Image Url of the Image that represents page
             setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
         }
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, this)
     }
 
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
