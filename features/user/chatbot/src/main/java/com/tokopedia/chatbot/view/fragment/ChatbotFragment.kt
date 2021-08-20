@@ -83,6 +83,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -218,7 +219,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun hideCsatRatingView() {
-        reply_box.show()
+        enableTyping()
         chatbot_view_help_rate.hide()
     }
 
@@ -335,6 +336,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun startNewSession() {
         presenter.connectWebSocket(messageId)
         getViewState().onConnectWebSocket()
+    }
+
+    override fun blockTyping() {
+        reply_box.hide()
+    }
+
+    override fun enableTyping() {
+        reply_box.show()
+        swipeToRefresh.setMargin(0, 0, 0, 0)
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -550,6 +560,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState().onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
                 opponentId)
+        enableTyping()
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
@@ -719,6 +730,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
         }
+        enableTyping()
     }
 
     override fun prepareListener() {
@@ -750,6 +762,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         } else {
             getViewState().hideActionBubble(model)
             presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+            enableTyping()
         }
     }
 

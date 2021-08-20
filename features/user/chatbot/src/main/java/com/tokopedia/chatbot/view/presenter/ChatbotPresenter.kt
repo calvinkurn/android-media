@@ -609,15 +609,22 @@ class ChatbotPresenter @Inject constructor(
             block = {
                 val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
                 val isNewSession = response.topBotGetNewSession.isNewSession
-                if (isNewSession) {
-                    view.startNewSession()
-                } else {
-                    view.loadChatHistory()
-                }
+                val isTypingBlocked = response.topBotGetNewSession.isTypingBlocked
+                handleNewSession(isNewSession)
+                handleReplyBox(isTypingBlocked)
             },
             onError = {
                 view.loadChatHistory()
+                view.enableTyping()
             }
         )
+    }
+
+    private fun handleReplyBox(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) view.blockTyping() else view.enableTyping()
+    }
+
+    private fun handleNewSession(isNewSession: Boolean) {
+        if (isNewSession) view.startNewSession() else view.loadChatHistory()
     }
 }
