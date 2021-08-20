@@ -175,6 +175,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         progressDialog = ProgressDialog(this)
         progressDialog?.setMessage(getString(R.string.title_loading))
         tvTitle?.text = getString(R.string.toppay_title)
+        tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, paymentPassData?.transactionId ?: "")
     }
 
     private fun initVar() {
