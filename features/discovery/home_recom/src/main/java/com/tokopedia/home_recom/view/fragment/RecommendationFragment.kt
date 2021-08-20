@@ -109,6 +109,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LOGIN = 283
+        private const val SPACING_30 = 30
 
         fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
@@ -176,7 +177,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view)?.layoutManager = recyclerViewLayoutManager
-        getRecyclerView(view)?.addItemDecoration(StaggerGridSpacingItemDecoration(30))
+        getRecyclerView(view)?.addItemDecoration(StaggerGridSpacingItemDecoration(SPACING_30))
         observeLiveData()
         observeAtcLiveData()
         observeBuyNowLiveData()

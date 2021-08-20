@@ -335,16 +335,16 @@ class OfficialStoreTracking(context: Context) {
                 "click", DataLayer.mapOf(
                 "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - flash sale - $campaignId - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
-                        "name", gridData.name,
-                        "id", gridData.id.toString(10),
-                        "price", gridData.price,
-                        "brand", "none",
-                        "category", "",
-                        "variant", "none",
-                        "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
-                        "position", position,
-                        "attribution", gridData.attribution
-                ))
+                "name", gridData.name,
+                "id", gridData.id.toString(RADIX_10),
+                "price", gridData.price,
+                "brand", "none",
+                "category", "",
+                "variant", "none",
+                "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
+                "position", position,
+                "attribution", gridData.attribution
+        ))
             )
         )
 

@@ -353,7 +353,7 @@ open class WishlistViewModel @Inject constructor(
             withContext(wishlistCoroutineDispatcherProvider.io){
                 try{
                     if (wishlistVisitable.isNotEmpty()) {
-                        val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                        val recommendationPositionInPreviousPage = ((currentPage - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
                         var pageToken = ""
                         if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
                             pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
@@ -444,7 +444,7 @@ open class WishlistViewModel @Inject constructor(
         return withContext(wishlistCoroutineDispatcherProvider.io){
             try{
                 if(wishlistVisitable.isNotEmpty()) {
-                    val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                    val recommendationPositionInPreviousPage = ((currentPage - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
                     var pageToken = ""
                     if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
                         pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
@@ -1012,5 +1012,6 @@ open class WishlistViewModel @Inject constructor(
         private const val WISHLIST_TOPADS_DIMENS = 3
 
         private const val RECOM_INDEX_STARTER = 4
+        private const val RECOM_INDEX_STARTER_MINUS = 3
     }
 }
