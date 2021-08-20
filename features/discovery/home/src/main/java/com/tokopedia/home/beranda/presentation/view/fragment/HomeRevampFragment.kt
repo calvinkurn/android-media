@@ -1336,21 +1336,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             override fun onTick(l: Long) {}
                             override fun onFinish() {
                                 val beautyFest = getBeautyFest(data.list)
+                                //save beauty fest in shared preferences
                                 saveBeautyFest(beautyFest)
 
                                 when (beautyFest) {
                                     BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
                                     BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-                                    else -> {
-                                        context?.let {
-                                            sharedPrefs = it.getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
-                                            when (sharedPrefs.getInt(KEY_IS_BEAUTY_FEST, BEAUTY_FEST_NOT_QUALIFY)) {
-                                                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-                                                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-                                                else -> renderTopBackground(isLoading = true, isBeautyFest = false)
-                                            }
-                                        }
-                                    }
+                                    else -> initialLoadHeader()
                                 }
                             }
                         }.start()
@@ -1582,6 +1574,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 //displaying header and hide shimmer
                 if (isBeautyFest) {
                     if (currentContext.isDarkMode()) {
+                        //change tint color
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
@@ -1590,6 +1583,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         )
                     }
                     else {
+                        //change tint color
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
@@ -1629,8 +1623,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun getBeautyFest(data: List<Visitable<*>>) : Int {
+        //some result string will not qualify if not contains string channelModel
         return if(!Gson().toJson(data).toString().contains("channelModel"))
             BEAUTY_FEST_NOT_QUALIFY
+        //beauty fest will contains isChannelBeautyFest true
         else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
             BEAUTY_FEST_TRUE
         else
