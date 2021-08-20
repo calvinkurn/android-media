@@ -221,10 +221,21 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
-        binding.cbSelectShop.isEnabled = true
-        binding.cbSelectShop.isChecked = cartShopHolderData.isAllSelected
-        binding.cbSelectShop.skipAnimation()
-        initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
+        with(binding) {
+            val padding10 = itemView.resources.getDimensionPixelSize(R.dimen.dp_10)
+            val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
+            if (!cartShopHolderData.isError) {
+                cbSelectShop.show()
+                cbSelectShop.isEnabled = true
+                cbSelectShop.isChecked = cartShopHolderData.isAllSelected
+                cbSelectShop.skipAnimation()
+                rlShopHeader.setPadding(padding10, padding16, padding10, padding10)
+                initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
+            } else {
+                cbSelectShop.gone()
+                rlShopHeader.setPadding(padding16, padding16, padding10, padding10)
+            }
+        }
     }
 
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {

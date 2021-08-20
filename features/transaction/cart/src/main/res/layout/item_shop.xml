@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:paddingStart="@dimen/dp_0"
+            tools:visibility="gone"
             android:paddingEnd="@dimen/dp_10" />
 
         <LinearLayout

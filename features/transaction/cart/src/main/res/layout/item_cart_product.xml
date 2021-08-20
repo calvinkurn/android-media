@@ -363,6 +363,8 @@
             android:paddingEnd="@dimen/dp_16"
             android:text="@string/label_move_to_wishlist"
             android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -6,8 +6,11 @@ import android.graphics.Paint
 import android.text.*
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +22,7 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -87,8 +91,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.START, R.id.v_bundling_product_separator, ConstraintSet.END, marginStart)
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.TOP, R.id.container_product_information, ConstraintSet.TOP, 0)
                 constraintSet.applyTo(containerProductInformation)
+                renderCheckBoxBundle(data, parentPosition)
+
+                val params = vBundlingProductSeparator.layoutParams as ViewGroup.MarginLayoutParams
+                if (data.isError) {
+                    params.leftMargin = 0
+                } else {
+                    params.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+                }
             }
-            renderCheckBoxBundle(data, parentPosition)
         } else {
             with(binding) {
                 vBundlingProductSeparator.gone()
@@ -99,8 +110,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.START, R.id.checkbox_product, ConstraintSet.END, marginStart)
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.TOP, R.id.container_product_information, ConstraintSet.TOP, 0)
                 constraintSet.applyTo(containerProductInformation)
+                renderCheckBoxProduct(data, parentPosition)
             }
-            renderCheckBoxProduct(data, parentPosition)
         }
     }
 
@@ -137,8 +148,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
     private fun renderCheckBoxProduct(data: CartItemHolderData, parentPosition: Int) {
         val checkboxProduct = binding.checkboxProduct
-        checkboxProduct.isEnabled = data.isError == false
-        checkboxProduct.isChecked = data.isError == false && data.isSelected
+        if (data.isError) {
+            checkboxProduct.gone()
+            return
+        }
+
+        checkboxProduct.show()
+        checkboxProduct.isChecked = data.isSelected
         checkboxProduct.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxProduct.isChecked
@@ -164,8 +180,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
     private fun renderCheckBoxBundle(data: CartItemHolderData, parentPosition: Int) {
         val checkboxBundle = binding.checkboxBundle
-        checkboxBundle.isEnabled = data.isError == false
-        checkboxBundle.isChecked = data.isError == false && data.isSelected
+        if (data.isError) {
+            checkboxBundle.gone()
+            val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
+            binding.productBundlingInfo.setPadding(padding16, 0, 0, 0)
+            return
+        }
+        binding.productBundlingInfo.setPadding(0, 0, 0, 0)
+        checkboxBundle.show()
+        checkboxBundle.isChecked = data.isSelected
         checkboxBundle.skipAnimation()
 
         var prevIsChecked: Boolean = checkboxBundle.isChecked
@@ -177,11 +200,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
-                        if (!data.isError) {
-                            if (adapterPosition != RecyclerView.NO_POSITION) {
-                                actionListener?.onBundleItemCheckChanged(data, parentPosition)
-                                viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
-                            }
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            actionListener?.onBundleItemCheckChanged(data, parentPosition)
+                            viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
                         }
                     }
                 }
@@ -506,7 +527,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         val qtyEditorProduct = binding.qtyEditorProduct
-
+        if (data.isError) {
+            qtyEditorProduct.gone()
+            return
+        }
+        qtyEditorProduct.show()
         qtyEditorProduct.autoHideKeyboard = true
         qtyEditorProduct.minValue = data.minOrder
         qtyEditorProduct.maxValue = data.maxOrder
@@ -609,6 +634,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
         val textMoveToWishlist = binding.textMoveToWishlist
+        if (data.isError) {
+            textMoveToWishlist.gone()
+            return
+        }
+
         if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
