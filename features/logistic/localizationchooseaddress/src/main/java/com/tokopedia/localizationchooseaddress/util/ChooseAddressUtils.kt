@@ -23,6 +23,9 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object ChooseAddressUtils {
 
+    private const val locationParamsFormat: String =
+        "user_lat=%s&user_long=%s&user_addressId=%s&user_cityId=%s&user_districtId=%s&user_postCode=%s&warehouse_ids=%s"
+
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
         return if (isRollOutUser(context)) {
             if (hasLocalizingAddressOnCache(context)) {
@@ -193,12 +196,16 @@ object ChooseAddressUtils {
     }
 
     fun LocalCacheModel.convertToLocationParams(): String {
-        return "user_lat=" + lat +
-                "&user_long=" + long +
-                "&user_addressId=" + address_id +
-                "&user_cityId=" + city_id +
-                "&user_districtId=" + district_id +
-                "&user_postCode=" + postal_code
+        return String.format(
+            locationParamsFormat,
+            lat,
+            long,
+            address_id,
+            city_id,
+            district_id,
+            postal_code,
+            warehouse_id
+        )
     }
 
     fun setLabel(data: ChosenAddressModel) : String {
