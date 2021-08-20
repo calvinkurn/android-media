@@ -2,13 +2,11 @@ package com.tokopedia.checkout.journey.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.checkout.robot.cartPage
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
-import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -36,8 +34,8 @@ class CartCheckoutAnalyticsTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.test.R.raw.cart_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.test.R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -80,7 +78,7 @@ class CartCheckoutAnalyticsTest {
         private const val GET_CART_LIST_KEY = "cart_revamp"
         private const val UPDATE_CART_KEY = "update_cart_v2"
 
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
+//        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
 
         private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
         private const val SAVE_SHIPMENT_KEY = "save_shipment"
