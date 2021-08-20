@@ -581,7 +581,6 @@ open class TopChatRoomPresenter @Inject constructor(
         attachment: HeaderCtaButtonAttachment,
         opponentId: String
     ) {
-        if (thisMessageId.isEmpty()) return
         val startTime = SendableViewModel.generateStartTime()
         val addressMasking = getAddressMasking()
         val ctaButton = attachment.ctaButton
