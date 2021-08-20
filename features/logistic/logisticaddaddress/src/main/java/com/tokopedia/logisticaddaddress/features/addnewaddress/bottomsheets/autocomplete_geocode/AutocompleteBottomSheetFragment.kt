@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.util.rxEditText
+import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetAutocompleteBinding
@@ -29,6 +31,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,6 +47,7 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
     private val defaultLat: Double by lazy { DEFAULT_LAT }
     private val defaultLong: Double by lazy { DEFAULT_LONG }
     private lateinit var adapter: AutocompleteBottomSheetAdapter
+    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var token: Token? = null
@@ -110,6 +115,11 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
         setViewListener()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeSubs.clear()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
             val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
@@ -152,30 +162,21 @@ class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSh
                 AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
             }
 
-            addTextChangedListener(object: TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    //no-op
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (binding.layoutSearch.searchBarTextField.text.toString().isEmpty()) {
-                        binding.rvPoiList.visibility = View.GONE
-                    } else {
-                        currentSearch = binding.layoutSearch.searchBarTextField.text.toString()
-                        loadAutocomplete(currentSearch)
+            rxEditText(this).subscribe(object : Subscriber<String>() {
+                override fun onNext(t: String) {
+                    if (t.isNotEmpty()) {
+                        loadAutocomplete(t)
                     }
                 }
 
-                override fun afterTextChanged(s: Editable?) {
-                    //no-op
+                override fun onCompleted() {
+                    // no op
                 }
 
-            })
+                override fun onError(e: Throwable?) {
+                    // no op
+                }
+            }).toCompositeSubs(compositeSubs)
 
             isFocusableInTouchMode = true
             isFocusable = true
