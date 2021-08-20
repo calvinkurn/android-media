@@ -5,6 +5,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
+import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -20,7 +21,8 @@ object StatisticPageHelper {
 
     fun getShopStatistic(
         context: Context,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        remoteConfig: StatisticRemoteConfig
     ): StatisticPageUiModel {
         val title = context.getString(R.string.stc_shop)
         return StatisticPageUiModel(
@@ -39,13 +41,14 @@ object StatisticPageHelper {
                     iconUnify = IconUnify.HELP
                 )
             ),
-            dateFilters = getShopDateFilters(context, userSession)
+            dateFilters = getShopDateFilters(context, userSession, remoteConfig)
         )
     }
 
     fun getProductStatistic(
         context: Context,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        remoteConfig: StatisticRemoteConfig
     ): StatisticPageUiModel {
         val title = context.getString(R.string.stc_product)
         return StatisticPageUiModel(
@@ -64,7 +67,7 @@ object StatisticPageHelper {
                     iconUnify = IconUnify.HELP
                 )
             ),
-            dateFilters = getProductDateFilters(context, userSession)
+            dateFilters = getProductDateFilters(context, userSession, remoteConfig)
         )
     }
 
@@ -126,7 +129,8 @@ object StatisticPageHelper {
 
     private fun getShopDateFilters(
         context: Context,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        remoteConfig: StatisticRemoteConfig
     ): List<DateFilterItem> {
         return if (getRegularMerchantStatus(userSession)) {
             listOf(
@@ -140,7 +144,7 @@ object StatisticPageHelper {
                 )
             )
         } else {
-            listOf(
+            val filters = mutableListOf(
                 getDateRangeItemToday(context, true),
                 getDateFilterItemClick(
                     context,
@@ -162,15 +166,21 @@ object StatisticPageHelper {
                 getDateFilterPerDay(context, Const.DAYS_365),
                 getDateFilterPerWeek(context, false, Const.DAYS_365),
                 getFilterPerMonth(context, true, Const.DAYS_365),
-                getDateFilterCustom(context, Const.DAYS_90, DateFilterItem.TYPE_CUSTOM),
-                DateFilterItem.ApplyButton
             )
+
+            if (remoteConfig.isCustomDateFilterEnabled()) {
+                filters.add(getDateFilterCustom(context, Const.DAYS_90, DateFilterItem.TYPE_CUSTOM))
+            }
+
+            filters.add(DateFilterItem.ApplyButton)
+            return filters
         }
     }
 
     private fun getProductDateFilters(
         context: Context,
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        remoteConfig: StatisticRemoteConfig
     ): List<DateFilterItem> {
         return if (getRegularMerchantStatus(userSession)) {
             listOf(
@@ -184,7 +194,7 @@ object StatisticPageHelper {
                 )
             )
         } else {
-            listOf(
+            val filters = mutableListOf(
                 getDateRangeItemToday(context, false),
                 getDateFilterItemClick(
                     context,
@@ -205,10 +215,21 @@ object StatisticPageHelper {
                 DateFilterItem.Divider,
                 getDateFilterPerDay(context, Const.DAYS_365),
                 getDateFilterPerWeek(context, false, Const.DAYS_365),
-                getFilterPerMonth(context, true, Const.DAYS_365),
-                getDateFilterCustom(context, Const.DAYS_31, DateFilterItem.TYPE_CUSTOM_SAME_MONTH),
-                DateFilterItem.ApplyButton
+                getFilterPerMonth(context, true, Const.DAYS_365)
             )
+
+            if (remoteConfig.isCustomDateFilterEnabled()) {
+                filters.add(
+                    getDateFilterCustom(
+                        context,
+                        Const.DAYS_31,
+                        DateFilterItem.TYPE_CUSTOM_SAME_MONTH
+                    )
+                )
+            }
+
+            filters.add(DateFilterItem.ApplyButton)
+            return filters
         }
     }
 
@@ -329,7 +350,11 @@ object StatisticPageHelper {
         )
     }
 
-    private fun getDateFilterCustom(context: Context, minDaysCount: Int, type: Int): DateFilterItem.Pick {
+    private fun getDateFilterCustom(
+        context: Context,
+        minDaysCount: Int,
+        type: Int
+    ): DateFilterItem.Pick {
         val label = context.getString(R.string.stc_custom_lbl)
         val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
         val maxDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAY_1.toLong()))
