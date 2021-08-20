@@ -1,9 +1,6 @@
-package com.tokopedia.feedcomponent.view.widget
+package com.tokopedia.feedcomponent.util.util
 
-import android.animation.Animator
 import android.content.Context
-import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup

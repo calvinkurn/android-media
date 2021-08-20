@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.widget
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
@@ -12,6 +13,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.util.util.convertDpToPixel
+import com.tokopedia.feedcomponent.util.util.doOnLayout
+import com.tokopedia.feedcomponent.util.util.goneWithAnimation
+import com.tokopedia.feedcomponent.util.util.visibleWithAnimation
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -145,14 +150,15 @@ class PostTagView @JvmOverloads constructor(
 
     fun showExpandedView(): Boolean {
         val isProductDotVisible = productTagDot.isVisible
+        Log.v("TAG","posx ${feedXTag.posX} posy ${feedXTag.posY}")
 
         if (productTagDot.isVisible) {
             productTagDot.gone()
-            finalPointerView.visible()
-            productTagExpandedView.visible()
+            finalPointerView.visibleWithAnimation()
+            productTagExpandedView.visibleWithAnimation()
         } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
             finalPointerView.gone()
-            productTagExpandedView.gone()
+            productTagExpandedView.goneWithAnimation()
         } else if (!initialBubbleVisible) {
             val params = productTagExpandedView.layoutParams as MarginLayoutParams
             if (position == POSITION_BOTTOM) {
@@ -162,11 +168,11 @@ class PostTagView @JvmOverloads constructor(
 
             }
             productTagExpandedView.layoutParams = params
-            finalPointerView.visible()
-            productTagExpandedView.visible()
+            finalPointerView.visibleWithAnimation()
+            productTagExpandedView.visibleWithAnimation()
         } else {
-            finalPointerView.visible()
-            productTagExpandedView.visible()
+            finalPointerView.visibleWithAnimation()
+            productTagExpandedView.visibleWithAnimation()
         }
         return isProductDotVisible
 
@@ -219,16 +225,18 @@ class PostTagView @JvmOverloads constructor(
         if (!productTagDot.isVisible)
             productTagDot.postDelayed({
                 productTagDot.apply {
-                    if (!(productTagExpandedView.isVisible || finalPointerView.isVisible))
-                        visible()
-                    initialBubbleVisible = true
+                    if (!(productTagExpandedView.isVisible || finalPointerView.isVisible)) {
+                        visibleWithAnimation()
+                        initialBubbleVisible = true
+                    }
                 }
             }, PRODUCT_DOT_ONE_SEC)
 
         productTagDot.postDelayed({
             productTagDot.apply {
-                if (isVisible)
-                    gone()
+                if (isVisible) {
+                    goneWithAnimation()
+                }
             }
         }, PRODUCT_DOT_TIMER)
     }

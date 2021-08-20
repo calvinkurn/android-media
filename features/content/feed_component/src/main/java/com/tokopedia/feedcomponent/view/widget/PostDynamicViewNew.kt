@@ -1255,7 +1255,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 handlerAnim?.postDelayed({
                     productTagText.apply {
                         visible()
-                        animate().alpha(1f).start()
+                        animate().alpha(1f).setDuration(600).start()
                     }
 
                 }, TIME_SECOND)
@@ -1266,7 +1266,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 productTagText.apply {
                     if (!shouldContinueToShowLihatProduct(layout)) {
                         gone()
-                        animate().alpha(0f).start()
+                        animate().alpha(0f).setDuration(600).start()
                     }
                 }
             }, TIME_FOUR_SEC)
