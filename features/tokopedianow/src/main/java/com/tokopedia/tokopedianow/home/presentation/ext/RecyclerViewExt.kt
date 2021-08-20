@@ -10,8 +10,12 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeRecentPurchas
 object RecyclerViewExt {
 
     fun RecyclerView.submitProduct(data: HomeLayoutListUiModel) {
-        submitRecentPurchase(data)
-        submitProductRecom(data)
+        try {
+            submitRecentPurchase(data)
+            submitProductRecom(data)
+        } catch (e: Exception) {
+            // nothing to do
+        }
     }
 
     private fun RecyclerView.submitRecentPurchase(data: HomeLayoutListUiModel) {
@@ -22,19 +26,21 @@ object RecyclerViewExt {
             val index = layoutList.indexOf(layoutItem)
             val viewHolder = findViewHolderForAdapterPosition(index) as? HomeRecentPurchaseViewHolder
             val recentPurchase = layoutItem.layout as? HomeRecentPurchaseUiModel
-            viewHolder?.submitList(recentPurchase)
+            if (!recentPurchase?.productList.isNullOrEmpty()) {
+                viewHolder?.submitList(recentPurchase)
+            }
         }
     }
 
     private fun RecyclerView.submitProductRecom(data: HomeLayoutListUiModel) {
         val layoutList = data.items
-        val layoutItem = layoutList.firstOrNull { it.layout is HomeProductRecomUiModel }
-
-        layoutItem?.let {
-            val index = layoutList.indexOf(layoutItem)
+        layoutList.filter { it.layout is HomeProductRecomUiModel }.forEach {
+            val index = layoutList.indexOf(it)
             val viewHolder = findViewHolderForAdapterPosition(index) as? HomeProductRecomViewHolder
-            val productRecom = layoutItem.layout as? HomeProductRecomUiModel
-            viewHolder?.submitList(productRecom)
+            val productRecom = it.layout as? HomeProductRecomUiModel
+            if (!productRecom?.recomWidget?.recommendationItemList.isNullOrEmpty()) {
+                viewHolder?.submitList(productRecom)
+            }
         }
     }
 }
