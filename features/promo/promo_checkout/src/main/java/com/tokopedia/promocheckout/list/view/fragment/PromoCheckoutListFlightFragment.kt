@@ -45,14 +45,6 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
         super.onDestroyView()
     }
 
-    /**Will be deleted soon after AB Test Promo from recharge is over*/
-    override fun loadData(page: Int) {
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }
-        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
-    }
-
     companion object {
 
         val FLIGHT_CATEGORY_ID = 27
