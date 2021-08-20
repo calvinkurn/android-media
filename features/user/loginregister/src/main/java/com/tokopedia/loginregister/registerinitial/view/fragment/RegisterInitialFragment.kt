@@ -858,7 +858,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         callbackManager.onActivityResult(requestCode, resultCode, data)
 
         activity?.let {
-
             if (requestCode == RegisterConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 task?.let { taskGoogleSignInAccount ->
