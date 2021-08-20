@@ -1053,9 +1053,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
-                    renderTopBackground(isLoading = true, isBeautyFest = false)
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                    renderTopBackground(isLoading = true, isBeautyFest = false)
                 }
             }
 
@@ -1329,7 +1329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
                         if (timer != null) timer!!.cancel()
-                        timer = object : CountDownTimer(12000, 1000) {
+                        timer = object : CountDownTimer(9000, 1000) {
                             override fun onTick(l: Long) {}
                             override fun onFinish() {
                                 val beautyFest = getBeautyFest(data.list)
@@ -1531,11 +1531,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observePlayWidgetReminderEvent() {
         getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
-            renderTopBackground(isLoading = true, isBeautyFest = false)
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
                 REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
             )
+            renderTopBackground(isLoading = true, isBeautyFest = false)
         })
     }
 
@@ -1903,10 +1903,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToLogin() {
-        renderTopBackground(isLoading = true, isBeautyFest = false)
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        renderTopBackground(isLoading = true, isBeautyFest = false)
     }
 
     private fun onGoToCreateShop() {
@@ -2932,8 +2932,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 )
             }
         } else {
-            renderTopBackground(isLoading = true, isBeautyFest = false)
             RouteManager.route(context, ApplinkConst.LOGIN)
+            renderTopBackground(isLoading = true, isBeautyFest = false)
         }
     }
 
