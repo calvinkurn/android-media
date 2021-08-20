@@ -59,7 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
-    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+//    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -72,7 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
-    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+//    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.referral)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
