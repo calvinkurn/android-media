@@ -211,7 +211,6 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     }
 
     private fun setViewListener() {
-
         binding.layoutSearch.searchBarTextField.isFocusableInTouchMode = true
         watchTextRx(binding.layoutSearch.searchBarTextField)
             .subscribe { s ->
