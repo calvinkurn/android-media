@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.socket
+package com.tokopedia.play.broadcaster.data.type
 
 
 /**
@@ -8,7 +8,7 @@ interface PlaySocketType {
     val type: PlaySocketEnum
 }
 
-enum class PlaySocketEnum(var value: String) {
+enum class PlaySocketEnum(val value: String) {
     TotalView("TOTAL_VIEW"),
     TotalLike("TOTAL_LIKE"),
     NewMetric("GENERAL_BULK_EVENT_NOTIF"),
@@ -17,5 +17,6 @@ enum class PlaySocketEnum(var value: String) {
     ProductTag("PRODUCT_TAG"),
     Banned("MODERATE"),
     Chat("MESG"),
-    Freeze("FREEZE")
+    Freeze("FREEZE"),
+    ChannelInteractive("CHANNEL_INTERACTIVE"),
 }

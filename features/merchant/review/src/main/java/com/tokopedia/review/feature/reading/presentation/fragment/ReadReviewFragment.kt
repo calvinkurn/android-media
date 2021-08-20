@@ -82,6 +82,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             "https://images.tokopedia.net/img/android/others/review-reading-filtered-empty.png"
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
+        const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
         fun createNewInstance(productId: String = "", shopId: String = "", isProductReview: Boolean): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -958,7 +959,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             val satisfactionRateInt = (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
                 it.isDigit()
             }.orEmpty()
-            context?.getString(R.string.review_reading_product_satisfaction_rate, satisfactionRateInt) ?: "$satisfactionRateInt% pembeli puas belanja barang ini"
+            "$satisfactionRateInt$PRODUCT_SATISFACTION_RATE"
         } else {
             val satisfactionRateInt = (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
                 it.isDigit()
