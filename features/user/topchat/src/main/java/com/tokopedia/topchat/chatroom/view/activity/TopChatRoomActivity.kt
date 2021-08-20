@@ -368,7 +368,12 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 if (!chatListFragment.adapter?.list.isNullOrEmpty() &&
                     chatListFragment.adapter?.activeChat != null )
                 {
-                    chatListFragment.setIndicatorCurrentActiveChat(msgId)
+                    try {
+                        chatListFragment.setIndicatorCurrentActiveChat(msgId)
+                    //to prevent: Cannot call this method while RecyclerView is computing a layout or scrolling
+                    } catch (ignored: Exception) {
+                        ignored.printStackTrace()
+                    }
                 }
                 delay(DELAY)
             }
