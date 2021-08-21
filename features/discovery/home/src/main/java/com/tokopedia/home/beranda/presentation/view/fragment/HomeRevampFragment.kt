@@ -175,10 +175,7 @@ import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -1332,7 +1329,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
                         if (!data.isCache && !getHomeViewModel().isFromLogin) {
-                            GlobalScope.async {
+                            CoroutineScope(Dispatchers.Main).launch {
                                 val beautyFest = getHomeViewModel().getBeautyFest(data.list)
                                 //save beauty fest in shared preferences
                                 saveBeautyFest(beautyFest)
