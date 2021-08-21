@@ -1658,9 +1658,9 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int {
+    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int = withContext(Dispatchers.IO) {
         //some result string will not qualify if not contains string channelModel
-        return if(!Gson().toJson(data).toString().contains("channelModel"))
+        if(!Gson().toJson(data).toString().contains("channelModel"))
             HomeRevampFragment.BEAUTY_FEST_NOT_QUALIFY
         //beauty fest will contains isChannelBeautyFest true
         else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
