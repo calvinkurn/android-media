@@ -176,6 +176,7 @@ import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -190,6 +191,7 @@ import kotlin.collections.ArrayList
  * @author by yoasfs on 12/14/17.
  */
 @SuppressLint("SyntheticAccessor")
+@ExperimentalCoroutinesApi
 open class HomeRevampFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
@@ -1055,10 +1057,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 context?.let {
+                    getHomeViewModel().isFromLogin = true
                     val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
-                    renderTopBackground(isLoading = true, isBeautyFest = false)
-                    getHomeViewModel().isFromLogin = true
                 }
             }
 
@@ -1543,12 +1544,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observePlayWidgetReminderEvent() {
         getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+            getHomeViewModel().isFromLogin = true
             startActivityForResult(
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
                 REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME
             )
-            renderTopBackground(isLoading = true, isBeautyFest = false)
-            getHomeViewModel().isFromLogin = true
         })
     }
 
@@ -1922,11 +1922,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToLogin() {
+        getHomeViewModel().isFromLogin = true
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
-        renderTopBackground(isLoading = true, isBeautyFest = false)
-        getHomeViewModel().isFromLogin = true
     }
 
     private fun onGoToCreateShop() {
@@ -2953,9 +2952,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 )
             }
         } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-            renderTopBackground(isLoading = true, isBeautyFest = false)
             getHomeViewModel().isFromLogin = true
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
