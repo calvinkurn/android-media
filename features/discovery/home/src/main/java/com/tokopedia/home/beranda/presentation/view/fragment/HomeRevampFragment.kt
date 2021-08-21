@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
@@ -287,8 +286,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BEAUTY_FEST_FALSE = 0
         private const val BEAUTY_FEST_TRUE = 1
         private const val BEAUTY_FEST_NOT_QUALIFY = 2
-        private const val MILLIS_IN_SECOND = 1000L
-        private const val DELAY_HEADER_TIMER  = 3000L
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1323,7 +1320,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeData() {
-        var timer: CountDownTimer? = null
         getHomeViewModel().homeLiveData.observe(
             viewLifecycleOwner,
             Observer { data: HomeDataModel? ->
@@ -1332,38 +1328,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         configureHomeFlag(data.homeFlag)
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
-                        if(!data.isCache && !getHomeViewModel().isFromLogin) {
+                        if (!data.isCache && !getHomeViewModel().isFromLogin) {
                             val beautyFest = getBeautyFest(data.list)
                             //save beauty fest in shared preferences
                             saveBeautyFest(beautyFest)
 
                             when (beautyFest) {
-                                BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-                                BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
+                                BEAUTY_FEST_TRUE -> renderTopBackground(
+                                    isLoading = false,
+                                    isBeautyFest = true
+                                )
+                                BEAUTY_FEST_FALSE -> renderTopBackground(
+                                    isLoading = false,
+                                    isBeautyFest = false
+                                )
                                 else -> initialLoadHeader()
                             }
-                        }
-                        else {
+                        } else {
                             getHomeViewModel().isFromLogin = false
                         }
-
-
-//                        //load data from latest update with delay 4 seconds
-//                        if (timer != null) timer?.cancel()
-//                        timer = object : CountDownTimer(DELAY_HEADER_TIMER, MILLIS_IN_SECOND) {
-//                            override fun onTick(l: Long) {}
-//                            override fun onFinish() {
-//                                val beautyFest = getBeautyFest(data.list)
-//                                //save beauty fest in shared preferences
-//                                saveBeautyFest(beautyFest)
-//
-//                                when (beautyFest) {
-//                                    BEAUTY_FEST_TRUE -> renderTopBackground(isLoading = false, isBeautyFest = true)
-//                                    BEAUTY_FEST_FALSE -> renderTopBackground(isLoading = false, isBeautyFest = false)
-//                                    else -> initialLoadHeader()
-//                                }
-//                            }
-//                        }.start()
                     }
                 }
             })
@@ -1571,18 +1554,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun renderTopBackground(isLoading: Boolean, isBeautyFest: Boolean) {
         context?.let { currentContext ->
             val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
-                    if (isChooseAddressShow) {
-                        val layoutParams = backgroundViewImage.layoutParams
-                        layoutParams.height =
-                            resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
-                        backgroundViewImage.layoutParams = layoutParams
-                    } else {
-                        val layoutParams = backgroundViewImage.layoutParams
-                        layoutParams.height =
-                            resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
-                        backgroundViewImage.layoutParams = layoutParams
-                        loaderHeaderImage.layoutParams = layoutParams
-                    }
+            if (isChooseAddressShow) {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+            } else {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+                loaderHeaderImage.layoutParams = layoutParams
+            }
 
             if (isLoading) {
                 //displaying shimmer and hide header
@@ -1599,8 +1582,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 R.color.beauty_fest_dark
                             )
                         )
-                    }
-                    else {
+                    } else {
                         //change tint color
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
@@ -1609,8 +1591,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             )
                         )
                     }
-                }
-                else {
+                } else {
                     backgroundViewImage.clearColorFilter()
                     val backgroundUrl = if (currentContext.isDarkMode()) {
                         BACKGROUND_DARK_1
