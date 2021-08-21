@@ -176,6 +176,9 @@ import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -283,9 +286,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
-        private const val BEAUTY_FEST_FALSE = 0
-        private const val BEAUTY_FEST_TRUE = 1
-        private const val BEAUTY_FEST_NOT_QUALIFY = 2
+        const val BEAUTY_FEST_FALSE = 0
+        const val BEAUTY_FEST_TRUE = 1
+        const val BEAUTY_FEST_NOT_QUALIFY = 2
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1329,20 +1332,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         setData(data.list, data.isCache, data.isProcessingAtf)
 
                         if (!data.isCache && !getHomeViewModel().isFromLogin) {
-                            val beautyFest = getBeautyFest(data.list)
-                            //save beauty fest in shared preferences
-                            saveBeautyFest(beautyFest)
+                            GlobalScope.async {
+                                val beautyFest = getHomeViewModel().getBeautyFest(data.list)
+                                //save beauty fest in shared preferences
+                                saveBeautyFest(beautyFest)
 
-                            when (beautyFest) {
-                                BEAUTY_FEST_TRUE -> renderTopBackground(
-                                    isLoading = false,
-                                    isBeautyFest = true
-                                )
-                                BEAUTY_FEST_FALSE -> renderTopBackground(
-                                    isLoading = false,
-                                    isBeautyFest = false
-                                )
-                                else -> initialLoadHeader()
+                                when (beautyFest) {
+                                    BEAUTY_FEST_TRUE -> renderTopBackground(
+                                        isLoading = false,
+                                        isBeautyFest = true
+                                    )
+                                    BEAUTY_FEST_FALSE -> renderTopBackground(
+                                        isLoading = false,
+                                        isBeautyFest = false
+                                    )
+                                    else -> initialLoadHeader()
+                                }
                             }
                         } else {
                             getHomeViewModel().isFromLogin = false

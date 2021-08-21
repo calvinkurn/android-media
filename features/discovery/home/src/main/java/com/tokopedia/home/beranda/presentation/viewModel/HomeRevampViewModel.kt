@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
@@ -40,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -1654,5 +1656,16 @@ open class HomeRevampViewModel @Inject constructor(
                 deleteWidget(topAdsModel, index)
             }
         }
+    }
+
+    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int {
+        //some result string will not qualify if not contains string channelModel
+        return if(!Gson().toJson(data).toString().contains("channelModel"))
+            HomeRevampFragment.BEAUTY_FEST_NOT_QUALIFY
+        //beauty fest will contains isChannelBeautyFest true
+        else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+            HomeRevampFragment.BEAUTY_FEST_TRUE
+        else
+            HomeRevampFragment.BEAUTY_FEST_FALSE
     }
 }
