@@ -161,8 +161,10 @@ class ShopScoreMapper @Inject constructor(
             val recommendationTools =
                 shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
             if (recommendationTools?.isNotEmpty() == true) {
-                add(mapToItemRecommendationPMUiModel
-                    (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools))
+                add(
+                    mapToItemRecommendationPMUiModel
+                        (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools)
+                )
             }
 
             when {
@@ -466,7 +468,8 @@ class ShopScoreMapper @Inject constructor(
 
             this.scorePenalty =
                 shopScoreLevelResponse?.shopScoreDetail?.find {
-                    it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong()
+                    it.identifier == PENALTY_IDENTIFIER
+                }?.rawValue?.roundToLong()
                     .orZero()
         }
         return headerShopPerformanceUiModel
@@ -652,8 +655,9 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemRecommendationPMUiModel(
         recommendationTools: List<GetRecommendationToolsResponse
-            .ValuePropositionGetRecommendationTools.RecommendationTool>?)
-    : SectionShopRecommendationUiModel {
+        .ValuePropositionGetRecommendationTools.RecommendationTool>?
+    )
+            : SectionShopRecommendationUiModel {
         return SectionShopRecommendationUiModel(
             recommendationTools?.map {
                 SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
@@ -758,7 +762,10 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemFaqUiModel(isNewSeller: Boolean, isOfficialStore: Boolean): List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel(
+        isNewSeller: Boolean,
+        isOfficialStore: Boolean
+    ): List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
