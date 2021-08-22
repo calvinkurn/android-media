@@ -37,7 +37,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
@@ -675,12 +675,16 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return containerListener?.role == RoleType.SELLER
     }
 
-    override fun trackClickOrderListItem(order: Card) {
+    override fun trackClickOrderListItem(order: OrderWidgetUiModel) {
         analytic.trackClickOrderListItem(containerListener?.role, order)
     }
 
     override fun getNotifAnalytic(): NotificationAnalytic {
         return analytic
+    }
+
+    override fun getRole(): Int {
+        return containerListener?.role ?: -1
     }
 
     override fun hasFilter(): Boolean {

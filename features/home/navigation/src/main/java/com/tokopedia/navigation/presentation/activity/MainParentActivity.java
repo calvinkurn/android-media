@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.RestrictTo;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -1171,18 +1172,27 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void requestStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            this.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        //for tokopedia lightmode, triggered when in top page
+        //for tokopedia darkmode, triggered when not in top page
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            //to trigger white text when tokopedia darkmode not on top page
+            requestStatusBarLight();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+                this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+            }
         }
     }
 
     @Override
     public void requestStatusBarLight() {
+        //for tokopedia lightmode, triggered when not in top page
+        //for tokopedia darkmode, triggered when in top page
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);

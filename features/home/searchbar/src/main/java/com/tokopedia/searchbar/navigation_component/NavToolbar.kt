@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -668,7 +667,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
