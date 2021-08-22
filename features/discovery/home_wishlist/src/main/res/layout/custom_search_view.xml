@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/dp_16"/>
+            android:layout_marginStart="16dp"/>
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/wishlist_tv_count_loader"
             app:loader_type="line"
@@ -59,9 +59,9 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dp_10"
         android:foreground="?selectableItemBackgroundBorderless"
-        android:paddingStart="@dimen/dp_16"
+        android:paddingStart="16dp"
         android:paddingTop="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_16"
+        android:paddingEnd="16dp"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/label_manage"
         android:textColor="@color/Unify_G500"
