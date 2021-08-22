@@ -86,9 +86,9 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                         setBottomText(MethodChecker.fromHtml(row.value))
                     }
                     if(0 == index){
-                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_16))
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.catalog_main_layout_top_margin_first))
                     }else {
-                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_8))
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.catalog_main_layout_top_margin))
                     }
                     linear_layout.addView(doubleTextView)
                     val lineView = View(context)
