@@ -167,7 +167,7 @@ class ShopScoreMapper @Inject constructor(
 
             when {
                 isOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
-                    add(SectionFaqUiModel(mapToItemFaqUiModel(isOfficialStore)))
+                    add(SectionFaqUiModel(mapToItemFaqUiModel(isNewSeller, isOfficialStore)))
                 }
                 //PM PRO Section
                 powerMerchantResponse?.pmTier == PMTier.PRO -> {
@@ -254,12 +254,7 @@ class ShopScoreMapper @Inject constructor(
                     this.showCardNewSeller = true
                     val nextSellerDays = SHOP_AGE_SIXTY - shopAge
                     val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
-                    val dateNewSellerProjection =
-                        format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
-                    descHeaderShopService = context?.getString(
-                        R.string.desc_new_seller_level_0,
-                        dateNewSellerProjection
-                    )
+                    descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0)
                         ?: ""
                 }
                 shopScore < 0 || shopLevel < 0 -> {
@@ -763,7 +758,7 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemFaqUiModel(isOfficialStore: Boolean): List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel(isNewSeller: Boolean, isOfficialStore: Boolean): List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
@@ -808,14 +803,16 @@ class ShopScoreMapper @Inject constructor(
                         .orEmpty(),
                 )
             )
-            add(
-                ItemFaqUiModel(
-                    title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
-                        .orEmpty(),
-                    desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller)
-                        .orEmpty(),
+            if (isNewSeller) {
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller)
+                            .orEmpty(),
+                    )
                 )
-            )
+            }
             if (isOfficialStore) {
                 add(
                     ItemFaqUiModel(
@@ -826,6 +823,14 @@ class ShopScoreMapper @Inject constructor(
                     )
                 )
             }
+            add(
+                ItemFaqUiModel(
+                    title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
+                        .orEmpty(),
+                    desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
+                        .orEmpty(),
+                )
+            )
         }
     }
 

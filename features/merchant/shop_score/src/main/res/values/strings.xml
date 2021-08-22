@@ -156,7 +156,7 @@
     <string name="desc_tenure_new_seller">Skor akan disesuaikan berdasarkan Performa setelah 90 hari. Tingkatkan Performa dengan baca tips, ya!</string>
 
     <string name="title_new_seller_level_0">Belum ada level &amp; skor untuk tokomu</string>
-    <string name="desc_new_seller_level_0">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
+    <string name="desc_new_seller_level_0">Level dan skor Performa Toko akan ditampilkan di sini jika kamu sudah bergabung selama 90 hari. Namun, kamu akan dapat proyeksi skor di hari Senin pertama setelah bergabung, ya.</string>
     <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>
     <string name="desc_keep_up_level_1">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
     <string name="title_good_level_1">Kualitas layanan tokomu sudah bagus!</string>
@@ -271,7 +271,10 @@
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
-    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan syarat telah melakukan verifikasi toko dan mempunyai minimum 1 produk aktif.</string>
+    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru akan mendapatkan proyeksi Performa Toko di Senin pertama setelah Seller membuka toko di Tokopedia dengan periode cut-off di hari Sabtu. Skor Performa Toko Seller akan aktif secara efektif setelah usia toko  lebih dari 90 hari.</string>
+
+    <string name="title_time_adjustment_what_relief_for_new_seller">Apa itu waktu penyesuaian (59 hari pertama) dan keringanan apa yang saya dapatkan?</string>
+    <string name="desc_time_adjustment_what_relief_for_new_seller">Terhitung 59 hari setelah pertama kali bergabung, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
 
     <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
@@ -316,4 +319,6 @@
     <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
     <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
+    <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
+    <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
 </resources>
