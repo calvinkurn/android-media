@@ -219,7 +219,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
                     mIsInitialLoading = true
                     handler.postDelayed({
                         presenter.loadData(input, page)
-                    }, 200)
+                    }, DELAY_MILIS)
                 } else {
                     binding.tvDescInputDistrict.visibility = View.GONE
                     binding.llPopularCity.visibility = View.VISIBLE
@@ -282,6 +282,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     companion object {
 
         private const val DEBOUNCE: Long = 700
+        private const val DELAY_MILIS: Long = 200
 
         @JvmStatic
         fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
