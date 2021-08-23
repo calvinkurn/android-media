@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -34,8 +35,11 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOO
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
+import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -48,7 +52,8 @@ class TokoNowSearchFragment:
         BaseSearchCategoryFragment(),
         SuggestionListener,
         CategoryJumperListener,
-        CTATokoNowHomeListener {
+        CTATokoNowHomeListener,
+        BroadMatchListener {
 
     companion object {
         @JvmStatic
@@ -93,6 +98,7 @@ class TokoNowSearchFragment:
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartBroadMatchTrackingLiveData.observe(this::sendATCBroadMatchTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -139,6 +145,7 @@ class TokoNowSearchFragment:
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
+            broadMatchListener = this,
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -327,5 +334,55 @@ class TokoNowSearchFragment:
 
     override fun getEventLabel(isOOC: Boolean): String {
         return getViewModel().query
+    }
+
+    override fun getRecyclerViewPool() = recycledViewPool
+
+    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+        val trackingQueue = trackingQueue ?: return
+
+        SearchTracking.sendBroadMatchImpressionEvent(
+            trackingQueue = trackingQueue,
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
+    }
+
+    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+        SearchTracking.sendBroadMatchClickEvent(
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
+
+        RouteManager.route(context, broadMatchItemDataView.applink)
+    }
+
+    override fun onBroadMatchItemATCNonVariant(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    ) {
+        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
+    }
+
+    private fun sendATCBroadMatchTrackingEvent(
+        atcTrackingData: Triple<Int, String, BroadMatchItemDataView>
+    ) {
+        val (quantity, _, broadMatchItemDataView) = atcTrackingData
+
+        SearchTracking.sendBroadMatchAddToCartEvent(
+            broadMatchItemDataView,
+            getViewModel().query,
+            getUserId(),
+            quantity,
+        )
+    }
+
+    override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
+
+        RouteManager.route(context, broadMatchDataView.applink)
     }
 }

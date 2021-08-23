@@ -53,6 +53,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
@@ -122,6 +124,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
+        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val ITEM_VIEW_CACHE_SIZE = 0
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -210,6 +213,7 @@ class TokoNowHomeFragment: Fragment(),
         super.onViewCreated(view, savedInstanceState)
         shareHomeTokonow()
         setupNavToolbar()
+        stickyLoginSetup()
         setupStatusBar()
         setupRecyclerView()
         setupSwipeRefreshLayout()
@@ -246,6 +250,15 @@ class TokoNowHomeFragment: Fragment(),
     override fun onDestroy() {
         UniversalShareBottomSheet.clearScreenShotDetector()
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                stickyLoginLoadContent()
+            }
+        }
     }
 
     override fun onTickerDismissed(id: String) {
@@ -485,6 +498,36 @@ class TokoNowHomeFragment: Fragment(),
         getMiniCart()
     }
 
+    private fun stickyLoginSetup(){
+        sticky_login_tokonow?.let {
+            it.page = StickyLoginConstant.Page.TOKONOW
+            it.lifecycleOwner = viewLifecycleOwner
+            it.setStickyAction(object : StickyLoginAction {
+                override fun onClick() {
+                    context?.let {
+                        val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                        startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                    }
+                }
+
+                override fun onDismiss() {
+                }
+
+                override fun onViewChange(isShowing: Boolean) {
+                }
+            })
+        }
+        hideStickyLogin()
+    }
+
+    private fun stickyLoginLoadContent(){
+        sticky_login_tokonow.loadContent()
+    }
+
+    private fun hideStickyLogin(){
+        sticky_login_tokonow.hide()
+    }
+
     private fun loadHeaderBackground() {
         ivHeaderBackground?.show()
         ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
@@ -512,6 +555,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun onRefreshLayout() {
         resetMovingPosition()
         removeAllScrollListener()
+        hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollPosition.clear()
         loadLayout()
@@ -653,6 +697,7 @@ class TokoNowHomeFragment: Fragment(),
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
+                stickyLoginLoadContent()
             }
         }
 
@@ -814,6 +859,7 @@ class TokoNowHomeFragment: Fragment(),
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
+            hideStickyLogin()
         } else {
             miniCartWidget?.hide()
         }

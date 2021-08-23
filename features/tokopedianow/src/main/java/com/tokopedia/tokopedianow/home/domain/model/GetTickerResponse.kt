@@ -27,5 +27,8 @@ data class Ticker(
         val message: String,
         @SerializedName("color")
         @Expose
-        val color: String
+        val color: String,
+        @SerializedName("layout")
+        @Expose
+        val layout: String
 )
