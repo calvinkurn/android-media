@@ -10,15 +10,15 @@ import com.tokopedia.tokopedianow.R
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
-@SuppressWarnings("checkstyle:magicnumber")
 class ProductItemDecoration(
         private val spacing: Int,
 ): RecyclerView.ItemDecoration() {
 
     companion object {
-        const val ITEM_POSITION_DEFAULT = -1
+        const val INVALID_ITEM_POSITION = -1
+        const val INVALID_VIEW_TYPE = -1
         const val SPAN_COUNT_DEFAULT = 1
-        const val FIRST_IN_ROW = 0
+        const val FIRST_IN_ROW_MODULO = 0
         const val HORIZONTAL_OFFSET_DEFAULT = 0
         const val VERTICAL_OFFSET_DEFAULT = 0
         const val COS_DEFAULT = 45.0
@@ -55,7 +55,7 @@ class ProductItemDecoration(
         val layoutParams = view.layoutParams
         return if (layoutParams is StaggeredGridLayoutManager.LayoutParams)
             layoutParams.spanIndex
-        else ITEM_POSITION_DEFAULT
+        else INVALID_ITEM_POSITION
     }
 
     private fun getTotalSpanCount(parent: RecyclerView) =
@@ -78,6 +78,7 @@ class ProductItemDecoration(
         return getHorizontalOffset(maxElevation, radius)
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getHorizontalOffset(maxElevation: Float, radius: Float): Int {
         return (maxElevation + (1 - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / 2
     }
@@ -103,6 +104,7 @@ class ProductItemDecoration(
         return getVerticalOffset(maxElevation, radius)
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getVerticalOffset(maxElevation: Float, radius: Float): Int {
         return (maxElevation * 1.5 + (1 - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / 2
     }
@@ -120,6 +122,7 @@ class ProductItemDecoration(
 
     private fun getLeftOffsetFirstInRow() = spacing - horizontalCardViewOffset
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getLeftOffsetNotFirstInRow() = spacing / 4 - horizontalCardViewOffset
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
@@ -129,8 +132,10 @@ class ProductItemDecoration(
             getTopOffsetNotTopItem()
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getTopOffsetTopItem() = spacing / 2 - verticalCardViewOffset
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getTopOffsetNotTopItem() = spacing / 4 - verticalCardViewOffset
 
     private fun getRightOffset(relativePos: Int, totalSpanCount: Int): Int {
@@ -139,31 +144,36 @@ class ProductItemDecoration(
 
     private fun getRightOffsetLastInRow() = spacing - horizontalCardViewOffset
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getRightOffsetNotLastInRow() = spacing / 4 - horizontalCardViewOffset
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getBottomOffsetNotBottomItem() = spacing / 4 - verticalCardViewOffset
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
         return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
     }
 
     private fun isFirstInRow(relativePos: Int, spanCount: Int): Boolean {
-        return relativePos % spanCount == FIRST_IN_ROW
+        return relativePos % spanCount == FIRST_IN_ROW_MODULO
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun isLastInRow(relativePos: Int, spanCount: Int): Boolean {
         return relativePos % spanCount == spanCount - 1
     }
 
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean {
         val viewType = getRecyclerViewViewType(parent, viewPosition)
-        return viewType != ITEM_POSITION_DEFAULT && allowedViewTypes.contains(viewType)
+        return viewType != INVALID_VIEW_TYPE && allowedViewTypes.contains(viewType)
     }
 
+    @SuppressWarnings("checkstyle:magicnumber")
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
-        val adapter = parent.adapter ?: return ITEM_POSITION_DEFAULT
-        val isInvalidPosition = viewPosition < FIRST_IN_ROW || viewPosition > adapter.itemCount - 1
+        val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
+        val isInvalidPosition = viewPosition < FIRST_IN_ROW_MODULO || viewPosition > adapter.itemCount - 1
 
-        return if (isInvalidPosition) ITEM_POSITION_DEFAULT else adapter.getItemViewType(viewPosition)
+        return if (isInvalidPosition) INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
     }
 }

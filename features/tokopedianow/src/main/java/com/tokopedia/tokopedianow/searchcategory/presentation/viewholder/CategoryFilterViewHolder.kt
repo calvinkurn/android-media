@@ -15,14 +15,13 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 
-@SuppressWarnings("checkstyle:magicnumber")
 class CategoryFilterViewHolder(
         itemView: View,
         private val categoryFilterListener: CategoryFilterListener
 ): AbstractViewHolder<CategoryFilterDataView>(itemView) {
 
     companion object {
-        const val ITEM_DECORATION_DEFAULT = 0
+        const val NO_ITEM_DECORATION_COUNT = 0
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
@@ -40,7 +39,7 @@ class CategoryFilterViewHolder(
         filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
         filterRecyclerView.scrollToSelected(element)
 
-        if (filterRecyclerView.itemDecorationCount == ITEM_DECORATION_DEFAULT) {
+        if (filterRecyclerView.itemDecorationCount == NO_ITEM_DECORATION_COUNT) {
             val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
             val spacing = context.resources.getDimensionPixelSize(unifySpace16)
             filterRecyclerView.addItemDecoration(ItemDecoration(spacing))
@@ -118,6 +117,7 @@ class CategoryFilterViewHolder(
             const val FIRST_CHILD_ADAPTER_POSITION = 0
         }
 
+        @SuppressWarnings("checkstyle:magicnumber")
         override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
