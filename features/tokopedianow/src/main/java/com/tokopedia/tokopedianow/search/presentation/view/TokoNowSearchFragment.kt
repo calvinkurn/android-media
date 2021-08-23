@@ -173,7 +173,7 @@ class TokoNowSearchFragment:
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.PREVIOUS_KEYWORD] = getViewModel().query
 
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" +
+        return ApplinkConstInternalTokopediaNow.SEARCH + "?" +
             UrlParamUtils.generateUrlParamString(params)
     }
 
