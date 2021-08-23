@@ -25,9 +25,12 @@ class BubbleContainerLayout : LinearLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
-        val myWidth = (widthSpecSize * 0.8).toInt()
+        val myWidth = (widthSpecSize * WIDTH_RATIO).toInt()
         val myWidthSpec = MeasureSpec.makeMeasureSpec(myWidth, MeasureSpec.EXACTLY)
         super.onMeasure(myWidthSpec, heightMeasureSpec)
     }
 
+    companion object {
+        private const val WIDTH_RATIO = 0.8
+    }
 }
