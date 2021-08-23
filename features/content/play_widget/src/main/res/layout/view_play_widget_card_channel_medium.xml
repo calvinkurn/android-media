@@ -107,28 +107,11 @@
             android:id="@+id/play_widget_badge_promo"
             layout="@layout/layout_promo_badge"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/play_widget_channel_medium_promo_height"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
             app:layout_constraintStart_toStartOf="parent"
-            />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_giveaway"
-            android:layout_width="@dimen/play_giveaway_icon_size"
-            android:layout_height="@dimen/play_giveaway_icon_size"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:background="@drawable/bg_play_widget_giveaway_badge"
-            android:padding="@dimen/spacing_lvl1"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="GIFT"
-            app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-            app:layout_constraintStart_toEndOf="@id/play_widget_badge_promo"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible"
             />
 
         <LinearLayout

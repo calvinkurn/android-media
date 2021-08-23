@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
@@ -30,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DIGITAL
@@ -149,6 +151,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -172,7 +183,9 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-
+import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -233,6 +246,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
+    private var activityOrderHistory = ""
+    private var searchQuery = ""
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -244,10 +261,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
+        const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
+        const val PARAM_HOME = "home"
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
             return UohListFragment().apply {
-                arguments = bundle
+                arguments = bundle.apply {
+                    putString(PARAM_ACTIVITY_ORDER_HISTORY, this.getString(
+                        PARAM_ACTIVITY_ORDER_HISTORY))
+                }
             }
         }
 
@@ -266,6 +288,46 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val LABEL_HELP_LINK = "Bantuan"
         const val MINUS_30 = -30
         const val MINUS_90 = -90
+        private const val MIN_30_DAYS = -30
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
+        if (!::firebaseRemoteConfig.isInitialized) {
+            context?.let {
+                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                return firebaseRemoteConfig
+            }
+            return null
+        } else {
+            return firebaseRemoteConfig
+        }
+    }
+
+    private fun isAutoRefreshEnabled(): Boolean {
+        return try {
+            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)?:false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isNavRevamp(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:
+            (getAbTestPlatform().getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -276,6 +338,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        launchAutoRefresh()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -289,6 +356,22 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onRefresh(view: View?) {
+        refreshUohData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
+        if (isVisibleToUser && isAutoRefreshEnabled()) {
+            rv_order_list.scrollToPosition(0)
+            refreshUohData()
+        }
+    }
+
+    private fun refreshUohData() {
         onLoadMore = false
         isFetchRecommendation = false
         onLoadMoreRecommendation = false
@@ -467,6 +550,51 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
+        activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
+
+        statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
+        uoh_navtoolbar?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
+                HintData(getString(R.string.hint_cari_transaksi) )),
+                editorActionCallback = {query ->
+                    searchQuery = query
+                    when {
+                        searchQuery.isBlank() -> {
+                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                            triggerSearch()
+                        }
+                        searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
+                            showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                        }
+                        else -> {
+                            view?.let { context?.let { it1 -> uoh_navtoolbar?.hideKeyboard() } }
+                            triggerSearch()
+                        }
+                    }
+                }
+            )
+            var pageSource = ""
+            if(activityOrderHistory != PARAM_HOME)
+            {
+                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                statusbar.visibility = View.GONE
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+            }
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = pageSource)
+            )
+            icons.apply {
+                addIcon(IconList.ID_MESSAGE) {}
+                addIcon(IconList.ID_NOTIFICATION) {}
+                addIcon(IconList.ID_CART) {}
+                if (isNavRevamp()) {
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
+            }
+            it.setIcon(icons)
+        }
 
         uohItemAdapter = UohItemAdapter().apply {
             setActionListener(this@UohListFragment)
@@ -474,33 +602,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarIcon?.setOnClickListener {
-            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            search_bar?.searchBarTextField?.text?.clear()
-            resetFocusEditText()
-            triggerSearch()
-        }
-
-        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                UohUtils.hideKeyBoard(search_bar.context, view)
-                val inputLength = search_bar?.searchBarTextField?.text?.length ?: 0
-                if (inputLength in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
-                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                } else {
-                    resetFocusEditText()
-                    triggerSearch()
-                }
-                true
-            } else false
-        }
-
         addEndlessScrollListener()
     }
 
-    private fun resetFocusEditText() {
-        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
-    }
+//    private fun resetFocusEditText() {
+//        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
+//    }
 
     private fun getLimitDate(): GregorianCalendar {
         var returnDate = GregorianCalendar()
@@ -518,7 +625,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun triggerSearch() {
-        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+        searchQuery.let { keyword ->
             resetFilter()
             paramUohOrder.searchableText = keyword
             refreshHandler?.startRefresh()
@@ -1054,7 +1161,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
-            val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
+            val searchBarIsNotEmpty = searchQuery.isNotEmpty()
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
@@ -1391,7 +1498,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_30)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
@@ -1727,24 +1834,22 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
-        var i = 0
-        order.metadata.products.forEach {
+        order.metadata.products.forEachIndexed { index, product ->
             var eeProductId = ""
             var eeProductPrice = ""
             if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i)?.asJsonObject
+                val objProduct = jsonArray.get(index)?.asJsonObject
                 eeProductId = objProduct?.get(EE_PRODUCT_ID).toString()
                 eeProductPrice = objProduct?.get(EE_PRODUCT_PRICE).toString()
             }
 
             arrayListProducts.add(ECommerceImpressions.Impressions(
-                    name = it.title,
+                    name = product.title,
                     id = eeProductId,
                     price = eeProductPrice,
                     list = "/order list - ${order.verticalCategory}",
                     position = index.toString()
             ))
-            i++
         }
         UohAnalytics.viewOrderCard(order.verticalCategory, order.userID, arrayListProducts)
     }
@@ -1894,21 +1999,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
 
             uohListViewModel.doAtcMulti(userSession.userId
-                    ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
-
-            // analytics
-            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-            orderData.metadata.products.forEachIndexed { index, product ->
-                val objProduct = jsonArray.get(index).asJsonObject
-                arrayListProducts.add(ECommerceAdd.Add.Products(
-                        name = product.title,
-                        id = objProduct.get(EE_PRODUCT_ID).asString,
-                        price = objProduct.get(EE_PRODUCT_PRICE).asString,
-                        quantity = objProduct.get(EE_QUANTITY).asString,
-                        dimension79 = objProduct.get(EE_SHOP_ID).asString
-                ))
-            }
-            userSession.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
+                    ?: "", GraphqlHelper.loadRawString(activity?.resources,
+                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti, orderData.verticalCategory)
         }
     }
 

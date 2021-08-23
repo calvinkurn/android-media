@@ -62,6 +62,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -69,6 +70,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
@@ -140,6 +142,7 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -162,6 +165,7 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
         ProductViewHolder.ProductViewHolderView,
@@ -171,7 +175,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditPriceFragment.OnFinishedListener,
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
-        ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener {
+        ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
+        ProductCampaignInfoListener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -909,7 +914,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
-        return ProductManageAdapterFactoryImpl(this)
+        return ProductManageAdapterFactoryImpl(this, this)
     }
 
     override fun getScreenName(): String = "/product list page"
@@ -1474,7 +1479,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
-            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this) }
+            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this, this) }
             editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         }
         ProductManageTracking.eventEditStock(product.id)
@@ -1496,7 +1501,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id, ::onClickCampaignInfo) { result ->
                 viewModel.editVariantsStock(result)
             }
             editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
@@ -1507,6 +1512,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     override fun onClickContactCsButton(product: ProductUiModel) {
         goToProductViolationHelpPage()
         ProductManageTracking.eventContactCs(product.id)
+    }
+
+    override fun onClickCampaignInfo(campaignTypeList: List<ProductCampaignType>) {
+        showOngoingPromotionBottomSheet(campaignTypeList)
     }
 
     override fun onClickMoreOptionsButton(product: ProductUiModel) {
@@ -2439,6 +2448,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun showAddEditMenuBottomSheet() {
         productManageAddEditMenuBottomSheet.show()
+    }
+
+    private fun showOngoingPromotionBottomSheet(campaignTypeList: List<ProductCampaignType>) {
+        context?.let {
+            OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
+        }
     }
 
     companion object {
