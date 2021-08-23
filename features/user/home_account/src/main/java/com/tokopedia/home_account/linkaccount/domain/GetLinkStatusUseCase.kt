@@ -33,7 +33,7 @@ class GetLinkStatusUseCase(private val repository: GraphqlRepository)
                     link_status {
                         linking_type
                         status
-                        partner_id
+                        partner_user_id
                     }
                     error
                 }
