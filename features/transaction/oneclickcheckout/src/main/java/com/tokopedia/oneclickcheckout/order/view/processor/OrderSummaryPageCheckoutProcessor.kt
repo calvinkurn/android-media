@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -106,9 +106,11 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     if (isPPPChecked) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
                                     else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
                         }
+                        val transactionId = getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form)
+                        checkoutOccData.result.paymentParameter.transactionId = transactionId
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,
-                                getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
+                                transactionId,
                                 paymentType,
                                 orderSummaryPageEnhanceECommerce.apply {
                                     setPromoCode(allPromoCodes)
