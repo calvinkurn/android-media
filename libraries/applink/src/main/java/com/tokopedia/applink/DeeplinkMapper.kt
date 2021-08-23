@@ -219,7 +219,6 @@ object DeeplinkMapper {
     fun isMainAppOrPro() = !GlobalConfig.isSellerApp()
 
     val deeplinkPatternTokopediaSchemeList: MutableList<DLP> = mutableListOf(
-            DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE),
             DLP(StartsWith(ApplinkConst.HOME),
                     targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHome(deeplink) }),
             DLP.matchPattern(ApplinkConst.PRODUCT_INFO,
