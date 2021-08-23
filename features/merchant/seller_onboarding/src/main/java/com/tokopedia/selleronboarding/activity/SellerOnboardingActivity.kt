@@ -26,7 +26,7 @@ import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
 import com.tokopedia.selleronboarding.model.SobSliderStatisticsUiModel
 import com.tokopedia.selleronboarding.model.SobSliderPromoUiModel
-import com.tokopedia.selleronboarding.old.utils.StatusBarHelper
+import com.tokopedia.selleronboarding.utils.StatusBarHelper
 import kotlinx.android.synthetic.main.activity_sob_onboarding.*
 import kotlin.math.abs
 

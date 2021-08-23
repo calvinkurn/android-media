@@ -43,7 +43,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobHeader"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="112dp"
+        android:layout_height="@dimen/sob_dimen_112"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
