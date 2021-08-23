@@ -197,12 +197,11 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
+
         fun goToLinkPage(activity: FragmentActivity?) {
             activity?.run {
-                RouteManager.route(
-                    this,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
-                )
+                val i = LinkAccountWebViewActivity.newInstance(this, LinkAccountFragment.getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
+                startActivity(i)
             }
         }
 
