@@ -28,7 +28,7 @@ fun Number.productThousandFormatted(
 
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(digitAfterComa, roundingMode)} ${
+    return "${number.numberFormatted(digitAfterComa, roundingMode)}${
         listOf(
             "rb",
             "jt",

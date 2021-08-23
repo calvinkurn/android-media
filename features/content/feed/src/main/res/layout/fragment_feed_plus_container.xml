@@ -125,12 +125,12 @@
             android:layout_height="@dimen/dp_60"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:visibility="gone"
-            app:backgroundTint="@color/Unify_G400"
+            app:backgroundTint="@color/Unify_GN500"
             app:srcCompat="@drawable/ic_feed_post_plus"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_feed_byme"

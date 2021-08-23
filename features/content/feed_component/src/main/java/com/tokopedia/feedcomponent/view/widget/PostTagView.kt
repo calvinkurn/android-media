@@ -12,9 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.util.util.doOnLayout
-import com.tokopedia.feedcomponent.util.util.goneWithAnimation
-import com.tokopedia.feedcomponent.util.util.visibleWithAnimation
+import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -84,8 +82,8 @@ class PostTagView @JvmOverloads constructor(
         positionInFeed: Int
     ) {
         this.listener = dynamicPostListener
-        this.dotMarginStart = (width * (1 - feedXTag.posX)).toInt()
-        this.dotMarginTop = (height * (1 - feedXTag.posY)).toInt()
+        this.dotMarginStart = (width * (feedXTag.posX)).toInt()
+        this.dotMarginTop = (height * (feedXTag.posY)).toInt()
         this.postImageHeight = height
         this.postImageWidth = width
         val product = products[feedXTag.tagIndex]
@@ -100,7 +98,7 @@ class PostTagView @JvmOverloads constructor(
             productViewPrice.text = product.priceFmt
         }
 
-        if (feedXTag.posY < 0.25) {
+        if (feedXTag.posY > 0.75) {
             this.finalPointerView = productTagPointerBottom
             position = POSITION_TOP
         } else {
@@ -151,11 +149,9 @@ class PostTagView @JvmOverloads constructor(
 
         if (productTagDot.isVisible) {
             productTagDot.gone()
-            finalPointerView.visibleWithAnimation()
-            productTagExpandedView.visibleWithAnimation()
+            showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
         } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
-            finalPointerView.gone()
-            productTagExpandedView.goneWithAnimation()
+            hideBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
         } else if (!initialBubbleVisible) {
             val params = productTagExpandedView.layoutParams as MarginLayoutParams
             if (position == POSITION_BOTTOM) {
@@ -165,11 +161,10 @@ class PostTagView @JvmOverloads constructor(
 
             }
             productTagExpandedView.layoutParams = params
-            finalPointerView.visibleWithAnimation()
-            productTagExpandedView.visibleWithAnimation()
+            showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
         } else {
-            finalPointerView.visibleWithAnimation()
-            productTagExpandedView.visibleWithAnimation()
+            showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+
         }
         return isProductDotVisible
 
