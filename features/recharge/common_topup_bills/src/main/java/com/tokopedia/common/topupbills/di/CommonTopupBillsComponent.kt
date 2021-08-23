@@ -7,6 +7,7 @@ import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
@@ -52,4 +53,6 @@ interface CommonTopupBillsComponent {
     fun inject(topupBillsFavoriteNumberFragment: TopupBillsFavoriteNumberFragment)
 
     fun inject(topupBillsContactListFragment: TopupBillsContactListFragment)
+
+    fun inject(topupBillsSavedNumberFragment: TopupBillsSavedNumberFragment)
 }

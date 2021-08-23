@@ -28,10 +28,12 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberAct
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_IDS
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_NAME
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -146,11 +148,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     }
 
-    protected fun navigateContact() {
+    protected fun navigateContact(
+        clientNumber: String,
+        favNumberList: MutableList<TopupBillsFavNumberItem>,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String
+    ) {
+        // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
-                permissionCheckerHelper.checkPermission(it,
+                permissionCheckerHelper.checkPermission(this,
                     PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
@@ -162,12 +170,33 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         }
 
                         override fun onPermissionGranted() {
-                            openContactPicker()
+                            navigateSavedNumber(
+                                clientNumber, favNumberList, dgCategoryIds, categoryName)
                         }
                     })
             }
         } else {
-            openContactPicker()
+            navigateSavedNumber(clientNumber, favNumberList, dgCategoryIds, categoryName)
+        }
+    }
+
+    private fun navigateSavedNumber(
+        clientNumber: String,
+        favNumberList: MutableList<TopupBillsFavNumberItem>,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String)
+    {
+        context?.let {
+
+            val intent = TopupBillsSavedNumberActivity.createInstance(
+                it, clientNumber, favNumberList, dgCategoryIds, categoryName, operatorData
+            )
+
+            // TODO: [Misael] Ganti ini request code
+            val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
+                REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER else REQUEST_CODE_DIGITAL_FAVORITE_NUMBER
+
+            startActivityForResult(intent, requestCode)
         }
     }
 

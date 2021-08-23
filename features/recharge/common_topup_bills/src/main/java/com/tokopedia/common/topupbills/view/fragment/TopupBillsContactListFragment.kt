@@ -94,7 +94,6 @@ class TopupBillsContactListFragment: BaseDaggerFragment() {
                     }
                 })
         } else {
-            //TODO: [Misael] CHECK INII BISA GA
             loadContacts()
         }
     }
@@ -134,22 +133,6 @@ class TopupBillsContactListFragment: BaseDaggerFragment() {
 
         cursor?.close()
         contactListAdapter.setContacts(contacts)
-    }
-
-    private fun getPhoneNumber(id: String): String? {
-        val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID  + " =?"
-
-        val phoneCursor = activity?.contentResolver?.query(
-            uri, null, selection, arrayOf(id), null
-        )
-
-        if (phoneCursor != null && phoneCursor.moveToNext()) {
-            return phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-        }
-
-        phoneCursor?.close()
-        return null
     }
 
     inner class Contact(

@@ -284,7 +284,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
                 inputNumberActionType = InputNumberActionType.CONTACT
-                navigateContact()
+
+                val clientNumber = postpaidClientNumberWidget.getInputNumber()
+                navigateContact(
+                    clientNumber, favNumberList,
+                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId))
             }
 
             override fun onRenderOperator() {

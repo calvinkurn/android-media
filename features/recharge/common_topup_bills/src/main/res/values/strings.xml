@@ -11,6 +11,7 @@
     <string name="common_topup_title_promo_code">Kode Promo: </string>
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
+    <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
     <string name="common_topup_fav_number_title">Nomor Favorit</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>

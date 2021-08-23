@@ -445,8 +445,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
         override fun onNavigateToContact() {
+            // TODO: [Misael] ganti input type berdasarkan jenis nomor yg dipilih user nanti (CONTACt/FAVORITE)
             inputNumberActionType = InputNumberActionType.CONTACT
-            navigateContact()
+
+            val clientNumber = telcoClientNumberWidget.getInputNumber()
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
+            navigateContact(
+                clientNumber, favNumberList,
+                dgCategoryIds, topupAnalytics.getCategoryName(categoryId))
         }
 
         override fun onRenderOperator() {
