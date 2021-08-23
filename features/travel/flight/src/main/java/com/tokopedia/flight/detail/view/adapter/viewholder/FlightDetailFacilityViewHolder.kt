@@ -76,8 +76,10 @@ class FlightDetailFacilityViewHolder(itemView: View) : AbstractViewHolder<Flight
         if (infos.isNotEmpty()) {
             adapterInfo.addData(infos)
             separatorInfoView.visibility = View.VISIBLE
+            listInfo.visibility = View.VISIBLE
         } else {
             separatorInfoView.visibility = View.GONE
+            listInfo.visibility = View.GONE
         }
     }
 
