@@ -75,7 +75,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_slashed_price_text"
@@ -87,7 +87,7 @@
                 android:visibility="gone"
                 android:text="Rp2.750.000"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
+                app:typographyWeight="bold"
                 android:singleLine="true"
                 android:textColor="@color/Unify_NN400"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -104,7 +104,7 @@
                 android:paddingBottom="@dimen/dp_4"
                 android:text="Rp2.750.000"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
+                app:typographyWeight="bold"
                 android:singleLine="true"
                 android:textColor="@color/Unify_NN400"
                 app:layout_constraintBottom_toBottomOf="@id/product_slashed_price_text"
