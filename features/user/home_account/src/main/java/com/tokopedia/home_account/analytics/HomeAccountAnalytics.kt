@@ -6,14 +6,20 @@ import com.tokopedia.home_account.AccountConstants.Analytics.ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.ACTION_FIELD
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ACCOUNT_SETTING_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ACC_GOJEK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_APP_SETTING_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_BACK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_BALANCE
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_HELP_LINK_ACC
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LINK_ACC
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LINK_ACC_GOJEK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_ON_MORE_OPTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SCREEN_RECORDER
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SETTING_LINK_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
@@ -25,6 +31,8 @@ import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_BUYER
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_SETTING_LINK
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_SETTING_PAGE
@@ -59,6 +67,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_APP_SETTING
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLEAN_CACHE
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CONNECTED_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_DISABLE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_EMPTY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ENABLE
@@ -667,5 +676,79 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
                 ACTION_SIMPAN_THEME_SELECTION,
                 label
         ))
+    }
+
+    fun trackClickLinkAccount() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
+                ACTION_CLICK_LINK_ACC_GOJEK,
+                "")
+        )
+    }
+
+    fun trackClickSettingLinkAcc() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_LINK,
+                ACTION_CLICK_SETTING_LINK_ACC,
+                LABEL_CONNECTED_ACC)
+        )
+    }
+
+    fun trackClickBackLinkAccount() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
+                ACTION_CLICK_BACK,
+                "")
+        )
+    }
+
+    fun trackClickHubungkanLinkAccountPage() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
+                ACTION_CLICK_LINK_ACC,
+                "")
+        )
+    }
+
+    fun trackClickViewStatusLinkAccountPage() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
+                ACTION_CLICK_ACC_GOJEK,
+                "")
+        )
+    }
+
+    fun trackClickHelpPageLinkAcc() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
+                ACTION_CLICK_HELP_LINK_ACC,
+                "")
+        )
+    }
+
+    private fun track(map: MutableMap<String, Any>) {
+        map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        map[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    companion object {
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
     }
 }

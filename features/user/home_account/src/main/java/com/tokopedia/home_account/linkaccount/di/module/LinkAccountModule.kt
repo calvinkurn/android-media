@@ -3,6 +3,7 @@ package com.tokopedia.home_account.linkaccount.di.module
 import android.content.Context
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.linkaccount.di.LinkAccountContext
 import com.tokopedia.home_account.linkaccount.di.LinkAccountScope
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
@@ -37,5 +38,11 @@ import dagger.Provides
     @LinkAccountScope
     fun provideGetLinkStatusUseCase(repository: GraphqlRepository): GetLinkStatusUseCase {
         return GetLinkStatusUseCase(repository)
+    }
+
+    @Provides
+    @LinkAccountScope
+    fun provideHomeAccountAnalytics(@LinkAccountContext context: Context, userSession: UserSessionInterface): HomeAccountAnalytics {
+        return HomeAccountAnalytics(context, userSession)
     }
 }

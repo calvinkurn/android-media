@@ -900,7 +900,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
                 startActivity(intent)
             }
-
+            AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                homeAccountAnalytic.trackClickSettingLinkAcc()
+                goToApplink(item.applink)
+            }
             else -> {
                 goToApplink(item.applink)
             }
@@ -1166,11 +1169,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 //            requireActivity(),
 //            ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
 //        ) ?: "", Toaster.LENGTH_LONG).show()
-
+        homeAccountAnalytic.trackClickLinkAccount()
         RouteManager.route(activity, ApplinkConst.WEBVIEW,
             LinkAccountFragment.getLinkAccountUrl(requireContext(), ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
         )
-//        showBottomSheetLinkAccount()
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {

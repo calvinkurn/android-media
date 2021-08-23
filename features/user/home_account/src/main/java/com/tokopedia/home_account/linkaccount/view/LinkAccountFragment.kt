@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.databinding.FragmentLinkAccountLayoutBinding
 import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -51,6 +52,9 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var homeAccountAnalytics: HomeAccountAnalytics
 
     private lateinit var viewModel: LinkAccountViewModel
     private val binding by viewBinding(FragmentLinkAccountLayoutBinding::bind)
@@ -142,6 +146,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     fun goToTokopediaCareWebview() {
+        homeAccountAnalytics.trackClickHelpPageLinkAcc()
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
             TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         ))
@@ -153,10 +158,12 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     override fun onLinkAccountClicked() {
+        homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
         goToLinkPage()
     }
 
     override fun onViewAccountClicked() {
+        homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
         goToLinkPage()
     }
 
@@ -174,6 +181,11 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
             partnerName = "Gojek",
             linkDate = "Linked on $linkedDate"
         )
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        homeAccountAnalytics.trackClickBackLinkAccount()
+        return super.onFragmentBackPressed()
     }
 
     companion object {
