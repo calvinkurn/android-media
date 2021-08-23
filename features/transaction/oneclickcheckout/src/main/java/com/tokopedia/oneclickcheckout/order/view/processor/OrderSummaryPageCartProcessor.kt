@@ -235,13 +235,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             try {
                 val creditCardData = creditCardTenorListUseCase.executeSuspend(ccTenorListRequest)
                 if (creditCardData.errorMsg.isNotEmpty()) {
-                    return@withContext false to OccGlobalEvent.AdjustAdminFeeError(creditCardData.errorMsg)
+                    return@withContext false to OccGlobalEvent.AdjustAdminFeeError
                 } else {
                     return@withContext true to OccGlobalEvent.AdjustAdminFeeSuccess(creditCardData)
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
-                return@withContext false to OccGlobalEvent.AdjustAdminFeeError("")
+                return@withContext false to OccGlobalEvent.AdjustAdminFeeError
             }
         }
         OccIdlingResource.decrement()
@@ -257,12 +257,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         val totalDiscount = orderTotal.orderCost.productDiscountAmount + orderTotal.orderCost.shippingDiscountAmount
         val totalOtherAmount = orderTotal.orderCost.purchaseProtectionPrice + orderTotal.orderCost.insuranceFee.toInt()
 
-        // TODO: return back to profileCode = orderPaymentCreditCard.additionalData.profileCode
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
             userId = userId.toLong(),
             totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice.toFloat(),
-            profileCode = "TEST_DEFAULT",
+            profileCode = orderPaymentCreditCard.additionalData.profileCode,
             ccfeeSignature = orderPaymentCreditCard.tenorSignature,
             timestamp = orderPaymentCreditCard.unixTimestamp,
             otherAmount = totalOtherAmount.toFloat(),
