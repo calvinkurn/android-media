@@ -1,9 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.util.Log
-import android.util.TypedValue
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,10 +43,9 @@ class ProductFeaturedViewComponent(
     )
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
-        val bias = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9F, resources.displayMetrics)
-
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
+
             val offset = rvProductFeatured.computeHorizontalScrollOffset()
             val width = rvProductFeatured.width
             val range = rvProductFeatured.computeHorizontalScrollRange()
@@ -61,8 +58,8 @@ class ProductFeaturedViewComponent(
             Log.d("<LOG>", "percentage : $percentage")
 
             if(width > range) icProductSeeMore.gone()
-            else if(percentage > 0.9F) {
-                val scale = (1 - percentage) / 0.1F
+            else if(percentage > SEE_MORE_ANIMATION_THRESHOLD) {
+                val scale = (1 - percentage) / (1 - SEE_MORE_ANIMATION_THRESHOLD)
                 val reverseScale = if(1 - scale < 0) 0F else 1 - scale
 
                 if(!featuredProduct.isNullOrEmpty() && featuredProduct.first() is PlayProductUiModel.Product) {
@@ -70,7 +67,9 @@ class ProductFeaturedViewComponent(
                     featuredProduct[featuredProduct.size - 1] = seeMore.copy(scale = reverseScale)
                     adapter.setItemsAndAnimateChanges(featuredProduct)
 
-                    if(reverseScale < 0.73F) icProductSeeMore.visible() else icProductSeeMore.gone()
+                    if(reverseScale < STICKY_SEE_MORE_VISIBLE_THRESHOLD)
+                        icProductSeeMore.visible()
+                    else icProductSeeMore.gone()
                 }
             }
             else icProductSeeMore.visible()
@@ -169,8 +168,9 @@ class ProductFeaturedViewComponent(
     }
 
     companion object {
-
         private const val TOTAL_PLACEHOLDER = 3
+        private const val SEE_MORE_ANIMATION_THRESHOLD = 0.8F
+        private const val STICKY_SEE_MORE_VISIBLE_THRESHOLD = 0.75F
     }
 
     interface Listener {
