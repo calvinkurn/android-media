@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvStcDateRage"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStcUpgradeToPM"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:text="@string/stc_upgrade_to_pm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
