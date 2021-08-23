@@ -29,6 +29,7 @@ class ProductFeaturedViewComponent(
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
     private val icProductSeeMore: ProductIconView = findViewById(R.id.ic_product_seemore)
+    private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
             productFeaturedListener = object : ProductBasicViewHolder.Listener {
@@ -64,11 +65,10 @@ class ProductFeaturedViewComponent(
                 val scale = (1 - percentage) / 0.1F
                 val reverseScale = if(1 - scale < 0) 0F else 1 - scale
 
-                val productFeatured = adapter.getItems()
-                if(!productFeatured.isNullOrEmpty() && productFeatured.first() is PlayProductUiModel.Product) {
-                    val seeMore = productFeatured.last() as PlayProductUiModel.SeeMore
-                    productFeatured.toMutableList()[productFeatured.size - 1] = seeMore.copy(scale = reverseScale)
-//                    adapter.setItemsAndAnimateChanges(productFeatured)
+                if(!featuredProduct.isNullOrEmpty() && featuredProduct.first() is PlayProductUiModel.Product) {
+                    val seeMore = featuredProduct.last() as PlayProductUiModel.SeeMore
+                    featuredProduct[featuredProduct.size - 1] = seeMore.copy(scale = reverseScale)
+                    adapter.setItemsAndAnimateChanges(featuredProduct)
 
                     if(reverseScale < 0.73F) icProductSeeMore.visible() else icProductSeeMore.gone()
                 }
@@ -92,6 +92,7 @@ class ProductFeaturedViewComponent(
 
     init {
         icProductSeeMore.setBackgroundResource(R.drawable.ic_product_see_more)
+        rvProductFeatured.itemAnimator = null
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
         rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
@@ -108,6 +109,9 @@ class ProductFeaturedViewComponent(
             if(featuredItems.first() is PlayProductUiModel.Product)
                 icProductSeeMore.setTotalProduct(products.size)
         }
+
+        featuredProduct.clear()
+        featuredProduct.addAll(featuredItems)
 
         sendImpression()
     }
