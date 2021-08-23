@@ -66,9 +66,12 @@ class ProductFeaturedViewComponent(
         adapter.setItemsAndAnimateChanges(featuredItems)
 
         if (featuredItems.isEmpty()) hide()
-        else show()
+        else {
+            show()
+            if(featuredItems.first() is PlayProductUiModel.Product)
+                icProductSeeMore.setTotalProduct(products.size)
+        }
 
-        icProductSeeMore.setTotalProduct(products.size)
         sendImpression()
     }
 
