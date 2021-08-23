@@ -33,7 +33,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -187,7 +187,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         categoryName: String)
     {
         context?.let {
-
             val intent = TopupBillsSavedNumberActivity.createInstance(
                 it, clientNumber, favNumberList, dgCategoryIds, categoryName, operatorData
             )
@@ -298,16 +297,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER) {
                     if (data != null) {
-                        val inputNumberActionType =
-                            data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                         val orderClientNumber =
-                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
+                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
                         handleCallbackAnySearchNumber(
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
-                            orderClientNumber.productId.toString(),
-                            orderClientNumber.categoryId.toString(),
-                            inputNumberActionType
+                            orderClientNumber.productId,
+                            orderClientNumber.categoryId,
+                            orderClientNumber.inputNumberActionTypeIndex
                         )
                     } else {
                         handleCallbackAnySearchNumberCancel()

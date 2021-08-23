@@ -1,9 +1,10 @@
 package com.tokopedia.common.topupbills.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 
-class TopupBillsContactListFragment: BaseDaggerFragment() {
-
+class TopupBillsContactListFragment:
+    BaseDaggerFragment(),
+    TopupBillsContactListAdapter.OnContactNumberClickListener
+{
     private val contactsProjection: Array<out String> = arrayOf(
         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
         ContactsContract.CommonDataKinds.Phone.NUMBER,
@@ -38,15 +43,6 @@ class TopupBillsContactListFragment: BaseDaggerFragment() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,7 +59,7 @@ class TopupBillsContactListFragment: BaseDaggerFragment() {
     }
 
     private fun initRecyclerView() {
-        contactListAdapter = TopupBillsContactListAdapter(listOf())
+        contactListAdapter = TopupBillsContactListAdapter(listOf(), this)
         binding?.commonTopupBillsContactsRv?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = contactListAdapter
@@ -133,6 +129,28 @@ class TopupBillsContactListFragment: BaseDaggerFragment() {
 
         cursor?.close()
         contactListAdapter.setContacts(contacts)
+    }
+
+    override fun onContactNumberClick(name: String, number: String) {
+        navigateToPDP(name, number)
+    }
+
+    private fun navigateToPDP(
+        clientName: String,
+        clientNumber: String
+    ) {
+        activity?.run {
+            val intent = Intent()
+            val searchedNumber = TopupBillsSavedNumber(
+                clientName = clientName,
+                clientNumber = clientNumber,
+                inputNumberActionTypeIndex =
+                    TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT.ordinal
+            )
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedNumber)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     inner class Contact(

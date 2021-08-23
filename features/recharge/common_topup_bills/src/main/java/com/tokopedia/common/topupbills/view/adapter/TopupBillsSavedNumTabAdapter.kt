@@ -5,7 +5,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
 import java.util.ArrayList
 
 class TopupBillsSavedNumTabAdapter(

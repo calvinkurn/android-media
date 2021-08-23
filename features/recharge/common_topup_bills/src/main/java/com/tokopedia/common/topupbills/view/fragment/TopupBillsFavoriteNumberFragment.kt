@@ -98,7 +98,7 @@ class TopupBillsFavoriteNumberFragment :
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
     private lateinit var localCacheHandler: LocalCacheHandler
-    protected lateinit var inputNumberActionType: InputNumberActionType
+    protected lateinit var inputNumberActionType: TopupBillsSearchNumberFragment.InputNumberActionType
 
     private var currentCategoryName = ""
     private var number: String = ""
@@ -174,7 +174,7 @@ class TopupBillsFavoriteNumberFragment :
         }
 
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
-            inputNumberActionType = InputNumberActionType.CONTACT
+            inputNumberActionType = TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT
             navigateContact()
         }
         initRecyclerView()
@@ -314,7 +314,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private val getFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-        if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
+        if (hasFocus) inputNumberActionType = TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
     }
 
     private val getSearchNumberListener = object : TextView.OnEditorActionListener {
@@ -387,7 +387,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     fun onSearchDone(text: String) {
-        navigateToPDP(InputNumberActionType.MANUAL)
+        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
     }
 
     fun onSearchReset() {
@@ -398,7 +398,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
-        navigateToPDP(InputNumberActionType.FAVORITE, clientNumber)
+        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE, clientNumber)
     }
 
     override fun onContinueClicked() {
@@ -406,22 +406,25 @@ class TopupBillsFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
                 currentCategoryName, getOperatorNameByPrefix(clientNumber), userSession.userId
         )
-        navigateToPDP(InputNumberActionType.MANUAL)
+        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
     }
 
     private fun navigateToPDP(
-            inputNumberActionType: InputNumberActionType,
-            clientNumber: TopupBillsSeamlessFavNumberItem? = null
+            inputNumberActionType: TopupBillsSearchNumberFragment.InputNumberActionType,
+            favNumber: TopupBillsSeamlessFavNumberItem? = null
     ) {
         activity?.run {
             val intent = Intent()
-            val searchedClientNumber: TopupBillsSeamlessFavNumberItem = clientNumber
-                    ?: TopupBillsSeamlessFavNumberItem(
-                            clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
-                    )
+            val searchedNumber = TopupBillsSavedNumber(
+                clientName = favNumber?.clientName ?: "",
+                clientNumber = favNumber?.clientNumber
+                    ?: binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString(),
+                categoryId = favNumber?.categoryId ?: "",
+                productId = favNumber?.productId ?: "",
+                inputNumberActionTypeIndex = inputNumberActionType.ordinal
+            )
 
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedClientNumber)
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType)
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedNumber)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
@@ -698,10 +701,6 @@ class TopupBillsFavoriteNumberFragment :
         getSeamlessFavoriteNumber()
     }
 
-    enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE
-    }
-
     enum class FavoriteNumberActionType {
         UPDATE, DELETE, UNDO_DELETE
     }
@@ -716,7 +715,7 @@ class TopupBillsFavoriteNumberFragment :
                         val clientNumber = TopupBillsSeamlessFavNumberItem(
                                 clientName = contact.givenName,
                                 clientNumber = contact.contactNumber)
-                        navigateToPDP(InputNumberActionType.CONTACT, clientNumber)
+                        navigateToPDP(TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT, clientNumber)
                     }
                 }
             }

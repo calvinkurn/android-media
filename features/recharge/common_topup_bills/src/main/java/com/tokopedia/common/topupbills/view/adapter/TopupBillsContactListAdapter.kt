@@ -7,7 +7,8 @@ import com.tokopedia.common.topupbills.databinding.ItemTopupBillsContactBinding
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 
 class TopupBillsContactListAdapter(
-    private var contacts: List<TopupBillsContactListFragment.Contact>
+    private var contacts: List<TopupBillsContactListFragment.Contact>,
+    private var listener: OnContactNumberClickListener
 ): RecyclerView.Adapter<TopupBillsContactListAdapter.ViewHolder>()  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,8 +33,14 @@ class TopupBillsContactListAdapter(
                 commonTopupBillsContactName.text = contact.name
                 commonTopupBillsContactNumber.text = contact.phoneNumber
                 commonTopupBillsInitial.text = contact.name[0].toString()
+                commonTopupBillsContainerContactNumber.setOnClickListener {
+                    listener.onContactNumberClick(contact.name, contact.phoneNumber)
+                }
             }
-
         }
+    }
+
+    interface OnContactNumberClickListener {
+        fun onContactNumberClick(name: String, number: String)
     }
 }
