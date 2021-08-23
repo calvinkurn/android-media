@@ -3,18 +3,21 @@ package com.tokopedia.imagepicker_insta.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imagepicker.common.ImageEditorBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.ImageRatioType
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
@@ -33,6 +36,8 @@ import javax.inject.Inject
 
 
 class MainFragment: Fragment() {
+
+    val EDITOR_REQUEST_CODE = 221
 
     lateinit var viewModel: PickerViewModel
     @Inject
@@ -53,6 +58,30 @@ class MainFragment: Fragment() {
         super.onCreate(savedInstanceState)
         initDagger()
         handleCameraPermissionCallback()
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.imagepicker_insta_menu,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.imagepicker_insta_lanjut-> proceedNextStep()
+        }
+        return true
+    }
+
+    private fun proceedNextStep(){
+        val assets = imageAdapter.selectedPositions.map {
+            imageAdapter.dataList[it].assetPath
+        }
+        val assetList = ArrayList(assets)
+        val intent = ImageEditorActivity.getIntent(context,
+            ImageEditorBuilder(assetList,
+            defaultRatio = ImageRatioType.RATIO_1_1))
+        startActivityForResult(intent,EDITOR_REQUEST_CODE)
     }
 
     fun handleCameraPermissionCallback(){
@@ -91,6 +120,8 @@ class MainFragment: Fragment() {
         selectedImage = v.findViewById(R.id.selected_image_view)
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
+        val toolbar:Toolbar = v.findViewById(R.id.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
         setupRv()
     }
 
@@ -188,9 +219,21 @@ class MainFragment: Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CameraUtil.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            handleCameraSuccessResponse()
+        when(requestCode){
+            CameraUtil.REQUEST_IMAGE_CAPTURE->{
+                if(resultCode == Activity.RESULT_OK){
+                    handleCameraSuccessResponse()
+                }
+            }
+            EDITOR_REQUEST_CODE->{
+                handleEditorCallback(data)
+            }
         }
+    }
+
+    private fun handleEditorCallback(data:Intent?){
+        val imageOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+        imageOrPathList.size
     }
 
     private fun handleCameraSuccessResponse(){
