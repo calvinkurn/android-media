@@ -12,14 +12,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -32,8 +24,9 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
@@ -43,10 +36,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSear
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
-import com.tokopedia.track.TrackAppUtils.EVENT
-import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
-import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
-import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -88,9 +77,6 @@ class TokoNowSearchViewModel @Inject constructor (
         userSession,
 ) {
 
-    private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
-    val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
-
     private val addToCartBroadMatchTrackingMutableLiveData =
         SingleLiveEvent<Triple<Int, String, BroadMatchItemDataView>>()
     val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, BroadMatchItemDataView>> =
@@ -116,12 +102,13 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
+        val searchProduct = searchModel.searchProduct
         responseCode = searchModel.getResponseCode()
         suggestionModel = searchModel.getSuggestion()
         searchCategoryJumper = searchModel.searchCategoryJumper
         related = searchModel.getRelated()
 
-        val searchProductHeader = searchModel.searchProduct.header
+        val searchProductHeader = searchProduct.header
 
         val headerDataView = HeaderDataView(
                 title = "",
@@ -132,12 +119,10 @@ class TokoNowSearchViewModel @Inject constructor (
         )
 
         val contentDataView = ContentDataView(
-                aceSearchProductData = searchModel.searchProduct.data,
+                aceSearchProductData = searchProduct.data,
         )
 
-        onGetFirstPageSuccess(headerDataView, contentDataView)
-
-        sendGeneralSearchTracking(searchProductHeader)
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
@@ -283,26 +268,10 @@ class TokoNowSearchViewModel @Inject constructor (
         visitableList.addAll(createBroadMatchVisitableList())
     }
 
-    private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
-        val eventLabel = query +
-                "|${searchProductHeader.keywordProcess}" +
-                "|${searchProductHeader.responseCode}" +
-                "|$BUSINESS_UNIT_PHYSICAL_GOODS" +
-                "|$TOKONOW" +
-                "|$HASIL_PENCARIAN_DI_TOKONOW" +
-                "|${searchProductHeader.totalData}"
+    override fun getKeywordForGeneralSearchTracking() = query
 
-        val generalSearchDataLayer = mapOf(
-                EVENT to EVENT_CLICK_TOKONOW,
-                EVENT_ACTION to GENERAL_SEARCH,
-                EVENT_CATEGORY to TOP_NAV,
-                EVENT_LABEL to eventLabel,
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-        )
-
-        generalSearchEventMutableLiveData.value = generalSearchDataLayer
-    }
+    override fun getPageSourceForGeneralSearchTracking() =
+        "$TOKOPEDIA_NOW.$TOKONOW.$LOCAL_SEARCH.$warehouseId"
 
     override fun executeLoadMore() {
         getSearchLoadMorePageUseCase.cancelJobs()

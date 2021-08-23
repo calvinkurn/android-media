@@ -9,7 +9,9 @@
       "eventLabel": ".+|.+|\\d|.+|.+|.+|.+",
       "businessUnit": "Physical Goods",
       "currentSite": "tokopediamarketplace",
-      "sessionIris": ".+"
+      "sessionIris": ".+",
+      "relatedKeyword": ".+ - .+",
+      "pageSource": ".+"
     },
     {
       "event": "view_item_list",
