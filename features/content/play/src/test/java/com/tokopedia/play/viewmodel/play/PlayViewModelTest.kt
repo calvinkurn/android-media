@@ -1,6 +1,7 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
@@ -18,6 +19,8 @@ class PlayViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val channelDataModelBuilder = PlayChannelDataModelBuilder()
+
     @Test
     fun `given video player instance is created, when retrieved, it should return the correct video player instance`() {
         val mockPlayerBuilder: PlayVideoWrapper.Builder = mockk(relaxed = true)
@@ -30,6 +33,17 @@ class PlayViewModelTest {
             getVideoPlayer()
         } thenVerify { result ->
             result.isEqualTo(mockPlayer)
+        }
+    }
+
+    @Test
+    fun `given channel data is set, when retrieved, it should return same data`() {
+        val channelData = channelDataModelBuilder.buildChannelData()
+
+        givenPlayViewModelRobot {
+            createPage(channelData)
+        } thenVerify {
+            viewModel.latestCompleteChannelData.isEqualTo(channelData)
         }
     }
 }
