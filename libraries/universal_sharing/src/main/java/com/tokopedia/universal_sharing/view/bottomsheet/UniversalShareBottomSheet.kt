@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
@@ -38,6 +39,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import kotlinx.android.synthetic.main.activity_analytics_validator.*
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -183,7 +185,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
-        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, this.requireView()) }
+//        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, this.requireView()) }
+        setShowListener {
+            Toaster.build(this.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+            Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+            Toaster.build(this.parent.rootView, text = fragment.getString(R.string.permission_denied_toast)).show()
+        }
         fragmentManager?.let {
             show(it, TAG)
         }
