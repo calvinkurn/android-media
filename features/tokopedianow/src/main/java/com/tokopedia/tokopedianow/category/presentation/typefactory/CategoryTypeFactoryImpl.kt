@@ -11,6 +11,8 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecentPurchaseViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -50,6 +52,8 @@ class CategoryTypeFactoryImpl(
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowCategoryGridUiModel) = TokoNowCategoryGridViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowRecentPurchaseUiModel) = TokoNowRecentPurchaseViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {

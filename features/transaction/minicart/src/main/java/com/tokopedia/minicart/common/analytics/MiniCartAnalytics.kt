@@ -69,9 +69,14 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_VIEW_TICKER_ERROR_UNAVAILABLE_PRODUCT = "view ticker error for unavailable product in cart page"
         const val EVENT_ACTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET = "click knob action"
+        const val EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET = "click langsung chat on minicart chat attachment"
+        const val EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET = "click product tickbox on minicart chat attachment"
+        const val EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET = "click tanya soal produk on minicart chat attachment"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
+        const val EVENT_LABEL_TICK = "tick"
+        const val EVENT_LABEL_UNTICK = "untick"
 
         // EE CUSTOM DIMENSION
         const val DIMENSION_104 = "dimension104" // Campaign id
@@ -488,6 +493,35 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventAction = EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET
         )
 
+        sendGeneralEvent(data)
+    }
+
+    /* CHAT BOTTOM SHEET : https://mynakama.tokopedia.com/datatracker/requestdetail/view/1995 */
+    // 1 - DONE
+    fun eventClickBtnDirectChatBottomSheet() {
+        val data = getGtmData(
+                eventName = EVENT_NAME_CLICK_MINICART,
+                eventAction = EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET
+        )
+        sendGeneralEvent(data)
+    }
+
+    // 2 - DONE
+    fun eventClickTickBoxChatBottomSheet(isChecked: Boolean) {
+        val data = getGtmData(
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET,
+            eventLabel = if (isChecked) EVENT_LABEL_TICK else EVENT_LABEL_UNTICK
+        )
+        sendGeneralEvent(data)
+    }
+
+    // 3 - DONE
+    fun eventClickBtnAskProductChatBottomSheet() {
+        val data = getGtmData(
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET
+        )
         sendGeneralEvent(data)
     }
 }

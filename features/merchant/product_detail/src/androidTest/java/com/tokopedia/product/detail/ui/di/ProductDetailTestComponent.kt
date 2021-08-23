@@ -15,7 +15,8 @@ import dagger.Component
     ViewModelModule::class,
     GqlRawQueryModule::class,
     ProductWishlistModule::class,
-    ProductUserSessionModuleMock::class],
+    ProductUserSessionModuleMock::class,
+    ProductDetailDevModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailTestComponent : ProductDetailComponent {
     fun inject(testData: BaseProductDetailUiTest)
