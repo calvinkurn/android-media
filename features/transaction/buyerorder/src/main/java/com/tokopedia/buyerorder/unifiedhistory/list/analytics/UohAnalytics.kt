@@ -37,7 +37,7 @@ object UohAnalytics {
     private const val NAME = "name"
     private const val ITEM_NAME = "item_name"
     private const val ID = "id"
-    private const val ITEM_ID = "id"
+    private const val ITEM_ID = "item_id"
     private const val PRICE = "price"
     private const val BRAND = "brand"
     private const val ITEM_BRAND = "item_brand"
@@ -326,7 +326,9 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>, verticalLabel: String) {
+    fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String,
+                                   arrayListProducts: ArrayList<ECommerceAdd.Add.Products>,
+                                   verticalLabel: String, cartId: String) {
         val arrayListBundleItems = arrayListOf<Bundle>()
         arrayListProducts.forEach { product ->
             val bundleProduct = Bundle().apply {
@@ -340,7 +342,7 @@ object UohAnalytics {
                 putString(DIMENSION79, product.dimension79)
                 putString(DIMENSION81, "")
                 putString(DIMENSION80, "")
-                putString(DIMENSION45, "")
+                putString(DIMENSION45, cartId)
                 putString(DIMENSION40, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
             }
             arrayListBundleItems.add(bundleProduct)

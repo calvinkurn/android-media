@@ -49,6 +49,7 @@ object ProductTrackingConstant {
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_PRICE = "productPrice"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -136,10 +137,6 @@ object ProductTrackingConstant {
         const val ADD_WISHLIST_NON_LOGIN = "add wishlist - non logged in"
         const val CLICK_CHECK_WISHLIST = "click - check wishlist kamu"
         const val CLICK_SHOP_PAGE = "click - shop page link"
-        const val CLICK_SEE_ALL_MERCHANT_VOUCHER = "click - merchant voucher - see all"
-        const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
-        const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
-        const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
         const val CLICK_TOASTER_LIHAT_SUCCESS_ATC = "click - lihat on add to cart success toaster"
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
@@ -164,6 +161,7 @@ object ProductTrackingConstant {
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
+        const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 

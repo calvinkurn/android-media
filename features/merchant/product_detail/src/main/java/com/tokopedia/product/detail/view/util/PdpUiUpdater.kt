@@ -57,9 +57,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
 
-    val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
-        get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
-
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
@@ -375,17 +372,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.SHOP_VOUCHER) {
-                productMerchantVoucherMap?.run {
-                    voucherData = ArrayList(it.vouchers)
-                }
-            }
-
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
-                    subTitle = it.merchantVoucherSummary.subTitle
-                    imageURL = it.merchantVoucherSummary.imageURL
+                    animatedInfos = it.merchantVoucherSummary.animatedInfos
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
                 }

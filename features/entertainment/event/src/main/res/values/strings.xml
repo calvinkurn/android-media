@@ -140,5 +140,6 @@
     <string name="ent_redeemed_time">Sudah di-redeem pada %s</string>
 
     <string name="ent_content_description">Event Content Description</string>
+    <string name="ent_free_price"> Gratis</string>
 
 </resources>
