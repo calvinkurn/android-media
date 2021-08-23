@@ -39,6 +39,7 @@ interface CommonConstant {
             const val SAVING_MONTH = "month"
             const val SAVING_TYPE = "type"
             const val PAGESIZE = "pageSize"
+            const val SOURCE = "source"
         }
     }
 
@@ -181,6 +182,7 @@ interface CommonConstant {
         const val ARGS_POINTS_AVAILABILITY = "points_availability"
         const val BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN"
         const val APIVERSION = "2.0.0"
+        const val REWARDS_SOURCE = "rewards"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
         const val TIMER_RED_BACKGROUND_HEX = "EF144A"
         const val HASH = "#"

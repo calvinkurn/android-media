@@ -89,5 +89,5 @@ data class MetadataItem(
     var timeRemainingSeconds: Long? = null,
 
     @SerializedName("isShowTime")
-    var isShowTime: Boolean? = false
+    val isShowTime: Boolean? = false
 )

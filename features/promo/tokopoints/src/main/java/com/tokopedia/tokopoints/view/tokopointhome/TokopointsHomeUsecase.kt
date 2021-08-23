@@ -10,6 +10,8 @@ import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerList
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.APIVERSION
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.REWARDS_SOURCE
 import com.tokopedia.tokopoints.view.util.TP_STATUS_MATCHING_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -75,7 +77,8 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
     @GqlQuery("TpStatusMatching", TP_STATUS_MATCHING_QUERY)
     suspend fun getUserStatusMatchingData() = withContext(Dispatchers.IO){
         val variables: MutableMap<String, Any> = HashMap()
-        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "1.0.0"
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = APIVERSION
+        variables[CommonConstant.GraphqlVariableKeys.SOURCE] = REWARDS_SOURCE
         mGetStatusMatchingUsecase.clearRequest()
         val requestSaving = GraphqlRequest(TpStatusMatching.GQL_QUERY,
             RewardTickerListResponse::class.java,variables,false)

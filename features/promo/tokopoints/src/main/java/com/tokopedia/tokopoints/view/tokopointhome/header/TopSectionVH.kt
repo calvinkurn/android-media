@@ -28,20 +28,23 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
-import com.tokopedia.tokopoints.view.customview.TimerTextView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.MetadataItem
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
 import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.Typography
 
 
-class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
+class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRuntimeHeightListener, private val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
     private var dynamicAction: DynamicItemActionView? = null
@@ -60,7 +63,8 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var backGroundImage: AppCompatImageView? = null
     private var cardStatusMatching: CardUnify? = null
     private var confettiAnim: LottieAnimationView? = null
-    private var timerTextView: TimerTextView? = null
+    private var timerTextView: Typography? = null
+    private var statusMatchingTimer: TimerUnifySingle? = null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -82,6 +86,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
         confettiAnim = itemView.findViewById(R.id.confetti_lottie)
         timerTextView = itemView.findViewById(R.id.timer_text_view)
+        statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -312,13 +317,32 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             }
         }
         playAnimation()
-        backGroundImage?.setBackgroundResource(R.drawable.ic_reward_tickerbg)
-        timerTextView?.setStatusTimerListener(object : TimerTextView.StatusTimerListener{
-            override fun onTimerFinish() {
+        backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching)
+        val metadata = rewardTickerResponse?.get(0)?.metadata?.get(0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            timerTextView?.text = Html.fromHtml(metadata?.text?.content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            timerTextView?.text = Html.fromHtml(metadata?.text?.content)
+        }
+        if(metadata?.isShowTime == true){
+            statusMatchingTimer?.show()
+            setTimer(metadata)
+        }
+    }
+
+    private fun setTimer(metadata: MetadataItem?){
+        statusMatchingTimer?.timer?.cancel()
+        statusMatchingTimer?.targetDate = convertSecondsToHrMmSs(metadata?.timeRemainingSeconds?:0L)
+        statusMatchingTimer?.apply {
+            timerTextWidth = TimerUnifySingle.TEXT_WRAP
+            timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+            onFinish = {
                 hideStatusMatching()
             }
-        })
-        timerTextView?.setTimer(rewardTickerResponse?.get(0)?.metadata?.get(0))
+            onTick = {
+                metadata?.timeRemainingSeconds = it / 1000
+            }
+        }
     }
 
     private fun playAnimation(){
@@ -326,7 +350,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         confettiAnim?.playAnimation()
     }
 
-     fun hideStatusMatching() {
+     private fun hideStatusMatching() {
          cardStatusMatching?.hide()
          containerStatusMatching?.hide()
     }
