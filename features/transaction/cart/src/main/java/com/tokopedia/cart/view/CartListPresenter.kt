@@ -22,6 +22,7 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -434,10 +435,16 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         val updateCartRequestList = ArrayList<UpdateCartRequest>()
         for (cartItemHolderData in cartItemHolderDataList) {
             if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemHolderData.isTokoNow)) {
-                val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemHolderData.cartId
-                updateCartRequest.notes = cartItemHolderData.notes
-                updateCartRequest.quantity = cartItemHolderData.quantity
+                val updateCartRequest = UpdateCartRequest().apply {
+                    cartId = cartItemHolderData.cartId
+                    notes = cartItemHolderData.notes
+                    quantity = cartItemHolderData.quantity
+                    bundleInfo = BundleInfo().apply {
+                        bundleId = cartItemHolderData.bundleId
+                        bundleGroupId = cartItemHolderData.bundleGroupId
+                        bundleQty = cartItemHolderData.bundleQuantity
+                    }
+                }
                 updateCartRequestList.add(updateCartRequest)
             }
         }

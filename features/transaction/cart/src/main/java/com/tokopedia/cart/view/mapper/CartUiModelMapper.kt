@@ -311,6 +311,7 @@ object CartUiModelMapper {
                 maxOrder = cartDetail.bundleDetail.bundleMaxOrder
                 quantity = product.productQuantity
                 bundleId = cartDetail.bundleDetail.bundleId
+                bundleGroupId = cartDetail.bundleDetail.bundleGroupId
                 bundleQuantity = cartDetail.bundleDetail.bundleQty
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
