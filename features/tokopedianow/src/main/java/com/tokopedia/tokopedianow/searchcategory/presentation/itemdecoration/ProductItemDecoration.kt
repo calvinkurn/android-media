@@ -14,6 +14,19 @@ class ProductItemDecoration(
         private val spacing: Int,
 ): RecyclerView.ItemDecoration() {
 
+    companion object {
+        const val ITEM_POSITION_DEFAULT = -1
+        const val SPAN_COUNT_DEFAULT = 1
+        const val FIRST_IN_ROW = 0
+        const val HORIZONTAL_OFFSET_DEFAULT = 0
+        const val VERTICAL_OFFSET_DEFAULT = 0
+        const val COS_DEFAULT = 45.0
+        const val ONE = 1
+        const val ONE_POINT_FIVE = 1.5
+        const val TWO = 2
+        const val FOUR = 4
+    }
+
     private var verticalCardViewOffset = 0
     private var horizontalCardViewOffset = 0
     private val allowedViewTypes = listOf(
@@ -45,20 +58,20 @@ class ProductItemDecoration(
         val layoutParams = view.layoutParams
         return if (layoutParams is StaggeredGridLayoutManager.LayoutParams)
             layoutParams.spanIndex
-        else -1
+        else ITEM_POSITION_DEFAULT
     }
 
     private fun getTotalSpanCount(parent: RecyclerView) =
             when (val layoutManager = parent.layoutManager) {
                 is StaggeredGridLayoutManager -> layoutManager.spanCount
-                else -> 1
+                else -> SPAN_COUNT_DEFAULT
             }
 
     private fun getHorizontalCardViewOffset(view: View) =
             when (view) {
                 is IProductCardView -> getHorizontalOffsetForIProductCardView(view)
                 is CardView -> getHorizontalOffsetForCardView(view)
-                else -> 0
+                else -> HORIZONTAL_OFFSET_DEFAULT
             }
 
     private fun getHorizontalOffsetForIProductCardView(cardView: IProductCardView): Int {
@@ -69,7 +82,7 @@ class ProductItemDecoration(
     }
 
     private fun getHorizontalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation + (ONE - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / 2
     }
 
     private fun getHorizontalOffsetForCardView(cardView: CardView): Int {
@@ -83,7 +96,7 @@ class ProductItemDecoration(
             when (view) {
                 is IProductCardView -> getVerticalOffsetForIProductCardView(view)
                 is CardView -> getVerticalOffsetForCardView(view)
-                else -> 0
+                else -> VERTICAL_OFFSET_DEFAULT
             }
 
     private fun getVerticalOffsetForIProductCardView(cardView: IProductCardView): Int {
@@ -94,7 +107,7 @@ class ProductItemDecoration(
     }
 
     private fun getVerticalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation * ONE_POINT_FIVE + (ONE - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / TWO
     }
 
     private fun getVerticalOffsetForCardView(cardView: CardView): Int {
@@ -110,7 +123,7 @@ class ProductItemDecoration(
 
     private fun getLeftOffsetFirstInRow() = spacing - horizontalCardViewOffset
 
-    private fun getLeftOffsetNotFirstInRow() = spacing / 4 - horizontalCardViewOffset
+    private fun getLeftOffsetNotFirstInRow() = spacing / FOUR - horizontalCardViewOffset
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
         return if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount))
@@ -119,9 +132,9 @@ class ProductItemDecoration(
             getTopOffsetNotTopItem()
     }
 
-    private fun getTopOffsetTopItem() = spacing / 2 - verticalCardViewOffset
+    private fun getTopOffsetTopItem() = spacing / TWO - verticalCardViewOffset
 
-    private fun getTopOffsetNotTopItem() = spacing / 4 - verticalCardViewOffset
+    private fun getTopOffsetNotTopItem() = spacing / TWO - verticalCardViewOffset
 
     private fun getRightOffset(relativePos: Int, totalSpanCount: Int): Int {
         return if (isLastInRow(relativePos, totalSpanCount)) getRightOffsetLastInRow() else getRightOffsetNotLastInRow()
@@ -129,31 +142,31 @@ class ProductItemDecoration(
 
     private fun getRightOffsetLastInRow() = spacing - horizontalCardViewOffset
 
-    private fun getRightOffsetNotLastInRow() = spacing / 4 - horizontalCardViewOffset
+    private fun getRightOffsetNotLastInRow() = spacing / FOUR - horizontalCardViewOffset
 
-    private fun getBottomOffsetNotBottomItem() = spacing / 4 - verticalCardViewOffset
+    private fun getBottomOffsetNotBottomItem() = spacing / FOUR - verticalCardViewOffset
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
-        return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
+        return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - ONE)
     }
 
     private fun isFirstInRow(relativePos: Int, spanCount: Int): Boolean {
-        return relativePos % spanCount == 0
+        return relativePos % spanCount == FIRST_IN_ROW
     }
 
     private fun isLastInRow(relativePos: Int, spanCount: Int): Boolean {
-        return relativePos % spanCount == spanCount - 1
+        return relativePos % spanCount == spanCount - ONE
     }
 
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean {
         val viewType = getRecyclerViewViewType(parent, viewPosition)
-        return viewType != -1 && allowedViewTypes.contains(viewType)
+        return viewType != ITEM_POSITION_DEFAULT && allowedViewTypes.contains(viewType)
     }
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
-        val adapter = parent.adapter ?: return -1
-        val isInvalidPosition = viewPosition < 0 || viewPosition > adapter.itemCount - 1
+        val adapter = parent.adapter ?: return ITEM_POSITION_DEFAULT
+        val isInvalidPosition = viewPosition < FIRST_IN_ROW || viewPosition > adapter.itemCount - ONE
 
-        return if (isInvalidPosition) -1 else adapter.getItemViewType(viewPosition)
+        return if (isInvalidPosition) ITEM_POSITION_DEFAULT else adapter.getItemViewType(viewPosition)
     }
 }

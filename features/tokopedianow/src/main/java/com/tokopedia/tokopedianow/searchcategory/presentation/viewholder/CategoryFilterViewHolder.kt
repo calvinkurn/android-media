@@ -21,6 +21,11 @@ class CategoryFilterViewHolder(
 ): AbstractViewHolder<CategoryFilterDataView>(itemView) {
 
     companion object {
+        const val ITEM_DECORATION_DEFAULT = 0
+        const val FIRST_CHILD_ADAPTER_POSITION = 0
+        const val ONE = 1
+        const val FOUR = 4
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
     }
@@ -37,7 +42,7 @@ class CategoryFilterViewHolder(
         filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
         filterRecyclerView.scrollToSelected(element)
 
-        if (filterRecyclerView.itemDecorationCount == 0) {
+        if (filterRecyclerView.itemDecorationCount == ITEM_DECORATION_DEFAULT) {
             val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
             val spacing = context.resources.getDimensionPixelSize(unifySpace16)
             filterRecyclerView.addItemDecoration(ItemDecoration(spacing))
@@ -120,17 +125,17 @@ class CategoryFilterViewHolder(
             val adapter = parent.adapter ?: return
 
             when (parent.getChildAdapterPosition(view)) {
-                0 -> {
+                FIRST_CHILD_ADAPTER_POSITION -> {
                     outRect.left = spacing
-                    outRect.right = spacing / 4
+                    outRect.right = spacing / FOUR
                 }
-                (adapter.itemCount - 1) -> {
-                    outRect.left = spacing / 4
+                (adapter.itemCount - ONE) -> {
+                    outRect.left = spacing / FOUR
                     outRect.right = spacing
                 }
                 else -> {
-                    outRect.left = spacing / 4
-                    outRect.right = spacing / 4
+                    outRect.left = spacing / FOUR
+                    outRect.right = spacing / FOUR
                 }
             }
         }
