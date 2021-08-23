@@ -1,229 +1,187 @@
-package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
+package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import androidx.annotation.NonNull;
-
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.logisticcart.R;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.RatesParam;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.network.utils.ErrorHandler;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Subscriber;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
+import rx.Observable
+import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
+class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: GetRatesUseCase,
+                                                    private val ratesApiUseCase: GetRatesApiUseCase,
+                                                    private val stateConverter: RatesResponseStateConverter,
+                                                    private val shippingCourierConverter: ShippingCourierConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
-public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurationContract.View>
-        implements ShippingDurationContract.Presenter {
+    private var view: ShippingDurationContract.View? = null
 
-    private final GetRatesUseCase ratesUseCase;
-    private final GetRatesApiUseCase ratesApiUseCase;
-    private final RatesResponseStateConverter stateConverter;
-    private final ShippingCourierConverter shippingCourierConverter;
-    private ShippingDurationContract.View view;
-
-    @Inject
-    public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
-                                     GetRatesApiUseCase ratesApiUseCase,
-                                     RatesResponseStateConverter stateTransformer,
-                                     ShippingCourierConverter shippingCourierConverter) {
-        this.ratesUseCase = ratesUseCase;
-        this.ratesApiUseCase = ratesApiUseCase;
-        this.stateConverter = stateTransformer;
-        this.shippingCourierConverter = shippingCourierConverter;
+    override fun attachView(view: ShippingDurationContract.View) {
+        super.attachView(view)
+        this.view = view
     }
 
-    @Override
-    public void attachView(ShippingDurationContract.View view) {
-        super.attachView(view);
-        this.view = view;
-    }
-
-    @Override
-    public void detachView() {
-        super.detachView();
-        ratesUseCase.unsubscribe();
-        ratesApiUseCase.unsubscribe();
+    override fun detachView() {
+        super.detachView()
+        ratesUseCase.unsubscribe()
+        ratesApiUseCase.unsubscribe()
     }
 
     /**
      * Calls rates
      */
-    @Override
-    public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
-                                          int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList,
-                                          int codHistory, boolean isCorner,
-                                          boolean isLeasing, String pslCode,
-                                          List<Product> products, String cartString,
-                                          boolean isTradeInDropOff,
-                                          RecipientAddressModel recipientAddressModel,
-                                          boolean isFulfillment, int preOrderTime,
-                                          String mvc) {
+    override fun loadCourierRecommendation(shipmentDetailData: ShipmentDetailData,
+                                           selectedServiceId: Int,
+                                           shopShipmentList: List<ShopShipment>,
+                                           codHistory: Int, isCorner: Boolean,
+                                           isLeasing: Boolean, pslCode: String,
+                                           products: List<Product>, cartString: String,
+                                           isTradeInDropOff: Boolean,
+                                           recipientAddressModel: RecipientAddressModel,
+                                           isFulfillment: Boolean, preOrderTime: Int,
+                                           mvc: String) {
         if (view != null) {
-            view.showLoading();
-            ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
-                    isTradeInDropOff, recipientAddressModel);
-            int selectedSpId = 0;
-            if (shipmentDetailData.getSelectedCourier() != null) {
-                selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
+            view!!.showLoading()
+            val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
+                    isTradeInDropOff, recipientAddressModel)
+            var selectedSpId = 0
+            if (shipmentDetailData.selectedCourier != null) {
+                selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc);
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc)
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory,
-                              boolean isCorner, boolean isLeasing,
-                              List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
-                              ShippingParam shippingParam, String pslCode,
-                              boolean isFulfillment, int preOrderTime, String mvc) {
-        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+    private fun loadDuration(selectedSpId: Int, selectedServiceId: Int, codHistory: Int,
+                             isCorner: Boolean, isLeasing: Boolean,
+                             shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
+                             shippingParam: ShippingParam, pslCode: String,
+                             isFulfillment: Boolean, preOrderTime: Int, mvc: String) {
+        val param = RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .mvc(mvc)
-                .build();
-
-        Observable<ShippingRecommendationData> observable;
-        if (isRatesTradeInApi) {
-            observable = ratesApiUseCase.execute(param);
+                .build()
+        val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
+            ratesApiUseCase.execute(param)
         } else {
-            observable = ratesUseCase.execute(param);
+            ratesUseCase.execute(param)
         }
-
         observable
-                .map(shippingRecommendationData ->
-                        stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                selectedSpId, selectedServiceId))
+                .map { shippingRecommendationData: ShippingRecommendationData ->
+                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                            selectedSpId, selectedServiceId)
+                }
                 .subscribe(
-                        new Subscriber<ShippingRecommendationData>() {
-                            @Override
-                            public void onCompleted() {
+                        object : Subscriber<ShippingRecommendationData>() {
+                            override fun onCompleted() {
                                 //no-op
                             }
 
-                            @Override
-                            public void onError(Throwable e) {
+                            override fun onError(e: Throwable) {
                                 if (view != null) {
-                                    view.showErrorPage(ErrorHandler.getErrorMessage(view.getActivity(), e));
-                                    view.stopTrace();
+                                    view!!.showErrorPage(getErrorMessage(view!!.activity, e))
+                                    view!!.stopTrace()
                                 }
                             }
 
-                            @Override
-                            public void onNext(ShippingRecommendationData shippingRecommendationData) {
+                            override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
                                 if (view != null) {
-                                    view.hideLoading();
-                                    if (shippingRecommendationData.getErrorId() != null &&
-                                            shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
-                                        view.showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
-                                        view.stopTrace();
-                                    } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
-                                            !shippingRecommendationData.getShippingDurationViewModels().isEmpty()) {
-                                        if (view.isDisableCourierPromo()) {
-                                            for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                                                shippingDurationUiModel.getServiceData().setIsPromo(0);
-                                                for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
-                                                    productData.setPromoCode("");
+                                    view!!.hideLoading()
+                                    if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
+                                        view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
+                                        view!!.stopTrace()
+                                    } else if (shippingRecommendationData.shippingDurationViewModels != null &&
+                                            shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
+                                        if (view!!.isDisableCourierPromo) {
+                                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
+                                                shippingDurationUiModel.serviceData.isPromo = 0
+                                                for (productData in shippingDurationUiModel.serviceData.products) {
+                                                    productData.promoCode = ""
                                                 }
                                             }
                                         }
-                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo(), shippingRecommendationData.getPreOrderModel());
-                                        view.stopTrace();
+                                        view!!.showData(shippingRecommendationData.shippingDurationViewModels, shippingRecommendationData.logisticPromo, shippingRecommendationData.preOrderModel)
+                                        view!!.stopTrace()
                                     } else {
-                                        view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message));
-                                        view.stopTrace();
+                                        view!!.showNoCourierAvailable(view!!.activity.getString(R.string.label_no_courier_bottomsheet_message))
+                                        view!!.stopTrace()
                                     }
                                 }
                             }
                         }
-                );
+                )
     }
 
-    @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData,
-                                           List<Product> products,
-                                           String cartString,
-                                           boolean isTradeInDropOff,
-                                           RecipientAddressModel recipientAddressModel) {
-        ShippingParam shippingParam = new ShippingParam();
-        shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
-        shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
-        shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
-        shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
-        shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
-        shippingParam.setWeightActualInKilograms(shipmentDetailData.getShipmentCartData().getWeightActual() / 1000);
-        shippingParam.setShopId(shipmentDetailData.getShopId());
-        shippingParam.setShopTier(shipmentDetailData.getShipmentCartData().getShopTier());
-        shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
-        shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
-        shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
-        shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
-        shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
-        shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
-        shippingParam.setBlackbox(shipmentDetailData.isBlackbox());
-        shippingParam.setPreorder(shipmentDetailData.getPreorder());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
-        shippingParam.setTradein(shipmentDetailData.isTradein());
-        shippingParam.setProducts(products);
-        shippingParam.setUniqueId(cartString);
-        shippingParam.setTradeInDropOff(isTradeInDropOff);
-        shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
-        shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
-        shippingParam.setBoMetadata(shipmentDetailData.getShipmentCartData().getBoMetadata());
-
-        if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
-            shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));
-            shippingParam.setDestinationPostalCode(recipientAddressModel.getLocationDataModel().getPostalCode());
-            shippingParam.setDestinationLatitude(recipientAddressModel.getLocationDataModel().getLatitude());
-            shippingParam.setDestinationLongitude(recipientAddressModel.getLocationDataModel().getLongitude());
+    private fun getShippingParam(shipmentDetailData: ShipmentDetailData,
+                                 products: List<Product>,
+                                 cartString: String,
+                                 isTradeInDropOff: Boolean,
+                                 recipientAddressModel: RecipientAddressModel): ShippingParam {
+        val shippingParam = ShippingParam()
+        shippingParam.originDistrictId = shipmentDetailData.shipmentCartData!!.originDistrictId
+        shippingParam.originPostalCode = shipmentDetailData.shipmentCartData!!.originPostalCode
+        shippingParam.originLatitude = shipmentDetailData.shipmentCartData!!.originLatitude
+        shippingParam.originLongitude = shipmentDetailData.shipmentCartData!!.originLongitude
+        shippingParam.weightInKilograms = shipmentDetailData.shipmentCartData!!.weight / 1000
+        shippingParam.weightActualInKilograms = shipmentDetailData.shipmentCartData!!.weightActual / 1000
+        shippingParam.shopId = shipmentDetailData.shopId
+        shippingParam.shopTier = shipmentDetailData.shipmentCartData!!.shopTier
+        shippingParam.token = shipmentDetailData.shipmentCartData!!.token
+        shippingParam.ut = shipmentDetailData.shipmentCartData!!.ut
+        shippingParam.insurance = shipmentDetailData.shipmentCartData!!.insurance
+        shippingParam.productInsurance = shipmentDetailData.shipmentCartData!!.productInsurance
+        shippingParam.orderValue = shipmentDetailData.shipmentCartData!!.orderValue
+        shippingParam.categoryIds = shipmentDetailData.shipmentCartData!!.categoryIds
+        shippingParam.isBlackbox = shipmentDetailData.isBlackbox
+        shippingParam.isPreorder = shipmentDetailData.preorder
+        shippingParam.addressId = shipmentDetailData.addressId
+        shippingParam.isTradein = shipmentDetailData.isTradein
+        shippingParam.products = products
+        shippingParam.uniqueId = cartString
+        shippingParam.isTradeInDropOff = isTradeInDropOff
+        shippingParam.preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration
+        shippingParam.isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment
+        shippingParam.boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
+        if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
+            shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
+            shippingParam.destinationPostalCode = recipientAddressModel.locationDataModel.postalCode
+            shippingParam.destinationLatitude = recipientAddressModel.locationDataModel.latitude
+            shippingParam.destinationLongitude = recipientAddressModel.locationDataModel.longitude
         } else {
-            shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
-            shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
-            shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
-            shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+            shippingParam.destinationDistrictId = shipmentDetailData.shipmentCartData!!.destinationDistrictId
+            shippingParam.destinationPostalCode = shipmentDetailData.shipmentCartData!!.destinationPostalCode
+            shippingParam.destinationLatitude = shipmentDetailData.shipmentCartData!!.destinationLatitude
+            shippingParam.destinationLongitude = shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
-        return shippingParam;
+        return shippingParam
     }
 
-    @Override
-    public CourierItemData getCourierItemData(List<ShippingCourierUiModel> shippingCourierUiModels) {
-        for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
-            if (shippingCourierUiModel.getProductData().isRecommend()) {
-                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
+    override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
+        for (shippingCourierUiModel in shippingCourierUiModels) {
+            if (shippingCourierUiModel.productData.isRecommend) {
+                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
             }
         }
-        return null;
+        return null
     }
 
-    @Override
-    public CourierItemData getCourierItemDataById(int spId, List<ShippingCourierUiModel> shippingCourierUiModels) {
-        for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
-            if (shippingCourierUiModel.getProductData().getShipperProductId() == spId) {
-                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
+    override fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
+        for (shippingCourierUiModel in shippingCourierUiModels) {
+            if (shippingCourierUiModel.productData.shipperProductId == spId) {
+                return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
             }
         }
-        return null;
+        return null
     }
 }
