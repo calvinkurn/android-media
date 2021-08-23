@@ -118,6 +118,8 @@ class CategoryFilterViewHolder(
         }
 
         @SuppressWarnings("checkstyle:magicnumber")
+        private fun getLastItemIndexInAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) = (adapter.itemCount - 1)
+
         override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
@@ -131,7 +133,7 @@ class CategoryFilterViewHolder(
                     outRect.left = spacing
                     outRect.right = spacing / 4
                 }
-                (adapter.itemCount - 1) -> {
+                getLastItemIndexInAdapter(adapter) -> {
                     outRect.left = spacing / 4
                     outRect.right = spacing
                 }

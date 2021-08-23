@@ -21,7 +21,7 @@ class ProductItemDecoration(
         const val FIRST_IN_ROW_MODULO = 0
         const val HORIZONTAL_OFFSET_DEFAULT = 0
         const val VERTICAL_OFFSET_DEFAULT = 0
-        const val COS_DEFAULT = 45.0
+        const val ADAPTER_START_INDEX = 0
     }
 
     private var verticalCardViewOffset = 0
@@ -80,7 +80,7 @@ class ProductItemDecoration(
 
     @SuppressWarnings("checkstyle:magicnumber")
     private fun getHorizontalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation + (1 - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
     }
 
     private fun getHorizontalOffsetForCardView(cardView: CardView): Int {
@@ -106,7 +106,7 @@ class ProductItemDecoration(
 
     @SuppressWarnings("checkstyle:magicnumber")
     private fun getVerticalOffset(maxElevation: Float, radius: Float): Int {
-        return (maxElevation * 1.5 + (1 - cos(COS_DEFAULT)) * radius).toFloat().roundToInt() / 2
+        return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
     }
 
     private fun getVerticalOffsetForCardView(cardView: CardView): Int {
@@ -169,10 +169,9 @@ class ProductItemDecoration(
         return viewType != INVALID_VIEW_TYPE && allowedViewTypes.contains(viewType)
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
-        val isInvalidPosition = viewPosition < FIRST_IN_ROW_MODULO || viewPosition > adapter.itemCount - 1
+        val isInvalidPosition = viewPosition !in ADAPTER_START_INDEX until adapter.itemCount
 
         return if (isInvalidPosition) INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
     }
