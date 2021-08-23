@@ -14,6 +14,7 @@ class PlayBottomInsetsResult(
     val keyboard = BottomInsetResult(result[BottomInsetsType.Keyboard] ?: error("Keyboard should be supported"))
     val productBottomSheet = BottomInsetResult(result[BottomInsetsType.ProductSheet] ?: error("Product Bottom Sheet should be supported"))
     val variantBottomSheet = BottomInsetResult(result[BottomInsetsType.VariantSheet] ?: error("Variant Bottom Sheet should be supported"))
+    val leaderboardBottomSheet = BottomInsetResult(result[BottomInsetsType.LeaderboardSheet] ?: error("Leaderboard Bottom Sheet should be supported"))
 
     class BottomInsetResult(
             private val result: BottomInsetsState

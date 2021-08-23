@@ -85,6 +85,18 @@ class PlayViewModelInsetsTest {
     }
 
     @Test
+    fun `when show leaderboard bottom sheet, leaderboard bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showLeaderboardBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .leaderboardBottomSheet
+                    .isShown()
+        }
+    }
+
+    @Test
     fun `given keyboard is shown, when hide keyboard, then keyboard should be hidden`() {
         val channelData = channelDataBuilder.buildChannelData(
                 channelDetail = channelInfoBuilder.buildChannelDetail(
@@ -140,6 +152,23 @@ class PlayViewModelInsetsTest {
         } thenVerify {
             bottomInsetsResult
                     .variantBottomSheet
+                    .isHidden()
+        }
+    }
+
+    @Test
+    fun `given leaderboard bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showLeaderboardBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .leaderboardBottomSheet
+                    .isShown()
+        } andWhen {
+            hideLeaderboardBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .leaderboardBottomSheet
                     .isHidden()
         }
     }
@@ -201,6 +230,24 @@ class PlayViewModelInsetsTest {
         } thenVerify { result ->
             bottomInsetsResult
                     .variantBottomSheet
+                    .isHidden()
+
+            result.isTrue()
+        }
+    }
+
+    @Test
+    fun `given leaderboard bottom sheet is shown, when back button is pressed, then leaderboard bottom sheet should be hidden and back will be consumed`() {
+        givenPlayViewModelRobot {
+            showLeaderboardBottomSheet()
+        } thenVerify {
+            bottomInsetsResult
+                    .leaderboardBottomSheet.isShown()
+        } andWhen {
+            goBack()
+        } thenVerify { result ->
+            bottomInsetsResult
+                    .leaderboardBottomSheet
                     .isHidden()
 
             result.isTrue()

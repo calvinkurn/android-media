@@ -18,7 +18,9 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
+import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -160,6 +162,14 @@ class PlayViewModelRobot(
 
     fun hideVariantBottomSheet() {
         viewModel.onHideVariantSheet()
+    }
+
+    fun showLeaderboardBottomSheet(bottomSheetHeight: Int = 50) {
+        viewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetHeight))
+    }
+
+    fun hideLeaderboardBottomSheet() {
+        viewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
     fun goBack() = viewModel.goBack()

@@ -29,15 +29,8 @@ class PlayLikeTest {
 
     private val testDispatcher = CoroutineTestDispatchers
 
-    private val partnerId = 1L
-
     private val channelDataBuilder = PlayChannelDataModelBuilder()
-    private val partnerInfoModelBuilder = PlayPartnerInfoModelBuilder()
-    private val mockChannelData = channelDataBuilder.buildChannelData(
-            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
-                    id = partnerId
-            ),
-    )
+    private val mockChannelData = channelDataBuilder.buildChannelData()
 
     @Before
     fun setUp() {
