@@ -40,6 +40,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
         private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
         private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
+        private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
         private val walletPref: WalletPref,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -95,6 +96,10 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _balanceAndPoint = MutableLiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>()
     val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
         get() = _balanceAndPoint
+
+    private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
+    val walletEligible: LiveData<Result<WalletappWalletEligibility>>
+        get() = _walletEligible
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -225,16 +230,43 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getBalanceAndPoint(partnerCode: String) {
+    fun getBalanceAndPoint(walletId: String) {
         launchCatchError(block = {
-            val params = getBalanceAndPointUseCase.getParams(partnerCode)
+            getBalanceAndPointUseCase.setQuery(walletId)
+            val params = when (walletId) {
+                AccountConstants.WALLET.GOPAY -> {
+                    getBalanceAndPointUseCase.getParams(GOPAY_PARTNER_CODE)
+                }
+                AccountConstants.WALLET.GOPAYLATER -> {
+                    getBalanceAndPointUseCase.getParams(GOPAYLATER_PARTNER_CODE)
+                }
+                AccountConstants.WALLET.OVO -> {
+                    getBalanceAndPointUseCase.getParams(OVO_PARTNER_CODE)
+                }
+                else -> {
+                    mapOf()
+                }
+            }
             val result = getBalanceAndPointUseCase(params)
 
             withContext(dispatcher.main) {
-                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, partnerCode)
+                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
             }
         }, onError = {
-            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, partnerCode)
+            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
+        })
+    }
+
+    fun getWalletEligible(partnerCode: String, walletCode: String) {
+        launchCatchError(block = {
+            val params = getWalletEligibleUseCase.getParams(partnerCode, walletCode)
+            val result = getWalletEligibleUseCase(params)
+
+            withContext(dispatcher.main) {
+                _walletEligible.value = Success(result.data)
+            }
+        }, onError = {
+            _walletEligible.value = Fail(it)
         })
     }
 
@@ -264,6 +296,10 @@ class HomeAccountUserViewModel @Inject constructor(
 
     companion object {
         private const val AKUN_PAGE = "account"
+
+        private const val GOPAY_PARTNER_CODE = "PEMUDA"
+        private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        private const val OVO_PARTNER_CODE = "OVO"
     }
 
 }

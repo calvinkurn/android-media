@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.adapter.viewholder
+ package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -22,7 +22,7 @@ class BalanceAndPointItemViewHolder(
         setImage(item?.urlImage)
         setTitleText(item?.type ?: DEFAULT_TYPE, item?.title)
         setSubtitleText(item?.id, item?.type ?: DEFAULT_TYPE, item?.subtitle)
-        setClickLitener(item?.type ?: DEFAULT_TYPE, balanceAndPointListener)
+        setClickLitener(item?.id, balanceAndPointListener)
     }
 
     private fun setImage(url: String?) {
@@ -87,9 +87,9 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointSubtitle?.text = subtitle
     }
 
-    private fun setClickLitener(type: Int, listener: BalanceAndPointListener) {
+    private fun setClickLitener(id: String?, listener: BalanceAndPointListener) {
         binding?.container?.setOnClickListener {
-            listener.onClickBalanceAndPoint(type)
+            id?.let { id -> listener.onClickBalanceAndPoint(id) }
         }
     }
 

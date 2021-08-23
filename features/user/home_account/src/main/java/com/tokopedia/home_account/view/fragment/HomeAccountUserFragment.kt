@@ -146,6 +146,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
+    private var isShowViewMoreWallet = false
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -198,6 +199,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
                 REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
             isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowViewMoreWallet = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
         }
     }
 
@@ -270,10 +272,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultBalanceAndPoint.Success -> {
-                    onSuccessGetBalanceAndPoint(it.data, it.partnerCode)
+                    onSuccessGetBalanceAndPoint(it.data, it.walletId)
                 }
                 is ResultBalanceAndPoint.Fail -> {
-                    onFailedGetBalanceAndPoint(it.throwable, it.partnerCode)
+                    onFailedGetBalanceAndPoint(it.throwable, it.walletId)
                 }
             }
         })
@@ -295,12 +297,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         balanceAndPointLocalLoad?.show()
     }
 
-    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance, partnerCode: String) {
+    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance, walletId: String) {
         balanceAndPointAdapter?.changeItemBySameId(UiModelMapper.getBalanceAndPointUiModel(balanceAndPoint))
     }
 
-    private fun onFailedGetBalanceAndPoint(throwable: Throwable, partnerCode: String) {
-        balanceAndPointAdapter?.changeItemTypeById(partnerCode, DEFAULT_TYPE)
+    private fun onFailedGetBalanceAndPoint(throwable: Throwable, walletId: String) {
+        balanceAndPointAdapter?.changeItemTypeById(walletId, DEFAULT_TYPE)
     }
 
     private fun onMemberErrorClicked() {
@@ -696,6 +698,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             }
             AccountConstants.SettingCode.SETTING_TOKOPOINTS -> {
                 homeAccountAnalytic.eventClickTokopoints()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE -> {
                 goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {
@@ -1272,8 +1277,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             this.commonAdapter = commonAdapter
     }
 
-    override fun onClickBalanceAndPoint(type: Int) {
-        TODO("Not yet implemented")
+    override fun onClickBalanceAndPoint(id: String) {
+        when (id) {
+            AccountConstants.WALLET.TOKOPOINT -> {
+
+            }
+            AccountConstants.WALLET.SALDO -> {
+
+            }
+            AccountConstants.WALLET.GOPAY -> {
+
+            }
+        }
     }
 
     companion object {

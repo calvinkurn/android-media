@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
@@ -19,9 +20,12 @@ import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
@@ -111,6 +115,20 @@ class ProfileViewHolder(
     }
 
     private fun setupBalanceAndPointAdapter(itemView: View) {
+        if (isShowViewMoreWallet()) {
+            itemView.home_account_view_more?.show()
+            itemView.home_account_view_more?.setOnClickListener {
+                listener.onSettingItemClicked(
+                    CommonDataView(
+                        id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
+                        applink = ApplinkConstInternalGlobal.FUNDS_AND_INVESTMENT
+                    )
+                )
+            }
+        } else {
+            itemView.home_account_view_more?.hide()
+        }
+
         itemView.home_account_balance_and_point_rv?.adapter = balanceAndPointAdapter
         itemView.home_account_balance_and_point_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(
@@ -193,6 +211,15 @@ class ProfileViewHolder(
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true
+    }
+
+    private fun isShowViewMoreWallet(): Boolean {
+        return if(itemView.context != null){
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
+            firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
+        } else {
+            false
+        }
     }
 
     companion object {
