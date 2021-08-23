@@ -181,7 +181,7 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isActive.get() }
+        get() = _uiEvent.filter { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -766,7 +766,7 @@ class PlayViewModel @Inject constructor(
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
                 .orEmpty()
-        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        val entry = shownBottomSheets.minByOrNull { it.value.deepLevel }
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
@@ -1313,10 +1313,12 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String, isUserJoined: Boolean) = coroutineScope {
+        suspend fun fetchLeaderboard(channelId: String, interactive: PlayCurrentInteractiveModel, isUserJoined: Boolean) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
+
+            delay(interactive.endGameDelayInMs)
 
             val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
             val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
@@ -1347,12 +1349,13 @@ class PlayViewModel @Inject constructor(
             val channelId = mChannelData?.id ?: return@launchCatchError
             val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
             val isUserJoined = interactiveRepo.hasJoined(activeInteractiveId)
+            val activeInteractive = interactiveRepo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             try {
-                fetchLeaderboard(channelId, isUserJoined)
+                fetchLeaderboard(channelId, activeInteractive, isUserJoined)
             } catch (e: Throwable) {
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             }
@@ -1363,7 +1366,10 @@ class PlayViewModel @Inject constructor(
         showLeaderboardSheet(height)
 
         val channelData = mChannelData ?: return
-        playAnalytic.clickWinnerBadge(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        playAnalytic.clickWinnerBadge(
+            channelId = channelData.id,
+            channelType = channelData.channelInfo.channelType
+        )
     }
 
     private fun handleTapTapAction() {
@@ -1372,7 +1378,12 @@ class PlayViewModel @Inject constructor(
         }
 
         val channelData = mChannelData ?: return
-        playAnalytic.clickTapTap(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return
+        playAnalytic.clickTapTap(
+            channelId = channelData.id,
+            channelType = channelData.channelInfo.channelType,
+            interactiveId = interactiveId
+        )
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1403,7 +1414,12 @@ class PlayViewModel @Inject constructor(
         }
 
         val channelData = mChannelData ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
+        val interactiveId = interactiveRepo.getActiveInteractiveId() ?: return@needLogin
+        playAnalytic.clickFollowShopInteractive(
+            channelData.id,
+            channelData.channelInfo.channelType,
+            interactiveId
+        )
     }
 
     private fun handleClickPartnerName() {

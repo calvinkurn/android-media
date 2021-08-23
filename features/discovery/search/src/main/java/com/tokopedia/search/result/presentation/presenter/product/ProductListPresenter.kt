@@ -1575,11 +1575,13 @@ class ProductListPresenter @Inject constructor(
         val categoryIdMapping = HashSet<String?>()
         val categoryNameMapping = HashSet<String?>()
         val prodIdArray = ArrayList<String?>()
+        val allProdIdArray = ArrayList<String?>()
 
         productDataView.productList.forEachIndexed { i, productItemDataView ->
             val productId = productItemDataView.productID
             val categoryIdString = productItemDataView.categoryID.toString()
             val categoryName = productItemDataView.categoryName
+            allProdIdArray.add(productId)
 
             if (i < SearchConstant.GENERAL_SEARCH_TRACKING_PRODUCT_COUNT) {
                 prodIdArray.add(productId)
@@ -1591,7 +1593,7 @@ class ProductListPresenter @Inject constructor(
             categoryNameMapping.add(categoryName)
         }
 
-        view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray)
+        view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
         view.sendTrackingEventMoEngageSearchAttempt(query, productDataView.productList.isNotEmpty(), moengageTrackingCategory)
         view.sendTrackingGTMEventSearchAttempt(
                 GeneralSearchTrackingModel(

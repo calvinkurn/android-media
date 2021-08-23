@@ -15,7 +15,6 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors','EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD,DEBUGGABLE'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
