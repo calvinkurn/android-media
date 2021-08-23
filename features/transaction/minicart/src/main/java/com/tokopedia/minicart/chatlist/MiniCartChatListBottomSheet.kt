@@ -59,7 +59,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         } else {
             updateDataWhenRemoving(element)
         }
-        analytics.eventClickTickBoxChatBottomSheet()
+        analytics.eventClickTickBoxChatBottomSheet(isChecked)
     }
 
     fun show(context: Context?,

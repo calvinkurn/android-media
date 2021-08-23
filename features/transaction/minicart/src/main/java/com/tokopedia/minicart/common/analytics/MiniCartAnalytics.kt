@@ -75,6 +75,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
+        const val EVENT_LABEL_TICK = "tick"
+        const val EVENT_LABEL_UNTICK = "untick"
 
         // EE CUSTOM DIMENSION
         const val DIMENSION_104 = "dimension104" // Campaign id
@@ -505,10 +507,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 2 - DONE
-    fun eventClickTickBoxChatBottomSheet() {
+    fun eventClickTickBoxChatBottomSheet(isChecked: Boolean) {
         val data = getGtmData(
             eventName = EVENT_NAME_CLICK_MINICART,
-            eventAction = EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET
+            eventAction = EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET,
+            eventLabel = if (isChecked) EVENT_LABEL_TICK else EVENT_LABEL_UNTICK
         )
         sendGeneralEvent(data)
     }
