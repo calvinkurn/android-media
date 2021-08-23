@@ -1073,7 +1073,7 @@ class NewShopPageFragment :
 
     private fun redirectToSearchAutoCompletePage() {
         val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST,
+                ApplinkConst.SHOP_ETALASE,
                 shopId,
                 ""
         ), "utf-8")

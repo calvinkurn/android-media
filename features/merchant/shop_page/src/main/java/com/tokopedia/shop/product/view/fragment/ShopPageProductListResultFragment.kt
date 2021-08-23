@@ -36,9 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_PAGE_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_PAGE_TITLE
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -283,12 +280,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun getIntentData() {
         activity?.intent?.data?.let { it ->
-            it.getQueryParameter(SRP_PAGE_ID)?.let { srpPageId ->
+            it.getQueryParameter(SearchApiConst.SRP_PAGE_ID)?.let { srpPageId ->
                 sourceRedirection = SEARCH_AUTOCOMPLETE_PAGE_SOURCE
                 this@ShopPageProductListResultFragment.srpPageId = srpPageId
             }
-            srpPageTitle = it.getQueryParameter(SRP_PAGE_TITLE).orEmpty()
-            navSource = it.getQueryParameter(NAVSOURCE).orEmpty()
+            srpPageTitle = it.getQueryParameter(SearchApiConst.SRP_PAGE_TITLE).orEmpty()
+            navSource = it.getQueryParameter(SearchApiConst.NAVSOURCE).orEmpty()
         }
     }
 
@@ -565,18 +562,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(
                     productResponseUiModel.listShopProductUiModel.isEmpty()
             )
-            SEARCH_AUTOCOMPLETE_PAGE_SOURCE -> sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel.totalProductData)
+            SEARCH_AUTOCOMPLETE_PAGE_SOURCE -> sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel)
         }
     }
 
-    private fun sendShopPageProductAutoCompleteSearchResultTracker(totalProduct: Int) {
+    private fun sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel: GetShopProductUiModel) {
         shopPageTracking?.sendShopPageAutoCompleteSearchResultTracker(
                 keyword,
-                "",
-                "",
+                productResponseUiModel.shopProductSuggestion.keyword_process,
+                productResponseUiModel.shopProductSuggestion.response_code.toString(),
                 navSource,
                 shopId.orEmpty(),
-                totalProduct,
+                productResponseUiModel.totalProductData,
                 shopName.orEmpty()
         )
     }
@@ -1408,7 +1405,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun redirectToSearchAutoCompletePage() {
         shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
         val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST,
+                ApplinkConst.SHOP_ETALASE,
                 shopId,
                 ""
         ), "utf-8")
