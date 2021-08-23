@@ -192,20 +192,20 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-    OnRefreshListener,
-    HomeCategoryListener,
-    AllNotificationListener,
-    FragmentListener,
-    HomeEggListener,
-    HomeTabFeedListener,
-    HomeInspirationListener,
-    HomeFeedsListener,
-    HomeReviewListener,
-    PopularKeywordListener,
-    FramePerformanceIndexInterface,
-    HomeAutoRefreshListener,
-    PlayWidgetListener,
-    RecommendationWidgetListener {
+        OnRefreshListener,
+        HomeCategoryListener,
+        AllNotificationListener,
+        FragmentListener,
+        HomeEggListener,
+        HomeTabFeedListener,
+        HomeInspirationListener,
+        HomeFeedsListener,
+        HomeReviewListener,
+        PopularKeywordListener,
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener,
+        PlayWidgetListener,
+        RecommendationWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -445,8 +445,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun chooseAddressAbTestCondition(
-        ifChooseAddressActive: () -> Unit = {},
-        ifChooseAddressNotActive: () -> Unit = {}) {
+            ifChooseAddressActive: () -> Unit = {},
+            ifChooseAddressNotActive: () -> Unit = {}) {
         val isActive = isChooseAddressRollenceActive()
         if (isActive) {
             ifChooseAddressActive.invoke()
@@ -592,8 +592,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
             PAGE_NAME_FPI_HOME, this, object : OnFrameListener {
-                override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
-            }
+            override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
+        }
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
@@ -605,68 +605,67 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
-        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
-            ifNavOld = {
-                oldToolbar?.setAfterInflationCallable(afterInflationCallable)
-                oldToolbar?.switchToLightToolbar()
-                oldToolbar?.visibility = View.VISIBLE
-                navToolbar?.visibility = View.GONE
-            },
-            ifNavRevamp = {
-                oldToolbar?.visibility = View.GONE
-                navToolbar?.visibility = View.VISIBLE
-                activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
-                navToolbar?.let {
-                    viewLifecycleOwner.lifecycle.addObserver(it)
-                    homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
-                        navToolbar = it,
-                        startTransitionPixel = homeMainToolbarHeight,
-                        toolbarTransitionRangePixel = searchBarTransitionRange,
-                        navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                            override fun onAlphaChanged(offsetAlpha: Float) {
+                ifNavOld = {
+                    oldToolbar?.setAfterInflationCallable(afterInflationCallable)
+                    oldToolbar?.switchToLightToolbar()
+                    oldToolbar?.visibility = View.VISIBLE
+                    navToolbar?.visibility = View.GONE
+                },
+                ifNavRevamp = {
+                    oldToolbar?.visibility = View.GONE
+                    navToolbar?.visibility = View.VISIBLE
+                    activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
+                    navToolbar?.let {
+                        viewLifecycleOwner.lifecycle.addObserver(it)
+                        homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
+                                navToolbar = it,
+                                startTransitionPixel = homeMainToolbarHeight,
+                                toolbarTransitionRangePixel = searchBarTransitionRange,
+                                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                                    override fun onAlphaChanged(offsetAlpha: Float) {
 
-                            }
+                                    }
 
-                            override fun onSwitchToDarkToolbar() {
-                                navToolbar?.hideShadow()
-                                requestStatusBarLight()
-                            }
+                                    override fun onSwitchToDarkToolbar() {
+                                        navToolbar?.hideShadow()
+                                        requestStatusBarLight()
+                                    }
 
-                            override fun onSwitchToLightToolbar() {
-                                requestStatusBarDark()
-                            }
+                                    override fun onSwitchToLightToolbar() {
+                                        requestStatusBarDark()
+                                    }
 
-                            override fun onYposChanged(yOffset: Int) {
-                                backgroundViewImage.y = -(yOffset.toFloat())
-                            }
+                                    override fun onYposChanged(yOffset: Int) {
+                                        backgroundViewImage.y = -(yOffset.toFloat())
+                                    }
+                                }
+                        ))
+                        val icons = IconBuilder(
+                                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                        ).addIcon(getInboxIcon()) {}
+                        if (!useNewInbox) {
+                            icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
-                    ))
-                    val icons = IconBuilder(
-                        IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                    ).addIcon(getInboxIcon()) {}
-                    if (!useNewInbox) {
-                        icons.addIcon(IconList.ID_NOTIFICATION) {}
+                        icons.apply {
+                            addIcon(IconList.ID_CART) {}
+                            addIcon(IconList.ID_NAV_GLOBAL) {}
+                        }
+                        it.setIcon(icons)
                     }
-                    icons.apply {
-                        addIcon(IconList.ID_CART) {}
-                        addIcon(IconList.ID_NAV_GLOBAL) {}
-                    }
-                    it.setIcon(icons)
                 }
-            }
         )
 
         chooseAddressAbTestCondition(
-            ifChooseAddressActive = {
-                onChooseAddressUpdated()
-            },
-            ifChooseAddressNotActive = {
-                getHomeViewModel().getAddressData().isActive = false
-            }
+                ifChooseAddressActive = {
+                    onChooseAddressUpdated()
+                },
+                ifChooseAddressNotActive = {
+                    getHomeViewModel().getAddressData().isActive = false
+                }
         )
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
@@ -686,7 +685,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
-            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
         ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
@@ -921,10 +920,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 evaluateHomeComponentOnScroll(recyclerView)
                 //calculate transparency of homeMainToolbar based on rv offset
                 navAbTestCondition(
-                    ifNavOld = {
-                        backgroundViewImage.y = -(offset.toFloat())
-                        calculateSearchbarView(recyclerView.computeVerticalScrollOffset())
-                    }
+                        ifNavOld = {
+                            backgroundViewImage.y = -(offset.toFloat())
+                            calculateSearchbarView(recyclerView.computeVerticalScrollOffset())
+                        }
                 )
             }
         })
@@ -933,7 +932,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
         //status bar background compability, we show view background for android >= Kitkat
@@ -959,24 +958,24 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
             navAbTestCondition(
-                ifNavOld = {
-                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                        oldToolbar?.showShadow()
-                    }
-                }, ifNavRevamp = {
-                    navToolbar?.showShadow(lineShadow = true)
-                })
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.showShadow()
+                        }
+                    }, ifNavRevamp = {
+                navToolbar?.showShadow(lineShadow = true)
+            })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             navAbTestCondition(
-                ifNavOld = {
-                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                        oldToolbar?.hideShadow()
-                    }
-                }, ifNavRevamp = {
-                    navToolbar?.hideShadow(lineShadow = true)
-                }
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.hideShadow()
+                        }
+                    }, ifNavRevamp = {
+                navToolbar?.hideShadow(lineShadow = true)
+            }
             )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
@@ -1010,11 +1009,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         getHomeViewModel().setRollanceNavigationType(
-            if (isNavRevamp()) {
-                RollenceKey.NAVIGATION_VARIANT_REVAMP
-            } else {
-                RollenceKey.NAVIGATION_VARIANT_OLD
-            }
+                if (isNavRevamp()) {
+                    RollenceKey.NAVIGATION_VARIANT_REVAMP
+                } else {
+                    RollenceKey.NAVIGATION_VARIANT_OLD
+                }
         )
 
         getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
@@ -1083,21 +1082,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         shouldPausePlay = true
         navAbTestCondition(
-            ifNavOld = { oldToolbar?.startHintAnimation() }
+                ifNavOld = { oldToolbar?.startHintAnimation() }
         )
     }
 
     private fun conditionalViewModelRefresh() {
         if (!fragmentCreatedForFirstTime) {
             chooseAddressAbTestCondition(
-                ifChooseAddressActive = {
-                    if (!validateChooseAddressWidget()) {
+                    ifChooseAddressActive = {
+                        if (!validateChooseAddressWidget()) {
+                            getHomeViewModel().refresh(isFirstInstall())
+                        }
+                    },
+                    ifChooseAddressNotActive = {
                         getHomeViewModel().refresh(isFirstInstall())
                     }
-                },
-                ifChooseAddressNotActive = {
-                    getHomeViewModel().refresh(isFirstInstall())
-                }
             )
 
         }
@@ -1126,13 +1125,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun adjustStatusBarColor() {
         navAbTestCondition(
-            ifNavOld = {
-                if (homeRecyclerView != null) {
-                    calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
-                } else {
-                    calculateSearchbarView(SEARCHBAR_DEFAULT_OFFSET)
+                ifNavOld = {
+                    if (homeRecyclerView != null) {
+                        calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
+                    } else {
+                        calculateSearchbarView(SEARCHBAR_DEFAULT_OFFSET)
+                    }
                 }
-            }
         )
     }
 
@@ -1158,7 +1157,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
         navAbTestCondition(
-            ifNavOld = { oldToolbar?.stopHintAnimation() }
+                ifNavOld = { oldToolbar?.stopHintAnimation() }
         )
     }
 
@@ -1190,16 +1189,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
              * set notification gimmick
              */
             navAbTestCondition(
-                ifNavOld = {
-                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                        oldToolbar?.setNotificationNumber(NOTIFICATION_NUMBER_DEFAULT)
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.setNotificationNumber(NOTIFICATION_NUMBER_DEFAULT)
+                        }
+                    },
+                    ifNavRevamp = {
+                        if (!useNewInbox) {
+                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
+                        }
                     }
-                },
-                ifNavRevamp = {
-                    if (!useNewInbox) {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
-                    }
-                }
             )
         }
         refreshLayout.setOnRefreshListener(this)
@@ -1273,7 +1272,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    @ExperimentalCoroutinesApi
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             data?.let {
@@ -1333,7 +1331,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeSearchHint() {
         if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers()) {
-            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
+            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder ->
+                if (userVisibleHint) {
+                    setHint(data)
+                }
+            })
         }
     }
 
@@ -1345,12 +1347,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
-                    (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
-                    (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
-                    dataMap[HomeRevampViewModel.POSITION] as Int,
-                    (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                    DEFAULT_CART_QUANTITY,
-                    viewModel.get().getUserId()
+                        (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
+                        (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        DEFAULT_CART_QUANTITY,
+                        viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
@@ -1363,12 +1365,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
-                    (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
-                    (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
-                    dataMap[HomeRevampViewModel.POSITION] as Int,
-                    (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                    DEFAULT_CART_QUANTITY,
-                    getHomeViewModel().getUserId()
+                        (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        DEFAULT_CART_QUANTITY,
+                        getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
@@ -1415,8 +1417,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Result.Status.SUCCESS -> if (it.data != null) showToaster(
-                    if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                    else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
+                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
                 Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
                 else -> {
                 }
@@ -1426,14 +1428,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observePlayWidgetReminderEvent() {
         getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
-            getHomeViewModel().isFromLogin = true
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
         })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderBeautyFestHeader()
+        renderTopBackground()
         observeSearchHint()
     }
 
@@ -1552,18 +1553,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let {
             getHomeViewModel().requestImageTestLiveData.observe(viewLifecycleOwner, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
-                    .asBitmap()
-                    .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            getHomeViewModel().setPlayBanner(playCardViewModelEvent.peekContent())
-                        }
+                        .asBitmap()
+                        .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                getHomeViewModel().setPlayBanner(playCardViewModelEvent.peekContent())
+                            }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            getHomeViewModel().clearPlayBanner()
-                        }
-                    })
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                                getHomeViewModel().clearPlayBanner()
+                            }
+                        })
             })
         }
     }
@@ -1706,32 +1707,32 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
-            this,
-            this,
-            this,
-            homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
-            this,
-            HomeComponentCallback(this),
-            DynamicLegoBannerComponentCallback(context, this),
-            RecommendationListCarouselComponentCallback(this),
-            MixLeftComponentCallback(this),
-            MixTopComponentCallback(this),
-            HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
-                SalamWidgetCallback(context, this, getUserSession())),
-            ProductHighlightComponentCallback(this),
-            Lego4AutoBannerComponentCallback(context, this),
-            FeaturedShopComponentCallback(context, this),
-            playWidgetCoordinator,
-            this,
-            CategoryNavigationCallback(context, this),
-            RechargeBUWidgetCallback(context, this),
-            bannerCarouselCallback,
-            DynamicIconComponentCallback(context, this),
-            Lego6AutoBannerComponentCallback(context, this)
+                this,
+                this,
+                this,
+                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
+                this,
+                HomeComponentCallback(this),
+                DynamicLegoBannerComponentCallback(context, this),
+                RecommendationListCarouselComponentCallback(this),
+                MixLeftComponentCallback(this),
+                MixTopComponentCallback(this),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
+                        SalamWidgetCallback(context, this, getUserSession())),
+                ProductHighlightComponentCallback(this),
+                Lego4AutoBannerComponentCallback(context, this),
+                FeaturedShopComponentCallback(context, this),
+                playWidgetCoordinator,
+                this,
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, this),
+                bannerCarouselCallback,
+                DynamicIconComponentCallback(context, this),
+                Lego6AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
-            .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-            .build()
+                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+                .build()
         adapter = HomeRecycleAdapter(asyncDifferConfig, adapterFactory, ArrayList<HomeVisitable>())
         homeRecyclerView?.adapter = adapter
     }
@@ -1795,7 +1796,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToLogin() {
-        getHomeViewModel().isFromLogin = true
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
@@ -1839,7 +1839,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setTitle(getString(R.string.toko_cash_pending_title))
                 val pendingCashbackView = View.inflate(context, R.layout.home_pending_cashback_tokocash, null)
                 pendingCashbackView.findViewById<Typography>(R.id.body_bottom_sheet)?.text = String.format(getString(R.string.toko_cash_pending_body),
-                    cashBackData.amountText)
+                        cashBackData.amountText)
                 pendingCashbackView.findViewById<ImageView>(R.id.img_bottom_sheet)?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_box))
                 pendingCashbackView.findViewById<Typography>(R.id.button_opsi_bottom_sheet)?.run {
                     setOnClickListener {
@@ -1881,9 +1881,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
             TopAdsUrlHitter(context).hitClickUrl(className,
-                slidesModel.redirectUrl, slidesModel.id.toString(),
-                slidesModel.title + " : " + slidesModel.creativeName,
-                slidesModel.imageUrl)
+                    slidesModel.redirectUrl, slidesModel.id.toString(),
+                    slidesModel.title + " : " + slidesModel.creativeName,
+                    slidesModel.imageUrl)
         }
     }
 
@@ -1893,13 +1893,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val remoteConfigEnable: Boolean
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
         remoteConfigEnable = remoteConfig.getBoolean(
-            ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+                ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         )
         if (activity != null && remoteConfigEnable) {
             activity?.startActivity(PromoListActivity.newInstance(
-                activity,
-                PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
-                PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
+                    activity,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
             ))
         } else {
             if (activity != null) {
@@ -1948,21 +1948,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(requestCode, resultCode, data,
-                    object : ProductCardOptionsWishlistCallback {
-                        override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleWishlistAction(productCardOptionsModel)
-                        }
-                    })
+                        object : ProductCardOptionsWishlistCallback {
+                            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                                handleWishlistAction(productCardOptionsModel)
+                            }
+                        })
             }
             REQUEST_CODE_LOGIN -> {
                 activity?.let {
-                    getHomeViewModel().isFromLogin = true
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     if (resultCode == Activity.RESULT_OK &&
-                        getUserSession().isLoggedIn &&
-                        data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
+                            getUserSession().isLoggedIn &&
+                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
                     ) {
                         it.startActivities(arrayOf(intentHome, intentNewUser))
                     } else {
@@ -1988,7 +1987,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
-        val isBeautyFest = isEligibleForBeautyFest()
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
@@ -2098,12 +2096,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         activity?.let {
             Observable.just(true).map { aBoolean: Boolean? ->
                 val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper.get(),
-                    LocationServices.getFusedLocationProviderClient(it.applicationContext),
-                    it.applicationContext)
+                        permissionCheckerHelper.get(),
+                        LocationServices.getFusedLocationProviderClient(it.applicationContext),
+                        it.applicationContext)
                 locationDetectorHelper.getLocation(onGetLocation(), it,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    "")
+                        LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                        "")
                 true
             }.subscribeOn(Schedulers.io()).subscribe({ }) { }
         }
@@ -2131,11 +2129,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun saveFirstViewNavigationFalse() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
             sharedPrefs.run {
                 edit()
-                    .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
-                    .apply()
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                        .apply()
             }
         }
     }
@@ -2143,9 +2141,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun isFirstViewNavigation(): Boolean {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
             return sharedPrefs.getBoolean(
-                KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
+                    KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
         }
         return true
     }
@@ -2153,20 +2151,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
-                ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
         }
     }
 
     private fun isFirstInstall(): Boolean {
         context?.let {
             if (!getUserSession().isLoggedIn &&
-                isShowFirstInstallSearch) {
+                    isShowFirstInstallSearch) {
                 sharedPrefs = it.getSharedPreferences(
-                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                        ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
-                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
+                        ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
 
                 if (firstInstallCacheValue == EMPTY_TIME_MILLIS) return false
                 firstInstallCacheValue += (MONTH_DAY_COUNT * TIME_MILLIS_MINUTE).toLong()
@@ -2195,33 +2193,33 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
             navAbTestCondition(
-                ifNavOld = {
-                    oldToolbar?.setHint(
-                        HintData(data.placeholder ?: "", data.keyword ?: ""),
-                        placeholderToHint(data),
-                        isFirstInstall(),
-                        shouldShowTransition(),
-                        durationAutoTransition)
-                },
-                ifNavRevamp = {
-                    navToolbar?.setupSearchbar(
-                        hints = listOf(HintData(data.placeholder ?: "", data.keyword
-                            ?: "")),
-                        applink = if (data.keyword?.isEmpty() != false) {
-                            ApplinkConstInternalDiscovery.AUTOCOMPLETE
-                        } else PARAM_APPLINK_AUTOCOMPLETE,
-                        searchbarClickCallback = {
-                            RouteManager.route(context,
-                                ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                                HOME_SOURCE,
-                                data.keyword.safeEncodeUtf8(),
-                                isFirstInstall().toString())
-                        },
-                        searchbarImpressionCallback = {},
-                        durationAutoTransition = durationAutoTransition,
-                        shouldShowTransition = shouldShowTransition()
-                    )
-                }
+                    ifNavOld = {
+                        oldToolbar?.setHint(
+                                HintData(data.placeholder ?: "", data.keyword ?: ""),
+                                placeholderToHint(data),
+                                isFirstInstall(),
+                                shouldShowTransition(),
+                                durationAutoTransition)
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.setupSearchbar(
+                                hints = listOf(HintData(data.placeholder ?: "", data.keyword
+                                        ?: "")),
+                                applink = if (data.keyword?.isEmpty() != false) {
+                                    ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                                } else PARAM_APPLINK_AUTOCOMPLETE,
+                                searchbarClickCallback = {
+                                    RouteManager.route(context,
+                                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                                            HOME_SOURCE,
+                                            data.keyword.safeEncodeUtf8(),
+                                            isFirstInstall().toString())
+                                },
+                                searchbarImpressionCallback = {},
+                                durationAutoTransition = durationAutoTransition,
+                                shouldShowTransition = shouldShowTransition()
+                        )
+                    }
             )
         }
     }
@@ -2245,7 +2243,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (visitable is HomeVisitable) {
                 if (visitable.isTrackingCombined && visitable.trackingDataForCombination != null) {
                     getTrackingQueueObj()?.putEETracking(
-                        LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
+                            LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
                     )
                 } else if (!visitable.isTrackingCombined && visitable.trackingData != null) {
                     HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
@@ -2285,7 +2283,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             return
         }
         if (activity != null
-            && RouteManager.isSupportApplink(activity, actionLink)) {
+                && RouteManager.isSupportApplink(activity, actionLink)) {
             openApplink(actionLink, trackingAttribution)
         } else {
             openWebViewURL(actionLink, activity)
@@ -2418,9 +2416,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(context).hitImpressionUrl(className, bannerSlidesModel.topadsViewUrl,
-                    bannerSlidesModel.id.toString(),
-                    bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
-                    bannerSlidesModel.imageUrl)
+                        bannerSlidesModel.id.toString(),
+                        bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
+                        bannerSlidesModel.imageUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -2434,7 +2432,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         trackScreen(isVisibleToUser)
         conditionalViewModelRefresh()
         playWidgetOnVisibilityChanged(
-            isUserVisibleHint = isVisibleToUser
+                isUserVisibleHint = isVisibleToUser
         )
         manageCoachmarkOnFragmentVisible(isVisibleToUser)
     }
@@ -2524,8 +2522,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
         recommendationWishlistItem = recommendationItem
         showProductCardOptions(
-            this,
-            recommendationItem.createProductCardOptionsModel(widgetPosition))
+                this,
+                recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
@@ -2547,8 +2545,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activity == null) return
         activity?.let {
             it.registerReceiver(
-                tokoCashBroadcaseReceiver,
-                IntentFilter(it.getString(R.string.broadcast_wallet))
+                    tokoCashBroadcaseReceiver,
+                    IntentFilter(it.getString(R.string.broadcast_wallet))
             )
         }
 
@@ -2582,23 +2580,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (wishlistResult.isUserLoggedIn) {
             if (wishlistResult.isSuccess) {
                 recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
-                    ?: false)
+                        ?: false)
                 showToasterWithAction(
-                    message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
-                    typeToaster = TYPE_NORMAL,
-                    actionText = getString(R.string.go_to_wishlist),
-                    clickListener = View.OnClickListener {
-                        RouteManager.route(context, ApplinkConst.WISHLIST)
-                    }
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        typeToaster = TYPE_NORMAL,
+                        actionText = getString(R.string.go_to_wishlist),
+                        clickListener = View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.WISHLIST)
+                        }
                 )
             } else {
                 showToaster(
-                    message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
-                    typeToaster = TYPE_ERROR
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
+                        typeToaster = TYPE_ERROR
                 )
             }
         } else {
-            getHomeViewModel().isFromLogin = true
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
@@ -2647,17 +2644,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         navAbTestCondition(
-            ifNavOld = {
-                if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                    oldToolbar?.setNotificationNumber(notificationCount)
-                    oldToolbar?.setInboxNumber(inboxCount)
+                ifNavOld = {
+                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                        oldToolbar?.setNotificationNumber(notificationCount)
+                        oldToolbar?.setInboxNumber(inboxCount)
+                    }
+                },
+                ifNavRevamp = {
+                    getHomeViewModel().setHomeNotif(
+                            notificationCount, inboxCount, cartCount
+                    )
                 }
-            },
-            ifNavRevamp = {
-                getHomeViewModel().setHomeNotif(
-                    notificationCount, inboxCount, cartCount
-                )
-            }
         )
     }
 
@@ -2692,7 +2689,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
         val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
-            getHomeViewModel().getRecommendationFeedSectionPosition()
+                getHomeViewModel().getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
@@ -2724,16 +2721,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     fun showNotAllowedGeolocationSnackbar() {
         getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
-            Snackbar.LENGTH_LONG)
-            .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) {
-                HomePageTracking.eventClickOnAtur()
-                goToApplicationDetailActivity()
-            }.show()
+                Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) {
+                    HomePageTracking.eventClickOnAtur()
+                    goToApplicationDetailActivity()
+                }.show()
     }
 
     fun showAllowedGeolocationSnackbar() {
         getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
-            Snackbar.LENGTH_LONG).show()
+                Snackbar.LENGTH_LONG).show()
     }
 
     private fun goToApplicationDetailActivity() {
@@ -2763,10 +2760,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink: String) {
         Handler().postDelayed({
             val newAppLink = Uri.parse(applink)
-                .buildUpon()
-                .appendQueryParameter(REVIEW_CLICK_AT, clickReviewAt.toString())
-                .appendQueryParameter(SOURCE, DEFAULT_SOURCE)
-                .build().toString()
+                    .buildUpon()
+                    .appendQueryParameter(REVIEW_CLICK_AT, clickReviewAt.toString())
+                    .appendQueryParameter(SOURCE, DEFAULT_SOURCE)
+                    .build().toString()
             val intent = RouteManager.getIntent(context, newAppLink)
             startActivityForResult(intent, REQUEST_CODE_REVIEW)
         }, delay)
@@ -2826,7 +2823,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         shouldPausePlay = false
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(),
-            Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
+                Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
         )
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
@@ -2854,8 +2851,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     super.onScrolled(recyclerView, dx, dy)
                     if (layoutManager!!.findLastVisibleItemPosition() >= adapterPosition) {
                         sendIrisTracker(DynamicChannelViewHolder.getLayoutType(dynamicChannelDataModel.channel!!),
-                            dynamicChannelDataModel.channel!!,
-                            adapterPosition)
+                                dynamicChannelDataModel.channel!!,
+                                adapterPosition)
                         homeRecyclerView?.removeOnScrollListener(this)
                     }
                 }
@@ -2868,20 +2865,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun sendIrisTracker(layoutType: Int, channel: DynamicHomeChannel.Channels, position: Int) {
         when (layoutType) {
             DynamicChannelViewHolder.TYPE_SPRINT_SALE -> putEEToIris(
-                HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                    channel.id, channel.grids, position
-                )
+                    HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                            channel.id, channel.grids, position
+                    )
             )
             DynamicChannelViewHolder.TYPE_ORGANIC -> putEEToIris(
-                HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
-                    channel.id, channel.grids, channel.header.name
-                )
+                    HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
+                            channel.id, channel.grids, channel.header.name
+                    )
             )
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
-                getSprintSaleImpression(channel, true) as HashMap<String, Any>
+                    getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
-                HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
+                    HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
         }
     }
@@ -2962,8 +2959,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun playWidgetOnVisibilityChanged(
-        isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-        isUserVisibleHint: Boolean = userVisibleHint
+            isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+            isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
             val isViewVisible = isViewResumed && isUserVisibleHint
@@ -3012,14 +3009,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun showSuccessResetPasswordDialog() {
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
         Toaster.build(root,
-            getString(R.string.text_dialog_success_reset_password),
-            DELAY_TOASTER_RESET_PASSWORD,
-            TYPE_NORMAL,
-            getString(R.string.cta_dialog_success_reset_password),
-            View.OnClickListener {
-                saveStateReset(false)
-                onGoToLogin()
-            }
+                getString(R.string.text_dialog_success_reset_password),
+                DELAY_TOASTER_RESET_PASSWORD,
+                TYPE_NORMAL,
+                getString(R.string.cta_dialog_success_reset_password),
+                View.OnClickListener {
+                    saveStateReset(false)
+                    onGoToLogin()
+                }
         ).addCallback(object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
