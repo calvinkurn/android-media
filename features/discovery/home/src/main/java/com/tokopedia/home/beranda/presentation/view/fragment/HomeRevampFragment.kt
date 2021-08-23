@@ -605,6 +605,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
+        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
