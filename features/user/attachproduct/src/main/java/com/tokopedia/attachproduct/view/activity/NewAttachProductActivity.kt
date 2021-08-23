@@ -10,11 +10,8 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.view.fragment.AttachProductFragment
 import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment.Companion.newInstance
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.*
 
 class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.Activity {

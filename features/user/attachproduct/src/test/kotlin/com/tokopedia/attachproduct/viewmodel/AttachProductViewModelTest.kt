@@ -93,7 +93,6 @@ class AttachProductViewModelTest {
     fun `fail load data` () {
         //GIVEN
         val expectedError = Throwable("")
-        val aceSearchProductResponse = AceSearchProductResponse()
         coEvery {
             useCase(any())
         } throws expectedError
@@ -111,7 +110,6 @@ class AttachProductViewModelTest {
     @Test
     fun `update checked list and previous checked list is empty` () {
         //GIVEN
-        val expectedError = Throwable("")
         val aceSearchProductResponse = AceSearchProductResponse()
         val expectedValue = aceSearchProductResponse.mapToListProduct().toDomainModelMapper()
 
@@ -179,6 +177,5 @@ class AttachProductViewModelTest {
 
         //THEN
         Assert.assertEquals(expectedValue.size, resultProduct.size)
-
     }
 }
