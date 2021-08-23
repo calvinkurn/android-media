@@ -616,8 +616,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
-        // TODO: check error & set tvInstallmentDetail jadi "Pilih Bayar Penuh / Cicilan"
-        println("++ creditCart.selectedTerm = "+creditCard.selectedTerm)
         val selectedTerm = creditCard.selectedTerm
         binding.apply {
             if (!creditCard.isDebit && selectedTerm != null) {
@@ -627,7 +625,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (selectedTerm.term > 0) {
                     tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
                 } else {
-                    tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
+                    if (selectedTerm.isError) tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
+                    else tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
                 }
                 setupPaymentInstallmentError(selectedTerm)
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {

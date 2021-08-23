@@ -256,11 +256,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         cartDetailsItemList.add(cartDetailsItem)
         val totalDiscount = orderTotal.orderCost.productDiscountAmount + orderTotal.orderCost.shippingDiscountAmount
         val totalOtherAmount = orderTotal.orderCost.purchaseProtectionPrice + orderTotal.orderCost.insuranceFee.toInt()
+
+        // TODO: return back to profileCode = orderPaymentCreditCard.additionalData.profileCode
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
             userId = userId.toLong(),
             totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice.toFloat(),
-            profileCode = orderPaymentCreditCard.additionalData.profileCode,
+            profileCode = "TEST_DEFAULT",
             ccfeeSignature = orderPaymentCreditCard.tenorSignature,
             timestamp = orderPaymentCreditCard.unixTimestamp,
             otherAmount = totalOtherAmount.toFloat(),

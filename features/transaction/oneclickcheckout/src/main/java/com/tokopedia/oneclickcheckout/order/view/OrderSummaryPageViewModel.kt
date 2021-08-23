@@ -746,7 +746,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             userSession.userId, orderTotal.value, orderCart)
         launch(executorDispatchers.immediate) {
             val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
-            if (!isSuccess) orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+            if (!isSuccess) {
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                orderPayment.value.creditCard.selectedTerm?.isError = true
+            }
             globalEvent.value = newGlobalEvent
         }
     }

@@ -648,8 +648,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         if (it.errorMsg.isNotEmpty()) msg = it.errorMsg
                         Toaster.build(v, msg, type = Toaster.TYPE_ERROR).show()
 
-                        // TODO: reset pilih pembayaran
-                        // TODO: disable button bayar
+                        // disable pay button
+                        adapter.notifyItemChanged(adapter.totalPaymentIndex)
+
+                        // reset choose installment
+                        adapter.notifyItemChanged(adapter.preferenceIndex)
                     }
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
