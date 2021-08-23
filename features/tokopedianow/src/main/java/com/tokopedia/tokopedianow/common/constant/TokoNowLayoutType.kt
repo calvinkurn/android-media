@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.constant
+package com.tokopedia.tokopedianow.common.constant
 
 import androidx.annotation.StringDef
 
@@ -9,14 +9,14 @@ import androidx.annotation.StringDef
  */
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
-    HomeLayoutType.BANNER_CAROUSEL,
-    HomeLayoutType.CATEGORY,
-    HomeLayoutType.LEGO_3_IMAGE,
-    HomeLayoutType.LEGO_6_IMAGE,
-    HomeLayoutType.PRODUCT_RECOM,
-    HomeLayoutType.RECENT_PURCHASE
+    TokoNowLayoutType.BANNER_CAROUSEL,
+    TokoNowLayoutType.CATEGORY,
+    TokoNowLayoutType.LEGO_3_IMAGE,
+    TokoNowLayoutType.LEGO_6_IMAGE,
+    TokoNowLayoutType.PRODUCT_RECOM,
+    TokoNowLayoutType.RECENT_PURCHASE
 )
-annotation class HomeLayoutType {
+annotation class TokoNowLayoutType {
     companion object {
         const val BANNER_CAROUSEL = "banner_carousel_v2"
         const val CATEGORY = "category_tokonow"
