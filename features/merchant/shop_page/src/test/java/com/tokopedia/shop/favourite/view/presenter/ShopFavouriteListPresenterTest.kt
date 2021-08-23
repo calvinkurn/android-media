@@ -11,8 +11,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
-import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.jvm.isAccessible
 
 class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
 

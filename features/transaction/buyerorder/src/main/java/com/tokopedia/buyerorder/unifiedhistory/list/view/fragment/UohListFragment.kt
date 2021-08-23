@@ -51,10 +51,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
+import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
@@ -104,6 +110,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_CANCEL_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
@@ -148,6 +155,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -160,6 +168,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.io.Serializable
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -254,6 +263,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val LABEL_3 = 3
         const val STATUS_600 = 600
         const val STATUS_200 = 200
+        const val UOH_CANCEL_ORDER = 300
+        const val LABEL_HELP_LINK = "Bantuan"
+        const val MINUS_30 = -30
+        const val MINUS_90 = -90
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -293,12 +306,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             } else {
                 activity?.finish()
             }
-        }
-        if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
+        } else if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            }
+        } else if (requestCode == UOH_CANCEL_ORDER) {
+            if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
+                val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
+                val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
+                if (result == RESULT_CODE_SUCCESS) {
+                    if (resultMsg != null) {
+                        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                        showToaster(resultMsg, Toaster.TYPE_NORMAL)
+                        loadOrderHistoryList(orderIdNeedUpdated)
+                    }
+                }
+            } else {
+                initialLoad()
             }
         }
     }
@@ -1366,7 +1392,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_30)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
@@ -1376,7 +1402,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate
@@ -1523,6 +1549,40 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
                 RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+            } else {
+                val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                    dotMenu.webURL
+                } else {
+                    dotMenu.appURL
+                }
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+            }
+        } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
+            if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                bottomSheetKebabMenu?.dismiss()
+                var helpLinkUrl = ""
+                currIndexNeedUpdate = index
+                orderIdNeedUpdated = orderData.orderUUID
+                orderData.metadata.dotMenus.forEach {
+                    if (it.label.equals(LABEL_HELP_LINK)) {
+                        helpLinkUrl = it.webURL
+                    }
+                }
+
+                val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
+                val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
+                    putExtra(BuyerConsts.PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
+                    putExtra(BuyerConsts.PARAM_INVOICE, cancelOrderQueryParam.invoice)
+                    putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
+                    putExtra(BuyerConsts.PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
+                    putExtra(BuyerConsts.PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
+                    putExtra(BuyerConsts.PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
+                    putExtra(BuyerConsts.PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
+                    putExtra(BuyerConsts.PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                    putExtra(BuyerConsts.PARAM_SOURCE_UOH, true)
+                    putExtra(BuyerConsts.PARAM_HELP_LINK_URL, helpLinkUrl)
+                }
+                startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
             } else {
                 val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
                     dotMenu.webURL
@@ -1755,7 +1815,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 quantity = recommendationItem.quantity,
                 shopId = recommendationItem.shopId,
                 category = recommendationItem.categoryBreadcrumbs,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION)
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION)
         uohListViewModel.doAtc(atcParam)
 
         // analytics

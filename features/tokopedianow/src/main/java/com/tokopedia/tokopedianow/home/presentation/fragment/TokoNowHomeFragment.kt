@@ -121,7 +121,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
-        private const val ITEM_VIEW_CACHE_SIZE = 20
+        private const val ITEM_VIEW_CACHE_SIZE = 0
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -165,6 +165,7 @@ class TokoNowHomeFragment: Fragment(),
     private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
+    private var rvHome: RecyclerView? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
@@ -615,7 +616,8 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupRecyclerView() {
         context?.let {
-            with(rvHome) {
+            rvHome = view?.findViewById(R.id.rv_home)
+            rvHome?.apply {
                 adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
@@ -644,7 +646,9 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                rvHome.submitProduct(it.data)
+                rvHome?.post {
+                    rvHome?.submitProduct(it.data)
+                }
             }
         }
 
@@ -875,7 +879,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.items.map { it.layout }
+        val items = data.items.toMutableList().map { it.layout }
         adapter.submitList(items)
     }
 
@@ -920,7 +924,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadVisibleLayoutData(index: Int?) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
@@ -928,7 +932,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadMoreLayoutData() {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)

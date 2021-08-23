@@ -254,8 +254,8 @@ object HomeLayoutMapper {
                 }
             }
             PRODUCT_RECOM -> {
-                firstOrNull { it.layout is HomeProductRecomUiModel }?.run {
-                    val layout = layout as HomeProductRecomUiModel
+                filter { it.layout is HomeProductRecomUiModel }?.forEach { homeLayoutItemUiModel->
+                    val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
                     val deletedProducts = layout.recomWidget.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
                     val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
@@ -312,17 +312,15 @@ object HomeLayoutMapper {
         productId: String,
         quantity: Int
     ) {
-        val homeLayoutItemUiModel = firstOrNull { it.layout is HomeProductRecomUiModel }
-        val productRecomUiModel = homeLayoutItemUiModel?.layout as? HomeProductRecomUiModel
-
-        productRecomUiModel?.let { uiModel ->
-            if (!uiModel.recomWidget.recommendationItemList.isNullOrEmpty()) {
-                val recom = uiModel.recomWidget.copy()
-                val recommendationItem = recom.recommendationItemList
-                    .firstOrNull { it.productId.toString() == productId }
-                recommendationItem?.quantity = quantity
-
-                mapProductRecomData(productRecomUiModel, recom)
+        filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
+            val uiModel = homeLayoutItemUiModel.layout as? HomeProductRecomUiModel
+            if (!uiModel?.recomWidget?.recommendationItemList.isNullOrEmpty()) {
+                val recom = uiModel?.recomWidget?.copy()
+                val recommendationItem = recom?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }
+                recommendationItem?.let {
+                    it.quantity = quantity
+                    mapProductRecomData(uiModel, recom)
+                }
             }
         }
     }
