@@ -113,7 +113,7 @@ class InstallmentDetailBottomSheet {
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.fee.toDouble(), false).removeDecimalSuffix())
                 if (installmentAfpb.type.isNotEmpty()) {
-                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.term == installmentAfpb.type.toInt()
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.term.toString().equals(installmentAfpb.type, true)
                 }
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
                     listener.onSelectInstallment(mapAfpbToInstallmentTerm(installmentAfpb))
