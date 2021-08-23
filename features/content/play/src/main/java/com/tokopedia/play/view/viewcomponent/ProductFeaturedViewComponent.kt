@@ -109,6 +109,7 @@ class ProductFeaturedViewComponent(
             show()
             if(featuredItems.first() is PlayProductUiModel.Product)
                 icProductSeeMore.setTotalProduct(products.size)
+            else icProductSeeMore.gone()
         }
 
         featuredProduct.clear()
