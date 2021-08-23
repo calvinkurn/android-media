@@ -91,6 +91,8 @@ class ProductFeaturedViewComponent(
 
     init {
         icProductSeeMore.setBackgroundResource(R.drawable.ic_product_see_more)
+        icProductSeeMore.setOnClickListener { listener.onSeeMoreClicked(this@ProductFeaturedViewComponent) }
+
         rvProductFeatured.itemAnimator = null
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
