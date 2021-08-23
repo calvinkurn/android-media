@@ -617,6 +617,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
         // TODO: check error & set tvInstallmentDetail jadi "Pilih Bayar Penuh / Cicilan"
+        println("++ creditCart.selectedTerm = "+creditCard.selectedTerm)
         val selectedTerm = creditCard.selectedTerm
         binding.apply {
             if (!creditCard.isDebit && selectedTerm != null) {

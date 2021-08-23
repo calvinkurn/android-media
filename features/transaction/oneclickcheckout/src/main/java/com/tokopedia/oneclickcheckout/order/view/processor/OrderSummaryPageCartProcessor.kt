@@ -234,10 +234,14 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         val result = withContext(executorDispatchers.io) {
             try {
                 val creditCardData = creditCardTenorListUseCase.executeSuspend(ccTenorListRequest)
-                return@withContext true to OccGlobalEvent.AdjustAdminFeeSuccess(creditCardData)
+                if (creditCardData.errorMsg.isNotEmpty()) {
+                    return@withContext false to OccGlobalEvent.AdjustAdminFeeError(creditCardData.errorMsg)
+                } else {
+                    return@withContext true to OccGlobalEvent.AdjustAdminFeeSuccess(creditCardData)
+                }
             } catch (t: Throwable) {
                 Timber.d(t)
-                return@withContext false to OccGlobalEvent.AdjustAdminFeeError
+                return@withContext false to OccGlobalEvent.AdjustAdminFeeError("")
             }
         }
         OccIdlingResource.decrement()

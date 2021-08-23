@@ -644,7 +644,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.AdjustAdminFeeError ->  {
                     progressDialog?.dismiss()
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        var msg = getString(R.string.default_afpb_error)
+                        if (it.errorMsg.isNotEmpty()) msg = it.errorMsg
+                        Toaster.build(v, msg, type = Toaster.TYPE_ERROR).show()
 
                         // TODO: reset pilih pembayaran
                         // TODO: disable button bayar
