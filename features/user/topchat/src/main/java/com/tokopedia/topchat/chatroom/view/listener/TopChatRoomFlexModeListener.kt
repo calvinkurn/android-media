@@ -8,4 +8,5 @@ interface TopChatRoomFlexModeListener {
     fun onSuccessGetMessageId(msgId: String)
     fun getSeparatedTemplateChat(): TopChatTemplateSeparatedView?
     fun isFlexMode(): Boolean
+    fun onRefreshChatlistForNewChat()
 }

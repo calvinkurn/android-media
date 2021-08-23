@@ -886,6 +886,10 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
+    fun loadInitialDataForRefreshList() {
+        loadInitialData()
+    }
+
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"

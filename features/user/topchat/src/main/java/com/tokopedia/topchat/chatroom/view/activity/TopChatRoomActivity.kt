@@ -388,6 +388,15 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 displayState == HALF_OPEN_STATE && isAllowedFlexMode()
     }
 
+    override fun onRefreshChatlistForNewChat() {
+        if(currentActiveChat == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(DELAY) //Delay waiting for chat to be sent first
+                chatListFragment.loadInitialDataForRefreshList()
+            }
+        }
+    }
+
     private fun hideKeyboard() {
         try {
             this.currentFocus?.let { view ->
@@ -522,8 +531,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         private const val HALF_OPEN_STATE = 2
         private const val ZER0_MESSAGE_ID = "0"
         private var role: Int? = null
-        var currentActiveChat: String? = null
-            private set
+        private var currentActiveChat: String? = null
     }
 
 }

@@ -1038,6 +1038,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.sendAttachmentsAndMessage(
             messageId, sendMessage, startTime, opponentId, onSendingMessage()
         )
+
+        refreshChatlistForNewChat()
     }
 
     private fun delaySendMessage() {
@@ -2282,6 +2284,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
         if(isNecessary) {
             getViewState().clearAttachmentPreview()
+        }
+    }
+
+    private fun refreshChatlistForNewChat() {
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            chatRoomFlexModeListener?.onRefreshChatlistForNewChat()
         }
     }
 
