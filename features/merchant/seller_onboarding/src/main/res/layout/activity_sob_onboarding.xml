@@ -9,24 +9,14 @@
         android:id="@+id/backgroundSob"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        app:srcCompat="@drawable/bg_sob_full"
         android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         app:layout_constrainedHeight="true"
-        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgSobHeader"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="112dp"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/backgroundSob"
-        app:srcCompat="@drawable/ic_toped_anniv" />
+        app:srcCompat="@drawable/bg_sob_full" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSobSkip"
@@ -48,7 +38,17 @@
         app:layout_constraintBottom_toTopOf="@+id/btnSobNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvSobSkip" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="112dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backgroundSob"
+        app:srcCompat="@drawable/ic_toped_anniv" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnSobPrev"

@@ -11,11 +11,12 @@
         android:id="@+id/tvSobSliderManageTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
         android:text="@string/sob_slider_title_manage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewObserver"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -33,26 +34,27 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobManage1"
-        android:layout_width="@dimen/sob_dimen_manage_image_1_width"
-        android:layout_height="@dimen/sob_dimen_manage_image_1_height"
-        android:layout_marginStart="@dimen/sob_manage_product_start_margin"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        android:scaleType="fitCenter"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="72dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toTopOf="@+id/imgSobManage2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSobSliderManageTitle"
         tools:src="@drawable/img_sob_manage_stock" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobManage2"
-        android:layout_width="@dimen/sob_dimen_manage_image_2_width"
-        android:layout_height="@dimen/sob_dimen_manage_image_2_height"
-        android:layout_marginEnd="@dimen/sob_manage_print_label_end_margin"
-        android:scaleType="fitCenter"
-        android:layout_marginBottom="@dimen/layout_lvl6"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginEnd="28dp"
+        android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobManage1"
         tools:src="@drawable/img_sob_som_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>

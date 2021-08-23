@@ -1,14 +1,11 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
 import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
-import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
 
@@ -16,7 +13,8 @@ import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
  * Created By @ilhamsuaib on 20/07/21
  */
 
-class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMessageUiModel>(itemView) {
+class SliderMessageViewHolder(itemView: View) :
+    AbstractViewHolder<SobSliderMessageUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_message_view_holder
@@ -32,7 +30,6 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
 
             imgSobMessageBg?.loadImage(R.drawable.bg_sob_circle)
             setMessageImageUrl()
-            setupMarginTitleSob { setMarginMessageTitle() }
         }
     }
 
@@ -71,15 +68,6 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
             imgSobMessage3?.loadImage(SobImageSliderUrl.IMG_BROADCAST_CHAT) {
                 setPlaceHolder(R.drawable.img_sob_broadcast_chat)
             }
-        }
-    }
-
-    private fun setMarginMessageTitle() {
-        with(itemView) {
-            val tvSobCurrentView = tvSobSliderMessageTitle?.layoutParams as? ConstraintLayout.LayoutParams
-            tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
-            tvSobSliderMessageTitle?.layoutParams = tvSobCurrentView
         }
     }
 }

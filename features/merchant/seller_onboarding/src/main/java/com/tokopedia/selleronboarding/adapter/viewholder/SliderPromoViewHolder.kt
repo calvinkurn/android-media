@@ -44,21 +44,6 @@ class SliderPromoViewHolder(itemView: View) : AbstractViewHolder<SobSliderPromoU
             imgSobPromo?.loadImage(SobImageSliderUrl.IMG_ADS_PROMOTION) {
                 setPlaceHolder(R.drawable.img_sob_ads_promotion)
             }
-            setupMarginTitleSob { setMarginPromoTitle() }
-        }
-    }
-
-    private fun setMarginPromoTitle() {
-        with(itemView) {
-            val tvSobCurrentView = tvSobSliderPromoTitle?.layoutParams as? ConstraintLayout.LayoutParams
-            tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
-            tvSobSliderPromoTitle?.layoutParams = tvSobCurrentView
-
-            val imgSobCurrentView = imgSobPromo?.layoutParams as? ConstraintLayout.LayoutParams
-            imgSobCurrentView?.matchConstraintPercentHeight = IMG_DEVICE_SCREEN_PERCENT
-            imgSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            imgSobPromo?.layoutParams = imgSobCurrentView
         }
     }
 }
