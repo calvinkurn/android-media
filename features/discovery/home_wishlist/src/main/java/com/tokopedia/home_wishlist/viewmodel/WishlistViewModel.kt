@@ -79,7 +79,7 @@ open class WishlistViewModel @Inject constructor(
     private val listRecommendationCarouselOnMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
 
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
-
+    private val wishlistCountData = WishlistLiveData<Int>(0)
 
     private var keywordSearch: String = ""
 
@@ -89,6 +89,8 @@ open class WishlistViewModel @Inject constructor(
     private var additionalParams: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
 
     val wishlistLiveData: LiveData<List<WishlistDataModel>> get() = wishlistData
+    val wishlistCountLiveData: LiveData<Int> get() = wishlistCountData
+
     val isInBulkModeState: LiveData<Boolean> get() = isInBulkMode
     val isWishlistState: LiveData<Status> get() = wishlistState
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
@@ -147,6 +149,7 @@ open class WishlistViewModel @Inject constructor(
                 )
                 getRecommendationOnEmptyWishlist(0)
             } else {
+                wishlistCountData.value = data.totalData.toInt()
                 wishlistState.value = Status.SUCCESS
 
                 val visitableWishlist = data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false)
@@ -741,6 +744,7 @@ open class WishlistViewModel @Inject constructor(
         val isPartiallyFailed = listForBulkRemoveCandidate.isNotEmpty()
 
         updatedList.addAll(newWishlistDataValue)
+        updateTotalCountAfterSuccessfulRemove(deletedIds.size)
         return Triple(updatedList, deletedIds, isPartiallyFailed)
     }
 
@@ -820,6 +824,7 @@ open class WishlistViewModel @Inject constructor(
 
         val updatedList = mutableListOf<WishlistDataModel>()
         updatedList.addAll(newWishlistDataValue)
+        updateTotalCountAfterSuccessfulRemove()
         return updatedList
     }
 
@@ -990,6 +995,11 @@ open class WishlistViewModel @Inject constructor(
                     tempSelectedPositionInPdp!!,
                     wishlistState)
         }
+    }
+
+    private fun updateTotalCountAfterSuccessfulRemove(removedProductCount: Int = 1) {
+        val currentCountData = wishlistCountData.value
+        wishlistCountData.value = currentCountData - removedProductCount
     }
 
     private fun removeLoadMore(): List<WishlistDataModel>{
