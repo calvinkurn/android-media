@@ -8,12 +8,14 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
@@ -185,6 +187,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
+    }
+
+    override fun convertToImageAnnouncement(item: Reply): Visitable<*> {
+        val pojoAttribute = gson.fromJson(
+            item.attachment.attributes, ImageAnnouncementPojo::class.java
+        )
+        return ImageAnnouncementViewModel(item, pojoAttribute)
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {

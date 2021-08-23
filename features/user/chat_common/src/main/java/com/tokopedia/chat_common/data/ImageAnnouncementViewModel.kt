@@ -1,6 +1,8 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
@@ -31,6 +33,41 @@ constructor(
         messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory> {
+
+    var wording: String = ""
+        private set
+    var isCampaign: Boolean = false
+        private set
+    var statusCampaign: Int = 1
+        private set
+    var startDate: String = ""
+        private set
+    var endDate: String = ""
+        private set
+
+    constructor(
+        item: Reply, attributes: ImageAnnouncementPojo
+    ) : this(
+        messageId = item.msgId.toString(),
+        fromUid = item.senderId.toString(),
+        from = item.senderName,
+        fromRole = item.role,
+        attachmentId = item.attachment.id,
+        attachmentType = item.attachment.type.toString(),
+        replyTime = item.replyTime,
+        imageUrl = attributes.imageUrl,
+        redirectUrl = attributes.url,
+        isHideBanner = attributes.isHideBanner,
+        message = item.msg,
+        blastId = item.blastId,
+        source = item.source
+    ) {
+        this.wording = attributes.wording
+        this.isCampaign = attributes.isCampaign
+        this.statusCampaign = attributes.statusCampaign
+        this.startDate = attributes.startDate
+        this.endDate = attributes.endDate
+    }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)

@@ -18,4 +18,20 @@ class ImageAnnouncementPojo {
     @SerializedName("is_hide_banner")
     @Expose
     var isHideBanner: Boolean = false
+
+    @SerializedName("wording")
+    @Expose
+    var wording: String = ""
+    @SerializedName("isCampaign")
+    @Expose
+    var isCampaign: Boolean = false
+    @SerializedName("statusCampaign")
+    @Expose
+    var statusCampaign: Int = 1
+    @SerializedName("startDate")
+    @Expose
+    var startDate: String = ""
+    @SerializedName("endDate")
+    @Expose
+    var endDate: String = ""
 }
