@@ -2,7 +2,6 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import androidx.lifecycle.LiveData
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
@@ -57,14 +56,12 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                     if (isCommandFailed(result)) {
                         isoDep.close()
-                        FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_PURSE_CHALLANGE_FAILED"))
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val resultString = NFCUtils.toHex(result)
                         val securePurseRequest = NFCUtils.toHex(secureReadPurse(terminalRandomNumber))
                         val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
                         if (isCommandFailed(secureResult)) {
-                            FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_SECURE_PURSE_FAILED"))
                             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val secureResultString = NFCUtils.toHex(secureResult)
@@ -72,19 +69,16 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                             if (!cardData.isNullOrEmpty()) {
                                 updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
                             } else {
-                                FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_CARD_DATA_EMPTY"))
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                             }
                         }
                     }
                 } catch (e: IOException) {
                     isoDep.close()
-                    FirebaseCrashlytics.getInstance().recordException(e)
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
         } else {
-            FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_ISODEP_NULL"))
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
@@ -108,7 +102,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
             }
         }) {
-            FirebaseCrashlytics.getInstance().recordException(it)
             errorInquiryMutable.postValue(it)
         }
     }
@@ -122,18 +115,15 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val writeResult = isoDep.transceive(command)
                 val writeResultString = NFCUtils.toHex(writeResult)
                 if (isCommandFailed(writeResult)) {
-                    FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_ISSUE_WRITE_FAILED"))
                     errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
                 } else {
                     recheckBalanceSecurePurse(tapcash, terminalRandomNumber)
                 }
             } catch (e: IOException) {
                 isoDep.close()
-                FirebaseCrashlytics.getInstance().recordException(e)
                 errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
             }
         } else {
-            FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_ISODEP_ISSUE_WRITE_IS_NOT_CONNECTED"))
             errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
         }
     }
@@ -144,7 +134,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                 val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
                 if (isCommandFailed(secureResult)) {
-                    FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_RECHECK_BALANCE_SECURE_PURSE_FAILED"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
                     val secureResultString = NFCUtils.toHex(secureResult)
@@ -152,11 +141,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 }
             } catch (e: IOException) {
                 isoDep.close()
-                FirebaseCrashlytics.getInstance().recordException(e)
                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             }
         } else {
-            FirebaseCrashlytics.getInstance().recordException(MessageErrorException("TAPCASH_ERROR_ISODEP_RECHECK_BALANCE_IS_NOT_CONNECTED"))
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }

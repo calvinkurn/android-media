@@ -4,8 +4,6 @@ import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
-import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
-
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.data.BalanceTapcash
 import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
@@ -55,7 +53,7 @@ class TapcashBalanceViewModelTest {
     """.trimIndent()
 
     val dummyResponseWithCrypto = """
-        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":40000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
+        {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://ecs7.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
     @Before
@@ -377,34 +375,6 @@ class TapcashBalanceViewModelTest {
 
         val writeByteRequest = NFCUtils.stringToByteArrayRadix(writeRequest)
         val writeByteResult = NFCUtils.stringToByteArrayRadix(challangeFail)
-        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
-        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
-        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
-        every { isoDep.transceive(writeByteRequest) } returns writeByteResult
-
-        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
-        val result = HashMap<Type, Any>()
-        result[BalanceTapcash::class.java] = balanceTapcash
-        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
-        //when
-        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
-
-        //then
-        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
-    }
-
-    @Test
-    fun processTagIntent_WriteBalanceTapcash_SuccessWithCryptoFailedSizeNoMatch() {
-        //given
-        initSuccessData()
-        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
-        val secureByteResult =
-                NFCUtils.stringToByteArrayRadix(secureResult)
-
-        val writeByteRequest = NFCUtils.stringToByteArrayRadix(writeRequest)
-        val writeByteResult = NFCUtils.stringToByteArrayRadix(writeResultFailedSize)
         every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
         every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
         every { isoDep.transceive(secureByteRequest) } returns secureByteResult
