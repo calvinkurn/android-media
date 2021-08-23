@@ -1033,8 +1033,11 @@ open class HomeRevampViewModel @Inject constructor(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
+        }
+
+        if (!homeNewDataModel.isProcessingAtf && !homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateRecommendationSection(
-                    onNeedTabLoad = { getFeedTabData() }
+                onNeedTabLoad = { getFeedTabData() }
             )
         }
         _homeLiveData.postValue(homeDataModel)

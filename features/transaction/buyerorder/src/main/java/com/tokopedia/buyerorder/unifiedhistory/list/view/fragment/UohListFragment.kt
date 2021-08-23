@@ -1727,24 +1727,22 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
-        var i = 0
-        order.metadata.products.forEach {
+        order.metadata.products.forEachIndexed { index, product ->
             var eeProductId = ""
             var eeProductPrice = ""
             if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i)?.asJsonObject
+                val objProduct = jsonArray.get(index)?.asJsonObject
                 eeProductId = objProduct?.get(EE_PRODUCT_ID).toString()
                 eeProductPrice = objProduct?.get(EE_PRODUCT_PRICE).toString()
             }
 
             arrayListProducts.add(ECommerceImpressions.Impressions(
-                    name = it.title,
+                    name = product.title,
                     id = eeProductId,
                     price = eeProductPrice,
                     list = "/order list - ${order.verticalCategory}",
                     position = index.toString()
             ))
-            i++
         }
         UohAnalytics.viewOrderCard(order.verticalCategory, order.userID, arrayListProducts)
     }
@@ -1894,21 +1892,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
 
             uohListViewModel.doAtcMulti(userSession.userId
-                    ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
-
-            // analytics
-            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-            orderData.metadata.products.forEachIndexed { index, product ->
-                val objProduct = jsonArray.get(index).asJsonObject
-                arrayListProducts.add(ECommerceAdd.Add.Products(
-                        name = product.title,
-                        id = objProduct.get(EE_PRODUCT_ID).asString,
-                        price = objProduct.get(EE_PRODUCT_PRICE).asString,
-                        quantity = objProduct.get(EE_QUANTITY).asString,
-                        dimension79 = objProduct.get(EE_SHOP_ID).asString
-                ))
-            }
-            userSession.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
+                    ?: "", GraphqlHelper.loadRawString(activity?.resources,
+                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti, orderData.verticalCategory)
         }
     }
 
