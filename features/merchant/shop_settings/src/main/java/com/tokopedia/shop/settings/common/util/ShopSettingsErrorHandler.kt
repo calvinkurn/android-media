@@ -3,6 +3,7 @@ package com.tokopedia.shop.settings.common.util
 import android.content.Context
 import android.text.TextUtils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.settings.BuildConfig
@@ -24,6 +25,7 @@ object ShopSettingsErrorHandler {
     private const val ERROR_CODE_FULL_VISITORS = 429
     private const val ERROR_CODE_PROBLEM_NEED_TO_BE_FIXED = 500
     private const val ERROR_CODE_FIXING_PROBLEM = 503
+    private const val MAX_LOCALIZED_MESSAGE = 3
 
     fun logMessage(message: String) {
         try {
@@ -61,7 +63,7 @@ object ShopSettingsErrorHandler {
                 context?.getString(R.string.error_no_internet_message)
             } else if (e is SocketTimeoutException) {
                 context?.getString(com.tokopedia.network.R.string.default_request_error_timeout)
-            } else if (e is RuntimeException && e.getLocalizedMessage() != null && e.getLocalizedMessage() != "" && e.localizedMessage?.length ?: 0 <= 3) {
+            } else if (e is RuntimeException && e.getLocalizedMessage() != null && e.getLocalizedMessage() != "" && e.localizedMessage?.length.orZero() <= MAX_LOCALIZED_MESSAGE) {
                 try {
                     e.localizedMessage?.let {
                         when (it.toInt()) {
