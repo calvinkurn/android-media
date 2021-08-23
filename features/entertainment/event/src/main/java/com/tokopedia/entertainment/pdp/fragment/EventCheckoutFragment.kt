@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -251,7 +250,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 val context = it
                 if (data.checkout.data.success == 0) {
                     view?.let {
-                        Toaster.build(it, data.checkout.header.messages.first(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 context.getString(R.string.ent_checkout_error)).show()
                     }
                 } else {
@@ -338,7 +337,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
 
 
-        tg_event_checkout_summary_price_price.text = getRupiahFormat(metadata.totalPrice)
+        tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
         context?.let {
             tg_event_checkout_tnc.makeLinks(
@@ -605,6 +604,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
+        const val ZERO_PRICE = 0
 
         const val ROUND_VALUE = 25f
 

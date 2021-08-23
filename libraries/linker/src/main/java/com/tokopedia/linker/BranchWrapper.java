@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -316,6 +317,12 @@ public class BranchWrapper implements WrapperInterface {
                     RechargeBranchHelper.sendDigitalScreenLaunchEvent(context,
                             (RechargeLinkerData) linkerGenericRequest.getDataObj()
                     );
+                }
+                break;
+            case LinkerConstants.EVENT_SEARCH:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof ArrayList) {
+                    BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
                 }
                 break;
         }

@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -81,7 +80,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
@@ -123,9 +122,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     private fun hideStatusBar() {
         digital_homepage_container.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            digital_homepage_container.requestApplyInsets()
-        }
+        digital_homepage_container.requestApplyInsets()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var flags = digital_homepage_container.systemUiVisibility
@@ -137,15 +134,13 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             }
         }
 
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
@@ -156,14 +151,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     private fun calculateToolbarView(offset: Int) {
 
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / searchBarTransitionRange * (offset)
+        var offsetAlpha = OFFSET_ALPHA / searchBarTransitionRange * (offset)
         //2.5 is maximum
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
 
         val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= 255) {
+        if (offsetAlpha >= OFFSET_ALPHA) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
             context?.run {
@@ -328,6 +323,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+
+        private const val OFFSET_ALPHA = 255f
 
         val initialImpressionTrackingConst = mapOf(
                 DYNAMIC_ICON_IMPRESSION to true,

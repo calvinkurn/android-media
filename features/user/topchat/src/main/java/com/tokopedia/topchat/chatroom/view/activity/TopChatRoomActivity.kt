@@ -187,13 +187,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 }
                 pathSegments.contains(ApplinkConst.Chat.PATH_ASK_BUYER) -> {
                     val toUserId = intent?.data?.lastPathSegment.toZeroStringIfNull()
-                    val shopName =
-                        it.getQueryParameter(ApplinkConst.Chat.OPPONENT_NAME).toEmptyStringIfNull()
-                    val customMessage =
-                        it.getQueryParameter(ApplinkConst.Chat.CUSTOM_MESSAGE).toEmptyStringIfNull()
-                    val avatar =
-                        it.getQueryParameter(ApplinkConst.Chat.AVATAR).toEmptyStringIfNull()
-                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: "deeplink"
+                    val shopName = it.getQueryParameter(ApplinkConst.Chat.OPPONENT_NAME).toEmptyStringIfNull()
+                    val customMessage = it.getQueryParameter(ApplinkConst.Chat.CUSTOM_MESSAGE).toEmptyStringIfNull()
+                    val avatar = it.getQueryParameter(ApplinkConst.Chat.AVATAR).toEmptyStringIfNull()
+                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: SOURCE_ASK_BUYER
                     intent.putExtra(ApplinkConst.Chat.SOURCE, source)
 
                     val model = ChatRoomHeaderViewModel()
@@ -510,6 +507,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     companion object {
+        const val SOURCE_ASK_BUYER = "tx_ask_buyer"
         val REQUEST_CODE_CHAT_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"

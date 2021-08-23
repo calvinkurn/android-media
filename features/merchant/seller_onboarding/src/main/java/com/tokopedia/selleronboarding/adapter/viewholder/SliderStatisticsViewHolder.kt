@@ -23,23 +23,33 @@ class SliderStatisticsViewHolder(itemView: View) : AbstractViewHolder<SobSliderS
         val RES_LAYOUT = R.layout.sob_slider_statistics_view_holder
     }
 
+    private val animationObserver by lazy {
+        itemView.findViewById<View>(R.id.viewObserver)
+    }
+
     override fun bind(element: SobSliderStatisticsUiModel) {
         with(itemView) {
-            tvSobSliderStatisticTitle?.viewTreeObserver?.addOnDrawListener {
-                tvSobSliderStatisticTitle.alpha = itemView.viewObserver.alpha
-                tvSobSliderStatisticTitle.translationY = itemView.viewObserver.translationY
-            }
-            imgSobStatistic?.run {
-                viewTreeObserver.addOnDrawListener {
-                    scaleX = itemView.viewObserver.scaleX
-                    scaleY = itemView.viewObserver.scaleY
-                    alpha = itemView.viewObserver.alpha
-                }
-            }
             imgSobStatistic?.loadImage(SobImageSliderUrl.IMG_STATISTIC) {
                 setPlaceHolder(R.drawable.img_sob_statistic)
             }
+
+            setupAnimation()
             setupMarginTitleSob { setMarginStatisticTitle() }
+        }
+    }
+
+    private fun setupAnimation() {
+        with(itemView) {
+            viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderStatisticTitle?.alpha = animationObserver.alpha
+                tvSobSliderStatisticTitle?.translationY = animationObserver.translationY
+
+                imgSobStatistic?.scaleX = animationObserver.scaleX
+                imgSobStatistic?.scaleY = animationObserver.scaleY
+                imgSobStatistic?.alpha = animationObserver.alpha
+
+                return@addOnPreDrawListener true
+            }
         }
     }
 
