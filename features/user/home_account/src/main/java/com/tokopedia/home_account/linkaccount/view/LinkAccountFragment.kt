@@ -189,7 +189,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     companion object {
-        const val BASE_URL = "https://accounts-staging.tokopedia.com/accounts-link/v1/gojek-auth"
+        const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
         fun getLinkAccountUrl(context: Context, redirectionApplink: String): String? {
