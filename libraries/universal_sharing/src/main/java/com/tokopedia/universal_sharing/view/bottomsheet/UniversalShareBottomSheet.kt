@@ -21,6 +21,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -144,6 +145,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var previewImage: ImageUnify? = null
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
+    private var containerView : ConstraintLayout? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -195,12 +197,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun showAllToasts(fragment: Fragment){
-        Toaster.build(this.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+        containerView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
         Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
         inflater.inflate(LAYOUT, container).apply {
+            containerView = findViewById(R.id.universal_share_container)
             rvSocialMediaList = findViewById(R.id.rv_social_media_list)
             thumbNailTitleTxTv = findViewById(R.id.thumb_nail_title)
             thumbNailImage = findViewById(R.id.thumb_nail_image)
