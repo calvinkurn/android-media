@@ -9,4 +9,5 @@
     <dimen name="scorePenaltyTextSize">48sp</dimen>
     <dimen name="width_img_benefit_pm_pro">83dp</dimen>
     <dimen name="height_img_benefit_pm_pro">55dp</dimen>
+    <dimen name="sc_dimen_180dp">180dp</dimen>
 </resources>

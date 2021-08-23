@@ -36,7 +36,7 @@ class EndGameInterruptBottomSheet : BaseBottomSheet() {
         btnGotoShopScore()
     }
 
-    fun setTextView() {
+    private fun setTextView() {
         val titleEndGameInterrupt = arguments?.getString(TITLE_END_GAME_INTERRUPT_KEY).orEmpty()
         val titleCardEndGameInterrupt =
             arguments?.getString(TITLE_CARD_END_GAME_INTERRUPT_KEY).orEmpty()

@@ -135,10 +135,8 @@
     <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
     <string name="read_tips_for_send_fast_order">Yuk, baca tips untuk cepat kirim pesanan &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
 
-
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
-
     <string name="title_level_1">Level 1</string>
     <string name="title_level_2">Level 2</string>
     <string name="title_level_3">Level 3</string>
@@ -271,14 +269,6 @@
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
-    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru akan mendapatkan proyeksi Performa Toko di Senin pertama setelah Seller membuka toko di Tokopedia dengan periode cut-off di hari Sabtu. Skor Performa Toko Seller akan aktif secara efektif setelah usia toko  lebih dari 90 hari.</string>
-
-    <string name="title_time_adjustment_what_relief_for_new_seller">Apa itu waktu penyesuaian (59 hari pertama) dan keringanan apa yang saya dapatkan?</string>
-    <string name="desc_time_adjustment_what_relief_for_new_seller">Terhitung 59 hari setelah pertama kali bergabung, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
-
-    <string name="title_relief_parameter_for_new_seller_bottom_sheet">Keringanan parameter untuk 59 hari pertama bergabung</string>
-    <string name="desc_relief_parameter_for_new_seller_bottom_sheet">Selama 59 hari pertama berjualan, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.
-    &lt;br /&gt;&lt;br /&gt;Tokomu akan dapat keringanan hingga: %s</string>
     
     <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
@@ -325,4 +315,21 @@
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
     <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
     <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
+    <string name="title_new_seller_end_tenure_celebraratory">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>
+    <string name="desc_result_new_seller_end_tenure_celebraratory">Ini hasil level dan skor Performa Tokomu:</string>
+    <string name="title_tips_increase_performance">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
+
+    <!-- New Seller Shop Score -->
+    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru akan mendapatkan proyeksi Performa Toko di Senin pertama setelah Seller membuka toko di Tokopedia dengan periode cut-off di hari Sabtu. Skor Performa Toko Seller akan aktif secara efektif setelah usia toko  lebih dari 90 hari.</string>
+
+    <string name="title_time_adjustment_what_relief_for_new_seller">Apa itu waktu penyesuaian (59 hari pertama) dan keringanan apa yang saya dapatkan?</string>
+    <string name="desc_time_adjustment_what_relief_for_new_seller">Terhitung 59 hari setelah pertama kali bergabung, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
+
+    <string name="title_relief_parameter_for_new_seller_bottom_sheet">Keringanan parameter untuk 59 hari pertama bergabung</string>
+    <string name="desc_relief_parameter_for_new_seller_bottom_sheet">Selama 59 hari pertama berjualan, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.
+    &lt;br /&gt;&lt;br /&gt;Tokomu akan dapat keringanan hingga: %s</string>
+    <string name="title_oke_understand">Oke, Saya Mengerti</string>
+    <string name="title_score_new_seller_label">Skor:</string>
+    <string name="title_warning_new_seller_shop_score">Karena skormu di bawah 60, status Power Merchant kamu nonaktif</string>
+    <string name="desc_warning_new_seller_shop_score">Tingkatkan kualitas toko untuk tetap jadi PM, ya.</string>
 </resources>
