@@ -594,13 +594,15 @@ open class TopChatRoomPresenter @Inject constructor(
         )
     }
 
+    @Suppress("MagicNumber")
     private fun getAddressMasking(): String {
         val addressLabel = userLocationInfo.label.trim()
         val addresses = addressLabel.split(" ").toMutableList()
         for (i in addresses.indices) {
             val word = addresses[i]
             val wordCount = word.length
-            val totalRemovedWord = ceil((wordCount * 30 / 100.0)).toInt()
+            val removedPercentage = 0.3
+            val totalRemovedWord = ceil((wordCount * removedPercentage)).toInt()
             val endIndex = wordCount - totalRemovedWord
             addresses[i] = "${word.substring(0, endIndex)}${"*".repeat(totalRemovedWord)}"
         }
