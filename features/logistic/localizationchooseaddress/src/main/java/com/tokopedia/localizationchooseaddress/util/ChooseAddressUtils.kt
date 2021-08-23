@@ -25,6 +25,8 @@ object ChooseAddressUtils {
 
     private const val locationParamsFormat: String =
         "user_lat=%s&user_long=%s&user_addressId=%s&user_cityId=%s&user_districtId=%s&user_postCode=%s&warehouse_ids=%s"
+    private const val locationRequestInterval = 10 * 1000L
+    private const val locationRequestFastestInterval = 2 * 1000L
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
         return if (isRollOutUser(context)) {
@@ -161,8 +163,8 @@ object ChooseAddressUtils {
 
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 10 * 1000
-            locationRequest.fastestInterval = 2 * 1000
+            locationRequest.interval = locationRequestInterval
+            locationRequest.fastestInterval = locationRequestFastestInterval
             val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
             val mLocationSettingsRequest = builder.build()
             builder.setAlwaysShow(true)
