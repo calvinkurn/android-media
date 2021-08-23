@@ -2633,7 +2633,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             refreshWishlistAfterItemRemoveAndMoveToWishlist()
         }
 
-        if (isFromGlobalCheckbox || deletedCartIds.size > 1) {
+        if (isFromGlobalCheckbox) {
             showToastMessageGreen(message)
         } else {
             showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
