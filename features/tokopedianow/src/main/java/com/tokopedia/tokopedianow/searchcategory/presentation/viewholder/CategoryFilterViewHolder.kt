@@ -141,10 +141,10 @@ class CategoryFilterViewHolder(
             }
         }
 
-        @SuppressWarnings("checkstyle:magicnumber")
+        @Suppress("MagicNumber")
         private fun getLastItemIndexInAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) = (adapter.itemCount - 1)
 
-        @SuppressWarnings("checkstyle:magicnumber")
+        @Suppress("MagicNumber")
         private fun quarterSpacingOffset() = spacing / 4
     }
 }
