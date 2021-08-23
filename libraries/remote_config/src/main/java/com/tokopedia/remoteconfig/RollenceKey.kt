@@ -39,6 +39,8 @@ object RollenceKey {
     const val HOME_WALLETAPP = "gopay_on"
     const val HOME_PAYMENT_ABC = "PaymentABC"
 
+    const val HOME_BEAUTY_FEST = "home_cantik"
+
     //home component rollence section
     const val HOME_COMPONENT_LEGO4BANNER_EXP = "lego4_test"
     const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
