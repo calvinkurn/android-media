@@ -3,14 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/navToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
@@ -18,56 +20,94 @@
         app:toolbarInitialTheme="light"
         app:toolbarTitle="@string/label_affiliate" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/user_image"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:layout_margin="@dimen/dp_16"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/navToolbar" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/hai_ana_sal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/dp_16"
-        android:text="@string/affiliate_hai_ana_sal"
-        app:layout_constraintBottom_toTopOf="@id/user_name"
-        app:layout_constraintLeft_toRightOf="@id/user_image"
-        app:layout_constraintTop_toTopOf="@id/user_image"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="@id/user_image"
-        app:layout_constraintLeft_toRightOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/hai_ana_sal"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold"
-        tools:text="Ana Putri" />
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/navToolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/user_image"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_margin="@dimen/dp_16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/hai_ana_sal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/dp_16"
+                android:text="@string/affiliate_hai_ana_sal"
+                app:layout_constraintBottom_toTopOf="@id/user_name"
+                app:layout_constraintLeft_toRightOf="@id/user_image"
+                app:layout_constraintTop_toTopOf="@id/user_image"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="@id/user_image"
+                app:layout_constraintLeft_toRightOf="@id/user_image"
+                app:layout_constraintTop_toBottomOf="@id/hai_ana_sal"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                tools:text="Ana Putri" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/affiliate_promoted_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_28"
+                android:text="@string/affiliate_promoted_products"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_name"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/products_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/affiliate_promoted_products" />
+
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_40"
+                android:background="@color/Unify_N0"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/user_image"
+                tools:visibility="gone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/affiliate_progress_bar"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_image"
-        tools:visibility="visible" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/products_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
