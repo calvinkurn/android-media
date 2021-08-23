@@ -23,11 +23,11 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ProductBundleActivity : BaseSimpleActivity() {
-    private var productId: String = "0"
-    private var bundleId: String = "0"
-    private var selectedProductIds: String = "0"
-    private var source: String = "0"
-    private var cartIds: String = "0"
+    private var productId: String = "0"  // TODO: Please handle this default case
+    private var bundleId: String = "0"  // TODO: Please handle this default case
+    private var selectedProductIds: String = "0"  // TODO: Please handle this default case
+    private var source: String = "0"  // TODO: Please handle this default case
+    private var cartIds: String = "0"  // TODO: Please handle this default case
 
     companion object {
         private const val BUNDLE_ID = "bundleId"
@@ -53,7 +53,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
 
         var data = intent.data
         data?.let {
-//          Applink sample = tokopedia-android-internal/product-bundle/2147881200?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
+//          Applink sample = tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
             data = RouteManager.getIntent(this, intent.data.toString()).data
             val pathSegments = it.pathSegments.orEmpty()
             getProductIdFromUri(it, pathSegments)
@@ -63,13 +63,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
             cartIds = if (data?.getQueryParameter(CART_IDS) == null) "" else it.getQueryParameter(CART_IDS)!!
         }
 
-//        intent.data?.run {
-////            val pathSegments = this.pathSegments
-////            val productId = pathSegments.firstOrNull() ?: "0"
-////            // call getBundleInfo
-////            viewModel.getBundleInfo(productId.toLongOrZero())
-//        }
-
         observeGetBundleInfoResult()
         observeInventoryError()
     }
@@ -78,7 +71,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         productId = if (pathSegments.size >= 2) {
             it?.pathSegments?.getOrNull(1).orEmpty()
         } else {
-            "0" // ---> Please handle this default case if productId is 0
+            "0" // TODO: Please handle this default case if productId is 0
         }
     }
 
