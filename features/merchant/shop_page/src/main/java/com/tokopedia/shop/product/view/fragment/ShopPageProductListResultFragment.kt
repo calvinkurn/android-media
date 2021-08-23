@@ -1212,6 +1212,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT = "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
+        private const val DEFAULT_SHOWCASE_ID = "0"
         @JvmStatic
         fun createInstance(shopId: String,
                            shopRef: String?,
@@ -1407,7 +1408,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                ""
+                DEFAULT_SHOWCASE_ID
         ), "utf-8")
         val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
                 .buildUpon()

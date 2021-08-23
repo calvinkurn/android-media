@@ -215,7 +215,7 @@ class NewShopPageFragment :
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
-
+        private const val DEFAULT_SHOWCASE_ID = "0"
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
@@ -1075,7 +1075,7 @@ class NewShopPageFragment :
         val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                ""
+                DEFAULT_SHOWCASE_ID
         ), "utf-8")
         val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
                 .buildUpon()
