@@ -18,28 +18,28 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventEditQuantityDecrease(productId: String, shopId: String, productQuantity: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.EDIT_QUANTITY_DECREASE,
-                "$productId - $shopId - $productQuantity"
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.EDIT_QUANTITY_DECREASE,
+            "$productId - $shopId - $productQuantity"
         )
     }
 
     fun eventClickSellerNotes(productId: String, shopId: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.EDIT_SELLER_NOTES,
-                "$productId - $shopId"
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.EDIT_SELLER_NOTES,
+            "$productId - $shopId"
         )
     }
 
     fun eventChangeCourierOSP(shippingAgentId: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.USER_CHANGE_COURIER_OSP,
-                shippingAgentId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.USER_CHANGE_COURIER_OSP,
+            shippingAgentId
         )
     }
 
@@ -57,18 +57,18 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickBayarNotSuccess(isButtonPilihPembayaran: Boolean, eventId: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS else EventAction.CLICK_BAYAR_NOT_SUCCESS,
-                "$NOT_SUCCESS - $eventId"
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS else EventAction.CLICK_BAYAR_NOT_SUCCESS,
+            "$NOT_SUCCESS - $eventId"
         )
     }
 
     fun eventChooseBboAsDuration() {
         sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CHOOSE_BBO_AS_DURATION
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CHOOSE_BBO_AS_DURATION
         )
     }
 
@@ -86,10 +86,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventChooseCourierSelectionOSP(shippingAgentId: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP,
-                shippingAgentId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP,
+            shippingAgentId
         )
     }
 
@@ -107,35 +107,49 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickBackFromOSP() {
         sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_BACK_FROM_OSP
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_BACK_FROM_OSP
         )
     }
 
     fun eventViewOrderSummaryPage(userId: String, paymentType: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
-                Key.EVENT, EventName.CHECKOUT,
-                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-                Key.EVENT_ACTION, EventAction.VIEW_ORDER_SUMMARY_PAGE,
-                Key.EVENT_LABEL, "success",
-                Key.E_COMMERCE, ee,
-                ExtraKey.USER_ID, userId,
-                ExtraKey.PAYMENT_TYPE, paymentType
+            Key.EVENT, EventName.CHECKOUT,
+            Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
+            Key.EVENT_ACTION, EventAction.VIEW_ORDER_SUMMARY_PAGE,
+            Key.EVENT_LABEL, "success",
+            Key.E_COMMERCE, ee,
+            ExtraKey.USER_ID, userId,
+            ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, userId: String, paymentId: String, paymentType: String, ee: Map<String, Any>) {
+    fun eventClickBayarSuccess(
+        isButtonPilihPembayaran: Boolean,
+        userId: String,
+        paymentId: String,
+        paymentType: String,
+        ee: Map<String, Any>
+    ) {
         val dataLayer = DataLayer.mapOf(
-                Key.EVENT, EventName.CHECKOUT,
-                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-                Key.EVENT_ACTION, if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
-                Key.EVENT_LABEL, "success",
-                Key.E_COMMERCE, ee,
-                Key.PAYMENT_ID, paymentId,
-                ExtraKey.USER_ID, userId,
-                ExtraKey.PAYMENT_TYPE, paymentType
+            Key.EVENT,
+            EventName.CHECKOUT,
+            Key.EVENT_CATEGORY,
+            EventCategory.ORDER_SUMMARY,
+            Key.EVENT_ACTION,
+            if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
+            Key.EVENT_LABEL,
+            "success",
+            Key.E_COMMERCE,
+            ee,
+            Key.PAYMENT_ID,
+            paymentId,
+            ExtraKey.USER_ID,
+            userId,
+            ExtraKey.PAYMENT_TYPE,
+            paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
@@ -143,75 +157,75 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     fun eventClickPromoOSP(promoCodes: List<String>) {
         if (promoCodes.isEmpty()) {
             sendEventCategoryAction(
-                    EventName.CLICK_CHECKOUT_EXPRESS,
-                    EventCategory.ORDER_SUMMARY,
-                    EventAction.CLICK_PROMO_SECTION_NOT_APPLIED_OSP
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PROMO_SECTION_NOT_APPLIED_OSP
             )
         } else {
             sendEventCategoryActionLabel(
-                    EventName.CLICK_CHECKOUT_EXPRESS,
-                    EventCategory.ORDER_SUMMARY,
-                    EventAction.CLICK_PROMO_SECTION_APPLIED_OSP,
-                    promoCodes.joinToString("-")
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PROMO_SECTION_APPLIED_OSP,
+                promoCodes.joinToString("-")
             )
         }
     }
 
     fun eventViewBottomSheetPromoError() {
         sendEventCategoryAction(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.EXPRESS_CHECKOUT,
-                EventAction.VIEW_BOTTOMSHEET_PROMO_ERROR
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.EXPRESS_CHECKOUT,
+            EventAction.VIEW_BOTTOMSHEET_PROMO_ERROR
         )
     }
 
     fun eventClickLanjutBayarPromoErrorOSP() {
         sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP
         )
     }
 
     fun eventClickPilihPromoLainPromoErrorOSP() {
         sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP
         )
     }
 
     fun eventViewPromoAlreadyApplied() {
         sendEventCategoryAction(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_PROMO_ALREADY_APPLIED
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_PROMO_ALREADY_APPLIED
         )
     }
 
     fun eventViewPromoDecreasedOrReleased(isReleased: Boolean) {
         sendEventCategoryAction(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                if (isReleased) EventAction.VIEW_PROMO_RELEASED else EventAction.VIEW_PROMO_DECREASED
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            if (isReleased) EventAction.VIEW_PROMO_RELEASED else EventAction.VIEW_PROMO_DECREASED
         )
     }
 
     fun eventViewErrorMessage(error: String) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_ERROR_ON_OSP,
-                error
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_ERROR_ON_OSP,
+            error
         )
     }
 
     fun eventViewPreselectedCourierOption(spId: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
-                spId
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+            spId
         )
         gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
@@ -231,10 +245,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickUbahWhenDurationError(userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_UBAH_WHEN_DURATION_ERROR,
-                ""
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_UBAH_WHEN_DURATION_ERROR,
+            ""
         )
         gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
@@ -242,10 +256,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickArrowToChangeAddressOption(currentAddressId: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION,
-                currentAddressId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION,
+            currentAddressId
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -255,10 +269,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickSelectedAddressOption(newAddressId: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_SELECTED_ADDRESS_OPTION,
-                newAddressId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_SELECTED_ADDRESS_OPTION,
+            newAddressId
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -268,10 +282,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickArrowToChangeDurationOption(currentSpId: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ARROW_TO_CHANGE_DURATION_OPTION,
-                currentSpId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_ARROW_TO_CHANGE_DURATION_OPTION,
+            currentSpId
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -281,10 +295,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickSelectedDurationOptionNew(newSpId: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_SELECTED_DURATION_OPTION_NEW,
-                newSpId
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_SELECTED_DURATION_OPTION_NEW,
+            newSpId
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -294,10 +308,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickArrowToChangePaymentOption(currentGateway: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION,
-                currentGateway
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION,
+            currentGateway
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -307,10 +321,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickSelectedPaymentOption(newGateway: String, userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_SELECTED_PAYMENT_OPTION,
-                newGateway
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_SELECTED_PAYMENT_OPTION,
+            newGateway
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -320,10 +334,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventViewCoachmark1ForNewBuyerAfterCreateProfile(userId: String) {
         val gtmData = getGtmData(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
-                ""
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+            ""
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -333,10 +347,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventViewCoachmark2ForNewBuyerAfterCreateProfile(userId: String) {
         val gtmData = getGtmData(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
-                ""
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+            ""
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -346,10 +360,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventViewCoachmark3ForNewBuyerAfterCreateProfile(userId: String) {
         val gtmData = getGtmData(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
-                ""
+            EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+            ""
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -359,10 +373,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userId: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
-                ""
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE,
+            ""
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -370,44 +384,58 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventPPImpressionOnInsuranceSection(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
+    fun eventPPImpressionOnInsuranceSection(
+        userId: String,
+        categoryLvl3Id: String,
+        protectionPrice: Int,
+        protectionName: String
+    ) {
         val gtmData = getGtmData(
-                EventName.PROMO_VIEW,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.PP_IMPRESSION_ON_INSURANCE_SECTION,
-                "$categoryLvl3Id - $insuranceBrand - $protectionName"
+            EventName.PURCHASE_PROTECTION_IMPRESSION,
+            EventCategory.PURCHASE_PROTECTION_OCC,
+            EventAction.PP_IMPRESSION_ON_INSURANCE_SECTION,
+            "$protectionName - $protectionPrice - $categoryLvl3Id"
         )
         gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_FINTECH
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH
         sendGeneralEvent(gtmData)
     }
 
-    fun eventPPClickTooltip(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
+    fun eventPPClickTooltip(
+        userId: String,
+        categoryLvl3Id: String,
+        protectionPrice: Int,
+        protectionName: String
+    ) {
         val gtmData = getGtmData(
-                EventName.PROMO_CLICK,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.PP_CLICK_TOOLTIP,
-                "$categoryLvl3Id - $insuranceBrand - $protectionName"
+            EventName.PURCHASE_PROTECTION_CLICK,
+            EventCategory.PURCHASE_PROTECTION_OCC,
+            EventAction.PP_CLICK_TOOLTIP,
+            "$protectionName - $protectionPrice - $categoryLvl3Id"
         )
         gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_FINTECH
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH
         sendGeneralEvent(gtmData)
     }
 
-    fun eventPPClickBayar(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, isChecked: Boolean, ee: Map<String, Any>) {
-        val dataLayer = DataLayer.mapOf(
-                Key.EVENT, EventName.CHECKOUT,
-                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-                Key.EVENT_ACTION, EventAction.PP_CLICK_BAYAR,
-                Key.EVENT_LABEL, "$categoryLvl3Id - $insuranceBrand - $protectionName - $isChecked",
-                Key.E_COMMERCE, ee,
-                ExtraKey.USER_ID, userId,
-                ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
-                ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+    fun eventPPClickBayar(
+        userId: String, categoryLvl3Id: String?, protectionName: String?,
+        ppPrice: Int?, cartId: String?, isChecked: String
+    ) {
+        val gtmData = getGtmData(
+            EventName.PURCHASE_PROTECTION_CLICK,
+            EventCategory.PURCHASE_PROTECTION_OCC,
+            EventAction.PP_CLICK_BAYAR,
+            "$protectionName - $isChecked - $categoryLvl3Id - " +
+                    "${ppPrice ?: 0} - ${cartId ?: ""}"
         )
-        sendEnhancedEcommerce(dataLayer)
+        gtmData[ExtraKey.CART_ID] = cartId ?: ""
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_FINTECH
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE_FINTECH
+        sendGeneralEvent(gtmData)
     }
 
     fun eventViewOverweightTicker(shopId: String) {

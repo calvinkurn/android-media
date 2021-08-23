@@ -7,6 +7,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertOutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
+import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import io.mockk.every
 import io.mockk.verify
@@ -111,13 +113,8 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
         `Then assert mini cart is not visible`()
         `Then assert out of coverage visitable list`()
-    }
-
-    private fun `Then assert scrollable false`() {
-        assertThat(tokoNowSearchViewModel.isRecyclerViewScrollEnabledLiveData.value, shouldBe(false))
     }
 
     private fun `Then assert mini cart is not visible`() {
@@ -128,7 +125,8 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         visitableList.first().assertChooseAddressDataView()
-        visitableList.last().assertOutOfCoverageDataView()
+        visitableList[1].assertOutOfCoverageDataView()
+        visitableList[2].assertRecommendationCarouselDataViewLoadingState(OOC_TOKONOW)
     }
 
     @Test
@@ -146,7 +144,6 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
         `Then assert mini cart is not visible`()
         `Then assert out of coverage visitable list`()
     }

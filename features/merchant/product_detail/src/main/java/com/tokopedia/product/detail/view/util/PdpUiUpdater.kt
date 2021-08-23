@@ -57,9 +57,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
 
-    val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
-        get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
-
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
@@ -119,6 +116,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
+
+    val productBundlingData: ProductBundlingDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
 
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
@@ -372,17 +372,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.SHOP_VOUCHER) {
-                productMerchantVoucherMap?.run {
-                    voucherData = ArrayList(it.vouchers)
-                }
-            }
-
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
-                    subTitle = it.merchantVoucherSummary.subTitle
-                    imageURL = it.merchantVoucherSummary.imageURL
+                    animatedInfos = it.merchantVoucherSummary.animatedInfos
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
                 }
@@ -419,6 +411,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
                 }
+            }
+
+            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
         }
     }
@@ -785,6 +781,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+        }
+    }
+
+    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
+        if (p2Data == null || productId == null) return
+        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
         }
     }
 

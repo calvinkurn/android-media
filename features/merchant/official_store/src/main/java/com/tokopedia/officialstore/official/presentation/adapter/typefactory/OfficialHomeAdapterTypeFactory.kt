@@ -24,6 +24,7 @@ class OfficialHomeAdapterTypeFactory(
         private val mixLeftComponentListener: MixLeftComponentListener,
         private val mixTopComponentListener: MixTopComponentListener,
         private val featuredBrandListener: FeaturedBrandListener,
+        private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
@@ -140,6 +141,7 @@ class OfficialHomeAdapterTypeFactory(
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
+            FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopDCListener, homeComponentListener)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
                     view, legoBannerListener, homeComponentListener

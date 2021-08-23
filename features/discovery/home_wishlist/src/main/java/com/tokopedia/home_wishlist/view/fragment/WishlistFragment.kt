@@ -130,6 +130,8 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         private const val CACHE_CART = "CART"
         private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
         private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
+        private const val DELAY_TEXT_CHANGED = 250L
+        private const val DELAY_MILIS_100 = 100L
         fun newInstance() = WishlistFragment()
     }
 
@@ -272,7 +274,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     }
 
     private fun initSearchView() {
-        searchView?.setDelayTextChanged(250)
+        searchView?.setDelayTextChanged(DELAY_TEXT_CHANGED)
         searchView?.setListener(object : CustomSearchView.Listener {
             override fun onSearchSubmitted(text: String?) {
                 searchView?.hideKeyboard()
@@ -669,7 +671,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                         )
                         coachMark.show(activity, "wishlist", coachMarkItems)
                     }
-                }, 100)
+                }, DELAY_MILIS_100)
         }
         }
     }

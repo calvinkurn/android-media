@@ -89,12 +89,12 @@ class SharedTelcoPrepaidViewModelTest {
     @Test
     fun setFavNumberSelected_validData() {
         //given
-        val favNumber = TopupBillsFavNumberItem(clientNumber = "08123232323")
+        val favNumber = "08123232323"
         //when
         sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
         //then
         val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
-        assertEquals(favNumber.clientNumber, actualData?.clientNumber)
+        assertEquals(favNumber, actualData)
     }
 
     @Test
@@ -159,7 +159,7 @@ class SharedTelcoPrepaidViewModelTest {
         val labelPulsa = (actualData as Success).data[0].label
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
-        assertEquals(autoSelectProductId.toString(), (sharedTelcoPrepaidViewModel.favNumberSelected.value as TopupBillsFavNumberItem).productId)
+        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.favNumberSelected.value)
     }
 
     @Test

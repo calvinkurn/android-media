@@ -9,8 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
@@ -165,40 +163,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               badgeURL
               shopTier
             }
-            merchantVoucher {
-                vouchers {
-                  voucher_id
-                  voucher_name
-                  voucher_type {
-                    voucher_type
-                    identifier
-                  }
-                  voucher_code
-                  amount {
-                    amount
-                    amount_type
-                  }
-                  minimum_spend
-                  owner {
-                    owner_id
-                    identifier
-                  }
-                  valid_thru
-                  tnc
-                  banner {
-                    desktop_url
-                    mobile_url
-                  }
-                  status {
-                    status
-                    identifier
-                  }
-                  in_use_expiry
-                  restricted_for_liquid_product
-                }
-                 error_message_title
-                 error_message
-               }
             nearestWarehouse {
               product_id
               warehouse_info {
@@ -389,11 +353,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             merchantVoucherSummary{
-                title{
-                    text
+                animatedInfo{
+                    title
+                    subTitle
+                    iconURL
                 }
-                subtitle
-                imageURL
                 isShown
             }
             reviewImage{
@@ -461,8 +425,32 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
-        }
-    }""".trimIndent()
+            bundleInfo {
+              productID
+              bundleID
+              groupID
+              name
+              type
+              status
+              titleComponent
+              finalPriceBundling
+              originalPriceBundling
+              savingPriceBundling
+              preorderString
+              bundleItems {
+                productID
+                name
+                picURL
+                status
+                quantity
+                originalPrice
+                bundlePrice
+                discountPercentage
+                stock
+              }
+  	        }
+          }
+        }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -520,8 +508,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
             p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
             p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE }
-                    ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.ratesEstimate = ratesEstimate
@@ -532,6 +518,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
         }
         return p2UiData
     }

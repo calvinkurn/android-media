@@ -21,4 +21,8 @@
     <string name="mini_cart_title_unavailable_header">Tidak bisa diproses (%d)</string>
     <string name="mini_cart_label_cannot_process">Tidak bisa diproses</string>
     <string name="mini_cart_cannot_process_quantity">%d Barang</string>
+    <string name="mini_cart_widget_label_unavailable">%d barang tidak dapat diproses</string>
+    <string name="mini_cart_chat_btn_label">Langsung Chat</string>
+    <string name="mini_cart_chat_bottomsheet_title_label">Lampirkan belanjaanmu?</string>
+    <string name="mini_cart_chat_btn_label_ask_product">Tanya Soal Produk (%1$d/3)</string>
 </resources>

@@ -11,6 +11,7 @@ import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
@@ -58,6 +59,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
+            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val checkoutProducts: ArrayList<ProductData> = ArrayList()
             products.forEach {
                 if (!it.isError) {
@@ -102,10 +104,11 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
                                 orderSummaryAnalytics.eventPPClickBayar(userId,
                                         it.categoryId,
-                                        "",
                                         it.purchaseProtectionPlanData.protectionTitle,
-                                        it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
-                                        orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                                        it.purchaseProtectionPlanData.protectionPricePerProduct,
+                                        orderCart.cartId,
+                                        if (isPPPChecked) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
+                                        else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
                             }
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
