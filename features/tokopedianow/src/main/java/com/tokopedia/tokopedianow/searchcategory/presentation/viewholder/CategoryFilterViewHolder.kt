@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 
+@SuppressWarnings("checkstyle:magicnumber")
 class CategoryFilterViewHolder(
         itemView: View,
         private val categoryFilterListener: CategoryFilterListener
@@ -22,9 +23,6 @@ class CategoryFilterViewHolder(
 
     companion object {
         const val ITEM_DECORATION_DEFAULT = 0
-        const val FIRST_CHILD_ADAPTER_POSITION = 0
-        const val ONE = 1
-        const val FOUR = 4
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
@@ -116,6 +114,10 @@ class CategoryFilterViewHolder(
 
     private class ItemDecoration(private val spacing: Int): RecyclerView.ItemDecoration() {
 
+        companion object {
+            const val FIRST_CHILD_ADAPTER_POSITION = 0
+        }
+
         override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
@@ -127,15 +129,15 @@ class CategoryFilterViewHolder(
             when (parent.getChildAdapterPosition(view)) {
                 FIRST_CHILD_ADAPTER_POSITION -> {
                     outRect.left = spacing
-                    outRect.right = spacing / FOUR
+                    outRect.right = spacing / 4
                 }
-                (adapter.itemCount - ONE) -> {
-                    outRect.left = spacing / FOUR
+                (adapter.itemCount - 1) -> {
+                    outRect.left = spacing / 4
                     outRect.right = spacing
                 }
                 else -> {
-                    outRect.left = spacing / FOUR
-                    outRect.right = spacing / FOUR
+                    outRect.left = spacing / 4
+                    outRect.right = spacing / 4
                 }
             }
         }
