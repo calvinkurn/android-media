@@ -166,7 +166,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
                 if (saveAddressDataModel != null) {
                     val param = StateChooseAddressParam(
-                        2, saveAddressDataModel.id, saveAddressDataModel.receiverName,
+                        ADDRESS_STATUS_FROM_ANA, saveAddressDataModel.id, saveAddressDataModel.receiverName,
                         saveAddressDataModel.addressName, saveAddressDataModel.latitude, saveAddressDataModel.longitude,
                         saveAddressDataModel.districtId, saveAddressDataModel.postalCode, isSupportWarehouseLoc
                     )
@@ -181,7 +181,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val longitude = data?.getDoubleExtra(LONGITUDE, 0.0)
                 if (discomModel != null) {
                     val param = StateChooseAddressParam(
-                        4, null, "", "",
+                        ADDRESS_STATUS_FROM_DISCOM, null, "", "",
                         latitude.toString(), longitude.toString(), discomModel.districtId, "",
                         isSupportWarehouseLoc
                     )
@@ -514,6 +514,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+        const val ADDRESS_STATUS_FROM_ANA = 2
+        const val ADDRESS_STATUS_FROM_DISCOM = 4
 
         const val SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER = "/user/address/create/chooseaddressnew"
 
