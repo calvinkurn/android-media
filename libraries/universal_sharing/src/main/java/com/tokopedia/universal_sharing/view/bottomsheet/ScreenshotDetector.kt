@@ -177,6 +177,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
             setDescription(fragment.getString(R.string.permission_dialog_description))
+            setImageDrawable(R.drawable.permission_dialog_image)
             }
         permissionDialogCustom.show()
     }
