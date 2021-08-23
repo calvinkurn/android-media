@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProBenefitAdapter
@@ -24,7 +25,8 @@ import kotlinx.android.synthetic.main.widget_upgrade_pm_pro.view.*
 
 class UpgradePmProWidget(
         itemView: View?,
-        private val listener: Listener
+        private val listener: Listener,
+        private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetUpgradePmProUiModel>(itemView) {
 
     companion object {
@@ -37,11 +39,14 @@ class UpgradePmProWidget(
         setupView(element)
         showTermsList(element.registrationTerms)
         showGeneralBenefits(element.generalBenefits)
-        setupUpgradeCta()
+        setupUpgradeCta(element)
     }
 
-    private fun setupUpgradeCta() = with(itemView) {
+    private fun setupUpgradeCta(element: WidgetUpgradePmProUiModel) = with(itemView) {
+        val shopScore = element.shopInfo.shopScore.toString()
+        powerMerchantTracking.sendEventImpressCTAPmUpgradeLearnMore(shopScore)
         ctaPmUpgradeLearnMore.setOnClickListener {
+            powerMerchantTracking.sendEventClickCTAPmUpgradeLearnMore(shopScore)
             RouteManager.route(context, Constant.Url.POWER_MERCHANT_PRO_EDU)
         }
     }

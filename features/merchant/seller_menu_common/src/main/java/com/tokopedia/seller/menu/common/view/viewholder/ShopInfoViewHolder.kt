@@ -227,7 +227,6 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                     }
                 }
             }

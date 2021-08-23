@@ -102,6 +102,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var freeShippingTracker: SettingFreeShippingTracker
     @Inject
     lateinit var shopOperationalTracker: SettingShopOperationalTracker
+    @Inject
+    lateinit var sellerMenuTracker: SellerMenuTracker
 
     @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
@@ -714,6 +716,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 trackingListener = this,
                 freeShippingTracker = freeShippingTracker,
                 shopOperationalTracker = shopOperationalTracker,
+                sellerMenuTracker = sellerMenuTracker,
                 userSession = userSession
             )
         }

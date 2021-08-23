@@ -48,7 +48,7 @@ class WidgetAdapterFactoryImpl(
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
-            UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(parent, widgetListener)
+            UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(parent, widgetListener, powerMerchantTracking)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent, widgetListener, powerMerchantTracking)
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent, widgetListener, powerMerchantTracking)
             PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)

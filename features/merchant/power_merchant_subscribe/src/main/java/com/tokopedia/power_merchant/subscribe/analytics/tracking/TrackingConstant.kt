@@ -23,11 +23,30 @@ object TrackingConstant {
     const val KEY_SHOP_ID = "shopId"
     const val KEY_USER_ID = "userId"
 
+    const val SHOP_TYPE = "shop_type"
+    const val SHOP_SCORE = "shop_score"
     const val EVENT_CLICK_POWER_MERCHANT = "clickPowerMerchant"
 
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_MAIN_APP = "tokopedia main app"
     const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant pro opt out questionnaire"
+
+    const val ACTION_PROMO_CLICK = "promoClick"
+    const val ACTION_PROMO_VIEW = "promoView"
+    const val CLICK_LEARN_MORE_PM_PRO = "click pelajari selengkapnya PM Pro"
+
+    const val KEY_EVENT_ECOMMERCE = "ecommerce"
+    const val KEY_EVENT_ECOMMERCE_PROMOCLICK = "promoClick"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION = "promotions"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_ID = "id"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_NAME = "name"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_CREATIVE = "creative"
+    const val KEY_EVENT_ECOMMERCE_PROMOTION_POSITION = "position"
+    const val PM_PRO_ACTIVATION_PAGE = "PM Pro Activation Page"
+    const val PM_PRO_LEARN_MORE = "pelajari selengkapnya PM Pro"
+    const val KEY_EVENT_ECOMMERCE_PROMOVIEW = "promoView"
+
+    const val IMPRESSION_PM_PRO_LEARN_MORE = "impression pelajari selengkapnya PM Pro"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT_PRO = "click upgrade power merchant pro"
