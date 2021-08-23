@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
@@ -152,17 +153,17 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    fun detectScreenshots(fragment: Fragment, requestPermission:Boolean = false) {
+    fun detectScreenshots(fragment: Fragment, requestPermission:Boolean = false, toastView: View? = null) {
         if (haveStoragePermission()) {
             start()
         } else {
             if(requestPermission) {
-                showCustomPermissionDialog(fragment)
+                showCustomPermissionDialog(fragment, toastView)
             }
         }
     }
 
-    private fun showCustomPermissionDialog(fragment: Fragment){
+    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?){
         var permissionDialogCustom = DialogUnify(fragment.requireContext(), DialogUnify.VERTICAL_ACTION,
             DialogUnify.WITH_ILLUSTRATION).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
@@ -172,7 +173,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
-                Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+                toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
                 dismiss()
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
