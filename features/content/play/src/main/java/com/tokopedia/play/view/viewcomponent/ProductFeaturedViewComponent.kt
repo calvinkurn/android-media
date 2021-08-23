@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -50,12 +49,6 @@ class ProductFeaturedViewComponent(
             val width = rvProductFeatured.width
             val range = rvProductFeatured.computeHorizontalScrollRange()
             val percentage = (offset + width) / range.toFloat()
-
-            Log.d("<LOG>", "=======================")
-            Log.d("<LOG>", "vertical offset : $offset")
-            Log.d("<LOG>", "vertical width : $width")
-            Log.d("<LOG>", "vertical range : $range")
-            Log.d("<LOG>", "percentage : $percentage")
 
             if(width > range) icProductSeeMore.gone()
             else if(percentage > SEE_MORE_ANIMATION_THRESHOLD) {
