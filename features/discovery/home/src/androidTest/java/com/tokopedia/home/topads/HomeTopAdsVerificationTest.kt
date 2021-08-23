@@ -80,10 +80,10 @@ class HomeTopAdsVerificationTest {
 
     private fun disableCoachMark(){
         val sharedPrefs = InstrumentationRegistry
-                .getInstrumentation().context
-                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+            .getInstrumentation().context
+            .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
+            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     private fun calculateTopAdsCount(itemList: List<Visitable<*>>) : Int {

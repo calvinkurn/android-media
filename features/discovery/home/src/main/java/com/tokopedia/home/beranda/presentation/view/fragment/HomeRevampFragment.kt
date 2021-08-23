@@ -421,8 +421,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     @Suppress("TooGenericExceptionCaught")
     private fun isEligibleForBeautyFest(): Boolean {
         return try {
-//            getAbTestPlatform().getString(HOME_BEAUTY_FEST, "") == HOME_BEAUTY_FEST && getUserSession().isLoggedIn
-            true && getUserSession().isLoggedIn
+            getAbTestPlatform().getString(HOME_BEAUTY_FEST, "") == HOME_BEAUTY_FEST && getUserSession().isLoggedIn
         } catch (e: Exception) {
             e.printStackTrace()
             false
