@@ -117,9 +117,6 @@ class CategoryFilterViewHolder(
             const val FIRST_CHILD_ADAPTER_POSITION = 0
         }
 
-        @SuppressWarnings("checkstyle:magicnumber")
-        private fun getLastItemIndexInAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) = (adapter.itemCount - 1)
-
         override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
@@ -131,17 +128,23 @@ class CategoryFilterViewHolder(
             when (parent.getChildAdapterPosition(view)) {
                 FIRST_CHILD_ADAPTER_POSITION -> {
                     outRect.left = spacing
-                    outRect.right = spacing / 4
+                    outRect.right = quarterSpacingOffset()
                 }
                 getLastItemIndexInAdapter(adapter) -> {
-                    outRect.left = spacing / 4
+                    outRect.left = quarterSpacingOffset()
                     outRect.right = spacing
                 }
                 else -> {
-                    outRect.left = spacing / 4
-                    outRect.right = spacing / 4
+                    outRect.left = quarterSpacingOffset()
+                    outRect.right = quarterSpacingOffset()
                 }
             }
         }
+
+        @SuppressWarnings("checkstyle:magicnumber")
+        private fun getLastItemIndexInAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) = (adapter.itemCount - 1)
+
+        @SuppressWarnings("checkstyle:magicnumber")
+        private fun quarterSpacingOffset() = spacing / 4
     }
 }
