@@ -12,6 +12,8 @@ import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -299,6 +301,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         )
 
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
+        private const val TAPCASH_TAG = "TAPCASH"
+        private const val ERROR_GRPC = "500"
     }
 
 }
