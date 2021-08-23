@@ -301,7 +301,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         )
 
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
-        private const val TAPCASH_TAG = "TAPCASH"
+        private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
         private const val ERROR_GRPC = "500"
     }
 
