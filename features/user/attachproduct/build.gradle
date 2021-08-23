@@ -26,6 +26,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(path: ':libraries:remote_config')
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     testImplementation project(path: ':libraries:unit_test')
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

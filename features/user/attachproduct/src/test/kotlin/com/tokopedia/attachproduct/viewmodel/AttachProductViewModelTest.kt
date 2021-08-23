@@ -166,7 +166,6 @@ class AttachProductViewModelTest {
     @Test
     fun `complete selection after check products` () {
         //GIVEN
-        val expectedError = Throwable("")
         val resultProduct = arrayListOf<ResultProduct>()
         val mockLambda: (ArrayList<ResultProduct>) -> Unit = { data ->
             resultProduct.addAll(data)

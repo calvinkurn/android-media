@@ -324,7 +324,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         if (TextUtils.isEmpty(searchBar.searchBarTextField.text)) {
-            if (activityContract!!.isSeller) {
+            if (isSeller) {
                 emptyResultViewModel.content = getString(R.string.string_attach_product_my_empty_product)
             } else {
                 emptyResultViewModel.content = getString(R.string.string_attach_product_empty_product)
@@ -334,7 +334,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
             emptyResultViewModel.content = getString(R.string.string_attach_product_search_not_found)
             emptyResultViewModel.iconRes = R.drawable.ic_attach_product_empty_search
         }
-        if (activityContract!!.isSeller) {
+        if (isSeller) {
             emptyResultViewModel.buttonTitleRes = R.string.string_attach_product_add_product_now
             emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {}

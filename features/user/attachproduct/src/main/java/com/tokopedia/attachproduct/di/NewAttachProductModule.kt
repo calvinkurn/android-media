@@ -17,6 +17,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -83,7 +85,14 @@ class NewAttachProductModule(private val context: Context) {
     }
 
     @Provides
+    @AttachProductScope
     fun provideUseCase(repository: GraphqlRepository, query: String): NewAttachProductUseCase {
         return NewAttachProductUseCase(repository, query, Dispatchers.IO)
+    }
+
+    @Provides
+    @AttachProductScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

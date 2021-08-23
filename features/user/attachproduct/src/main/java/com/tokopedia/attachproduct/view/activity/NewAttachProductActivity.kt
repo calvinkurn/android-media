@@ -10,8 +10,11 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
+import com.tokopedia.attachproduct.view.fragment.AttachProductFragment
 import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment.Companion.newInstance
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.*
 
 class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.Activity {
@@ -19,7 +22,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     private var warehouseId = "0"
     private var _shopId = ""
     private var shopName: String = ""
-    private var _isSeller = false
+    private var isSeller = false
     private var source: String = ""
     var maxChecked = MAX_CHECKED_DEFAULT
     private val hiddenProducts: ArrayList<String> = arrayListOf()
@@ -29,9 +32,6 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
         const val SOURCE_TALK = "talk"
     }
-
-    override val isSeller: Boolean
-        get() = _isSeller
 
     private fun setupWarehouseId() {
         warehouseId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID)
@@ -46,23 +46,20 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
                 ?: ""
         setupWarehouseId()
         super.onCreate(savedInstanceState)
-
     }
-
 
     override fun getNewFragment(): Fragment {
         var fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         return if (fragment != null) {
             fragment
         } else {
-                _isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,
+                isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,
                     false)
                 source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
                         ?: ""
                 maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
                     AttachProductActivity.MAX_CHECKED_DEFAULT)
                 hiddenProducts.addAll(intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN) ?: arrayListOf())
-
             fragment = newInstance(
                 this, isSeller, source, maxChecked, hiddenProducts, warehouseId, _shopId
             )

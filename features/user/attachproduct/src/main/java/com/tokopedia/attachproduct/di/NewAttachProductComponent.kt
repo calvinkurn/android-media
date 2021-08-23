@@ -11,4 +11,6 @@ import dagger.Component
 interface NewAttachProductComponent {
 
     fun inject(newAttachProductFragment: NewAttachProductFragment)
+
+    fun inject(newAttachProductActivity: NewAttachProductActivity)
 }
