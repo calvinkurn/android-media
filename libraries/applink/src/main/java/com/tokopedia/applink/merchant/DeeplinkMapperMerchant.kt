@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
@@ -25,6 +26,9 @@ object DeeplinkMapperMerchant {
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val PARAM_BUNDLE_ID = "bundleId"
+    private const val PARAM_SELECTED_PRODUCT_IDS = "selectedProductIds"
+    private const val PARAM_CART_IDS = "cartIds"
     private const val CREATE_SHOWCASE_SEGMENT = "showcase-create"
     private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
@@ -129,6 +133,26 @@ object DeeplinkMapperMerchant {
         }
         return Uri.parse(newUri)
                 .buildUpon()
+                .build()
+                .toString()
+    }
+
+    fun getRegisteredNavigationProductBundle(uri: Uri): String {
+        // TODO: Need to handle the default value in activity level
+        val segments = uri.pathSegments
+        val bundleId = uri.getQueryParameter(PARAM_BUNDLE_ID) ?: "0"
+        val selectedProductIds = uri.getQueryParameter(PARAM_SELECTED_PRODUCT_IDS) ?: "0"
+        val source = uri.getQueryParameter(PARAM_SOURCE) ?: ""
+        val cartIds = uri.getQueryParameter(PARAM_CART_IDS) ?: "0"
+
+        val productId = segments.last()
+        val newUri = UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
+        return Uri.parse(newUri)
+                .buildUpon()
+                .appendQueryParameter(PARAM_BUNDLE_ID, bundleId)
+                .appendQueryParameter(PARAM_SELECTED_PRODUCT_IDS, selectedProductIds)
+                .appendQueryParameter(PARAM_SOURCE, source)
+                .appendQueryParameter(PARAM_CART_IDS, cartIds)
                 .build()
                 .toString()
     }
