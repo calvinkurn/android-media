@@ -78,7 +78,7 @@ class ProductItemDecoration(
         return getHorizontalOffset(maxElevation, radius)
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getHorizontalOffset(maxElevation: Float, radius: Float): Int {
         return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
     }
@@ -104,7 +104,7 @@ class ProductItemDecoration(
         return getVerticalOffset(maxElevation, radius)
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getVerticalOffset(maxElevation: Float, radius: Float): Int {
         return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
     }
@@ -122,7 +122,7 @@ class ProductItemDecoration(
 
     private fun getLeftOffsetFirstInRow() = spacing - horizontalCardViewOffset
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getLeftOffsetNotFirstInRow() = spacing / 4 - horizontalCardViewOffset
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
@@ -132,10 +132,10 @@ class ProductItemDecoration(
             getTopOffsetNotTopItem()
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getTopOffsetTopItem() = spacing / 2 - verticalCardViewOffset
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getTopOffsetNotTopItem() = spacing / 4 - verticalCardViewOffset
 
     private fun getRightOffset(relativePos: Int, totalSpanCount: Int): Int {
@@ -144,13 +144,13 @@ class ProductItemDecoration(
 
     private fun getRightOffsetLastInRow() = spacing - horizontalCardViewOffset
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getRightOffsetNotLastInRow() = spacing / 4 - horizontalCardViewOffset
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun getBottomOffsetNotBottomItem() = spacing / 4 - verticalCardViewOffset
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
         return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
     }
@@ -159,7 +159,7 @@ class ProductItemDecoration(
         return relativePos % spanCount == FIRST_IN_ROW_MODULO
     }
 
-    @SuppressWarnings("checkstyle:magicnumber")
+    @Suppress("MagicNumber")
     private fun isLastInRow(relativePos: Int, spanCount: Int): Boolean {
         return relativePos % spanCount == spanCount - 1
     }
