@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.exploreCategory.ui.activity.AffiliateActivity
+import com.tokopedia.exploreCategory.ui.fragment.AffiliateHomeFragment
 import dagger.Component
 
 @AffiliateScope
@@ -13,6 +14,6 @@ interface AffiliateComponent {
     @get:ApplicationContext
     val context: Context
 
-    fun inject(affiliateActivity: AffiliateActivity)
+    fun inject(affiliateHomeFragment: AffiliateHomeFragment)
 
 }

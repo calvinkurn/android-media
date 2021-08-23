@@ -8,6 +8,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.ui.bottomnav.BottomMenu
 import com.tokopedia.exploreCategory.ui.bottomnav.IBottomClickListener
 import com.tokopedia.exploreCategory.ui.bottomnav.LottieBottomNavbar
+import com.tokopedia.exploreCategory.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.exploreCategory.viewmodel.AffiliateViewModel
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
@@ -35,7 +36,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     }
 
     override fun getNewFragment(): Fragment? {
-        return null
+        return AffiliateHomeFragment.getFragmentInstance()
     }
 
     private fun initBottomNavigationView() {
