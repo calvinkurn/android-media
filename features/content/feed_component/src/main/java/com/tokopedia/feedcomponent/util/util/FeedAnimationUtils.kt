@@ -82,19 +82,20 @@ fun hideViewWithSlideAnimation(view: View) {
     objectAnimator.start()
 }
 
-inline fun View.visibleWithAnimation() {
+fun View.visibleWithAnimation() {
     showViewWithAnimation(this)
 
 }
 
-inline fun View.goneWithAnimation() {
+fun View.goneWithAnimation() {
     hideViewWithAnimation(this)
 }
-inline fun View.visibleWithSlideAnimation() {
+
+fun View.visibleWithSlideAnimation() {
     showViewWithSlideAnimation(this)
 
 }
 
-inline fun View.goneWithSlideAnimation() {
+fun View.goneWithSlideAnimation() {
     hideViewWithSlideAnimation(this)
 }

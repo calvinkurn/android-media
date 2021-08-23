@@ -30,10 +30,10 @@ fun Number.productThousandFormatted(
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
     return "${number.numberFormatted(digitAfterComa, roundingMode)} ${
         listOf(
-            " rb",
-            " jt",
-            " M",
-            " T"
+            "rb",
+            "jt",
+            "M",
+            "T"
         )[exp - 1]
     }"
 }

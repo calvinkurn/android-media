@@ -36,6 +36,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -685,10 +686,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
                 media.forEach { feedMedia ->
 
+                    feedMedia.isImageImpressedFirst = true
+
                     if (feedMedia.type == TYPE_IMAGE) {
-                        feedMedia.isImageImpressedFirst = true
-                        var width = 0
-                        var height = 0
+                        var imageWidth = 0
+                        var imageHeight = 0
 
                         val imageItem = getImageView()
                         feedMedia.imageView = imageItem
@@ -699,9 +701,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 products.isNotEmpty()
                             )
 
-                            val bitmapDrawable = postImage.drawable.toBitmap()
-                            width = bitmapDrawable.width
-                            height = bitmapDrawable.height
+
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
@@ -712,20 +712,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
-                            feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
-                                val productTagView = PostTagView(context, feedXMediaTagging)
+                            doOnLayout {
+                                imageWidth = width
+                                imageHeight = height
+                                feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
+                                    val productTagView = PostTagView(context, feedXMediaTagging)
+                                    productTagView.postDelayed({
+                                        productTagView.bindData(listener,
+                                            products,
+                                            imageWidth,
+                                            imageHeight,
+                                            positionInFeed)
 
-                                productTagView.postDelayed({
-                                    productTagView.bindData(listener,
-                                        products,
-                                        width,
-                                        height,
-                                        positionInFeed)
-
-                                }, TIME_SECOND)
+                                    }, TIME_SECOND)
 
 
-                                layout.addView(productTagView)
+                                    layout.addView(productTagView)
+                                }
 
                             }
                             imagePostListener.userImagePostImpression(

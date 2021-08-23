@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.view.widget
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
@@ -13,7 +12,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.util.util.convertDpToPixel
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.util.util.goneWithAnimation
 import com.tokopedia.feedcomponent.util.util.visibleWithAnimation
@@ -86,10 +84,10 @@ class PostTagView @JvmOverloads constructor(
         positionInFeed: Int
     ) {
         this.listener = dynamicPostListener
-        this.dotMarginStart = convertDpToPixel((width * (1 - feedXTag.posX)), context)
-        this.dotMarginTop = convertDpToPixel((height * (1 - feedXTag.posY)), context)
+        this.dotMarginStart = (width * (1 - feedXTag.posX)).toInt()
+        this.dotMarginTop = (height * (1 - feedXTag.posY)).toInt()
         this.postImageHeight = height
-        this.postImageWidth = convertDpToPixel(width.toFloat(), context)
+        this.postImageWidth = width
         val product = products[feedXTag.tagIndex]
 
         productViewName.text = product.name
@@ -150,7 +148,6 @@ class PostTagView @JvmOverloads constructor(
 
     fun showExpandedView(): Boolean {
         val isProductDotVisible = productTagDot.isVisible
-        Log.v("TAG","posx ${feedXTag.posX} posy ${feedXTag.posY}")
 
         if (productTagDot.isVisible) {
             productTagDot.gone()

@@ -168,7 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="@dimen/unify_font_10"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@id/caption_text"
         app:layout_constraintTop_toBottomOf="@id/caption_text"
         tools:text="17 Oktober 2020" />
