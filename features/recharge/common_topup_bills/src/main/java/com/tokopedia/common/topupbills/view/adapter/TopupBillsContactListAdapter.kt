@@ -24,6 +24,7 @@ class TopupBillsContactListAdapter(
 
     fun setContacts(contacts: List<TopupBillsContactListFragment.Contact>) {
         this.contacts = contacts
+        notifyDataSetChanged()
     }
 
 

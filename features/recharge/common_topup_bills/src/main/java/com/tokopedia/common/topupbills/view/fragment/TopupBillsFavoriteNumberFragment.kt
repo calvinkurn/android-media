@@ -46,6 +46,7 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottom
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
+import com.tokopedia.common.topupbills.view.listener.SavedNumberSearchListener
 import com.tokopedia.common.topupbills.view.model.*
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
@@ -78,7 +79,8 @@ class TopupBillsFavoriteNumberFragment :
         FavoriteNumberMenuListener,
         FavoriteNumberEmptyStateListener,
         FavoriteNumberModifyListener,
-        FavoriteNumberErrorStateListener
+        FavoriteNumberErrorStateListener,
+        SavedNumberSearchListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -356,7 +358,7 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    private fun filterData(query: String) {
+    override fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
 
         searchClientNumbers.addAll(clientNumbers.filter {

@@ -8,21 +8,27 @@ import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
+import com.tokopedia.common.topupbills.view.listener.SavedNumberSearchListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 
 class TopupBillsContactListFragment:
     BaseDaggerFragment(),
-    TopupBillsContactListAdapter.OnContactNumberClickListener
+    TopupBillsContactListAdapter.OnContactNumberClickListener,
+    SavedNumberSearchListener
 {
+    private var contacts: MutableList<Contact> = mutableListOf()
     private val contactsProjection: Array<out String> = arrayOf(
         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
         ContactsContract.CommonDataKinds.Phone.NUMBER,
@@ -126,9 +132,14 @@ class TopupBillsContactListFragment:
                 contacts.add(Contact(name, phoneNumber))
             }
         }
-
         cursor?.close()
-        contactListAdapter.setContacts(contacts)
+        this.contacts = contacts
+        contactListAdapter.setContacts(this.contacts)
+
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
+            if (this@TopupBillsContactListFragment.contacts.isEmpty())
+                hide() else show()
+        }
     }
 
     override fun onContactNumberClick(name: String, number: String) {
@@ -153,12 +164,28 @@ class TopupBillsContactListFragment:
         }
     }
 
+    override fun filterData(query: String) {
+        val searchClientNumbers = ArrayList<Contact>()
+
+        searchClientNumbers.addAll(contacts.filter {
+            it.name.contains(query, true) || it.phoneNumber.contains(query, true)
+        })
+
+        contactListAdapter.setContacts(searchClientNumbers)
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
+            if (searchClientNumbers.isEmpty()) hide() else show()
+        }
+    }
+
     inner class Contact(
         val name: String,
         val phoneNumber: String
     )
 
     companion object {
+        fun newInstance(): Fragment {
+            return TopupBillsContactListFragment()
+        }
         private const val MOD_ASCENDING = " ASC"
     }
 }

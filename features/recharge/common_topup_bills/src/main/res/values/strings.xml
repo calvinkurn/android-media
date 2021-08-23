@@ -11,7 +11,6 @@
     <string name="common_topup_title_promo_code">Kode Promo: </string>
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
-    <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
     <string name="common_topup_fav_number_title">Nomor Favorit</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
@@ -62,4 +61,8 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+
+    <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
+    <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
+    <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
 </resources>

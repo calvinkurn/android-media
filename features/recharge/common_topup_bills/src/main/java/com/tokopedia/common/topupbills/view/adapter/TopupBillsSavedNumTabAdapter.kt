@@ -15,14 +15,30 @@ class TopupBillsSavedNumTabAdapter(
     private var currentCategoryName: String = "",
     private var operatorData: TelcoCatalogPrefixSelect? = null
 ): FragmentStateAdapter(fragment) {
+    private var instance: HashMap<String, Fragment> = hashMapOf()
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            POSITION_CONTACT_LIST -> TopupBillsContactListFragment()
-            POSITION_FAVORITE_NUMBER -> TopupBillsFavoriteNumberFragment.newInstance(
-                clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds
-            )
-            else -> TopupBillsContactListFragment()
+            POSITION_CONTACT_LIST -> {
+                if (!instance.containsKey(position.toString())) {
+                    instance[position.toString()] = TopupBillsContactListFragment.newInstance()
+                }
+                instance[position.toString()]!!
+            }
+            POSITION_FAVORITE_NUMBER -> {
+                if (!instance.containsKey(position.toString())) {
+                    instance[position.toString()] =
+                        TopupBillsFavoriteNumberFragment.newInstance(
+                            clientNumberType,
+                            number,
+                            operatorData,
+                            currentCategoryName,
+                            dgCategoryIds
+                        )
+                }
+                instance[position.toString()]!!
+            }
+            else -> TopupBillsContactListFragment.newInstance()
         }
     }
 

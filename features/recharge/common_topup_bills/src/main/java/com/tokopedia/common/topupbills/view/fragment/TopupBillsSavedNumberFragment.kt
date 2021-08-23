@@ -12,6 +12,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsSavedNumTabAdapter
+import com.tokopedia.common.topupbills.view.listener.SavedNumberSearchListener
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -26,6 +27,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
 
     private var binding: FragmentSavedNumberBinding? = null
+    private var pagerAdapter: TopupBillsSavedNumTabAdapter? = null
 
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
@@ -68,10 +70,18 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         initListener()
     }
 
+    // TODO: [Misael] nanti check bener ga panggilnya dari sini si removal
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding?.commonTopupBillsSavedNumSearchbar?.searchBarTextField?.removeTextChangedListener(
+            getSearchTextWatcher
+        )
+    }
+
     private fun initViewPager() {
-        val pagerAdapter = TopupBillsSavedNumTabAdapter(
+        pagerAdapter = TopupBillsSavedNumTabAdapter(
             this, clientNumberType, number,
-            dgCategoryIds, currentCategoryName, operatorData
+            dgCategoryIds, currentCategoryName, operatorData,
         )
         binding?.commonTopupBillsSavedNumViewpager?.adapter = pagerAdapter
     }
@@ -87,6 +97,9 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
                         POSITION_CONTACT_LIST, true)
                 }
             }
+            commonTopupBillsSavedNumSearchbar.searchBarTextField.addTextChangedListener(
+                getSearchTextWatcher
+            )
         }
     }
 
@@ -100,6 +113,26 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         }
 
         this.operatorList = operatorList
+    }
+
+    private val getSearchTextWatcher = object : android.text.TextWatcher {
+        override fun afterTextChanged(text: android.text.Editable?) {
+            text?.let {
+                val pos = binding?.commonTopupBillsSavedNumViewpager?.currentItem
+                pos?.let {
+                    val fragment = pagerAdapter?.createFragment(it) as SavedNumberSearchListener
+                    fragment.filterData(text.toString())
+                }
+            }
+        }
+
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            //do nothing
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            //do nothing
+        }
     }
 
     companion object {
@@ -120,8 +153,6 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
             fragment.arguments = bundle
             return fragment
         }
-
-        val TAG = TopupBillsSavedNumberFragment::class.java.simpleName
 
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"

@@ -10,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/common_topup_fav_number_clue"
-        android:layout_margin="@dimen/spacing_lvl5"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:typographyType="heading_4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/common_topup_bills_contacts_rv"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/common_topup_bills_contacts_rv"
