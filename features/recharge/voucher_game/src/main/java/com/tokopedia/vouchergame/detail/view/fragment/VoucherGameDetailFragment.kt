@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -23,6 +22,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
@@ -113,7 +113,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
             //Setup adapter
@@ -671,6 +671,14 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
     override fun onClickNextBuyButton() {
         processCheckoutData()
+    }
+
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        // do nothing
+    }
+    
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // do nothing
     }
 
     private fun processCheckoutData() {
