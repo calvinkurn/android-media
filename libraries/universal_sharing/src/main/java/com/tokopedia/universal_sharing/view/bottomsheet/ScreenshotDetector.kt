@@ -173,8 +173,8 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
-                toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
                 dismiss()
+                toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
             setDescription(fragment.getString(R.string.permission_dialog_description))

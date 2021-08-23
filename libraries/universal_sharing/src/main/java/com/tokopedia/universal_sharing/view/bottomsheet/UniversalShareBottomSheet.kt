@@ -183,7 +183,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
-        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, view) }
+        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, this.requireView()) }
         fragmentManager?.let {
             show(it, TAG)
         }
