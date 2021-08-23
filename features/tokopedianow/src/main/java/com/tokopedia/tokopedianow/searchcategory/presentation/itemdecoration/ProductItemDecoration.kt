@@ -134,7 +134,7 @@ class ProductItemDecoration(
 
     private fun getTopOffsetTopItem() = spacing / TWO - verticalCardViewOffset
 
-    private fun getTopOffsetNotTopItem() = spacing / TWO - verticalCardViewOffset
+    private fun getTopOffsetNotTopItem() = spacing / FOUR - verticalCardViewOffset
 
     private fun getRightOffset(relativePos: Int, totalSpanCount: Int): Int {
         return if (isLastInRow(relativePos, totalSpanCount)) getRightOffsetLastInRow() else getRightOffsetNotLastInRow()
