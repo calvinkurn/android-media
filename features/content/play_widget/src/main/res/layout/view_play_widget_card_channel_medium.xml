@@ -107,7 +107,7 @@
             android:id="@+id/play_widget_badge_promo"
             layout="@layout/layout_promo_badge"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/play_widget_channel_medium_promo_height"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"

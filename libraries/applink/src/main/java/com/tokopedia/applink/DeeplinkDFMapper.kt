@@ -8,7 +8,6 @@ import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
@@ -255,7 +254,8 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(GENERAL_TEMPLATE) ||
                         it.startsWith(CAMERA_OCR) ||
                         it.startsWith(VOUCHER_GAME) ||
-                        it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) || it.startsWith(CHECKOUT_DIGITAL)
+                        it.startsWith(DIGITAL_CART) ||
+                        it.startsWith(CHECKOUT_DIGITAL)
             }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))

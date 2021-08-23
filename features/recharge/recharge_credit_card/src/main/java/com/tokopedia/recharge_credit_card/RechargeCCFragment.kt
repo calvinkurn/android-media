@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
@@ -320,7 +320,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
         trackAddToCartEvent()
         context?.let {
-            val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }

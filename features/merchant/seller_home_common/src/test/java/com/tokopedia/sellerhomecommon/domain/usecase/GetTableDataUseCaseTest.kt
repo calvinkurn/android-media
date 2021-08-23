@@ -41,8 +41,8 @@ class GetTableDataUseCaseTest {
     private lateinit var getTableDataUseCase: GetTableDataUseCase
 
     private val params = GetTableDataUseCase.getRequestParams(
-            dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = DynamicParameterModel()
+        dataKey = ArgumentMatchers.anyList(),
+        dynamicParameter = DynamicParameterModel()
     )
 
     @Before
