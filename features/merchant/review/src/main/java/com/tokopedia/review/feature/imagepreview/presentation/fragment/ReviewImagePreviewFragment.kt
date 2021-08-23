@@ -432,7 +432,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun showComponents() {
         closeButton?.show()
-        if (productReview.isReportable) {
+        if (productReview.isReportable || galleryRoutingData.getSelectedReview()?.isReportable == true) {
             menuButton?.show()
         }
         reviewImagePreviewDetail?.show()

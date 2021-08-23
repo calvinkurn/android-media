@@ -185,6 +185,11 @@ class ReviewGalleryFragment :
         goToReadingPage()
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        showFullPageLoading()
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -287,7 +292,7 @@ class ReviewGalleryFragment :
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
             reviewGalleryUiModel = reviewGalleryUiModel.copy(
-                imageUrl = this.thumbnailURL,
+                imageUrl = this.fullsizeURL,
                 fullImageUrl = this.fullsizeURL
             )
         }

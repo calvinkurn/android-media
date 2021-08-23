@@ -195,6 +195,7 @@
 
         <activity
             android:name=".feature.gallery.presentation.activity.ReviewGalleryActivity"
+            android:label="@string/review_gallery_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 

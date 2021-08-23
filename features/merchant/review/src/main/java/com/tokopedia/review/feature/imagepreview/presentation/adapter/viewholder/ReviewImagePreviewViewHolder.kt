@@ -22,7 +22,6 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     init {
         image = view.findViewById(R.id.review_gallery_image_preview)
-        background = view.findViewById(R.id.review_gallery_image_background)
     }
 
     fun bind(imageUrl: String, imagePreviewListener: ReviewImagePreviewListener) {
@@ -39,7 +38,7 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                     listener(
                         onSuccess = { _, _ ->
                             mLoaderView.hide()
-                            this@ReviewImagePreviewViewHolder.background?.setBackgroundColor(
+                            image?.setBackgroundColor(
                                 ContextCompat.getColor(
                                     context,
                                     android.R.color.transparent
@@ -77,7 +76,6 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                         imagePreviewListener.disableScroll()
                     } else {
                         imagePreviewListener.enableScroll()
-                        this@ReviewImagePreviewViewHolder.background?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N75))
                     }
                 }
             }

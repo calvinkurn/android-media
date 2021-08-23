@@ -40,6 +40,10 @@ class ReadReviewHighlightedTopic: BaseCustomView {
     fun setHighlightedTopic(topic: ProductTopic) {
         topicRating?.text = String.format(context.getString(R.string.review_reading_rating_format), topic.rating)
         topicTitle?.text = topic.formatted
-        reviewCount?.text = topic.reviewCount.toString()
+        reviewCount?.text = context.getString(R.string.review_reading_highlighted_topic_review_count, topic.reviewCount)
+    }
+
+    fun setListener() {
+
     }
 }

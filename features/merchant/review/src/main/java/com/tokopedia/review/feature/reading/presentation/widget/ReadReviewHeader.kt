@@ -242,6 +242,7 @@ class ReadReviewHeader : BaseCustomView {
         topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
             highlightedTopic[index]?.apply {
                 setHighlightedTopic(productTopic)
+                setListener()
                 show()
             }
         }
