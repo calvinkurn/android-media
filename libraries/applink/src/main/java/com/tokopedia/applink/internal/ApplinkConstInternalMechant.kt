@@ -24,7 +24,8 @@ object ApplinkConstInternalMechant {
 
     const val MERCHANT_PRODUCT_DRAFT = "${INTERNAL_MERCHANT}/product-draft"
 
-    const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle"
+    // Product Bundle = tokopedia-android-internal/product-bundle/2147881200?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
+    const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}"
 
     // Official Store Brandlist
     const val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"
