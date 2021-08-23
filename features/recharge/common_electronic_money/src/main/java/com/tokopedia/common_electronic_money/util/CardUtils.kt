@@ -4,6 +4,7 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
 
@@ -46,6 +47,7 @@ class CardUtils {
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
             return false
@@ -64,6 +66,7 @@ class CardUtils {
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED_BRIZZI
                 }
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
             return false
@@ -82,6 +85,7 @@ class CardUtils {
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception){
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
             return false

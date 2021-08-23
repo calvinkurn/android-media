@@ -40,6 +40,11 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     @Inject
     lateinit var brizziInstance: Brizzi
 
+    val errorHanlderBuilder = ErrorHandler.Builder().apply {
+        sendToScalyr = true
+        className = CLASS_NAME
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initiateViewModel()
@@ -146,23 +151,24 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             })
 
             brizziBalanceViewModel.errorCardMessage.observe(this, Observer {
-                showError(ErrorHandler.getErrorMessage(context, it),
-                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                val message = ErrorHandler.getErrorMessagePair(context, it, errorHanlderBuilder)
+                showError(message.first.orEmpty(),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label)+" "+message.second,
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                         true)
             })
 
             brizziBalanceViewModel.errorCommonBrizzi.observeForever { throwable ->
                 context?.let {
-                    val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
-                    if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    val message = ErrorHandler.getErrorMessagePair(context, throwable, errorHanlderBuilder)
+                    if((throwable is UnknownHostException) || message.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                         showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
-                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+message.second,
                                 "",
                                 true)
                     } else {
-                        showError(errorMessage,
-                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                        showError(message.first.orEmpty(),
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+" "+message.second,
                                 "",
                                 true, true)
                     }
@@ -273,6 +279,8 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
+
+        const val CLASS_NAME = "BrizziCheckBalanceFragment"
 
         const val ARCHITECTURE_ARM64 = "arm64-v8a"
         const val ARCHITECTURE_ARM32 = "armeabi-v7a"

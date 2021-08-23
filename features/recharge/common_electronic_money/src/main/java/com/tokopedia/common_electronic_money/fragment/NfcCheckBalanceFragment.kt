@@ -33,7 +33,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import okhttp3.Route
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -253,7 +252,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     abstract fun processTagIntent(intent: Intent)
 
     protected fun isDigitalSmartcardEnabled(): Boolean {
-        return true
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
     }
 
     protected fun navigateToNFCSettings() {
