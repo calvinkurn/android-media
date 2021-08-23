@@ -334,6 +334,8 @@ public interface ApplinkConst {
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
+    String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -479,6 +481,7 @@ public interface ApplinkConst {
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
+        String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
     }
 
     interface TokopediaNow {

@@ -22,7 +22,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
+import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
@@ -53,6 +53,8 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -72,7 +74,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -220,7 +221,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
-    private var useWalletApp: Boolean = true
+    private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
@@ -1032,8 +1033,11 @@ open class HomeRevampViewModel @Inject constructor(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
+        }
+
+        if (!homeNewDataModel.isProcessingAtf && !homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateRecommendationSection(
-                    onNeedTabLoad = { getFeedTabData() }
+                onNeedTabLoad = { getFeedTabData() }
             )
         }
         _homeLiveData.postValue(homeDataModel)
@@ -1409,36 +1413,15 @@ open class HomeRevampViewModel @Inject constructor(
                     } else {
                         updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                            )), index)
+                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                            ),
+                            state = FeaturedShopDataModel.STATE_READY)
+                                , index)
                     }
                 }){
                     deleteWidget(featuredShopDataModel, index)
                 }
             }
-        }
-    }
-
-    private fun mappingTopAdsHeaderToChannelGrid(data: List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>): List<ChannelGrid>{
-        return data.map {
-            ChannelGrid(
-                    id = it.id,
-                    applink = it.applink,
-                    shop = ChannelShop(
-                            id = it.headline.shop.id,
-                            shopName = it.headline.shop.name,
-                            shopProfileUrl = it.headline.shop.imageShop.cover,
-                            shopLocation = it.headline.shop.location,
-                            shopBadgeUrl = it.headline.badges.firstOrNull()?.imageUrl ?: "",
-                            isGoldMerchant = it.headline.shop.goldShop,
-                            isOfficialStore = it.headline.shop.shopIsOfficialStore
-                    ),
-                    countReviewFormat = it.headline.shop.products.firstOrNull()?.review ?: "",
-                    rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
-                    impression = it.headline.image.url,
-                    productClickUrl = it.adClickUrl,
-                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
-            )
         }
     }
 

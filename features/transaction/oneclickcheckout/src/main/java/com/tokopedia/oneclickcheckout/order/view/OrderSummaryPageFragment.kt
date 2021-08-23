@@ -36,9 +36,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -1033,7 +1033,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId, "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
+        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId,
+            viewModel.orderProduct.purchaseProtectionPlanData.protectionPricePerProduct, viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
     }
 
     override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
@@ -1194,6 +1195,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     paymentPassData.redirectUrl = redirectParam.url
                     paymentPassData.queryString = redirectParam.form
                     paymentPassData.method = redirectParam.method
+                    paymentPassData.transactionId = checkoutOccResult.paymentParameter.transactionId
+                    paymentPassData.paymentId = checkoutOccResult.paymentParameter.transactionId
 
                     shouldUpdateCart = false
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)

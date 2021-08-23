@@ -115,10 +115,11 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
 import static com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment.CREATE_REVIEW_ERROR_MESSAGE;
@@ -158,7 +159,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
-    public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
     public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
@@ -905,7 +905,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
 
                 if (actionButton.getKey().equalsIgnoreCase(BuyerConsts.KEY_REQUEST_CANCEL)) {
-                    Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                    Intent buyerReqCancelIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
@@ -921,6 +921,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE_URL, invoiceUrl);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_ID, status.status());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_HELP_LINK_URL, _helplink);
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
 
                 } else {
@@ -1088,36 +1089,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String reason = "";
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 String resultMsg = data.getStringExtra(RESULT_MSG_INSTANT_CANCEL);
-                int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
-                if (result == 1) {
+                int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, RESULT_CODE_SUCCESS);
+                if (result == RESULT_CODE_SUCCESS) {
                     if (resultMsg != null && getView() != null) {
                         Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
                         }).show();
                     }
-                } else if (result == 3) {
-                    String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
-                    String popupBody = data.getStringExtra(RESULT_POPUP_BODY_INSTANT_CANCEL);
-                    if (getContext() != null && popupTitle != null && popupBody != null) {
-                        DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
-                        dialogUnify.setTitle(popupTitle);
-                        dialogUnify.setDescription(popupBody);
-                        dialogUnify.setPrimaryCTAText(getString(R.string.mengerti_button));
-                        dialogUnify.setPrimaryCTAClickListener(() -> {
-                            dialogUnify.dismiss();
-                            return Unit.INSTANCE;
-                        });
-                        dialogUnify.setSecondaryCTAText(getString(R.string.pusat_bantuan_button));
-                        dialogUnify.setSecondaryCTAClickListener(() -> {
-                            dialogUnify.dismiss();
-                            if (!_helplink.isEmpty()) {
-                                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, _helplink);
-                            }
-                            return Unit.INSTANCE;
-                        });
-                        dialogUnify.show();
-                    }
-                }
-                if (result != 0) {
+                } else if (result != RESULT_CODE_BACK) {
                     finishOrderDetail();
                 }
             } else if (resultCode == CANCEL_ORDER_DISABLE) {

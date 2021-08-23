@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.banner.Indicator
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -36,13 +36,17 @@ import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTrip
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -82,7 +86,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
 
         activity?.run {
@@ -216,6 +220,10 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel) {
+        flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
+    }
+
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                         departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -337,30 +345,47 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
         if (bannerList.isNotEmpty()) {
             showBannerView()
-            flightHomepageBanner.customWidth = if (bannerWidthInPixels > 0) {
-                bannerWidthInPixels
-            } else {
-                resources.getDimensionPixelSize(R.dimen.banner_width)
-            }
-            flightHomepageBanner.customHeight = if (bannerWidthInPixels > 0) {
-                measureBannerHeightBasedOnRatio()
-            } else {
-                resources.getDimensionPixelSize(R.dimen.banner_height)
-            }
-            flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
-            flightHomepageBanner.setOnPromoScrolledListener { position ->
-                flightHomepageViewModel.sendTrackingPromoScrolled(position)
-            }
-            flightHomepageBanner.setOnPromoClickListener { position -> onBannerClicked(position) }
-            flightHomepageBanner.setOnPromoAllClickListener { onAllBannerClicked() }
+            flightHomepageAllPromo.setOnClickListener { onAllBannerClicked() }
+            flightHomepageBanner?.apply {
+                freeMode = false
+                centerMode = true
+                slideToScroll = 1
+                indicatorPosition = CarouselUnify.INDICATOR_BL
 
-            val bannerUrls = arrayListOf<String>()
-            for (banner in bannerList) {
-                bannerUrls.add(banner.attribute.imageUrl)
+                if (bannerList.size == 1) {
+                    autoplay = false
+                    infinite = false
+                    slideToShow = 1.0f
+                    setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
+                } else {
+                    slideToShow = BANNER_SHOW_SIZE
+                    autoplay = true
+                    infinite = true
+                }
+                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                    override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        flightHomepageViewModel.sendTrackingPromoScrolled(current)
+                    }
+                }
+                val itemParam = { view: View, data: Any ->
+                    data as TravelCollectiveBannerModel.Banner
+
+                    val image = view.findViewById<ImageUnify>(R.id.flightHomepagePromoImageCarousel)
+                    if (bannerWidthInPixels > 0) {
+                        image.layoutParams.height = measureBannerHeightBasedOnRatio()
+                        image.layoutParams.width = bannerWidthInPixels
+                    } else {
+                        image.layoutParams.height = resources.getDimensionPixelSize(R.dimen.banner_height)
+                        image.layoutParams.width = resources.getDimensionPixelSize(R.dimen.banner_width)
+                    }
+                    image.loadImage(data.attribute.imageUrl)
+                    image.setOnClickListener {
+                        onBannerClicked(data.position)
+                    }
+                }
+                bannerList.forEachIndexed { index, banner -> banner.position = index }
+                addItems(R.layout.flight_homepage_carousel_item, ArrayList(bannerList), itemParam)
             }
-            flightHomepageBanner.setPromoList(bannerUrls)
-            flightHomepageBanner.buildView()
         }
     }
 
@@ -553,6 +578,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         // Banner Ratio = 414 : 139
         private const val BANNER_WIDTH_RATIO = 414f
         private const val BANNER_HEIGHT_RATIO = 139f
+        private const val BANNER_SHOW_SIZE = 1.1f
 
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"

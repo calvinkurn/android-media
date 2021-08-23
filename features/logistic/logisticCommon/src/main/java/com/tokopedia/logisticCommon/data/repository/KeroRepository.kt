@@ -13,10 +13,12 @@ import javax.inject.Inject
 
 class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
-    suspend fun getAutoComplete(keyword: String): AutoCompleteResponse {
-        val param = mapOf("param" to keyword)
-        val request = GraphqlRequest(KeroLogisticQuery.autoComplete,
-                AutoCompleteResponse::class.java, param)
+    suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
+        val param = mapOf("param" to keyword, "latlng" to latlng)
+        val request = GraphqlRequest(
+            KeroLogisticQuery.autoComplete,
+            AutoCompleteResponse::class.java, param
+        )
         return gql.getResponse(request)
     }
 

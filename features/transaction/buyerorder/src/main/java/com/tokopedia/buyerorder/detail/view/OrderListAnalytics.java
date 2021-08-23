@@ -62,7 +62,8 @@ public class OrderListAnalytics {
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
-    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG = "my purchase list detail - dg";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL_MP = "my purchase list detail - mp";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
     private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
     private static final String EVENT_CATEGORY_ORDER_DETAIL_PAGE = "digital - order detail page";
@@ -345,7 +346,7 @@ public class OrderListAnalytics {
         map.put("event", EVENT_ADD_TO_CART);
 
         if(fromDetail)
-            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN_DETAIL);
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN_DETAIL_MP);
         else
             map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
         map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
@@ -446,7 +447,7 @@ public class OrderListAnalytics {
     public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, item.getTrackingData().getItemType() + " - " + item.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
@@ -478,7 +479,7 @@ public class OrderListAnalytics {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL_MP,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, "historical - " + item.getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
@@ -509,7 +510,7 @@ public class OrderListAnalytics {
     public static void eventRecommendationListView(@NotNull RecommendationsItem recommendationsItem, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL_MP,
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, "historical - " + recommendationsItem.getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
