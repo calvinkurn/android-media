@@ -29,9 +29,16 @@ class SingleBundle(parent: View) {
         view.show()
 
         image.urlSrc = item.picURL
-        label.text = item.quantity
         name.text = item.name
         price.text = item.bundlePrice
+
+        val quantityLabel = item.quantity
+        if (quantityLabel.isBlank()) {
+            label.hide()
+        } else {
+            label.show()
+            label.text = quantityLabel
+        }
 
         val itemDiscount = item.discountPercentage
         if (itemDiscount.isBlank()) {
