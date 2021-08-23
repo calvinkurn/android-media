@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +40,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.webview.WebViewHelper
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -159,19 +162,12 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        goToLinkPage()
+        goToLinkPage(activity)
     }
 
     override fun onViewAccountClicked() {
         homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        goToLinkPage()
-    }
-
-    private fun goToLinkPage() {
-        activity?.run {
-//            Toaster.build(requireView(), getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT) ?: "", Toaster.LENGTH_LONG).show()
-            RouteManager.route(activity, ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
-        }
+        goToLinkPage(activity)
     }
 
     private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
@@ -179,8 +175,17 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
             isLinked = status == "linked",
             status = if(status == "linked") userSessionInterface.phoneNumber else "Belum terhubung",
             partnerName = "Gojek",
-            linkDate = "Linked on $linkedDate"
+            linkDate = "Linked on ${formatDate(linkedDate)}"
         )
+    }
+
+    private fun formatDate(mDate: String): String {
+        return try {
+            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(mDate) ?: ""
+            SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date)
+        } catch (e: Exception) {
+            mDate
+        }
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -191,6 +196,15 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     companion object {
         const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
+
+        fun goToLinkPage(activity: FragmentActivity?) {
+            activity?.run {
+                RouteManager.route(
+                    this,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
+                )
+            }
+        }
 
         fun getLinkAccountUrl(context: Context, redirectionApplink: String): String? {
             var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(BASE_URL, context)
