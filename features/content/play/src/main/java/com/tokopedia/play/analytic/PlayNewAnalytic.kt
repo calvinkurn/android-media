@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
+import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import javax.inject.Inject
 
@@ -9,5 +10,8 @@ import javax.inject.Inject
  */
 class PlayNewAnalytic @Inject constructor(
         partnerAnalytic: PlayPartnerAnalytic,
-        interactiveAnalytic: PlayInteractiveAnalytic
-) : PlayPartnerAnalytic by partnerAnalytic, PlayInteractiveAnalytic by interactiveAnalytic
+        interactiveAnalytic: PlayInteractiveAnalytic,
+        likeAnalytic: PlayLikeAnalytic,
+) : PlayPartnerAnalytic by partnerAnalytic,
+        PlayInteractiveAnalytic by interactiveAnalytic,
+        PlayLikeAnalytic by likeAnalytic

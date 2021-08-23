@@ -1452,6 +1452,13 @@ class PlayViewModel @Inject constructor(
                     shouldLike = newStatus == PlayLikeStatus.Liked
             )
         }
+
+        playAnalytic.clickLike(
+                channelId = channelId,
+                channelType = channelType,
+                channelName = _channelDetail.value.channelInfo.title,
+                likeStatus = newStatus,
+        )
     }
 
     private fun handleClickShare() {

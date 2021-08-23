@@ -2,6 +2,8 @@ package com.tokopedia.play.di
 
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
+import com.tokopedia.play.analytic.like.PlayLikeAnalytic
+import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
 import com.tokopedia.play.data.repository.*
@@ -51,4 +53,8 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindInteractiveAnalytic(analytic: PlayInteractiveAnalyticImpl): PlayInteractiveAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindLikeAnalytic(analytic: PlayLikeAnalyticImpl): PlayLikeAnalytic
 }

@@ -331,7 +331,6 @@ class PlayUserInteractionFragment @Inject constructor(
      * Like View Component Listener
      */
     override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
-//        doClickLike(shouldLike)
         playViewModel.submitAction(ClickLikeAction)
     }
 
@@ -975,10 +974,6 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
-    private fun doClickLike(shouldLike: Boolean) {
-        viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
-    }
-
 //    private fun shouldOpenCartPage() {
 //        analytic.clickCartIcon()
 //        viewModel.doInteractionEvent(InteractionEvent.CartPage)
@@ -1000,7 +995,6 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
-            is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
         }
     }
 

@@ -102,29 +102,29 @@ class PlayParentViewModelTest {
         }
     }
 
-    @Test
-    fun `given channel data is already stored, when data is overridden, then it should return newest data`() {
-        val mockResponse = responseBuilder.buildChannelDetailsWithRecomResponse()
-
-        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
-        coEvery { mockUseCase.executeOnBackground() } returns mockResponse
-
-        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
-        val oldData = mappedData.first()
-
-        val newData: PlayChannelData = mockk(relaxed = true)
-
-        givenParentViewModelRobot(
-                getChannelDetailsWithRecomUseCase = mockUseCase
-        ) thenVerify {
-            channelDataResult(oldData.id)
-                    .isDataEqualTo(oldData)
-        } andWhen {
-            setChannelData(oldData.id, newData)
-        } thenVerify {
-            channelDataResult(oldData.id)
-                    .isDataNotEqualTo(oldData)
-                    .isDataEqualTo(newData)
-        }
-    }
+//    @Test
+//    fun `given channel data is already stored, when data is overridden, then it should return newest data`() {
+//        val mockResponse = responseBuilder.buildChannelDetailsWithRecomResponse()
+//
+//        val mockUseCase: GetChannelDetailsWithRecomUseCase = mockk(relaxed = true)
+//        coEvery { mockUseCase.executeOnBackground() } returns mockResponse
+//
+//        val mappedData = mapper.map(mockResponse, classBuilder.getMapperExtraParams())
+//        val oldData = mappedData.first()
+//
+//        val newData: PlayChannelData = mockk(relaxed = true)
+//
+//        givenParentViewModelRobot(
+//                getChannelDetailsWithRecomUseCase = mockUseCase
+//        ) thenVerify {
+//            channelDataResult(oldData.id)
+//                    .isDataEqualTo(oldData)
+//        } andWhen {
+//            setChannelData(oldData.id, newData)
+//        } thenVerify {
+//            channelDataResult(oldData.id)
+//                    .isDataNotEqualTo(oldData)
+//                    .isDataEqualTo(newData)
+//        }
+//    }
 }

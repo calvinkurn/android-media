@@ -104,7 +104,7 @@ class RealTimeNotificationViewComponent(
 
         val bgColor = try {
             Color.parseColor(notification.bgColor)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Throwable) {
             MethodChecker.getColor(
                     rootView.context,
                     R.color.play_dms_default_real_time_notif_bg
