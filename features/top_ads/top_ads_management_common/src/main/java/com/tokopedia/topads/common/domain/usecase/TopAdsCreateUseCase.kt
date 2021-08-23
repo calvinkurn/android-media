@@ -64,13 +64,16 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     private fun convertToParam(source: String?, dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManagePromoGroupProductInput {
-        val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
+        var strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
         val groupAction = dataGroup[ACTION_TYPE] as? String
         var bidtypeData = dataKeyword[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
 //        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
         if(bidtypeData == null) {
             bidtypeData = dataGroup[BID_TYPE] as MutableList<TopAdsBidSettingsModel>?
+        }
+        if(strategy == null) {
+            strategy = dataGroup[STRATEGIES] as ArrayList<String>?
         }
         val dailyBudgetGroup = dataGroup[DAILY_BUDGET] as? Int
         val groupId = dataGroup[GROUPID] as? Int
