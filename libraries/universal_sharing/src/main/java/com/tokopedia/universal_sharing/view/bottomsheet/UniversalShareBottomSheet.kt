@@ -39,7 +39,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import kotlinx.android.synthetic.main.activity_analytics_validator.*
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -187,14 +186,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
 //        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, this.requireView()) }
         setShowListener {
-            Toaster.build(this.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
-            Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
-            Toaster.build(this.parent.rootView, text = fragment.getString(R.string.permission_denied_toast)).show()
+            showAllToasts(fragment)
         }
         fragmentManager?.let {
             show(it, TAG)
         }
         screenshotDetector?.stop()
+    }
+
+    fun showAllToasts(fragment: Fragment){
+        Toaster.build(this.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+        Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
