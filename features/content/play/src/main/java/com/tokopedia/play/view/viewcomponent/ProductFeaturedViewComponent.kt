@@ -10,6 +10,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedSeeMoreViewHolder
+import com.tokopedia.play.view.custom.ProductIconView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -22,6 +23,7 @@ class ProductFeaturedViewComponent(
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
+    private val icProductSeeMore: ProductIconView = findViewById(R.id.ic_product_seemore)
 
     private val adapter = ProductFeaturedAdapter(
             productFeaturedListener = object : ProductBasicViewHolder.Listener {
@@ -52,6 +54,7 @@ class ProductFeaturedViewComponent(
     private var isProductsInitialized = false
 
     init {
+        icProductSeeMore.setBackgroundResource(R.drawable.ic_product_see_more)
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
         rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
@@ -65,6 +68,7 @@ class ProductFeaturedViewComponent(
         if (featuredItems.isEmpty()) hide()
         else show()
 
+        icProductSeeMore.setTotalProduct(products.size)
         sendImpression()
     }
 
