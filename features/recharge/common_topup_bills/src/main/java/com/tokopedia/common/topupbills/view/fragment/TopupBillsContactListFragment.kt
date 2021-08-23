@@ -9,14 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
-import com.tokopedia.common.topupbills.view.listener.SavedNumberSearchListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -25,8 +26,7 @@ import javax.inject.Inject
 
 class TopupBillsContactListFragment:
     BaseDaggerFragment(),
-    TopupBillsContactListAdapter.OnContactNumberClickListener,
-    SavedNumberSearchListener
+    TopupBillsContactListAdapter.OnContactNumberClickListener
 {
     private var contacts: MutableList<Contact> = mutableListOf()
     private val contactsProjection: Array<out String> = arrayOf(
@@ -37,6 +37,12 @@ class TopupBillsContactListFragment:
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
+    private val savedNumberViewModel by lazy {
+        viewModelFragmentProvider.get(TopupBillsSavedNumberViewModel::class.java) }
 
     private lateinit var contactListAdapter: TopupBillsContactListAdapter
     private var binding: FragmentContactListBinding? = null
@@ -62,6 +68,8 @@ class TopupBillsContactListFragment:
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         loadData()
+
+        savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
     }
 
     private fun initRecyclerView() {
@@ -137,8 +145,11 @@ class TopupBillsContactListFragment:
         contactListAdapter.setContacts(this.contacts)
 
         binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (this@TopupBillsContactListFragment.contacts.isEmpty())
-                hide() else show()
+            if (this@TopupBillsContactListFragment.contacts.isEmpty()){
+                hide()
+            } else {
+                show()
+            }
         }
     }
 
@@ -164,7 +175,7 @@ class TopupBillsContactListFragment:
         }
     }
 
-    override fun filterData(query: String) {
+    fun filterData(query: String) {
         val searchClientNumbers = ArrayList<Contact>()
 
         searchClientNumbers.addAll(contacts.filter {

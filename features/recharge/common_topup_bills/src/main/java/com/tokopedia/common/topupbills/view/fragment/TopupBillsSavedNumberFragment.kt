@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
@@ -12,8 +13,9 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.databinding.FragmentSavedNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsSavedNumTabAdapter
-import com.tokopedia.common.topupbills.view.listener.SavedNumberSearchListener
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -28,6 +30,12 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
 
     private var binding: FragmentSavedNumberBinding? = null
     private var pagerAdapter: TopupBillsSavedNumTabAdapter? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
+    private val savedNumberViewModel by lazy {
+        viewModelFragmentProvider.get(TopupBillsSavedNumberViewModel::class.java) }
 
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
@@ -81,8 +89,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private fun initViewPager() {
         pagerAdapter = TopupBillsSavedNumTabAdapter(
             this, clientNumberType, number,
-            dgCategoryIds, currentCategoryName, operatorData,
-        )
+            dgCategoryIds, currentCategoryName, operatorData)
         binding?.commonTopupBillsSavedNumViewpager?.adapter = pagerAdapter
     }
 
@@ -118,11 +125,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private val getSearchTextWatcher = object : android.text.TextWatcher {
         override fun afterTextChanged(text: android.text.Editable?) {
             text?.let {
-                val pos = binding?.commonTopupBillsSavedNumViewpager?.currentItem
-                pos?.let {
-                    val fragment = pagerAdapter?.createFragment(it) as SavedNumberSearchListener
-                    fragment.filterData(text.toString())
-                }
+                savedNumberViewModel.setSearchKeyword(text.toString())
             }
         }
 

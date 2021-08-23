@@ -32,6 +32,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
@@ -660,7 +661,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        if (!inputNumberActionTypeIndex.isLessThanZero()) {
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        }
+        // TODO: [Misael] cek ini nanti autoSelect buat apa
         autoSelectTabProduct = true
         if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
             sharedModelPrepaid.setFavNumberSelected(productId)
