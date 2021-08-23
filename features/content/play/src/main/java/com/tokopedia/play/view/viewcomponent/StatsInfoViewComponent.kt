@@ -6,8 +6,6 @@ import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayTotalViewUiModel
-import com.tokopedia.play.view.uimodel.recom.totalViewFmt
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 

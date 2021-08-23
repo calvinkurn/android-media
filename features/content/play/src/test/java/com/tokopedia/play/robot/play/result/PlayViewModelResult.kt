@@ -1,16 +1,11 @@
 package com.tokopedia.play.robot.play.result
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.robot.RobotResult
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 
 /**
@@ -26,20 +21,8 @@ class PlayViewModelRobotResult(
     val videoMetaResult: PlayVideoMetaResult
         get() = PlayVideoMetaResult(viewModel.observableVideoMeta.getOrAwaitValue())
 
-    val likeStatusResult: PlayLikeInfoResult.LikeStatusResult
-        get() = PlayLikeInfoResult.LikeStatusResult { viewModel.observableLikeStatusInfo.getOrAwaitValue() }
-
-    val totalViewResult: PlayTotalViewResult
-        get() = PlayTotalViewResult(viewModel.observableTotalViews.getOrAwaitValue())
-
-    val cartInfoResult: PlayCartInfoResult
-        get() = PlayCartInfoResult(viewModel.observableCartInfo.getOrAwaitValue())
-
     val quickReplyResult: PlayQuickReplyResult
         get() = PlayQuickReplyResult(viewModel.observableQuickReply.getOrAwaitValue())
-
-    val shareInfoResult: PlayShareInfoResult
-        get() = PlayShareInfoResult(viewModel.observableShareInfo.getOrAwaitValue())
 
     val channelInfoResult: PlayChannelInfoResult
         get() = PlayChannelInfoResult(viewModel.observableChannelInfo.getOrAwaitValue())
@@ -76,9 +59,6 @@ class PlayViewModelRobotResult(
 
     val channelTypeFieldResult: PlayChannelInfoResult.ChannelTypeResult
         get() = PlayChannelInfoResult.ChannelTypeResult(viewModel.channelType)
-
-    val likeParamInfoFieldResult: PlayLikeInfoResult.LikeParamResult
-        get() = PlayLikeInfoResult.LikeParamResult(viewModel.likeParamInfo)
 
     val lastCompleteChannelDataFieldResult: PlayChannelDataResult
         get() = PlayChannelDataResult(viewModel.latestCompleteChannelData)

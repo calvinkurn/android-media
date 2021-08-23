@@ -1,19 +1,15 @@
-package com.tokopedia.play.viewmodel.follow
+package com.tokopedia.play.viewmodel.like
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
@@ -24,30 +20,24 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Created by jegul on 15/07/21
+ * Created by jegul on 23/08/21
  */
-class PlayFollowOthersShopTest {
+class PlayLikeTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val testDispatcher = CoroutineTestDispatchers
 
-    private val partnerId = 2L
+    private val partnerId = 1L
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val partnerInfoModelBuilder = PlayPartnerInfoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
             partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
                     id = partnerId
-            )
+            ),
     )
-
-    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
-
-    init {
-        every { mockUserSession.shopId } returns "1"
-    }
 
     @Before
     fun setUp() {
@@ -60,74 +50,66 @@ class PlayFollowOthersShopTest {
     }
 
     @Test
-    fun `given user is logged in and has not followed shop, when click follow, the shop should be followed`() {
-        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+    fun `given user is logged in and channel is not liked, when click like, then channel should be liked`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns false
 
         givenPlayViewModelRobot(
-                repo = mockPartnerRepo,
+                repo = mockRepo,
                 dispatchers = testDispatcher,
-                userSession = mockUserSession,
         ) {
             setLoggedIn(true)
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(ClickLikeAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
-                    PlayPartnerFollowStatus.Followable(isFollowing = true)
-                )
+                like.isLiked.isTrue()
             }
         }
     }
 
     @Test
-    fun `given user is logged in and has followed shop, when click follow, the shop should be unfollowed`() {
-        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns true
+    fun `given user is logged in and channel is liked, when click like, then channel should not be liked`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns true
 
         givenPlayViewModelRobot(
-                repo = mockPartnerRepo,
+                repo = mockRepo,
                 dispatchers = testDispatcher,
-                userSession = mockUserSession,
         ) {
             setLoggedIn(true)
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(ClickLikeAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
-                )
+                like.isLiked.isFalse()
             }
         }
     }
 
     @Test
-    fun `given user is not logged in, when click follow, the shop should stay unfollowed`() {
-        val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
+    fun `given user is not logged in, when click like, then channel should not be liked`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns false
 
         givenPlayViewModelRobot(
-                repo = mockPartnerRepo,
+                repo = mockRepo,
                 dispatchers = testDispatcher,
-                userSession = mockUserSession,
         ) {
             setLoggedIn(false)
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(ClickLikeAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.Followable(isFollowing = false)
-                )
+                like.isLiked.isFalse()
             }
         }
     }
+
 }

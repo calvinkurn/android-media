@@ -21,8 +21,10 @@ class PlayViewModelInsetsTest {
     @Test
     fun `given channel is live, when show keyboard, keyboard insets should be shown`() {
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = PlayChannelType.Live
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = PlayChannelType.Live
+                        )
                 )
         )
 
@@ -40,8 +42,10 @@ class PlayViewModelInsetsTest {
     @Test
     fun `given channel is vod, when show keyboard, keyboard insets should still be hidden`() {
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = PlayChannelType.VOD
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = PlayChannelType.VOD
+                        )
                 )
         )
 
@@ -83,8 +87,10 @@ class PlayViewModelInsetsTest {
     @Test
     fun `given keyboard is shown, when hide keyboard, then keyboard should be hidden`() {
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = PlayChannelType.Live
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = PlayChannelType.Live
+                        )
                 )
         )
 
@@ -141,8 +147,10 @@ class PlayViewModelInsetsTest {
     @Test
     fun `given keyboard is shown, when back button is pressed, then keyboard should be hidden and back will be consumed`() {
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = PlayChannelType.Live
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = PlayChannelType.Live
+                        )
                 )
         )
 

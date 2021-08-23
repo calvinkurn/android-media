@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.robot.play.andThen
@@ -40,10 +41,12 @@ class PlayLiveStepInteractiveTest {
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live)
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
     )
 
-    private val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+    private val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -67,7 +70,7 @@ class PlayLiveStepInteractiveTest {
         )
 
         givenPlayViewModelRobot(
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
@@ -94,7 +97,7 @@ class PlayLiveStepInteractiveTest {
         )
 
         givenPlayViewModelRobot(
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)

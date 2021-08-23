@@ -8,7 +8,6 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
@@ -37,7 +36,6 @@ class PlayViewModelCreatePageTest {
     private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
-    private val totalViewBuilder = PlayTotalViewModelBuilder()
     private val likeBuilder = PlayLikeModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
@@ -72,86 +70,6 @@ class PlayViewModelCreatePageTest {
     }
 
     @Test
-    fun `given channel data is set, when page is created, then like status value should be the same as in channel data`() {
-        val totalLike = 5L
-        val totalLikeFormatted = totalLike.toString()
-        val isLiked = false
-
-        val channelData = channelDataBuilder.buildChannelData(
-                likeInfo = likeBuilder.buildCompleteData(
-                        status = likeBuilder.buildStatus(
-                                totalLike = totalLike,
-                                totalLikeFormatted = totalLikeFormatted,
-                                isLiked = isLiked
-                        )
-                )
-        )
-        val expectedModel = likeBuilder.buildStatus(
-                totalLike = totalLike,
-                totalLikeFormatted = totalLikeFormatted,
-                isLiked = isLiked,
-                source = LikeSource.Storage
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            likeStatusResult
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
-    fun `given channel data is set, when page is created, then total view value should be the same as in channel data`() {
-        val totalView = "5.8k"
-
-        val channelData = channelDataBuilder.buildChannelData(
-                totalViewInfo = totalViewBuilder.buildCompleteData(
-                        totalView = totalView
-                )
-        )
-
-        val expectedModel = totalViewBuilder.buildCompleteData(
-                totalView = totalView
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            totalViewResult
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
-    fun `given channel data is set, when page is created, then cart info value should be the same as in channel data`() {
-        val shouldShowCart = true
-        val itemInCartCount = 95
-
-        val channelData = channelDataBuilder.buildChannelData(
-                cartInfo = cartInfoBuilder.buildCompleteData(
-                        shouldShow = shouldShowCart,
-                        count = itemInCartCount
-                )
-        )
-
-        val expectedModel = cartInfoBuilder.buildCompleteData(
-                shouldShow = shouldShowCart,
-                count = itemInCartCount
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            cartInfoResult
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
     fun `given channel data is set, when page is created, then quick replies value should be the same as in channel data`() {
         val quickReplyList = listOf("Wah keren", "Bagus Sekali", "<3")
 
@@ -171,40 +89,16 @@ class PlayViewModelCreatePageTest {
     }
 
     @Test
-    fun `given channel data is set, when page is created, then share info value should be the same as in channel data`() {
-        val shareContent = "Ayo buruan beli sekarang hanya di https://www.tokopedia.com"
-        val shouldShowShare = shareContent.isNotEmpty()
-
-        val channelData = channelDataBuilder.buildChannelData(
-                shareInfo = shareInfoBuilder.build(
-                        content = shareContent,
-                        shouldShow = shouldShowShare
-                )
-        )
-
-        val expectedModel = shareInfoBuilder.build(
-                content = shareContent,
-                shouldShow = shouldShowShare
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            shareInfoResult
-                    .isEqualTo(expectedModel)
-        }
-    }
-
-    @Test
     fun `given channel data is set, when page is created, then channel info value should be the same as in channel data`() {
         val channelType = PlayChannelType.VOD
         val backgroundUrl = "https://tokopedia.com/play/channels"
 
         val channelData = channelDataBuilder.buildChannelData(
-                channelInfo = channelInfoBuilder.buildChannelInfo(
-                        channelType = channelType,
-                        backgroundUrl = backgroundUrl
+                channelDetail = channelInfoBuilder.buildChannelDetail(
+                        channelInfo = channelInfoBuilder.buildChannelInfo(
+                                channelType = channelType,
+                                backgroundUrl = backgroundUrl
+                        )
                 )
         )
 
