@@ -24,5 +24,7 @@ data class WalletappGetAccountBalance(
     @SerializedName("icon") @Expose
     val icon: String = "",
     @SerializedName("is_active") @Expose
-    val isActive: Boolean = false
+    val isActive: Boolean = false,
+    @SerializedName("is_hidden") @Expose
+    val isHidden: Boolean = false
 )
