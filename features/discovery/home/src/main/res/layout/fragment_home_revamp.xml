@@ -31,7 +31,7 @@
           android:id="@+id/view_background_header_loading_replacer"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:src="@drawable/bg_header_home_invert"
+          android:src="@drawable/ic_header_home_invert"
           android:tint="@color/Unify_N0"
           android:scaleType="fitXY"/>
 
@@ -42,7 +42,7 @@
         android:id="@+id/view_background_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
-        android:src="@drawable/bg_header_home"
+        android:src="@drawable/ic_header_home"
         android:visibility="gone"
         android:scaleType="fitXY"/>
 

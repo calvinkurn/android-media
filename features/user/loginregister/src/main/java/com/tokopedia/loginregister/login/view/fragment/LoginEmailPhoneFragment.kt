@@ -1057,7 +1057,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLogin() {
         dismissLoadingLogin()
         activityShouldEnd = true
-        clearBeautyFest()
 
         if (emailPhoneEditText?.text?.isNotBlank() == true)
             userSession.autofillUserData = emailPhoneEditText?.text.toString()
@@ -1991,11 +1990,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return getString(R.string.color_ticker_warning)
     }
 
-    private fun clearBeautyFest() {
-        val beautyPref = requireContext().getSharedPreferences(KEY_BEAUTY_FEST, Context.MODE_PRIVATE)
-        beautyPref.edit().clear().apply()
-    }
-
     companion object {
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
@@ -2009,8 +2003,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val OS_11 = 30
-
-        private const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
