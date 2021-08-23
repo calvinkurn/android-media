@@ -46,11 +46,8 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun setSecureWindowFlag() {
         if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread {
-                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

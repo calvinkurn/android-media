@@ -32,9 +32,7 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
 
     private fun setSecureWindowFlag() {
         if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread {
-                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
 
