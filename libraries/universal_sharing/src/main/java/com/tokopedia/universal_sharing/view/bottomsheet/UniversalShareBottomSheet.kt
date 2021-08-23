@@ -186,19 +186,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
-//        setShowListener { screenshotDetector?.detectScreenshots(fragment, true, this.requireView()) }
-        setShowListener {
-            showAllToasts(fragment)
-        }
-        fragmentManager?.let {
-            show(it, TAG)
-        }
-        screenshotDetector?.stop()
-    }
-
-    fun showAllToasts(fragment: Fragment){
-        containerView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
-        Toaster.build(fragment.requireView(), text = fragment.getString(R.string.permission_denied_toast)).show()
+        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
+            ?: fragmentManager?.let { show(it, TAG) }
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -561,6 +550,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
+        screenshotDetector?.stop()
         var customBottomSheetEnabled = true
         if(!TextUtils.isEmpty(featureFlagRemoteConfigKey)){
             val remoteConfig = FirebaseRemoteConfigImpl(context)

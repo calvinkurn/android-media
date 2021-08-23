@@ -153,21 +153,24 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    fun detectScreenshots(fragment: Fragment, requestPermission:Boolean = false, toastView: View? = null) {
+    fun detectScreenshots(fragment: Fragment,  display:(() -> Unit)? = null, requestPermission:Boolean = false,
+                          toastView: View? = null) {
         if (haveStoragePermission()) {
             start()
+            display?.invoke()
         } else {
             if(requestPermission) {
-                showCustomPermissionDialog(fragment, toastView)
+                showCustomPermissionDialog(fragment, toastView, display)
             }
         }
     }
 
-    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?){
+    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?, display:(() -> Unit)?){
         var permissionDialogCustom = DialogUnify(fragment.requireContext(), DialogUnify.VERTICAL_ACTION,
             DialogUnify.WITH_ILLUSTRATION).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
             setPrimaryCTAClickListener {
+                display?.invoke()
                 requestPermission(fragment)
                 dismiss()
             }
@@ -175,6 +178,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             setSecondaryCTAClickListener {
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
+                Handler().postDelayed({
+                    display?.invoke()
+                }, 1100)
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
             setDescription(fragment.getString(R.string.permission_dialog_description))
