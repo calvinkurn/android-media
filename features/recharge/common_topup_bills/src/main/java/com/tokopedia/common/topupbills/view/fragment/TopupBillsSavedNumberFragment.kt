@@ -78,7 +78,6 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         initListener()
     }
 
-    // TODO: [Misael] nanti check bener ga panggilnya dari sini si removal
     override fun onDestroyView() {
         super.onDestroyView()
         binding?.commonTopupBillsSavedNumSearchbar?.searchBarTextField?.removeTextChangedListener(

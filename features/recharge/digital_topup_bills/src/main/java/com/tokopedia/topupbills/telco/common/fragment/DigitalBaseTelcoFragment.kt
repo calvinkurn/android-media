@@ -191,9 +191,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 it, clientNumber, favNumberList, dgCategoryIds, categoryName, operatorData
             )
 
-            // TODO: [Misael] Ganti ini request code
             val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
-                REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER else REQUEST_CODE_DIGITAL_FAVORITE_NUMBER
+                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
 
             startActivityForResult(intent, requestCode)
         }
@@ -228,7 +227,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             intent.putExtras(extras)
 
             val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
-                REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER else REQUEST_CODE_DIGITAL_FAVORITE_NUMBER
+                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
 
             startActivityForResult(intent, requestCode)
         }
@@ -279,7 +278,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         setInputNumberFromContact(contact?.contactNumber ?: "")
                         setContactNameFromContact(contact?.givenName ?: "")
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_FAVORITE_NUMBER) {
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
                         val inputNumberActionType =
                             data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
@@ -295,7 +294,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     } else {
                         handleCallbackAnySearchNumberCancel()
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER) {
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                     if (data != null) {
                         val orderClientNumber =
                             data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
@@ -585,8 +584,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
-        const val REQUEST_CODE_DIGITAL_FAVORITE_NUMBER = 76
-        const val REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER = 77
+        const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
+        const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090

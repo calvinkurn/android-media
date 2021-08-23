@@ -285,7 +285,7 @@ class TopupBillsFavoriteNumberFragment:
 
 
     // TODO: [Misael] extract NotFoundDataView keluar
-    fun filterData(query: String) {
+    private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
 
         searchClientNumbers.addAll(clientNumbers.filter {

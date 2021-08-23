@@ -175,7 +175,7 @@ class TopupBillsContactListFragment:
         }
     }
 
-    fun filterData(query: String) {
+    private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<Contact>()
 
         searchClientNumbers.addAll(contacts.filter {
