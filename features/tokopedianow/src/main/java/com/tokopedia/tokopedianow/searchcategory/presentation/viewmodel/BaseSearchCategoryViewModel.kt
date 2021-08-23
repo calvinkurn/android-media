@@ -54,6 +54,7 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -115,9 +116,11 @@ abstract class BaseSearchCategoryViewModel(
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
-    private var allMiniCartItemList: List<MiniCartItem>? = null
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    protected var allMiniCartItemList: List<MiniCartItem>? = null
+    protected var cartItemsNonVariant: List<MiniCartItem>? = null
+        private set
+    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+        private set
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -550,14 +553,7 @@ abstract class BaseSearchCategoryViewModel(
                 ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
-                labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
-                    LabelGroupDataView(
-                            url = labelGroup.url,
-                            title = labelGroup.title,
-                            position = labelGroup.position,
-                            type = labelGroup.type,
-                    )
-                },
+                labelGroupDataViewList = product.labelGroupList.map(::mapToLabelGroupDataView),
                 labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
                     LabelGroupVariantDataView(
                             title = labelGroupVariant.title,
@@ -587,6 +583,14 @@ abstract class BaseSearchCategoryViewModel(
                         quantity = getProductNonVariantQuantity(product.id)
                 )
             else null
+
+    protected open fun mapToLabelGroupDataView(labelGroup: ProductLabelGroup) =
+        LabelGroupDataView(
+            url = labelGroup.url,
+            title = labelGroup.title,
+            position = labelGroup.position,
+            type = labelGroup.type,
+        )
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())
@@ -829,8 +833,7 @@ abstract class BaseSearchCategoryViewModel(
             val updatedProductIndices = mutableListOf<Int>()
 
             visitableList.forEachIndexed { index, visitable ->
-                if (visitable is ProductItemDataView)
-                    updateProductItemQuantity(index, visitable, updatedProductIndices)
+                updateQuantityInVisitable(visitable, index, updatedProductIndices)
             }
 
             updateRecommendationListQuantity(recommendationList)
@@ -854,6 +857,15 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
             miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
+
+    protected open fun updateQuantityInVisitable(
+        visitable: Visitable<*>,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        if (visitable is ProductItemDataView)
+            updateProductItemQuantity(index, visitable, updatedProductIndices)
+    }
 
     private fun updateProductItemQuantity(
             index: Int,
@@ -882,12 +894,12 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
-    private fun getProductNonVariantQuantity(productId: String): Int {
+    protected fun getProductNonVariantQuantity(productId: String): Int {
         val cartItem = cartItemsNonVariant?.find { it.productId == productId }
         return cartItem?.quantity ?: 0
     }
 
-    private fun getProductVariantTotalQuantity(parentProductId: String): Int {
+    protected fun getProductVariantTotalQuantity(parentProductId: String): Int {
         val cartItemsVariantGrouped = cartItemsVariantGrouped
         val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
         val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
@@ -949,7 +961,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun addToCart(
+    protected fun addToCart(
             productId: String,
             shopId: String,
             quantity: Int,
@@ -969,7 +981,7 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    private fun updateCartMessageSuccess(successMessage: String) {
+    protected fun updateCartMessageSuccess(successMessage: String) {
         successATCMessageMutableLiveData.value = successMessage
     }
 
@@ -985,7 +997,7 @@ abstract class BaseSearchCategoryViewModel(
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun onAddToCartFailed(throwable: Throwable) {
+    protected fun onAddToCartFailed(throwable: Throwable) {
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
@@ -1003,13 +1015,13 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun updateCart(
+    protected fun updateCart(
             productId: String,
             quantity: Int,
             onSuccess: (UpdateCartV2Data) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
                 cartId = miniCartItem.cartId,
@@ -1044,12 +1056,12 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun deleteCart(
+    protected fun deleteCart(
             productId: String,
             onSuccess: (RemoveFromCartData) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
         deleteCartUseCase.execute(onSuccess, onError)

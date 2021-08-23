@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.reading.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewAttachedImageViewHolder
@@ -16,7 +15,7 @@ class ReadReviewAttachedImagesAdapter(private val imageClickListener: ReadReview
     private var shopId: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReadReviewAttachedImageViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_review_attached_image, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(com.tokopedia.review.inbox.R.layout.item_review_attached_image, parent, false)
         return ReadReviewAttachedImageViewHolder(itemView)
     }
 

@@ -388,6 +388,7 @@
     <string name="review_reading_empty_filter_subtitle">Coba reset atau ubah filter kamu, ya.</string>
     <string name="review_reading_success_submit_report">Kamu berhasil melaporkan ulasan ini.</string>
     <string name="review_reading_collapse">&lt;a href="#"&gt;Tutup Ulasan&lt;/a&gt;</string>
+    <string name="review_reading_product_satisfaction_rate">%s&#37; pembeli puas belanja barang ini</string>
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>
