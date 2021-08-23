@@ -34,6 +34,7 @@ class GetLinkStatusUseCase(private val repository: GraphqlRepository)
                         linking_type
                         status
                         partner_user_id
+                        linked_time
                     }
                     error
                 }
