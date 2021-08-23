@@ -1130,7 +1130,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String) {
             PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, "", protectionTitle)
+            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, 0, protectionTitle)
         }
 
         override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {

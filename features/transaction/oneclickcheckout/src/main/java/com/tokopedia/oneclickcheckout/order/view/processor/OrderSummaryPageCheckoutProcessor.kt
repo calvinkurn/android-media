@@ -59,7 +59,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+//            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val checkoutProducts: ArrayList<ProductData> = ArrayList()
             products.forEach {
                 if (!it.isError) {
@@ -102,6 +102,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         }
                         products.forEach {
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
+/*
                                 orderSummaryAnalytics.eventPPClickBayar(userId,
                                         it.categoryId,
                                         it.purchaseProtectionPlanData.protectionTitle,
@@ -109,6 +110,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                         orderCart.cartId,
                                         if (isPPPChecked) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
                                         else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
+*/
                             }
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,

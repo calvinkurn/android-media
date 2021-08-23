@@ -140,7 +140,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, orderProfile.value.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             for (product in orderCart.products) {
                 if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
+                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, 0, product.purchaseProtectionPlanData.protectionTitle)
                 }
             }
             hasSentViewOspEe = true
