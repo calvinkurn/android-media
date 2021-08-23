@@ -22,10 +22,11 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobHome"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl4"
-        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
