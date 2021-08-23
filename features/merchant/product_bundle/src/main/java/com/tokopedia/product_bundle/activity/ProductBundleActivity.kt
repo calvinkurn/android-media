@@ -53,7 +53,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
 
         var data = intent.data
         data?.let {
-//          Applink sample = tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
+//          Applink sample = tokopedia-android-internal/product-bundle/2147881200?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
             data = RouteManager.getIntent(this, intent.data.toString()).data
             val pathSegments = it.pathSegments.orEmpty()
             getProductIdFromUri(it, pathSegments)
