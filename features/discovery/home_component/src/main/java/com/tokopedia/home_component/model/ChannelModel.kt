@@ -19,6 +19,10 @@ data class ChannelModel(
         val name : String = "",
         val layout: String = ""
 ): ImpressHolder(){
+    companion object{
+        const val CHANNEL_HOME = "home"
+        const val CHANNEL_OS = "os"
+    }
     val isChannelBeautyFest : Boolean = when(id) {
             //hardcoded channel id as beauty fest channel id
             "129362",
