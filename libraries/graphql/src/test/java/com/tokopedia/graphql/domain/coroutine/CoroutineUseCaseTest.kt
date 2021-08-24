@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
 import com.tokopedia.graphql.domain.example.GetNoParamUseCase
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +25,7 @@ class CoroutineUseCaseTest {
     @Before
     fun setup() {
         uut = GetNoParamUseCase(repository, dispatcher)
+        clearAllMocks()
     }
 
     @Test
