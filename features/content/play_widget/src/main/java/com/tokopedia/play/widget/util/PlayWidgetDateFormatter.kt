@@ -27,10 +27,13 @@ object PlayWidgetDateFormatter {
         return try {
             val input = SimpleDateFormat(inputFormat, locale)
             val output = SimpleDateFormat(outputFormat, locale)
-
             val date = input.parse(raw)
+
             date?.let {
-                return@let output.format(date)
+                val diff = (GMT07.toInt() - getDeviceGMT().toInt()) / 100
+                val time = it.time + (diff * 60 * 60 * 1000)
+
+                return@let output.format(Date(time))
             } ?: raw
         }
         catch (e: Exception){
