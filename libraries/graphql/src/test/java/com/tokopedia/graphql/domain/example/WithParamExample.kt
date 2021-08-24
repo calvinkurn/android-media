@@ -4,8 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 
-class GetNoParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    CoroutineUseCase<Unit, FooModel>(repository, dispatcher) {
+class GetWithParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
+    CoroutineUseCase<FooInput, FooModel>(repository, dispatcher) {
 
     override fun graphqlQuery(): String {
         return """
@@ -16,8 +16,8 @@ class GetNoParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDisp
         """.trimIndent()
     }
 
-    override suspend fun execute(params: Unit): FooModel {
-        return request(Unit)
+    override suspend fun execute(params: FooInput): FooModel {
+        return request(params.toMap())
     }
 
 }

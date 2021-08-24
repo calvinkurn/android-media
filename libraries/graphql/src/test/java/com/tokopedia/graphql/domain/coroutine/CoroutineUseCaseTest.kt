@@ -39,4 +39,13 @@ class CoroutineUseCaseTest {
         }
 
     }
+
+
+    @Test
+    fun `a a`() {
+        dispatcher.runBlockingTest {
+            val result = repository.getReseponse(listOf())
+            print(result)
+        }
+    }
 }
