@@ -5,10 +5,10 @@ import com.tokopedia.graphql.domain.GqlUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-abstract class CoroutineUseCase<P, out R: Any> constructor(
+abstract class CoroutineUseCase<Input, out Output: Any> constructor(
     repository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<P, R>(repository) {
+) : GqlUseCase<Input, Output>(repository) {
 
     /*
     * Executes the use case synchronously
@@ -16,7 +16,7 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return an generic class comes from R
     * */
-    suspend operator fun invoke(params: P): R {
+    suspend operator fun invoke(params: Input): Output {
         return withContext(dispatcher) {
             execute(params)
         }
