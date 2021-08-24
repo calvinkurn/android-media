@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
@@ -34,8 +35,8 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
         }
 
         val request = GraphqlRequest(getQueryCartRevampV3(), ShopGroupSimplifiedGqlResponse::class.java, params)
-//        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
-        val response = Gson().fromJson(getJsonFromResource("cart_dummy.json"), ShopGroupSimplifiedGqlResponse::class.java)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
+//        val response = Gson().fromJson(getJsonFromResource("cart_dummy.json"), ShopGroupSimplifiedGqlResponse::class.java)
 
         if (response.shopGroupSimplifiedResponse.status == "OK") {
             return response.shopGroupSimplifiedResponse.data
