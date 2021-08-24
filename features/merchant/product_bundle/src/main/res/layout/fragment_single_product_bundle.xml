@@ -48,12 +48,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:unify_total_amount_cta_text="Beli Paket"
+        app:unify_total_amount_cta_text="@string/action_buy"
         app:unify_total_amount_enable_shadow="true"
         app:unify_total_amount_enable_title_chevron="false"
         app:unify_total_amount_subtitle_text="Hemat Rp0"
-        app:unify_total_amount_text="Rp0"
-        app:unify_total_amount_title_suffix_text="Rp0"
+        app:unify_total_amount_text="@string/single_bundle_default_price"
+        app:unify_total_amount_title_suffix_text="@string/single_bundle_default_price"
         app:unify_total_amount_title_text=" " />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

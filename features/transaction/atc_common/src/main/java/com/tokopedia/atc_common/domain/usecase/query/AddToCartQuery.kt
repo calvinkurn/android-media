@@ -59,8 +59,8 @@ val QUERY_ADD_TO_CART_OCC = """
 """.trimIndent()
 
 val MUTATION_ADD_TO_CART_BUNDLE = """
-    mutation add_to_cart_bundle(${'$'}param: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {
-      add_to_cart_bundle(params: ${'$'}param, chosen_address: ${'$'}chosen_address, dummy: ${'$'}dummy) {
+    mutation add_to_cart_bundle(${'$'}params: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {
+      add_to_cart_bundle(params: ${'$'}params, chosen_address: ${'$'}chosen_address, dummy: ${'$'}dummy) {
         error_message
         status
         data{

@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.common.util
+package com.tokopedia.product_bundle.common.data.mapper
 
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.Child
