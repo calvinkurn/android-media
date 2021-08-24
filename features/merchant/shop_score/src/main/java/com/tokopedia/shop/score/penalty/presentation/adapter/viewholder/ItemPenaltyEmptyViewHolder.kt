@@ -7,7 +7,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.EMPTY_STATE_PENALTY_URL
 import kotlinx.android.synthetic.main.item_empty_state_penalty.view.*
 
-class ItemPenaltyEmptyViewHolder(view: View): AbstractViewHolder<EmptyModel>(view) {
+class ItemPenaltyEmptyViewHolder(view: View) : AbstractViewHolder<EmptyModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_empty_state_penalty

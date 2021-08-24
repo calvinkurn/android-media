@@ -2,14 +2,10 @@ package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
-import com.tokopedia.product.manage.common.feature.variant.data.model.Option
-import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
-import com.tokopedia.product.manage.common.feature.variant.data.model.Product
-import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
-import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
+import com.tokopedia.product.manage.common.feature.variant.data.model.*
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 fun createProductVariantResponse(
@@ -17,7 +13,7 @@ fun createProductVariantResponse(
     status: ProductStatus = ProductStatus.ACTIVE,
     combination: List<Int> = emptyList(),
     isPrimary: Boolean = false,
-    price: Int = 100,
+    price: Double = 100.0,
     sku: String = "sku",
     stock: Int = 0,
     pictures: List<Picture> = emptyList(),
@@ -52,14 +48,15 @@ fun createProductVariant(
         combination: List<Int> = emptyList(),
         isPrimary: Boolean = false,
         isCampaign: Boolean = false,
-        price: Int = 100,
+        price: Double = 100.0,
         sku: String = "sku",
         stock: Int = 0,
         pictures: List<Picture> = emptyList(),
         isAllStockEmpty: Boolean = true,
-        access: ProductManageAccess = createShopOwnerAccess()
+        access: ProductManageAccess = createShopOwnerAccess(),
+        campaignTypeList: List<CampaignType>? = emptyList()
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, isCampaign, price, sku, stock, pictures, isAllStockEmpty, access)
+    return ProductVariant(id, name, status, combination, isPrimary, isCampaign, price, sku, stock, pictures, isAllStockEmpty, access, campaignTypeList)
 }
 
 fun createGetVariantResponse(
