@@ -141,7 +141,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onPageClickedAgain() {
-        rv?.smoothScrollToPosition(0)
+        rv?.scrollToPosition(0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
