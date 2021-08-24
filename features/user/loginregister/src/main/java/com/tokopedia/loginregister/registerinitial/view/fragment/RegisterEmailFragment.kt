@@ -34,6 +34,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.common.utils.RegisterUtil.getMessageWithoutErrorCode
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -173,7 +174,7 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        if (errorMessage == forbiddenMessage) {
+                        if (errorMessage.getMessageWithoutErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
                             onErrorRegister(errorMessage)
@@ -555,8 +556,8 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {
-        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage ?: "")
-        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
+        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.getMessageWithoutErrorCode() ?: "")
+        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.getMessageWithoutErrorCode() ?: "")
     }
 
     val isAutoVerify: Int
