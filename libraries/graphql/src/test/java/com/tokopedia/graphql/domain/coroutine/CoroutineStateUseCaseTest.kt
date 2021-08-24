@@ -22,7 +22,6 @@ class CoroutineStateUseCaseTest {
     val dispatcher = TestCoroutineDispatcher()
     lateinit var uut: GetNoParamStateUseCase
 
-
     @Before
     fun setup() {
         uut = GetNoParamStateUseCase(repository, dispatcher)

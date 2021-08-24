@@ -21,7 +21,6 @@ class CoroutineUseCaseTest {
     val dispatcher = TestCoroutineDispatcher()
     lateinit var uut: GetNoParamUseCase
 
-
     @Before
     fun setup() {
         uut = GetNoParamUseCase(repository, dispatcher)
