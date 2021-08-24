@@ -98,7 +98,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             welcomeNotification = realTimeNotificationMapper.mapWelcomeFormat(
                     welcomeFormatResponse
             ),
-            lifespan = config.lifespan,
+            lifespan = if (config.lifespan <= 0) DEFAULT_LIFESPAN_IN_MS else config.lifespan,
 //                welcomeNotification = RealTimeNotificationUiModel("", "eggy & 10 penonton lainnya follow toko ini", "#50BA47"),
 //                lifespan = 1000L,
     )
@@ -223,6 +223,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     companion object {
         private const val MS_PER_SECOND = 1000
         private const val DEFAULT_MAX_FEATURED_PRODUCT = 5
+
+        private const val DEFAULT_LIFESPAN_IN_MS = 1000L
     }
 
     data class ExtraParams(

@@ -258,7 +258,6 @@
         layout="@layout/view_real_time_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="invisible"
         app:layout_constrainedWidth="true"

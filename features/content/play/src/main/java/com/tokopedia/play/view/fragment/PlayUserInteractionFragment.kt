@@ -505,6 +505,13 @@ class PlayUserInteractionFragment @Inject constructor(
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
+
+        if (isHidingInsets && rtnView?.isAnimatingHide() != true) {
+            val height = rtnView?.getRtnHeight() ?: return
+            chatListView?.setMask(height.toFloat() + offset8, false)
+        } else {
+            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
+        }
     }
 
     private fun initAnalytic() {
@@ -833,7 +840,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderChatListView(cachedState.isValueChanged(PlayViewerNewUiState::rtn), state.rtn)
             }
         }
     }
@@ -1452,18 +1458,6 @@ class PlayUserInteractionFragment @Inject constructor(
         rtnView?.setLifespan(rtn.lifespanInMs)
         if (rtn.shouldShow) rtnView?.show()
         else rtnView?.invisible()
-    }
-
-    private fun renderChatListView(isChanged: Boolean, rtn: PlayRtnUiState) {
-        if (!isChanged) return
-        if (!rtn.shouldShow) {
-            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
-        }
-//        else {
-//            if (rtnView?.isAnimating() != true) return
-//            val height = rtnView?.getRtnHeight() ?: return
-//            chatListView?.setMask(height.toFloat() + offset8, false)
-//        }
     }
     //endregion
 

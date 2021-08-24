@@ -36,6 +36,8 @@ class RealTimeNotificationViewComponent(
         private val listener: Listener,
 ) : ViewComponent(container, R.id.view_real_time_notification) {
 
+    private val offset16 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+
     private val rtnBubbleView: RealTimeNotificationBubbleView = findViewById(
             R.id.rtn_bubble
     )
@@ -75,6 +77,8 @@ class RealTimeNotificationViewComponent(
         }
     }
 
+    private var showAnimation = ValueAnimator.ofInt(0)
+    private var hideAnimation = ValueAnimator.ofInt(0)
     private val animatorSet = AnimatorSet()
 
     init {
@@ -91,6 +95,10 @@ class RealTimeNotificationViewComponent(
 
     fun getRtnHeight(): Int {
         return rtnBubbleView.measuredHeight
+    }
+
+    fun isAnimatingHide(): Boolean {
+        return hideAnimation.isRunning
     }
 
     private suspend fun setRealTimeNotification(rtn: RealTimeNotificationUiModel) {
@@ -129,7 +137,12 @@ class RealTimeNotificationViewComponent(
             }
         }
 
-        val showAnimation = ObjectAnimator.ofFloat(rtnBubbleView, View.TRANSLATION_X, -1f * rtnBubbleView.measuredWidth, 0f).apply {
+        showAnimation = ObjectAnimator.ofFloat(
+                rtnBubbleView,
+                View.TRANSLATION_X,
+                -1f * (rtnBubbleView.measuredWidth + offset16)
+                , 0f
+        ).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(showListener)
         }
@@ -138,7 +151,12 @@ class RealTimeNotificationViewComponent(
             duration = lifespanInMs
         }
 
-        val hideAnimation = ObjectAnimator.ofFloat(rtnBubbleView, View.TRANSLATION_X, 0f, -1f * rtnBubbleView.measuredWidth).apply {
+        hideAnimation = ObjectAnimator.ofFloat(
+                rtnBubbleView,
+                View.TRANSLATION_X,
+                0f,
+                -1f * (rtnBubbleView.measuredWidth + offset16)
+        ).apply {
             duration = SLIDE_DURATION_IN_MS
             addListener(hideListener)
         }

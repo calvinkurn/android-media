@@ -9,6 +9,7 @@
         android:id="@+id/rtn_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:visibility="invisible"
         />
 
