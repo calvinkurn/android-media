@@ -74,6 +74,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/separatorLine"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="@dimen/dp_28"
+        android:background="@color/Unify_N75"
+        app:layout_constraintStart_toEndOf="@id/guidelineNewSeller"
+        app:layout_constraintTop_toTopOf="@id/tvShopLevel"
+        app:layout_constraintBottom_toBottomOf="@id/tvShopLevel"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShopScoreLabel"
         android:layout_width="wrap_content"
