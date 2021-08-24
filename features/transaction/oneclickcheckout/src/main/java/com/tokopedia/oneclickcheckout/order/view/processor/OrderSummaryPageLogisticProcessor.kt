@@ -100,8 +100,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             uniqueId = orderCart.cartString
             addressId = address.addressId.toString()
             products = productList
-            weightInKilograms = totalWeight / 1000.0
-            weightActualInKilograms = totalWeightActual / 1000.0
+            weightInKilograms = totalWeight / OrderShop.WEIGHT_KG_DIVIDER
+            weightActualInKilograms = totalWeightActual / OrderShop.WEIGHT_KG_DIVIDER
             productInsurance = productFInsurance
             orderValue = orderCost.totalItemPrice.toLong()
             isFulfillment = orderShop.isFulfillment
@@ -124,7 +124,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             val logisticPromo = data.logisticPromo
             if (logisticPromo != null && !shipmentProfile.isDisableChangeCourier) {
                 // validate army courier
-                // TODO: 07/07/21 check tokonow bbo
                 val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
                 if (serviceData == null) {
                     data.logisticPromo = null
@@ -144,12 +143,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 if (param == null) {
                     // overweight
                     return@withContext ResultRates(
-                            orderShipment = OrderShipment(
+                            orderShipment = orderShipment.copy(
                                     isLoading = false,
-                                    serviceName = orderProfile.shipment.serviceName,
-                                    serviceDuration = orderProfile.shipment.serviceDuration,
-                                    serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
-                                    shippingRecommendationData = null
+                                    serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
                             ),
                             overweight = overweight
                     )
@@ -192,7 +188,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
 
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
-                // TODO: 06/07/21 handle tokonow bbo data
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
                     if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected) || profileShipment.isDisableChangeCourier) {

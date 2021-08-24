@@ -9,10 +9,10 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventEditQuantityIncrease(productId: String, shopId: String, productQuantity: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
                 EventAction.EDIT_QUANTITY_INCREASE,
-                "$productId - $shopId - $productQuantity"
+            "$productId - $shopId - $productQuantity"
         )
     }
 
@@ -45,9 +45,9 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickOnInsurance(insuranceCheck: String, insuranceValue: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ON_INSURANCE,
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_ON_INSURANCE,
                 "$insuranceCheck - $insuranceValue"
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -95,9 +95,9 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
 
     fun eventClickRingkasanBelanjaOSP(totalPrice: String) {
         val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_RINGKASAN_BELANJA_OSP,
+            EventName.CLICK_CHECKOUT_EXPRESS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.CLICK_RINGKASAN_BELANJA_OSP,
                 totalPrice
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM

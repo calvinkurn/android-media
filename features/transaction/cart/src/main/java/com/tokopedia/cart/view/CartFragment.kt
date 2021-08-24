@@ -211,6 +211,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         private const val TOKONOW_UPDATER_DEBOUNCE = 500L
 
+        private const val TOKONOW_SEE_OTHERS_OR_ALL_LIMIT = 10
+
         const val HAS_ELEVATION = 9
         const val NO_ELEVATION = 0
         const val CART_TRACE = "mp_cart"
@@ -2776,6 +2778,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationCancel(animation: Animator) {}
                 override fun onAnimationRepeat(animation: Animator) {}
             })
+            it.start()
         }
     }
 
@@ -3281,11 +3284,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onExpandAvailableItem(index: Int) {
-        // Todo : revamp collapse - expand handling
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
+        if (cartShopHolderData != null) {
+            if (cartShopHolderData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopId)
+            } else {
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopId)
+            }
+            cartShopHolderData.isCollapsed = false
+            onNeedToUpdateViewItem(index)
+        }
     }
 
-    override fun onCollapsedProductClicked(clickedProductIndex: Int) {
-        // Todo : revamp collapse - expand handling
+    override fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData) {
+        val (cartShopHolderData, shopIndex) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (cartShopHolderData != null) {
+            cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
+            cartShopHolderData.isCollapsed = false
+            cartShopHolderData.clickedCollapsedProductIndex = index
+            onNeedToUpdateViewItem(shopIndex)
+        }
     }
 
     override fun scrollToClickedExpandedProduct(index: Int, offset: Int) {

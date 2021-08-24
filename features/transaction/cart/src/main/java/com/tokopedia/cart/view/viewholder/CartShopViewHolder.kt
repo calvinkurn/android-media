@@ -164,7 +164,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         var hasProductWithVariant = false
         val cartItemDataList = cartShopHolderData.productUiModelList
         if (cartItemDataList.isNotEmpty()) {
-            val maxIndex = min(cartItemDataList.size, 10)
+            val maxIndex = min(cartItemDataList.size, COLLAPSED_PRODUCTS_LIMIT)
             loop@ for (cartItemData in cartItemDataList.subList(0, maxIndex)) {
                 if (cartItemData.variant.isNotBlank()) {
                     hasProductWithVariant = true
@@ -185,8 +185,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val showMoreWording: String
             val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
             val itemCount = cartShopHolderData.productUiModelList.size
-            showMoreWording = if (itemCount > 10) {
-                val exceedItemCount = itemCount - 10
+            showMoreWording = if (itemCount > COLLAPSED_PRODUCTS_LIMIT) {
+                val exceedItemCount = itemCount - COLLAPSED_PRODUCTS_LIMIT
                 itemView.context.getString(R.string.label_tokonow_show_other, exceedItemCount)
             } else {
                 itemView.context.getString(R.string.label_tokonow_show_more)
@@ -419,6 +419,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     companion object {
         val LAYOUT = R.layout.item_shop
+
+        private const val COLLAPSED_PRODUCTS_LIMIT = 10
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
         const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"

@@ -197,7 +197,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     viewModel?.goToCheckout(globalEvent.observer)
                 }
             })
-            val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
             analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description, isOCCFlow)
         } else {
             // Reload data
@@ -223,7 +223,7 @@ class MiniCartWidget @JvmOverloads constructor(
             } else {
                 showToaster(view, errorMessage, Toaster.TYPE_ERROR, isShowCta = false)
             }
-            val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
             analytics.eventClickBuyThenGetToasterError(errorMessage, isOCCFlow)
         }
     }
@@ -243,7 +243,7 @@ class MiniCartWidget @JvmOverloads constructor(
                             viewModel?.goToCheckout(globalEvent.observer)
                         }
                     })
-                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
                     analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle), isOCCFlow)
                 }
                 is SocketTimeoutException -> {
@@ -252,7 +252,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
                         analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
                     analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
                 else -> {
@@ -261,7 +261,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
                         analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
                     analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
             }
@@ -269,7 +269,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun onSuccessGoToCheckout(context: Context) {
-        val intent = if (viewModel?.isOCCFlow?.value == true) {
+        val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
@@ -346,7 +346,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
-        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
         analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
@@ -424,6 +424,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(true)
+        viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
@@ -448,15 +449,16 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun validateAmountCtaLabel(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        if (viewModel?.isOCCFlow?.value == true) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             // Change button from `Beli Langsung` to `Beli` if ellipsis
             totalAmount?.post {
                 val ellipsis = totalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
                 if (ellipsis > 0) {
+                    val ctaText = context.getString(R.string.mini_cart_widget_cta_text_default)
                     if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-                        totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                        totalAmount?.setCtaText(ctaText)
                     } else {
-                        totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+                        totalAmount?.setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
                     }
                 }
             }
@@ -467,11 +469,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
-            if (viewModel?.isOCCFlow?.value == true) {
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-            } else {
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-            }
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
             amountCtaView.isEnabled = true
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
@@ -485,11 +485,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.apply {
             setLabelTitle("")
             setAmount("")
-            if (viewModel?.isOCCFlow?.value == true) {
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
-            } else {
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
-            }
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText(ctaText)
             amountCtaView.isEnabled = false
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()

@@ -22,7 +22,9 @@ import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -58,9 +60,9 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     val currentPage: LiveData<MiniCartAnalytics.Page>
         get() = _currentPage
 
-    private val _isOCCFlow = MutableLiveData<Boolean>()
-    val isOCCFlow: LiveData<Boolean>
-        get() = _isOCCFlow
+    private val _miniCartABTestData = MutableLiveData<MiniCartABTestData>()
+    val miniCartABTestData: LiveData<MiniCartABTestData>
+        get() = _miniCartABTestData
 
     // Widget DATA
     private val _globalEvent = MutableLiveData<GlobalEvent>()
@@ -153,6 +155,13 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
     }
 
+    fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
+        _miniCartABTestData.value = MiniCartABTestData(
+                isOCCFlow = isOCCFlow,
+                buttonBuyWording = buttonBuyWording
+        )
+    }
+
     // API Call & Callback
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
@@ -165,8 +174,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {
-                    // Todo : setOccFlow value from mini cart response
-                    _isOCCFlow.value = true
+                    setMiniCartABTestData(
+                            isOCCFlow = it.miniCartWidgetData.isOCCFlow,
+                            buttonBuyWording = it.miniCartWidgetData.buttonBuyWording
+                    )
                     _miniCartSimplifiedData.value = it
                 },
                 onError = {
@@ -183,8 +194,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    // Todo : setOccFlow value from mini cart response
-                    _isOCCFlow.value = true
+                    setMiniCartABTestData(
+                            isOCCFlow = it.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC,
+                            buttonBuyWording = it.data.beliButtonConfig.buttonWording
+                    )
                     onSuccessGetCartList(it, isFirstLoad)
                 },
                 onError = {
@@ -358,7 +371,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun goToCheckout(observer: Int) {
-        if (isOCCFlow.value == true) {
+        if (miniCartABTestData.value?.isOCCFlow == true) {
             addToCartForCheckout(observer)
         } else {
             updateCartForCheckout(observer)

@@ -181,7 +181,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
-        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
         analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
@@ -427,20 +427,16 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             if (miniCartWidgetData.totalProductCount == 0) {
                 setAmount("-")
-                if (viewModel?.isOCCFlow?.value == true) {
-                    setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
-                } else {
-                    setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
-                }
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                        ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText(ctaText)
                 amountCtaView.isEnabled = false
                 enableAmountChevron(false)
             } else {
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-                if (viewModel?.isOCCFlow?.value == true) {
-                    setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartWidgetData.totalProductCount))
-                } else {
-                    setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
-                }
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                        ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText("$ctaText (${miniCartWidgetData.totalProductCount})")
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
@@ -452,15 +448,16 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun validateAmountCtaLabel(viewBinding: LayoutBottomsheetMiniCartListBinding, miniCartWidgetData: MiniCartWidgetData) {
-        if (viewModel?.isOCCFlow?.value == true) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             viewBinding.totalAmount.post {
                 val ellipsis = viewBinding.totalAmount.amountCtaView.layout?.getEllipsisCount(0)
                         ?: 0
                 if (ellipsis > 0) {
+                    val ctaText = viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_cta_text_default)
                     if (miniCartWidgetData.totalProductCount == 0) {
-                        viewBinding.totalAmount.setCtaText(String.format(viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                        viewBinding.totalAmount.setCtaText(ctaText)
                     } else {
-                        viewBinding.totalAmount.setCtaText(String.format(viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                        viewBinding.totalAmount.setCtaText("$ctaText (${miniCartWidgetData.totalProductCount})")
                     }
                 }
             }

@@ -59,7 +59,6 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-//            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val checkoutProducts: ArrayList<ProductData> = ArrayList()
             products.forEach {
                 if (!it.isError) {
@@ -90,7 +89,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     promos = shopPromos
                             )
                     )
-            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1))
+            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))
 
             try {
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
@@ -102,20 +101,20 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         }
                         products.forEach {
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
-/*
                                 orderSummaryAnalytics.eventPPClickBayar(userId,
                                         it.categoryId,
                                         it.purchaseProtectionPlanData.protectionTitle,
                                         it.purchaseProtectionPlanData.protectionPricePerProduct,
-                                        orderCart.cartId,
-                                        if (isPPPChecked) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
+                                        it.cartId,
+                                        if (it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
                                         else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
-*/
                             }
                         }
+                        val transactionId = getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form)
+                        checkoutOccData.result.paymentParameter.transactionId = transactionId
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,
-                                getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
+                                transactionId,
                                 paymentType,
                                 orderSummaryPageEnhanceECommerce.apply {
                                     dataList.forEach {

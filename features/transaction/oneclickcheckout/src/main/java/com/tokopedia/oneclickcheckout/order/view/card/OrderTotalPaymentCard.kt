@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
@@ -73,34 +74,15 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                                 }
                             }
                         }
-                        OccButtonType.CONTINUE -> {
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                            when (orderTotal.buttonState) {
-                                OccButtonState.NORMAL -> {
-                                    isEnabled = true
-                                    setText(R.string.continue_pay)
-                                    groupLoaderPayment.gone()
-                                    groupPayment.visible()
-                                }
-                                OccButtonState.DISABLE -> {
-                                    isEnabled = false
-                                    setText(R.string.continue_pay)
-                                    groupLoaderPayment.gone()
-                                    groupPayment.visible()
-                                }
-                                else -> {
-                                    groupPayment.gone()
-                                    groupLoaderPayment.visible()
-                                }
-                            }
-                        }
                     }
                 }
 
                 if (orderTotal.orderCost.totalPrice > 0.0) {
                     tvTotalPaymentValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false).removeDecimalSuffix()
+                    btnOrderDetail.visibility = if (orderTotal.buttonState == OccButtonState.LOADING) View.GONE else View.VISIBLE
                 } else {
                     tvTotalPaymentValue.text = "-"
+                    btnOrderDetail.visibility = View.GONE
                 }
 
                 btnOrderDetail.setOnClickListener {

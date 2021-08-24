@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.common.domain.mapper
 
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.Data
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -31,6 +32,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             totalProductError = miniCartData.data.totalProductError
             containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
             unavailableItemsCount = miniCartData.data.totalProductError
+            isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
+            buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
         }
     }
 

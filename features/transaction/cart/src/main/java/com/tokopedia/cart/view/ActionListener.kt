@@ -80,7 +80,7 @@ interface ActionListener {
 
     fun onExpandAvailableItem(index: Int)
 
-    fun onCollapsedProductClicked(clickedProductIndex: Int)
+    fun onCollapsedProductClicked(index: Int, cartItemHolderData: CartItemHolderData)
 
     fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 

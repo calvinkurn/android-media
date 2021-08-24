@@ -36,7 +36,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                actionListener.onCollapsedProductClicked(position)
+                actionListener.onCollapsedProductClicked(position, cartItemHolderData)
             }
         }
     }
