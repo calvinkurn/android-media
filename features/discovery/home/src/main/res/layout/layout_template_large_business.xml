@@ -10,7 +10,7 @@
         android:layout_height="@dimen/bu_item_large_height"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/productName"
             android:layout_width="@dimen/dp_110"
             android:layout_height="wrap_content"
@@ -38,13 +38,13 @@
             android:orientation="vertical">
 
             <include
-                layout="@layout/layout_template_footer_business"
                 android:id="@+id/footer"
-                android:layout_alignParentBottom="true"
+                layout="@layout/layout_template_footer_business"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_alignParentBottom="true" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title1st"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 tools:text="Nilai investasi"
                 />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/desc1st"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 tools:text="Rp999.000.000"
                 />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title2nd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 tools:text="Keuntungan Harian"
                 />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/desc2nd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
