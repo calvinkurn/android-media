@@ -24,7 +24,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
  *   this function is a helper to request data to the graphql service based on
  *   predefined parameters and queries.
  */
-abstract class GqlUseCase<P, out R> {
+abstract class GqlUseCase<P, out R>(protected val repository: GraphqlRepository) {
 
     /*
     * override this to set the code to be executed
@@ -40,11 +40,7 @@ abstract class GqlUseCase<P, out R> {
     /*
     * this is helper function to request network using graphql repository
     * */
-    @Suppress("UNCHECKED_CAST")
-    protected suspend inline fun <reified T, reified P> request(
-        repository: GraphqlRepository,
-        params: P
-    ): T {
+    protected suspend inline fun <reified T> request(params: P): T {
         val parameters = if (params is Map<*, *>) params as Map<String, Any> else mapOf()
 
         val request = GraphqlRequest(graphqlQuery(), T::class.java, parameters)

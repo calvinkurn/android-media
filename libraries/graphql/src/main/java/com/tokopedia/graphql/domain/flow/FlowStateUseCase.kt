@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.domain.flow
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -9,8 +10,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 
 abstract class FlowStateUseCase<P, out R: Any> constructor(
+    repository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<P, Flow<Result<R>>>() {
+) : GqlUseCase<P, Flow<Result<R>>>(repository) {
 
     /*
     * Executes the use case based on dispatcher's flow with state

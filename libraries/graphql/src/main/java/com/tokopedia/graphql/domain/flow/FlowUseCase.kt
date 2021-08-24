@@ -1,13 +1,15 @@
 package com.tokopedia.graphql.domain.flow
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GqlUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
 abstract class FlowUseCase<P, out R: Any> constructor(
+    repository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<P, Flow<R>>() {
+) : GqlUseCase<P, Flow<R>>(repository) {
 
     /*
     * Executes the use case based on dispatcher's flow
