@@ -6,17 +6,17 @@
     android:paddingTop="@dimen/dp_20">
 
     <LinearLayout
-        android:layout_width="@dimen/dp_230"
-        android:layout_height="@dimen/dp_110"
+        android:layout_width="@dimen/bu_item_large_width"
+        android:layout_height="@dimen/bu_item_large_height"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/productName"
             android:layout_width="@dimen/dp_110"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:gravity="right"
             android:textSize="@dimen/sp_10"
             android:textColor="@color/Unify_N700_68"
@@ -24,21 +24,21 @@
             android:layout_gravity="end"
             android:maxLines="1"
             android:ellipsize="end"
-            tools:text="EVENTS"
-            />
+            tools:text="EVENTS" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_template_footer_business"
+            <include
+                layout="@layout/layout_template_footer_business"
                 android:id="@+id/footer"
                 android:layout_alignParentBottom="true"
                 android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
         layout="@layout/layout_template_icon_business_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8" />
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginLeft="@dimen/unify_space_8" />
 
 </com.tokopedia.unifycomponents.CardUnify>

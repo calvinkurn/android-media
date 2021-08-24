@@ -7,8 +7,8 @@
     android:paddingTop="@dimen/dp_20">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_110"
+        android:layout_width="@dimen/bu_item_med_width"
+        android:layout_height="@dimen/bu_item_med_height"
         android:orientation="vertical">
 
         <TextView
