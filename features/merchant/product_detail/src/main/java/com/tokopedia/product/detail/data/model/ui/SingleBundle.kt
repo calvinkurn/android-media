@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -33,10 +34,7 @@ class SingleBundle(parent: View) {
         price.text = item.bundlePrice
 
         val quantityLabel = item.quantity
-        if (quantityLabel.isBlank()) {
-            label.hide()
-        } else {
-            label.show()
+        label.shouldShowWithAction(quantityLabel.isNotBlank()) {
             label.text = quantityLabel
         }
 
