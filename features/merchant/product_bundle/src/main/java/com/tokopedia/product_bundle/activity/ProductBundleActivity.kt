@@ -1,5 +1,7 @@
 package com.tokopedia.product_bundle.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
@@ -21,6 +24,19 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ProductBundleActivity : BaseSimpleActivity() {
+
+    companion object {
+        const val EXTRA_PRODUCT_ID: String = "product_id"
+
+        // TODO("remove if unused")
+        fun createInstance(context: Context?, product_id: String? = null): Intent {
+            val intent = Intent(context, ProductBundleActivity::class.java)
+            product_id?.let {
+                intent.putExtra(EXTRA_PRODUCT_ID, product_id)
+            }
+            return intent
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -42,6 +58,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             // call getBundleInfo
             viewModel.getBundleInfo(productId.toLongOrZero())
         }
+        setupToolbarActions()
 
         observeGetBundleInfoResult()
         observeInventoryError()
@@ -105,6 +122,15 @@ class ProductBundleActivity : BaseSimpleActivity() {
             setSecondaryCTAClickListener { finish() }
             setPrimaryCTAClickListener { dismiss() }
         }.show()
+    }
+
+    private fun setupToolbarActions() {
+        findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
+            headerTitle = getString(R.string.product_bundle_page_title)
+            setNavigationOnClickListener {
+                finish()
+            }
+        }
     }
 
     fun refreshPage() {
