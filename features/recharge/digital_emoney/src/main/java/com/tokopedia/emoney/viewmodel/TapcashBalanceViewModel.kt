@@ -111,9 +111,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val firstError = errors.firstOrNull()
                 if (firstError?.extensions?.developerMessage?.contains(ERROR_GRPC) ?: false){
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "Error GRPC Tapcash"))
-                } else {
-                    throw(MessageErrorException(firstError?.message))
                 }
+
+                throw(MessageErrorException(firstError?.message))
+
             }
         }) {
             errorInquiryMutable.postValue(it)
