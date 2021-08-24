@@ -312,6 +312,5 @@ infix fun PlayViewModelRobot.andWhenExpectEvent(
 
         result = value.await()
     }
-    run(fn)
     return Pair(this, result!!)
 }
