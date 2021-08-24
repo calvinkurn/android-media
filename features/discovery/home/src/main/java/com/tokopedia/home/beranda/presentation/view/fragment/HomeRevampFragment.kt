@@ -2310,7 +2310,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun renderBeautyFestErrorNetwork() {
-        if(beautyFestEvent == BEAUTY_FEST_NOT_SET) {
+        if(isEligibleForBeautyFest() && beautyFestEvent == BEAUTY_FEST_NOT_SET) {
             beautyFestEvent = BEAUTY_FEST_FALSE
             renderBeautyFestHeader()
         }
