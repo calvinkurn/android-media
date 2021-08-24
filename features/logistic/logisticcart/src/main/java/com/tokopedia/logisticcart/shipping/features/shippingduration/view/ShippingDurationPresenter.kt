@@ -56,7 +56,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                 selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc)
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc)
         }
     }
 
@@ -64,7 +64,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                              isCorner: Boolean, isLeasing: Boolean,
                              shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
                              shippingParam: ShippingParam, pslCode: String,
-                             isFulfillment: Boolean, preOrderTime: Int, mvc: String) {
+                             mvc: String) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)

@@ -24,7 +24,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -98,7 +97,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             mCourierModelList = shippingCourierUiModels
             mPreOrderModel = preOrderModel
             setupRecyclerView(cartPosition)
-        } else {
+        } else if (activity != null) {
             showErrorPage(activity!!.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition)
         }
     }

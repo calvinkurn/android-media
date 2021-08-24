@@ -1,5 +1,11 @@
-query RatesV3Api($param: OngkirRatesV3Input!) {
-  ratesV3Api(input: $param) {
+package com.tokopedia.logisticcart.shipping.usecase
+
+internal const val QUERY_RATESV3 = "ratesV3"
+internal const val QUERY_RATESV3_API = "ratesV3Api"
+
+internal fun ratesQuery(queryName: String) = """
+query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
+  ${queryName}(input: ${"$"}param) {
     ratesv3 {
       id
       rates_id
@@ -30,6 +36,11 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
           text_eta_summarize
           error_code
         }
+        features {
+          dynamic_price {
+            text_label
+          }
+        }
         order_priority {
           is_now
           inactive_message
@@ -51,6 +62,12 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
         cod {
           is_cod
           cod_text
+        }
+        mvc {
+          is_mvc
+          mvc_title
+          mvc_logo
+          mvc_error_message
         }
         products {
           shipper_name
@@ -106,6 +123,14 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
               url_detail
               icon_url
             }
+            mvc {
+              is_mvc
+              mvc_logo
+              mvc_error_message
+            }
+            dynamic_price {
+              text_label
+            }
           }
           eta {
             text_eta
@@ -147,11 +172,12 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
               text_eta
               error_code
             }
+        is_bebas_ongkir_extra
       }
       pre_order {
-         header
-         label
-         display
+        header
+        label
+        display
       }
       info {
         blackbox_info {
@@ -165,3 +191,6 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
     }
   }
 }
+""".trimIndent()
+
+internal const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
