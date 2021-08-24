@@ -50,7 +50,7 @@ class RevGeocodeUseCase @Inject constructor(
     }
 
     companion object {
-        val PARAM_LATLNG = "latlng"
-        val PARAM_ERR = "err"
+        const val PARAM_LATLNG = "latlng"
+        const val PARAM_ERR = "err"
     }
 }
