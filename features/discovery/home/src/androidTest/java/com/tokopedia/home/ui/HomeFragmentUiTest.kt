@@ -235,10 +235,6 @@ class HomeFragmentUiTest {
         while (homeRecyclerView?.canScrollVertically(1) == true) {
             onView(withId(R.id.home_fragment_recycler_view)).perform(swipeUp())
         }
-//        Todo Unresolved reference: recom_divider_1, recom_divider_2, recom_divider_3
-//        onView(withId(R.id.recom_divider_1)).check(matches(isDisplayed()))
-//        onView(withId(R.id.recom_divider_2)).check(matches(isDisplayed()))
-//        onView(withId(R.id.recom_divider_3)).check(matches(isDisplayed()))
         onView(withId(R.id.view_feed_shadow)).check(matches(isDisplayed()))
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))

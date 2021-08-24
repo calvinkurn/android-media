@@ -45,10 +45,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_VIEW_MINICART_IRIS = "viewMinicartIris"
         const val EVENT_NAME_BEGIN_CHECKOUT = "begin_checkout"
         const val EVENT_NAME_CHECKOUT_PROGRESS = "checkout_progress"
+        const val EVENT_NAME_CHECKOUT = "checkout"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
-        const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
+        const val EVENT_CATEGORY_CLICK_BUY = "tokonow - %s"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -72,9 +73,14 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_VIEW_MINI_CART_WITH_UNAVAILABLE_PRODUCT = "view minicart with unavailable product"
         const val EVENT_ACTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET = "click knob action"
+        const val EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET = "click langsung chat on minicart chat attachment"
+        const val EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET = "click product tickbox on minicart chat attachment"
+        const val EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET = "click tanya soal produk on minicart chat attachment"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
+        const val EVENT_LABEL_TICK = "tick"
+        const val EVENT_LABEL_UNTICK = "untick"
 
         // EE CUSTOM DIMENSION
         const val DIMENSION_104 = "dimension104" // Campaign id
@@ -294,7 +300,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
@@ -338,7 +344,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
@@ -491,6 +497,35 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventAction = EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET
         )
 
+        sendGeneralEvent(data)
+    }
+
+    /* CHAT BOTTOM SHEET : https://mynakama.tokopedia.com/datatracker/requestdetail/view/1995 */
+    // 1 - DONE
+    fun eventClickBtnDirectChatBottomSheet() {
+        val data = getGtmData(
+                eventName = EVENT_NAME_CLICK_MINICART,
+                eventAction = EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET
+        )
+        sendGeneralEvent(data)
+    }
+
+    // 2 - DONE
+    fun eventClickTickBoxChatBottomSheet(isChecked: Boolean) {
+        val data = getGtmData(
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_PRODUCT_CARD_TICK_BOX_CHAT_ON_BOTTOM_SHEET,
+            eventLabel = if (isChecked) EVENT_LABEL_TICK else EVENT_LABEL_UNTICK
+        )
+        sendGeneralEvent(data)
+    }
+
+    // 3 - DONE
+    fun eventClickBtnAskProductChatBottomSheet() {
+        val data = getGtmData(
+            eventName = EVENT_NAME_CLICK_MINICART,
+            eventAction = EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET
+        )
         sendGeneralEvent(data)
     }
 }

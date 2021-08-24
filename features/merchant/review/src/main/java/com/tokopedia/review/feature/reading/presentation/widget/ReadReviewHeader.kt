@@ -48,10 +48,15 @@ class ReadReviewHeader : BaseCustomView {
     private var ratingAndReviewCount: Typography? = null
     private var chevron: IconUnify? = null
     private var sortFilter: SortFilter? = null
+    var isProductReview: Boolean = true
 
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_header, this)
         bindViews()
+    }
+
+    fun setIsProductReview(isProductReview: Boolean){
+        this.isProductReview = isProductReview
     }
 
     private fun bindViews() {
@@ -60,6 +65,12 @@ class ReadReviewHeader : BaseCustomView {
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
+        sortFilter?.sortFilterItems?.setPadding(
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                0,
+                0,
+                0
+        )
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
@@ -151,7 +162,10 @@ class ReadReviewHeader : BaseCustomView {
 
     private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
         return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
-            SortTypeConstants.MOST_HELPFUL_COPY
+            if(!isProductReview)
+                SortTypeConstants.LATEST_COPY
+            else
+                SortTypeConstants.MOST_HELPFUL_COPY
         } else {
             sortOption.title.toString()
         }

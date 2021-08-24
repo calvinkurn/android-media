@@ -186,23 +186,6 @@ class GetOccCartMapper @Inject constructor() {
         return wholesalePrice.map { WholesalePrice(it.qtyMinFmt, it.qtyMaxFmt, it.prdPrcFmt, it.qtyMin, it.qtyMax, it.prdPrc) }
     }
 
-    private fun mapQuantity(product: ProductDataResponse): QuantityUiModel {
-        return QuantityUiModel().apply {
-            minOrderQuantity = product.productMinOrder
-            maxOrderQuantity = product.productMaxOrder
-            maxOrderStock = if (product.productSwitchInvenage == 0) {
-                product.productMaxOrder
-            } else {
-                min(product.productMaxOrder, product.productInvenageValue)
-            }
-            orderQuantity = product.productQuantity
-        }
-    }
-
-    private fun mapProductTickerMessage(tickerMessage: OccTickerMessage): ProductTickerMessage {
-        return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
-    }
-
     private fun mapPurchaseProtectionPlanData(purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
         return PurchaseProtectionPlanData(
                 isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,

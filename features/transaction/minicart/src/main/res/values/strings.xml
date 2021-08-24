@@ -1,10 +1,7 @@
 <resources>
     <string name="mini_cart_widget_label_see_cart">Lihat Keranjang</string>
     <string name="mini_cart_widget_label_total_price">Total Harga</string>
-    <string name="mini_cart_widget_label_buy_occ">Beli Langsung (%d)</string>
-    <string name="mini_cart_widget_label_buy">Beli (%d)</string>
-    <string name="mini_cart_widget_label_buy_occ_empty">Beli Langsung</string>
-    <string name="mini_cart_widget_label_buy_empty">Beli</string>
+    <string name="mini_cart_widget_cta_text_default">Beli</string>
     <string name="mini_cart_label_product_notes">Tulis Catatan</string>
     <string name="mini_cart_label_product_notes_editable">Catatan untuk barang ini</string>
     <string name="mini_cart_label_dialog_title_delete_unavailable_multiple_item">Hapus %1d barang yang nggak bisa dibeli?</string>
@@ -21,4 +18,8 @@
     <string name="mini_cart_title_unavailable_header">Tidak bisa diproses (%d)</string>
     <string name="mini_cart_label_cannot_process">Tidak bisa diproses</string>
     <string name="mini_cart_cannot_process_quantity">%d Barang</string>
+    <string name="mini_cart_widget_label_unavailable">%d barang tidak dapat diproses</string>
+    <string name="mini_cart_chat_btn_label">Langsung Chat</string>
+    <string name="mini_cart_chat_bottomsheet_title_label">Lampirkan belanjaanmu?</string>
+    <string name="mini_cart_chat_btn_label_ask_product">Tanya Soal Produk (%1$d/3)</string>
 </resources>

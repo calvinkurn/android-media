@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
@@ -22,7 +23,6 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -51,8 +52,9 @@ import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_INIT_FLOW
 import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -133,6 +135,7 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
+    var isFromLogin = false
 
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
@@ -1409,36 +1412,15 @@ open class HomeRevampViewModel @Inject constructor(
                     } else {
                         updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                            )), index)
+                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                            ),
+                            state = FeaturedShopDataModel.STATE_READY)
+                                , index)
                     }
                 }){
                     deleteWidget(featuredShopDataModel, index)
                 }
             }
-        }
-    }
-
-    private fun mappingTopAdsHeaderToChannelGrid(data: List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>): List<ChannelGrid>{
-        return data.map {
-            ChannelGrid(
-                    id = it.id,
-                    applink = it.applink,
-                    shop = ChannelShop(
-                            id = it.headline.shop.id,
-                            shopName = it.headline.shop.name,
-                            shopProfileUrl = it.headline.shop.imageShop.cover,
-                            shopLocation = it.headline.shop.location,
-                            shopBadgeUrl = it.headline.badges.firstOrNull()?.imageUrl ?: "",
-                            isGoldMerchant = it.headline.shop.goldShop,
-                            isOfficialStore = it.headline.shop.shopIsOfficialStore
-                    ),
-                    countReviewFormat = it.headline.shop.products.firstOrNull()?.review ?: "",
-                    rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
-                    impression = it.headline.image.url,
-                    productClickUrl = it.adClickUrl,
-                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
-            )
         }
     }
 
@@ -1673,5 +1655,16 @@ open class HomeRevampViewModel @Inject constructor(
                 deleteWidget(topAdsModel, index)
             }
         }
+    }
+
+    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int = withContext(Dispatchers.IO) {
+        //some result string will not qualify if not contains string channelModel
+        if(!Gson().toJson(data).toString().contains("channelModel"))
+            HomeRevampFragment.BEAUTY_FEST_NOT_QUALIFY
+        //beauty fest will contains isChannelBeautyFest true
+        else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+            HomeRevampFragment.BEAUTY_FEST_TRUE
+        else
+            HomeRevampFragment.BEAUTY_FEST_FALSE
     }
 }

@@ -106,9 +106,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     )
                 }
             }
-            if (cart.isEmpty()) {
-                return null
-            }
             var metadata = orderProfile.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {

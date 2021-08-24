@@ -10,31 +10,12 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
-import io.mockk.verify
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -706,7 +687,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Get Rates Overweight`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(
-                shop = helper.orderData.cart.shop.copy(maximumWeight = 10),
+                shop = helper.orderData.cart.shop.copy(maximumWeight = 10, maximumWeightWording = "max"),
                 products = arrayListOf(helper.product.copy(weight = 100)))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
 
@@ -716,6 +697,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(false, orderSummaryPageViewModel.orderProfile.value.enable)
         assertEquals(90.0, orderSummaryPageViewModel.orderShop.value.overweight, 0.0)
+        assertEquals(OrderShipment(
+                isLoading = false,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
+        ), orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
     }
 

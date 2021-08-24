@@ -31,9 +31,10 @@ data class ParamCart(
         @SerializedName("mode")
         val mode: Int = 0, // 0 = instant payment, 1 = scrooge payment page
         @SerializedName("feature_type")
-        val featureType: Int = FEATURE_TYPE_TOKONOW
+        val featureType: Int = FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
 ) {
         companion object {
+                const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
                 const val FEATURE_TYPE_TOKONOW = 11
         }
 }

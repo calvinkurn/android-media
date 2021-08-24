@@ -8,7 +8,6 @@ import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,8 +29,6 @@ interface DigitalComponent {
 
     @DigitalRestApiRetrofit
     fun digitalRestApiRetrofit(): Retrofit
-
-    fun cartMapperData(): ICartMapperData
 
     @DigitalAddToCartQualifier
     fun restRepository(): RestRepository

@@ -35,7 +35,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
         Log.d(TAG, "Error body response : " + errorBody);
         if (!errorBody.isEmpty()) {
             TkpdDigitalResponse.DigitalErrorResponse digitalErrorResponse =
-                    TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code());
+                    TkpdDigitalResponse.DigitalErrorResponse.Companion.factory(errorBody, response.code());
             if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_DIGITAL) {
                 throw new ResponseErrorException(digitalErrorResponse.getDigitalErrorMessageFormatted());
