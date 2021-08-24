@@ -92,23 +92,30 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             val mapParam = HashMap<String, Any>()
             mapParam.put(CARD_DATA, cardData)
 
-            val data = withContext(dispatcher) {
+            val response = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(balanceRawQuery, BalanceTapcash::class.java, mapParam)
                 graphqlRequest.setUrlPath(URL_PATH)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<BalanceTapcash>()
-
-            if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
-                writeBalance(data, terminalRandomNumber)
-            } else {
-                tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
             }
-        }) {
-            if (it is MessageErrorException){
-                if(it.errorCode == ERROR_GRPC){
+
+            val errors = response.getError(BalanceTapcash::class.java)
+
+            if(errors.isNullOrEmpty()) {
+                val data = response.getSuccessData<BalanceTapcash>()
+                if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
+                    writeBalance(data, terminalRandomNumber)
+                } else {
+                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
+                }
+            } else {
+                val firstError = errors.firstOrNull()
+                if (firstError?.extensions?.developerMessage?.contains(ERROR_GRPC) ?: false){
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "Error GRPC Tapcash"))
+                } else {
+                    throw(MessageErrorException(firstError?.message))
                 }
             }
+        }) {
             errorInquiryMutable.postValue(it)
         }
     }
@@ -302,7 +309,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
         private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
-        private const val ERROR_GRPC = "500"
+        private const val ERROR_GRPC = "GRPC timeout"
     }
 
 }
