@@ -140,7 +140,7 @@ class ChatItemListViewHolder constructor(
                 bindMessageState(chat)
             }
         }
-        chat.isActive = true
+        chat.markAsActive()
         listener.chatItemClicked(chat, adapterPosition, Pair(chat, adapterPosition))
     }
 

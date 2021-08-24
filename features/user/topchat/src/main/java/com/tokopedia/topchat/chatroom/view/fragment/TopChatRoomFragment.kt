@@ -130,7 +130,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -1154,7 +1153,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().setTemplate(null)
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun pickImageToUpload() {
         activity?.let {
             val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
@@ -1167,7 +1165,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -2177,14 +2174,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addSrwBubbleToChat() {
-        //Topchat normal device
-        if(chatRoomFlexModeListener?.isFlexMode() == false) {
+        if (chatRoomFlexModeListener?.isFlexMode() != null) {
             addSrwBubble()
-        } else {
-            //Topchat flexmode & check if messageId match
-            if(chatRoomFlexModeListener?.isFlexMode() == true) {
-                addSrwBubble()
-            }
         }
     }
 
@@ -2230,7 +2221,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
             override fun onKeyboardShow() {

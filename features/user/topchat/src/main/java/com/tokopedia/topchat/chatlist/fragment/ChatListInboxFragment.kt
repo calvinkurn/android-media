@@ -128,7 +128,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "chatlist"
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
             containerListener = context
@@ -179,14 +178,25 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun initRole() {
-        if(arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) != NO_INT_ARGUMENT) {
-            //From ChatRoom with Flex Foldables
-            role = arguments?.getInt(Constant.CHAT_USER_ROLE_KEY)?: RoleType.BUYER
-            assignRole(role)
+        if(isArgumentUserRoleAvailable()) {
+            initRoleFromChatRoom()
         } else {
-            //From Inbox
-            assignRole(containerListener?.role)
+            initRoleFromInbox()
         }
+    }
+
+    private fun isArgumentUserRoleAvailable(): Boolean {
+        return arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) != NO_INT_ARGUMENT
+    }
+
+    private fun initRoleFromChatRoom() {
+        //From ChatRoom with Flex Foldables
+        role = arguments?.getInt(Constant.CHAT_USER_ROLE_KEY)?: RoleType.BUYER
+        assignRole(role)
+    }
+
+    private fun initRoleFromInbox() {
+        assignRole(containerListener?.role)
     }
 
     private fun initWebSocket() {
@@ -611,7 +621,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         viewModel.getChatListMessage(page, role)
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun chatItemClicked(
         element: ItemChatListPojo,
         itemPosition: Int,
@@ -860,7 +869,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun returnToSellerHome() {}
 
-    @OptIn(InternalCoroutinesApi::class)
     private fun isFromTopChatRoom(): Boolean {
         return activity is TopChatRoomActivity
     }
@@ -874,10 +882,11 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             }
             if(currentActiveChat != null) {
                 val pair = adapter?.getItemPosition(currentActiveChat)
-                if(pair?.first != null && pair.second != null) {
-                    val activateChat = pair.first
-                    activateChat?.isActive = true
-                    adapter?.notifyItemChanged(pair.second!!, activateChat)
+                val activateChat = pair?.first
+                val activateChatPosition = pair?.second
+                if(activateChat != null && activateChatPosition != null) {
+                    activateChat.markAsActive()
+                    adapter?.notifyItemChanged(activateChatPosition, activateChat)
                     adapter?.activeChat = pair
                     if(!stopTryingIndicator) stopTryingIndicator = true
                     currentActiveMessageId = currentActiveChat
@@ -888,6 +897,10 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     fun loadInitialDataForRefreshList() {
         loadInitialData()
+    }
+
+    fun getCurrentActiveChatPosition(messageId: String): Int? {
+        return adapter?.getItemPosition(messageId)?.second
     }
 
     companion object {
@@ -912,9 +925,12 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             currentActiveChat: String? = null
         ): Bundle {
             val bundle = Bundle()
-            if (role != null) bundle.putInt(Constant.CHAT_USER_ROLE_KEY, role)
-            if (currentActiveChat != null)
+            if (role != null) {
+                bundle.putInt(Constant.CHAT_USER_ROLE_KEY, role)
+            }
+            if (currentActiveChat != null){
                 bundle.putString(Constant.CHAT_CURRENT_ACTIVE, currentActiveChat)
+            }
             return bundle
         }
     }

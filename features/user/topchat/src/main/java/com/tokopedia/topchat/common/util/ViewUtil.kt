@@ -24,6 +24,9 @@ import androidx.window.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
 
 object ViewUtil {
+
+    private const val ELEVATION_VALUE_DIVIDER = 3f
+
     fun generateBackgroundWithShadow(
             view: View?,
             @ColorRes backgroundColor: Int,
@@ -74,17 +77,17 @@ object ViewUtil {
             Gravity.TOP -> {
                 shapeDrawablePadding.top = elevationValue * 2
                 shapeDrawablePadding.bottom = elevationValue
-                DY = -1 * elevationValue / 3f
+                DY = -1 * elevationValue / ELEVATION_VALUE_DIVIDER
             }
             Gravity.BOTTOM -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3f
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3f
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
         }
 

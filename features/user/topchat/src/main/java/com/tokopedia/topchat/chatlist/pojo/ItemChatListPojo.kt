@@ -38,6 +38,7 @@ data class ItemChatListPojo(
     val isPinned: Boolean get() = attributes?.pinStatus == 1
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
     var isActive: Boolean = false
+        private set
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
@@ -97,6 +98,14 @@ data class ItemChatListPojo(
     fun updatePinStatus(isPinChat: Boolean) {
         val pinStatus = if (isPinChat) 1 else 0
         attributes?.pinStatus = pinStatus
+    }
+
+    fun markAsActive() {
+        this.isActive = true
+    }
+
+    fun markAsInactive() {
+        this.isActive = false
     }
 
 }

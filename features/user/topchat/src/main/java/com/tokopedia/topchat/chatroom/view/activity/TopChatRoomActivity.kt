@@ -52,7 +52,6 @@ import com.tokopedia.topchat.common.util.ViewUtil
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
-@InternalCoroutinesApi
 open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatComponent>,
     StickerFragment.Listener, TopChatRoomFlexModeListener {
 
@@ -363,7 +362,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun checkPeriodicallyUntilListRendered(msgId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            while(!chatListFragment.stopTryingIndicator) {
+            var tryCounter = 0
+            while(!chatListFragment.stopTryingIndicator && tryCounter <= COUNTER_THRESHOLD) {
                 if (!chatListFragment.adapter?.list.isNullOrEmpty() &&
                     chatListFragment.adapter?.activeChat != null )
                 {
@@ -374,6 +374,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                         ignored.printStackTrace()
                     }
                 }
+                tryCounter++
                 delay(DELAY)
             }
         }
@@ -389,7 +390,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onRefreshChatlistForNewChat() {
-        if(currentActiveChat == null) {
+        if(chatListFragment.getCurrentActiveChatPosition(currentActiveChat?: "") == null) {
             CoroutineScope(Dispatchers.IO).launch {
                 delay(DELAY) //Delay waiting for chat to be sent first
                 chatListFragment.loadInitialDataForRefreshList()
@@ -526,6 +527,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         private const val TITLE_CHAT = "Chat"
 
         private const val DELAY = 1000L
+        private const val COUNTER_THRESHOLD = 10
         private const val EMPTY_STATE = 0
         private const val FLAT_STATE = 1
         private const val HALF_OPEN_STATE = 2

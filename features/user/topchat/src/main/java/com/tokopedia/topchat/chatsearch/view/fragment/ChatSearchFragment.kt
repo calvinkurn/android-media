@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatsearch.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -84,6 +84,7 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun updateTouchListener(view: View) {
         view.setOnTouchListener { _, event ->
             when (event?.action) {

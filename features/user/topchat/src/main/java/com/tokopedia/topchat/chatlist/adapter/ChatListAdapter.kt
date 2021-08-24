@@ -272,10 +272,8 @@ class ChatListAdapter constructor(
 
     fun getItemPosition(msgId: String): Pair<ItemChatListPojo?, Int?> {
         for(i in list.indices) {
-            if(list[i] is ItemChatListPojo) {
-                if((list[i] as ItemChatListPojo).msgId == msgId) {
-                    return Pair((list[i] as ItemChatListPojo), i)
-                }
+            if(list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).msgId == msgId) {
+                return Pair((list[i] as ItemChatListPojo), i)
             }
         }
         return Pair(null, null)
@@ -285,7 +283,7 @@ class ChatListAdapter constructor(
         if(!activeChat.first?.msgId.isNullOrEmpty() &&
             activeChat.first?.msgId != currentActiveChat.msgId) {
             val deactivateChat = activeChat.first
-            deactivateChat?.isActive = false
+            deactivateChat?.markAsInactive()
             if(deactivateChat != null && activeChat.second != null) {
                 notifyItemChanged(activeChat.second!!, deactivateChat)
             }

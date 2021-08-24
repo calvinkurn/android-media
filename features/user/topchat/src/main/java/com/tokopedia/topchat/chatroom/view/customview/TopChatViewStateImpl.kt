@@ -634,12 +634,12 @@ open class TopChatViewStateImpl constructor(
         lastMessageSrwBubble: Boolean,
         amIBuyer: Boolean
     ) {
-        if (showTemplateIfReadyChecker(lastMessageBroadcast, lastMessageSrwBubble, amIBuyer)) {
+        if (isTemplateReady(lastMessageBroadcast, lastMessageSrwBubble, amIBuyer)) {
             showTemplateChat()
         }
     }
 
-    private fun showTemplateIfReadyChecker(
+    private fun isTemplateReady(
         lastMessageBroadcast: Boolean,
         lastMessageSrwBubble: Boolean,
         amIBuyer: Boolean,
