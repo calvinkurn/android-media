@@ -1092,6 +1092,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             opponentId,
             onSendingMessage()
         )
+        refreshChatlistForNewChat()
     }
 
     private fun onSendingMessage(): () -> Unit {
@@ -1315,6 +1316,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     presenter.startCompressImages(model)
                 }
                 sellerReviewHelper.hasRepliedChat = true
+                refreshChatlistForNewChat()
             }
         }
     }

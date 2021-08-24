@@ -897,6 +897,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     fun loadInitialDataForRefreshList() {
         loadInitialData()
+        stopTryingIndicator = false
     }
 
     fun getCurrentActiveChatPosition(messageId: String): Int? {

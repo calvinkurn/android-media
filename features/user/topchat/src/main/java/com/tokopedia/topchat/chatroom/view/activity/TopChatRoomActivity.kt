@@ -390,13 +390,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onRefreshChatlistForNewChat() {
-        if(chatListFragment.getCurrentActiveChatPosition(currentActiveChat?: "") == null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(DELAY) //Delay waiting for chat to be sent first in IO thread
-                //Change the thread to Main for refresh/render the list
-                withContext(Dispatchers.Main) {
-                    chatListFragment.loadInitialDataForRefreshList()
-                }
+        currentActiveChat?.let {
+            if(chatListFragment.getCurrentActiveChatPosition(it) == null) {
+                chatListFragment.loadInitialDataForRefreshList()
+                checkPeriodicallyUntilListRendered(it)
             }
         }
     }
