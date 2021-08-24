@@ -6,6 +6,7 @@
     android:useLevel="false">
    <gradient
        android:angle="90"
-       android:endColor="#F1C53E"
-       android:startColor="#EF7E08" />
+       android:endColor="@color/play_dms_winner_ring_g2"
+       android:startColor="@color/play_dms_winner_ring_g1"
+       />
 </shape>
