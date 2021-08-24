@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -26,7 +27,7 @@ import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
@@ -35,6 +36,7 @@ import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanc
 import com.tokopedia.shop.score.performance.presentation.adapter.*
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPopupEndTenure
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
 import com.tokopedia.shop.score.performance.presentation.model.*
@@ -82,7 +84,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
-    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScoreCoachMarkPrefs(it) } }
+    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
 
     private val coachMark: CoachMark2? by lazy {
         context?.let { CoachMark2(it) }
@@ -788,6 +790,29 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             supportActionBar?.apply {
                 title = getString(R.string.title_shop_performance)
             }
+        }
+    }
+
+    private fun showPopupEndTenureNewSeller(
+        headerShopPerformanceUiModel: HeaderShopPerformanceUiModel
+    ) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        val popupEndTenureUiModel = PopupEndTenureUiModel(
+            shopType = headerShopPerformanceUiModel.shopType,
+            shopScore = headerShopPerformanceUiModel.shopScore,
+            shopLevel = headerShopPerformanceUiModel.shopLevel
+        )
+        val bottomSheetPopupEndTenure =
+            BottomSheetPopupEndTenure.newInstance(cacheManager?.id.orEmpty())
+        val isShowPopupEndTenure = shopScoreCoachMarkPrefs?.getIsShowPopupEndTenure()
+
+        bottomSheetPopupEndTenure.setOnDismissListener {
+            if (isShowPopupEndTenure == false) {
+                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(isShowPopupEndTenure)
+            }
+        }
+        if (isShowPopupEndTenure == false) {
+            bottomSheetPopupEndTenure.show(childFragmentManager)
         }
     }
 

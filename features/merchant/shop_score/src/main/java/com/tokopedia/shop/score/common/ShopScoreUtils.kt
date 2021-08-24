@@ -15,6 +15,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.io.IOException
+import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -105,4 +106,13 @@ fun getColoredIndicator(context: Context, colorRes: Int): Drawable? {
     val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
     drawable.colorFilter = filter
     return drawable
+}
+
+
+fun String.getNumberFormat(defaultNumber: Long): Long {
+    return try {
+        this.toLong()
+    } catch (e: NumberFormatException) {
+        defaultNumber
+    }
 }

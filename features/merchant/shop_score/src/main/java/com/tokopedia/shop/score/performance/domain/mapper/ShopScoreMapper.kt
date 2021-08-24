@@ -42,6 +42,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
@@ -53,7 +54,8 @@ import kotlin.math.roundToLong
 
 class ShopScoreMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    @ApplicationContext val context: Context?
+    @ApplicationContext val context: Context?,
+    private val shopScorePrefManager: ShopScorePrefManager
 ) {
 
     fun mapToShopPerformanceDetail(identifierPerformanceDetail: String): ShopPerformanceDetailUiModel {
@@ -135,6 +137,9 @@ class ShopScoreMapper @Inject constructor(
             officialStoreResponse?.status == OSStatus.ACTIVE
         }
 
+        val shopType =
+            getShopType(shopScoreWrapperResponse.goldGetPMOStatusResponse, isOfficialStore)
+
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
                 val mapTimerNewSeller =
@@ -150,7 +155,8 @@ class ShopScoreMapper @Inject constructor(
             add(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
-                    shopAge
+                    shopAge,
+                    shopType
                 )
             )
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
@@ -243,7 +249,8 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
-        shopAge: Long
+        shopAge: Long,
+        shopType: ShopType
     ): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
         val shopScore = shopScoreLevelResponse?.shopScore ?: -1
@@ -471,6 +478,9 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong()
                     .orZero()
+
+            this.shopType = shopType
+            this.isShowPopupEndTenure = getIsShowPopupEndTenure(shopAge)
         }
         return headerShopPerformanceUiModel
     }
@@ -876,6 +886,23 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
+    private fun getShopType(
+        powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        isOfficialStore: Boolean
+    ): ShopType {
+        val powerMerchantData = powerMerchantResponse?.powerMerchant
+        return when {
+            isOfficialStore -> ShopType.OFFICIAL_STORE
+            powerMerchantData?.pmTier == PMTier.PRO
+                    && powerMerchantData.status == PMStatusConst.ACTIVE ->
+                ShopType.POWER_MERCHANT_PRO
+            powerMerchantData?.pmTier == PMTier.REGULAR
+                    && powerMerchantData.status == PMStatusConst.ACTIVE ->
+                ShopType.POWER_MERCHANT
+            else -> ShopType.REGULAR_MERCHANT
+        }
+    }
+
     private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
         val date = Calendar.getInstance(getLocale())
         date.add(Calendar.DATE, nextDays)
@@ -900,6 +927,15 @@ class ShopScoreMapper @Inject constructor(
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
         }
+    }
+
+    private fun getIsShowPopupEndTenure(shopAge: Long): Boolean {
+        return if (!shopScorePrefManager.getIsShowPopupEndTenure()) {
+            if (shopAge >= SHOP_AGE_SIXTY) {
+                val calendar = Calendar.getInstance(getLocale())
+                calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
+            } else false
+        } else false
     }
 
     companion object {

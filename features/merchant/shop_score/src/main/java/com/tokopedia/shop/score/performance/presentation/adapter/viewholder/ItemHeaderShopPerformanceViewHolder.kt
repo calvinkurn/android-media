@@ -22,7 +22,6 @@ class ItemHeaderShopPerformanceViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
-        const val SHOP_SCORE_NULL = -1
         const val ROUNDED_RADIUS = 16F
     }
 
@@ -66,9 +65,9 @@ class ItemHeaderShopPerformanceViewHolder(
 
     private fun shopScoreFormatted(shopScore: String?): Int {
         return try {
-            shopScore?.toInt() ?: SHOP_SCORE_NULL
+            shopScore?.toInt() ?: ShopScoreConstant.SHOP_SCORE_NULL
         } catch (e: NumberFormatException) {
-            SHOP_SCORE_NULL
+            ShopScoreConstant.SHOP_SCORE_NULL
         }
     }
 

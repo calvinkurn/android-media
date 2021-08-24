@@ -1,6 +1,8 @@
 package com.tokopedia.shop.score.common
 
 object ShopScoreConstant {
+    const val SHOP_SCORE_NULL = -1L
+
     const val SHOP_SCORE_LEVEL_ONE = 1L
     const val SHOP_SCORE_LEVEL_TWO = 2L
     const val SHOP_SCORE_LEVEL_THREE = 3L
@@ -115,4 +117,6 @@ object ShopScoreConstant {
 
     const val AND_SYMBOL = "&"
     const val AND_TEXT = "dan"
+
+    const val NULL_NUMBER = -1L
 }
