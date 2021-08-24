@@ -23,6 +23,8 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         const val TYPE = "TYPE"
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
+        private const val CATALOG_SPECS_TEXT_SIZE = 14.0f
+        private const val CATALOG_BOTTOM_LINEAR_WEIGHT = 0.5f
 
         fun newInstance(type: Int, description: String?, specifications: ArrayList<FullSpecificationsComponentData>?): CatalogSpecsAndDetailFragment {
             return CatalogSpecsAndDetailFragment().apply {
@@ -77,18 +79,18 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                     doubleTextView.apply {
                         setTopText(MethodChecker.fromHtml(row.key).toString())
-                        setTopTextSize(14.0f)
-                        setBottomLinearLayoutWeight(0.5f)
+                        setTopTextSize(CATALOG_SPECS_TEXT_SIZE)
+                        setBottomLinearLayoutWeight(CATALOG_BOTTOM_LINEAR_WEIGHT)
                         setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                        setBottomTextSize(14.0f)
+                        setBottomTextSize(CATALOG_SPECS_TEXT_SIZE)
                         setBottomTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700))
                         doubleTextView.setBottomTextStyle("")
                         setBottomText(MethodChecker.fromHtml(row.value))
                     }
                     if(0 == index){
-                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_16))
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
                     }else {
-                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(R.dimen.dp_8))
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
                     }
                     linear_layout.addView(doubleTextView)
                     val lineView = View(context)
@@ -96,9 +98,9 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     lineView.minimumHeight = 2
                     lineView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     if(specs.specificationsRow.size - 1 == index){
-                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.unify_space_24))
+                        params.setMargins(0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
                     }else {
-                        params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.unify_space_0))
+                        params.setMargins(0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0))
                     }
                     lineView.layoutParams = params
                     linear_layout.addView(lineView)

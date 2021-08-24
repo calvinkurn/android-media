@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
@@ -43,20 +44,50 @@ class ReadReviewProductInfo : BaseCustomView {
     }
 
     fun setProductInfo(imageUrl: String, productName: String) {
+        productImage?.clearImage()
         productImage?.loadImage(imageUrl)
         this.productName?.text = productName
     }
 
-    fun setListener(isReportable: Boolean, reviewId: String, shopId: String, readReviewItemListener: ReadReviewItemListener) {
+    fun setListener(
+            isReportable: Boolean,
+            reviewId: String,
+            shopName: String,
+            productNameText: String,
+            position: Int,
+            shopId: String,
+            productId: String,
+            readReviewItemListener: ReadReviewItemListener
+    ) {
         threeDotsMenu?.apply {
             if (isReportable) {
                 show()
                 setOnClickListener {
-                    readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
+                    readReviewItemListener.onThreeDotsProductInfoClicked(reviewId, shopId)
                 }
             } else {
                 hide()
             }
+        }
+        productImage?.setOnClickListener {
+            readReviewItemListener.onProductInfoClicked(
+                    reviewId,
+                    shopName,
+                    productNameText,
+                    position,
+                    shopId,
+                    productId
+            )
+        }
+        productName?.setOnClickListener {
+            readReviewItemListener.onProductInfoClicked(
+                    reviewId,
+                    shopName,
+                    productNameText,
+                    position,
+                    shopId,
+                    productId
+            )
         }
     }
 

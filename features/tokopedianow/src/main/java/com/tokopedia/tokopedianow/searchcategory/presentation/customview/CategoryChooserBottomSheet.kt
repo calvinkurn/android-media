@@ -99,6 +99,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     }
 
     fun setResultCountText(resultCount: String) {
+        buttonApply?.isLoading = false
         buttonApply?.text = resultCount
     }
 
@@ -112,6 +113,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         notifyAdapterSelection(previousPosition, position)
         configureButtonApplyVisibility(position)
 
+        buttonApply?.isLoading = true
+        buttonApply?.text = ""
         callback?.getResultCount(option)
     }
 
