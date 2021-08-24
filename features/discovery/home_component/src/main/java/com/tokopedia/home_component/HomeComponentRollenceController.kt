@@ -10,17 +10,24 @@ object HomeComponentRollenceController {
 
     private var rollenceLego4BannerValue: String = ""
     private var rollenceCategoryWidgetValue: String = ""
+    private var rollenceLego2BannerValue: String = ""
 
     fun fetchHomeComponentRollenceValue() {
         rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO4BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO4BANNER_OLD)
         rollenceCategoryWidgetValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_EXP, RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD)
+        rollenceLego2BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO2BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD)
+
     }
 
-    private fun getRollenceValueLego4Banner() : String {
+    private fun getRollenceValueLego4Banner(): String {
         return if (rollenceLego4BannerValue.isNotEmpty()) rollenceLego4BannerValue else RollenceKey.HOME_COMPONENT_LEGO4BANNER_OLD
     }
 
-    private fun getRollenceValueCategoryWidget() : String {
+    private fun getRollenceValueLego2Banner(): String {
+        return if (rollenceLego2BannerValue.isNotEmpty()) rollenceLego2BannerValue else RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD
+    }
+
+    private fun getRollenceValueCategoryWidget(): String {
         return if (rollenceCategoryWidgetValue.isNotEmpty()) rollenceCategoryWidgetValue else RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD
     }
 
@@ -28,7 +35,11 @@ object HomeComponentRollenceController {
         return getRollenceValueLego4Banner() == RollenceKey.HOME_COMPONENT_LEGO4BANNER_VARIANT
     }
 
-    fun checkCategoryWidgetRollenceType(isTypeControl:() -> Unit = {}, isTypeTextInside: () -> Unit = {}, isTypeTextBox: () -> Unit = {}) {
+    fun isHomeComponentLego2BannerUsingRollenceVariant(): Boolean {
+        return getRollenceValueLego2Banner() == RollenceKey.HOME_COMPONENT_LEGO2BANNER_VARIANT
+    }
+
+    fun checkCategoryWidgetRollenceType(isTypeControl: () -> Unit = {}, isTypeTextInside: () -> Unit = {}, isTypeTextBox: () -> Unit = {}) {
         when (getRollenceValueCategoryWidget()) {
             RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD -> isTypeControl.invoke()
             RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX -> isTypeTextBox.invoke()

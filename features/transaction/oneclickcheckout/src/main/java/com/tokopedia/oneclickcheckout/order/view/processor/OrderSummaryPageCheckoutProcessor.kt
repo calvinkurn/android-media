@@ -110,9 +110,11 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                         else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
                             }
                         }
+                        val transactionId = getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form)
+                        checkoutOccData.result.paymentParameter.transactionId = transactionId
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,
-                                getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
+                                transactionId,
                                 paymentType,
                                 orderSummaryPageEnhanceECommerce.apply {
                                     dataList.forEach {

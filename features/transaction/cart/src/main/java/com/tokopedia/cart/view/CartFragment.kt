@@ -3125,6 +3125,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationCancel(animation: Animator) {}
                 override fun onAnimationRepeat(animation: Animator) {}
             })
+            it.start()
         }
     }
 
