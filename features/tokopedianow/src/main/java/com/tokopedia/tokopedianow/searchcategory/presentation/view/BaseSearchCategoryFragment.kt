@@ -123,6 +123,7 @@ abstract class BaseSearchCategoryFragment:
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
     protected val carouselScrollPosition = SparseIntArray()
+    protected val recycledViewPool = RecyclerView.RecycledViewPool()
 
     private var movingPosition = 0
 

@@ -22,6 +22,7 @@ class ErrorHandlerHotel {
         private const val ERROR_EMAIL_NOT_VERIFIED = 34
         private const val ERROR_ORDER_NOT_FOUND = 77
         private const val ERROR_ORDER_HAS_BEEN_CANCELLED = 143
+        private const val ERROR_INVALID_PROPERTY_ID = "InvalidPropertyID"
 
         fun isOrderNotFound(t: Throwable): Boolean = if (t is HotelErrorException) t.errorCode == ERROR_ORDER_NOT_FOUND else false
 
@@ -72,7 +73,11 @@ class ErrorHandlerHotel {
             when(error){
                 is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
                 is MessageErrorException -> {
-                    view.setType(GlobalError.SERVER_ERROR)
+                    if(error.message == ERROR_INVALID_PROPERTY_ID){
+                        view.setType(GlobalError.PAGE_NOT_FOUND)
+                    }else{
+                        view.setType(GlobalError.SERVER_ERROR)
+                    }
                     view.errorTitle.text = if(error.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, error) else error.message
                 }
                 else -> {
