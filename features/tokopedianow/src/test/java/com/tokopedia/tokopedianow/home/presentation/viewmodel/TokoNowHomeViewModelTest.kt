@@ -20,9 +20,11 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -682,7 +684,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val productId = "1"
         val quantity = 5
         val shopId = "5"
-        val type = HomeLayoutType.RECENT_PURCHASE
+        val type = TokoNowLayoutType.RECENT_PURCHASE
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -708,7 +710,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(2, "1", 0, 3, LocalCacheModel())
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
-        val recentPurchaseUiModel = HomeRecentPurchaseUiModel(
+        val recentPurchaseUiModel = TokoNowRecentPurchaseUiModel(
             id = "1001",
             title = "Kamu pernah beli",
             productList = listOf(
@@ -753,7 +755,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val productId = "100"
         val quantity = 0
         val shopId = "5"
-        val type = HomeLayoutType.RECENT_PURCHASE
+        val type = TokoNowLayoutType.RECENT_PURCHASE
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -783,7 +785,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
-        val recentPurchaseUiModel = HomeRecentPurchaseUiModel(
+        val recentPurchaseUiModel = TokoNowRecentPurchaseUiModel(
             id = "1001",
             title = "Kamu pernah beli",
             productList = listOf(
@@ -829,7 +831,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val warehouseId = "1"
         val productId = "100"
         val shopId = "5"
-        val type = HomeLayoutType.RECENT_PURCHASE
+        val type = TokoNowLayoutType.RECENT_PURCHASE
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -906,7 +908,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(2, warehouseId, 0, 3, LocalCacheModel())
         viewModel.getProductAddToCartQuantity(listOf("1"), warehouseId)
 
-        val recentPurchaseUiModel = HomeRecentPurchaseUiModel(
+        val recentPurchaseUiModel = TokoNowRecentPurchaseUiModel(
             id = "1001",
             title = "Kamu pernah beli",
             productList = listOf(
@@ -1080,7 +1082,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(LocalCacheModel())
 
-        val expected = emptyList<HomeProductCardUiModel>()
+        val expected = emptyList<TokoNowProductCardUiModel>()
         val actual = viewModel.getRecentPurchaseProducts()
 
         verifyGetHomeLayoutUseCaseCalled()
@@ -1089,7 +1091,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given homeLayoutItemList is empty when getRecentPurchaseProducts should return empty list`() {
-        val expected = emptyList<HomeProductCardUiModel>()
+        val expected = emptyList<TokoNowProductCardUiModel>()
         val actual = viewModel.getRecentPurchaseProducts()
 
         assertEquals(expected, actual)
@@ -1191,7 +1193,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(2, warehouseId, 0, 3, LocalCacheModel())
 
-        val recentPurchaseUiModel = HomeRecentPurchaseUiModel(
+        val recentPurchaseUiModel = TokoNowRecentPurchaseUiModel(
             id = "1001",
             title = "Kamu pernah beli",
             productList = listOf(
@@ -1235,7 +1237,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val quantity = 5
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -1297,7 +1299,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val productId = "1"
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -1364,7 +1366,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val productId = "1"
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -1430,7 +1432,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val quantity = 5
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = emptyList<HomeLayoutResponse>()
         val homeRecomResponse = HomeLayoutResponse(
@@ -1465,7 +1467,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val quantity = 5
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -1511,7 +1513,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val quantity = 5
         val shopId = "5"
         val cartId = "1999"
-        val type = HomeLayoutType.PRODUCT_RECOM
+        val type = TokoNowLayoutType.PRODUCT_RECOM
 
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -1589,7 +1591,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(2, "2", 0, 3, LocalCacheModel())
-        viewModel.addProductToCart("2", 2, "100", HomeLayoutType.RECENT_PURCHASE)
+        viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.RECENT_PURCHASE)
 
         val productCardUiModel = createHomeProductCardUiModel(
             productId = "2",
@@ -1653,7 +1655,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(2, "2", 0, 3, LocalCacheModel())
-        viewModel.addProductToCart("4", 2, "100", HomeLayoutType.RECENT_PURCHASE)
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.RECENT_PURCHASE)
 
         verifyGetHomeLayoutUseCaseCalled()
         verifyGetRecentPurchaseUseCaseCalled()
@@ -1673,7 +1675,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(2, "2", 0, 3, LocalCacheModel())
-        viewModel.addProductToCart("4", 2, "100", HomeLayoutType.RECENT_PURCHASE)
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.RECENT_PURCHASE)
 
         verifyGetHomeLayoutUseCaseCalled()
         verifyAddToCartUseCaseCalled()

@@ -433,16 +433,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 progress_bar.setValue(it, false)
             }
         }
-        getBidForKeywords()
         renderTabAndViewPager()
     }
 
-    private fun getBidForKeywords() {
+    fun getBidForKeywords(list: MutableList<String>) {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<String> = mutableListOf()
-        dummyId.add(groupId.toString())
-        suggestions.add(DataSuggestions("group", dummyId))
-        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
+        suggestions.add(DataSuggestions("product", list))
+        viewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessSuggestion)
     }
 
 
