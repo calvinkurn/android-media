@@ -41,7 +41,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val view: View
 
     private lateinit var listener: ActionListener
-    private lateinit var autoCompleteAdapter1: TopupBillsAutoCompleteAdapter
+    private lateinit var autoCompleteAdapter: TopupBillsAutoCompleteAdapter
 
     init {
         view = View.inflate(context, getLayout(), this)
@@ -82,7 +82,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     // TODO: [Docs] diganti gini supaya ketika delete manual icon clear n operator masih ada
                     if (count != 0) {
                         btnClear.visibility = View.VISIBLE
-                        autoCompleteAdapter1.filter.filter(s)
+                        autoCompleteAdapter.filter.filter(s)
                     }
 
                     /** [Misael] Delete Soon
@@ -141,10 +141,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 //        autoCompleteAdapter1.updateItems(
 //            CommonTopupBillsDataMapper
 //                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
-        autoCompleteAdapter1.updateItems(mutableListOf(
-            TopupBillsAutoCompleteContactDataView("Misael1", "081208120812"),
+        autoCompleteAdapter.updateItems(mutableListOf(
+            TopupBillsAutoCompleteContactDataView("", "081208120812"),
             TopupBillsAutoCompleteContactDataView("Misael2", "081908190819"),
-            TopupBillsAutoCompleteContactDataView("Misael3", "081999999999"),
+            TopupBillsAutoCompleteContactDataView("", "081999999999"),
             TopupBillsAutoCompleteContactDataView("Misael4", "08219283903"),
             TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
             TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
@@ -191,9 +191,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun initClientNumberAutoComplete(context: Context) {
-        autoCompleteAdapter1 = TopupBillsAutoCompleteAdapter(
+        autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
-            R.layout.item_topup_bills_autocomplete_phonenumber,
+            R.layout.item_topup_bills_autocomplete_number,
             mutableListOf(),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
@@ -202,7 +202,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             }
         )
 
-        inputNumberField.textFieldInput.setAdapter(autoCompleteAdapter1)
+        inputNumberField.textFieldInput.setAdapter(autoCompleteAdapter)
     }
 
     private fun validateContactName(contactName: String): String {

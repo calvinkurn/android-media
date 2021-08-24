@@ -51,10 +51,6 @@ import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -85,7 +81,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
-    private var queryProductListJob: Job? = null
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -522,16 +517,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData(isDelayed: Boolean = false) {
         sharedModelPrepaid.setProductListShimmer(true)
-        queryProductListJob?.cancel()
-        queryProductListJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            if (isDelayed) delay(GET_PRODUCT_LIST_DELAY_TIME)
-            validatePhoneNumber(operatorData, telcoClientNumberWidget)
-            if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(
-                    DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
-                    productId, telcoClientNumberWidget.getInputNumber()
-                )
-            }
+        validatePhoneNumber(operatorData, telcoClientNumberWidget)
+        if (operatorId.isNotEmpty()) {
+            sharedModelPrepaid.getCatalogProductList(
+                DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
+                productId, telcoClientNumberWidget.getInputNumber()
+            )
         }
     }
 
@@ -650,14 +641,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         performanceMonitoringStopTrace()
         val favNumbers = data.favoriteNumbers
         seamlessFavNumberList.addAll(favNumbers)
-        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
-            autoSelectTabProduct = true
-            telcoClientNumberWidget.run {
-                setAutoCompleteList(favNumbers)
-                setInputNumber(favNumbers[0].clientNumber)
-                setContactName(favNumbers[0].clientName)
-            }
-        }
+        telcoClientNumberWidget.setAutoCompleteList(favNumbers)
+        // TODO: [Misael] revert nanti ya janlup, dan hapus si setAutoComplete diatas
+//        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+//            autoSelectTabProduct = true
+//            telcoClientNumberWidget.run {
+//                setAutoCompleteList(favNumbers)
+//                setInputNumber(favNumbers[0].clientNumber)
+//                setContactName(favNumbers[0].clientName)
+//            }
+//        }
     }
 
     override fun errorSetFavNumbers() {
@@ -803,7 +796,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         private const val DEFAULT_SPACE_HEIGHT = 81
         private const val DEFAULT_ID_PRODUCT_TAB = 6L
-        private const val GET_PRODUCT_LIST_DELAY_TIME = 1000L
 
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"

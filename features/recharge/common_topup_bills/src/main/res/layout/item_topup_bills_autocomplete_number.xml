@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
+        app:layout_goneMarginBottom="@dimen/spacing_lvl3"
         tools:text="Selalu Ada"
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_96"
@@ -35,8 +36,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintTop_toBottomOf="@id/common_topup_bills_autocomplete_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
         android:id="@+id/common_topup_bills_autocomplete_separator"

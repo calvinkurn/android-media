@@ -10,15 +10,14 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteHeaderDataView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import java.lang.IllegalArgumentException
-import java.util.ArrayList
 
 class TopupBillsAutoCompleteAdapter(
     @get:JvmName("getContext_") val context: Context,
@@ -41,39 +40,61 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        /* TODO: [Misael] check ini
-        *   val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater*/
-
+        var view: View? = convertView
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (getItemViewType(position)) {
             TopupBillsAutoCompleteView.EMPTY_STATE.type -> {
-                layoutInflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
+                getAutoCompleteEmptyView(view, layoutInflater)
             }
             TopupBillsAutoCompleteView.HEADER.type -> {
-                layoutInflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
+                getAutoCompleteHeaderView(view, layoutInflater)
             }
             TopupBillsAutoCompleteView.CONTACT.type -> {
-                val view = layoutInflater.inflate(R.layout.item_topup_bills_autocomplete_phonenumber, null)
-                getItem(position)?.let {
-                    val contact = it as TopupBillsAutoCompleteContactDataView
-                    val tvName = view.findViewById<TextView>(R.id.common_topup_bills_autocomplete_name)
-                    val tvNumber = view.findViewById<TextView>(R.id.common_topup_bills_autocomplete_number)
-
-                    if (contact.name.isNotEmpty()) {
-                        tvName.text = getSpandableBoldText(contact.name, listener.getFilterText())
-                    } else {
-                        tvName.hide()
-                    }
-                    tvNumber.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
-                }
-                view
+                getAutoCompleteNumberView(view, layoutInflater, position)
             }
-            else -> throw IllegalArgumentException("Illegal Autocomplete Viewtype")
+            else -> throw IllegalArgumentException("Illegal Autocomplete ViewType")
         }
     }
 
+    private fun getAutoCompleteEmptyView(view: View?, inflater: LayoutInflater): View {
+        return view ?: inflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
+    }
+
+    private fun getAutoCompleteHeaderView(view: View?, inflater: LayoutInflater): View {
+        return view ?: inflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
+    }
+
+    private fun getAutoCompleteNumberView(view: View?, inflater: LayoutInflater, pos: Int): View {
+        var tempView = view
+        var holder: AutoCompleteItemViewHolder
+
+        if (tempView == null) {
+            tempView = inflater.inflate(R.layout.item_topup_bills_autocomplete_number, null)
+            holder = AutoCompleteItemViewHolder(
+                tempView.findViewById(R.id.common_topup_bills_autocomplete_name),
+                tempView.findViewById(R.id.common_topup_bills_autocomplete_number)
+            )
+            tempView.tag = holder
+        } else {
+            holder = tempView.tag as AutoCompleteItemViewHolder
+        }
+
+        holder.run {
+            val contact = getItem(pos) as TopupBillsAutoCompleteContactDataView
+            if (contact.name.isNotEmpty()) {
+                tvClientName.text = getSpandableBoldText(contact.name, listener.getFilterText())
+                tvClientNumber.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
+                tvClientNumber.show()
+            } else {
+                tvClientName.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
+                tvClientNumber.hide()
+            }
+        }
+        return tempView!!
+    }
+
     override fun getViewTypeCount(): Int {
-        return 3
+        return NUM_OF_AUTOCOMPLETE_TYPE
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -88,7 +109,6 @@ class TopupBillsAutoCompleteAdapter(
         }
     }
 
-    // TODO: [Misael] check ini
     override fun getItem(position: Int): TopupBillsAutoComplete? {
         return if (suggestions.isNotEmpty() && suggestions.size > position) {
             suggestions[position]
@@ -155,18 +175,27 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String): CharSequence {
-        val start = strToPut.indexOf(stringToHighlighted)
+        val start = strToPut.indexOf(stringToHighlighted, ignoreCase = true)
         val end = start + stringToHighlighted.length
 
         val spannableStringBuilder = SpannableStringBuilder(strToPut)
         if (start >= 0) {
             if (stringToHighlighted.length <= strToPut.length) {
-                spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableStringBuilder
+                    .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    0, start, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableStringBuilder
+                    .setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        end, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         return spannableStringBuilder
     }
+
+    inner class AutoCompleteItemViewHolder(
+        val tvClientName: TextView,
+        val tvClientNumber: TextView
+    )
 
     interface ContactArrayListener {
         fun getFilterText(): String
@@ -174,5 +203,6 @@ class TopupBillsAutoCompleteAdapter(
 
     companion object {
         private const val REGEX_IS_NUMERIC = "^[0-9]*$"
+        const val NUM_OF_AUTOCOMPLETE_TYPE = 3
     }
 }

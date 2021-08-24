@@ -7,5 +7,5 @@ interface TopupBillsAutoComplete {
 enum class TopupBillsAutoCompleteView(val type: Int) {
     EMPTY_STATE(0),
     CONTACT(1),
-    HEADER(2),
+    HEADER(2)
 }
