@@ -72,15 +72,10 @@ class CouponCatalogViewModelTest {
         val item = mockk<CatalogsValueEntity>() {
             every { id } returns 1
         }
-        val data = mockk<RedeemCouponEntity> {
-            every { coupons?.get(0) } returns mockk {
-                every { code } returns "200"
-                every { cta } returns "cta"
-                every { title } returns "title"
-                every { description } returns "description"
-            }
-            every { redeemMessage } returns "success"
-        }
+        val dummyCouponData = ArrayList<CouponDetailEntity>()
+        val couponDetailEntity = CouponDetailEntity(code = "200",cta = "cta" ,title = "title" , description = "description")
+        dummyCouponData.add(couponDetailEntity)
+        val data = RedeemCouponEntity(coupons=dummyCouponData,redeemMessage = "claim success")
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
         }
@@ -221,18 +216,19 @@ class CouponCatalogViewModelTest {
     @Test
     fun `fetch Latest Status success case`() {
         val observer = mockk<Observer<CatalogStatusItem>>()
-        val data = mockk<CatalogStatusItem>()
+        val listCatalog = ArrayList<CatalogStatusItem>()
+        listCatalog.add(CatalogStatusItem())
+        val dummyData = CatalogStatusBase(catalogs = listCatalog)
         coEvery { repository.fetchLatestStatus(any()) } returns mockk {
-            every { catalogStatus } returns mockk {
-                every { catalogs[0] } returns data
+            every { catalogStatus } returns dummyData
             }
-        }
+
         viewModel.latestStatusLiveData.observeForever(observer)
         viewModel.fetchLatestStatus(listOf())
 
         verify(exactly = 1) { observer.onChanged(any()) }
 
-        assert(viewModel.latestStatusLiveData.value == data)
+        assert(viewModel.latestStatusLiveData.value == dummyData.catalogs?.get(0))
     }
 
     @Test

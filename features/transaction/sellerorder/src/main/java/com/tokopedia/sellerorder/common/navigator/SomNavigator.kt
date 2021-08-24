@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
+import java.net.URLDecoder
 
 object SomNavigator {
 
@@ -41,7 +42,12 @@ object SomNavigator {
         context?.run {
             var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
             val uriBuilder = Uri.Builder()
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, url)
+            val decodedUrl = if (url.startsWith(SomConsts.PREFIX_HTTPS)) {
+                url
+            } else {
+                URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
+            }
+            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
             uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, SomConsts.PARAM_SELLER)
             routingAppLink += uriBuilder.toString()
             RouteManager.route(this, routingAppLink)

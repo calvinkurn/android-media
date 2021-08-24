@@ -2,7 +2,7 @@ package com.tokopedia.statistic.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.statistic.di.StatisticScope
@@ -20,7 +20,9 @@ class StatisticModule {
 
     @StatisticScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 
     @StatisticScope
     @Provides
@@ -28,5 +30,7 @@ class StatisticModule {
 
     @StatisticScope
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 }

@@ -342,7 +342,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         telcoTelcoProductView.hide()
         error?.let {
             if (!it.message.isNullOrEmpty()) {
-                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
+                 Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
                         Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }

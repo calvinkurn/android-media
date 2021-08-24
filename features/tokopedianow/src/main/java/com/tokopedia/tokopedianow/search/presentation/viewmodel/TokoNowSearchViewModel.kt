@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.search.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -21,15 +23,19 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PEN
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
+import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -62,6 +68,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updateCartUseCase: UpdateCartUseCase,
         deleteCartUseCase: DeleteCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -75,6 +82,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updateCartUseCase,
         deleteCartUseCase,
         getWarehouseUseCase,
+        getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -83,10 +91,17 @@ class TokoNowSearchViewModel @Inject constructor (
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
+    private val addToCartBroadMatchTrackingMutableLiveData =
+        SingleLiveEvent<Triple<Int, String, BroadMatchItemDataView>>()
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, BroadMatchItemDataView>> =
+        addToCartBroadMatchTrackingMutableLiveData
+
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
+    private var responseCode = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
+    private var related: AceSearchProductModel.Related? = null
 
     override val tokonowSource: String
         get() = TOKONOW
@@ -101,8 +116,10 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
-        suggestionModel = searchModel.searchProduct.data.suggestion
+        responseCode = searchModel.getResponseCode()
+        suggestionModel = searchModel.getSuggestion()
         searchCategoryJumper = searchModel.searchCategoryJumper
+        related = searchModel.getRelated()
 
         val searchProductHeader = searchModel.searchProduct.header
 
@@ -134,27 +151,34 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
-        processSuggestionModel(headerList)
+        if (!shouldShowSuggestion()) return
+
+        processSuggestionModel { suggestionDataView ->
+            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
+
+            headerList.add(suggestionDataViewIndex, suggestionDataView)
+        }
     }
 
-    private fun processSuggestionModel(headerList: MutableList<Visitable<*>>) {
+    private fun shouldShowSuggestion() = showSuggestionResponseCodeList.contains(responseCode)
+
+    private fun processSuggestionModel(action: (SuggestionDataView) -> Unit) {
         val suggestionModel = suggestionModel ?: return
 
         if (suggestionModel.text.isNotEmpty()) {
-            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
-
-            headerList.add(
-                    suggestionDataViewIndex,
-                    SuggestionDataView(
-                            text = suggestionModel.text,
-                            query = suggestionModel.query,
-                            suggestion = suggestionModel.suggestion,
-                    ),
-            )
+            val suggestionDataView = createSuggestionDataView(suggestionModel)
+            action(suggestionDataView)
         }
 
         this.suggestionModel = null
     }
+
+    private fun createSuggestionDataView(suggestionModel: AceSearchProductModel.Suggestion) =
+        SuggestionDataView(
+            text = suggestionModel.text,
+            query = suggestionModel.query,
+            suggestion = suggestionModel.suggestion,
+        )
 
     private fun determineSuggestionDataViewIndex(headerList: List<Visitable<*>>): Int {
         val quickFilterIndex = headerList.indexOfFirst { it is QuickFilterDataView }
@@ -162,11 +186,71 @@ class TokoNowSearchViewModel @Inject constructor (
         return quickFilterIndex + 1
     }
 
-    override fun createFooterVisitableList() =
-            listOf(
-                createCategoryJumperDataView(),
-                CTATokopediaNowHomeDataView(),
-            )
+    override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
+        val broadMatchVisitableList = createBroadMatchVisitableList()
+
+        return broadMatchVisitableList + listOf(
+            createCategoryJumperDataView(),
+            CTATokopediaNowHomeDataView(),
+        )
+    }
+
+    private fun createBroadMatchVisitableList(): List<Visitable<SearchTypeFactory>> {
+        val broadMatchVisitableList = mutableListOf<Visitable<SearchTypeFactory>>()
+
+        if (!isShowBroadMatch()) return broadMatchVisitableList
+
+        processSuggestionModel { suggestionDataView ->
+            broadMatchVisitableList.add(suggestionDataView)
+        }
+
+        processBroadMatch { broadMatchDataView ->
+            broadMatchVisitableList.add(broadMatchDataView)
+        }
+
+        return broadMatchVisitableList
+    }
+
+    private fun isShowBroadMatch() =
+        showBroadMatchResponseCodeList.contains(responseCode)
+
+    private fun processBroadMatch(action: (BroadMatchDataView) -> Unit) {
+        related?.otherRelatedList?.forEach { otherRelated ->
+            val broadMatchDataView = createBroadMatchDataView(otherRelated)
+            action(broadMatchDataView)
+        }
+
+        related = null
+    }
+
+    private fun createBroadMatchDataView(otherRelated: AceSearchProductModel.OtherRelated) =
+        BroadMatchDataView(
+            keyword = otherRelated.keyword,
+            applink = otherRelated.applink,
+            broadMatchItemDataViewList = otherRelated.productList
+                .mapIndexed { index, otherRelatedProduct ->
+                    BroadMatchItemDataView(
+                        id = otherRelatedProduct.id,
+                        name = otherRelatedProduct.name,
+                        price = otherRelatedProduct.price,
+                        imageUrl = otherRelatedProduct.imageUrl,
+                        applink = otherRelatedProduct.applink,
+                        priceString = otherRelatedProduct.priceString,
+                        position = index + 1,
+                        alternativeKeyword = otherRelated.keyword,
+                        ratingAverage = otherRelatedProduct.ratingAverage,
+                        labelGroupDataList = otherRelatedProduct.labelGroupList
+                            .map(::mapToLabelGroupDataView),
+                        shop = BroadMatchItemDataView.Shop(id = otherRelatedProduct.shop.id),
+                        nonVariantATC = NonVariantATCDataView(
+                            minQuantity = otherRelatedProduct.minOrder,
+                            maxQuantity = otherRelatedProduct.stock,
+                            quantity = getProductQuantityInMiniCart(otherRelatedProduct.id)
+                        ),
+                    )
+                },
+        )
+
 
     private fun createCategoryJumperDataView(): CategoryJumperDataView {
         val categoryJumperItemList =
@@ -186,6 +270,18 @@ class TokoNowSearchViewModel @Inject constructor (
                     title = jumperData.title,
                     applink = jumperData.applink,
             )
+
+    override fun createVisitableListWithEmptyProduct() {
+        if (isShowBroadMatch())
+            createVisitableListWithEmptyProductBroadmatch()
+        else
+            super.createVisitableListWithEmptyProduct()
+    }
+
+    private fun createVisitableListWithEmptyProductBroadmatch() {
+        visitableList.add(chooseAddressDataView)
+        visitableList.addAll(createBroadMatchVisitableList())
+    }
 
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
         val eventLabel = query +
@@ -225,4 +321,136 @@ class TokoNowSearchViewModel @Inject constructor (
     private fun onGetSearchLoadMorePageError(throwable: Throwable) {
 
     }
+
+    override fun updateQuantityInVisitable(
+        visitable: Visitable<*>,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        super.updateQuantityInVisitable(visitable, index, updatedProductIndices)
+
+        if (visitable is BroadMatchDataView)
+            updateBroadMatchQuantities(visitable, index, updatedProductIndices)
+    }
+
+    private fun updateBroadMatchQuantities(
+        broadMatchDataView: BroadMatchDataView,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        broadMatchDataView.broadMatchItemDataViewList.forEach { broadMatchItemDataView ->
+            updateBroadMatchItemQuantity(broadMatchItemDataView, index, updatedProductIndices)
+        }
+    }
+
+    private fun updateBroadMatchItemQuantity(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        val nonVariantATC = broadMatchItemDataView.nonVariantATC ?: return
+        val quantity = getProductQuantityInMiniCart(broadMatchItemDataView.id)
+
+        if (nonVariantATC.quantity != quantity) {
+            nonVariantATC.quantity = quantity
+
+            if (!updatedProductIndices.contains(index))
+                updatedProductIndices.add(index)
+        }
+    }
+
+    private fun getProductQuantityInMiniCart(productId: String)
+        = allMiniCartItemList?.find { it.productId == productId }?.quantity ?: 0
+
+    fun onViewATCBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    ) {
+        if (userSession.isLoggedIn)
+            handleAddToCartBroadMatchItem(broadMatchItem, quantity)
+        else
+            handleAddToCartEventNonLogin(broadMatchIndex)
+    }
+
+    private fun handleAddToCartBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        quantity: Int,
+    ) {
+        val nonVariantATC = broadMatchItem.nonVariantATC ?: return
+        if (nonVariantATC.quantity == quantity) return
+
+        when {
+            nonVariantATC.quantity == 0 -> addToCartBroadMatchItem(broadMatchItem, quantity)
+            quantity == 0 -> deleteCartBroadMatchItem(broadMatchItem)
+            else -> updateCartBroadMatchItem(broadMatchItem, quantity)
+        }
+    }
+
+    private fun addToCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
+        addToCart(
+            productId = broadMatchItem.id,
+            shopId = broadMatchItem.shop.id,
+            quantity = quantity,
+            onSuccess = {
+                sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onError = ::onAddToCartFailed,
+        )
+    }
+
+    private fun sendAddToCartBroadMatchItemTracking(
+        quantity: Int,
+        addToCartDataModel: AddToCartDataModel,
+        broadMatchItem: BroadMatchItemDataView,
+    ) {
+        addToCartBroadMatchTrackingMutableLiveData.value =
+            Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
+    }
+
+    private fun onAddToCartSuccessBroadMatchItem(
+        broadMatchItem: BroadMatchItemDataView,
+        updatedQuantity: Int,
+    ) {
+        updateBroadMatchItemQuantity(broadMatchItem, updatedQuantity)
+        refreshMiniCart()
+    }
+
+    private fun updateBroadMatchItemQuantity(
+        broadMatchItem: BroadMatchItemDataView,
+        updatedQuantity: Int,
+    ) {
+        broadMatchItem.nonVariantATC?.quantity = updatedQuantity
+    }
+
+    private fun deleteCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView) {
+        deleteCart(
+            productId = broadMatchItem.id,
+            onSuccess = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
+            onError = ::onAddToCartFailed,
+        )
+    }
+
+    private fun updateCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
+        updateCart(
+            productId = broadMatchItem.id,
+            quantity = quantity,
+            onSuccess = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
+            },
+            onError = ::onAddToCartFailed,
+        )
+    }
+
+    companion object {
+        private val showBroadMatchResponseCodeList = listOf("4", "5")
+        private val showSuggestionResponseCodeList = listOf("3", "6", "7")
+    }
+
+    override fun getRecomKeywords() = listOf(query)
 }

@@ -191,22 +191,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
         }
-
-        //TODO("Mock")
-//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-//            interactiveView.show()
-//
-//            interactiveView.setInit(true)
-//            delay(5000)
-//            interactiveView.setSchedule("Giveaway Tesla", 10000) {
-//                interactiveView.setLive(15000) {
-//                    interactiveView.setLoading()
-//                    view?.postDelayed({
-//                        interactiveView.setFinish()
-//                    }, 3000)
-//                }
-//            }
-//        }
     }
 
     private fun setupInsets() {

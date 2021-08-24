@@ -8,7 +8,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
 /**
