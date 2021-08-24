@@ -26,6 +26,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".stub.AddEditProductDraftActivityStub"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

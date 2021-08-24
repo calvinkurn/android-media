@@ -41,8 +41,10 @@ class SimilarProductRecommendationTypeFactoryImpl (
 
     override fun type(dataModel: RecommendationEmptyDataModel): Int = RecommendationEmptyDataModel.LAYOUT
 
+    override fun type(dataModel: RecommendationCPMDataModel): Int = -1
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when(type){
+        return when (type) {
             RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
             LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
             SimilarProductLoadMoreViewHolder.LAYOUT -> SimilarProductLoadMoreViewHolder(view)

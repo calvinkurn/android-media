@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -27,6 +28,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchType
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
 import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -118,6 +120,34 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
                 }
             }
         })
+    }
+
+    override fun showGetListError(throwable: Throwable) {
+        hideLoading()
+
+        updateStateScrollListener()
+
+        if (adapter.itemCount > 0) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                context, throwable, ErrorHandler.Builder().build())
+            val errorNetworkModel = ErrorNetworkModel()
+
+            errorNetworkModel.run {
+                errorMessage = errMsg
+                subErrorMessage = "${getString(
+                    com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+                onRetryListener = ErrorNetworkModel.OnRetryListener {
+                    showLoading()
+                    loadInitialData()
+                }
+            }
+            adapter.run {
+                setErrorNetworkModel(errorNetworkModel)
+                showErrorNetwork()
+            }
+        }
     }
 
     override fun loadData(page: Int) {

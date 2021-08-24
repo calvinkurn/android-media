@@ -46,7 +46,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -1827,7 +1829,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet()
+                showAddToCartDoneBottomSheet(result.data.cartId)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -2207,7 +2209,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
     }
 
-    private fun showAddToCartDoneBottomSheet() {
+    private fun showAddToCartDoneBottomSheet(cartId: String) {
         viewModel.getDynamicProductInfoP1?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
             val productName = it.getProductName
@@ -2218,7 +2220,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     productImageUrl,
                     it.data.variant.isVariant,
                     it.basic.getShopId(),
-                    viewModel.getBebasOngkirDataByProductId().imageURL
+                    viewModel.getBebasOngkirDataByProductId().imageURL,
+                    cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -3040,7 +3043,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
                         warehouseId = selectedWarehouseId
-                        atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
@@ -3053,15 +3056,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun addToCartOcc(data: DynamicProductInfoP1, selectedWarehouseId: Int) {
-        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-            warehouseId = selectedWarehouseId.toString()
-            attribution = trackerAttributionPdp ?: ""
-            listTracker = trackerListNamePdp ?: ""
-            productName = data.getProductName
-            category = data.basic.category.name
-            price = data.finalPrice.toString()
-            userId = viewModel.userId
-        }
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(
+                carts = listOf(
+                        AddToCartOccMultiCartParam(
+                                productId = data.basic.productID,
+                                shopId = data.basic.shopID,
+                                quantity = data.basic.minOrder.toString()
+                        ).apply {
+                            warehouseId = selectedWarehouseId.toString()
+                            attribution = trackerAttributionPdp ?: ""
+                            listTracker = trackerListNamePdp ?: ""
+                            productName = data.getProductName
+                            category = data.basic.category.name
+                            price = data.finalPrice.toString()
+                        }
+                ),
+                userId = viewModel.userId,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+        )
         viewModel.addToCart(addToCartOccRequestParams)
     }
 

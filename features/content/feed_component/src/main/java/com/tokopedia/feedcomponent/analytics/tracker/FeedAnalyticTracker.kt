@@ -1416,7 +1416,7 @@ class FeedAnalyticTracker
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     "watch",
-                    "video ",
+                    "video",
                     getPostType("", isFollowed = isFollowed, isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -1562,27 +1562,13 @@ class FeedAnalyticTracker
 
         val map = mapOf(
             KEY_EVENT to OPEN_SCREEN,
-            "isLoggedInStatus" to isLoggedInStatus.toString(),
-            KEY_EVENT_SCREEN_NAME to "/feed",
+            SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
+            KEY_EVENT_SCREEN_NAME to Screen.FEED,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
-
-    /**
-     *
-     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
-     *
-     */
-    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
-        trackOpenScreenEventC2s(
-            Screen.HOME_FEED_SCREEN,
-            isLoggedInStatus = isLoggedInStatus.toString(),
-            isFeedEmpty = isFeedEmpty.toString()
-        )
     }
 
     /**

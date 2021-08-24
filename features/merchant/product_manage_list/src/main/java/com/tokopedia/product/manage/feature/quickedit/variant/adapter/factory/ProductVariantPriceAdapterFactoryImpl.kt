@@ -15,7 +15,7 @@ class ProductVariantPriceAdapterFactoryImpl(
     private val listener: ProductVariantListener
 ): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 
-    private val variantPriceMap: MutableMap<String, Int> = mutableMapOf()
+    private val variantPriceMap: MutableMap<String, Double> = mutableMapOf()
 
     override fun type(viewModel: ProductVariant): Int = ProductVariantPriceViewHolder.LAYOUT
 

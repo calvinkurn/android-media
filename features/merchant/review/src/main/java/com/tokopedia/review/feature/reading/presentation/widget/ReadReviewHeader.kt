@@ -72,6 +72,12 @@ class ReadReviewHeader : BaseCustomView {
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
+        sortFilter?.sortFilterItems?.setPadding(
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                0,
+                0,
+                0
+        )
         seeAll = findViewById(R.id.read_review_see_all)
         topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
         topicRight = findViewById(R.id.read_review_highlighted_topic_right)

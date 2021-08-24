@@ -37,6 +37,7 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
@@ -52,11 +53,11 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoThankYouBottomSheetBuilder
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
-import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
@@ -722,7 +723,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
-                IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(
+                IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     it,
                     data,
                     this@CreateReviewFragment,

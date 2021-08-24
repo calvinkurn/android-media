@@ -33,6 +33,7 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:animateLayoutChanges="true"
         android:minWidth="@dimen/layout_lvl3"
         app:cardBackgroundColor="@color/Unify_NN900"
         app:cardCornerRadius="@dimen/dp_12"
