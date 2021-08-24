@@ -1228,6 +1228,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
         observeResetNestedScrolling()
+        observeBeautyFestData()
     }
 
     private fun observeResetNestedScrolling() {
@@ -1291,23 +1292,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun setBeautyFest(data: HomeDataModel) {
-        val isEligibleForBeautyFest = isEligibleForBeautyFest()
-        if (isEligibleForBeautyFest && !data.isCache && counterBypassFirstNetworkHomeData>0) {
-            CoroutineScope(Dispatchers.Main).launch {
-                beautyFestEvent = getHomeViewModel().getBeautyFest(data.list)
+    private fun observeBeautyFestData() {
+        getHomeViewModel().beautyFestLiveData.observe(viewLifecycleOwner, Observer { beautyFestData ->
+            if(beautyFestData == BEAUTY_FEST_NOT_SET) {
+                if(beautyFestEvent == BEAUTY_FEST_NOT_SET) {
+                    beautyFestEvent = BEAUTY_FEST_FALSE
+                    renderBeautyFestHeader()
+                }
+            }
+            else {
+                beautyFestEvent = beautyFestData
                 renderBeautyFestHeader()
             }
-        }
-        else if(isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_NOT_SET
-            renderBeautyFestHeader()
-            counterBypassFirstNetworkHomeData++
-        }
-        else if(!isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_FALSE
-            renderBeautyFestHeader(bypassEligibleBeautyFest = true)
-        }
+
+        })
     }
 
     private fun observeUpdateNetworkStatusData() {
@@ -1607,6 +1605,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             adapter?.submitList(data)
             showCoachmarkWithDataValidation(data)
+        }
+    }
+
+    private fun setBeautyFest(data: HomeDataModel) {
+        val isEligibleForBeautyFest = isEligibleForBeautyFest()
+        if (isEligibleForBeautyFest && !data.isCache && counterBypassFirstNetworkHomeData > 0) {
+            getHomeViewModel().getBeautyFest(data.list)
+        } else if (isEligibleForBeautyFest) {
+            beautyFestEvent = BEAUTY_FEST_NOT_SET
+            renderBeautyFestHeader()
+            counterBypassFirstNetworkHomeData++
+        } else if (!isEligibleForBeautyFest) {
+            beautyFestEvent = BEAUTY_FEST_FALSE
+            renderBeautyFestHeader(bypassEligibleBeautyFest = true)
         }
     }
 
@@ -2290,10 +2302,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isAdded && activity != null && adapter != null) {
             if (adapter?.itemCount ?: RV_EMPTY_TRESHOLD > RV_EMPTY_TRESHOLD) {
                 showToaster(message, TYPE_ERROR)
-                renderBeautyFestHeader()
+                renderBeautyFestErrorNetwork()
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
+        }
+    }
+
+    private fun renderBeautyFestErrorNetwork() {
+        if(beautyFestEvent == BEAUTY_FEST_NOT_SET) {
+            beautyFestEvent = BEAUTY_FEST_FALSE
+            renderBeautyFestHeader()
         }
     }
 

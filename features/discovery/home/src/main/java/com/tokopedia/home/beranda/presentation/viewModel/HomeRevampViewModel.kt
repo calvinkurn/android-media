@@ -136,6 +136,10 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
+    val beautyFestLiveData: LiveData<Int>
+        get() = _beautyFestLiveData
+    private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
+
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
     private val _homeLiveData: MutableLiveData<HomeDataModel> = MutableLiveData()
@@ -1656,11 +1660,16 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    suspend fun getBeautyFest(data: List<Visitable<*>>) : Int = withContext(Dispatchers.IO) {
-        //some result string will not qualify if not contains string channelModel
-        if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
-            HomeRevampFragment.BEAUTY_FEST_TRUE
-        else
-            HomeRevampFragment.BEAUTY_FEST_FALSE
+    fun getBeautyFest(data: List<Visitable<*>>) {
+        //beauty fest event will qualify if contains "isChannelBeautyFest":true
+        launchCatchError(coroutineContext, {
+            if (Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_TRUE)
+            else
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_FALSE)
+        }, {
+            it.printStackTrace()
+            _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
+        })
     }
 }
