@@ -53,14 +53,14 @@ class ProductFeaturedViewComponent(
             if(width > range) icProductSeeMore.gone()
             else if(percentage > SEE_MORE_ANIMATION_THRESHOLD) {
                 val scale = (1 - percentage) / (1 - SEE_MORE_ANIMATION_THRESHOLD)
-                val reverseScale = if(1 - scale < 0) 0F else 1 - scale
+                val seeMoreScale = if(1 - scale < 0) 0F else 1 - scale
 
                 if(!featuredProduct.isNullOrEmpty() && featuredProduct.first() is PlayProductUiModel.Product) {
                     val seeMore = featuredProduct.last() as PlayProductUiModel.SeeMore
-                    featuredProduct[featuredProduct.size - 1] = seeMore.copy(scale = reverseScale)
+                    featuredProduct[featuredProduct.size - 1] = seeMore.copy(scale = seeMoreScale)
                     adapter.setItemsAndAnimateChanges(featuredProduct)
 
-                    if(reverseScale < STICKY_SEE_MORE_VISIBLE_THRESHOLD)
+                    if(seeMoreScale < STICKY_SEE_MORE_VISIBLE_THRESHOLD)
                         icProductSeeMore.visible()
                     else icProductSeeMore.gone()
                 }
