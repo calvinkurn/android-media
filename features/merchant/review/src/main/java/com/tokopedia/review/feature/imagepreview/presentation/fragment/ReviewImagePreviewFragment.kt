@@ -327,7 +327,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         ReviewImagePreviewTracking.trackOnLikeReviewClicked(
                             productReview.feedbackID,
                             isLiked(productReview.likeDislike.likeStatus),
-                            productId
+                            productId,
+                            isFromGallery
                         )
                     } else {
                         ReviewImagePreviewTracking.trackOnShopReviewLikeReviewClicked(
@@ -443,7 +444,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun openExpandedReviewBottomSheet() {
         if (isProductReview) {
-            ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+            ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId, isFromGallery)
         } else {
             ReviewImagePreviewTracking.trackOnShopReviewSeeAllClicked(
                 productReview.feedbackID,
@@ -552,7 +553,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             ReviewImagePreviewTracking.trackOnLikeReviewClicked(
                                 feedbackId,
                                 isLiked,
-                                productId
+                                productId,
+                                isFromGallery
                             )
                             viewModel.toggleLikeReview(
                                 feedbackId,
