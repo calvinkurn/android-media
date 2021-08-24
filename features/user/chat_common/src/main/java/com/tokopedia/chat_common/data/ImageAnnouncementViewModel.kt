@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by nisie on 5/15/18.
@@ -34,7 +35,7 @@ constructor(
         attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory> {
 
-    var wording: String = ""
+    var finishedDescription: String = ""
         private set
     var isCampaign: Boolean = false
         private set
@@ -44,6 +45,8 @@ constructor(
         private set
     var endDate: String = ""
         private set
+
+    val endDataMillis get() = endDate.toLongOrZero() * 1_000
 
     constructor(
         item: Reply, attributes: ImageAnnouncementPojo
@@ -62,7 +65,7 @@ constructor(
         blastId = item.blastId,
         source = item.source
     ) {
-        this.wording = attributes.wording
+        this.finishedDescription = attributes.wording
         this.isCampaign = attributes.isCampaign
         this.statusCampaign = attributes.statusCampaign
         this.startDate = attributes.startDate
@@ -71,5 +74,19 @@ constructor(
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasStartedCampaign(): Boolean {
+        return statusCampaign == CampaignStatus.STARTED
+    }
+
+    fun hasOngoingCampaign(): Boolean {
+        return statusCampaign == CampaignStatus.ON_GOING
+    }
+
+    object CampaignStatus {
+        const val STARTED = 1
+        const val ON_GOING = 2
+        const val ENDED = 3
     }
 }

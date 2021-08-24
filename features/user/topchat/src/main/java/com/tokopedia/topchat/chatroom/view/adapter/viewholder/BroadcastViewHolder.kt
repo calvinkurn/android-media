@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.DeferredAttachment
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -24,6 +25,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Imag
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -32,42 +34,45 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 
 class BroadcastViewHolder constructor(
-        itemView: View?,
-        private val imageAnnouncementListener: ImageAnnouncementListener,
-        private val voucherListener: TopChatVoucherListener,
-        private val productListener: TopchatProductAttachmentListener,
-        private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
-        private val deferredAttachment: DeferredViewHolderAttachment,
-        private val searchListener: SearchListener,
-        private val commonListener: CommonViewHolderListener,
-        private val adapterListener: AdapterListener,
-        private val chatMessageListener: ChatLinkHandlerListener
+    itemView: View?,
+    private val imageAnnouncementListener: ImageAnnouncementListener,
+    private val voucherListener: TopChatVoucherListener,
+    private val productListener: TopchatProductAttachmentListener,
+    private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
+    private val deferredAttachment: DeferredViewHolderAttachment,
+    private val searchListener: SearchListener,
+    private val commonListener: CommonViewHolderListener,
+    private val adapterListener: AdapterListener,
+    private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
     private val broadcastContainer: LinearLayout? = itemView?.findViewById(
-            R.id.bubble_broadcast_container
+        R.id.bubble_broadcast_container
     )
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
+    private val broadcastLabel: BroadcastCampaignLabelView? = itemView?.findViewById(
+        R.id.broadcast_campaign_label
+    )
     private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(
-            R.id.broadcast_merchant_voucher
+        R.id.broadcast_merchant_voucher
     )
     private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(
-            R.id.broadcast_product
+        R.id.broadcast_product
     )
     private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(
-            R.id.broadcast_fx_chat
+        R.id.broadcast_fx_chat
     )
     private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(
-            R.id.rv_product_carousel
+        R.id.rv_product_carousel
     )
     private val adapterProductCarousel = ProductListAdapter(
-            searchListener = searchListener,
-            listener = productListener,
-            deferredAttachment = deferredAttachment,
-            commonListener = commonListener,
-            adapterListener = adapterListener,
-            isUnifyBroadcast = true
+        searchListener = searchListener,
+        listener = productListener,
+        deferredAttachment = deferredAttachment,
+        commonListener = commonListener,
+        adapterListener = adapterListener,
+        isUnifyBroadcast = true
     )
     private val paddingOpposite: Int by lazy(LazyThreadSafetyMode.NONE) {
         itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_1)?.toInt() ?: 0
@@ -79,7 +84,11 @@ class BroadcastViewHolder constructor(
 
     init {
         ProductCarouselListAttachmentViewHolderBinder.initRecyclerView(
-                rvProductCarousel, adapterListener, adapterProductCarousel, productCarouselListener, this
+            rvProductCarousel,
+            adapterListener,
+            adapterProductCarousel,
+            productCarouselListener,
+            this
         )
     }
 
@@ -107,15 +116,15 @@ class BroadcastViewHolder constructor(
     }
 
     private fun updateProductStock(
-            element: BroadCastUiModel,
-            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+        element: BroadCastUiModel,
+        payload: SingleProductAttachmentContainer.PayloadUpdateStock
     ) {
         if (element.isSingleProduct()) {
             val product = element.singleProduct ?: return
             singleProduct?.updateStockState(product)
         } else {
             ProductCarouselListAttachmentViewHolderBinder.updateCarouselProductStock(
-                    adapterProductCarousel, payload
+                adapterProductCarousel, payload
             )
         }
     }
@@ -130,10 +139,15 @@ class BroadcastViewHolder constructor(
             setPaddingTop(paddingWithBanner)
             ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
             ImageAnnouncementViewHolderBinder.bindBannerClick(
-                    banner, bannerView, imageAnnouncementListener
+                banner, bannerView, imageAnnouncementListener
             )
+            bindBroadcastLabel(banner)
             bindBannerMargin(element)
         }
+    }
+
+    private fun bindBroadcastLabel(banner: ImageAnnouncementViewModel) {
+        broadcastLabel?.renderState(banner)
     }
 
     private fun setPaddingTop(topPadding: Float) {
@@ -146,10 +160,14 @@ class BroadcastViewHolder constructor(
 
     private fun bindBannerMargin(element: BroadCastUiModel) {
         (bannerView?.layoutParams as? LinearLayout.LayoutParams)?.apply {
-            val productMarginBottom = if (element.hasVoucher()) {
-                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-            } else {
-                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val productMarginBottom = when {
+                element.hasCampaignLabel() -> 0
+                element.hasVoucher() -> itemView.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2
+                )
+                else -> itemView.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+                )
             }
             bottomMargin = productMarginBottom.toInt()
         }
@@ -172,16 +190,16 @@ class BroadcastViewHolder constructor(
         if (productCarousel != null) {
             rvProductCarousel?.show()
             ProductCarouselListAttachmentViewHolderBinder.updateParentMetaData(
-                    element, adapterPosition, adapterProductCarousel
+                element, adapterPosition, adapterProductCarousel
             )
             ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(
-                    productCarousel, deferredAttachment
+                productCarousel, deferredAttachment
             )
             ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(
-                    productCarousel, adapterProductCarousel
+                productCarousel, adapterProductCarousel
             )
             ProductCarouselListAttachmentViewHolderBinder.bindScrollState(
-                    rvProductCarousel, productCarouselListener, this
+                rvProductCarousel, productCarouselListener, this
             )
         } else {
             rvProductCarousel?.gone()
@@ -191,14 +209,14 @@ class BroadcastViewHolder constructor(
     private fun bindSingleProduct(element: BroadCastUiModel) {
         val product = element.singleProduct
         val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
-                element, adapterPosition
+            element, adapterPosition
         )
         if (product != null) {
             singleProduct?.show()
             singleProduct?.bindData(
-                    product, adapterPosition, productListener, deferredAttachment,
-                    searchListener, commonListener, adapterListener,
-                    false, metaData
+                product, adapterPosition, productListener, deferredAttachment,
+                searchListener, commonListener, adapterListener,
+                false, metaData
             )
         } else {
             singleProduct?.gone()
@@ -219,10 +237,20 @@ class BroadcastViewHolder constructor(
 
     private fun bindBackground(element: BroadCastUiModel) {
         if (element.isOpposite) {
-            broadcastContainer?.setPadding(paddingOpposite, paddingOpposite, paddingOpposite, paddingOpposite)
+            broadcastContainer?.setPadding(
+                paddingOpposite,
+                paddingOpposite,
+                paddingOpposite,
+                paddingOpposite
+            )
             broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_receiver)
         } else {
-            broadcastContainer?.setPadding(paddingSender, paddingSender, paddingSender, paddingSender)
+            broadcastContainer?.setPadding(
+                paddingSender,
+                paddingSender,
+                paddingSender,
+                paddingSender
+            )
             broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_sender)
         }
     }

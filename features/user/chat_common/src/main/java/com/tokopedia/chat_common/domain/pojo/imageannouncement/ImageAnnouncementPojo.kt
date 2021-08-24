@@ -22,10 +22,10 @@ class ImageAnnouncementPojo {
     @SerializedName("wording")
     @Expose
     var wording: String = ""
-    @SerializedName("isCampaign")
+    @SerializedName("is_campaign")
     @Expose
     var isCampaign: Boolean = false
-    @SerializedName("statusCampaign")
+    @SerializedName("status_campaign")
     @Expose
     var statusCampaign: Int = 1
     @SerializedName("startDate")
