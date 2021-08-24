@@ -2267,7 +2267,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val unavailableSectionList = unavailableDataMapResult.first
             val accordionUiModel = unavailableDataMapResult.second
             cartAdapter.addItems(unavailableSectionList)
-/*
             if (accordionUiModel != null) {
                 collapseOrExpandDisabledItem(accordionUiModel)
                 if (!unavailableItemAccordionCollapseState) {
@@ -2275,7 +2274,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     collapseOrExpandDisabledItem(accordionUiModel)
                 }
             }
-*/
         }
     }
 
