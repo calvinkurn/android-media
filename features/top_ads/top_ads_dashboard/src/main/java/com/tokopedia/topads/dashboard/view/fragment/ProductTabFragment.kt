@@ -78,6 +78,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
+    private var itemList: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
     private var placementType: Int = 0
     private var isWhiteListedUser: Boolean = false
@@ -322,6 +323,7 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     private fun fetchData() {
         adIds.clear()
+        itemList.clear()
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
@@ -371,6 +373,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         }
         response.data.forEach {
             adIds.add(it.adId.toString())
+            itemList.add(it.itemId.toString())
             adapter.items.add(ProductItemModel(it))
         }
         if (adIds.isNotEmpty()) {
@@ -380,6 +383,7 @@ class ProductTabFragment : BaseDaggerFragment() {
                     groupFilterSheet.getSelectedStatusId(), groupFilterSheet.getSelectedAdPlacementType())
         }
         setFilterCount()
+        (activity as TopAdsGroupDetailViewActivity).getBidForKeywords(itemList)
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
     }
 
