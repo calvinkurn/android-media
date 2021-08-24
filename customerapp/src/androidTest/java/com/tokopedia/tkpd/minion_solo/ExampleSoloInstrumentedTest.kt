@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.minion_yoda
+package com.tokopedia.tkpd.minion_solo
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,11 +14,11 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class ExampleSoloInstrumentedTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.tokopedia.tkpd", appContext.packageName)
+        assertEquals("com.tokopedia.tkpd.minion_solo", appContext.packageName)
     }
 }
