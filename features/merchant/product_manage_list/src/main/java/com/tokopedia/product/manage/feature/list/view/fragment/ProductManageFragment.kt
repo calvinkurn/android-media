@@ -1921,7 +1921,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onScrollToTop() {
-        recycler_view?.smoothScrollToPosition(0)
+        recycler_view?.post {
+            recycler_view?.smoothScrollToPosition(0)
+        }
     }
 
     @Suppress("NAME_SHADOWING")

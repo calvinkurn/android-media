@@ -320,7 +320,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onScrollToTop() {
-        scrollView?.smoothScrollTo(0, 0)
+        scrollView?.post {
+            scrollView?.smoothScrollTo(0, 0)
+        }
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {

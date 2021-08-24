@@ -835,7 +835,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     override fun onScrollToTop() {
-        rvSomList?.smoothScrollToPosition(0)
+        rvSomList?.post {
+            rvSomList?.smoothScrollToPosition(0)
+        }
     }
 
     private fun setupBuyerRequestCancelBottomSheet(

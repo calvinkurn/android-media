@@ -421,7 +421,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onScrollToTop() {
-        recyclerView?.smoothScrollToPosition(0)
+        recyclerView?.post {
+            recyclerView?.smoothScrollToPosition(0)
+        }
     }
 
     fun setNavigationOtherMenuView(view: View?) {

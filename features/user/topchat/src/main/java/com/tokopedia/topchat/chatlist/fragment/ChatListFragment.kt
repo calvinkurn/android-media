@@ -598,7 +598,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun onScrollToTop() {
-        getRecyclerView(view)?.smoothScrollToPosition(0)
+        getRecyclerView(view)?.post {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
