@@ -90,7 +90,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
 
                             override fun onError(e: Throwable) {
                                 if (view != null) {
-                                    view!!.showErrorPage(getErrorMessage(view!!.activity, e))
+                                    view!!.showErrorPage(getErrorMessage(view!!.getActivity(), e))
                                     view!!.stopTrace()
                                 }
                             }
@@ -103,7 +103,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                         view!!.stopTrace()
                                     } else if (shippingRecommendationData.shippingDurationViewModels != null &&
                                             shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
-                                        if (view!!.isDisableCourierPromo) {
+                                        if (view!!.isDisableCourierPromo()) {
                                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
                                                 shippingDurationUiModel.serviceData.isPromo = 0
                                                 for (productData in shippingDurationUiModel.serviceData.products) {
@@ -114,7 +114,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                         view!!.showData(shippingRecommendationData.shippingDurationViewModels, shippingRecommendationData.logisticPromo, shippingRecommendationData.preOrderModel)
                                         view!!.stopTrace()
                                     } else {
-                                        view!!.showNoCourierAvailable(view!!.activity.getString(R.string.label_no_courier_bottomsheet_message))
+                                        view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
                                         view!!.stopTrace()
                                     }
                                 }

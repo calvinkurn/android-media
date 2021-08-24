@@ -17,8 +17,8 @@ interface ShippingDurationContract {
         fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?)
         fun showNoCourierAvailable(message: String?)
         fun stopTrace()
-        val isDisableCourierPromo: Boolean
-        val activity: Activity
+        fun isDisableCourierPromo(): Boolean
+        fun getActivity(): Activity
     }
 
     interface Presenter : CustomerPresenter<View> {
