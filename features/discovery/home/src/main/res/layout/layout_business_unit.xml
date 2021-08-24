@@ -22,5 +22,6 @@
         android:id="@+id/error_bu_unit_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_12"
         android:visibility="gone"/>
 </FrameLayout>
