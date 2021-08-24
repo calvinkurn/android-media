@@ -3,7 +3,9 @@ package com.tokopedia.graphql.domain.coroutine
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
-import com.tokopedia.graphql.domain.example.GetNoParamUseCase
+import com.tokopedia.graphql.domain.example.GetNoParamStateUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -13,23 +15,22 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 
-
 @ExperimentalCoroutinesApi
-class CoroutineUseCaseTest {
+class CoroutineStateUseCaseTest {
 
     val repository = mockk<GraphqlRepository>()
     val dispatcher = TestCoroutineDispatcher()
-    lateinit var uut: GetNoParamUseCase
+    lateinit var uut: GetNoParamStateUseCase
 
 
     @Before
     fun setup() {
-        uut = GetNoParamUseCase(repository, dispatcher)
+        uut = GetNoParamStateUseCase(repository, dispatcher)
         clearAllMocks()
     }
 
     @Test
-    fun `when given success response should return output model with id`() = dispatcher.runBlockingTest {
+    fun `when given success response should return Success with id`() = dispatcher.runBlockingTest {
         val case = FooModel(1, "message")
         coEvery { repository.getReseponse(any(), any()) } returns MockUtil.createSuccessResponse(
             case
@@ -37,16 +38,19 @@ class CoroutineUseCaseTest {
 
         val result = uut(Unit)
 
-        assert(result.id == case.id)
-        assert(result.msg == case.msg)
+        assert(result is Success)
+        assert((result as Success).data.id == case.id)
     }
 
-    @Test(expected = RuntimeException::class)
-    fun `when given error response should throw Runtime exception`() = dispatcher.runBlockingTest {
-        val case = RuntimeException()
+    @Test
+    fun `when given error answer should return Fail object`() = dispatcher.runBlockingTest {
+        val case = RuntimeException("err")
         coEvery { repository.getReseponse(any(), any()) } throws case
 
-        uut(Unit)
+        val result = uut(Unit)
+
+        assert(result is Fail)
+        assert((result as Fail).throwable.message == case.message)
     }
 
 }

@@ -19,7 +19,7 @@ abstract class CoroutineStateUseCase<Input, out Output: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return an generic class with state comes from R
     * */
-    suspend fun invoke(params: Input): Result<Output> {
+    suspend operator fun invoke(params: Input): Result<Output> {
         return try {
             withContext(dispatcher) {
                 Success(execute(params))
