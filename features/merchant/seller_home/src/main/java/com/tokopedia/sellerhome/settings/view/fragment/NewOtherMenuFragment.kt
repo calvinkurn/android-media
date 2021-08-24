@@ -1,0 +1,93 @@
+package com.tokopedia.sellerhome.settings.view.fragment
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
+import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
+//TODO: Preserve name OtherMenuFragment and move the older one to different path
+class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    SettingTrackingListener, OtherMenuAdapter.Listener {
+
+    companion object {
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
+        @JvmStatic
+        fun createInstance(): NewOtherMenuFragment = NewOtherMenuFragment()
+    }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val otherMenuAdapter by lazy {
+        adapter as? OtherMenuAdapter
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+    }
+
+    override fun onItemClicked(t: SettingUiModel?) {}
+
+    override fun loadData(page: Int) {}
+
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory =
+        OtherMenuAdapterTypeFactory(this, userSession = userSession)
+
+    override fun initInjector() {
+        DaggerSellerHomeComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    override fun getScreenName(): String = ""
+
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
+        if (settingShopInfoImpressionTrackable is StatisticMenuItemUiModel) {
+            sendEventImpressionStatisticMenuItem(userSession.userId)
+        } else {
+            settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+        }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
+        return OtherMenuAdapter(context, this, adapterTypeFactory)
+    }
+
+    override fun goToPrintingPage() {
+        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
+        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        RouteManager.getIntent(context, applink)?.let {
+            context?.startActivity(it)
+        }
+    }
+
+    override fun goToSettings() {
+        startActivity(Intent(context, MenuSettingActivity::class.java))
+    }
+
+    private fun setupView() {
+        (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
+        otherMenuAdapter?.populateAdapterData()
+    }
+}

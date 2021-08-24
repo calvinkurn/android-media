@@ -11,6 +11,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.settings.view.fragment.NewOtherMenuFragment
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -151,7 +152,7 @@ class SellerHomeNavigator(
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        otherSettingsFragment = NewOtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))

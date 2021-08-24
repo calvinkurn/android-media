@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -48,6 +49,7 @@ import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
+import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.customview.FireworksLottieView
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
@@ -64,10 +66,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    OtherMenuViewHolder.Listener, OtherMenuAdapter.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s"
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
@@ -142,6 +144,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private val otherMenuAdapter by lazy {
+        adapter as? OtherMenuAdapter
+    }
+
     private var statusHeaderImage: AppCompatImageView? = null
     private var statusIconImage: AppCompatImageView? = null
     private var whiteBackgroundView: View? = null
@@ -176,6 +182,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this, userSession = userSession)
+
+    override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
+        return OtherMenuAdapter(context, this, adapterTypeFactory)
+    }
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
@@ -581,85 +591,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun populateAdapterData() {
-        val settingList = mutableListOf(
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
-                StatisticMenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_statistic),
-                        clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-                        iconUnify = IconUnify.GRAPH),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-                        iconUnify = IconUnify.PROMO_ADS),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_performance),
-                        clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                        iconUnify = IconUnify.PERFORMANCE,
-                ),
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_discussion),
-                        clickApplink = ApplinkConst.TALK,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-                        iconUnify = IconUnify.DISCUSSION),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_review),
-                        clickApplink = ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW,
-                        iconUnify = IconUnify.STAR),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_complaint),
-                        clickApplink = null,
-                        eventActionSuffix = SettingTrackingConstant.COMPLAINT,
-                        iconUnify = IconUnify.PRODUCT_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                DividerUiModel(),
-                PrintingMenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_product_package),
-                        iconUnify = IconUnify.PACKAGE
-                ) { goToPrintingPage() },
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_finance_service),
-                        clickApplink = null,
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
-                        iconUnify = IconUnify.FINANCE
-                ) {
-                    RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
-                },
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_seller_education_center),
-                        clickApplink = null,
-                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
-                        iconUnify = IconUnify.SHOP_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_tokopedia_care),
-                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
-                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-                        iconUnify = IconUnify.CALL_CENTER),
-                DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_setting),
-                        clickApplink = null,
-                        eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                        iconUnify = IconUnify.SETTING
-                ) {
-                    startActivity(Intent(context, MenuSettingActivity::class.java))
-                }
-        )
-        adapter.data.addAll(settingList)
-        adapter.notifyDataSetChanged()
-        renderList(settingList)
+        otherMenuAdapter?.populateAdapterData()
     }
 
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
@@ -816,12 +748,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         startActivity(shopFavouriteListIntent)
     }
 
-    private fun goToPrintingPage() {
+    override fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
         val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
         }
+    }
+
+    override fun goToSettings() {
+        startActivity(Intent(context, MenuSettingActivity::class.java))
     }
 
     private fun isActivityResumed(): Boolean {

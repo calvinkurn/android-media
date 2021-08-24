@@ -9,6 +9,7 @@ import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
+import com.tokopedia.sellerhome.settings.view.fragment.NewOtherMenuFragment
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -36,6 +37,7 @@ interface SellerHomeComponent {
     fun inject(sellerHomeFragment: MenuSettingFragment)
 
     fun inject(sellerHomeFragment: OtherMenuFragment)
+    fun inject(newOtherMenuFragment: NewOtherMenuFragment)
     fun inject(sellerHomeFragment: CentralizedPromoFragment)
 
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)
