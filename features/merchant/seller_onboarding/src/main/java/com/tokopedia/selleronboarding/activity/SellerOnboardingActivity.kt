@@ -26,7 +26,7 @@ import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
 import com.tokopedia.selleronboarding.model.SobSliderStatisticsUiModel
 import com.tokopedia.selleronboarding.model.SobSliderPromoUiModel
-import com.tokopedia.selleronboarding.utils.StatusBarHelper
+import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import kotlinx.android.synthetic.main.activity_sob_onboarding.*
 import kotlin.math.abs
 
@@ -202,7 +202,7 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun setupViewsTopMargin() {
-        val statusBarHeight = StatusBarHelper.getStatusBarHeight(this)
+        val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
         val btnSkipLp = tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
         btnSkipLp?.let { lp ->
             val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)

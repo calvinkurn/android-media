@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
@@ -18,6 +19,8 @@ class SliderMessageViewHolder(itemView: View) :
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_message_view_holder
+
+        private const val IMG_ROTATION = 180f
     }
 
     private val observer by lazy {
@@ -59,14 +62,20 @@ class SliderMessageViewHolder(itemView: View) :
 
     private fun setMessageImageUrl() {
         with(itemView) {
-            imgSobMessage1?.loadImage(SobImageSliderUrl.IMG_SOB_WIDGET_ANDROID) {
-                setPlaceHolder(R.drawable.img_sob_widget_android)
-            }
+            imgSobMessage1?.loadImage(R.drawable.img_sob_widget_android)
             imgSobMessage2?.loadImage(SobImageSliderUrl.IMG_SMART_REPLY) {
                 setPlaceHolder(R.drawable.img_sob_smart_reply)
             }
             imgSobMessage3?.loadImage(SobImageSliderUrl.IMG_BROADCAST_CHAT) {
                 setPlaceHolder(R.drawable.img_sob_broadcast_chat)
+            }
+
+            OnboardingUtils.loadImageAsBitmap(
+                context,
+                SobImageSliderUrl.IMG_SOB_WIDGET_ANDROID,
+                IMG_ROTATION
+            ) {
+                imgSobMessage1?.loadImage(it)
             }
         }
     }

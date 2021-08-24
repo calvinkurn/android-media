@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
@@ -15,11 +16,14 @@ import kotlinx.android.synthetic.main.sob_slider_promo_view_holder.view.*
  * Created By @ilhamsuaib on 20/07/21
  */
 
-class SliderManageViewHolder(itemView: View) :
-    AbstractViewHolder<SobSliderManageUiModel>(itemView) {
+class SliderManageViewHolder(
+    itemView: View
+) : AbstractViewHolder<SobSliderManageUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_manage_view_holder
+
+        private const val IMG_ROTATION = 180f
     }
 
     private val animationObserver by lazy {
@@ -57,12 +61,26 @@ class SliderManageViewHolder(itemView: View) :
 
     private fun setManageImageUrl() {
         with(itemView) {
-            imgSobManage1?.loadImage(SobImageSliderUrl.IMG_MANAGE_STOCK) {
-                setPlaceHolder(R.drawable.img_sob_manage_stock)
+            imgSobManage1?.loadImage(R.drawable.img_sob_manage_stock)
+            imgSobManage2?.loadImage(R.drawable.img_sob_som_card)
+
+            OnboardingUtils.loadImageAsBitmap(
+                context,
+                SobImageSliderUrl.IMG_MANAGE_STOCK,
+                IMG_ROTATION
+            ) {
+                imgSobManage1?.loadImage(it)
             }
-            imgSobManage2?.loadImage(SobImageSliderUrl.IMG_SOM_CARD) {
-                setPlaceHolder(R.drawable.img_sob_som_card)
+
+            OnboardingUtils.loadImageAsBitmap(
+                context,
+                SobImageSliderUrl.IMG_SOM_CARD,
+                IMG_ROTATION
+            ) {
+                imgSobManage2?.loadImage(it)
             }
         }
     }
+
+
 }

@@ -30,22 +30,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvSobSliderManageTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvSobSliderManageTitle"
         tools:src="@drawable/bg_sob_circle" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobManage1"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/sob_dimen_28"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/sob_dimen_72"
-        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:rotation="180"
         android:scaleType="fitStart"
         app:layout_constraintBottom_toTopOf="@+id/imgSobManage2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSobSliderManageTitle"
+        tools:rotation="0"
         tools:src="@drawable/img_sob_manage_stock" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -53,12 +55,14 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/sob_dimen_88"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/sob_dimen_28"
-        android:adjustViewBounds="true"
+        android:rotation="180"
         android:scaleType="fitEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobManage1"
+        tools:rotation="0"
         tools:src="@drawable/img_sob_som_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>
