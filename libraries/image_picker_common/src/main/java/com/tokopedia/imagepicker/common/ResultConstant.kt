@@ -1,4 +1,3 @@
-
 package com.tokopedia.imagepicker.common
 
 const val PICKER_RESULT_PATHS = "result_paths"

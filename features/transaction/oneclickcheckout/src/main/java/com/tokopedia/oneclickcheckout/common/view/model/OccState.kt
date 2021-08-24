@@ -16,7 +16,6 @@ sealed class OccState<out T : Any> {
             return eventFailure.getData()
         }
     }
-    data class UpdateAfpb<out T : Any>(val data: T) : OccState<T>()
 }
 
 sealed class OccGlobalEvent {
