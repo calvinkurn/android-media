@@ -30,6 +30,11 @@ class FeaturedBrandAdapter(
         private val isCacheData: Boolean
 ) : RecyclerView.Adapter<FeaturedBrandAdapter.Holder>() {
 
+    companion object {
+        private const val MAX_ITEM = 4
+        private const val ROUNDED_12F = 12F
+    }
+
     private lateinit var dataModel: FeaturedBrandDataModel
     private var itemList: MutableList<Lego4AutoItem> = mutableListOf()
 
@@ -49,7 +54,7 @@ class FeaturedBrandAdapter(
         this.dataModel = dataModel
         itemList.clear()
         dataModel.channelModel.channelGrids.forEachIndexed { index, data ->
-            if (index < 4) {
+            if (index < MAX_ITEM) {
                 itemList.add(Lego4AutoItem(grid = data))
             }
         }
@@ -64,9 +69,9 @@ class FeaturedBrandAdapter(
 
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: FeaturedBrandListener?, channelModel: ChannelModel, isCacheData: Boolean) {
-            itemImage.loadImageRounded(item.grid.productImageUrl, 12f)
+            itemImage.loadImageRounded(item.grid.productImageUrl, ROUNDED_12F)
             if (item.grid.imageUrl.isNotEmpty()) {
-                itemLogo.loadImageRounded(item.grid.imageUrl, 12f)
+                itemLogo.loadImageRounded(item.grid.imageUrl, ROUNDED_12F)
             }
             if (item.grid.benefit.type.isNotEmpty()) {
                 itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
