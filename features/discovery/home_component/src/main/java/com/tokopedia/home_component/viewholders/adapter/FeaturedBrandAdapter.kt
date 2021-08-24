@@ -13,13 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.FeaturedBrandListener
-import com.tokopedia.home_component.listener.Lego4AutoBannerListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageRounded
@@ -84,13 +80,19 @@ class FeaturedBrandAdapter(
             if (item.grid.backColor.isNotEmpty()) {
                 itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
             }
-            itemLayout.addOnImpressionListener(item.impressHolder){
+            itemLayout.addOnImpressionListener(item.impressHolder) {
                 if (!isCacheData) {
                     listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
                 }
             }
             itemLayout.setOnClickListener {
-                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
+            }
+            itemLogo.setOnClickListener {
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
+            }
+            itemImage.setOnClickListener {
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
             }
         }
 
