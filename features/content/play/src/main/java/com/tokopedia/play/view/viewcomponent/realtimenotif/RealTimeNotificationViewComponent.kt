@@ -26,6 +26,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 
 /**
@@ -46,6 +47,8 @@ class RealTimeNotificationViewComponent(
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
+
+    private val isActive = AtomicBoolean(true)
 
     private val rtnQueue = MutableSharedFlow<RealTimeNotificationUiModel>(
             extraBufferCapacity = 64,
@@ -175,6 +178,7 @@ class RealTimeNotificationViewComponent(
     private fun initRtnQueue() {
         scope.launch {
             rtnQueue.collect {
+                if (!this@RealTimeNotificationViewComponent.isActive.get()) return@collect
                 setRealTimeNotification(it)
                 runAnimation()
             }
@@ -183,6 +187,13 @@ class RealTimeNotificationViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        isActive.set(false)
+        animatorSet.cancel()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        isActive.set(true)
         animatorSet.cancel()
     }
 
