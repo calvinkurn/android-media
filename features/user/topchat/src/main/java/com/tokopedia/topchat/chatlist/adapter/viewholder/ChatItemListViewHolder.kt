@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -339,8 +340,10 @@ class ChatItemListViewHolder constructor(
         when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
-                unreadCounter.text = chatItem.totalUnread
-                unreadCounter.show()
+                if(chatItem.totalUnread.toIntOrZero() > 0) {
+                    unreadCounter.text = chatItem.totalUnread
+                    unreadCounter.show()
+                }
             }
             STATE_CHAT_READ -> {
                 unreadCounter.hide()

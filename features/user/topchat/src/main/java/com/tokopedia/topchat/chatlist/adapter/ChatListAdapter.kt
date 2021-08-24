@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatAdminNoAccessUiModel
+import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 
@@ -157,11 +158,33 @@ class ChatListAdapter constructor(
 
     fun onNewItemChatMessage(newChat: IncomingChatWebSocketModel, pinMsgIds: Set<String>) {
         val newChatIndex = pinMsgIds.size
+        clearEmptyModel()
+        val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
+        val item = ItemChatListPojo(newChat.messageId, attributes, "")
+        notifyItemInsertedNewChat(newChatIndex, item)
+    }
+
+    fun onNewItemChatFromSelfMessage(
+        newChat: IncomingChatWebSocketModel,
+        pinMsgIds: Set<String>,
+        receiverContact: ItemChatAttributesContactPojo
+    ) {
+        val newChatIndex = pinMsgIds.size
+        clearEmptyModel()
+        val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, receiverContact).apply {
+            unreadReply = 0
+        }
+        val item = ItemChatListPojo(newChat.messageId, attributes, "")
+        notifyItemInsertedNewChat(newChatIndex, item)
+    }
+
+    private fun clearEmptyModel() {
         if (hasEmptyModel()) {
             clearAllElements()
         }
-        val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
-        val item = ItemChatListPojo(newChat.messageId, attributes, "")
+    }
+
+    private fun notifyItemInsertedNewChat(newChatIndex: Int, item: ItemChatListPojo) {
         visitables.add(newChatIndex, item)
         notifyItemInserted(newChatIndex)
     }
@@ -286,6 +309,14 @@ class ChatListAdapter constructor(
             deactivateChat?.markAsInactive()
             if(deactivateChat != null && activeChat.second != null) {
                 notifyItemChanged(activeChat.second!!, deactivateChat)
+            }
+        }
+    }
+
+    fun resetActiveChatIndicator() {
+        for(i in list.indices) {
+            if(list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).isActive) {
+                (list[i] as ItemChatListPojo).markAsInactive()
             }
         }
     }

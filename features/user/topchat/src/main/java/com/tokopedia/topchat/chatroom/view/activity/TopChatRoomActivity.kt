@@ -389,15 +389,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 displayState == HALF_OPEN_STATE && isAllowedFlexMode()
     }
 
-    override fun onRefreshChatlistForNewChat() {
-        currentActiveChat?.let {
-            if(chatListFragment.getCurrentActiveChatPosition(it) == null) {
-                chatListFragment.loadInitialDataForRefreshList()
-                checkPeriodicallyUntilListRendered(it)
-            }
-        }
-    }
-
     private fun hideKeyboard() {
         try {
             this.currentFocus?.let { view ->

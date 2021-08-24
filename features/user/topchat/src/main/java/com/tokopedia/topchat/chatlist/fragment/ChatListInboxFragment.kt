@@ -76,7 +76,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Inject
 
 /**
@@ -467,9 +466,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
                 //not found on list
                 index == RecyclerView.NO_POSITION -> {
-                    if (newChat.isFromMySelf(role, userSession.userId)) return
-                    adapter.onNewItemChatMessage(newChat, viewModel.pinnedMsgId)
-                    increaseNotificationCounter()
+                    addNewChatToList(newChat)
                 }
                 //found on list, not the first
                 index >= 0 -> {
@@ -485,6 +482,21 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                     )
                 }
             }
+        }
+    }
+
+    private fun addNewChatToList(newChat: IncomingChatWebSocketModel) {
+        if(chatRoomFlexModeListener?.isFlexMode() == true &&
+            newChat.isFromMySelf(role, userSession.userId)
+        ) {
+            adapter?.activeChat?.first?.attributes?.contact?.let {
+                adapter?.onNewItemChatFromSelfMessage(newChat, viewModel.pinnedMsgId, it)
+                setIndicatorCurrentActiveChat(newChat.msgId)
+            }
+        } else {
+            if (newChat.isFromMySelf(role, userSession.userId)) return
+            adapter?.onNewItemChatMessage(newChat, viewModel.pinnedMsgId)
+            increaseNotificationCounter()
         }
     }
 
@@ -895,13 +907,11 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    fun loadInitialDataForRefreshList() {
-        loadInitialData()
-        stopTryingIndicator = false
-    }
-
-    fun getCurrentActiveChatPosition(messageId: String): Int? {
-        return adapter?.getItemPosition(messageId)?.second
+    override fun onResume() {
+        super.onResume()
+        if(!isFromTopChatRoom()) {
+            adapter?.resetActiveChatIndicator()
+        }
     }
 
     companion object {
