@@ -46,6 +46,7 @@ import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -195,7 +196,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
-            shouldSetActivityResult = it.pageSource != AtcVariantHelper.BUNDLING_PAGESOURCE
+            val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
+                    .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
+            shouldSetActivityResult = when (cartRedirCartType) {
+                ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
+                else -> true
+            }
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
@@ -599,12 +606,19 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        if (cartType == ProductDetailCommonConstant.KEY_SAVE_BUTTON) {
-            onSaveButtonClicked()
-        } else {
-            this.buttonText = buttonText
-            val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-            doAtc(atcKey)
+        when (cartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUTTON -> {
+                onSaveButtonClicked()
+            }
+            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> {
+                viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
+                onSaveButtonClicked()
+            }
+            else -> {
+                this.buttonText = buttonText
+                val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+                doAtc(atcKey)
+            }
         }
     }
 

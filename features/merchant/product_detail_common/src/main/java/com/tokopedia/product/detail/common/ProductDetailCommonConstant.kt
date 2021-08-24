@@ -60,6 +60,7 @@ object ProductDetailCommonConstant {
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_SAVE_BUTTON = "save"
+    const val KEY_SAVE_TRADEIN_BUTTON = "save_tradein"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_REMIND_ME = "remind_me"
@@ -92,6 +93,7 @@ object ProductDetailCommonConstant {
 
     const val REQUEST_CODE_CHECKOUT = 12382
     const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
+    const val REQUEST_CODE_TRADEIN_PDP = 2881
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;

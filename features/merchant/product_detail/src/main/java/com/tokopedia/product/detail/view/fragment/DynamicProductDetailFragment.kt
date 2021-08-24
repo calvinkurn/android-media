@@ -105,6 +105,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -486,13 +487,26 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(data.mapOfSelectedVariantOption?.values
                     ?: mutableListOf())
                     ?: false // means selected variant in bottom sheet is the same in pdp
-            if (pdpUiUpdater?.productSingleVariant == null
-                    || pdpUiUpdater?.productSingleVariant?.isVariantError == true
-                    || data.mapOfSelectedVariantOption == null || isSelectedTheSame) return
+            val noNeedToUpdateVariant = pdpUiUpdater?.productSingleVariant == null ||
+                    pdpUiUpdater?.productSingleVariant?.isVariantError == true ||
+                    data.mapOfSelectedVariantOption == null ||
+                    isSelectedTheSame
+
+            if (noNeedToUpdateVariant) {
+                if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
+                    onTradeinClickedAfter()
+                }
+                return
+            }
+
             pdpUiUpdater?.updateVariantSelected(data.mapOfSelectedVariantOption)
             val variantLevelOne = ProductDetailVariantLogic.determineVariant(data.mapOfSelectedVariantOption
                     ?: mapOf(), viewModel.variantData)
-            updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
+            updateVariantDataAndUi(if (variantLevelOne != null) listOf(variantLevelOne) else listOf()) {
+                if (data.requestCode == ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP) {
+                    onTradeinClickedAfter()
+                }
+            }
             scrollVariantToSelectedPosition()
         }
     }
@@ -798,8 +812,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel) {
         when (name) {
             ProductDetailConstant.TRADE_IN -> {
-                DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice.toDouble(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                doAtc(ProductDetailCommonConstant.TRADEIN_BUTTON)
+                onTradeinClicked(componentTrackDataModel)
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -833,6 +846,40 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
         }
+    }
+
+    private fun onTradeinClicked(componentTrackDataModel: ComponentTrackDataModel?) {
+        val data = viewModel.getDynamicProductInfoP1
+        if (data?.data?.variant?.isVariant == false) {
+            onTradeinClickedAfter(componentTrackDataModel)
+        } else {
+            viewModel.variantData?.let {
+                goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
+                        productVariant = it,
+                        buttonText = context?.getString(R.string.pdp_save_btn) ?: "",
+                        customCartType = ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON)
+                )
+            }
+        }
+    }
+
+    private fun onTradeinClickedAfter(componentTrackDataModel: ComponentTrackDataModel? = null) {
+        if (!viewModel.isUserSessionActive) {
+            doLoginWhenUserClickButton()
+            return
+        }
+
+        if (viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
+            view?.showToasterError(getString(R.string.tradein_error_label), ctaText = getString(R.string.label_oke_pdp))
+            return
+        }
+
+        if (openShipmentBottomSheetWhenError()) return
+
+        DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice.toDouble(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+
+
+        goToTradein()
     }
 
     private fun getPurchaseProtectionUrl(): String {
@@ -1419,7 +1466,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeonVariantClickedData() {
         viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
-            updateVariantDataToExistingProductData(it)
+            updateVariantDataAndUi(it)
         }
     }
 
@@ -1463,7 +1510,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return remoteConfig()?.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
     }
 
-    private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
+    private fun updateVariantDataAndUi(variantProcessedData: List<VariantCategory>?,
+                                       doSomethingAfterVariantUpdated: (() -> Unit)? = null) {
         val selectedOptionIds = if (pdpUiUpdater?.productSingleVariant != null) pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList()
                 ?: listOf()
         else pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
@@ -1519,6 +1567,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel))
         }
         updateUi()
+        doSomethingAfterVariantUpdated?.invoke()
     }
 
     private fun updateButtonState() {
@@ -1571,7 +1620,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
             } else {
                 //If variant did auto select, we have to update the UI
-                updateVariantDataToExistingProductData(listOfVariantLevelOne)
+                updateVariantDataAndUi(listOfVariantLevelOne)
             }
         }
     }
@@ -1582,7 +1631,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateVariantData(it)
             } else {
                 //If variant did auto select, we have to update the UI
-                updateVariantDataToExistingProductData(it)
+                updateVariantDataAndUi(it)
             }
         }
     }
@@ -2142,7 +2191,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         goToAtcVariant()
     }
 
-    private fun goToAtcVariant() {
+    private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
                 DynamicProductDetailTracking.Click.onSingleVariantClicked(
@@ -2152,6 +2201,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
 
                 val p2Data = viewModel.p2Data.value
+                val cartTypeData = if (customCartRedirection != null) customCartRedirection  else
+                    p2Data?.cartRedirection
 
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
@@ -2163,7 +2214,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
-                        cartRedirection = p2Data?.cartRedirection ?: mapOf(),
+                        cartRedirection = cartTypeData ?: mapOf(),
                         miniCart = p2Data?.miniCart,
                         alternateCopy = p2Data?.alternateCopy,
                         boData = p2Data?.bebasOngkir ?: BebasOngkir(),
@@ -2963,11 +3014,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 return@let
             }
 
-            if (buttonActionType == ProductDetailCommonConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
-                view?.showToasterError(getString(R.string.tradein_error_label), ctaText = getString(R.string.label_oke_pdp))
-                return@let
-            }
-
             if (isVariant && isPartialySelected) {
                 if (pdpUiUpdater?.productNewVariantDataModel?.listOfVariantCategory == null) {
                     view.showToasterError(getString(R.string.variant_failed_load), ctaText = getString(R.string.product_refresh), ctaMaxWidth = 500, ctaListener = {
@@ -2980,13 +3026,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
 
             if (openShipmentBottomSheetWhenError()) return@let
-
-            when (buttonActionType) {
-                ProductDetailCommonConstant.TRADEIN_BUTTON -> {
-                    goToTradein()
-                    return@let
-                }
-            }
 
             hitAtc(buttonAction)
         }

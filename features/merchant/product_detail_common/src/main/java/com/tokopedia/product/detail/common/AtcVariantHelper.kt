@@ -138,21 +138,23 @@ object AtcVariantHelper {
                 ?: RestrictionInfoResponse()
     }
 
-    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String): Map<String, CartTypeData>? {
+    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String,
+                                      customCartType: String = ProductDetailCommonConstant.KEY_SAVE_BUTTON): Map<String, CartTypeData>? {
         if (!productVariant.hasChildren) return null
         val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
         productVariant.children.forEach {
-            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText)
+            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText, customCartType)
         }
         return mapOfCartRedirection
     }
 
-    private fun generateCartTypeDataSimpan(productId: String, buttonText: String): CartTypeData {
+    private fun generateCartTypeDataSimpan(productId: String, buttonText: String,
+                                           customCartType: String): CartTypeData {
         return CartTypeData(
                 productId = productId,
                 availableButtons = listOf(
                         AvailableButton(
-                                cartType = ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                                cartType = customCartType,
                                 color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
                                 text = buttonText,
                                 showRecommendation = false
