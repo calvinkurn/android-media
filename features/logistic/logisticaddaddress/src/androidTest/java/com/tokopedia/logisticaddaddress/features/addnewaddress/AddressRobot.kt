@@ -32,6 +32,7 @@ class AddressRobot {
     fun searchWithKeyword(keyword: String) {
         onView(withId(R.id.layout_search)).perform(click())
         onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), closeSoftKeyboard())
+        waitForData()
     }
 
     fun selectFirstItem() {
