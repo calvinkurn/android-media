@@ -109,8 +109,7 @@ class BroadcastCampaignLabelView : LinearLayout {
     private fun bindStartDate(banner: ImageAnnouncementViewModel) {
         if (banner.hasStartedCampaign()) {
             showStartDate()
-            // TODO: bind startDate
-            startDateText?.text = banner.startDate
+            startDateText?.text = banner.startDateFormatted
         } else {
             hideStartDate()
         }

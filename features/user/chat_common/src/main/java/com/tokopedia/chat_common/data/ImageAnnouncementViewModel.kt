@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.utils.time.TimeHelper
 
 /**
  * @author by nisie on 5/15/18.
@@ -47,6 +48,12 @@ constructor(
         private set
 
     val endDataMillis get() = endDate.toLongOrZero() * 1_000
+    val startDataMillis get() = startDate.toLongOrZero() * 1_000
+
+    val startDateFormatted: String
+        get() {
+            return TimeHelper.format(startDataMillis, "dd MMM yyyy", TimeHelper.localeID)
+        }
 
     constructor(
         item: Reply, attributes: ImageAnnouncementPojo
