@@ -51,40 +51,65 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     val allShopGroupDataList: List<CartShopHolderData>
         get() {
-            val cartShopHolderDataFinalList = ArrayList<CartShopHolderData>()
-            for (i in cartDataList.indices) {
-                val obj = cartDataList[i]
-                if (obj is CartShopHolderData) {
-                    cartShopHolderDataFinalList.add(obj)
+            val shopGroupList = mutableListOf<CartShopHolderData>()
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        shopGroupList.add(data)
+                    }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
-            return cartShopHolderDataFinalList
+            return shopGroupList
         }
 
     val allAvailableShopGroupDataList: List<CartShopHolderData>
         get() {
-            val cartShopHolderDataFinalList = ArrayList<CartShopHolderData>()
-            for (i in cartDataList.indices) {
-                val obj = cartDataList[i]
-                if (obj is CartShopHolderData && !obj.isError) {
-                    cartShopHolderDataFinalList.add(obj)
+            val availableShopGroupList = mutableListOf<CartShopHolderData>()
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        if (!data.isError) {
+                            availableShopGroupList.add(data)
+                        }
+                    }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
-            return cartShopHolderDataFinalList
+            return availableShopGroupList
+        }
+
+    val allUnavailableShopGroupDataList: List<CartShopHolderData>
+        get() {
+            val availableShopGroupList = mutableListOf<CartShopHolderData>()
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        if (data.isError) {
+                            availableShopGroupList.add(data)
+                        }
+                    }
+                    hasReachAllShopItems(data) -> break@loop
+                }
+            }
+            return availableShopGroupList
         }
 
     val selectedCartItemData: List<CartItemHolderData>
         get() {
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in cartDataList) {
-                if (data is CartShopHolderData) {
-                    if ((data.isPartialSelected || data.isAllSelected)) {
-                        for (cartItemHolderData in data.productUiModelList) {
-                            if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
-                                cartItemDataList.add(cartItemHolderData)
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        if ((data.isPartialSelected || data.isAllSelected)) {
+                            for (cartItemHolderData in data.productUiModelList) {
+                                if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
+                                    cartItemDataList.add(cartItemHolderData)
+                                }
                             }
                         }
                     }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -94,11 +119,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     val selectedCartShopHolderData: List<CartShopHolderData>
         get() {
             val cartShopHolderDataList = ArrayList<CartShopHolderData>()
-            for (data in cartDataList) {
-                if (data is CartShopHolderData) {
-                    if (data.isPartialSelected || data.isAllSelected) {
-                        cartShopHolderDataList.add(data)
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        if (data.isPartialSelected || data.isAllSelected) {
+                            cartShopHolderDataList.add(data)
+                        }
                     }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -135,7 +163,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             cartItemDataList.addAll(data.productUiModelList)
                         }
                     }
-                    is CartWishlistHolderData, is CartRecentViewHolderData, is CartRecommendationItemHolderData -> break@loop
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -152,7 +180,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             cartItemDataList.addAll(data.productUiModelList)
                         }
                     }
-                    is CartWishlistHolderData, is CartRecentViewHolderData, is CartRecommendationItemHolderData -> break@loop
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -181,7 +209,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     val allCartItemProductId: List<String>
         get() {
             val productIdList = ArrayList<String>()
-            for (data in cartDataList) {
+            loop@ for (data in cartDataList) {
                 when (data) {
                     is CartShopHolderData -> {
                         data.productUiModelList.let {
@@ -190,7 +218,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             }
                         }
                     }
-                    is DisabledCartItemHolderData -> productIdList.add(data.productId)
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -200,11 +228,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     val allAvailableCartItemHolderData: List<CartItemHolderData>
         get() {
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            for (data in cartDataList) {
-                if (data is CartShopHolderData) {
-                    data.productUiModelList.let {
-                        cartItemDataList.addAll(it)
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        data.productUiModelList.let {
+                            cartItemDataList.addAll(it)
+                        }
                     }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -213,10 +244,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     val allCartShopHolderData: List<CartShopHolderData>
         get() {
-            val cartShopHolderDataList = ArrayList<CartShopHolderData>()
-            for (i in cartDataList.indices) {
-                getCartShopHolderDataByIndex(i)?.let {
-                    cartShopHolderDataList.add(it)
+            val cartShopHolderDataList = mutableListOf<CartShopHolderData>()
+            loop@ for (data in cartDataList) {
+                when (data) {
+                    is CartShopHolderData -> {
+                        cartShopHolderDataList.add(data)
+                    }
+                    hasReachAllShopItems(data) -> break@loop
                 }
             }
 
@@ -955,16 +989,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val toBeRemovedIndices = mutableListOf<Int>()
         val toBeUpdatedIndices = mutableListOf<Int>()
 
-        var cartSelectAllHolderData: CartSelectAllHolderData? = null
-        var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
-        var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
-        var disabledAccordionHolderData: DisabledAccordionHolderData? = null
+        var cartSelectAllHolderDataIndexPair: Pair<CartSelectAllHolderData, Int>? = null
+        var cartItemTickerErrorHolderDataIndexPair: Pair<CartItemTickerErrorHolderData, Int>? = null
+        var disabledItemHeaderHolderDataIndexPair: Pair<DisabledItemHeaderHolderData, Int>? = null
+        var disabledAccordionHolderDataIndexPair: Pair<DisabledAccordionHolderData, Int>? = null
         loop@ for ((index, data) in cartDataList.withIndex()) {
             when {
-                data is CartSelectAllHolderData -> cartSelectAllHolderData = data
-                data is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderData = data
-                data is DisabledItemHeaderHolderData -> disabledItemHeaderHolderData = data
-                data is DisabledAccordionHolderData -> disabledAccordionHolderData = data
+                data is CartSelectAllHolderData -> cartSelectAllHolderDataIndexPair = Pair(data, index)
+                data is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderDataIndexPair = Pair(data, index)
+                data is DisabledItemHeaderHolderData -> disabledItemHeaderHolderDataIndexPair = Pair(data, index)
+                data is DisabledAccordionHolderData -> disabledAccordionHolderDataIndexPair = Pair(data, index)
                 data is CartShopHolderData -> {
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
                     data.productUiModelList.forEach { cartItemHolderData ->
@@ -995,6 +1029,67 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         cartDataList.removeAll(toBeRemovedItems)
+
+        if (allAvailableCartItemData.isEmpty()) {
+            cartSelectAllHolderDataIndexPair?.let {
+                cartDataList.remove(it.first)
+                toBeRemovedItems.add(it.second)
+            }
+        }
+
+        val disabledCartItems = allDisabledCartItemData
+        if (disabledCartItems.isEmpty()) {
+            cartItemTickerErrorHolderDataIndexPair?.let {
+                cartDataList.remove(it.first)
+                toBeRemovedItems.add(it.second)
+                toBeRemovedIndices.add(it.second)
+            }
+            disabledItemHeaderHolderDataIndexPair?.let {
+                cartDataList.remove(it.first)
+                toBeRemovedItems.add(it.second)
+                toBeRemovedIndices.add(it.second)
+            }
+            disabledAccordionHolderDataIndexPair?.let {
+                cartDataList.remove(it.first)
+                toBeRemovedItems.add(it.second)
+                toBeRemovedIndices.add(it.second)
+            }
+        } else {
+            val errorItemCount = disabledCartItems.size
+            cartItemTickerErrorHolderDataIndexPair?.let {
+                it.first.errorProductCount = errorItemCount
+                toBeUpdatedIndices.add(it.second)
+            }
+            disabledItemHeaderHolderDataIndexPair?.let {
+                it.first.disabledItemCount = errorItemCount
+                toBeUpdatedIndices.add(it.second)
+            }
+
+            var removeAccordion = false
+            if (errorItemCount == 1) {
+                removeAccordion = true
+            } else {
+                val bundleIdCartIdSet = mutableSetOf<String>()
+                disabledCartItems.forEach {
+                    if (it.isBundlingItem) {
+                        bundleIdCartIdSet.add(it.bundleId)
+                    } else {
+                        bundleIdCartIdSet.add(it.cartId)
+                    }
+                }
+                if (bundleIdCartIdSet.size <= 1) {
+                    removeAccordion = true
+                }
+            }
+
+            if (removeAccordion) {
+                disabledAccordionHolderDataIndexPair?.let {
+                    cartDataList.remove(it.first)
+                    toBeRemovedItems.add(it.second)
+                    toBeRemovedIndices.add(it.second)
+                }
+            }
+        }
         return Pair(toBeRemovedIndices, toBeUpdatedIndices)
     }
 
@@ -1024,6 +1119,27 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    private fun getNonCollapsibleUnavailableProduct(shop: CartShopHolderData): List<CartItemHolderData> {
+        val tmpProducts = mutableListOf<CartItemHolderData>()
+        loop@ for (product in shop.productUiModelList) {
+            if (product.isBundlingItem) {
+                if (tmpProducts.isNotEmpty() && tmpProducts.firstOrNull()?.isBundlingItem == false) {
+                    break@loop
+                } else {
+                    tmpProducts.add(product)
+                }
+            } else {
+                if (tmpProducts.isEmpty()) {
+                    tmpProducts.add(product)
+                } else {
+                    break@loop
+                }
+            }
+        }
+
+        return tmpProducts
+    }
+
     fun collapseDisabledItems() {
         var firstIndex = RecyclerView.NO_POSITION
         var lastIndex = 0
@@ -1042,22 +1158,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
         firstUnavailableShop?.let { shop ->
             if (shop is CartShopHolderData) {
-                val tmpProducts = mutableListOf<CartItemHolderData>()
-                loop@ for (product in shop.productUiModelList) {
-                    if (product.isBundlingItem) {
-                        if (tmpProducts.isNotEmpty() && tmpProducts.firstOrNull()?.isBundlingItem == false) {
-                            break@loop
-                        } else {
-                            tmpProducts.add(product)
-                        }
-                    } else {
-                        if (tmpProducts.isEmpty()) {
-                            tmpProducts.add(product)
-                        } else {
-                            break@loop
-                        }
-                    }
-                }
+                val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
                 val cartShopHolderData = CartShopHolderData().apply {
                     isError = true
                     shopName = shop.shopName
@@ -1093,20 +1194,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
         }
-/*
-        if (tmpCollapsedUnavailableItem.isNotEmpty()) {
-            var headerIndex = 0
-            for ((index, item) in cartDataList.withIndex()) {
-                if (item is DisabledCartItemHolderData) {
-                    headerIndex = index
-                    break
-                }
-            }
-            cartDataList.addAll(++headerIndex, tmpCollapsedUnavailableItem)
-            notifyItemRangeInserted(headerIndex, tmpCollapsedUnavailableItem.size)
-            tmpCollapsedUnavailableItem.clear()
-        }
-*/
     }
 
     fun getDisabledAccordionHolderData(): DisabledAccordionHolderData? {

@@ -341,6 +341,7 @@ object CartUiModelMapper {
                 }
 //            bundleImageUrl;
             } else {
+                bundleId = "0"
                 minOrder = product.productMinOrder
                 maxOrder = if (product.productSwitchInvenage == 0) {
                     product.productMaxOrder
