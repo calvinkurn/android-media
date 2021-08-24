@@ -74,6 +74,23 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         }
     }
 
+    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: String) : ValidateUsePromoRequest? {
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.remove(oldPromoCode)
+        }
+        return lastValidateUsePromoRequest
+    }
+
+    fun clearAllPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?): ValidateUsePromoRequest? {
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.clear()
+        }
+        lastValidateUsePromoRequest?.codes?.clear()
+        return lastValidateUsePromoRequest
+    }
+
     suspend fun validateUseLogisticPromo(validateUsePromoRequest: ValidateUsePromoRequest, logisticPromoCode: String): Triple<Boolean, ValidateUsePromoRevampUiModel?, OccGlobalEvent> {
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
@@ -140,13 +157,19 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
-        ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
+        val productDetails: ArrayList<ProductDetail> = ArrayList()
+        orderCart.products.forEach {
+            if (!it.isError) {
+                productDetails.add(ProductDetail(it.productId, it.orderQuantity))
+            }
+        }
+        ordersItem.product_details = productDetails
         ordersItem.isChecked = true
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
 
-        if (shipping.isCheckInsurance && shipping.insuranceData != null) {
+        if (shipping.insurance.isCheckInsurance && shipping.insurance.insuranceData != null) {
             ordersItem.isInsurancePrice = 1
         } else {
             ordersItem.isInsurancePrice = 0
@@ -156,7 +179,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        promoRequest.cartType = CheckoutConstant.PARAM_OCC
+        promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
 
         if (lastValidateUsePromoRequest != null) {
             promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes.filterNotNull())
@@ -200,7 +223,13 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
 
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))
+        val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
+        orderCart.products.forEach {
+            if (!it.isError) {
+                productDetails.add(ProductDetailsItem(it.orderQuantity, it.productId))
+            }
+        }
+        ordersItem.productDetails = productDetails
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
@@ -209,7 +238,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC
+        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
 
         if (lastValidateUsePromoRequest != null) {
             validateUsePromoRequest.codes = lastValidateUsePromoRequest.codes

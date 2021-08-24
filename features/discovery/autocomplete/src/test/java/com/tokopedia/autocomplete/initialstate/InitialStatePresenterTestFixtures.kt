@@ -24,11 +24,11 @@ internal open class InitialStatePresenterTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     protected val slotVisitableList = slot<List<Visitable<*>>>()
-    protected val slotDeletedVisitableList = slot<List<Visitable<*>>>()
+    protected val slotDeletedVisitableList = mutableListOf<List<Visitable<*>>>()
     protected val slotRefreshVisitableList = slot<List<Visitable<*>>>()
 
     protected val slotRecentViewItemList = slot<MutableList<Any>>()
-    protected val slotRecentSearchItemList = slot<MutableList<Any>>()
+    protected val slotRecentSearchItemList = mutableListOf<MutableList<Any>>()
     protected val slotPopularSearchTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
     protected val slotDynamicSectionTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
 

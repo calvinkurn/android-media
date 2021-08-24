@@ -1451,7 +1451,7 @@ class FeedAnalyticTracker
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     "watch",
-                    "video ",
+                    "video",
                     getPostType("", isFollowed = isFollowed, isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -1597,8 +1597,8 @@ class FeedAnalyticTracker
 
         val map = mapOf(
             KEY_EVENT to OPEN_SCREEN,
-            "isLoggedInStatus" to isLoggedInStatus.toString(),
-            KEY_EVENT_SCREEN_NAME to "/feed",
+            SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
+            KEY_EVENT_SCREEN_NAME to Screen.FEED,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_EVENT_USER_ID to userSessionInterface.userId

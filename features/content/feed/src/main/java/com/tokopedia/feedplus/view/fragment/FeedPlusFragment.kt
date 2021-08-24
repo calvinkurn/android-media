@@ -1909,8 +1909,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
-            if (::productTagBS.isInitialized)
+            if (::productTagBS.isInitialized) {
+                productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
+            }
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
         } else {
             onGoToLogin()
@@ -2044,8 +2046,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             shopId
         )
-        if (::productTagBS.isInitialized)
+        if (::productTagBS.isInitialized) {
+            productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
+        }
         feedViewModel.addWishlist(
             postId.toString(),
             productId,
@@ -2097,8 +2101,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed, shopId
         )
-        if (::productTagBS.isInitialized)
+        if (::productTagBS.isInitialized) {
+            productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
+        }
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)

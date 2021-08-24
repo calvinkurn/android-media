@@ -18,8 +18,8 @@ import javax.inject.Inject
  */
 
 class StatisticActivityViewModel @Inject constructor(
-        private val checkWhitelistedStatusUseCase: CheckWhitelistedStatusUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val checkWhitelistedStatusUseCase: CheckWhitelistedStatusUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     val whitelistedStatus: LiveData<Result<Boolean>>
