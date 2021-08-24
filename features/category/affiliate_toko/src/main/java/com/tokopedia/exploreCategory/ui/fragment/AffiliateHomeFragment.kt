@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,6 +21,8 @@ import com.tokopedia.exploreCategory.adapter.AffiliateAdapter
 import com.tokopedia.exploreCategory.adapter.AffiliateAdapterFactory
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
+import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -54,7 +55,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
 
     private fun afterViewCreated() {
         affiliate_progress_bar?.gone()
-        if(!affiliateHomeViewModel.isUserLoggedIn()){
+        if (!affiliateHomeViewModel.isUserLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
@@ -75,6 +76,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
         global_error.setButtonFull(true)
         global_error.errorAction.text = getString(R.string.affiliate_promote_affiliatw)
         global_error.errorSecondaryAction.gone()
+        global_error.setActionClickListener {
+            AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,8 +94,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                     adapter.stopShimmer()
             }
         })
-        affiliateHomeViewModel.getProductCards().observe(this, {it ->
-            if(it.isNotEmpty()){
+        affiliateHomeViewModel.getProductCards().observe(this, { products ->
+            if (products.isNotEmpty()) {
+                for (product in products) {
+                    adapter.addElement(AffiliateProductCardVHViewModel(product))
+                }
                 //TODO
             } else {
                 showNoAffiliate()

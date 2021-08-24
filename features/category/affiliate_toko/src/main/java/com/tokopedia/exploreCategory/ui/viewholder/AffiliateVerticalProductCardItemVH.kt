@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
 
-class AffiliateVerticalProductCardItem(itemView: View)
+class AffiliateVerticalProductCardItemVH(itemView: View)
     : AbstractViewHolder<AffiliateProductCardVHViewModel>(itemView) {
 
     companion object {
