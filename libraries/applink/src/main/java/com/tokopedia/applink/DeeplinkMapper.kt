@@ -410,7 +410,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(ctx, deeplink) },
             DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalGlobal.TELEPHONY_MASKING),
             DLP.matchPattern(ApplinkConst.PRODUCT_BUNDLE,
-                    targetDeeplink = { ctx, uri, deeplink, idList -> UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) }  //DeeplinkMapperMerchant.getRegisteredNavigationProductBundle(uri) }) //UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) }),
+                    targetDeeplink = { ctx, uri, deeplink, idList -> UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) })  //DeeplinkMapperMerchant.getRegisteredNavigationProductBundle(uri) }) //UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) }),
     )
 
     fun getTokopediaSchemeList():List<DLP>{
