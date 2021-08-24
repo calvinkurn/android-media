@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -20,8 +19,8 @@ class ReadReviewAttachedImageViewHolder(private val view: View) : RecyclerView.V
     }
 
     private fun bindViews() {
-        blankSpace = view.findViewById(R.id.reviewHistoryAttachedImageBlankSpace)
-        attachedImage = view.findViewById(R.id.reviewHistoryAttachedImage)
+        blankSpace = view.findViewById(com.tokopedia.review.inbox.R.id.reviewHistoryAttachedImageBlankSpace)
+        attachedImage = view.findViewById(com.tokopedia.review.inbox.R.id.reviewHistoryAttachedImage)
     }
 
     fun bind(attachedImageUrl: String, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String) {

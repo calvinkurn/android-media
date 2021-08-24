@@ -253,36 +253,6 @@ object CartListPresenterCalculateWeightTest : Spek({
             }
         }
 
-        Scenario("some item error") {
-
-            Given("error in unselected items") {
-                firstItemFirst.isSelected = true
-                secondItemFirstData.isError = true
-                firstShop.isPartialSelected = true
-
-                secondShopData.isError = true
-            }
-
-            Given("cart data list") {
-                every { view.getAllAvailableCartDataList() } answers {
-                    cartShops.flatMap {
-                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
-                    }.map {
-                        it.cartItemData
-                    }
-                }
-            }
-
-            When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops)
-            }
-
-            Then("should have 1 gram in first shop") {
-                assertEquals(1.0, cartShops[0].shopGroupAvailableData?.totalWeight)
-                assertEquals(0.0, cartShops[1].shopGroupAvailableData?.totalWeight)
-            }
-        }
-
         Scenario("all item selected") {
 
             Given("check all items") {

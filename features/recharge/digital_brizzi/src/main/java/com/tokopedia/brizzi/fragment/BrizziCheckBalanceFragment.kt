@@ -154,15 +154,16 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
             brizziBalanceViewModel.errorCommonBrizzi.observeForever { throwable ->
                 context?.let {
-                    val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
-                    if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(it, throwable, ErrorHandler.Builder().build())
+                    if((throwable is UnknownHostException) || errMsg.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                         showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
                                 resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
                                 "",
                                 true)
                     } else {
-                        showError(errorMessage,
-                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                        showError("$errMsg",
+                            "${resources.getString(
+                                com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)} Kode Error: ($errCode)",
                                 "",
                                 true, true)
                     }

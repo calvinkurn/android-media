@@ -11,18 +11,23 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
 class SellableStockProductViewHolder (itemView: View?,
-                                     private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
-                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
-                                     private val source: String,
-                                     private val shopId: String
+                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
+                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
+                                      private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
+                                      private val source: String,
+                                      private val shopId: String
 ): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
     private var stockEditTextWatcher: TextWatcher? = null
+
+    private val ongoingPromotionCountText: Typography? = itemView?.findViewById(R.id.tv_campaign_stock_count_variant)
 
     companion object {
         @LayoutRes
@@ -41,8 +46,18 @@ class SellableStockProductViewHolder (itemView: View?,
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
-            label_campaign_stock_inactive.showWithCondition(!element.isActive)
-            label_campaign_stock.showWithCondition(element.isCampaign)
+            label_campaign_stock_inactive?.visibleWithCondition(!element.isActive)
+            ongoingPromotionCountText?.run {
+                visibleWithCondition(element.isCampaign)
+                if (element.isCampaign) {
+                    element.campaignTypeList?.let { campaignList ->
+                        text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), campaignList.count().orZero())
+                        setOnClickListener {
+                            onOngoingPromotionClicked(campaignList)
+                        }
+                    }
+                }
+            }
             switch_campaign_stock_variant_editor?.run {
                 isChecked = element.isActive
                 setOnCheckedChangeListener { _, isChecked ->
@@ -52,7 +67,8 @@ class SellableStockProductViewHolder (itemView: View?,
                     } else {
                         ProductStatus.INACTIVE
                     }
-                    this@with.label_campaign_stock_inactive.showWithCondition(!isChecked)
+                    val shouldShowInactiveLabel = !isChecked || getInactivityByStock(element)
+                    this@with.label_campaign_stock_inactive?.visibleWithCondition(shouldShowInactiveLabel)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(
                         isVariant = true,
@@ -65,7 +81,7 @@ class SellableStockProductViewHolder (itemView: View?,
             }
             switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
-        showHideStockInfo(element)
+        showHideInactiveLabel(element)
     }
 
     private fun QuantityEditorUnify.setElement(element: SellableStockProductUIModel) {
@@ -77,16 +93,17 @@ class SellableStockProductViewHolder (itemView: View?,
         setValue(element.stock.toIntOrZero())
 
         stockEditTextWatcher = getStockTextChangeListener {
-            val stock = if(it.isNotEmpty()) {
-                getValue()
+            val stock: Int
+            if(it.isNotEmpty()) {
+                stock = getValue()
+                toggleQuantityEditorBtn(stock)
+                onVariantStockChanged(element.productId, stock)
             } else {
+                stock = EditProductConstant.MINIMUM_STOCK
                 editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
-                EditProductConstant.MINIMUM_STOCK
+                toggleQuantityEditorBtn(stock)
             }
-            showHideStockInfo(element)
-            toggleQuantityEditorBtn(stock)
-            element.stock = stock.toString()
-            onVariantStockChanged(element.productId, stock)
+            showHideInactiveLabel(element)
         }
         editText.addTextChangedListener(stockEditTextWatcher)
 
@@ -116,10 +133,26 @@ class SellableStockProductViewHolder (itemView: View?,
         setupStockEditor(element)
     }
 
-    private fun showHideStockInfo(element: SellableStockProductUIModel) {
+    private fun getInactivityByStock(element: SellableStockProductUIModel): Boolean {
         val stock = getCurrentStockInput()
-        val shouldShow = stock == 0 && !element.isAllStockEmpty
-        itemView.emptyStockInfo.showWithCondition(shouldShow)
+        return stock == 0 && !element.isAllStockEmpty
+    }
+
+    private fun getInactivityByStatus(): Boolean {
+        return itemView.switch_campaign_stock_variant_editor?.isChecked == false
+    }
+
+    private fun showHideInactiveLabel(element: SellableStockProductUIModel) {
+        itemView.label_campaign_stock_inactive?.visibleWithCondition(getInactivityByStock(element) || getInactivityByStatus())
+    }
+
+    private fun View.visibleWithCondition(isVisible: Boolean) {
+        visibility =
+            if (isVisible) {
+                View.VISIBLE
+            } else {
+                View.INVISIBLE
+            }
     }
 
     private fun setupStockEditor(element: SellableStockProductUIModel) {
