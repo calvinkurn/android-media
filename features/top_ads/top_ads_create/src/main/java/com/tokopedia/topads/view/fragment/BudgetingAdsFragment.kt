@@ -94,6 +94,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var minSuggestKeyword = "0"
     private var maxSuggestKeyword = "0"
     private var suggestBidPerClick = "0"
+    private var suggestedKeywordBid = "0"
     private var isEnable = false
     private var userID: String = ""
     private var shopID = ""
@@ -211,7 +212,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bundle.putString("type", "create")
         bundle.putString(MAX_BID, maxBid)
         bundle.putString(MIN_BID, minBid)
-        bundle.putString(SUGGESTION_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.bidSuggest)
+        bundle.putString(SUGGESTION_BID, suggestedKeywordBid)
         bundle.putString(KEYWORD_NAME, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keyword)
         bundle.putInt(ITEM_POSITION, pos)
         return bundle
@@ -355,6 +356,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         data.firstOrNull()?.let {
             minSuggestKeyword = it.minBid
             maxSuggestKeyword = it.maxBid
+            suggestedKeywordBid = it.minBid
         }
         bidInfoAdapter.setMinimumBid(minSuggestKeyword)
         bidInfoAdapter.notifyDataSetChanged()
