@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
@@ -704,6 +705,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+                            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+                            layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -757,11 +761,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         if (!productTagText.isVisible) {
                                             productTagText.apply {
                                                 visible()
-                                                animate().alpha(1f).start()
+                                                showViewWithSlideAnimation(layoutLihatProdukParent)
                                             }
                                         } else if(!productTagBubbleShowing) {
                                             productTagText.gone()
-                                            productTagText.animate().alpha(0f)
                                         }
                                         return true
                                     }
@@ -941,11 +944,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
+            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
+            layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             handlerAnim?.postDelayed({
+                showViewWithSlideAnimation(layoutLihatProdukParent)
                 video_tag_text.visible()
-                video_tag_text.animate().alpha(1F).start()
             }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -1242,6 +1248,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+            layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
 
             productTagText.gone()
             for (i in 0 until layout.childCount) {
@@ -1256,8 +1265,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (!productTagText.isVisible && products.isNotEmpty()) {
                 handlerAnim?.postDelayed({
                     productTagText.apply {
+                        showViewWithSlideAnimation(layoutLihatProdukParent)
                         visible()
-                        animate().alpha(1f).setDuration(600).start()
                     }
 
                 }, TIME_SECOND)
@@ -1268,7 +1277,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 productTagText.apply {
                     if (!shouldContinueToShowLihatProduct(layout)) {
                         gone()
-                        animate().alpha(0f).setDuration(600).start()
                     }
                 }
             }, TIME_FOUR_SEC)

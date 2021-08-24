@@ -3,7 +3,10 @@ package com.tokopedia.feedcomponent.util.util
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,7 +18,7 @@ private const val POSITION_TOP = 1
 private const val DOT_HALF_DIMEN = 8
 
 
-fun showViewWithAnimation(view: View, duration: Long = 400) {
+fun showViewWithAnimation(view: View, duration: Long = 300) {
     view.visible()
     val pvhScaleX =
         PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 0f, 1f)
@@ -28,7 +31,7 @@ fun showViewWithAnimation(view: View, duration: Long = 400) {
     objectAnimator.start()
 }
 
-fun hideViewWithAnimation(view: View, duration: Long = 400) {
+fun hideViewWithAnimation(view: View, duration: Long = 300) {
     if (!view.isVisible) {
         return
     }
@@ -68,7 +71,7 @@ fun showBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     val objectAnimator: ObjectAnimator =
         ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX, pvhScaleY)
     objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 400
+    objectAnimator.duration = 300
     objectAnimator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
             showViewWithAnimation(pointerView, 100)
@@ -99,7 +102,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     val objectAnimator: ObjectAnimator =
         ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX, pvhScaleY)
     objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 400
+    objectAnimator.duration = 300
     objectAnimator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
             pointerView.postDelayed({
@@ -108,7 +111,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
                         gone()
                     }
                 }
-            }, 300)
+            }, 150)
         }
         override fun onAnimationEnd(animation: Animator) {
             view.gone()
@@ -120,43 +123,15 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     objectAnimator.start()
 }
 
-fun showViewWithSlideAnimation(view: View) {
+fun showViewWithSlideAnimation(view: ViewGroup) {
     view.visible()
-    view.pivotX = 0f
-    view.pivotY = (view.height/2).toFloat()
-    val pvhScaleX =
-        PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 0f, 1f)
-    val objectAnimator: ObjectAnimator =
-        ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX)
-    objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 400
-    objectAnimator.start()
+        TransitionManager.beginDelayedTransition(
+            view,
+            AutoTransition().setDuration(300)
+        )
 }
 
-fun hideViewWithSlideAnimation(view: View) {
-    if (!view.isVisible) {
-        return
-    }
-    view.visible()
-    view.pivotX = 0f
-    view.pivotY = (view.height/2).toFloat()
-    val pvhScaleX =
-        PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 1f, 0f)
-    val objectAnimator: ObjectAnimator =
-        ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX)
-    objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 400
-    objectAnimator.addListener(object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator) {}
-        override fun onAnimationEnd(animation: Animator) {
-            view.gone()
-        }
 
-        override fun onAnimationCancel(animation: Animator) {}
-        override fun onAnimationRepeat(animation: Animator) {}
-    })
-    objectAnimator.start()
-}
 
 fun View.visibleWithAnimation() {
     showViewWithAnimation(this)
@@ -167,11 +142,3 @@ fun View.goneWithAnimation() {
     hideViewWithAnimation(this)
 }
 
-fun View.visibleWithSlideAnimation() {
-    showViewWithSlideAnimation(this)
-
-}
-
-fun View.goneWithSlideAnimation() {
-    hideViewWithSlideAnimation(this)
-}

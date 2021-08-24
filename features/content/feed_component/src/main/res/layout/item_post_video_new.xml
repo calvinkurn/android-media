@@ -110,6 +110,7 @@
         app:layout_constraintStart_toStartOf="@id/layout_main">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lihat_video_parent_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
