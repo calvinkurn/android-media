@@ -2,22 +2,25 @@ package com.tokopedia.exploreCategory.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.exploreCategory.ui.bottomnav.BottomMenu
+import com.tokopedia.exploreCategory.ui.bottomnav.AffiliateBottomNavbar
 import com.tokopedia.exploreCategory.ui.bottomnav.IBottomClickListener
-import com.tokopedia.exploreCategory.ui.bottomnav.LottieBottomNavbar
+import com.tokopedia.exploreCategory.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.exploreCategory.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.exploreCategory.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.exploreCategory.viewmodel.AffiliateViewModel
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
 
     private lateinit var affiliateVM: AffiliateViewModel
 
-    var menu: ArrayList<BottomMenu> = ArrayList()
-    private val isNewNavigation = false
-    private var bottomNavigation: LottieBottomNavbar? = null
+    private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,27 +39,59 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     }
 
     override fun getNewFragment(): Fragment? {
-        return AffiliateHomeFragment.getFragmentInstance()
+        return null
     }
 
     private fun initBottomNavigationView() {
-        bottomNavigation = findViewById(R.id.bottom_navbar)
-        populateBottomNavigationView()
-        bottomNavigation?.setMenuClickListener(this)
-    }
-
-    private fun populateBottomNavigationView(){
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_feed, resources.getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_os, resources.getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_P500, true, 1f, 3f))
-        bottomNavigation?.setMenu(menu, isNewNavigation)
+        affiliateBottomNavigation = AffiliateBottomNavbar(findViewById(R.id.bottom_navbar),
+                this,this).apply {
+            populateBottomNavigationView()
+        }
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
+        when(position) {
+            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance())
+            PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
+            HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance())
+        }
         return true
     }
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun openFragment(fragment : Fragment){
+        val backStackName = fragment.javaClass.simpleName
+        val ft = supportFragmentManager.beginTransaction()
+        val currentFrag : Fragment? = supportFragmentManager.findFragmentByTag(backStackName)
+        if (currentFrag != null && supportFragmentManager.fragments.size > 0) {
+            showSelectedFragment(fragment, supportFragmentManager, ft)
+        } else {
+            ft.add(R.id.parent_view ,fragment, backStackName)
+            showSelectedFragment(fragment, supportFragmentManager, ft)
+            onFragmentSelected(fragment)
+        }
+        ft.commitNowAllowingStateLoss()
+    }
+
+    private fun showSelectedFragment(fragment: Fragment, manager: FragmentManager, ft: FragmentTransaction) {
+        for (i in manager.fragments.indices) {
+            val frag = manager.fragments[i]
+            if (frag.javaClass.name.equals(fragment.javaClass.name, ignoreCase = true)) {
+                ft.show(frag)
+                onFragmentSelected(frag)
+            } else {
+                ft.hide(frag)
+                onFragmentUnSelected(frag)
+            }
+        }
+    }
+
+    companion object MenuItems {
+        const val HOME_MENU = 0
+        const val PROMO_MENU = 1
+        const val HELP_MENU = 2
     }
 }

@@ -31,6 +31,7 @@ import java.util.ArrayList
 import javax.inject.Inject
 
 class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
+
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel

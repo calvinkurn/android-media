@@ -299,7 +299,7 @@ class LottieBottomNavbar : LinearLayout {
 
             if (bottomMenu.useBadge) {
                 val badge: View = LayoutInflater.from(context)
-                        .inflate(R.layout.badge_layout, imageContainer, false)
+                        .inflate(R.layout.affiliate_badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
                 badgeTextViewList?.add(badgeTextView)

@@ -27,7 +27,6 @@
         app:setViewPagerSwipeable="false"
         app:navbarElevation="15dp"
         app:viewPagerBackground="@color/Unify_N0"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" />
 
 
