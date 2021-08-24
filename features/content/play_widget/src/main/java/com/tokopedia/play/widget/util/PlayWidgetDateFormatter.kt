@@ -30,7 +30,7 @@ object PlayWidgetDateFormatter {
             val date = input.parse(raw)
 
             date?.let {
-                val diff = (GMT07.toInt() - getDeviceGMT().toInt()) / 100
+                val diff = (getDeviceGMT().toInt() - GMT07.toInt()) / 100
                 val time = it.time + (diff * 60 * 60 * 1000)
 
                 return@let output.format(Date(time))
