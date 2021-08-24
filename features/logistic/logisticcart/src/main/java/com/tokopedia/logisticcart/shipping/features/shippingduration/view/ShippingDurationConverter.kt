@@ -38,7 +38,7 @@ class ShippingDurationConverter @Inject constructor() {
                 shippingRecommendationData.preOrderModel = convertToPreOrderModel(ratesData.ratesDetailData.preOrder)
 
                 // Has service / duration list
-                shippingRecommendationData.shippingDurationViewModels = convertShippingDuration(ratesData.ratesDetailData)
+                shippingRecommendationData.shippingDurationUiModels = convertShippingDuration(ratesData.ratesDetailData)
             }
         }
         return shippingRecommendationData

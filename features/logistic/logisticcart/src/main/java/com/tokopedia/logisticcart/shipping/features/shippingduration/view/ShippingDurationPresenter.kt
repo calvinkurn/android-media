@@ -101,16 +101,16 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                     if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
                                         view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
                                         view!!.stopTrace()
-                                    } else if (shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
+                                    } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                                         if (view!!.isDisableCourierPromo()) {
-                                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
+                                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                                 shippingDurationUiModel.serviceData.isPromo = 0
                                                 for (productData in shippingDurationUiModel.serviceData.products) {
                                                     productData.promoCode = ""
                                                 }
                                             }
                                         }
-                                        view!!.showData(shippingRecommendationData.shippingDurationViewModels, shippingRecommendationData.logisticPromo, shippingRecommendationData.preOrderModel)
+                                        view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.logisticPromo, shippingRecommendationData.preOrderModel)
                                         view!!.stopTrace()
                                     } else {
                                         view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))

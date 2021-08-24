@@ -12,7 +12,7 @@ class RatesResponseStateConverter @Inject constructor() {
     fun fillState(response: ShippingRecommendationData, shopShipments: List<ShopShipment>,
                   selectedSpId: Int, selectedServiceId: Int): ShippingRecommendationData {
         val isPromoApplied = isPromoStackingApplied(response.logisticPromo)
-        response.shippingDurationViewModels.forEach { duration ->
+        response.shippingDurationUiModels.forEach { duration ->
             duration.shippingCourierViewModelList.forEach { courier ->
                 if (selectedSpId != 0 && !isPromoApplied) {
                     if (selectedSpId == courier.productData.shipperProductId) {
