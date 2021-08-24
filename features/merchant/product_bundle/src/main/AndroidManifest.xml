@@ -5,8 +5,9 @@
     <application>
         <activity
             android:name=".activity.ProductBundleActivity"
-            android:label="@string/product_bundle_page_title"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
