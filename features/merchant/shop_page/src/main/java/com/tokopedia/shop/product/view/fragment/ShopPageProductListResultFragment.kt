@@ -1213,6 +1213,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
         private const val DEFAULT_SHOWCASE_ID = "0"
+        private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
+
         @JvmStatic
         fun createInstance(shopId: String,
                            shopRef: String?,
@@ -1415,7 +1417,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 .appendQueryParameter(SearchApiConst.Q, keyword)
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
-                .appendQueryParameter(SearchApiConst.NAVSOURCE, "shop")
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
                 .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
                 .build()
                 .toString()

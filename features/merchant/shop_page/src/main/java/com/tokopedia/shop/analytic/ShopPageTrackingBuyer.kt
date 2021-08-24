@@ -1098,7 +1098,6 @@ class ShopPageTrackingBuyer(
             shopName: String
     ) {
         val eventLabel = "$keyword|$treatmentType|$responseCode|${ShopPageTrackingConstant.PHYSICAL_GOODS}|$navSource|$shopId|$totalData"
-//        val component = ".$treatmentType|$responseCode||$navSource|$srpPageTitle|$totalData"
         val pageSource = "$shopName.$navSource.${ShopPageTrackingConstant.LOCAL_SEARCH}.$shopId"
         val relatedKeyword = "$keyword - none"
         val eventMap: MutableMap<String, Any> = mutableMapOf(
