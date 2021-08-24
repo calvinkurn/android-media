@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by Irfan Khoirul on 11/10/18.
  */
 @Parcelize
-class ShippingRecommendationData(): Parcelable {
+class ShippingRecommendationData: Parcelable {
     var shippingDurationViewModels: List<ShippingDurationUiModel> = emptyList()
     var logisticPromo: LogisticPromoUiModel? = null
     var preOrderModel: PreOrderModel? = null

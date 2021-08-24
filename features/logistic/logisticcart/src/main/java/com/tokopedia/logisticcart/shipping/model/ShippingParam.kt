@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by Irfan Khoirul on 08/01/19.
  */
 @Parcelize
-class ShippingParam(): Parcelable {
+class ShippingParam: Parcelable {
     var originDistrictId: String? = null
     var originPostalCode: String? = null
     var originLatitude: String? = null
