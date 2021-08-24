@@ -1052,7 +1052,7 @@ class FeedAnalyticTracker
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
             "dimension39", "/feed - ${getPostType(type, isFollowed)} "
         )
 
