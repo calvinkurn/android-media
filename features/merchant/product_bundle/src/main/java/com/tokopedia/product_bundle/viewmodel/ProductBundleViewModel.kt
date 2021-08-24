@@ -15,7 +15,8 @@ import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResp
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.DiscountUtil
-import com.tokopedia.product_bundle.common.util.InventoryError
+import com.tokopedia.product_bundle.common.data.mapper.InventoryError
+import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,8 +58,12 @@ class ProductBundleViewModel @Inject constructor(
     private val isErrorLiveData = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> get() = isErrorLiveData
 
+    private val mPageState = MutableLiveData<ProductBundleState>()
+    val pageState: LiveData<ProductBundleState> get() = mPageState
+
     fun getBundleInfo(productId: Long) {
         parentProductID = productId
+        mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
@@ -75,8 +80,10 @@ class ProductBundleViewModel @Inject constructor(
                 getBundleInfoUseCase.executeOnBackground()
             }
             getBundleInfoResultLiveData.value = Success(result)
+            mPageState.value = ProductBundleState.SUCCESS
         }, onError = {
             getBundleInfoResultLiveData.value = Fail(it)
+            mPageState.value = ProductBundleState.ERROR
         })
     }
 

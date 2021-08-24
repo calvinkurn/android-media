@@ -68,6 +68,7 @@ class SingleProductBundleFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity.setBackgroundToWhite()
 
         setupTotalSold(view)
         setupRecyclerViewItems(view)

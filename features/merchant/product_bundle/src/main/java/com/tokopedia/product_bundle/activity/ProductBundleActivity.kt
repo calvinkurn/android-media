@@ -14,7 +14,9 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
-import com.tokopedia.product_bundle.common.util.InventoryErrorType
+import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
+import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
@@ -49,6 +51,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
         viewModelProvider.get(ProductBundleViewModel::class.java)
     }
 
+    private val entryPointFragment = EntrypointFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -60,14 +64,15 @@ class ProductBundleActivity : BaseSimpleActivity() {
         }
         setupToolbarActions()
 
+        observePageState()
         observeGetBundleInfoResult()
         observeInventoryError()
     }
 
+    override fun getLayoutRes() = R.layout.activity_product_bundle
+
     override fun getNewFragment(): Fragment {
-        // TODO: add shimmering
-        // TODO: manage initial fragment transaction
-        return MultipleProductBundleFragment.newInstance(listOf())
+        return entryPointFragment
     }
 
     private fun initInjector() {
@@ -75,6 +80,17 @@ class ProductBundleActivity : BaseSimpleActivity() {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun observePageState() {
+        viewModel.pageState.observe(this) { state ->
+            when (state) {
+                ProductBundleState.LOADING -> entryPointFragment.showShimmering()
+                ProductBundleState.SUCCESS -> entryPointFragment.showSuccess()
+                ProductBundleState.ERROR -> entryPointFragment.showError()
+                else -> entryPointFragment.showSuccess()
+            }
+        }
     }
 
     private fun observeGetBundleInfoResult() {
@@ -97,8 +113,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     }
                 }
                 is Fail -> {
-                    // log and show error view
-                    // TODO: add error view in activity layout
+                    // TODO: log error
                 }
             }
         })

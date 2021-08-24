@@ -24,8 +24,6 @@ data class ProductDetail(
         var notes: String = "",
         @SerializedName("shop_id")
         val shopId: String = "",
-        @SerializedName("warehouse_id")
-        val warehouseId: String = "",
         @SerializedName("is_product_parent")
         val isProductParent: Boolean = false,
         @SerializedName("customer_id")
