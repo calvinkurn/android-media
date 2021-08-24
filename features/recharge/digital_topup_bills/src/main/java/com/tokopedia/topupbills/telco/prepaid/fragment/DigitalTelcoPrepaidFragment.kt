@@ -447,9 +447,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
         override fun onNavigateToContact() {
-            // TODO: [Misael] ganti input type berdasarkan jenis nomor yg dipilih user nanti (CONTACt/FAVORITE)
-            inputNumberActionType = InputNumberActionType.CONTACT
-
             val clientNumber = telcoClientNumberWidget.getInputNumber()
             val dgCategoryIds = arrayListOf(
                 TelcoCategoryType.CATEGORY_PULSA.toString(),
@@ -664,7 +661,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         if (!inputNumberActionTypeIndex.isLessThanZero()) {
             inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         }
-        // TODO: [Misael] cek ini nanti autoSelect buat apa
         autoSelectTabProduct = true
         if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
             sharedModelPrepaid.setFavNumberSelected(productId)

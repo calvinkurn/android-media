@@ -65,4 +65,5 @@
     <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
     <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
+    <string name="common_topup_saved_number_searchbar_placeholder">Cari nama atau nomor HP</string>
 </resources>

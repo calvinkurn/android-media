@@ -26,7 +26,7 @@ class TopupBillsSavedNumberActivity : BaseSimpleActivity(),
     protected var operatorData: TelcoCatalogPrefixSelect? = null
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_digital_search_number_rev
+        return R.layout.activity_digital_saved_number
     }
 
     override fun getParentViewResourceID(): Int {

@@ -21,7 +21,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
-        app:search_bar_placeholder="Cari nama atau nomor HP"
+        app:search_bar_placeholder="@string/common_topup_saved_number_searchbar_placeholder"
         app:search_bar_clearable="true"
         app:search_bar_show_icon="false"
         app:layout_constraintTop_toBottomOf="@id/common_topup_bills_saved_num_switcher"

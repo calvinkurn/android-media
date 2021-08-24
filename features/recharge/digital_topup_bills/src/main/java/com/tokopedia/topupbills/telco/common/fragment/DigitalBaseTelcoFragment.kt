@@ -157,24 +157,22 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.checkPermission(this,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                        }
+            permissionCheckerHelper.checkPermission(this,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper.onPermissionDenied(requireContext(), permissionText)
+                    }
 
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                        }
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper.onNeverAskAgain(requireContext(), permissionText)
+                    }
 
-                        override fun onPermissionGranted() {
-                            navigateSavedNumber(
-                                clientNumber, favNumberList, dgCategoryIds, categoryName)
-                        }
-                    })
-            }
+                    override fun onPermissionGranted() {
+                        navigateSavedNumber(
+                            clientNumber, favNumberList, dgCategoryIds, categoryName)
+                    }
+                })
         } else {
             navigateSavedNumber(clientNumber, favNumberList, dgCategoryIds, categoryName)
         }

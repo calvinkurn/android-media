@@ -7,7 +7,6 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
@@ -21,7 +20,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected var operatorData: TelcoCatalogPrefixSelect? = null
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_digital_search_number_rev
+        return R.layout.activity_digital_favorite_number
     }
 
     override fun getParentViewResourceID(): Int {
