@@ -850,20 +850,35 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onTradeinClicked(componentTrackDataModel: ComponentTrackDataModel?) {
         val data = viewModel.getDynamicProductInfoP1
-        if (data?.data?.variant?.isVariant == false) {
-            onTradeinClickedAfter(componentTrackDataModel)
-        } else {
-            viewModel.variantData?.let {
-                goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
-                        productVariant = it,
-                        buttonText = context?.getString(R.string.pdp_save_btn) ?: "",
-                        customCartType = ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON)
-                )
+        if (pdpUiUpdater?.productSingleVariant != null) {
+            if (data?.data?.variant?.isVariant == false) {
+                onTradeinClickedAfter(componentTrackDataModel)
+            } else {
+                viewModel.variantData?.let {
+                    goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
+                            productVariant = it,
+                            buttonText = context?.getString(R.string.pdp_save_btn) ?: "",
+                            customCartType = ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON)
+                    )
+                }
             }
+        } else {
+            onTradeinClickedAfter(componentTrackDataModel)
         }
     }
 
     private fun onTradeinClickedAfter(componentTrackDataModel: ComponentTrackDataModel? = null) {
+        if (pdpUiUpdater?.productSingleVariant == null) {
+            val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
+            val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+                    ?: false
+
+            if (isVariant && isPartialySelected) {
+                showErrorVariantUnselected()
+                return
+            }
+        }
+
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return
@@ -877,7 +892,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         if (openShipmentBottomSheetWhenError()) return
 
         DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice.toDouble(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-
 
         goToTradein()
     }
@@ -2201,7 +2215,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
 
                 val p2Data = viewModel.p2Data.value
-                val cartTypeData = if (customCartRedirection != null) customCartRedirection  else
+                val cartTypeData = if (customCartRedirection != null) customCartRedirection else
                     p2Data?.cartRedirection
 
                 AtcVariantHelper.pdpToAtcVariant(
@@ -2989,7 +3003,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
                     ?: false
 
-            if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+            if (isVariant && pdpUiUpdater?.productSingleVariant != null) {
                 clickButtonWhenVariantTokonow(isVariant)
                 return@let
             }
