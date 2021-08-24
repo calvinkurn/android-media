@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
@@ -100,18 +101,15 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
             presenter!!.attachView(this)
             loadData()
-            Unit
         }
         bottomSheet!!.setOnDismissListener {
             presenter!!.detachView()
-            Unit
         }
-        bottomSheet!!.setCloseClickListener { view: View? ->
+        bottomSheet!!.setCloseClickListener {
             if (shippingDurationBottomsheetListener != null) {
                 shippingDurationBottomsheetListener!!.onShippingDurationButtonCloseClicked()
             }
             bottomSheet!!.dismiss()
-            Unit
         }
     }
 
@@ -143,6 +141,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         component.inject(this)
     }
 
+    @SuppressLint("InflateParams")
     private fun initView(activity: Activity) {
         val inflater = activity.layoutInflater
         val view = inflater.inflate(R.layout.fragment_shipment_duration_choice, null)
@@ -209,12 +208,12 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
     }
 
-    override fun showData(shippingDurationUiModelList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter!!.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
-        if (promoViewModel != null && promoViewModel.etaData != null && promoViewModel.etaData.textEta.isEmpty() && promoViewModel.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
-        val hasCourierPromo = checkHasCourierPromo(shippingDurationUiModelList)
+    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?) {
+        shippingDurationAdapter!!.setShippingDurationViewModels(serviceDataList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
+        if (promoViewModel?.etaData != null && promoViewModel.etaData.textEta.isEmpty() && promoViewModel.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
+        val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
-            sendAnalyticCourierPromo(shippingDurationUiModelList)
+            sendAnalyticCourierPromo(serviceDataList)
         }
         if (promoViewModel != null) {
             mPromoTracker!!.eventViewPromoLogisticTicker(promoViewModel.promoCode)
@@ -264,7 +263,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         return isDisableCourierPromo
     }
 
-    override fun onShippingDurationChoosen(shippingCourierUiModels: List<ShippingCourierUiModel>,
+    override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>,
                                            cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
@@ -275,7 +274,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 selectedServiceId = serviceData.serviceId
             }
         } else {
-            for (shippingCourierUiModel in shippingCourierUiModels) {
+            for (shippingCourierUiModel in shippingCourierUiModelList) {
                 shippingCourierUiModel.isSelected = shippingCourierUiModel.productData.isRecommend
                 if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     flagNeedToSetPinpoint = true
@@ -287,9 +286,9 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         if (shippingDurationBottomsheetListener != null) {
             try {
                 shippingDurationBottomsheetListener!!.onShippingDurationChoosen(
-                        shippingCourierUiModels, presenter!!.getCourierItemData(shippingCourierUiModels),
+                        shippingCourierUiModelList, presenter!!.getCourierItemData(shippingCourierUiModelList),
                         mRecipientAddress, cartPosition, selectedServiceId, serviceData,
-                        flagNeedToSetPinpoint, true, true)
+                        flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
                 bottomSheet!!.dismiss()
             } catch (e: Exception) {
                 e.printStackTrace()

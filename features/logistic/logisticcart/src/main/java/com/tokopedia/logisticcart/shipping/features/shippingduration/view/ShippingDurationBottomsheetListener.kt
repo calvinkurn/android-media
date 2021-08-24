@@ -10,14 +10,14 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
  */
 interface ShippingDurationBottomsheetListener {
 
-    fun onShippingDurationChoosen(shippingCourierUiModels: List<ShippingCourierUiModel?>?,
+    fun onShippingDurationChoosen(shippingCourierUiModels: List<ShippingCourierUiModel>?,
                                   courierItemData: CourierItemData?,
                                   recipientAddressModel: RecipientAddressModel?,
                                   cartPosition: Int, selectedServiceId: Int,
                                   serviceData: ServiceData?, flagNeedToSetPinpoint: Boolean,
                                   isDurationClick: Boolean, isClearPromo: Boolean)
 
-    fun onLogisticPromoChosen(shippingCourierUiModels: List<ShippingCourierUiModel?>?,
+    fun onLogisticPromoChosen(shippingCourierUiModels: List<ShippingCourierUiModel>?,
                               courierData: CourierItemData?,
                               recipientAddressModel: RecipientAddressModel?, cartPosition: Int,
                               serviceData: ServiceData?, flagNeedToSetPinpoint: Boolean, promoCode: String?, selectedServiceId: Int)

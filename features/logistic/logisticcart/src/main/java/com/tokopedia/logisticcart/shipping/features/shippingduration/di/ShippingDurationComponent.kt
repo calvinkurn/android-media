@@ -10,5 +10,5 @@ import dagger.Component
 @ShippingDurationScope
 @Component(dependencies = [BaseAppComponent::class], modules = [ShippingDurationModule::class])
 interface ShippingDurationComponent {
-    fun inject(shippingDurationBottomsheet: ShippingDurationBottomsheet?)
+    fun inject(shippingDurationBottomsheet: ShippingDurationBottomsheet)
 }

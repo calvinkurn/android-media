@@ -16,15 +16,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.showcase.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.util.*
 
 /**
@@ -119,10 +119,10 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         if (shippingDurationUiModel.serviceData.texts.errorCode == 0) {
             val shipperNameEta: String = if (shippingDurationUiModel.serviceData.rangePrice.minPrice == shippingDurationUiModel.serviceData.rangePrice.maxPrice) {
                 shippingDurationUiModel.serviceData.serviceName + " " + "(" +
-                        removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false)) + ")"
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false).removeDecimalSuffix() + ")"
             } else {
-                val rangePrice = removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false)) + " - " +
-                        removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.maxPrice, false))
+                val rangePrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.minPrice, false).removeDecimalSuffix() + " - " +
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.serviceData.rangePrice.maxPrice, false).removeDecimalSuffix()
                 shippingDurationUiModel.serviceData.serviceName + " " + "(" + rangePrice + ")"
             }
             if (shippingDurationUiModel.serviceData.texts.textEtaSummarize.isNotEmpty()) {

@@ -101,8 +101,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                     if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
                                         view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
                                         view!!.stopTrace()
-                                    } else if (shippingRecommendationData.shippingDurationViewModels != null &&
-                                            shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
+                                    } else if (shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
                                         if (view!!.isDisableCourierPromo()) {
                                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
                                                 shippingDurationUiModel.serviceData.isPromo = 0

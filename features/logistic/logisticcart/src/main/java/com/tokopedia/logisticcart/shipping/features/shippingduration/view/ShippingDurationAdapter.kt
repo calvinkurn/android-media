@@ -65,7 +65,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         notifyItemChanged(position)
     }
 
-    override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
+    override fun getItemViewType(position: Int): Int = when (mData[position]) {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT

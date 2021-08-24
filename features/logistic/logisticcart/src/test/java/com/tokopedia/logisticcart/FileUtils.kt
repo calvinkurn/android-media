@@ -1,23 +1,20 @@
-package com.tokopedia.logisticcart;
+package com.tokopedia.logisticcart
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.IOException
 
-public class FileUtils {
-
-    public String getJsonFromAsset(String path) {
-        String json = "";
+class FileUtils {
+    fun getJsonFromAsset(path: String?): String {
+        var json = ""
         try {
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(path);
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
+            val inputStream = this.javaClass.classLoader!!.getResourceAsStream(path)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            json = String(buffer)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-        return json;
+        return json
     }
 }
-
