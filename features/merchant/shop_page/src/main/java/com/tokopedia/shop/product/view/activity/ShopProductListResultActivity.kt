@@ -55,14 +55,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
         isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
         sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
-        if (savedInstanceState == null) {
-            keyword = intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD)
-            if (null == keyword) {
-                keyword = ""
-            }
-        } else {
-            keyword = savedInstanceState.getString(SAVED_KEYWORD, "")
-        }
+        keyword = getSearchKeywordData(savedInstanceState)
         var data = intent.data
         if (null != data) {
             data = RouteManager.getIntent(this, intent.data.toString()).data
@@ -72,7 +65,6 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             shopRef = if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
             sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
             attribution = if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(QUERY_ATTRIBUTION)
-            keyword = getKeywordFromAppLink(data)
         }
         if (shopRef == null) {
             shopRef = ""
@@ -83,14 +75,18 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         findViewById<View>(R.id.mainLayout).requestFocus()
     }
 
-    private fun getKeywordFromAppLink(data: Uri?): String {
-        return data?.let {
-            when {
-                it.getQueryParameter(QUERY_SEARCH) != null -> it.getQueryParameter(QUERY_SEARCH).orEmpty()
-                it.getQueryParameter(SearchApiConst.Q) != null -> it.getQueryParameter(SearchApiConst.Q).orEmpty()
+    private fun getSearchKeywordData(savedInstanceState: Bundle?): String {
+        return if (savedInstanceState == null) {
+            when{
+                intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
+                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA)?.getString(QUERY_SEARCH, "").orEmpty()
+                intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
+                intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
                 else -> ""
             }
-        }.orEmpty()
+        } else {
+            savedInstanceState.getString(SAVED_KEYWORD, "")
+        }
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {
@@ -193,6 +189,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_SORT = "sort"
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
+        private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
         fun createIntent(context: Context?, shopId: String?, keyword: String?,
                          etalaseId: String?, attribution: String?, sortId: String?, shopRef: String?): Intent {
             val intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef)
