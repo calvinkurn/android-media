@@ -15,8 +15,8 @@
     <string name="sp_title_withdraw">Tarik Saldo</string>
     <string name="sp_title_remaining_tokopedia">Saldo Aktif</string>
     <string name="sp_saldo_title">Saldo</string>
-    <string name="sp_positive_saldo_balance">+ %s</string>
-    <string name="sp_negative_saldo_balance">- %s</string>
+    <string name="sp_positive_saldo_balance">+%s</string>
+    <string name="sp_negative_saldo_balance">-%s</string>
     <string name="sp_date_time_view">%s WIB</string>
     <string name="saldo_hold_balance_text">Saldo Tertahan %s</string>
     <string name="check_saldo_hold_balance_status">Cek Status</string>
