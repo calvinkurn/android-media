@@ -69,7 +69,7 @@ class ErrorHandlerHotel {
             else return R.drawable.hotel_ic_server_error
         }
 
-        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError){
+        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError, onBackPress: () -> Unit = { }){
             when(error){
                 is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
                 is MessageErrorException -> {
@@ -86,7 +86,11 @@ class ErrorHandlerHotel {
                 }
             }
             view.setActionClickListener {
-                action()
+                if(view.getErrorType() == GlobalError.PAGE_NOT_FOUND){
+                    onBackPress()
+                }else{
+                    action()
+                }
             }
         }
     }
