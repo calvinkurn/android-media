@@ -15,7 +15,7 @@
 
                 <data
                     android:host="@string/host_merchant"
-                    android:path="@string/path_product_bundle"
+                    android:pathPattern="@string/path_product_bundle"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
