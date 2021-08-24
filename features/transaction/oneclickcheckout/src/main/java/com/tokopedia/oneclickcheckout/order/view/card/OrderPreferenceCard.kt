@@ -220,7 +220,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
                 val span = SpannableString("($originalPrice $finalPrice)")
                 span.setSpan(StrikethroughSpan(), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(RelativeSizeSpan(10 / 12f), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 binding.root.context?.let {
@@ -462,7 +462,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val originalPriceStartIndex = shipping.logisticPromoShipping.productData.shipperName.length + 2
                     val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length + 1
                     span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    span.setSpan(RelativeSizeSpan(10 / 12f), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    span.setSpan(RelativeSizeSpan(PROPOTION_10 / FLOAT_12), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                     binding.root.context?.let {
                         val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                         span.setSpan(ForegroundColorSpan(color), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -820,6 +820,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
+        private const val FLOAT_12 = 12F
+        private const val PROPOTION_10 = 10
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8
         private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16

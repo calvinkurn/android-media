@@ -109,7 +109,7 @@ class InstallmentDetailBottomSheet {
                     viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.term == installmentAfpb.type.toInt()
                 }
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
-                viewInstallmentDetailItem.root.alpha = 0.5f
+                viewInstallmentDetailItem.root.alpha = DISABLE_ALPHA
             } else {
                 viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentAfpb.fee.toDouble(), false).removeDecimalSuffix())
                 if (installmentAfpb.type.isNotEmpty()) {
@@ -123,7 +123,7 @@ class InstallmentDetailBottomSheet {
                     listener.onSelectInstallment(mapAfpbToInstallmentTerm(installmentAfpb))
                     dismiss()
                 }
-                viewInstallmentDetailItem.root.alpha = 1.0f
+                viewInstallmentDetailItem.root.alpha = ENABLE_ALPHA
             }
             binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
         }
