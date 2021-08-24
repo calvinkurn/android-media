@@ -1,14 +1,17 @@
 package com.tokopedia.play.viewmodel.follow
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -108,7 +111,7 @@ class PlayFollowOthersShopTest {
     }
 
     @Test
-    fun `given user is not logged in, when click follow, the shop should stay unfollowed`() {
+    fun `given user is not logged in, when click follow, the shop should stay unfollowed and open login page`() {
         val mockPartnerRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
 
@@ -120,14 +123,19 @@ class PlayFollowOthersShopTest {
             setLoggedIn(false)
             createPage(mockChannelData)
             focusPage(mockChannelData)
-        } andWhen {
+        } andWhenExpectEvent {
             submitAction(ClickFollowAction)
-        } thenVerify {
+        } thenVerify { event ->
             withState {
                 followStatus.isEqualTo(
                         PlayPartnerFollowStatus.Followable(isFollowing = false)
                 )
             }
+
+            event.isEqualToIgnoringFields(
+                    OpenPageEvent(applink = ApplinkConst.LOGIN),
+                    OpenPageEvent::requestCode
+            )
         }
     }
 }

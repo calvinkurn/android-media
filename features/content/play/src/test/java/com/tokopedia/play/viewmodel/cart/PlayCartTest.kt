@@ -1,17 +1,26 @@
 package com.tokopedia.play.viewmodel.cart
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayCartInfoModelBuilder
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.view.uimodel.action.ClickCartAction
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.state.PlayCartCount
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -148,6 +157,29 @@ class PlayCartTest {
                 (cart.count as PlayCartCount.Show).countText
                         .isEqualTo("99+")
             }
+        }
+    }
+
+    @Test
+    fun `given cart is shown, when cart clicked, then should open cart page`() {
+        val mockChannelData = channelDataBuilder.buildChannelData(
+                cartInfo = cartInfoModelBuilder.build(shouldShow = true)
+        )
+
+        givenPlayViewModelRobot(
+                dispatchers = testDispatcher,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } andWhenExpectEvent {
+            submitAction(ClickCartAction)
+        } thenVerify { event ->
+            event.isEqualTo(
+                    OpenPageEvent(
+                            applink = ApplinkConst.CART
+                    )
+            )
         }
     }
 }

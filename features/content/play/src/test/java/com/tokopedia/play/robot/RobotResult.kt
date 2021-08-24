@@ -1,6 +1,7 @@
 package com.tokopedia.play.robot
 
 import org.assertj.core.api.Assertions
+import kotlin.reflect.KProperty1
 
 /**
  * Created by jegul on 10/02/21
@@ -23,6 +24,16 @@ interface RobotResult {
         Assertions
                 .assertThat(this)
                 .isEqualTo(expected)
+    }
+
+    fun <T: Any> T?.isEqualToIgnoringFields(expected: T, vararg ignoreFields: String) {
+        Assertions
+                .assertThat(this)
+                .isEqualToIgnoringGivenFields(expected, *ignoreFields)
+    }
+
+    fun <T: Any> T?.isEqualToIgnoringFields(expected: T, vararg field: KProperty1<*, *>) {
+        isEqualToIgnoringFields(expected, *field.map { it.name }.toTypedArray())
     }
 
     fun <T: Any> Any.isInstanceOf(expected: Class<T>) {

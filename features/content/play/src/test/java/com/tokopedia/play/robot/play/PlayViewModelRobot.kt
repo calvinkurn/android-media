@@ -22,6 +22,7 @@ import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -34,6 +35,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runBlockingTest
 
 /**
  * Created by jegul on 10/02/21
@@ -290,4 +294,24 @@ infix fun <T> RobotWithValue<T>.thenVerify(
 ): PlayViewModelRobot {
     PlayViewModelRobotResult(first.viewModel).apply { fn(second) }
     return first
+}
+
+/**
+ * Temporary. might need to use Turbine library
+ */
+infix fun PlayViewModelRobot.andWhenExpectEvent(
+        fn: PlayViewModelRobot.() -> Unit
+): RobotWithValue<PlayViewerNewUiEvent> {
+    var result: PlayViewerNewUiEvent? = null
+    runBlockingTest {
+        val value = async {
+            viewModel.uiEvent.first()
+        }
+
+        fn()
+
+        result = value.await()
+    }
+    run(fn)
+    return Pair(this, result!!)
 }
