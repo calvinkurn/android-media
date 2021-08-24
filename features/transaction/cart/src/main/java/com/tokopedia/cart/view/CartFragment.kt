@@ -1095,7 +1095,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         if (toBeDeletedProducts.size > 0) {
-            dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedProducts, false, false)
+            // If unavailable item > 1 and state is collapsed, then expand first
+            var forceExpand = false
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+
+            dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedProducts, false, forceExpand)
             cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                     dPresenter.generateDeleteCartDataAnalytics(toBeDeletedProducts)
             )
@@ -2785,15 +2792,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun removeLocalCartItem(updateListResult: Pair<List<Int>, List<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
-        // Todo : remove deleted item locally, then refresh cart
-        updateListResult.first.forEach {
-            onNeedToRemoveViewItem(it)
-        }
-        updateListResult.second.forEach {
-            onNeedToUpdateViewItem(it)
-        }
-
-/*
         updateListResult.first.forEach {
             onNeedToRemoveViewItem(it)
         }
@@ -2813,13 +2811,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
 
         // Check if cart list has more than 1 shop, and it's a toko now
-        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
+        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow == true) {
             allShopGroupDataList[0].let {
                 it.isCollapsible = false
                 it.isCollapsed = false
-                it.shopGroupAvailableData?.isShowPin = false
-                val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
-                        ?: "")
+                it.isShowPin = false
+                val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
                 if (index != RecyclerView.NO_POSITION) {
                     onNeedToUpdateViewItem(index)
                 }
@@ -2827,13 +2824,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         // Check if cart list has more than 1 shop, and first shop is toko now
-        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
+        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].isTokoNow == true) {
             allShopGroupDataList[0].let {
-                if ((it.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0) == 1) {
+                if (it.productUiModelList.size == 1) {
                     it.isCollapsible = false
                     it.isCollapsed = false
-                    val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
-                            ?: "")
+                    val index = cartAdapter.getCartShopHolderIndexByCartString(it.cartString)
                     if (index != RecyclerView.NO_POSITION) {
                         onNeedToUpdateViewItem(index)
                     }
@@ -2843,7 +2839,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
         notifyBottomCartParent()
-*/
     }
 
     private fun onNeedToInserViewItem(position: Int) {
@@ -3099,31 +3094,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDeleteDisabledItem(data: DisabledCartItemHolderData) {
-        // Todo : unified delete handle for available & unavailable items
-/*
-        data.data?.let {
-            cartPageAnalytics.eventClickDeleteProductOnUnavailableSection(userSession.userId, data.productId, data.errorType)
-            if (data.data?.selectedUnavailableActionId ?: 0 == ACTION_CHECKOUTBROWSER) {
-                cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco()
-            } else {
-                cartPageAnalytics.eventClickAtcCartClickTrashBin()
-            }
-            val cartItemDatas = listOf(it)
-            val allCartItemDataList = cartAdapter.allCartItemData
-
-            // If unavailable item > 1 and state is collapsed, then expand first
-            var forceExpand = false
-            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
-                collapseOrExpandDisabledItem()
-                forceExpand = true
-            }
-
-            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false, forceExpand)
-            cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
-                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
-            )
-        }
-*/
     }
 
     override fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, action: Action) {

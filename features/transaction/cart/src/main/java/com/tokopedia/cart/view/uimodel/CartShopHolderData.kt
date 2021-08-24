@@ -35,6 +35,38 @@ data class CartShopHolderData(
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 
+    fun deepCopy(): CartShopHolderData {
+        return CartShopHolderData(
+                cartString = this.cartString,
+                shopId = this.shopId,
+                shopName = this.shopName,
+                shopTypeInfo = this.shopTypeInfo,
+                isFulfillment = this.isFulfillment,
+                fulfillmentName = this.fulfillmentName,
+                fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
+                estimatedTimeArrival = this.estimatedTimeArrival,
+                productUiModelList = this.productUiModelList.toMutableList(),
+                isShowPin = this.isShowPin,
+                pinCoachmarkMessage = this.pinCoachmarkMessage,
+                isTokoNow = this.isTokoNow,
+                preOrderInfo = this.preOrderInfo,
+                incidentInfo = this.incidentInfo,
+                isFreeShippingExtra = this.isFreeShippingExtra,
+                freeShippingBadgeUrl = this.freeShippingBadgeUrl,
+                maximumWeightWording = this.maximumWeightWording,
+                maximumShippingWeight = this.maximumShippingWeight,
+                totalWeight = this.totalWeight,
+                isAllSelected = this.isAllSelected,
+                isPartialSelected = this.isPartialSelected,
+                isCollapsible = this.isCollapsible,
+                isCollapsed = this.isCollapsed,
+                clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
+                isNeedToRefreshWeight = this.isNeedToRefreshWeight,
+                isError = this.isError,
+                promoCodes = this.promoCodes.toMutableList()
+        )
+    }
+
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
     }
