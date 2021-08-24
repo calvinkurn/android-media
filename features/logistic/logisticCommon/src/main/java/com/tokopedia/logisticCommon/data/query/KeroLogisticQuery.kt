@@ -239,4 +239,20 @@ object KeroLogisticQuery {
 
     """.trimIndent()
 
+    val district_recommendation = """
+        query GetDistrictRecommendation(${'$'}query: String, ${'$'}page: String){
+          kero_district_recommendation(query:${'$'}query, page:${'$'}page) {
+            district {
+              district_id
+              district_name
+              city_id
+              city_name
+              province_id
+              province_name
+              zip_code
+            }
+            next_available
+          }
+        }
+    """.trimIndent()
 }

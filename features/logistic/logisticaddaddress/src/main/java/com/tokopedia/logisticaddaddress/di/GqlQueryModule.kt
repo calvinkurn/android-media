@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticaddaddress.R
 import javax.inject.Singleton
 
@@ -18,6 +19,6 @@ class GqlQueryModule {
     @IntoMap
     @StringKey(RawQueryConstant.GET_DISTRICT_RECOMMENDATION)
     fun provideQueryDiscom(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.district_recommendation)
+            KeroLogisticQuery.district_recommendation
 
 }
