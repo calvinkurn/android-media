@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.domain
 
+import com.tokopedia.graphql.R
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -40,10 +41,9 @@ abstract class GqlUseCase<Input, out Output>(protected val repository: GraphqlRe
     /*
     * this is helper function to request network using graphql repository
     * */
-    protected suspend inline fun <reified R, P> request(params: P): R {
-        val parameters = if (params is Map<*, *>) params as Map<String, Any> else mapOf()
+    protected suspend inline fun <reified R> request(params: Map<String, Any>): R {
 
-        val request = GraphqlRequest(graphqlQuery(), R::class.java, parameters)
+        val request = GraphqlRequest(graphqlQuery(), R::class.java, params)
         val response = repository.getReseponse(listOf(request))
 
         return response.getSuccessData()

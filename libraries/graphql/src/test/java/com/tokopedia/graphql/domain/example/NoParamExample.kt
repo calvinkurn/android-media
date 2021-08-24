@@ -9,15 +9,17 @@ class GetNoParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDisp
 
     override fun graphqlQuery(): String {
         return """
-            query get_no_param {
-                id
-                msg
+            query GetNoParam {
+                FooResponse {
+                    id
+                    msg
+                }
             }
         """.trimIndent()
     }
 
     override suspend fun execute(params: Unit): FooModel {
-        return request(Unit)
+        return request(emptyMap())
     }
 
 }

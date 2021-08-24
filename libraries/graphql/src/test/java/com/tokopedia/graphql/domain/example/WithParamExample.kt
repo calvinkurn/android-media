@@ -9,9 +9,11 @@ class GetWithParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDi
 
     override fun graphqlQuery(): String {
         return """
-            query get_no_param {
-                id
-                msg
+            query GetWithParam(${'$'}id: String!, ${'$'}isSorted: Boolean!) {
+                FooResponse(param1: ${'$'}id, param2: ${'$'}isSorted) {
+                    id
+                    msg
+                }
             }
         """.trimIndent()
     }

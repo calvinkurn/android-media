@@ -16,7 +16,7 @@ open class GetTroubleshootStatusUseCase constructor(
     }
 
     override suspend fun execute(params: Unit): NotificationTroubleshoot {
-        return request(params)
+        return request(emptyMap())
     }
 
 }
