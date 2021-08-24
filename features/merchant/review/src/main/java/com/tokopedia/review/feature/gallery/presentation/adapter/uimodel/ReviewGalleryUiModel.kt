@@ -15,7 +15,8 @@ data class ReviewGalleryUiModel(
     val review: String = "",
     val reviewTime: String = "",
     val isReportable: Boolean = false,
-    val imageNumber: Int = 0
+    val imageNumber: Int = 0,
+    val attachmentId: String = ""
 ) : Visitable<ReviewGalleryAdapterTypeFactory> {
 
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {

@@ -25,6 +25,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
@@ -75,6 +76,7 @@ class ReviewGalleryFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getProductIdFromArguments()
+        ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
     }
 
     override fun stopPreparePerfomancePageMonitoring() {
@@ -143,6 +145,11 @@ class ReviewGalleryFragment :
     }
 
     override fun onItemClicked(t: ReviewGalleryUiModel) {
+        ReviewGalleryTracking.trackClickImage(
+            t.attachmentId,
+            t.feedbackId,
+            viewModel.getProductId()
+        )
         goToImagePreview(t)
     }
 
@@ -167,6 +174,12 @@ class ReviewGalleryFragment :
     }
 
     override fun openStatisticsBottomSheet() {
+        ReviewGalleryTracking.trackClickSatisfactionScore(
+            getSatisfactionRate(),
+            getRating(),
+            getTotalReview(),
+            viewModel.getProductId()
+        )
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(
                 getReviewStatistics(),
@@ -182,6 +195,7 @@ class ReviewGalleryFragment :
     }
 
     override fun onSeeAllClicked() {
+        ReviewGalleryTracking.trackClickSeeAll(viewModel.getProductId())
         goToReadingPage()
     }
 
@@ -293,7 +307,8 @@ class ReviewGalleryFragment :
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
             reviewGalleryUiModel = reviewGalleryUiModel.copy(
                 imageUrl = this.fullsizeURL,
-                fullImageUrl = this.fullsizeURL
+                fullImageUrl = this.fullsizeURL,
+                attachmentId = this.attachmentId
             )
         }
         reviewGalleryUiModel = reviewGalleryUiModel.copy(
@@ -309,6 +324,14 @@ class ReviewGalleryFragment :
 
     private fun getSatisfactionRate(): String {
         return (viewModel.rating.value as? Success)?.data?.satisfactionRate ?: ""
+    }
+
+    private fun getRating(): String {
+        return (viewModel.rating.value as? Success)?.data?.ratingScore ?: ""
+    }
+
+    private fun getTotalReview(): String {
+        return (viewModel.rating.value as? Success)?.data?.totalRatingTextAndImage.toString()
     }
 
     private fun goToReadingPage() {

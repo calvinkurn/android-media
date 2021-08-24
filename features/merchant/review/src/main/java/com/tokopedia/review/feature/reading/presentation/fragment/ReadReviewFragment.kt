@@ -361,6 +361,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     ) {
         val topicFilterTitle = getString(R.string.review_reading_topic_filter_title)
         if(isProductReview) {
+
             ReadReviewTracking.trackOnFilterClicked(
                     topicFilterTitle,
                     isActive,
