@@ -135,7 +135,6 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
-    var isFromLogin = false
 
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
@@ -1659,10 +1658,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     suspend fun getBeautyFest(data: List<Visitable<*>>) : Int = withContext(Dispatchers.IO) {
         //some result string will not qualify if not contains string channelModel
-        if(!Gson().toJson(data).toString().contains("channelModel"))
-            HomeRevampFragment.BEAUTY_FEST_NOT_QUALIFY
-        //beauty fest will contains isChannelBeautyFest true
-        else if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+        if(Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
             HomeRevampFragment.BEAUTY_FEST_TRUE
         else
             HomeRevampFragment.BEAUTY_FEST_FALSE

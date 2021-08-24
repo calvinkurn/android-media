@@ -283,9 +283,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_Y = 1
         const val BEAUTY_FEST_FALSE = 0
         const val BEAUTY_FEST_TRUE = 1
-        const val BEAUTY_FEST_NOT_QUALIFY = 2
-        private const val BEAUTY_FEST_NOT_SET = -1
+        const val BEAUTY_FEST_NOT_SET = -1
         private var beautyFestEvent = BEAUTY_FEST_NOT_SET
+        private var counterBypassFirstNetworkHomeData = 0
+        private var eligibleBeautyFest = false
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -479,6 +480,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
@@ -1070,6 +1072,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onResume() {
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
+        if(eligibleBeautyFest != isEligibleForBeautyFest()) {
+            beautyFestEvent = BEAUTY_FEST_NOT_SET
+            renderBeautyFestHeader(true)
+        }
         createAndCallSendScreen()
         if (!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
@@ -1279,9 +1285,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (data.list.isNotEmpty()) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache, data.isProcessingAtf)
+                    setBeautyFest(data)
                 }
             }
         })
+    }
+
+    private fun setBeautyFest(data: HomeDataModel) {
+        val isEligibleForBeautyFest = isEligibleForBeautyFest()
+        if (isEligibleForBeautyFest && !data.isCache && counterBypassFirstNetworkHomeData>0) {
+            CoroutineScope(Dispatchers.Main).launch {
+                beautyFestEvent = getHomeViewModel().getBeautyFest(data.list)
+                renderBeautyFestHeader()
+            }
+        }
+        else if(isEligibleForBeautyFest) {
+            beautyFestEvent = BEAUTY_FEST_NOT_SET
+            renderBeautyFestHeader()
+            counterBypassFirstNetworkHomeData++
+        }
+        else if(!isEligibleForBeautyFest) {
+            beautyFestEvent = BEAUTY_FEST_FALSE
+            renderBeautyFestHeader(bypassEligibleBeautyFest = true)
+        }
     }
 
     private fun observeUpdateNetworkStatusData() {
@@ -1435,17 +1461,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderTopBackground()
+        renderBeautyFestHeader()
         observeSearchHint()
     }
 
-    private fun renderBeautyFestHeader() {
-        if(isEligibleForBeautyFest()) {
+    private fun renderBeautyFestHeader(bypassEligibleBeautyFest: Boolean = false) {
+        if(isEligibleForBeautyFest() || bypassEligibleBeautyFest) {
+            eligibleBeautyFest = false
             when (beautyFestEvent) {
                 BEAUTY_FEST_NOT_SET -> {
                     renderTopBackgroundBeautyFest(isLoading = true, isBeautyFest =  false)
                 }
                 BEAUTY_FEST_TRUE -> {
+                    eligibleBeautyFest = true
                     renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  true)
                 }
                 else -> {
@@ -1454,6 +1482,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
         else {
+            eligibleBeautyFest = false
             renderTopBackground()
         }
     }
@@ -1497,6 +1526,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 layoutParams.height =
                     resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
                 backgroundViewImage.layoutParams = layoutParams
+                loaderHeaderImage.layoutParams = layoutParams
             } else {
                 val layoutParams = backgroundViewImage.layoutParams
                 layoutParams.height =
@@ -1517,7 +1547,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
-                                R.color.home_beauty_fest_dark
+                                R.color.home_beauty_fest_dark_dms
                             )
                         )
                     } else {
@@ -1525,7 +1555,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         backgroundViewImage.setColorFilter(
                             ContextCompat.getColor(
                                 requireContext(),
-                                R.color.home_beauty_fest_light
+                                R.color.home_beauty_fest_light_dms
                             )
                         )
                     }
@@ -2260,6 +2290,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isAdded && activity != null && adapter != null) {
             if (adapter?.itemCount ?: RV_EMPTY_TRESHOLD > RV_EMPTY_TRESHOLD) {
                 showToaster(message, TYPE_ERROR)
+                renderBeautyFestHeader()
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
