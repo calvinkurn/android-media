@@ -24,6 +24,7 @@ data class FeedXMedia(
     var videoView: View? = null,
     @Transient
     var imageView: View? = null,
-    var canPlay: Boolean = false
+    var canPlay: Boolean = false,
+    var isImageImpressedFirst: Boolean = true
 )
 
