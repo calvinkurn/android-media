@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.aggregator.SimpleBasicInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -41,11 +42,13 @@ object AtcVariantHelper {
     const val CART_PAGESOURCE = "cart"
     const val SEARCH_PAGESOURCE = "search result"
     const val CATEGORY_PAGESOURCE = "category page"
+    const val BUNDLING_PAGESOURCE = "bundling page"
 
     /**
      * For PDP only
      */
     fun pdpToAtcVariant(context: Context,
+                        pageSource: String,
                         productInfoP1: DynamicProductInfoP1,
                         warehouseId: String,
                         pdpSession: String,
@@ -68,7 +71,7 @@ object AtcVariantHelper {
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
-                pageSource = PDP_PAGESOURCE,
+                pageSource = pageSource,
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
@@ -133,5 +136,29 @@ object AtcVariantHelper {
 
         return restrictionData?.copy(restrictionData = manipulateRestrictionShopFollowers)
                 ?: RestrictionInfoResponse()
+    }
+
+    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String): Map<String, CartTypeData>? {
+        if (!productVariant.hasChildren) return null
+        val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
+        productVariant.children.forEach {
+            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText)
+        }
+        return mapOfCartRedirection
+    }
+
+    private fun generateCartTypeDataSimpan(productId: String, buttonText: String): CartTypeData {
+        return CartTypeData(
+                productId = productId,
+                availableButtons = listOf(
+                        AvailableButton(
+                                cartType = ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                                color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                                text = buttonText,
+                                showRecommendation = false
+                        )),
+                unavailableButtons = listOf(ProductDetailCommonConstant.KEY_CHAT),
+                hideFloatingButton = false
+        )
     }
 }

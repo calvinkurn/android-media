@@ -105,6 +105,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private var buttonActionType = 0
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
+    private var shouldSetActivityResult = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,6 +195,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
+            shouldSetActivityResult = it.pageSource != AtcVariantHelper.BUNDLING_PAGESOURCE
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
@@ -541,8 +543,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        viewModel.getActivityResultData().let {
-            sharedViewModel.setActivityResult(it)
+        if (shouldSetActivityResult) {
+            viewModel.getActivityResultData().let {
+                sharedViewModel.setActivityResult(it)
+            }
         }
 
         super.onDismiss(dialog)
@@ -593,13 +597,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        this.buttonText = buttonText
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        doAtc(atcKey)
+        if (cartType == ProductDetailCommonConstant.KEY_SAVE_BUTTON) {
+            onSaveButtonClicked()
+        } else {
+            this.buttonText = buttonText
+            val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+            doAtc(atcKey)
+        }
     }
 
     override fun isTokonow(): Boolean {
         return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
+    }
+
+    private fun onSaveButtonClicked() {
+        shouldSetActivityResult = true
+        dismiss()
     }
 
     private fun goToImagePreview(listOfImage: ArrayList<String>) {

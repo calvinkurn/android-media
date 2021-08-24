@@ -59,6 +59,7 @@ object ProductDetailCommonConstant {
     const val KEY_NORMAL_BUTTON = "normal"
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
+    const val KEY_SAVE_BUTTON = "save"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_REMIND_ME = "remind_me"
