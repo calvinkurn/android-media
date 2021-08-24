@@ -237,10 +237,14 @@ class SellerHomeNavigator(
     private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
         hideAllPages(transaction)
         fragment?.let {
-            if (it.isVisible) {
-                (it as? SellerHomeFragmentListener)?.onScrollToTop()
-            }
+            scrollFragmentToTop(it)
             transaction.show(it)
+        }
+    }
+
+    private fun scrollFragmentToTop(fragment: Fragment) {
+        if (fragment.isVisible) {
+            (fragment as? SellerHomeFragmentListener)?.onScrollToTop()
         }
     }
 
