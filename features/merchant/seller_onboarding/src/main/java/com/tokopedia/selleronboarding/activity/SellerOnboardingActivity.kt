@@ -46,7 +46,7 @@ class SellerOnboardingActivity : BaseActivity() {
         private const val TRANSFORMER_FULL_PAGE_POSITION = 1
         private const val SLIDER_FIRST_INDEX = 0
         private const val SLIDER_LAT_INDEX = 4
-        private const val OFF_SCREEN_PAGE_LIMIT = 3
+        private const val OFF_SCREEN_PAGE_LIMIT = 2
         private const val ADDITIONAL_INDEX = 1
     }
 
