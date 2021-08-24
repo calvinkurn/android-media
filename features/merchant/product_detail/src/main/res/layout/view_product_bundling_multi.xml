@@ -8,6 +8,7 @@
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/product_bundling_multi_constraint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
