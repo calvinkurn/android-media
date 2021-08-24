@@ -55,9 +55,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                         setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
                     (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
-                        setMessageErrorField("", "", false)
+                        budget.setError(false)
+                        budget.setMessage("")
+                        btnSave.isEnabled = true
                         if(fromDetail)
-                        min_suggested_bid.visibility = View.VISIBLE
+                           min_suggested_bid.visibility = View.VISIBLE
                     }
                     result > maxBid.toDouble() -> {
                         min_suggested_bid.visibility = View.GONE
