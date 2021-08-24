@@ -64,10 +64,16 @@ object KeroLogisticQuery {
               partner_name
               type
               is_corner
+              is_state_chosen_address
+              radio_button_checked
             }
             token {
               district_recommendation
               ut
+            }
+            page_info {
+              ticker
+              button_label
             }
           }
         }
