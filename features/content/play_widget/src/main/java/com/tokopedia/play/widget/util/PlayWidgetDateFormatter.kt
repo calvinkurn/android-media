@@ -12,14 +12,19 @@ object PlayWidgetDateFormatter {
     private const val LANGUAGE_ID = "id"
     private const val yyyymmddThhmmss = "yyyy-MM-dd'T'HH:mm:ss"
     private const val ddmmmmyyyy_hhmm = "dd MMMM yyyy - HH:mm"
+    private const val GMT = "GMT"
+    private const val Z = "Z"
+    private const val GMT07 = "+0700"
+
+    private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
     fun formatDate(
         raw: String,
         inputFormat: String = yyyymmddThhmmss,
         outputFormat: String = ddmmmmyyyy_hhmm
     ): String {
+        getDeviceGMT()
         return try {
-            val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
             val input = SimpleDateFormat(inputFormat, locale)
             val output = SimpleDateFormat(outputFormat, locale)
 
@@ -30,6 +35,17 @@ object PlayWidgetDateFormatter {
         }
         catch (e: Exception){
             raw
+        }
+    }
+
+    private fun getDeviceGMT(): String {
+        return try {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone(GMT), locale)
+            val dateFormat = SimpleDateFormat(Z, locale)
+            dateFormat.format(calendar.time)
+        }
+        catch (e: Exception) {
+            GMT07
         }
     }
 }
