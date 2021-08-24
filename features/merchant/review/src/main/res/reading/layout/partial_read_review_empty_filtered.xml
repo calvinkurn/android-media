@@ -23,6 +23,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/review_reading_empty_filter_title"
         android:textColor="@color/Unify_N700_96"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_empty_list_image"

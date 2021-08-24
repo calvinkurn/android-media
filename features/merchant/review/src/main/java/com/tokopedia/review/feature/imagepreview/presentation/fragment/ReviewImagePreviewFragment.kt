@@ -344,8 +344,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     )
                 }
                 setLikeButtonImage(likeDislike.isLiked())
+                setVariantName(variantName)
             }
-            setThreeDotsVisibility(isReportable)
+            setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
     }
 
@@ -409,7 +410,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
         if (isFromGallery) {
-            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.isLiked = isLiked(likeStatus)
+            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.isLiked =
+                isLiked(likeStatus)
             return
         }
         productReview.likeDislike = productReview.likeDislike.copy(likeStatus = likeStatus)
@@ -538,29 +540,32 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 it.imageNumber == if (isFirstTimeUpdate) currentPosition
                 else currentRecyclerViewPosition
             }?.let { selectedReview ->
-                reviewImagePreviewDetail?.apply {
-                    if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
-                    setRating(selectedReview.rating)
-                    setReviewerName(selectedReview.reviewerName)
-                    setTimeStamp(selectedReview.reviewTime)
-                    setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
-                    setLikeCount(selectedReview.totalLiked.toString())
-                    setLikeButtonClickListener {
-                        ReviewImagePreviewTracking.trackOnLikeReviewClicked(
-                            selectedReview.feedbackId,
-                            selectedReview.isLiked,
-                            productId
-                        )
-                        viewModel.toggleLikeReview(
-                            selectedReview.feedbackId,
-                            shopId,
-                            productId,
-                            mapToLikeStatus(selectedReview.isLiked)
-                        )
+                with(selectedReview) {
+                    reviewImagePreviewDetail?.apply {
+                        if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
+                        setRating(rating)
+                        setReviewerName(reviewerName)
+                        setTimeStamp(reviewTime)
+                        setReviewMessage(review) { openExpandedReviewBottomSheet() }
+                        setLikeCount(totalLiked.toString())
+                        setLikeButtonClickListener {
+                            ReviewImagePreviewTracking.trackOnLikeReviewClicked(
+                                feedbackId,
+                                isLiked,
+                                productId
+                            )
+                            viewModel.toggleLikeReview(
+                                feedbackId,
+                                shopId,
+                                productId,
+                                mapToLikeStatus(selectedReview.isLiked)
+                            )
+                        }
+                        setLikeButtonImage(isLiked)
+                        setVariantName(variantName)
                     }
-                    setLikeButtonImage(selectedReview.isLiked)
+                    setThreeDotsVisibility(isReportable && !areComponentsHidden)
                 }
-                setThreeDotsVisibility(selectedReview.isReportable)
             }
         }
     }
