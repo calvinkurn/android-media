@@ -16,6 +16,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     companion object {
+        const val AB_TEST_BUY = "beli"
+        const val AB_TEST_DIRECT_BUY = "beli langsung"
+
         // HOST PAGE
         const val TOKONOW_HOME_PAGE = "landing"
         const val SEARCH_PAGE = "search"
@@ -32,7 +35,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-        const val VALUE_CHECKOUT_OPTION_CLICK_BELI_IN_MINICART = "click beli in minicart"
+        const val VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART = "click beli in minicart"
         const val VALUE_CHECKOUT_OPTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val VALUE_CHECKOUT_STEP_ZERO = "0"
         const val VALUE_CHECKOUT_STEP_ONE = "1"
@@ -42,10 +45,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_VIEW_MINICART_IRIS = "viewMinicartIris"
         const val EVENT_NAME_BEGIN_CHECKOUT = "begin_checkout"
         const val EVENT_NAME_CHECKOUT_PROGRESS = "checkout_progress"
+        const val EVENT_NAME_CHECKOUT = "checkout"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
-        const val EVENT_CATEGORY_CLICK_BELI = "tokonow %s"
+        const val EVENT_CATEGORY_CLICK_BUY = "tokonow - %s"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -57,16 +61,16 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_WRITE_NOTES = "click tulis catatan"
         const val EVENT_ACTION_CLICK_CHANGE_NOTES = "click ubah catatan"
         const val EVENT_ACTION_CLICK_CHAT_ON_MINICART = "click chat on minicart"
-        const val EVENT_ACTION_CLICK_BUY = "click beli on minicart in %s page"
+        const val EVENT_ACTION_CLICK_BUY = "click %s on minicart in %s page"
         const val EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_BOTTOMSHEET = "click arrow icon on minicart bottomsheet"
         const val EVENT_ACTION_CLICK_CHEVRON_TO_SHOW_SUMMARY_TRANSACTION = "click arrow icon in total price"
         const val EVENT_VIEW_ERROR_TICKER_IN_MINICART = "view error ticker in minicart"
         const val EVENT_CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT = "click delete all unavailable product"
         const val EVENT_CLICK_SEE_SIMILAR_PRODUCT_ON_UNAVAILABLE_SECTION = "click lihat produk serupa on unavailable section"
-        const val EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR = "click beli - toaster not success"
-        const val EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR = "click beli - bottomsheet not success"
+        const val EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR = "click %s - toaster not success"
+        const val EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR = "click %s - bottomsheet not success"
         const val EVENT_CLICK_BUTTON_ON_ERROR_TOASTER = "click button on error toaster"
-        const val EVENT_VIEW_TICKER_ERROR_UNAVAILABLE_PRODUCT = "view ticker error for unavailable product in cart page"
+        const val EVENT_VIEW_MINI_CART_WITH_UNAVAILABLE_PRODUCT = "view minicart with unavailable product"
         const val EVENT_ACTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET = "click knob action"
         const val EVENT_ACTION_CLICK_DIRECT_CHAT_ON_BOTTOM_SHEET = "click langsung chat on minicart chat attachment"
@@ -277,33 +281,33 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Bottom Sheet - DONE
     @JvmName("eventClickBuyFromBottomSheet")
-    fun eventClickBuy(page: Page, products: List<MiniCartProductUiModel>) {
+    fun eventClickBuy(page: Page, products: List<MiniCartProductUiModel>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
             Page.HOME_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "landing")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "homepage")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "homepage")
             }
             Page.SEARCH_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "search")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "search result")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "search result")
             }
             Page.CATEGORY_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "category")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "category page")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
             }
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
             putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM)
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putString(KEY_USER_ID, userSession.userId)
-            putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BELI_IN_MINICART)
+            putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
@@ -321,33 +325,33 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Widget - DONE
     @JvmName("eventClickBuyFromWidget")
-    fun eventClickBuy(page: Page, products: List<MiniCartItem>) {
+    fun eventClickBuy(page: Page, products: List<MiniCartItem>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
             Page.HOME_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "landing")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "homepage")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "homepage")
             }
             Page.SEARCH_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "search")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "search result")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "search result")
             }
             Page.CATEGORY_PAGE -> {
-                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "category")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "category page")
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
             }
         }
 
         val dataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
             putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
             putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM)
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putString(KEY_USER_ID, userSession.userId)
-            putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BELI_IN_MINICART)
+            putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
@@ -416,10 +420,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 18 - DONE
-    fun eventClickBuyThenGetToasterError(errorMessage: String) {
+    fun eventClickBuyThenGetToasterError(errorMessage: String, isOCCFlow: Boolean) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR,
+                eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
                 eventLabel = errorMessage
         )
 
@@ -427,7 +431,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 19 - DONE
-    fun eventClickUpdateCartToasterErrorCta(errorMessage: String, ctaWording: String) {
+    fun eventClickAtcToasterErrorCta(errorMessage: String, ctaWording: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
                 eventAction = EVENT_CLICK_BUTTON_ON_ERROR_TOASTER,
@@ -439,10 +443,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
 
     // 20 - DONE
-    fun eventClickBuyThenGetBottomSheetError(errorMessage: String) {
+    fun eventClickBuyThenGetBottomSheetError(errorMessage: String, isOCCFlow: Boolean) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR,
+                eventAction = String.format(EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY),
                 eventLabel = errorMessage
         )
 
@@ -450,11 +454,11 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 21 - DONE
-    fun eventViewTickerErrorUnavailableProduct(errorMessage: String) {
+    fun eventViewTickerErrorUnavailableProduct(shopId: String, errorMessage: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_VIEW_MINICART_IRIS,
-                eventAction = EVENT_VIEW_TICKER_ERROR_UNAVAILABLE_PRODUCT,
-                eventLabel = errorMessage
+                eventAction = EVENT_VIEW_MINI_CART_WITH_UNAVAILABLE_PRODUCT,
+                eventLabel = "$shopId - $errorMessage"
         )
 
         sendGeneralEvent(data)
