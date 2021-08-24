@@ -42,4 +42,6 @@
     <color name="home_dms_color_pending_tokocash">#B3000000</color>
     <color name="home_dms_color_pending_tokocash_disabled">#61000000</color>
     <color name="home_dms_color_banner_label_type">#31353b</color>
+    <color name="home_dms_gradient_category_top">#00000000</color>
+    <color name="home_dms_gradient_category_bottom">#80000000</color>
 </resources>
