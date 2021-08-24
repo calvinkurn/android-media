@@ -21,7 +21,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
-        android:text="@string/title_new_seller_end_tenure_celebraratory"
+        android:text="@string/title_new_seller_end_tenure_pop_up"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="@id/ivNewSellerIllustration"
         app:layout_constraintHorizontal_bias="0.0"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitleNewSellerEndTenure"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_68"
-        android:text="@string/desc_result_new_seller_end_tenure_celebraratory" />
+        android:text="@string/desc_result_new_seller_end_tenure_pop_up" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShopLevel"

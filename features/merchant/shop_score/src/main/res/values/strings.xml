@@ -315,8 +315,8 @@
     <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
     <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
     <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
-    <string name="title_new_seller_end_tenure_celebraratory">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>
-    <string name="desc_result_new_seller_end_tenure_celebraratory">Ini hasil level dan skor Performa Tokomu:</string>
+    <string name="title_new_seller_end_tenure_pop_up">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>
+    <string name="desc_result_new_seller_end_tenure_pop_up">Ini hasil level dan skor Performa Tokomu:</string>
     <string name="title_tips_increase_performance">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
 
     <!-- New Seller Shop Score -->
