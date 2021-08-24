@@ -1093,6 +1093,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     paymentPassData.redirectUrl = redirectParam.url
                     paymentPassData.queryString = redirectParam.form
                     paymentPassData.method = redirectParam.method
+                    paymentPassData.transactionId = checkoutOccResult.paymentParameter.transactionId
+                    paymentPassData.paymentId = checkoutOccResult.paymentParameter.transactionId
 
                     shouldUpdateCart = false
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
