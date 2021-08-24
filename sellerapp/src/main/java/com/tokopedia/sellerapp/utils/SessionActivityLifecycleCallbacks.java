@@ -105,8 +105,8 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         }
         try {
             diffDurationFormatted = String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis);
-        } catch (Exception e) {
-            diffDurationFormatted= Float.toString(diffTimeInMillis);
+        } catch (NullPointerException e) {
+            diffDurationFormatted = Float.toString(diffTimeInMillis);
         }
         return diffDurationFormatted;
     }
