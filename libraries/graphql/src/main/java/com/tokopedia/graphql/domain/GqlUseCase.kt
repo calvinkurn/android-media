@@ -27,15 +27,15 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 abstract class GqlUseCase<P, out R>(protected val repository: GraphqlRepository) {
 
     /*
+    * override this to set the graphql query
+    * */
+    protected abstract fun graphqlQuery(): String
+
+    /*
     * override this to set the code to be executed
     * */
     @Throws(RuntimeException::class)
     protected abstract suspend fun execute(params: P): R
-
-    /*
-    * override this to set the graphql query
-    * */
-    protected abstract fun graphqlQuery(): String
 
     /*
     * this is helper function to request network using graphql repository
