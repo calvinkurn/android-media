@@ -117,8 +117,8 @@ object KeroLogisticQuery {
     """.trimIndent()
 
     val keroMapsAutofill = """
-        query kero_maps_autofill(${'$'}latlng: String!){
-          kero_maps_autofill(latlng: ${'$'}latlng) {
+        query kero_maps_autofill(${'$'}latlng: String!, ${'$'}err: Boolean){
+          kero_maps_autofill(latlng: ${'$'}latlng, error_data: ${'$'}err) {
             data {
               title
               formatted_address
