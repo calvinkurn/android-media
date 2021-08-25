@@ -276,6 +276,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSwipeRefresh() {
+        val asd = 0
         viewModel.clearCache()
         // check RE for showcase type campaign eligibility
         loadShopRestrictionInfo()
