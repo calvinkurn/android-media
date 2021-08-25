@@ -27,6 +27,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -101,7 +103,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
-                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG){
+                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+                                             addFragmentLifecycleObserver: Boolean = true){
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
@@ -109,8 +112,24 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 if (screenshotDetector == null) {
                     screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener)
                 }
+                if(addFragmentLifecycleObserver){
+                    setFragmentLifecycleObserverForScreenShot(fragment)
+                }
                 screenshotDetector?.detectScreenshots(fragment)
             }
+        }
+
+        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment){
+            fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    getScreenShotDetector()?.start()
+                }
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    clearScreenShotDetector()
+                }
+            })
         }
 
         //Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
