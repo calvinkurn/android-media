@@ -73,7 +73,7 @@ object DeeplinkMapperMerchant {
 
     fun getRegisteredNavigationReviewReminder(deeplink: String): String {
         if (deeplink.startsWith(ApplinkConst.REVIEW_REMINDER)) {
-            return ApplinkConstInternalMarketplace.REVIEW_REMINDER
+            return ApplinkConstInternalSellerapp.REVIEW_REMINDER
         }
         return deeplink
     }
