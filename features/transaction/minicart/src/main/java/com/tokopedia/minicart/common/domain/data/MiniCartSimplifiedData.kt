@@ -23,7 +23,9 @@ data class MiniCartWidgetData(
         var totalProductPrice: Long = 0,
         var totalProductError: Int = 0,
         var containsOnlyUnavailableItems: Boolean = false,
-        var unavailableItemsCount: Int = 0
+        var unavailableItemsCount: Int = 0,
+        var isOCCFlow: Boolean = false,
+        var buttonBuyWording: String = ""
 )
 
 data class MiniCartItem(
@@ -34,7 +36,7 @@ data class MiniCartItem(
         var quantity: Int = 0,
         var notes: String = "",
 
-        // Fields below are for analytics purpose only
+        // Fields below are for analytics & atc occ purpose only
         var campaignId: String = "",
         var attribution: String = "",
         var productWeight: Int = 0,

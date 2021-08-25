@@ -577,62 +577,7 @@ object CreateReviewTracking {
         )
     }
 
-    fun eventDismissTncBottomSheet(
-        message: String,
-        reputationId: String,
-        orderId: String,
-        productId: String,
-        userId: String
-    ) {
-        tracker.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
-                ReviewTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_TICKER,
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_DISMISS_TNC,
-                    message,
-                    reputationId,
-                    orderId,
-                    productId
-                ),
-                productId,
-                userId
-            )
-        )
-    }
-
-    fun eventClickContinueTncBottomSheet(
-        title: String,
-        reputationId: String,
-        orderId: String,
-        productId: String,
-        userId: String
-    ) {
-        tracker.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
-                ReviewTrackingConstant.CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES,
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_CLICK_CONTINUE_TNC,
-                    title,
-                    reputationId,
-                    orderId,
-                    productId
-                ),
-                productId,
-                userId
-            )
-        )
-    }
-
-    private fun createEventMap(
-        event: String,
-        category: String,
-        action: String,
-        label: String
-    ): HashMap<String, Any>? {
+    private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
         eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category

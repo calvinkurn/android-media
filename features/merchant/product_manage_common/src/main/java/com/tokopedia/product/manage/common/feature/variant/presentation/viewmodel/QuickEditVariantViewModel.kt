@@ -133,7 +133,7 @@ class QuickEditVariantViewModel @Inject constructor(
         _showSaveBtn.value = shouldShow
     }
 
-    fun setVariantPrice(variantId: String, price: Int) {
+    fun setVariantPrice(variantId: String, price: Double) {
         updateVariant(variantId) { it.copy(price = price) }
     }
 

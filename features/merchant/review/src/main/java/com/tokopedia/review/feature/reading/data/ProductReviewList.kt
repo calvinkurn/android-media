@@ -24,55 +24,56 @@ data class ProductrevGetProductReviewList(
 data class ProductReview(
         @SerializedName("feedbackID")
         @Expose
-        val feedbackID: String = "",
+        var feedbackID: String = "",
         @SerializedName("message")
         @Expose
-        val message: String = "",
+        var message: String = "",
         @SerializedName("productRating")
         @Expose
-        val productRating: Int = 0,
+        var productRating: Int = 0,
         @SerializedName("reviewCreateTime")
         @Expose
-        val reviewCreateTime: String = "",
+        var reviewCreateTime: String = "",
         @SerializedName("reviewCreateTimestamp")
         @Expose
-        val reviewCreateTimestamp: String = "",
+        var reviewCreateTimestamp: String = "",
         @SerializedName("isAnonymous")
         @Expose
-        val isAnonymous: Boolean = false,
+        var isAnonymous: Boolean = false,
         @SerializedName("isReportable")
         @Expose
-        val isReportable: Boolean = false,
+        var isReportable: Boolean = false,
         @SerializedName("reviewResponse")
         @Expose
-        val reviewResponse: ProductReviewResponse = ProductReviewResponse(),
+        var reviewResponse: ProductReviewResponse = ProductReviewResponse(),
         @SerializedName("user")
         @Expose
-        val user: ProductReviewUser = ProductReviewUser(),
+        var user: ProductReviewUser = ProductReviewUser(),
         @SerializedName("imageAttachments")
         @Expose
-        val imageAttachments: List<ProductReviewAttachments> = listOf(),
+        var imageAttachments: List<ProductReviewAttachments> = listOf(),
         @SerializedName("likeDislike")
         @Expose
-        var likeDislike: LikeDislike = LikeDislike()
+        var likeDislike: LikeDislike = LikeDislike(),
+        var shopProductId : String = ""
 )
 
 data class ProductReviewResponse(
         @SerializedName("message")
         @Expose
-        val message: String = "",
+        var message: String = "",
         @SerializedName("createTime")
         @Expose
-        val createTime: String = "",
+        var createTime: String = "",
 )
 
 data class ProductReviewUser(
         @SerializedName("userID")
         @Expose
-        val userID: String = "",
+        var userID: String = "",
         @SerializedName("fullName")
         @Expose
-        val fullName: String = "",
+        var fullName: String = "",
         @SerializedName("image")
         @Expose
         val image: String = "",

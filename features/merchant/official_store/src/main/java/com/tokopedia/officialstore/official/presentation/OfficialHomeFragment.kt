@@ -172,7 +172,7 @@ class OfficialHomeFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.os_child_recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
@@ -869,7 +869,6 @@ class OfficialHomeFragment :
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
-
                             Handler().postDelayed({
                                 isScrolling = false
                             }, DELAY_200L)

@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
@@ -79,6 +80,7 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
+private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
@@ -245,7 +247,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val count = followers.count
         val isVideo = mediaType != TYPE_IMAGE
 
-        if (count >= 100) {
+        if (count >= FOLLOW_COUNT_THRESHOLD) {
             followCount.text =
                 String.format(
                     context.getString(R.string.feed_header_follow_count_text),
@@ -651,6 +653,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun bindItems(
         feedXCard: FeedXCard,
     ) {
@@ -684,6 +687,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = getImageView()
+                        feedMedia.isImageImpressedFirst = true
                         feedMedia.imageView = imageItem
                         imageItem?.run {
                             findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
@@ -960,6 +964,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             feedXCard,
                             (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
                         )
+
                     }
                 })
             }
@@ -1152,8 +1157,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (!fromSlide) {
             carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
+            videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null

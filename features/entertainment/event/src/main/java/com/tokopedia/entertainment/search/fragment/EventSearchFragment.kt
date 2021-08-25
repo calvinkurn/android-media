@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -173,7 +172,9 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         get() = Dispatchers.Main + Job()
 
     override fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion, listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>, position: Int) {
+        RouteManager.route(context, event.app_url)
         EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position + 1, userSession.userId)
+        activity?.finish()
     }
 
     override fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) {
@@ -187,6 +188,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     override fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion, listsLocation: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
         EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
                 listsLocation, position, userSession.userId)
+        activity?.finish()
     }
 
     companion object{

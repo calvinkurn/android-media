@@ -4,12 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.statistic.view.customview.DateTextFieldView
-        android:id="@+id/edtStcDate"
-        android:layout_width="@dimen/shc_dimen_210dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2" />
+        android:orientation="horizontal">
+
+        <com.tokopedia.statistic.view.customview.DateTextFieldView
+            android:id="@+id/edtStcStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_weight="1" />
+
+        <com.tokopedia.statistic.view.customview.DateTextFieldView
+            android:id="@+id/edtStcEndDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <com.tokopedia.calendar.UnifyCalendar
         android:id="@+id/calendarPickerStc"
