@@ -3,6 +3,7 @@ package tokopedia.applink.deeplink
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.tokopedia.applink.DLP
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -24,6 +25,7 @@ import kotlin.system.measureTimeMillis
 open class DeepLinkMapperTestFixture {
 
     protected lateinit var context: Context
+    protected lateinit var reversedList: MutableList<DLP>
 
     @Before
     open fun setup() {
@@ -37,6 +39,7 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeepLinkMapperPenalty)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
     }
 
     @After
@@ -47,6 +50,13 @@ open class DeepLinkMapperTestFixture {
     protected fun assertEqualsDeepLinkMapper(deepLink: String, expectedDeepLink: String) {
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResult)
+        every {
+            DeeplinkMapper.getTokopediaSchemeList()
+        } answers {
+            reversedList
+        }
+        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeepLinkMapperApp(appType: AppType, deepLink: String, expectedDeepLink: String) {
@@ -56,6 +66,13 @@ open class DeepLinkMapperTestFixture {
             GlobalConfig.SELLER_APPLICATION
         }
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+        every {
+            DeeplinkMapper.getTokopediaSchemeList()
+        } answers {
+            reversedList
+        }
+        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeeplinkParameters(deeplink: String, vararg extras: Pair<String, String?>) {
