@@ -88,7 +88,7 @@
                 tools:visibility="visible" />
 
             <include
-                layout="@layout/item_cart_product"
+                layout="@layout/item_shipment_product"
                 tools:visibility="visible" />
 
             <include

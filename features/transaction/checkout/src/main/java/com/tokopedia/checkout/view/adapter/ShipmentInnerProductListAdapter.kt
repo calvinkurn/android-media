@@ -11,7 +11,7 @@ import com.tokopedia.checkout.R
 class ShipmentInnerProductListAdapter(private val mCartItemList: List<CartItemModel>, private val mListener: ShipmentItemListener) : RecyclerView.Adapter<ShipmentCartItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipmentCartItemViewHolder {
         val mContext = parent.context
-        val view = LayoutInflater.from(mContext).inflate(R.layout.item_cart_product, parent, false)
+        val view = LayoutInflater.from(mContext).inflate(R.layout.item_shipment_product, parent, false)
         return ShipmentCartItemViewHolder(view)
     }
 
