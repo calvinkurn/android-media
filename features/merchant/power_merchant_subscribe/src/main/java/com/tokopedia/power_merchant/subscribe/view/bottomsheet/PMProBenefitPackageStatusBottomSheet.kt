@@ -6,13 +6,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProStatusStepperAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusStepperUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class PMProBenefitPackageStatusBottomSheet : BaseBottomSheet() {
 
     private var pmProStatus = ""
     private var rvBenefitPackagePmProStatus: RecyclerView? = null
+    private var tvDescBenefitPackagePmProStatus: Typography? = null
     private val pmProStatusStepperAdapter by lazy { PMProStatusStepperAdapter() }
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_benefit_package_pm_pro_status
@@ -20,11 +23,19 @@ class PMProBenefitPackageStatusBottomSheet : BaseBottomSheet() {
     override fun setupView() = childView?.run {
         pmProStatus = arguments?.getString(PM_PRO_STATUS_KEY) ?: ""
         rvBenefitPackagePmProStatus = findViewById(R.id.rvBenefitPackagePmProStatus)
+        tvDescBenefitPackagePmProStatus = findViewById(R.id.tvDescBenefitPackagePmProStatus)
+        tvDescBenefitPackagePmProStatus?.setTextMakeHyperlink(
+            getString(R.string.pm_desc_benefit_package_pm_pro_status)
+        ) {
+
+        }
         setupPMProStatusStepper()
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
     private fun setupPMProStatusStepper() {

@@ -222,16 +222,14 @@ class ShopScoreMapper @Inject constructor(
                         //PM Section logic
                         (powerMerchantResponse.status == PMStatusConst.ACTIVE)
                                 && !isOfficialStore -> {
-                            if (shopAge >= SHOP_AGE_SIXTY) {
-                                when (isEligiblePMPro) {
-                                    true -> {
-                                        add(mapToSectionPMEligibleToPMPro())
-                                        return@apply
-                                    }
-                                    else -> {
-                                        add(mapToItemPMUiModel(isNewSellerProjection))
-                                        return@apply
-                                    }
+                            when (isEligiblePMPro) {
+                                true -> {
+                                    add(mapToSectionPMEligibleToPMPro())
+                                    return@apply
+                                }
+                                else -> {
+                                    add(mapToItemPMUiModel(isNewSellerProjection))
+                                    return@apply
                                 }
                             }
                         }
@@ -931,7 +929,8 @@ class ShopScoreMapper @Inject constructor(
 
     private fun getIsShowPopupEndTenure(shopAge: Long): Boolean {
         return if (!shopScorePrefManager.getIsShowPopupEndTenure()) {
-            if (shopAge >= SHOP_AGE_SIXTY) {
+            val isEndTenureDay = shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
+            if (isEndTenureDay) {
                 val calendar = Calendar.getInstance(getLocale())
                 calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
             } else false
@@ -939,6 +938,8 @@ class ShopScoreMapper @Inject constructor(
     }
 
     companion object {
+        const val SHOP_AGE_NINETY = 90
+        const val SHOP_AGE_NINETY_SIX = 96
         const val ORDER_SUCCESS_RATE_INDEX = 0
         const val CHAT_DISCUSSION_REPLY_SPEED_INDEX = 1
         const val SPEED_SENDING_ORDERS_INDEX = 2
