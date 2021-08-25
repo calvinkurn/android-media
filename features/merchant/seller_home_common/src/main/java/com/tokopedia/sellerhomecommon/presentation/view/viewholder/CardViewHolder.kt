@@ -92,8 +92,9 @@ class CardViewHolder(
                 context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
                         selectableItemBg, true)
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
-            } else
+            } else {
                 containerCard.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
 
             tvCardTitle.text = element.title
             if (shouldLoadAnimation) {

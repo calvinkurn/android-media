@@ -10,9 +10,11 @@ class PlayChannelInfoModelBuilder {
 
     fun buildChannelInfo(
             channelType: PlayChannelType = PlayChannelType.Live,
-            backgroundUrl: String = "https://www.tokopedia.com"
+            backgroundUrl: String = "https://www.tokopedia.com",
+            title: String = ""
     ) = PlayChannelInfoUiModel(
             channelType = channelType,
-            backgroundUrl = backgroundUrl
+            backgroundUrl = backgroundUrl,
+            title = title
     )
 }

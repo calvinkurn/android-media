@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_section_detail_performance.view.*
 import timber.log.Timber
 
 class PeriodDetailPerformanceViewHolder(view: View) :
-        AbstractViewHolder<PeriodDetailPerformanceUiModel>(view) {
+    AbstractViewHolder<PeriodDetailPerformanceUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_section_detail_performance
@@ -21,16 +21,23 @@ class PeriodDetailPerformanceViewHolder(view: View) :
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
         with(itemView) {
             setContainerBackground()
-            tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
-            tvPerformanceDetailDate?.text = getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
+            tvPerformanceDetailLabel?.text =
+                getString(R.string.title_detail_performa, element?.period.orEmpty())
+            tvPerformanceDetailDate?.text =
+                getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
 
             if (element?.isNewSeller == true) {
-                tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performance_new_seller)
-                tvPerformanceDetailDate?.text = context?.getString(R.string.title_update_date_new_seller, element.period)
-                tvPerformanceDetailDateNewSeller?.text = getString(R.string.title_update_date, element.nextUpdate)
+                tvPerformanceDetailLabel?.text =
+                    getString(R.string.title_detail_performance_new_seller)
+                tvPerformanceDetailDate?.text =
+                    context?.getString(R.string.title_update_date_new_seller, element.period)
+                tvPerformanceDetailDateNewSeller?.text =
+                    getString(R.string.title_update_date, element.nextUpdate)
             } else {
-                tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
-                tvPerformanceDetailDate?.text = getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
+                tvPerformanceDetailLabel?.text =
+                    getString(R.string.title_detail_performa, element?.period.orEmpty())
+                tvPerformanceDetailDate?.text =
+                    getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
             }
 
             tvPerformanceDetailDateNewSeller?.showWithCondition(element?.isNewSeller == true)
@@ -41,7 +48,8 @@ class PeriodDetailPerformanceViewHolder(view: View) :
         try {
             with(itemView) {
                 context?.let {
-                    containerSectionDetailPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
+                    containerSectionDetailPerformance?.setBackgroundColor(
+                        it.getResColor(R.color.shop_score_penalty_dms_container))
                 }
             }
         } catch (e: Resources.NotFoundException) {

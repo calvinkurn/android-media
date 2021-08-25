@@ -2248,9 +2248,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void navigateToProtectionMore(String url) {
-        mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
+    public void navigateToProtectionMore(CartItemModel cartItemModel) {
+        mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
+                cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
+                cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(),
+                cartItemModel.getProtectionLinkUrl(), getString(R.string.title_activity_checkout_webview));
     }
 
     @Override

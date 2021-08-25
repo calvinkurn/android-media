@@ -56,16 +56,16 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address List Success`() {
-        coEvery { chooseAddressRepo.getChosenAddressList(any()) } returns GetChosenAddressListQglResponse()
-        chooseAddressViewModel.getChosenAddressList("address")
+        coEvery { chooseAddressRepo.getChosenAddressList(any(), any()) } returns GetChosenAddressListQglResponse()
+        chooseAddressViewModel.getChosenAddressList("address", true)
         verify { chosenAddressListObserver.onChanged(match { it is Success }) }
 
     }
 
     @Test
     fun `Get Chosen Address List Fail`() {
-        coEvery { chooseAddressRepo.getChosenAddressList(any()) } throws defaultThrowable
-        chooseAddressViewModel.getChosenAddressList("address")
+        coEvery { chooseAddressRepo.getChosenAddressList(any(), any()) } throws defaultThrowable
+        chooseAddressViewModel.getChosenAddressList("address", true)
         verify { chosenAddressListObserver.onChanged(match { it is Fail }) }
     }
 

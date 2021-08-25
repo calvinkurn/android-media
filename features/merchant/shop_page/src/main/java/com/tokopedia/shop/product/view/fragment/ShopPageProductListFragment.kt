@@ -806,6 +806,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 this,
                 null,
                 this,
+                null,
                 true,
                 deviceWidth,
                 ShopTrackProductTypeDef.PRODUCT
