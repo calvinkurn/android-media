@@ -15,12 +15,13 @@ class ProductFeaturedSeeMoreViewHolder(
         listener: Listener
 ) : BaseViewHolder(itemView) {
 
+    private val icProduct: ProductIconView = itemView.findViewById(R.id.ic_play_featured_product)
+
     init {
         itemView.setOnClickListener { listener.onSeeMoreClicked() }
     }
 
     fun bind(item: PlayProductUiModel.SeeMore) {
-        val icProduct = itemView.findViewById<ProductIconView>(R.id.ic_play_featured_product)
         icProduct.setTotalProduct(item.total)
         itemView.scaleX = item.scale
         itemView.scaleY = item.scale
@@ -31,7 +32,6 @@ class ProductFeaturedSeeMoreViewHolder(
     }
 
     interface Listener {
-
         fun onSeeMoreClicked()
     }
 }
