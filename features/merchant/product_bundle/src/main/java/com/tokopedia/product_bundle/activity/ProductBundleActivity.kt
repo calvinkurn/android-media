@@ -39,9 +39,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
         private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
         private const val SOURCE = "source"
         private const val CART_IDS = "cartIds"
-    }
-
-    companion object {
         const val EXTRA_PRODUCT_ID: String = "product_id"
 
         // TODO("remove if unused")
