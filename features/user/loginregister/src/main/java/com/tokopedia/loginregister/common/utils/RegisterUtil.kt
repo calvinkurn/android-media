@@ -58,7 +58,7 @@ object RegisterUtil {
         return isValid
     }
 
-    private const val PREFIX_ERROR_CODE = "Kode Error :"
+    private const val PREFIX_ERROR_CODE = "Kode Error"
     fun String.removeErrorCode() : String {
         if (this.contains(PREFIX_ERROR_CODE)) {
             return this.substringBefore(PREFIX_ERROR_CODE).trim()
