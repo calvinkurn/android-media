@@ -104,7 +104,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
                                              fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
-                                             addFragmentLifecycleObserver: Boolean = true){
+                                             addFragmentLifecycleObserver: Boolean = false){
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
