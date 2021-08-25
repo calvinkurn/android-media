@@ -10,7 +10,7 @@ import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.common.util.Utility
-import com.tokopedia.product_bundle.common.view.RoundedCornerImageView
+import com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.unifyprinciples.Typography

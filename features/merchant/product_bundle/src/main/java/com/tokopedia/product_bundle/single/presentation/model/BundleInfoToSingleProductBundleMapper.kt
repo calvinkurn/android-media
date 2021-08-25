@@ -4,12 +4,17 @@ import android.content.Context
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.Child
 import com.tokopedia.product_bundle.common.data.model.response.Preorder
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 
 object BundleInfoToSingleProductBundleMapper {
 
+    private const val BUNDLE_INFO_ACTIVE: String = "1"
+    private const val BUNDLE_INFO_UPCOMING: String = "2"
+    private const val BUNDLE_ITEM_SHOW: String = "1"
+    private const val BUNDLE_ITEM_ACTIVE: String = "ACTIVE"
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
     private const val PREORDER_TYPE_DAY: Int = 1
     private const val PREORDER_TYPE_MONTH: Int = 2
@@ -18,10 +23,20 @@ object BundleInfoToSingleProductBundleMapper {
         context: Context, bundleInfo: List<BundleInfo>,
         selectedBundleId: String,
         selectedProductId: Long
-    ) = SingleProductBundleUiModel(
-        items = mapToBundleItem(context, bundleInfo),
-        selectedItems = mapToSelectedItem(bundleInfo, selectedBundleId, selectedProductId)
-    )
+    ): SingleProductBundleUiModel {
+        val filteredBundleInfo = bundleInfo.filter {
+            val bundleItem = it.bundleItems.firstOrNull()
+            return@filter bundleItem != null &&
+                    (it.status == BUNDLE_INFO_ACTIVE || it.status == BUNDLE_INFO_UPCOMING) &&
+                    bundleItem.status == BUNDLE_ITEM_SHOW &&
+                    bundleItem.productStatus == BUNDLE_ITEM_ACTIVE &&
+                    it.isStockAvailable()
+        }
+        return SingleProductBundleUiModel(
+            items = mapToBundleItem(context, filteredBundleInfo),
+            selectedItems = mapToSelectedItem(filteredBundleInfo, selectedBundleId, selectedProductId)
+        )
+    }
 
     private fun getPreorderWording(context: Context, preorder: Preorder): String? {
         if (preorder.status == PREORDER_STATUS_ACTIVE) {
@@ -83,5 +98,13 @@ object BundleInfoToSingleProductBundleMapper {
         if (!this.any { it.isSelected }) {
             this.firstOrNull()?.isSelected = true
         }
+    }
+
+    private fun BundleInfo.isStockAvailable() = bundleItems.any {
+        it.stock > 0 || it.children.isStockAvailable()
+    }
+
+    private fun List<Child>.isStockAvailable() = any {
+        it.stock > 0
     }
 }

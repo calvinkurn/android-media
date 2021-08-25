@@ -7,6 +7,7 @@
 
     <!-- product bundle detail -->
     <string name="text_sold_product_bundle">Terjual %d paket</string>
+    <string name="error_empty_variant">Variant habis, ganti ke varian lain</string>
 
     <!-- product bundle overview -->
     <string name="action_buy">Beli Paket</string>
@@ -23,6 +24,7 @@
     <string name="action_select_another_bundle">Lihat Paket Lain</string>
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
+    <string name="action_back_to_pdp">Ke Halaman Produk</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>
@@ -35,7 +37,17 @@
     <string name="single_bundle_error_bundle_not_selected">Oops, pilih product dulu, ya.</string>
     <string name="single_bundle_error_variant_not_selected">Oops, pilih varian dulu, ya.</string>
     <string name="single_bundle_error_unknown">Terjadi kesalahan!</string>
+    <string name="single_bundle_error_bundle">Oops, paket ini sudah habis</string>
+    <string name="single_bundle_error_bundle_desc">Kamu bisa kembali ke halaman produk untuk beli produk ini secara satuan</string>
     <string name="single_bundle_error_bundle_is_empty_long">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
     <string name="single_bundle_default_price">Rp0</string>
+
+    <!-- error dialog wording -->
+    <string name="dialog_error_title_empty">Oops, paket ini habis</string>
+    <string name="dialog_error_message_empty_variant">Coba ganti dengan varian lain, atau bisa juga cek paket lainnya, ya.</string>
+    <string name="dialog_error_message_empty_variant_bundle_alternative">Coba ganti dengan varian lain, ya.</string>
+    <string name="dialog_error_message_empty_bundle">Tenang kamu bisa cek pilihan paket serupa lainnya, ya.</string>
+    <string name="dialog_error_action_empty_variant">Ganti Varian.</string>
+    <string name="dialog_error_action_empty_bundle">Lihat Paket Lain</string>
 
 </resources>

@@ -16,6 +16,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.*
 import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_QTY
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,7 +24,8 @@ import kotlin.math.abs
 
 class SingleProductBundleViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val addToCartBundleUseCase: AddToCartBundleUseCase
+        private val addToCartBundleUseCase: AddToCartBundleUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
 
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
@@ -46,6 +48,10 @@ class SingleProductBundleViewModel @Inject constructor(
     val dialogError: LiveData<SingleProductBundleDialogModel>
         get() = mDialogError
 
+    private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val pageError: LiveData<SingleProductBundleErrorEnum>
+        get() = mPageError
+
     fun setBundleInfo(
         context: Context,
         bundleInfo: List<BundleInfo>,
@@ -57,8 +63,10 @@ class SingleProductBundleViewModel @Inject constructor(
 
         if (bundleModel.items.isEmpty()) {
             mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+            mPageError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
         } else {
             mSingleProductBundleUiModel.value = bundleModel
+            mPageError.value = SingleProductBundleErrorEnum.NO_ERROR
         }
     }
 
@@ -124,6 +132,7 @@ class SingleProductBundleViewModel @Inject constructor(
         shopId: String,
         quantity: Int
     ) {
+        val customerId = userSession.userId
         launchCatchError(block = {
             val result = withContext(dispatcher.io) {
                 addToCartBundleUseCase.setParams(
@@ -134,7 +143,9 @@ class SingleProductBundleViewModel @Inject constructor(
                         selectedProductPdp = parentProductID.toString(),
                         listOf(
                             ProductDetail(
-                                productId,
+                                customerId = customerId,
+                                isProductParent = productId == parentProductID.toString(),
+                                productId = productId,
                                 quantity = quantity,
                                 shopId = shopId
                             )

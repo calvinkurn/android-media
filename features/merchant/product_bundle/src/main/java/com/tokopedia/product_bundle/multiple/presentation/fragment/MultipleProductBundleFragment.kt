@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
+import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
@@ -87,6 +88,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity.setBackgroundToWhite()
+        processDayView = view.findViewById(R.id.tv_po_process_day)
 
         // get product bundle info from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
@@ -106,7 +109,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productBundleInfo.forEach { bundleInfo ->
                     // map product bundle info to master and details
                     val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
-                    val bundleDetail = viewModel.mapBundleItemsToBundleDetail(bundleMaster.bundleId, bundleInfo.bundleItems)
+                    val bundleDetail = viewModel.mapBundleItemsToBundleDetail(bundleInfo.bundleItems)
                     // update product bundle map
                     viewModel.updateProductBundleMap(bundleMaster, bundleDetail)
                 }

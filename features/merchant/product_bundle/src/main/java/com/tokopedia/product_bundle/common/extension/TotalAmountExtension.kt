@@ -6,7 +6,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Label
 
@@ -16,13 +15,12 @@ internal fun TotalAmount.setTitleText(discount: String, slashPrice: String) {
         setLabelType(Label.GENERAL_LIGHT_RED)
     }
 
-    if (titleContainerView[0] is Label) titleContainerView.removeViewAt(0) // remove old label to prevent duplicated label
+    if (titleContainerView.getChildAt(0) is Label) titleContainerView.removeViewAt(0) // remove old label to prevent duplicated label
     titleContainerView.addView(labelView, 0)
     labelTitleSuffixView.paintFlags = labelTitleSuffixView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     labelTitleView.text = " "
     labelTitleSuffixView.text = slashPrice
 }
-
 
 internal fun TotalAmount.setSubtitleText(prefix: String, price: String) {
     val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)

@@ -2,14 +2,13 @@ package com.tokopedia.product_bundle.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -19,6 +18,8 @@ import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.common.data.mapper.InventoryError
+import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.common.util.ResourceProvider
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
@@ -53,6 +54,9 @@ class ProductBundleViewModel @Inject constructor(
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
+    val inventoryError = Transformations.map(getBundleInfoResultLiveData) { result ->
+        InventoryError() // TODO('implement error mapper')
+    }
 
     private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
     val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData
@@ -60,8 +64,12 @@ class ProductBundleViewModel @Inject constructor(
     private val isErrorLiveData = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> get() = isErrorLiveData
 
+    private val mPageState = MutableLiveData<ProductBundleState>()
+    val pageState: LiveData<ProductBundleState> get() = mPageState
+
     fun getBundleInfo(productId: Long) {
         parentProductID = productId
+        mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
@@ -71,16 +79,17 @@ class ProductBundleViewModel @Inject constructor(
                         variantDetail = true,
                         CheckCampaign = true,
                         BundleGroup = true,
-                        Preorder = true,
-                        inventoryDetail = InventoryDetail(true)
+                        Preorder = true
                     ),
                     productData = ProductData(productID = productId.toString())
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
             getBundleInfoResultLiveData.value = Success(result)
+            mPageState.value = ProductBundleState.SUCCESS
         }, onError = {
             getBundleInfoResultLiveData.value = Fail(it)
+            mPageState.value = ProductBundleState.ERROR
         })
     }
 
@@ -122,7 +131,7 @@ class ProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun mapBundleItemsToBundleDetail(bundleId: Long, bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
             ProductBundleDetail(
