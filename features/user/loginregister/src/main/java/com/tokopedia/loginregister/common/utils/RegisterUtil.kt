@@ -58,12 +58,11 @@ object RegisterUtil {
         return isValid
     }
 
-    private const val DELIMITER_ERROR_CODE = "Kode Error :"
-    fun String.getMessageWithoutErrorCode() : String {
-        var msg = this
-        if (this.contains(DELIMITER_ERROR_CODE)) {
-            msg = this.substringBefore(DELIMITER_ERROR_CODE).trimEnd(' ')
+    private const val PREFIX_ERROR_CODE = "Kode Error :"
+    fun String.removeErrorCode() : String {
+        if (this.contains(PREFIX_ERROR_CODE)) {
+            return this.substringBefore(PREFIX_ERROR_CODE).trim()
         }
-        return  msg
+        return this
     }
 }

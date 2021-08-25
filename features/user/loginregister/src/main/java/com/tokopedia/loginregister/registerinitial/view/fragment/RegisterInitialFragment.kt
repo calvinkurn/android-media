@@ -52,7 +52,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
-import com.tokopedia.loginregister.common.utils.RegisterUtil.getMessageWithoutErrorCode
+import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
@@ -594,7 +594,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        if (errorMessage.getMessageWithoutErrorCode() == forbiddenMessage) {
+        if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity,
@@ -789,7 +789,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
         val messageError = ErrorHandler.getErrorMessage(context, throwable)
-        registerAnalytics.trackFailedClickSignUpButton(messageError.getMessageWithoutErrorCode())
+        registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
     }
@@ -1089,7 +1089,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onErrorRegister(errorMessage: String) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        registerAnalytics.trackErrorRegister(errorMessage.getMessageWithoutErrorCode(), userSession.loginMethod)
+        registerAnalytics.trackErrorRegister(errorMessage.removeErrorCode(), userSession.loginMethod)
     }
 
     private fun showRegisteredEmailDialog(email: String) {

@@ -71,7 +71,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.error.LoginErrorCode
-import com.tokopedia.loginregister.common.utils.RegisterUtil.getMessageWithoutErrorCode
+import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
@@ -1032,7 +1032,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        if (errorMessage.getMessageWithoutErrorCode() == forbiddenMessage) {
+        if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
             activity?.let {
@@ -1190,14 +1190,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onErrorLogin(errorMessage: String?, flow: String) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.getMessageWithoutErrorCode(), isFromRegister)
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.removeErrorCode(), isFromRegister)
         dismissLoadingLogin()
         showToaster(errorMessage)
         loggingError(flow, errorMessage)
     }
 
     private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.getMessageWithoutErrorCode(), isFromRegister)
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage?.removeErrorCode(), isFromRegister)
         dismissLoadingLogin()
         showToaster(errorMessage)
         loggingErrorWithThrowable(flow, errorMessage, throwable)
@@ -1210,7 +1210,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
         val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
-        analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.getMessageWithoutErrorCode())
+        analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.removeErrorCode())
         partialRegisterInputView?.onErrorValidate(message)
     }
 
@@ -1351,7 +1351,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                if (errorMessage.getMessageWithoutErrorCode() == forbiddenMessage) {
+                if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
                     onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN, it)
@@ -1444,7 +1444,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }.showRetrySnackbar()
 
-                analytics.eventFailedLogin(userSession.loginMethod, errorMessage.getMessageWithoutErrorCode())
+                analytics.eventFailedLogin(userSession.loginMethod, errorMessage.removeErrorCode())
             }
         }
     }
