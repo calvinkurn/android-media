@@ -30,6 +30,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
@@ -339,7 +340,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
         if (isLoadError || (!hasImageUrl && placeholder == 0)) {
             if (measuredWidth.toDp() <= MINIMUM_MEASURED_WIDTH || measuredHeight.toDp() <= MINIMUM_MEASURED_HEIGHT) {
-                if (!isRetryable) {
+                if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
                     prevScaleType = scaleType
                     scaleType = ScaleType.FIT_CENTER
                 }
