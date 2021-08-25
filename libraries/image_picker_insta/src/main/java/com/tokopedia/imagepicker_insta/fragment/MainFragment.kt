@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker_insta.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -27,6 +28,7 @@ import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
@@ -74,14 +76,18 @@ class MainFragment: Fragment() {
     }
 
     private fun proceedNextStep(){
-        val assets = imageAdapter.selectedPositions.map {
-            imageAdapter.dataList[it].assetPath
+        if(imageAdapter.selectedPositions.isNotEmpty()){
+            val assets = imageAdapter.selectedPositions.map {
+                imageAdapter.dataList[it].assetPath
+            }
+            val assetList = ArrayList(assets)
+            val intent = ImageEditorActivity.getIntent(context,
+                ImageEditorBuilder(assetList,
+                    defaultRatio = ImageRatioType.RATIO_1_1))
+            startActivityForResult(intent,EDITOR_REQUEST_CODE)
+        }else{
+            Toast.makeText(context,"Select any image first",Toast.LENGTH_SHORT).show()
         }
-        val assetList = ArrayList(assets)
-        val intent = ImageEditorActivity.getIntent(context,
-            ImageEditorBuilder(assetList,
-            defaultRatio = ImageRatioType.RATIO_1_1))
-        startActivityForResult(intent,EDITOR_REQUEST_CODE)
     }
 
     fun handleCameraPermissionCallback(){
@@ -254,12 +260,16 @@ class MainFragment: Fragment() {
             cameraCaptureFilePath = null
         }
     }
-    fun addAssetToGallery(asset:Asset){
+    private fun addAssetToGallery(asset:Asset){
         viewModel.insertIntoGallery(asset)
     }
 
-    fun addToCurrnetDisplayedList(asset: Asset){
-        if(tvSelectedFolder.text == "Pictures"){
+    private fun addToCurrnetDisplayedList(asset: Asset){
+
+        if(tvSelectedFolder.text == Environment.DIRECTORY_PICTURES ||
+            tvSelectedFolder.text == PhotoImporter.ALL ||
+            tvSelectedFolder.text == StorageUtil.INTERNAL_FOLDER_NAME
+                ){
             imageDataList.add(1,asset)
             imageAdapter.selectedPositions.add(1)
             imageAdapter.notifyItemInserted(1)

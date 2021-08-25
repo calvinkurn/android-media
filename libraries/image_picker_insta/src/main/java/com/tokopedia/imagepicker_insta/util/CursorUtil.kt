@@ -1,12 +1,9 @@
 package com.tokopedia.imagepicker_insta.util
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.core.content.ContextCompat
 
 object CursorUtil {
 

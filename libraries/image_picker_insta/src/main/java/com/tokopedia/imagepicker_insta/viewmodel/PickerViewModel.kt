@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.viewmodel
 
+import android.Manifest
 import android.app.Application
 import android.content.ContentValues
 import android.provider.MediaStore
@@ -9,6 +10,9 @@ import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
+import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.util.StorageUtil
+import com.tokopedia.imagepicker_insta.util.WriteStorageLocation
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -46,7 +50,7 @@ class PickerViewModel @Inject constructor(
     fun getPhotos() {
         launchCatchError(block = {
             photosLiveData.postValue(LiveDataResult.loading())
-            val result = photosUseCase.getPhotos(app)
+            val result = photosUseCase.getPhotosFromMediaStorage(app)
             photosImporterData = result
             photosLiveData.postValue(LiveDataResult.success(result))
         },onError = {
@@ -55,15 +59,17 @@ class PickerViewModel @Inject constructor(
     }
 
     fun insertIntoGallery(asset: Asset){
-        launchCatchError(block = {
-            val values = ContentValues()
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            values.put(MediaStore.Images.Media.DATA, asset.assetPath)
-            val uri = app.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            Log.d(TAG,"uri = $uri")
-        },onError = {
-            it.printStackTrace()
-        })
-
+        when(StorageUtil.WRITE_LOCATION){
+            WriteStorageLocation.EXTERNAL->{
+                launchCatchError(block = {
+                    val values = ContentValues()
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    values.put(MediaStore.Images.Media.DATA, asset.assetPath)
+                    val uri = app.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                },onError = {
+                    it.printStackTrace()
+                })
+            }
+        }
     }
 }

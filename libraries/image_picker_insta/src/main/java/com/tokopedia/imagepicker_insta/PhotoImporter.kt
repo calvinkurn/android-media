@@ -3,36 +3,65 @@ package com.tokopedia.imagepicker_insta
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.util.SparseArray
-import com.tokopedia.imagepicker_insta.fragment.MainFragment
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.imagepicker_insta.util.CursorUtil
 import com.tokopedia.imagepicker_insta.util.FileUtil
+import com.tokopedia.imagepicker_insta.util.StorageUtil
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 
 class PhotoImporter {
-companion object{
-    const val ALL = "All"
-}
+    companion object {
+        const val ALL = "All"
+    }
+
+    fun importPhotosFromInternalDir(context: Context): List<Asset> {
+        val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
+        val photosDataList = arrayListOf<PhotosData>()
+            if (file.isDirectory) {
+            file.listFiles()?.forEach {
+                val filePath = it.absolutePath
+                val isFileSupported = (filePath.endsWith(".jpg") ||
+                        filePath.endsWith(".jpeg") ||
+                        filePath.endsWith(".png") ||
+                        filePath.endsWith(".webP"))
+
+                if (isFileSupported) {
+                    val photoData = PhotosData(
+                        filePath,
+                        StorageUtil.INTERNAL_FOLDER_NAME,
+                        States.mediaType.camera.value(),
+                        Uri.fromFile(it),
+                        it.lastModified()
+                    )
+                    photosDataList.add(photoData)
+                }
+            }
+        }
+        return photosDataList
+    }
+
     fun importPhotos(context: Context): PhotosImporterData {
         val photoNames = SparseArray<String>()
-        val photoCursor = CursorUtil.getPhotoCursor(context,"",null)
+        val photoCursor = CursorUtil.getPhotoCursor(context, "", null)
         val photosOnPhone = SparseArray<JSONObject>()
-        val data = iteratePhotoCursor(photoCursor, photosOnPhone,photoNames)
+        val data = iteratePhotoCursor(photoCursor, photosOnPhone, photoNames)
 
         return data
     }
 
-    protected fun iteratePhotoCursor(cur: Cursor?,
-                                     photosOnPhone: SparseArray<JSONObject>,
-                                     photoNames:SparseArray<String>
-    ):PhotosImporterData {
+    protected fun iteratePhotoCursor(
+        cur: Cursor?,
+        photosOnPhone: SparseArray<JSONObject>,
+        photoNames: SparseArray<String>
+    ): PhotosImporterData {
         val photosList = arrayListOf<Asset>()
         val folders = hashSetOf<String>()
 
@@ -55,9 +84,10 @@ companion object{
                             item.put("nw_st", "")
                             item.put("mt", "")
                             item.put("_ne", "")
+                            var dateLong = cur.getLong(date)
 
                             if (Photo.validName(name) && numBytesKB > 10) {
-                                var dateLong = cur.getLong(date)
+
                                 if (dateLong == 0L) {
                                     try {
                                         dateLong = FileUtil.getDateTaken(name)
@@ -101,13 +131,15 @@ companion object{
                             }
 
                             val folderName = item["nw_st"] as String
-                            val photosData = PhotosData(filePath = name,
-                            folderName = folderName,
-                            mediaType = item["mt"] as String,
-                                uri =  ContentUris.withAppendedId(
+                            val photosData = PhotosData(
+                                filePath = name,
+                                folderName = folderName,
+                                mediaType = item["mt"] as String,
+                                uri = ContentUris.withAppendedId(
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                     index
-                                )
+                                ),
+                                _createdDate = dateLong
                             )
                             folders.add(folderName)
                             photosList.add(photosData)
@@ -123,7 +155,7 @@ companion object{
         }
         val tempFoldersList = ArrayList(folders)
         tempFoldersList.add(0, PhotoImporter.ALL)
-        return PhotosImporterData(tempFoldersList,photosList,null)
+        return PhotosImporterData(tempFoldersList, photosList, null)
     }
 
     protected fun locationValid(latitude: Double, longitude: Double): Boolean? {
@@ -139,7 +171,7 @@ companion object{
     }
 }
 
-class States{
+class States {
     enum class mediaType(private val value: String) {
         camera("camera"), portrait("portrait"), landscape("landscape"), panorama("panorama"), slowmo("slowmo"), recording("recording"), gif("gif"), others("others"), collage(
             "collage"

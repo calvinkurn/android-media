@@ -24,12 +24,31 @@ object CameraUtil {
     private fun createImageFile(context: Context): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        var storageDir : File? = null
+
+        when(StorageUtil.WRITE_LOCATION){
+            WriteStorageLocation.INTERNAL->{
+                storageDir =  getInternalDir(context)
+            }
+            WriteStorageLocation.EXTERNAL->{
+                storageDir =  getExternalDir(context)
+            }
+        }
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
             storageDir /* directory */
         )
+    }
+
+    private fun getExternalDir(context: Context):File?{
+        return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    }
+
+    private fun getInternalDir(context: Context):File{
+        val file =  File(context.filesDir,StorageUtil.INTERNAL_FOLDER_NAME)
+        file.mkdirs()
+        return file
     }
 
     private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?):String? {

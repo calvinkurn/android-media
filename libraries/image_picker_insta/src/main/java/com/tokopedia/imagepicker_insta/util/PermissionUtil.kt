@@ -13,18 +13,26 @@ object PermissionUtil {
 
     fun hasAllPermission(context: Context):Boolean{
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
-            return hasArrayOfPermissions(context,arrayListOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-            ))
+            when(StorageUtil.WRITE_LOCATION){
+                WriteStorageLocation.EXTERNAL->
+                    return hasArrayOfPermissions(context,arrayListOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA
+                    ))
+
+                else->
+                    return hasArrayOfPermissions(context,arrayListOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA
+                    ))
+            }
         }else{
             return hasArrayOfPermissions(context,arrayListOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA
             ))
         }
-
     }
 
     fun hasArrayOfPermissions(context: Context, arrayOfPermissions:ArrayList<String>):Boolean{
@@ -48,7 +56,10 @@ object PermissionUtil {
 
     fun requestCameraAndWritePermission(activity: AppCompatActivity) {
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA), CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE)
+            when(StorageUtil.WRITE_LOCATION){
+                WriteStorageLocation.EXTERNAL-> ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA), CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE)
+                WriteStorageLocation.INTERNAL-> ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA), CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE)
+            }
         }else{
             ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA), CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE)
         }
