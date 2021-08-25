@@ -3,7 +3,6 @@ package com.tokopedia.imagepicker.editor.watermark
 import android.content.Context
 import android.graphics.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
@@ -36,23 +35,19 @@ data class Watermark(
 ) {
 
     init {
-        try {
-            canvasBitmap = backgroundImg
-            outputImage = backgroundImg
-            watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
+        canvasBitmap = backgroundImg
+        outputImage = backgroundImg
+        watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
 
-            if (!isCombine) {
-                createWatermarkImage(watermarkImg)
-                createWatermarkText(watermarkText)
+        if (!isCombine) {
+            createWatermarkImage(watermarkImg)
+            createWatermarkText(watermarkText)
+        } else {
+            if (onlyWatermark) {
+                createScalableWatermarkTextAndImage(watermarkTextAndImage)
             } else {
-                if (onlyWatermark) {
-                    createScalableWatermarkTextAndImage(watermarkTextAndImage)
-                } else {
-                    createWatermarkTextAndImage(watermarkTextAndImage)
-                }
+                createWatermarkTextAndImage(watermarkTextAndImage)
             }
-        } catch (e: Exception) {
-
         }
     }
 
@@ -67,7 +62,10 @@ data class Watermark(
         // threesHold of empty bitmap as container of watermark
         val squareBitmapSize = 2000
 
-        val logoBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
+        val resizedBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
+
+        val logoBitmap = resizedBitmap
+
 
         val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
@@ -236,7 +234,7 @@ data class Watermark(
 
         if (!backgroundImg!!.isDark()) {
             scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                .changeColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                .changeColor(Color.parseColor("#4D03AC0E"))
         }
 
         // merge the main bitmap with scaled watermark bitmap
@@ -278,7 +276,7 @@ data class Watermark(
             //afterwards, draw watermark on the center
             drawBitmap(scaledWatermarkBitmap!!,
                 (backgroundImg!!.width / 2f - (scaledWatermarkBitmap!!.width / 2f)),
-                backgroundImg!!.height / 2f, null)
+                (backgroundImg!!.height / 2f) - (scaledWatermarkBitmap!!.height / 2f), null)
         }
 
         return mainBitmap

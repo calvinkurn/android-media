@@ -7,8 +7,10 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -34,20 +36,20 @@ object BitmapHelper {
 
             // text alpha
             if (properties.textAlpha in 0..255) {
-                alpha = properties.textAlpha
+                alpha = 80
             }
 
             // text shadow properties
-            if (properties.textShadowBlurRadius != 0f
-                    || properties.textShadowXOffset != 0f
-                    || properties.textShadowYOffset != 0f) {
-                setShadowLayer(
-                    properties.textShadowBlurRadius,
-                    properties.textShadowXOffset,
-                    properties.textShadowYOffset,
-                    properties.textShadowColor
-                )
-            }
+//            if (properties.textShadowBlurRadius != 0f
+//                    || properties.textShadowXOffset != 0f
+//                    || properties.textShadowYOffset != 0f) {
+//                setShadowLayer(
+//                    properties.textShadowBlurRadius,
+//                    properties.textShadowXOffset,
+//                    properties.textShadowYOffset,
+//                    properties.textShadowColor
+//                )
+//            }
 
             // font properties
             if (properties.fontName.isNotEmpty()) {
@@ -115,7 +117,7 @@ object BitmapHelper {
 
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
-        canvas.drawColor(properties.backgroundColor)
+//        canvas.drawColor(properties.backgroundColor)
         staticLayout.draw(canvas)
 
         return bitmapResult
@@ -269,20 +271,37 @@ object BitmapHelper {
         val height = this.height
         val srcHSV = FloatArray(3)
         val dstHSV = FloatArray(3)
-        val dstBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val alpha = Color.alpha(dstColor)
+        val dstBitmap = Bitmap.createBitmap(width, height, this.config)
         for (row in 0 until height) {
             for (col in 0 until width) {
+//
+//                // If it area to be painted set only value of original image
                 val pixel = this.getPixel(col, row)
-                val alpha = Color.alpha(pixel)
                 Color.colorToHSV(pixel, srcHSV)
                 Color.colorToHSV(dstColor, dstHSV)
+                val sourceAlpha = Color.alpha(pixel)
 
-                // If it area to be painted set only value of original image
-                dstHSV[2] = srcHSV[2] // value
-                dstBitmap.setPixel(col, row, Color.HSVToColor(alpha, dstHSV))
+                dstBitmap.setPixel(col, row, Color.HSVToColor(sourceAlpha, dstHSV))
             }
         }
         return dstBitmap
+    }
+
+    //this value from 0..255
+    fun Bitmap.setAlpha(alpha: Int): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            width, // width in pixels
+            height, // height in pixels
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        val paint = Paint().apply {
+            setAlpha(alpha)
+        }
+        canvas.drawBitmap(this, 0f, 0f, paint)
+        return bitmap
     }
 
     fun Bitmap.addPadding(
