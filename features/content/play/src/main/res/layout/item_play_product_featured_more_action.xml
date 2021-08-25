@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/play_product_featured_placeholder_width"
     android:layout_height="@dimen/play_product_featured_height"
     android:background="@drawable/bg_play_product_featured"
@@ -20,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        android:text="Cek Barang"
+        android:text="@string/play_featured_product_check_product"
         app:typographyType="small"
         />
 
