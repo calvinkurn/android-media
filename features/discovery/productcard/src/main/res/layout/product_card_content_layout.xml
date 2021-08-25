@@ -15,7 +15,6 @@
         android:textColor="@color/Unify_N700"
         android:gravity="start|top"
         android:visibility="gone"
-        app:layout_goneMarginBottom="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

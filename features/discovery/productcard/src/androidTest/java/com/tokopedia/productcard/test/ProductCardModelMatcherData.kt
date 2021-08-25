@@ -9,6 +9,7 @@ import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.utils.*
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.not
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
@@ -66,6 +67,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelBestSeller())
     it.add(testLabelBestSellerAndCategorySide())
     it.add(testLabelBestSellerAndCategoryBottom())
+    it.add(testLabelCategorySideAndBottomWithoutBestSeller())
     it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
     it.add(testLabelETA())
     it.add(testLabelCategory())
@@ -1900,7 +1902,7 @@ private fun testLabelBestSellerAndCategorySide(): ProductCardModelMatcher {
 
 private fun testLabelBestSellerAndCategoryBottom(): ProductCardModelMatcher {
     val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
-    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di Kategori Baju Anak", type = "textLightGrey")
+    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di iOS", type = "textLightGrey")
 
     val productCardModel = ProductCardModel(
         productName = "Test Label Best Seller Category Bottom",
@@ -1930,6 +1932,43 @@ private fun testLabelBestSellerAndCategoryBottom(): ProductCardModelMatcher {
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
         it[R.id.textCategoryBottom] = isDisplayedWithText(labelCategoryBottom.title)
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelMatcher {
+    val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di iOS", type = "textLightGrey")
+    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di iOS", type = "textLightGrey")
+
+    val productCardModel = ProductCardModel(
+        productName = "Test Label Category Side and Bottom without Best Seller",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        countSoldRating = "4.5",
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        isTopAds = true,
+        hasThreeDots = true,
+        labelGroupList = listOf(labelCategorySide, labelCategoryBottom)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+        it[R.id.textCategoryBottom] = not(isDisplayed())
+        it[R.id.textCategorySide] = not(isDisplayed())
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
