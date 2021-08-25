@@ -31,6 +31,8 @@ public interface QrScannerContract {
         boolean getRemoteConfigForOvoPay();
 
         void goToEventRedeemPage(String url);
+
+        String checkQRPeduliLindungi();
     }
 
     interface Presenter extends CustomerPresenter<View> {

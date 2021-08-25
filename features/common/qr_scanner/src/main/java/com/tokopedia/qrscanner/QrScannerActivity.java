@@ -294,6 +294,17 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
+    public String checkQRPeduliLindungi() {
+        Uri uri = getIntent().getData();
+       if(uri != null){
+           return uri.getQueryParameter("redirect");
+       }
+       else {
+           return "";
+       }
+    }
+
+    @Override
     public QRComponent getComponent() {
         if (qrComponent == null) initInjector();
         return qrComponent;

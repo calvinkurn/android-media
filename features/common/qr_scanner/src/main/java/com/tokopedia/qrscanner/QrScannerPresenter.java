@@ -54,6 +54,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String OVO_TEXT = "ovo";
     private static final String GPNR_TEXT = "gpnqr";
     private static final String EVENT_REDEEM = "tokopedia.com/v1/api/event/custom/redeem/invoice";
+    private static final String PEDULI_LINDUNGI_CHECK_IN = "checkin";
+    private static final String PEDULI_LINDUNGI_CHECK_OUT = "checkout";
 
     private ScannerUseCase scannerUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -99,7 +101,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             checkBarCode(barcodeData);
         } else if (barcodeData.toLowerCase().contains(EVENT_REDEEM)){
             checkEventRedeem(barcodeData);
-        } else {
+        } else if(barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT)){
+            String path = getView().checkQRPeduliLindungi() + "&payload="+barcodeData;
+            openActivity(path);
+        }
+        else {
             getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
         }
     }
