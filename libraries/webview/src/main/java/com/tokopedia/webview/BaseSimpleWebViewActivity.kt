@@ -53,10 +53,19 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun init(intent: Intent) {
+        url = ""
+        intent.extras?.run {
+            url = getString(KEY_URL, "").decode()
+            showTitleBar = getBoolean(KEY_TITLEBAR, true)
+            allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
+            needLogin = getBoolean(KEY_NEED_LOGIN, false)
+            pullToRefresh = getBoolean(KEY_PULL_TO_REFRESH, false)
+            webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
+        }
         intent.data?.let { uri ->
             url = WebViewHelper.getEncodedUrlCheckSecondUrl(
                 uri,
-                uri.getQueryParameter(KEY_URL)?.decode() ?: ""
+                uri.getQueryParameter(KEY_URL)?.decode() ?: url
             )
 
             showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
