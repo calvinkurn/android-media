@@ -44,11 +44,11 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
-        listOf(SobSliderHomeUiModel(R.drawable.ic_toped_anniv),
-                SobSliderMessageUiModel(R.drawable.ic_toped_anniv),
-                SobSliderManageUiModel(R.drawable.ic_toped_anniv),
-                SobSliderPromoUiModel(R.drawable.ic_toped_anniv),
-                SobSliderStatisticsUiModel(R.drawable.ic_toped_anniv))
+        listOf(SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
+                SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
+                SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
+                SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
+                SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
