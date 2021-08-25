@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,11 +18,6 @@ import java.lang.ref.WeakReference
  * UI Model for ProductBundlingViewHolder
  */
 class MultiBundle(parent: View) {
-
-    companion object {
-        private const val CONSTRAINT_HORIZONTAL_BIAS_LEFT = 0f
-        private const val CONSTRAINT_HORIZONTAL_BIAS_CENTER = 0.5f
-    }
 
     private val viewStub: ViewStub = parent.findViewById(R.id.product_bundling_stub_multi)
     private val view: View = viewStub.inflate()
@@ -54,11 +47,6 @@ class MultiBundle(parent: View) {
     private val discounts = listOf(discount1, discount2, discount3)
     private val slashes = listOf(slash1, slash2, slash3)
     private val groups = listOf(group1, group2, group3)
-
-    private val constraintLayout: ConstraintLayout = view.findViewById(
-        R.id.product_bundling_multi_constraint
-    )
-    private val constraintSet = ConstraintSet()
 
     fun process(
         bundle: BundleInfo,
@@ -108,14 +96,6 @@ class MultiBundle(parent: View) {
 
         unusedGroups.forEach { group ->
             group.hide()
-        }
-
-        val horizontalBias = if (unusedGroups.isEmpty()) CONSTRAINT_HORIZONTAL_BIAS_CENTER
-        else CONSTRAINT_HORIZONTAL_BIAS_LEFT
-        constraintSet.run {
-            clone(constraintLayout)
-            setHorizontalBias(R.id.product_bundling_image_1, horizontalBias)
-            applyTo(constraintLayout)
         }
 
         val quantityText = weakContext.get()?.getString(

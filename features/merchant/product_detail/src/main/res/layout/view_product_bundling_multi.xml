@@ -8,7 +8,6 @@
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/product_bundling_multi_constraint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -16,8 +15,9 @@
             android:id="@+id/product_bundling_image_1"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_20"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/product_bundling_icon_add_1"
@@ -63,7 +63,7 @@
             android:id="@+id/product_bundling_image_3"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/product_bundling_image_1"
             app:layout_constraintLeft_toRightOf="@id/product_bundling_icon_add_2"
             app:layout_constraintRight_toRightOf="parent"
