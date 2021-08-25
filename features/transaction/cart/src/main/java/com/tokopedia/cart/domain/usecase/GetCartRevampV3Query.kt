@@ -1,10 +1,10 @@
 package com.tokopedia.cart.domain.usecase
 
-fun getQueryCartRevamp(): String {
+fun getQueryCartRevampV3(): String {
     return """
-        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+        query cart_revamp_v3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
+          cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
             status
             data {

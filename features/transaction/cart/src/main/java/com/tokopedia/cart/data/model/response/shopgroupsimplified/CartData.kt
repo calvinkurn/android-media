@@ -7,11 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoC
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*
 
-/**
- * @author anggaprasetiyo on 31/01/18.
- */
-
-data class CartDataListResponse(
+data class CartData(
         @SerializedName("errors")
         val errors: List<String> = ArrayList(),
         @SerializedName("tickers")

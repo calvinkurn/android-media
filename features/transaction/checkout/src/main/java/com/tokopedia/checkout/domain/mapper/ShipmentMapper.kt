@@ -436,7 +436,7 @@ class ShipmentMapper @Inject constructor() {
             voucherOrders = mapPromoVoucherOrders(promoData)
             additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData?.additionalInfo)
             message = mapLastApplyMessageUiModel(promoData?.message)
-            listRedPromos = mapListRedPromos(promoData)
+//            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
         }
     }
