@@ -140,10 +140,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         window.decorView.setBackgroundColor(color)
     }
 
-    override fun setupToolbar() {
-        //Do Nothing
-    }
-
     private fun decreaseToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
@@ -418,7 +414,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun setupChatRoomOnlyToolbar() {
         toolbarChatList?.hide()
-        super.setupToolbar()
     }
 
     private fun setupToolbarFlexChatroom() {
