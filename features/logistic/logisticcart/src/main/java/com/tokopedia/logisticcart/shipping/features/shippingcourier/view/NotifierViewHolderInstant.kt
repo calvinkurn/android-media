@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.R
-import kotlinx.android.synthetic.main.item_notifier.view.*
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 class NotifierViewHolderInstant(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -12,6 +12,6 @@ class NotifierViewHolderInstant(itemView: View): RecyclerView.ViewHolder(itemVie
     }
 
     fun bindData() {
-        itemView.ticker_notifier.setTextDescription(itemView.context.getString(R.string.label_hardcoded_courier_ticker_instant))
+        itemView.findViewById<Ticker>(R.id.ticker_notifier).setTextDescription(itemView.context.getString(R.string.label_hardcoded_courier_ticker_instant))
     }
 }
