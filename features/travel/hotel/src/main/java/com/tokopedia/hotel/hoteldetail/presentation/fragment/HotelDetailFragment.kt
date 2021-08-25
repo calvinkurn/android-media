@@ -321,7 +321,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(error: Throwable) {
-        if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
+        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
 
             binding?.let {
