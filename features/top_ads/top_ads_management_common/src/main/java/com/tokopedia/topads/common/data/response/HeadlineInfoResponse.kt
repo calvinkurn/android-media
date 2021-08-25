@@ -25,7 +25,7 @@ class HeadlineInfoResponse(
             @field:SerializedName("group_id")
             val groupId: String = "",
 
-            @field:SerializedName("dailyBu")
+            @field:SerializedName("price_bid")
             val priceBid: Int = 0,
 
             @field:SerializedName("status")

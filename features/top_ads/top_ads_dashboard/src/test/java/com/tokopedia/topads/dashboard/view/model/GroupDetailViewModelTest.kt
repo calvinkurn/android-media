@@ -114,7 +114,7 @@ class GroupDetailViewModelTest {
         val onSuccess: (data: HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) -> Unit = {
             actual = it.priceBid
         }
-        every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { headlineInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
         viewModel.getHeadlineInfo(res, "", onSuccess)
