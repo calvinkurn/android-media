@@ -209,7 +209,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     isHotelDetailSuccess = false
-                    showErrorView(it.throwable)
                 }
             }
             isHotelInfoLoaded = true
@@ -224,7 +223,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     isHotelReviewSuccess = false
-                    showErrorView(it.throwable)
                 }
             }
             isHotelReviewLoaded = true
@@ -323,7 +321,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(error: Throwable) {
-        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
+        if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
             stopTrace()
 
             binding?.let {
@@ -333,8 +331,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             context?.run {
                 ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
-                    { (activity as HotelDetailActivity).onBackPressed() })
-            }
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
