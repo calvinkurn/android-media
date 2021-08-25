@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
@@ -87,6 +88,7 @@ class DynamicChannelHeaderView: FrameLayout {
                 itemView?.findViewById(R.id.channel_title)
             }
             channelTitle?.text = channelHeaderName
+            channelTitle?.gravity = Gravity.CENTER_VERTICAL
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
