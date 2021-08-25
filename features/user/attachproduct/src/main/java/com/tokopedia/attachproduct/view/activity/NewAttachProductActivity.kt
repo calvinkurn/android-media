@@ -32,7 +32,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Act
         const val MAX_CHECKED_DEFAULT = 3
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
         const val SOURCE_TALK = "talk"
-        const val USE_NEW_FRAGMENT_REMOTE_CONFIG = "use_new_fragment"
+        const val USE_NEW_FRAGMENT_REMOTE_CONFIG = "attach_product_use_new_fragment"
     }
 
     private fun isUseNewFragment(): Boolean {
