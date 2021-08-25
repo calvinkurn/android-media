@@ -155,7 +155,7 @@ object AtcVariantHelper {
                 availableButtons = listOf(
                         AvailableButton(
                                 cartType = customCartType,
-                                color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                                color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
                                 text = buttonText,
                                 showRecommendation = false
                         )),
