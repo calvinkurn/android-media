@@ -46,6 +46,7 @@ class EditorItemSelectionAdapter constructor(
 
     fun clear() {
         items.clear()
+        selectedPosition = 0
         notifyDataSetChanged()
     }
 

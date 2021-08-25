@@ -47,7 +47,6 @@ class ItemSelectionWidget : FrameLayout {
         if (adapter.itemCount == 0) {
             adapter.updateAll(items)
             adapter.setListener(listener)
-
         }
 
         recyclerView?.layoutManager = LinearLayoutManager(

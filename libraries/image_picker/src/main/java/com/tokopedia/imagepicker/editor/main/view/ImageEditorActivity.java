@@ -364,7 +364,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null) {
                         fragment.saveWatermarkImage();
                         titleWatermarkStyle.setVisibility(View.GONE);
-                        trackClickSave(getLabelWatermark());
+//                        trackClickSave(getLabelWatermark());
                         isSetWatermark = false;
                     }
                     break;
