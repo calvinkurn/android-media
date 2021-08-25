@@ -29,11 +29,12 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                          private val permissionListener: PermissionListener? = null) {
 
     private var contentObserver: ContentObserver? = null
-    val pendingRegex = ".pending"
-    val screenShotRegex = "screenshot"
-    val actionPermissionDialog = "click - access photo media and files"
-    val labelAllow = "allow"
-    val labelDeny = "deny"
+    private val pendingRegex = ".pending"
+    private val screenShotRegex = "screenshot"
+    private val actionPermissionDialog = "click - access photo media and files"
+    private val labelAllow = "allow"
+    private val labelDeny = "deny"
+    private val readingDelayTime = 1100L
     private var ssUriPath = ""
 
     fun start() {
@@ -186,7 +187,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
                 Handler().postDelayed({
                     display?.invoke()
-                }, 1100)
+                }, readingDelayTime)
                 permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
