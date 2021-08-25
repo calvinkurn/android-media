@@ -944,7 +944,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (shouldScrollToTop) {
             shouldScrollToTop = false
             recycler_view?.addOneTimeGlobalLayoutListener {
-                recycler_view?.smoothScrollToPosition(0)
+                recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
             }
         }
         renderCheckedView()
@@ -1922,7 +1922,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onScrollToTop() {
         recycler_view?.post {
-            recycler_view?.smoothScrollToPosition(0)
+            recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
@@ -2473,6 +2473,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
 
         private const val START_SPAN_INDEX = 5
+
+        private const val RV_TOP_POSITION = 0
     }
 
 }

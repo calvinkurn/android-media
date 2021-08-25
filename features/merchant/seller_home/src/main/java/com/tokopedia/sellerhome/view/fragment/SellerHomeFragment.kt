@@ -110,6 +110,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         private const val DEFAULT_HEIGHT_DP = 720f
 
+        private const val RV_TOP_POSITION = 0
+
         private const val ANNIV_ILLUSTRATION_OS =
             "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_os.png"
         private const val ANNIV_ILLUSTRATION_PM =
@@ -422,7 +424,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onScrollToTop() {
         recyclerView?.post {
-            recyclerView?.smoothScrollToPosition(0)
+            recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
