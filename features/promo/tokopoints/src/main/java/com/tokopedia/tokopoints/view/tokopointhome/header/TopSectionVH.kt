@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -304,8 +305,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         cardStatusMatching?.setOnClickListener {
             rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
                 if (url.isNotEmpty()) {
-                    RouteManager.route(
-                        itemView.context,url)
+                    RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
                 }
                 AnalyticsTrackerUtil.sendEvent(
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
