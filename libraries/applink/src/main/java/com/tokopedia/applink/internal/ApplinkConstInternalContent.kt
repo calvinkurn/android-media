@@ -26,15 +26,7 @@ object ApplinkConstInternalContent {
 
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
-    const val AFFILIATE_EXPLORE = "$INTERNAL_AFFILIATE/explore"
-    const val AFFILIATE_DASHBOARD = "$INTERNAL_AFFILIATE/dashboard"
-    const val AFFILIATE_EDUCATION = "$INTERNAL_AFFILIATE/education"
-    const val AFFILIATE_BYME_TRACKING = "$INTERNAL_AFFILIATE/tracking/"
     const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}/"
-
-    const val TOKOPEDIA_BYME = "tokopedia.by"
-    const val TOKOPEDIA_BYME_HTTP = "${DeeplinkConstant.SCHEME_HTTP}://${TOKOPEDIA_BYME}/"
-    const val TOKOPEDIA_BYME_HTTPS = "${DeeplinkConstant.SCHEME_HTTPS}://${TOKOPEDIA_BYME}/"
 
     const val HOST_PLAY = "play"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
