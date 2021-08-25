@@ -71,13 +71,6 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
-    fun getRegisteredNavigationReviewReminder(deeplink: String): String {
-        if (deeplink.startsWith(ApplinkConst.REVIEW_REMINDER)) {
-            return ApplinkConstInternalSellerapp.REVIEW_REMINDER
-        }
-        return deeplink
-    }
-
     fun isShopPage(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SHOP) && uri.pathSegments.size == SHOP_PAGE_SEGMENT_SIZE
