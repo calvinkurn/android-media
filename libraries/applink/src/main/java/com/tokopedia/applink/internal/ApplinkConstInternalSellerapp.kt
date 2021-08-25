@@ -77,5 +77,5 @@ object ApplinkConstInternalSellerapp {
     //SellerFeedbackActivity
     const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 
-    const val REVIEW_REMINDER = "${INTERNAL_SELLERAPP}/review-reminder"
+    const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
 }
