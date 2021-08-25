@@ -16,9 +16,6 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.isAnyShown
@@ -53,9 +50,11 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketClosedReason
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tokopedia.play.extensions.combine
@@ -94,8 +93,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-    val observableSocketInfo: LiveData<PlaySocketInfo>
-        get() = _observableSocketInfo
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
@@ -298,7 +295,6 @@ class PlayViewModel @Inject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>() /**Changed**/
@@ -772,7 +768,7 @@ class PlayViewModel @Inject constructor(
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
                 .orEmpty()
-        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        val entry = shownBottomSheets.minByOrNull { it.value.deepLevel }
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
@@ -1352,7 +1348,10 @@ class PlayViewModel @Inject constructor(
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
 
-        playAnalytic.clickWinnerBadge(channelId = channelId, channelType = channelType)
+        playAnalytic.clickWinnerBadge(
+                channelId = channelId,
+                channelType = channelType,
+        )
     }
 
     private fun handleTapTapAction() {
@@ -1360,7 +1359,12 @@ class PlayViewModel @Inject constructor(
             interactiveFlow.emit(Unit)
         }
 
-        playAnalytic.clickTapTap(channelId = channelId, channelType = channelType)
+        val interactiveId = repo.getActiveInteractiveId() ?: return
+        playAnalytic.clickTapTap(
+                channelId = channelId,
+                channelType = channelType,
+                interactiveId = interactiveId,
+        )
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1389,7 +1393,12 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        playAnalytic.clickFollowShopInteractive(channelId, channelType)
+        val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
+        playAnalytic.clickFollowShopInteractive(
+                channelId,
+                channelType,
+                interactiveId,
+        )
     }
 
     private fun handleClickPartnerName() {

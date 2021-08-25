@@ -5,7 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.interactive.PostInteractiveTapResponse
 import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder

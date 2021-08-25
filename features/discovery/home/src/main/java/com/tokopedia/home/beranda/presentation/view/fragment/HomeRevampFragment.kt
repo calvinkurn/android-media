@@ -111,9 +111,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -136,6 +134,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.RollenceKey.HOME_BEAUTY_FEST
 import com.tokopedia.remoteconfig.RollenceKey.HOME_WALLETAPP
 import com.tokopedia.remoteconfig.RollenceKey.HOME_PAYMENT_ABC
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -174,6 +173,10 @@ import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -278,6 +281,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
+        const val BEAUTY_FEST_FALSE = 0
+        const val BEAUTY_FEST_TRUE = 1
+        const val BEAUTY_FEST_NOT_QUALIFY = 2
+        private const val BEAUTY_FEST_NOT_SET = -1
+        private var beautyFestEvent = BEAUTY_FEST_NOT_SET
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -326,6 +334,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var backgroundViewImage: ImageView
+    private lateinit var loaderHeaderImage: FrameLayout
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
@@ -403,6 +412,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun isEligibleForPaymentABC(): Boolean {
         return try {
             getAbTestPlatform().getString(HOME_PAYMENT_ABC, "") == HOME_PAYMENT_ABC
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isEligibleForBeautyFest(): Boolean {
+        return try {
+            getAbTestPlatform().getString(HOME_BEAUTY_FEST, "") == HOME_BEAUTY_FEST && getUserSession().isLoggedIn
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -586,6 +605,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
+        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
@@ -1312,7 +1332,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeSearchHint() {
         if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers()) {
-            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
+            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder ->
+                if (userVisibleHint) {
+                    setHint(data)
+                }
+            })
         }
     }
 
@@ -1415,8 +1439,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeSearchHint()
     }
 
+    private fun renderBeautyFestHeader() {
+        if(isEligibleForBeautyFest()) {
+            when (beautyFestEvent) {
+                BEAUTY_FEST_NOT_SET -> {
+                    renderTopBackgroundBeautyFest(isLoading = true, isBeautyFest =  false)
+                }
+                BEAUTY_FEST_TRUE -> {
+                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  true)
+                }
+                else -> {
+                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  false)
+                }
+            }
+        }
+        else {
+            renderTopBackground()
+        }
+    }
+
     private fun renderTopBackground() {
         context?.let { currentContext ->
+            //gone hide visibility loader cantik fest
+            loaderHeaderImage.gone()
+            backgroundViewImage.visible()
+
             val backgroundUrl = if (currentContext.isDarkMode()) {
                 BACKGROUND_DARK_1
             } else {
@@ -1439,6 +1486,66 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 .fitCenter()
                 .dontAnimate()
                 .into(backgroundViewImage)
+        }
+    }
+
+    private fun renderTopBackgroundBeautyFest(isLoading: Boolean, isBeautyFest: Boolean) {
+        context?.let { currentContext ->
+            val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+            if (isChooseAddressShow) {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+            } else {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height =
+                    resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+                loaderHeaderImage.layoutParams = layoutParams
+            }
+
+            if (isLoading) {
+                //displaying shimmer and hide header
+                loaderHeaderImage.visible()
+                backgroundViewImage.gone()
+            } else {
+                //displaying header and hide shimmer
+                if (isBeautyFest) {
+                    if (currentContext.isDarkMode()) {
+                        //change tint color
+                        backgroundViewImage.setColorFilter(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.home_beauty_fest_dark
+                            )
+                        )
+                    } else {
+                        //change tint color
+                        backgroundViewImage.setColorFilter(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.home_beauty_fest_light
+                            )
+                        )
+                    }
+                } else {
+                    backgroundViewImage.clearColorFilter()
+                    val backgroundUrl = if (currentContext.isDarkMode()) {
+                        BACKGROUND_DARK_1
+                    } else {
+                        BACKGROUND_LIGHT_1
+                    }
+
+                    Glide.with(currentContext)
+                        .load(backgroundUrl)
+                        .fitCenter()
+                        .dontAnimate()
+                        .into(backgroundViewImage)
+                }
+                loaderHeaderImage.gone()
+                backgroundViewImage.visible()
+            }
         }
     }
 

@@ -1,10 +1,7 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
-import com.tokopedia.play.data.mapper.PlaySocketType
-import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.play_common.websocket.WebSocketResponse
 
 /**
  * Created by jegul on 15/07/21

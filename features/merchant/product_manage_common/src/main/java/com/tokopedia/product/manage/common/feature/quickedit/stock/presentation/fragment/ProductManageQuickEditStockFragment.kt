@@ -35,6 +35,7 @@ import com.tokopedia.product.manage.common.feature.list.ext.hasEditStockAccess
 import com.tokopedia.product.manage.common.feature.list.ext.isActive
 import com.tokopedia.product.manage.common.feature.list.ext.isCampaign
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
@@ -45,11 +46,13 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(
-    private var onFinishedListener: OnFinishedListener? = null
+    private var onFinishedListener: OnFinishedListener? = null,
+    private var campaignListener: ProductCampaignInfoListener? = null
 ) : BottomSheetUnify(), HasComponent<ProductManageQuickEditStockComponent> {
 
     companion object {
@@ -62,12 +65,13 @@ class ProductManageQuickEditStockFragment(
         fun createInstance(
             context: Context,
             product: ProductUiModel,
-            onFinishedListener: OnFinishedListener
+            onFinishedListener: OnFinishedListener,
+            campaignListener: ProductCampaignInfoListener,
         ): ProductManageQuickEditStockFragment {
             SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
                 put(KEY_PRODUCT, product)
             }
-            return ProductManageQuickEditStockFragment(onFinishedListener)
+            return ProductManageQuickEditStockFragment(onFinishedListener, campaignListener)
         }
     }
 
@@ -83,6 +87,8 @@ class ProductManageQuickEditStockFragment(
     private var product: ProductUiModel? = null
 
     private var firstStateChecked = false
+
+    private var ongoingCampaignTypeText: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +114,7 @@ class ProductManageQuickEditStockFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(view)
         firstStateChecked = true
     }
 
@@ -130,7 +136,7 @@ class ProductManageQuickEditStockFragment(
         component?.inject(this)
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
         observeStatus()
         observeStock()
         observeStockTicker()
@@ -140,7 +146,7 @@ class ProductManageQuickEditStockFragment(
         setupSaveButton()
         setupStatusSwitch()
         setupBottomSheet()
-        setupCampaignLabel()
+        setupCampaignInfo(view)
 
         requestStockEditorFocus()
         setAddButtonClickListener()
@@ -251,8 +257,17 @@ class ProductManageQuickEditStockFragment(
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
-    private fun setupCampaignLabel() {
-        labelCampaign.showWithCondition(product.isCampaign())
+    private fun setupCampaignInfo(view: View) {
+        ongoingCampaignTypeText = view.findViewById(R.id.tv_product_manage_single_stock_count_variant)
+        ongoingCampaignTypeText?.run {
+            product?.campaignTypeList?.let { campaignList ->
+                text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
+                setOnClickListener {
+                    campaignListener?.onClickCampaignInfo(campaignList)
+                }
+            }
+            showWithCondition(product.isCampaign())
+        }
     }
 
     private fun observeStock() {

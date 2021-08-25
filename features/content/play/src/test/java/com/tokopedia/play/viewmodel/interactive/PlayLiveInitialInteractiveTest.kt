@@ -2,7 +2,7 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
