@@ -145,7 +145,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var previewImage: ImageUnify? = null
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
-    private var containerView : ConstraintLayout? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -192,7 +191,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
         inflater.inflate(LAYOUT, container).apply {
-            containerView = findViewById(R.id.universal_share_container)
             rvSocialMediaList = findViewById(R.id.rv_social_media_list)
             thumbNailTitleTxTv = findViewById(R.id.thumb_nail_title)
             thumbNailImage = findViewById(R.id.thumb_nail_image)
