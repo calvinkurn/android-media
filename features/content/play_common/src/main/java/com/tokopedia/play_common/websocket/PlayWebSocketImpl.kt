@@ -30,7 +30,7 @@ class PlayWebSocketImpl(
     private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
-            extraBufferCapacity = 500
+            extraBufferCapacity = 100
     )
 
     private var mWebSocket: WebSocket? = null
