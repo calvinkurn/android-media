@@ -105,7 +105,7 @@ class BroadcastCampaignLabelView : LinearLayout {
 
     private fun bindLabelBackgroundColor(banner: ImageAnnouncementViewModel) {
         val colorRes = when (banner.statusCampaign) {
-            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_T100
+            CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_T200
             else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
         }
         setBackgroundResource(colorRes)
