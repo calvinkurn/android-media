@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/unify_space_0"
             app:search_bar_placeholder="@string/string_attach_product_search_placeholder_text"
             app:search_bar_show_icon="false" />
     </RelativeLayout>

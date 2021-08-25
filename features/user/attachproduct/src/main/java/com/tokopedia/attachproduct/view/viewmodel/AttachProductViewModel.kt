@@ -20,7 +20,9 @@ class AttachProductViewModel @Inject constructor
     : BaseViewModel(dispatcher.io), NewAttachProductContract.Presenter {
 
     private val _products = MutableLiveData<Result<List<NewAttachProductItemUiModel>>>()
+    private val _cacheList = mutableListOf<NewAttachProductItemUiModel>()
     private val _checkedList = mutableListOf<NewAttachProductItemUiModel>()
+    private var _cacheHasNext = false
     private val _checkedListMutableLiveData = MutableLiveData<List<NewAttachProductItemUiModel>>()
 
     val checkedList: LiveData<List<NewAttachProductItemUiModel>>
@@ -28,13 +30,29 @@ class AttachProductViewModel @Inject constructor
     val products: LiveData<Result<List<NewAttachProductItemUiModel>>>
         get() = _products
 
+    val cacheList: List<NewAttachProductItemUiModel>
+        get() = _cacheList
+
+    val cacheHasNext: Boolean
+        get() = _cacheHasNext
+
+
 
     override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
             val result = useCaseNew(generateParam(query, shopId, page, warehouseId))
 
             withContext(dispatcher.main) {
-                _products.value = Success(result.mapToListProduct().toDomainModelMapper())
+                val resultModel = result.mapToListProduct().toDomainModelMapper()
+                _products.value = Success(resultModel)
+
+                if (query.isEmpty()) {
+                    _products.value.let { data ->
+                        if (data != null) {
+                            cacheData(data)
+                        }
+                    }
+                }
             }
         }, onError = {
             _products.value = Fail(it)
@@ -61,7 +79,9 @@ class AttachProductViewModel @Inject constructor
                 product.productUrl,
                 product.productImage,
                 product.productPrice,
-                product.productName
+                product.productName,
+                product.originalPrice,
+                product.discountPercentage
             )
         }
         val resultProduct = arrayListOf<ResultProduct>()
@@ -78,8 +98,27 @@ class AttachProductViewModel @Inject constructor
         }
     }
 
+    fun clearCache() {
+        if (_cacheList.isNotEmpty()) {
+            _cacheList.clear()
+        }
+    }
+
+    private fun cacheData(result: Result<List<NewAttachProductItemUiModel>>){
+        if (result is Success) {
+            val listData = result.data.toMutableList()
+            _cacheHasNext = false
+            if (result.data.size >= DEFAULT_ROWS) {
+                _cacheHasNext = true
+                listData.removeAt(result.data.size - 1)
+            }
+            _cacheList.addAll(listData)
+        }
+    }
+
     companion object {
         const val ROW = 11
         const val PARAM = "params"
+        const val DEFAULT_ROWS = 10
     }
 }

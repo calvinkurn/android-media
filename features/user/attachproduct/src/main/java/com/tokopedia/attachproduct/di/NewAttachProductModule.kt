@@ -16,15 +16,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Hendri on 19/02/18.
@@ -83,6 +78,7 @@ class NewAttachProductModule(private val context: Context) {
     }
 
     @Provides
+    @AttachProductScope
     fun provideUseCase(repository: GraphqlRepository, query: String): NewAttachProductUseCase {
         return NewAttachProductUseCase(repository, query, Dispatchers.IO)
     }

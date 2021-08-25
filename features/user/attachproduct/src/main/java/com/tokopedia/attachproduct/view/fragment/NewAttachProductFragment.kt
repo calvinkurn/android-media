@@ -30,12 +30,11 @@ import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.NewAttachProductAnalytics
 import com.tokopedia.attachproduct.di.NewAttachProductModule
 import com.tokopedia.attachproduct.di.DaggerNewAttachProductComponent
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity.MAX_CHECKED_DEFAULT
 import com.tokopedia.attachproduct.view.activity.NewAttachProductActivity
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapter
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
+import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
-import com.tokopedia.attachproduct.view.subscriber.AttachProductGetProductListSubscriber
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
@@ -61,15 +60,16 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         ViewModelProvider(this, viewModelFactory).get(AttachProductViewModel::class.java)
     }
 
-    private var activityContract: NewAttachProductContract.Activity? = null
+    private var activityContract: AttachProductContract.Activity? = null
     protected val adapter by lazy { NewAttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
+    private var shopId = ""
     private var warehouseId = "0"
     private var maxChecked = NewAttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
 
-    fun setActivityContract(activityContract: NewAttachProductContract.Activity?) {
+    fun setActivityContract(activityContract: AttachProductContract.Activity?) {
         this.activityContract = activityContract
     }
 
@@ -89,10 +89,12 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initSearchBar()
+        shopId = arguments?.getString(SHOP_ID, "") ?: ""
         setupWarehouseId()
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false)
+            shopId = savedInstanceState.getString(SHOP_ID, "")
             source = savedInstanceState.getString(SOURCE, "")
             maxChecked = savedInstanceState.getInt(MAX_CHECKED, NewAttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS)
@@ -136,6 +138,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 searchBar.clearFocus()
                 val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 `in`.hideSoftInputFromWindow(searchBar.getWindowToken(), 0)
+
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
             }
@@ -148,6 +151,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         outState.putBoolean(IS_SELLER, isSeller)
         outState.putString(SOURCE, source)
         outState.putInt(MAX_CHECKED, maxChecked)
+        outState.putString(SHOP_ID, shopId)
         outState.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts)
     }
 
@@ -156,7 +160,12 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         sendButton = view.findViewById(R.id.send_button_attach_product)
         sendButton.setOnClickListener { sendButtonClicked() }
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        swipeRefreshLayout.setOnRefreshListener{ loadInitialData() }
+        swipeRefreshLayout.setOnRefreshListener{
+            if (searchBar.searchBarTextField.text.toString().isEmpty()) {
+                viewModel.clearCache()
+            }
+            loadInitialData()
+        }
         updateButtonBasedOnChecked(0)
         return view
     }
@@ -164,19 +173,25 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     override fun onStart() {
         super.onStart()
         if (activityContract == null) {
-            if (activity is NewAttachProductContract.Activity) {
-                activityContract = activity as NewAttachProductContract.Activity?
+            if (activity is AttachProductContract.Activity) {
+                activityContract = activity as AttachProductContract.Activity?
             }
         }
     }
 
     private fun onSearchSubmitted() {
         KeyboardHandler.DropKeyboard(activity, view)
-        loadInitialData()
+        if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
+            loadInitialData()
+        }
     }
 
     private fun onSearchTextChanged(text: String) {
-        if (TextUtils.isEmpty(text)) loadInitialData()
+        if (text.isEmpty()) {
+            adapter.clearAllElements()
+            recyclerViewLayoutManager.scrollToPosition(0)
+            addProductToList(viewModel.cacheList, viewModel.cacheHasNext)
+        }
     }
 
     private fun initObserver() {
@@ -185,13 +200,14 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 is Success -> {
                     hideAllLoadingIndicator()
                     var hasNext = false
-                    if (result.data.size >= AttachProductGetProductListSubscriber.DEFAULT_ROWS) {
+                    var listData = result.data.toMutableList()
+                    if (listData.size >= AttachProductViewModel.DEFAULT_ROWS) {
                         hasNext = true
-                        result.data.toMutableList().removeAt(result.data.size - 1)
+                        listData.removeAt(result.data.size - 1)
                     }
-                    addProductToList(result.data, hasNext)
+                    addProductToList(listData, hasNext)
                     if (result.data.isNotEmpty()) {
-                        setShopName(result.data.first().shopName)
+                        setShopName(listData.first().shopName)
                     }
                 }
                 is Fail -> {
@@ -214,11 +230,22 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     override fun loadData(page: Int) {
         if (activityContract != null) {
-            viewModel.loadProductData(
-                searchBar.searchBarTextField.text.toString(),
-                activityContract!!.shopId,
+            if (searchBar.searchBarTextField.text.toString().isEmpty()
+                    && viewModel.cacheList.isNotEmpty()) {
+                val page = (viewModel.cacheList.size / 10) + 1
+                viewModel.loadProductData(
+                    "",
+                    shopId,
+                    page, warehouseId
+                )
+            }
+            else {
+                viewModel.loadProductData(
+                        searchBar.searchBarTextField.text.toString(),
+                shopId,
                 page, warehouseId
-            )
+                )
+            }
         } else if (activity != null) {
             requireActivity().finish()
         }
@@ -298,7 +325,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         if (TextUtils.isEmpty(searchBar.searchBarTextField.text)) {
-            if (activityContract!!.isSeller) {
+            if (isSeller) {
                 emptyResultViewModel.content = getString(R.string.string_attach_product_my_empty_product)
             } else {
                 emptyResultViewModel.content = getString(R.string.string_attach_product_empty_product)
@@ -308,7 +335,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
             emptyResultViewModel.content = getString(R.string.string_attach_product_search_not_found)
             emptyResultViewModel.iconRes = R.drawable.ic_attach_product_empty_search
         }
-        if (activityContract!!.isSeller) {
+        if (isSeller) {
             emptyResultViewModel.buttonTitleRes = R.string.string_attach_product_add_product_now
             emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {}
@@ -321,7 +348,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     }
 
     fun addProductClicked() {
-        activityContract!!.goToAddProduct(activityContract!!.shopId)
+        activityContract!!.goToAddProduct(shopId)
     }
 
     private fun removeHiddenProducts(productNews: MutableList<NewAttachProductItemUiModel>) {
@@ -369,14 +396,16 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         private const val SOURCE = "source"
         private const val MAX_CHECKED = "max_checked"
         private const val HIDDEN_PRODUCTS = "hidden_products"
+        private const val SHOP_ID = "shop_id"
 
         @JvmStatic
         fun newInstance(
-            checkedUIView: NewAttachProductContract.Activity?,
+            checkedUIView: AttachProductContract.Activity?,
             isSeller: Boolean, source: String?, maxChecked: Int,
-            hiddenProducts: ArrayList<String>?, warehouseId: String?
+            hiddenProducts: ArrayList<String>?, warehouseId: String?, shopId: String
         ): NewAttachProductFragment {
             val args = Bundle()
+            args.putString(SHOP_ID, shopId)
             args.putBoolean(IS_SELLER, isSeller)
             args.putString(SOURCE, source)
             args.putString(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId)
