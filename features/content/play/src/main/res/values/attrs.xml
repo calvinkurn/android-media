@@ -7,8 +7,4 @@
     <declare-styleable name="NestedScrollableHost">
         <attr name="lockScroll" format="boolean"/>
     </declare-styleable>
-
-    <declare-styleable name="ProductIconView">
-        <attr name="pic_totalProduct" format="integer"/>
-    </declare-styleable>
 </resources>
