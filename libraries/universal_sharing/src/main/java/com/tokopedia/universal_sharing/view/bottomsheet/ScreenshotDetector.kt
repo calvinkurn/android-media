@@ -21,14 +21,19 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import java.lang.Exception
 
-class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?) {
+class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?,
+                         private val permissionListener: PermissionListener? = null) {
 
     private var contentObserver: ContentObserver? = null
     val pendingRegex = ".pending"
     val screenShotRegex = "screenshot"
+    val actionPermissionDialog = "click - access photo media and files"
+    val labelAllow = "allow"
+    val labelDeny = "deny"
     private var ssUriPath = ""
 
     fun start() {
@@ -173,6 +178,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                 display?.invoke()
                 requestPermission(fragment)
                 dismiss()
+                permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_primary_cta))
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
@@ -181,6 +187,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                 Handler().postDelayed({
                     display?.invoke()
                 }, 1100)
+                permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
             }
             setTitle(fragment.getString(R.string.permission_dialog_title))
             setDescription(fragment.getString(R.string.permission_dialog_description))
@@ -197,6 +204,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             READ_EXTERNAL_STORAGE_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     start()
+                    permissionListener?.permissionAction(actionPermissionDialog, labelAllow)
+                }else{
+                    permissionListener?.permissionAction(actionPermissionDialog, labelDeny)
                 }
                 return
             }
