@@ -64,7 +64,7 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             }
             imagePreviewUnifyListener = object : ImagePreview.ImagePreviewUnifyListener {
                 override fun onZoomStart(scaleFactor: Float) {
-
+                    imagePreviewListener.disableScroll()
                 }
 
                 override fun onZoom(scaleFactor: Float) {
