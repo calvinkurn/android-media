@@ -443,11 +443,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackLihatSemuaClick(headerName: String?) {
-        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
+    override fun trackLihatSemuaClick(dataItem: DataItem?) {
+        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = dataItem?.title
                 ?: EMPTY_STRING)
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         getTracker().sendGeneralEvent(map)
     }
 
