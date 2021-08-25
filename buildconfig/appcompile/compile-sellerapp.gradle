@@ -15,6 +15,7 @@ includeIfEnabled("features:home:navigation-common")
 
 //includeIfEnabled("features:communication:broadcast_message_no_op")
 
+includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:feed_component")
 includeIfEnabled("features:content:createpost")
 includeIfEnabled("features:content:kol")

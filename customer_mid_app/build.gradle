@@ -43,7 +43,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
 
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
-//    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.explore)
