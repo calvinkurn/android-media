@@ -93,8 +93,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
             renderNoCampaign(headerData.productMainPrice)
         }
 
-        productStock.shouldShowWithAction(headerData.productStock.isNotEmpty() && headerData.productStock != "0") {
-            productStock.text = context.getString(R.string.atc_variant_total_stock_empty_label, headerData.productStock)
+        productStock.shouldShowWithAction(headerData.productStockFmt.isNotEmpty() && headerData.productStockFmt != "0") {
+            productStock.text = headerData.productStockFmt
         }
     }
 

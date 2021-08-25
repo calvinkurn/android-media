@@ -382,7 +382,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStock = selectedChild?.stock?.stockFmt ?: ""
+                productStockFmt = selectedChild?.stock?.stockFmt ?: ""
         )
         return productImage to headerData
     }

@@ -10,10 +10,11 @@ import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,13 +53,16 @@ abstract class BaseAtcVariantViewModelTest {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
 
+    @RelaxedMockK
+    lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     val viewModel by lazy {
         AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
                 addToCartUseCase, addToCartOcsUseCase,
-                addToCartOccUseCase, addWishListUseCase, updateCartUseCase, deleteCartUseCase)
+                addToCartOccUseCase, addWishListUseCase, updateCartUseCase, deleteCartUseCase, toggleFavoriteUseCase)
     }
 
     @Before
@@ -113,15 +117,14 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun assertVisitables(visitables: List<AtcVariantVisitable>,
                          showQuantityEditor: Boolean,
-                         expectedSelectedOptionIds: List<String>,
                          expectedSelectedProductId: String,
                          expectedSelectedMainPrice: String,
-                         expectedSelectedStock: String,
+                         expectedSelectedStockFmt: String,
                          expectedSelectedOptionIdsLevelOne: String,
                          expectedSelectedOptionIdsLevelTwo: String,
+                         expectedVariantName: List<String> = listOf(),
                          expectedQuantity: Int,
-                         expectedMinOrder: Int,
-                         isEmptyStock: Boolean = false) {
+                         expectedMinOrder: Int) {
 
         visitables.forEach {
             when (it) {
@@ -129,7 +132,8 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
                     Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
-                    Assert.assertEquals(it.headerData.productStock, expectedSelectedStock)
+                    Assert.assertEquals(it.headerData.productStockFmt, expectedSelectedStockFmt)
+                    Assert.assertTrue(it.variantTitle.containsAll(expectedVariantName))
                 }
                 is VariantComponentDataModel -> {
                     val currentSelectedLevelOne = it.listOfVariantCategory?.first()?.getSelectedOption()?.variantId
@@ -139,8 +143,7 @@ abstract class BaseAtcVariantViewModelTest {
 
                     Assert.assertEquals(currentSelectedLevelOne, expectedSelectedOptionIdsLevelOne)
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
-                    Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(expectedSelectedOptionIds))
-                    Assert.assertEquals(it.isEmptyStock, isEmptyStock)
+                    Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(listOf(expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelTwo)))
                 }
                 is VariantQuantityDataModel -> {
                     Assert.assertEquals(it.quantity, expectedQuantity)
