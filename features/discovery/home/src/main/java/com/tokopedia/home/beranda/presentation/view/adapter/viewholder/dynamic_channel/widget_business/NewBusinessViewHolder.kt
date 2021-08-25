@@ -85,6 +85,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
         setChannelDivider(element)
+        setHeaderComponent(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
         Embrace.getInstance().startEvent(performanceTraceName, null, false)
@@ -113,7 +114,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         try {
             adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
             model = element
-            setHeaderComponent(element)
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
                 if(bundle.containsKey(ERROR_BUNDLE_TAB_LAYOUT)){

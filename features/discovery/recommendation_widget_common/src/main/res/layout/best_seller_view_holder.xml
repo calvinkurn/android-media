@@ -46,7 +46,7 @@
         android:scrollbars="none"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_16"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
