@@ -2479,13 +2479,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        resetAutoPlay(isVisibleToUser)
-        trackScreen(isVisibleToUser)
-        conditionalViewModelRefresh()
-        playWidgetOnVisibilityChanged(
+        if (this::viewModel.isInitialized) {
+            resetAutoPlay(isVisibleToUser)
+            trackScreen(isVisibleToUser)
+            conditionalViewModelRefresh()
+            playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
-        )
-        manageCoachmarkOnFragmentVisible(isVisibleToUser)
+            )
+            manageCoachmarkOnFragmentVisible(isVisibleToUser)
+        }
     }
 
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
