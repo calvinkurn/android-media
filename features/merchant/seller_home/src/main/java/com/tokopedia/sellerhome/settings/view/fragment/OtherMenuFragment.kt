@@ -78,6 +78,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val MAXIMUM_ALPHA = 255f
         private const val ALPHA_CHANGE_THRESHOLD = 150
 
+        private const val SCROLLVIEW_INITIAL_POSITION = 0
+
         private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
@@ -321,7 +323,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onScrollToTop() {
         scrollView?.post {
-            scrollView?.smoothScrollTo(0, 0)
+            scrollView?.smoothScrollTo(SCROLLVIEW_INITIAL_POSITION, SCROLLVIEW_INITIAL_POSITION)
         }
     }
 
