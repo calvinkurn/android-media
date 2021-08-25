@@ -1,17 +1,23 @@
 package com.tokopedia.common.topupbills.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSavedNumberFragment
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
 
-class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<CommonTopupBillsComponent> {
+class TopupBillsSavedNumberActivity : BaseSimpleActivity(),
+    HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
@@ -20,7 +26,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected var operatorData: TelcoCatalogPrefixSelect? = null
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_digital_favorite_number
+        return R.layout.activity_digital_saved_number
     }
 
     override fun getParentViewResourceID(): Int {
@@ -36,7 +42,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     }
 
     override fun getScreenName(): String? {
-        return TopupBillsFavoriteNumberActivity::class.java.simpleName
+        return TopupBillsSavedNumberActivity::class.java.simpleName
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -50,7 +56,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
         }
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.common_topup_fav_number_title))
+        updateTitle(getString(R.string.common_topup_saved_number_title))
 
         //draw background without overdraw GPU
         window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
@@ -60,11 +66,36 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
-        return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
+        return TopupBillsSavedNumberFragment
+            .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
     }
 
     companion object {
+        fun createInstance(
+            context: Context,
+            clientNumber: String,
+            favNumberList: MutableList<TopupBillsFavNumberItem>,
+            dgCategoryIds: ArrayList<String>,
+            categoryName: String,
+            operatorData: TelcoCatalogPrefixSelect
+        ): Intent {
+            val intent = Intent(context, TopupBillsSavedNumberActivity::class.java)
+            val extras = Bundle()
+            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
+            extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
+            extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
+            extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
+
+            /* EXTRA_NUMBER_LIST */
+            extras.putParcelableArrayList(
+                TopupBillsSearchNumberActivity.EXTRA_NUMBER_LIST,
+                favNumberList as ArrayList<out Parcelable>
+            )
+
+            intent.putExtras(extras)
+            return intent
+        }
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
