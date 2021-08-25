@@ -48,7 +48,7 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
-                    ShopPageTrackingConstant.SHOP_REF, shopRef,
+                    ShopPageTrackingConstant.DIMENSION_90, shopRef,
                     ShopPageTrackingConstant.DIMENSION_83, boe
             ))
             list.add(event)
@@ -64,7 +64,7 @@ class ShopPageTrackingBuyer(
             shopTypeDef: String?,
             loginNonLoginString: String,
             shopId: String,
-            shopRef: String
+            dimension90: String
     ): List<Any> {
         val list: MutableList<Any> = ArrayList()
         for (i in shopProductUiModelList.indices) {
@@ -80,7 +80,7 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
-                    ShopPageTrackingConstant.SHOP_REF, shopRef
+                    ShopPageTrackingConstant.DIMENSION_90, dimension90
             ))
             list.add(event)
         }
@@ -133,6 +133,7 @@ class ShopPageTrackingBuyer(
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
         val eventMap = createMap(event, category, action, label, customDimensionShopPage)
+        val dimension90Value = "$shopName.$navSource.local_search.$shopId"
         eventMap[ShopPageTrackingConstant.ECOMMERCE] = DataLayer.mapOf(
                 ShopPageTrackingConstant.CURRENCY_CODE, ShopPageTrackingConstant.IDR,
                 ShopPageTrackingConstant.IMPRESSIONS,
@@ -144,10 +145,8 @@ class ShopPageTrackingBuyer(
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
                         shopId,
-                        customDimensionShopPage.shopRef
+                        dimension90Value
                 ))
-        val dimension90 = "$shopName.$navSource.local_search.$shopId"
-        eventMap[ShopPageTrackingConstant.SHOP_AUTO_COMPLETE_PAGE_DIMENSION_90] = dimension90
         return eventMap
     }
 
@@ -197,6 +196,7 @@ class ShopPageTrackingBuyer(
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
         val eventMap = createMap(event, category, action, label, customDimensionShopPage)
+        val dimension90Value = "$shopName.$navSource.local_search.$shopId"
         eventMap[ShopPageTrackingConstant.ECOMMERCE] = DataLayer.mapOf(
                 ShopPageTrackingConstant.CLICK,
                 DataLayer.mapOf(
@@ -221,11 +221,9 @@ class ShopPageTrackingBuyer(
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
                         shopId,
-                        customDimensionShopPage.shopRef
+                        dimension90Value
                 ))
         )
-        val dimension90 = "$shopName.$navSource.local_search.$shopId"
-        eventMap[ShopPageTrackingConstant.SHOP_AUTO_COMPLETE_PAGE_DIMENSION_90] = dimension90
         return eventMap
     }
 
@@ -827,7 +825,7 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
-                    ShopPageTrackingConstant.SHOP_REF, shopRef
+                    ShopPageTrackingConstant.DIMENSION_90, shopRef
             ))
             list.add(event)
         }
