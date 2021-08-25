@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.filters.FlakyTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
@@ -46,6 +48,17 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
     }
 
     @Test
+    fun should_hide_order_list_when_app_is_seller() {
+        // Given
+        startInboxActivity(true)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(NotificationOrderListViewHolder::class.java))
+        )
+    }
+
+    @Test
     fun should_show_cached_version_order_list_when_cache_data_is_exist() {
         // Given
         val delay = 10_000L
@@ -65,11 +78,11 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
                 0, NotificationOrderListViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertNotifOrderFirstCardText(
-            "Cache Transaksi"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            0, "Cache Transaksi"
         )
-        NotifcenterAssertion.assertNotifOrderSecondCardText(
-            "Cache All"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            1, "Cache All"
         )
     }
 
@@ -90,11 +103,11 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
                 0, NotificationOrderListViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertNotifOrderFirstCardText(
-            "Transaksi berlangsung"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            0, "Transaksi berlangsung"
         )
-        NotifcenterAssertion.assertNotifOrderSecondCardText(
-            "Lihat semua"
+        NotifcenterAssertion.assertNotifOrderCardTextAtPosition(
+            1, "Lihat semua"
         )
     }
 
@@ -145,4 +158,24 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
+    @Test
+    @FlakyTest
+    fun should_retain_last_position_when_user_scrolled_down_and_back_to_it() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.response = notifOrderListUseCase.fifteenOrderWidgetResponse
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.fifteenNotifications
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.smoothScrollOrderWidgetTo(14)
+        NotifcenterAction.smoothScrollNotificationTo(14)
+        NotifcenterAction.smoothScrollNotificationTo(0)
+
+        // Then
+        NotifcenterAssertion.assertOrderWidgetCardAt(
+            14, isDisplayed()
+        )
+    }
 }

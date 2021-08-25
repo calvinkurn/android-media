@@ -91,8 +91,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
-        etalaseId = if (pathSegments.size >= 4) {
-            data?.pathSegments?.getOrNull(3).orEmpty()
+        etalaseId = if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
+            data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
         } else {
             "0"
         }
@@ -182,6 +182,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_SORT = "sort"
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
+        private const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
+        private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         fun createIntent(context: Context?, shopId: String?, keyword: String?,
                          etalaseId: String?, attribution: String?, sortId: String?, shopRef: String?): Intent {
             val intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef)

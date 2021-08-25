@@ -155,6 +155,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     productId,
                     ref)
         }
+        RecommendationRollenceController.fetchRecommendationRollenceValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -36,6 +36,31 @@
 
     </com.tokopedia.play_common.view.RoundedConstraintLayout>
 
+    <FrameLayout
+        android:id="@+id/fl_interactive_follow"
+        android:layout_width="@dimen/play_interactive_tap_action"
+        android:layout_height="@dimen/play_interactive_tap_action"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_play_interactive_tap_action"
+        app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
+        app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_follow"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="USER_ADD"
+            />
+
+    </FrameLayout>
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_confetti_tap"
         android:layout_width="wrap_content"
@@ -64,6 +89,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_interactive_tap_action"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
         app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
         >
@@ -81,6 +107,14 @@
             />
 
     </FrameLayout>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_lottie_tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="lottie_button_tap, lottie_confetti_tap"
+        android:visibility="invisible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_tap_action"
