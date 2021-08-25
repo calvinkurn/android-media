@@ -38,13 +38,13 @@ import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGallery
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
+import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.review_layout.*
 import javax.inject.Inject
 
 class ReviewGalleryFragment :
@@ -180,10 +180,13 @@ class ReviewGalleryFragment :
             getTotalReview(),
             viewModel.getProductId()
         )
+        val satisfactionRateInt = getSatisfactionRate().filter {
+            it.isDigit()
+        }
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(
                 getReviewStatistics(),
-                getSatisfactionRate()
+                "$satisfactionRateInt${ReadReviewFragment.PRODUCT_SATISFACTION_RATE}"
             )
         }
         activity?.supportFragmentManager?.let {

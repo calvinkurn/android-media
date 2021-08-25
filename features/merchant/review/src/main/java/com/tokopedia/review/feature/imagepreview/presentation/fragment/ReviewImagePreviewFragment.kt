@@ -262,11 +262,19 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun setupThreeDots() {
         menuButton?.setOnClickListener {
             activity?.supportFragmentManager?.let {
-                ReviewReportBottomSheet.newInstance(
-                    productReview.feedbackID,
-                    shopId,
-                    this
-                ).show(it, ReviewReportBottomSheet.TAG)
+                if (isFromGallery) {
+                    ReviewReportBottomSheet.newInstance(
+                        galleryRoutingData.getSelectedReview()?.feedbackId ?: "",
+                        shopId,
+                        this
+                    ).show(it, ReviewReportBottomSheet.TAG)
+                } else {
+                    ReviewReportBottomSheet.newInstance(
+                        productReview.feedbackID,
+                        shopId,
+                        this
+                    ).show(it, ReviewReportBottomSheet.TAG)
+                }
             }
         }
     }
@@ -444,7 +452,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun openExpandedReviewBottomSheet() {
         if (isProductReview) {
-            ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId, isFromGallery)
+            ReviewImagePreviewTracking.trackOnSeeAllClicked(
+                productReview.feedbackID,
+                productId,
+                isFromGallery
+            )
         } else {
             ReviewImagePreviewTracking.trackOnShopReviewSeeAllClicked(
                 productReview.feedbackID,
