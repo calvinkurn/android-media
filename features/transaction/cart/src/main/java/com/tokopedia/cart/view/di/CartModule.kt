@@ -8,7 +8,6 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
@@ -116,7 +115,6 @@ class CartModule {
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                   followShopUseCase: FollowShopUseCase,
-                                  addToCartBundleUseCase: AddToCartBundleUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartRevampV3UseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
@@ -125,7 +123,7 @@ class CartModule {
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
                 validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
-                addToCartBundleUseCase, schedulers
+                schedulers
         )
     }
 

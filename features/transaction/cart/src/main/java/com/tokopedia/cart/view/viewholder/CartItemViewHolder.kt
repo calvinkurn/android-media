@@ -47,7 +47,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     @SuppressLint("ClickableViewAccessibility")
     private fun setNoteTouchListener() {
         binding.textFieldNotes.setOnTouchListener { view, event ->
-            if (view.id == R.id.et_remark) {
+            if (view.id == R.id.text_field_notes) {
                 view.parent.requestDisallowInterceptTouchEvent(true)
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_UP -> view.parent.requestDisallowInterceptTouchEvent(false)
