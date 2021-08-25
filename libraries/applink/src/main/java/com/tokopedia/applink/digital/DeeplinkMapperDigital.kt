@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.RECHARGE_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
@@ -32,7 +33,7 @@ object DeeplinkMapperDigital {
         if (applink.isNotEmpty()) {
             val internalApplink = getRegisteredNavigationDigital(context, applink)
             val stringBuilder = StringBuilder(internalApplink)
-            stringBuilder.append("?")
+            if (!stringBuilder.contains("?")) stringBuilder.append("?")
             stringBuilder.append(Uri.parse(applink).query)
             return stringBuilder.toString()
         }
@@ -46,7 +47,7 @@ object DeeplinkMapperDigital {
                 if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
-                else ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, RECHARGE_SUBHOMEPAGE_PLATFORM_ID, false.toString())
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
