@@ -344,9 +344,12 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
+        var paramSource = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString()))
+            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+
         return mapOf(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
-                FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
+                FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
                 FAVORITE_NUMBER_PARAM_CATEGORY_IDS to categoryIds,
                 FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
@@ -365,6 +368,9 @@ class TopupBillsViewModel @Inject constructor(
         label: String,
         isDelete: Boolean
     ): Map<String, Any> {
+        var paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR)
+            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+
         return mapOf(
             FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
                 FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
@@ -373,7 +379,7 @@ class TopupBillsViewModel @Inject constructor(
                 FAVORITE_NUMBER_PARAM_LABEL to label,
                 FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                 FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
+                FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
                 FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
                 FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
             )
@@ -445,7 +451,6 @@ class TopupBillsViewModel @Inject constructor(
 
         const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
         const val FAVORITE_NUMBER_PARAM_SOURCE = "source"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP = "pdp_favorite_list"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_IDS = "category_ids"
         const val FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION = "min_last_transaction"
         const val FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION = "min_total_transaction"
@@ -462,6 +467,8 @@ class TopupBillsViewModel @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE = "updateLastOrderDate"
         const val FAVORITE_NUMBER_PARAM_UPDATE_STATUS = "updateStatus"
         const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID = "pdp_favorite_list_telco_postpaid"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_PREPAID = "pdp_favorite_list_telco_prepaid"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
@@ -471,6 +478,8 @@ class TopupBillsViewModel @Inject constructor(
         const val ERROR_FETCH_AFTER_UNDO_DELETE = "ERROR_UNDO_DELETE"
 
         const val NULL_RESPONSE = "null response"
+
+        const val CATEGORY_ID_PASCABAYAR = 9
 
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val FAVORITE_NUMBER_LIMIT = 10

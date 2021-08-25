@@ -15,7 +15,7 @@
     <string name="common_topup_fav_number_title">Nomor Favorit</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
     <string name="common_topup_fav_number_empty_state_title">Wah, nomor baru ya?</string>
-    <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorite, Transaksi dulu, yuk!</string>
+    <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorit, Transaksi dulu, yuk!</string>
     <string name="common_topup_fav_number_not_found_state_desc">Setelah transaksi, nomor bakal tersimpan di sini supaya kamu nggak perlu masukin lagi.</string>
     <string name="common_topup_fav_number_coachmark_1_title">Nomornya jangan lupa dinamain, ya &#9999;</string>
     <string name="common_topup_fav_number_coachmark_1_subtitle">Biar mudah diingat, kamu bisa kasih nama buat masing-masing Nomor Favorit disini</string>
@@ -36,8 +36,8 @@
     <string name="common_topup_fav_number_modify_name">Nama</string>
     <string name="common_topup_fav_number_modify_phone">Nomor HP</string>
     <string name="common_topup_fav_number_modify_button">Simpan</string>
-    <string name="common_topup_fav_number_delete_dialog"><![CDATA[<b>%s</b> akan dihapus dari Nomor Favorite. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
-    <string name="common_topup_fav_number_delete_dialog_with_client_name"><![CDATA[<b>%s (%s)</b> akan dihapus dari Nomor Favorite. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
+    <string name="common_topup_fav_number_delete_dialog"><![CDATA[<b>%s</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
+    <string name="common_topup_fav_number_delete_dialog_with_client_name"><![CDATA[<b>%s (%s)</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
     <string name="common_topup_fav_number_success_update_name">Oke, nama berhasil diubah.</string>
     <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>
     <string name="common_topup_fav_number_refresh">Refresh</string>
@@ -61,6 +61,12 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+
+    <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
+    <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
+    <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
+    <string name="common_topup_saved_number_searchbar_placeholder">Cari nama atau nomor HP</string>
+
     <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
     <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
     <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>

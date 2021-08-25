@@ -71,19 +71,6 @@ class HotelSearchMapViewModel @Inject constructor(
         with(searchParam) {
             location = ParamLocation()
 
-            when (hotelSearchModel.type) {
-                // temp: to support the popular search and recent search in suggestion page
-                HotelTypeEnum.CITY.value -> {
-                    location.cityID = hotelSearchModel.id
-                }
-                HotelTypeEnum.DISTRICT.value -> {
-                    location.districtID = hotelSearchModel.id
-                }
-                HotelTypeEnum.REGION.value -> {
-                    location.regionID = hotelSearchModel.id
-                }
-            }
-
             // when user search by coordinate
             if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
                 location.latitude = hotelSearchModel.lat

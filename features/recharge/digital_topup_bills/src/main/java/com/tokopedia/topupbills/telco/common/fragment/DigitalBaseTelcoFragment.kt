@@ -30,10 +30,12 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberAct
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_IDS
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_NAME
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -154,28 +156,51 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     }
 
-    protected fun navigateContact() {
+    protected fun navigateContact(
+        clientNumber: String,
+        favNumberList: MutableList<TopupBillsFavNumberItem>,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String
+    ) {
+        // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.checkPermission(it,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                        }
+            permissionCheckerHelper.checkPermission(this,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper.onPermissionDenied(requireContext(), permissionText)
+                    }
 
-                        override fun onNeverAskAgain(permissionText: String) {
-                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                        }
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper.onNeverAskAgain(requireContext(), permissionText)
+                    }
 
-                        override fun onPermissionGranted() {
-                            openContactPicker()
-                        }
-                    })
-            }
+                    override fun onPermissionGranted() {
+                        navigateSavedNumber(
+                            clientNumber, favNumberList, dgCategoryIds, categoryName)
+                    }
+                })
         } else {
-            openContactPicker()
+            navigateSavedNumber(clientNumber, favNumberList, dgCategoryIds, categoryName)
+        }
+    }
+
+    private fun navigateSavedNumber(
+        clientNumber: String,
+        favNumberList: MutableList<TopupBillsFavNumberItem>,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String)
+    {
+        context?.let {
+            val intent = TopupBillsSavedNumberActivity.createInstance(
+                it, clientNumber, favNumberList, dgCategoryIds, categoryName, operatorData
+            )
+
+            val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
+                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+
+            startActivityForResult(intent, requestCode)
         }
     }
 
@@ -208,7 +233,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             intent.putExtras(extras)
 
             val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
-                REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER else REQUEST_CODE_DIGITAL_FAVORITE_NUMBER
+                REQUEST_CODE_DIGITAL_SAVED_NUMBER else REQUEST_CODE_DIGITAL_SEARCH_NUMBER
 
             startActivityForResult(intent, requestCode)
         }
@@ -259,7 +284,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         setInputNumberFromContact(contact?.contactNumber ?: "")
                         setContactNameFromContact(contact?.givenName ?: "")
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_FAVORITE_NUMBER) {
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
                         val inputNumberActionType =
                             data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
@@ -275,18 +300,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     } else {
                         handleCallbackAnySearchNumberCancel()
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER) {
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                     if (data != null) {
-                        val inputNumberActionType =
-                            data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                         val orderClientNumber =
-                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
+                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
                         handleCallbackAnySearchNumber(
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
-                            orderClientNumber.productId.toString(),
-                            orderClientNumber.categoryId.toString(),
-                            inputNumberActionType
+                            orderClientNumber.productId,
+                            orderClientNumber.categoryId,
+                            orderClientNumber.inputNumberActionTypeIndex
                         )
                     } else {
                         handleCallbackAnySearchNumberCancel()
@@ -389,10 +412,15 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(activity, error, ErrorHandler.Builder().build())
+
         NetworkErrorHelper.showEmptyState(
             activity,
             pageContainer,
-            ErrorHandler.getErrorMessage(context, error)
+            errMsg,
+            "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            null,
+            DEFAULT_ICON_RES
         ) {
             getMenuDetail(getTelcoMenuId())
         }
@@ -577,12 +605,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
-        const val REQUEST_CODE_DIGITAL_FAVORITE_NUMBER = 76
-        const val REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER = 77
+        const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
+        const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
 
+        const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300
     }

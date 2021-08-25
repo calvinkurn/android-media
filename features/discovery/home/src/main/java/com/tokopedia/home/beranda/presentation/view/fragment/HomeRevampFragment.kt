@@ -587,7 +587,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
-        homeRecyclerView?.itemAnimator?.moveDuration = ITEM_MOVE_DURATION
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
@@ -714,61 +713,63 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
-        //inbox
-        if (!isInboxCoachmarkShown(requireContext())) {
-            val inboxIcon = navToolbar?.getInboxIconView()
-            inboxIcon?.let {
-                this.add(
-                        CoachMark2Item(
-                                inboxIcon,
-                                getString(R.string.onboarding_coachmark_inbox_title),
-                                getString(R.string.onboarding_coachmark_inbox_description)
-                        )
-                )
-            }
-        }
-
-        //add balance widget
-        //uncomment this to activate balance widget coachmark
-        if (isUsingWalletApp()) {
-            if (!skipBalanceWidget && !isWalletAppCoachmarkShown(requireContext())) {
-                val gopayWidget = getGopayBalanceWidgetView()
-                gopayWidget?.let {
+        context?.let { currentContext ->
+            //inbox
+            if (!isInboxCoachmarkShown(currentContext)) {
+                val inboxIcon = navToolbar?.getInboxIconView()
+                inboxIcon?.let {
                     this.add(
                         CoachMark2Item(
-                            gopayWidget,
-                            getString(R.string.home_gopay_coachmark_title),
-                            getString(R.string.home_gopay_coachmark_description)
+                            inboxIcon,
+                            getString(R.string.onboarding_coachmark_inbox_title),
+                            getString(R.string.onboarding_coachmark_inbox_description)
                         )
                     )
                 }
             }
 
-            if (!skipBalanceWidget && !isWalletApp2CoachmarkShown(requireContext())) {
-                val balanceWidget = getBalanceWidgetView()
-                balanceWidget?.let {
+            //add balance widget
+            //uncomment this to activate balance widget coachmark
+            if (isUsingWalletApp()) {
+                if (!skipBalanceWidget && !isWalletAppCoachmarkShown(currentContext)) {
+                    val gopayWidget = getGopayBalanceWidgetView()
+                    gopayWidget?.let {
+                        this.add(
+                            CoachMark2Item(
+                                gopayWidget,
+                                getString(R.string.home_gopay_coachmark_title),
+                                getString(R.string.home_gopay_coachmark_description)
+                            )
+                        )
+                    }
+                }
+
+                if (!skipBalanceWidget && !isWalletApp2CoachmarkShown(currentContext)) {
+                    val balanceWidget = getBalanceWidgetView()
+                    balanceWidget?.let {
+                        this.add(
+                            CoachMark2Item(
+                                balanceWidget,
+                                getString(R.string.home_gopay2_coachmark_title),
+                                getString(R.string.home_gopay2_coachmark_description)
+                            )
+                        )
+                    }
+                }
+            }
+
+            //add navigation
+            if (!isNavigationCoachmarkShown(currentContext)) {
+                val globalNavIcon = navToolbar?.getGlobalNavIconView()
+                globalNavIcon?.let {
                     this.add(
                         CoachMark2Item(
-                            balanceWidget,
-                            getString(R.string.home_gopay2_coachmark_title),
-                            getString(R.string.home_gopay2_coachmark_description)
+                            globalNavIcon,
+                            getString(R.string.onboarding_coachmark_title),
+                            getString(R.string.onboarding_coachmark_description)
                         )
                     )
                 }
-            }
-        }
-
-        //add navigation
-        if (!isNavigationCoachmarkShown(requireContext())) {
-            val globalNavIcon = navToolbar?.getGlobalNavIconView()
-            globalNavIcon?.let {
-                this.add(
-                    CoachMark2Item(
-                        globalNavIcon,
-                        getString(R.string.onboarding_coachmark_title),
-                        getString(R.string.onboarding_coachmark_description)
-                    )
-                )
             }
         }
     }
@@ -804,24 +805,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun CoachMark2Item.setCoachmarkShownPref() {
-        when {
-            this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
-                setChooseAddressCoachmarkShown(requireContext())
-            }
-            this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
-                setNavigationCoachmarkShown(requireContext())
-            }
-            this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
-                setInboxCoachmarkShown(requireContext())
-            }
-            this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
-                setBalanceWidgetCoachmarkShown(requireContext())
-            }
-            this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
-                setWalletAppCoachmarkShown(requireContext())
-            }
-            this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
-                setWalletApp2CoachmarkShown(requireContext())
+        context?.let { currentContext ->
+            when {
+                this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
+                    setChooseAddressCoachmarkShown(currentContext)
+                }
+                this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
+                    setNavigationCoachmarkShown(currentContext)
+                }
+                this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
+                    setInboxCoachmarkShown(currentContext)
+                }
+                this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
+                    setBalanceWidgetCoachmarkShown(currentContext)
+                }
+                this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
+                    setWalletAppCoachmarkShown(currentContext)
+                }
+                this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
+                    setWalletApp2CoachmarkShown(currentContext)
+                }
             }
         }
     }
@@ -1081,21 +1084,24 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun validateChooseAddressWidget(): Boolean {
-        var isAddressChanged = false
-        getHomeViewModel().getAddressData().toLocalCacheModel().let {
-            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
-        }
+        context?.let { currentContext ->
+            var isAddressChanged = false
+            getHomeViewModel().getAddressData().toLocalCacheModel().let {
+                isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(currentContext, it)
+            }
 
-        if (isAddressChanged) {
-            chooseAddressWidgetInitialized = false
-            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+            if (isAddressChanged) {
+                chooseAddressWidgetInitialized = false
+                val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(currentContext)
+                val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
-            getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
-            getHomeViewModel().refresh(isFirstInstall = isFirstInstall(), forceRefresh = true)
-        }
+                getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
+                getHomeViewModel().refresh(isFirstInstall = isFirstInstall(), forceRefresh = true)
+            }
 
-        return isAddressChanged
+            return isAddressChanged
+        }
+        return false
     }
 
     private fun adjustStatusBarColor() {
@@ -1306,7 +1312,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeSearchHint() {
         if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers()) {
-            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
+            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder ->
+                if (userVisibleHint) {
+                    setHint(data)
+                }
+            })
         }
     }
 
@@ -1410,28 +1420,30 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun renderTopBackground() {
-        val backgroundUrl = if (requireContext().isDarkMode()) {
-            BACKGROUND_DARK_1
-        } else {
-            BACKGROUND_LIGHT_1
-        }
+        context?.let { currentContext ->
+            val backgroundUrl = if (currentContext.isDarkMode()) {
+                BACKGROUND_DARK_1
+            } else {
+                BACKGROUND_LIGHT_1
+            }
 
-        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
-        if (isChooseAddressShow) {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-        } else {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-        }
+            val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+            if (isChooseAddressShow) {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+            } else {
+                val layoutParams = backgroundViewImage.layoutParams
+                layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+                backgroundViewImage.layoutParams = layoutParams
+            }
 
-        Glide.with(requireContext())
+            Glide.with(currentContext)
                 .load(backgroundUrl)
                 .fitCenter()
                 .dontAnimate()
                 .into(backgroundViewImage)
+        }
     }
 
     @VisibleForTesting
@@ -1886,13 +1898,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onChooseAddressUpdated() {
-        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        getHomeViewModel().updateChooseAddressData(
+        context?.let { currentContext ->
+            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(currentContext)
+            getHomeViewModel().updateChooseAddressData(
                 HomeChooseAddressData(isActive = true)
-                        .setLocalCacheModel(localCacheModel)
-        )
-        chooseAddressWidgetInitialized = false
-        getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
+                    .setLocalCacheModel(localCacheModel)
+            )
+            chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
+        }
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
@@ -1913,9 +1927,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().removeChooseAddressWidget()
     }
 
-    private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
-//animation to keep our performance
-//        homeRecyclerView?.itemAnimator = null
+    private fun onNetworkRetry(forceRefresh: Boolean = false) {
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
@@ -2823,7 +2835,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
-        startActivityForResult(RouteManager.getIntent(requireContext(), appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+        context?.let {
+            startActivityForResult(RouteManager.getIntent(it, appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+        }
     }
 
     override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
@@ -2922,7 +2936,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun getErrorString(e: Throwable) : String {
-        return ErrorHandler.getErrorMessage(requireContext(), e)
+        return context?.let {
+            ErrorHandler.getErrorMessage(it, e)
+        }?:""
     }
 
     private fun gotoNewUserZonePage() {

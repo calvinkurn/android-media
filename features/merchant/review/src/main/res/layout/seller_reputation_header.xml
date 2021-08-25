@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -13,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="@dimen/spacing_lvl6"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         tools:text="wewe" />

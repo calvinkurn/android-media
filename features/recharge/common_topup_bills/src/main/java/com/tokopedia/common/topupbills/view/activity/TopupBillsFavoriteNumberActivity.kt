@@ -20,7 +20,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected var operatorData: TelcoCatalogPrefixSelect? = null
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_digital_search_number_rev
+        return R.layout.activity_digital_favorite_number
     }
 
     override fun getParentViewResourceID(): Int {
