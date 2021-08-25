@@ -15,7 +15,11 @@ data class NewAttachProductItemUiModel(
     val productId: String,
     val productImageFull: String,
     val productImage: String,
-    val productPrice: String, val shopName: String)
+    val productPrice: String,
+    val shopName: String,
+    val originalPrice: String,
+    val discountPercentage: String,
+)
     : Visitable<NewAttachProductListAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactoryNew: NewAttachProductListAdapterTypeFactory): Int {

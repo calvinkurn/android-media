@@ -29,5 +29,11 @@ data class NewDataProductResponse (
     var priceInt: Int = 0,
 
     @SerializedName("shop")
-    val shop: NewDataShopResponse = NewDataShopResponse()
+    val shop: NewDataShopResponse = NewDataShopResponse(),
+
+    @SerializedName("originalPrice")
+    val originalPrice: String = "",
+
+    @SerializedName("discountPercentage")
+    val discountPercentage: String = ""
 )

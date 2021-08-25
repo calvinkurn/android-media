@@ -33,6 +33,7 @@ import com.tokopedia.attachproduct.di.DaggerNewAttachProductComponent
 import com.tokopedia.attachproduct.view.activity.NewAttachProductActivity
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapter
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
+import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
@@ -59,7 +60,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         ViewModelProvider(this, viewModelFactory).get(AttachProductViewModel::class.java)
     }
 
-    private var activityContract: NewAttachProductContract.Activity? = null
+    private var activityContract: AttachProductContract.Activity? = null
     protected val adapter by lazy { NewAttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
@@ -68,7 +69,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     private var maxChecked = NewAttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
 
-    fun setActivityContract(activityContract: NewAttachProductContract.Activity?) {
+    fun setActivityContract(activityContract: AttachProductContract.Activity?) {
         this.activityContract = activityContract
     }
 
@@ -172,8 +173,8 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     override fun onStart() {
         super.onStart()
         if (activityContract == null) {
-            if (activity is NewAttachProductContract.Activity) {
-                activityContract = activity as NewAttachProductContract.Activity?
+            if (activity is AttachProductContract.Activity) {
+                activityContract = activity as AttachProductContract.Activity?
             }
         }
     }
@@ -399,7 +400,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
         @JvmStatic
         fun newInstance(
-            checkedUIView: NewAttachProductContract.Activity?,
+            checkedUIView: AttachProductContract.Activity?,
             isSeller: Boolean, source: String?, maxChecked: Int,
             hiddenProducts: ArrayList<String>?, warehouseId: String?, shopId: String
         ): NewAttachProductFragment {
