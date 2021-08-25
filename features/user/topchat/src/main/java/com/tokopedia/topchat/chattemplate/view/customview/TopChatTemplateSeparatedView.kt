@@ -20,17 +20,24 @@ class TopChatTemplateSeparatedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attributeSet, defStyleAttr) {
 
-    private var view: View = View.inflate(context, R.layout.layout_chat_template, this)
+    private var view: View? = null
 
     private var chatTemplateList: List<Visitable<Any>> = arrayListOf()
     private var recyclerView: RecyclerView? = null
     private var adapter: TemplateChatAdapter? = null
     private var listener: ChatTemplateListener? = null
 
-    var isVisible = false
-
     init {
-        recyclerView = view.findViewById(R.id.list_template)
+        initViewLayout()
+        initBindView()
+    }
+
+    private fun initViewLayout() {
+        view = View.inflate(context, R.layout.layout_chat_template, this)
+    }
+
+    private fun initBindView() {
+        recyclerView = view?.findViewById(R.id.list_template_separated)
     }
 
     fun setupSeparatedChatTemplate(chatTemplateListener: ChatTemplateListener) {
@@ -39,21 +46,9 @@ class TopChatTemplateSeparatedView @JvmOverloads constructor(
 
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = LinearLayoutManager(
-            view.context, LinearLayoutManager.HORIZONTAL, false)
+            view?.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView?.adapter = adapter
-        adapter?.list = arrayListOf()
-    }
-
-    fun showSeparatedChatTemplate() {
-        if(adapter?.hasTemplateChat() == true) {
-            recyclerView?.show()
-            isVisible = true
-        }
-    }
-
-    fun hideSeparatedChatTemplate() {
-        recyclerView?.hide()
-        isVisible = false
+        adapter?.list?.clear()
     }
 
     fun updateTemplate(chatTemplates: List<Visitable<Any>>) {

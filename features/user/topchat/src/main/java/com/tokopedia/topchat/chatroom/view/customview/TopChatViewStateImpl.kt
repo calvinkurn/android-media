@@ -87,7 +87,7 @@ open class TopChatViewStateImpl constructor(
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
-    override fun getRecyclerViewId() = R.id.recycler_view
+    override fun getRecyclerViewId() = R.id.recycler_view_chatroom
     override fun getNewCommentId() = R.id.new_comment
     override fun getReplyBoxId() = R.id.reply_box
     override fun getActionBoxId() = R.id.add_comment_area

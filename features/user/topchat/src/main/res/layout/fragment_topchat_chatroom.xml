@@ -28,7 +28,7 @@
             android:adjustViewBounds="true" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recycler_view_chatroom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/footer"
@@ -143,11 +143,22 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <include
-                layout="@layout/layout_chat_template"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"/>
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_template_chat_layout"
+                tools:orientation="horizontal"
+                tools:scrollbars="horizontal"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/cl_attachment_preview"

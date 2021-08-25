@@ -209,7 +209,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
@@ -1147,7 +1147,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onErrorGetTemplate() {
-        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hide()
         getViewState().setTemplate(null)
     }
 
@@ -2244,7 +2244,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun showSeparatedChatTemplateIfFlex() {
         if (viewStateShouldShowTemplate()) {
             chatRoomFlexModeListener?.getSeparatedTemplateChat()?.show()
-            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.showSeparatedChatTemplate()
         } else {
             hideSeparatedChatTemplate()
         }
@@ -2252,7 +2251,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun hideSeparatedChatTemplate() {
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hide()
-        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
         chatBoxPadding?.hide()
     }
 

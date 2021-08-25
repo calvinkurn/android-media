@@ -61,7 +61,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private lateinit var chatRoomFragment: TopChatRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
 
-    private var remoteConfig: RemoteConfig? = null
+    var remoteConfig: RemoteConfig? = null
 
     private var constraintLayoutParent: ConstraintLayout? = null
     private var frameLayoutChatRoom: FrameLayout? = null
@@ -327,7 +327,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private fun handleNonFlexModeView() {
         frameLayoutChatList?.hide()
         attachChatRoomFragment()
-        chatTemplateSeparatedView?.hideSeparatedChatTemplate()
+        chatTemplateSeparatedView?.hide()
         chatRoomFragment.toggleTemplateChatWhenFlex(false)
     }
 
@@ -395,7 +395,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(view.windowToken, 0)
             }
-            chatTemplateSeparatedView?.hideSeparatedChatTemplate()
+            chatTemplateSeparatedView?.hide()
         } catch (ignored: Exception) {
             ignored.printStackTrace()
         }
@@ -426,7 +426,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         toolbar.removeAllViews()
         toolbar.addView(mCustomView)
-        toolbar.contentInsetStartWithNavigation = ViewUtil.convertToPx(16)
+        toolbar.contentInsetStartWithNavigation = ViewUtil.convertToPx(SIXTEEN_DP)
         toolbar.contentInsetEndWithActions = 0
     }
 
@@ -507,6 +507,14 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true)?: true
     }
 
+    override fun onBackPressed() {
+        if(chatRoomFragment.onBackPressed()) {
+            return
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
         val REQUEST_CODE_CHAT_IMAGE = 2325
@@ -523,6 +531,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         private const val FLAT_STATE = 1
         private const val HALF_OPEN_STATE = 2
         private const val ZER0_MESSAGE_ID = "0"
+        private const val SIXTEEN_DP = 16
         private var role: Int? = null
         private var currentActiveChat: String? = null
     }

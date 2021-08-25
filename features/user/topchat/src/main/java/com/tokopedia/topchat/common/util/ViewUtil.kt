@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 object ViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
+    private const val FIVE_MARGIN = 5
 
     fun generateBackgroundWithShadow(
             view: View?,
@@ -254,10 +255,9 @@ object ViewUtil {
             deviceFeatureId, ConstraintSet.START, 0
         )
 
-
         set.connect(
             secondContainerId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, 5
+            toolbarId, ConstraintSet.BOTTOM, FIVE_MARGIN
         )
         set.connect(
             secondContainerId, ConstraintSet.BOTTOM,
