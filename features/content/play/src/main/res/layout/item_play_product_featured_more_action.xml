@@ -12,7 +12,7 @@
         android:id="@+id/ic_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:totalProduct="15" />
+        tools:pic_totalProduct="15" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_check_product"

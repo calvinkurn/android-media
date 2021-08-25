@@ -9,6 +9,6 @@
     </declare-styleable>
 
     <declare-styleable name="ProductIconView">
-        <attr name="totalProduct" format="integer"/>
+        <attr name="pic_totalProduct" format="integer"/>
     </declare-styleable>
 </resources>
