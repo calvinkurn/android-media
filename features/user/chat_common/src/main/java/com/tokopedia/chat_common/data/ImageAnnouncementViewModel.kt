@@ -91,6 +91,10 @@ constructor(
         return statusCampaign == CampaignStatus.ON_GOING
     }
 
+    fun endCampaign() {
+        statusCampaign = CampaignStatus.ENDED
+    }
+
     object CampaignStatus {
         const val STARTED = 1
         const val ON_GOING = 2

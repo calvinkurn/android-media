@@ -68,6 +68,11 @@ class BroadcastCampaignLabelView : LinearLayout {
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        countdown?.onFinish = null
+    }
+
     // TODO: Adjust wording
     private fun bindDescText(banner: ImageAnnouncementViewModel) {
         val description = when (banner.statusCampaign) {
@@ -122,6 +127,10 @@ class BroadcastCampaignLabelView : LinearLayout {
                 time = Date(banner.endDataMillis)
             }
             countdown?.targetDate = calendar
+            countdown?.onFinish = {
+                banner.endCampaign()
+                renderState(banner)
+            }
         } else {
             countdown?.hide()
         }
