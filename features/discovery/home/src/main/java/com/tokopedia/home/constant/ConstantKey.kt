@@ -59,4 +59,9 @@ object ConstantKey {
         const val KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD"
         const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
     }
+
+    object BeautyFest {
+        const val KEY_BEAUTY_FEST = "KEY_BEAUTY_FEST"
+        const val KEY_IS_BEAUTY_FEST ="KEY_IS_BEAUTY_FEST"
+    }
 }

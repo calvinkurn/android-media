@@ -593,4 +593,12 @@
         <key>android_main_app_enable_tokopedia_now</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_customer_sticky_login_tokonow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_sticky_login_reminder_tokonow</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

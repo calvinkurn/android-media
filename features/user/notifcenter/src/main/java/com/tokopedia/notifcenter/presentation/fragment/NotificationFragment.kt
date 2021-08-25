@@ -26,6 +26,7 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -37,7 +38,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
@@ -123,7 +124,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun loadData(page: Int) {
         if (page == 1) {
-            if (!hasFilter()) {
+            if (!hasFilter() && !GlobalConfig.isSellerApp()) {
                 viewModel.loadNotifOrderList(containerListener?.role)
             }
             viewModel.loadFirstPageNotification(
@@ -675,12 +676,16 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return containerListener?.role == RoleType.SELLER
     }
 
-    override fun trackClickOrderListItem(order: Card) {
+    override fun trackClickOrderListItem(order: OrderWidgetUiModel) {
         analytic.trackClickOrderListItem(containerListener?.role, order)
     }
 
     override fun getNotifAnalytic(): NotificationAnalytic {
         return analytic
+    }
+
+    override fun getRole(): Int {
+        return containerListener?.role ?: -1
     }
 
     override fun hasFilter(): Boolean {
