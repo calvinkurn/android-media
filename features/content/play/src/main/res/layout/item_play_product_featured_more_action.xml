@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.play.view.custom.ProductIconView
-        android:id="@+id/ic_product"
+        android:id="@+id/ic_play_featured_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:pic_totalProduct="15" />

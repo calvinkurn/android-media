@@ -20,7 +20,7 @@ class ProductFeaturedSeeMoreViewHolder(
     }
 
     fun bind(item: PlayProductUiModel.SeeMore) {
-        val icProduct = itemView.findViewById<ProductIconView>(R.id.ic_product)
+        val icProduct = itemView.findViewById<ProductIconView>(R.id.ic_play_featured_product)
         icProduct.setTotalProduct(item.total)
         itemView.scaleX = item.scale
         itemView.scaleY = item.scale
