@@ -6,6 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -13,7 +17,9 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.common.util.ResourceProvider
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,6 +29,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductBundleViewModel @Inject constructor(
+    private val rscProvider: ResourceProvider,
     private val dispatchers: CoroutineDispatchers,
     private val getBundleInfoUseCase: GetBundleInfoUseCase,
     private val addToCartBundleUseCase: AddToCartBundleUseCase
@@ -35,13 +42,14 @@ class ProductBundleViewModel @Inject constructor(
         private const val PRODUCT_BUNDLE_STATUS_UPCOMING = 2
         private const val PRODUCT_BUNDLE_STATUS_EXPIRED = -2
         private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
+        private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
         private const val PREORDER_TYPE_DAY: Int = 1
         private const val PREORDER_TYPE_MONTH: Int = 2
     }
 
-    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
-
     var parentProductID: Long = 0L
+
+    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
@@ -63,7 +71,8 @@ class ProductBundleViewModel @Inject constructor(
                         variantDetail = true,
                         CheckCampaign = true,
                         BundleGroup = true,
-                        Preorder = true
+                        Preorder = true,
+                        inventoryDetail = InventoryDetail(true)
                     ),
                     productData = ProductData(productID = productId.toString())
                 )
@@ -79,16 +88,24 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleMasters.firstOrNull()
     }
 
+    fun getSelectedProductBundleDetails(): List<ProductBundleDetail> {
+        return productBundleMap[selectedProductBundleMaster.value] ?: listOf()
+    }
+
     fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
         this.selectedProductBundleMasterLiveData.value = productBundleMaster
     }
 
-    fun getPreOrderProcessDay(): Long {
-        return this.selectedProductBundleMasterLiveData.value?.processDay ?: 0L
+    fun isPreOrderActive(preOrderStatus: String): Boolean {
+        return preOrderStatus == PREORDER_STATUS_ACTIVE
     }
 
-    fun getTimeUnitWording(processTypeNum: Int): String {
-        return ""
+    fun getPreOrderTimeUnitWording(processTypeNum: Int): String {
+        return when (processTypeNum) {
+            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay() ?: ""
+            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
+            else -> ""
+        }
     }
 
     fun addProductBundleToCart() {
@@ -99,13 +116,17 @@ class ProductBundleViewModel @Inject constructor(
         return ProductBundleMaster(
             bundleId = bundleInfo.bundleID,
             bundleName = bundleInfo.name,
-            processDay = bundleInfo.preorder.processDay
+            preOrderStatus = bundleInfo.preorder.status,
+            processDay = bundleInfo.preorder.processDay,
+            processTypeNum = bundleInfo.preorder.processTypeNum
         )
     }
 
-    fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetail(bundleId: Long, bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
+            val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
             ProductBundleDetail(
+                productId = bundleItem.productID,
                 productImageUrl = bundleItem.picURL,
                 productName = bundleItem.name,
                 originalPrice = bundleItem.originalPrice,
@@ -113,7 +134,8 @@ class ProductBundleViewModel @Inject constructor(
                 discountAmount = calculateDiscountPercentage(
                     originalPrice = bundleItem.originalPrice,
                     bundlePrice = bundleItem.bundlePrice
-                )
+                ),
+                productVariant = if (productVariant.hasVariant) productVariant else null
             )
         }
     }
@@ -122,11 +144,47 @@ class ProductBundleViewModel @Inject constructor(
         productBundleMap[bundleMaster] = bundleDetail
     }
 
+    fun updateProductBundleDetail(selectedProductId: Long,
+                                  parentProductId: Long,
+                                  mapOfSelectedVariantOption: MutableMap<String, String>): ProductBundleDetail? {
+        val productBundleMaster = selectedProductBundleMaster.value ?: ProductBundleMaster()
+        val productBundleDetails = productBundleMap[productBundleMaster]
+        var target: ProductBundleDetail? = null
+        productBundleDetails?.let { bundleDetails ->
+            target = bundleDetails.firstOrNull { productBundleDetail -> productBundleDetail.productId == parentProductId }
+            target?.apply {
+                val selectedProductVariant = getVariantChildFromProductId(selectedProductId.toString())
+                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero()
+                this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
+                this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
+                this.mapOfSelectedVariantOption = mapOfSelectedVariantOption
+                this.selectedVariantText = getSelectedVariantText(productVariant, mapOfSelectedVariantOption)
+            }
+        }
+        return target
+    }
+
+    private fun getSelectedVariantText(selectedProductVariant: ProductVariant?,
+                                       mapOfSelectedVariantOption: MutableMap<String, String>, ): String {
+        val selectedVariantTexts = mutableListOf<String?>()
+        val variantOptionIds = mapOfSelectedVariantOption.values
+        val variants = selectedProductVariant?.variants ?: listOf()
+        variantOptionIds.forEachIndexed { index, optionId ->
+            val option = variants[index].options.find {
+                it.id == optionId
+            }
+            if (option != null) {
+                selectedVariantTexts.add(option.value)
+            }
+        }
+        return selectedVariantTexts.joinToString()
+    }
+
     fun getProductBundleMasters(): List<ProductBundleMaster> {
         return productBundleMap.keys.toList()
     }
 
-    fun getProductBundleDetail(productBundleMaster: ProductBundleMaster): List<ProductBundleDetail>? {
+    fun getProductBundleDetails(productBundleMaster: ProductBundleMaster): List<ProductBundleDetail>? {
         return productBundleMap[productBundleMaster]
     }
 
@@ -136,20 +194,16 @@ class ProductBundleViewModel @Inject constructor(
         return bundleItems.size == SINGLE_PRODUCT_BUNDLE_ITEM_SIZE
     }
 
-    private fun calculateSoldProductBundle(originalQuota: Int, quota: Int): Int {
-        return originalQuota - quota
-    }
-
     fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Int {
         return DiscountUtil.getDiscountPercentage(originalPrice, bundlePrice)
     }
 
-    fun calculateTotalPrice(productBundleItems: List<BundleItem>): Double {
-        return productBundleItems.map { it.originalPrice }.sum()
+    fun calculateTotalPrice(productBundleDetails: List<ProductBundleDetail>): Double {
+        return productBundleDetails.map { it.originalPrice }.sum()
     }
 
-    fun calculateTotalBundlePrice(productBundleItems: List<BundleItem>): Double {
-        return productBundleItems.map { it.bundlePrice }.sum()
+    fun calculateTotalBundlePrice(productBundleDetails: List<ProductBundleDetail>): Double {
+        return productBundleDetails.map { it.bundlePrice }.sum()
     }
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {

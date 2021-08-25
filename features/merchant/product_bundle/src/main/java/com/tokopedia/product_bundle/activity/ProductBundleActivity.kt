@@ -35,7 +35,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = this.pathSegments
             val productId = pathSegments.firstOrNull() ?: "0"
             // call getBundleInfo
-            viewModel.getBundleInfo(productId.toLongOrZero())
+//            viewModel.getBundleInfo(2147893315L)
+            viewModel.getBundleInfo(2147881200L)
         }
 
         observeGetBundleInfoResult()

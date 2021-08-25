@@ -24,8 +24,8 @@ class ProductBundleMasterViewHolder(
     init {
         this.context = itemView.context
         this.productBundleChipView = itemView.findViewById(R.id.cu_product_bundle_master)
-        this.productBundleChipView?.setOnClickListener {
-            val productBundleMasterObj = it.getTag(R.id.product_bundle_master_tag)
+        this.productBundleChipView?.setOnClickListener { view ->
+            val productBundleMasterObj = view.getTag(R.id.product_bundle_master_tag)
             productBundleMasterObj?.let { obj ->
                 val productBundleMaster = obj as ProductBundleMaster
                 clickListener.onProductBundleMasterItemClicked(adapterPosition, productBundleMaster)

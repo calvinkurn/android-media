@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.INTERNAL_MERCHANT
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -109,5 +111,9 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+//        RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE,"2147881200")
+        RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE)
+//        RouteManager.route(this, "${INTERNAL_MERCHANT}/product-bundle/")
+//        RouteManager.route(this, "${INTERNAL_MERCHANT}/product-bundle/2147881200")
     }
 }
