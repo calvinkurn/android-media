@@ -24,11 +24,13 @@
         android:background="@drawable/bg_product_icon_total"
         android:gravity="center"
         android:textColor="@color/Unify_Static_White"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="15"
+        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

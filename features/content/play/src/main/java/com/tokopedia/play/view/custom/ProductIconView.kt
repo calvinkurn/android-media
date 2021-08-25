@@ -19,7 +19,6 @@ class ProductIconView(context: Context, attributeSet: AttributeSet): ConstraintL
     init {
         val view = View.inflate(context, R.layout.view_product_icon, this)
         tvTotal = view.findViewById(R.id.tv_play_total_featured_product)
-        setTotalProduct(-1)
     }
 
     fun setTotalProduct(total: Int) {
