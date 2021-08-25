@@ -711,6 +711,9 @@ class PlayViewModel @Inject constructor(
         fun loadCast() {
             if (channelData.statusInfo.statusType.isFreeze) return
 
+            playVideoPlayer.stop(resetState = false)
+            playVideoPlayer.removeListener(videoManagerListener)
+
             val videoStream = channelData.videoMetaInfo.videoStream
             if(mChannelData?.id.toString() != castPlayerHelper.getCurrentMediaChannelId()) {
                 castPlayerHelper.castPlay(
