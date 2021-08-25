@@ -53,7 +53,7 @@ class ProductBundlingViewHolder(
         }
 
         when (bundleType) {
-            BUNDLE_TYPE_SINGLE -> showSingleBundle(bundleItems.first())
+            BUNDLE_TYPE_SINGLE -> showSingleBundle(bundleItems.first(), bundle.name)
             BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle, bundleId)
         }
 
@@ -62,9 +62,9 @@ class ProductBundlingViewHolder(
         }
     }
 
-    private fun showSingleBundle(item: BundleInfo.BundleItem) {
+    private fun showSingleBundle(item: BundleInfo.BundleItem, bundleName: String) {
         if (multiBundleDelegate.isInitialized()) multiBundle.hide()
-        singleBundle.process(item)
+        singleBundle.process(item, bundleName)
     }
 
     private fun showMultiBundle(bundle: BundleInfo, bundleId: String) {
