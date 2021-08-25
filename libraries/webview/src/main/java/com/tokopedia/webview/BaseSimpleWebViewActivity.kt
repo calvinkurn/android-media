@@ -68,11 +68,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 uri.getQueryParameter(KEY_URL)?.decode() ?: url
             )
 
-            showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
-            allowOverride = uri.getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            needLogin = uri.getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
-            pullToRefresh = uri.getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: false
-            webViewTitle = uri.getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
+            showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar
+            allowOverride = uri.getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: allowOverride
+            needLogin = uri.getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: needLogin
+            pullToRefresh = uri.getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: pullToRefresh
+            webViewTitle = uri.getQueryParameter(KEY_TITLE) ?: webViewTitle
 
             trackCampaign(uri)
         }
