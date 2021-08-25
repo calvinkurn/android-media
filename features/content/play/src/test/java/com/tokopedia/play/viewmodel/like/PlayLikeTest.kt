@@ -3,10 +3,12 @@ package com.tokopedia.play.viewmodel.like
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isTrue
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery

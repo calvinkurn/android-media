@@ -1,8 +1,14 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.*
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.*
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
 import org.junit.Rule
 import org.junit.Test
@@ -33,9 +39,9 @@ class PlayViewModelInsetsTest {
         } andWhen {
             showKeyboard()
         } thenVerify {
-            bottomInsetsResult
-                    .keyboard
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isShown.isTrue()
         }
     }
 
@@ -54,9 +60,9 @@ class PlayViewModelInsetsTest {
         } andWhen {
             showKeyboard()
         } thenVerify {
-            bottomInsetsResult
-                    .keyboard
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isHidden.isTrue()
         }
     }
 
@@ -66,9 +72,9 @@ class PlayViewModelInsetsTest {
         ) andWhen {
             showProductBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .productBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .isShown.isTrue()
         }
     }
 
@@ -78,9 +84,9 @@ class PlayViewModelInsetsTest {
         ) andWhen {
             showVariantBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .variantBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                    .isShown.isTrue()
         }
     }
 
@@ -90,9 +96,9 @@ class PlayViewModelInsetsTest {
         ) andWhen {
             showLeaderboardBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .leaderboardBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                    .isShown.isTrue()
         }
     }
 
@@ -110,15 +116,15 @@ class PlayViewModelInsetsTest {
             createPage(channelData)
             showKeyboard()
         } thenVerify {
-            bottomInsetsResult
-                    .keyboard
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isShown.isTrue()
         } andWhen {
             hideKeyboard()
         } thenVerify {
-            bottomInsetsResult
-                    .keyboard
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isHidden.isTrue()
         }
     }
 
@@ -127,15 +133,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showProductBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .productBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             hideProductBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .productBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .isHidden.isTrue()
         }
     }
 
@@ -144,15 +150,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showVariantBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .variantBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             hideVariantBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .variantBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                    .isHidden.isTrue()
         }
     }
 
@@ -161,15 +167,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showLeaderboardBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .leaderboardBottomSheet
-                    .isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             hideLeaderboardBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .leaderboardBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                    .isHidden.isTrue()
         }
     }
 
@@ -187,14 +193,15 @@ class PlayViewModelInsetsTest {
             createPage(channelData)
             showKeyboard()
         } thenVerify {
-            bottomInsetsResult
-                    .keyboard.isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isShown.isTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
-            bottomInsetsResult
-                    .keyboard
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.Keyboard]!!
+                    .isHidden.isTrue()
 
             result.isTrue()
         }
@@ -205,14 +212,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showProductBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .productBottomSheet.isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
-            bottomInsetsResult
-                    .productBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .isHidden.isTrue()
 
             result.isTrue()
         }
@@ -223,14 +231,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showVariantBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .variantBottomSheet.isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
-            bottomInsetsResult
-                    .variantBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.VariantSheet]!!
+                    .isHidden.isTrue()
 
             result.isTrue()
         }
@@ -241,14 +250,15 @@ class PlayViewModelInsetsTest {
         givenPlayViewModelRobot {
             showLeaderboardBottomSheet()
         } thenVerify {
-            bottomInsetsResult
-                    .leaderboardBottomSheet.isShown()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                    .isShown.isTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
-            bottomInsetsResult
-                    .leaderboardBottomSheet
-                    .isHidden()
+            viewModel.observableBottomInsetsState
+                    .getOrAwaitValue()[BottomInsetsType.LeaderboardSheet]!!
+                    .isHidden.isTrue()
 
             result.isTrue()
         }

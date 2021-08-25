@@ -1,13 +1,14 @@
 package com.tokopedia.play.viewmodel.follow
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers

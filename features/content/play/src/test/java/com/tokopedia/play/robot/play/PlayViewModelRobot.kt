@@ -8,7 +8,8 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
-import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
+import com.tokopedia.play.robot.Robot
+import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -25,6 +26,7 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
@@ -42,8 +44,6 @@ import kotlinx.coroutines.test.runBlockingTest
 /**
  * Created by jegul on 10/02/21
  */
-typealias RobotWithValue<T> = Pair<PlayViewModelRobot, T>
-
 class PlayViewModelRobot(
         private val playVideoBuilder: PlayVideoWrapper.Builder,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
@@ -66,7 +66,7 @@ class PlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
-) {
+) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
 
@@ -264,36 +264,13 @@ fun givenPlayViewModelRobot(
     ).apply(fn)
 }
 
-infix fun <T> PlayViewModelRobot.andWhen(
-        fn: PlayViewModelRobot.() -> T
-): RobotWithValue<T> {
-    return Pair(this, run(fn))
-}
+suspend fun PlayViewModelRobot.state() = viewModel.uiState.first()
 
-infix fun PlayViewModelRobot.andThen(
-        fn: PlayViewModelRobot.() -> Unit
-): PlayViewModelRobot {
-    return apply(fn)
-}
-
-infix fun <T> RobotWithValue<T>.andThen(
-        fn: PlayViewModelRobot.(T) -> Unit
-): PlayViewModelRobot {
-    return first.apply { fn(second) }
-}
-
-infix fun PlayViewModelRobot.thenVerify(
-        fn: PlayViewModelRobotResult.() -> Unit
-): PlayViewModelRobot {
-    PlayViewModelRobotResult(viewModel).apply { fn() }
-    return this
-}
-
-infix fun <T> RobotWithValue<T>.thenVerify(
-        fn: PlayViewModelRobotResult.(T) -> Unit
-): PlayViewModelRobot {
-    PlayViewModelRobotResult(first.viewModel).apply { fn(second) }
-    return first
+fun PlayViewModelRobot.withState(
+        dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+        fn: suspend PlayViewerNewUiState.() -> Unit
+) = runBlockingTest(dispatcher.coroutineDispatcher) {
+    state().fn()
 }
 
 /**
@@ -301,7 +278,7 @@ infix fun <T> RobotWithValue<T>.thenVerify(
  */
 infix fun PlayViewModelRobot.andWhenExpectEvent(
         fn: PlayViewModelRobot.() -> Unit
-): RobotWithValue<PlayViewerNewUiEvent> {
+) : RobotWithValue<PlayViewModelRobot, PlayViewerNewUiEvent> {
     var result: PlayViewerNewUiEvent? = null
     runBlockingTest {
         val value = async {
@@ -312,5 +289,5 @@ infix fun PlayViewModelRobot.andWhenExpectEvent(
 
         result = value.await()
     }
-    return Pair(this, result!!)
+    return RobotWithValue(this, result!!)
 }

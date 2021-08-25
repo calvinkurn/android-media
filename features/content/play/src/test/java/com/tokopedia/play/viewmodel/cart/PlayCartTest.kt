@@ -5,10 +5,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayCartInfoModelBuilder
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.robot.play.andWhen
-import com.tokopedia.play.robot.play.andWhenExpectEvent
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.*
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isInstanceOf
+import com.tokopedia.play.util.isTrue
 import com.tokopedia.play.view.uimodel.action.ClickCartAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.state.PlayCartCount

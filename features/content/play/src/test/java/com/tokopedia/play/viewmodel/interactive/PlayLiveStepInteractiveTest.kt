@@ -1,13 +1,14 @@
 package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.robot.play.andThen
+import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction

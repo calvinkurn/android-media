@@ -6,10 +6,11 @@ import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
-import com.tokopedia.play.robot.play.andWhen
-import com.tokopedia.play.robot.play.andWhenExpectEvent
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.andWhen
+import com.tokopedia.play.robot.play.*
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus

@@ -7,11 +7,13 @@ import com.tokopedia.play.domain.TrackProductTagBroadcasterUseCase
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.model.PlaySocketResponseBuilder
-import com.tokopedia.play.robot.play.andThen
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andThen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
-import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
+import com.tokopedia.play.util.isTrue
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery

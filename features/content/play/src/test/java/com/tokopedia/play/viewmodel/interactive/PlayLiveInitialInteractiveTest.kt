@@ -3,11 +3,13 @@ package com.tokopedia.play.viewmodel.interactive
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
