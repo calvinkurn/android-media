@@ -6,6 +6,36 @@
         "Message": ""
       }
     },
+    "restrictionInfo": {
+      "message": " Exclusive Discount: ok;",
+      "restrictionData": [
+        {
+          "action": [
+            {
+              "actionType": "popup",
+              "attributeName": "exclusive_discount",
+              "badgeURL": "https://images.tokopedia.net/img/rewards/loyalty/plat.png",
+              "description": "desc re gan",
+              "title": "title re gan platinum"
+            }
+          ],
+          "isEligible": false,
+          "productID": "2147818593"
+        },{
+          "action": [
+            {
+              "actionType": "popup",
+              "attributeName": "exclusive_discount",
+              "badgeURL": "https://images.tokopedia.net/img/rewards/loyalty/plat.png",
+              "description": "desc re gan",
+              "title": "title re gan gold"
+            }
+          ],
+          "isEligible": false,
+          "productID": "2147818586"
+        }
+      ]
+    },
     "cartRedirection": {
       "alternate_copy": [
         {

@@ -14,6 +14,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -91,8 +93,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
         }
 
-//        Assert.assertEquals("Merah, M", viewModel.titleVariantName.value)
-
         val visitablesData = (viewModel.initialData.value as Success).data
 
         assertVisitables(visitablesData,
@@ -168,6 +168,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1
         )
         assertButton()
+
+        assertRestrictionData(assertSuccess = false)
     }
 
     /**
@@ -217,6 +219,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 2
         )
         assertButton()
+
+        assertRestrictionData(
+                assertSuccess = true,
+                expectedProductId = "2147818593",
+                expectedDescription = "desc re gan",
+                expectedTitle = "title re gan platinum"
+        )
     }
 
     /**
@@ -268,8 +277,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.onVariantClicked(false, warnaId, hijauId, "image variant", 1)
 
-//        Assert.assertEquals("Hijau, M", viewModel.titleVariantName.value)
-
         val visitablesData = (viewModel.initialData.value as Success).data
         assertVisitables(visitablesData,
                 showQuantityEditor = false,
@@ -291,6 +298,12 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertTrue(updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false)
         Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
+
+        assertRestrictionData(
+                assertSuccess = true,
+                expectedProductId = "2147818586",
+                expectedDescription = "desc re gan",
+                expectedTitle = "title re gan gold")
     }
 
     /**
@@ -660,6 +673,80 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+    }
+    //endregion
+
+    //region favorite shop
+    @Test
+    fun `on success favorite shop`() {
+        val shopId = "12345"
+        val data = DataFollowShop()
+        val captureParams = slot<RequestParams>()
+        data.followShop = FollowShop().apply {
+            isSuccess = true
+            message = ""
+        }
+        coEvery {
+            toggleFavoriteUseCase.executeOnBackground(capture(captureParams))
+        } returns data
+
+        viewModel.toggleFavorite(shopId)
+
+        val result = viewModel.toggleFavoriteShop
+        Assert.assertEquals((result.value as Success).data, true)
+
+        //Assert request params
+        Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
+        Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
+    }
+
+    @Test
+    fun `on success favorite shop but isSuccess false`() {
+        val shopId = "12345"
+        val data = DataFollowShop()
+        val captureParams = slot<RequestParams>()
+
+        data.followShop = FollowShop().apply {
+            isSuccess = false
+            message = "Fail"
+        }
+        coEvery {
+            toggleFavoriteUseCase.executeOnBackground(capture(captureParams))
+        } returns data
+
+        viewModel.toggleFavorite(shopId)
+
+        val result = viewModel.toggleFavoriteShop
+        Assert.assertTrue(result.value is Fail)
+        Assert.assertEquals((result.value as Fail).throwable.message, "Fail")
+
+        //Assert request params
+        Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
+        Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
+    }
+
+    @Test
+    fun `on fail favorite shop`() {
+        val shopId = "12345"
+        val captureParams = slot<RequestParams>()
+
+        coEvery {
+            toggleFavoriteUseCase.executeOnBackground(any())
+        } throws Throwable("Fail")
+
+        viewModel.toggleFavorite(shopId)
+
+        coVerify {
+            toggleFavoriteUseCase.executeOnBackground(capture(captureParams))
+        }
+
+        val result = viewModel.toggleFavoriteShop
+        Assert.assertTrue(result.value is Fail)
+        Assert.assertEquals((result.value as Fail).throwable.message, "Fail")
+
+        //Assert request params
+        Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
+        Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
     //endregion
 

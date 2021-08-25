@@ -85,6 +85,22 @@ abstract class BaseAtcVariantViewModelTest {
         Assert.assertEquals(cartType?.text, expectedCartText)
     }
 
+    fun assertRestrictionData(assertSuccess: Boolean,
+                              expectedProductId: String = "",
+                              expectedDescription: String = "",
+                              expectedTitle: String = "") {
+
+        if (assertSuccess) {
+            val data = (viewModel.restrictionData.value as Success).data
+
+            Assert.assertEquals(data.productId, expectedProductId)
+            Assert.assertEquals(data.action.firstOrNull()?.description, expectedDescription)
+            Assert.assertEquals(data.action.firstOrNull()?.title, expectedTitle)
+        } else {
+            Assert.assertTrue(viewModel.restrictionData.value is Fail)
+        }
+    }
+
     fun decideFailValueHitGqlAggregator() {
         coEvery {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
