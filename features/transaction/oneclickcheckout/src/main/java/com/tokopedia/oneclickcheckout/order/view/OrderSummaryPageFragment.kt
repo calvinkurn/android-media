@@ -648,12 +648,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     progressDialog?.dismiss()
                     view?.let { v ->
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
-
-                        // disable pay button
-                        adapter.notifyItemChanged(adapter.totalPaymentIndex)
-
-                        // reset choose installment
-                        adapter.notifyItemChanged(adapter.preferenceIndex)
                     }
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
@@ -1266,14 +1260,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                creditCardTenorListData?.let {
-                    InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard,
-                        it, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                            override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                                viewModel.chooseInstallment(installment)
-                            }
-                        })
-                }
+                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
+                    object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                        override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                            viewModel.chooseInstallment(installment)
+                        }
+                    })
             }
         }
 

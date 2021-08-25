@@ -134,9 +134,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
-            if (orderPayment.value.creditCard.isAfpb) {
-                adjustAdminFee()
-            }
+            adjustAdminFee()
         }
     }
 
@@ -486,9 +484,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
                 clearBboIfExist()
-                if (orderPayment.value.creditCard.isAfpb) {
-                    adjustAdminFee()
-                }
+                adjustAdminFee()
             }
             globalEvent.value = newGlobalEvent
         }
@@ -561,9 +557,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 clearBboIfExist()
-                if (orderPayment.value.creditCard.isAfpb) {
-                    adjustAdminFee()
-                }
+                adjustAdminFee()
             }
             globalEvent.value = newGlobalEvent
         }
@@ -580,9 +574,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val (isSuccess, newGlobalEvent) = cartProcessor.updateCartPromo(param)
             globalEvent.value = newGlobalEvent
             if (isSuccess) {
-                if (orderPayment.value.creditCard.isAfpb) {
-                    adjustAdminFee()
-                }
+                adjustAdminFee()
                 onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
             }
         }
@@ -756,16 +748,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun adjustAdminFee() {
-        val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
-            userSession.userId, orderTotal.value, orderCart)
-        launch(executorDispatchers.immediate) {
-            val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
-            if (!isSuccess) {
-                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                orderPayment.value.creditCard.selectedTerm?.isError = true
+    private fun adjustAdminFee() {
+        if (orderPayment.value.creditCard.isAfpb) {
+            val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
+                userSession.userId, orderTotal.value, orderCart)
+            launch(executorDispatchers.immediate) {
+                val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
+                if (!isSuccess) {
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+
+                    val newOrderPayment = orderPayment.value
+                    val selectedTerm = newOrderPayment.creditCard.selectedTerm
+                    if (selectedTerm != null) {
+                        selectedTerm.isError = true
+                        orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedTerm))
+                    }
+                }
+                globalEvent.value = newGlobalEvent
             }
-            globalEvent.value = newGlobalEvent
         }
     }
 

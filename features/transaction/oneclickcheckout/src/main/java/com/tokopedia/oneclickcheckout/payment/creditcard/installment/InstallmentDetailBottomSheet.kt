@@ -23,7 +23,7 @@ class InstallmentDetailBottomSheet {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData, listener: InstallmentDetailBottomSheetListener) {
+    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData?, listener: InstallmentDetailBottomSheetListener) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
             this.listener = listener
@@ -45,13 +45,15 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupChild(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData) {
+    private fun setupChild(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData?) {
         setupTerms(binding, creditCard.tncInfo)
-        if (creditCard.isAfpb) setupInstallmentsAfpb(context, binding, fragment, creditCard, creditCardTenorListData)
-        else setupInstallments(context, binding, fragment, creditCard, creditCardTenorListData)
+        if (creditCard.isAfpb) {
+            creditCardTenorListData?.let { setupInstallmentsAfpb(context, binding, fragment, creditCard, it) }
+        }
+        else setupInstallments(context, binding, fragment, creditCard)
     }
 
-    private fun setupInstallments(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData) {
+    private fun setupInstallments(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
         SplitCompat.installActivity(context)
         val inflater = LayoutInflater.from(fragment.context)
         val installmentDetails = creditCard.availableTerms
