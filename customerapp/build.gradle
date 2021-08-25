@@ -437,6 +437,13 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+
+    androidTestImplementation projectOrAar(rootProject.ext.features.cart)
+    androidTestImplementation projectOrAar(rootProject.ext.features.checkout)
+    androidTestImplementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    androidTestImplementation projectOrAar(rootProject.ext.features.commonPayment)
+    androidTestImplementation rootProject.ext.unifyDependencies.principles
+    androidTestImplementation rootProject.ext.unifyDependencies.components
 }
 
 apply plugin: 'com.google.gms.google-services'

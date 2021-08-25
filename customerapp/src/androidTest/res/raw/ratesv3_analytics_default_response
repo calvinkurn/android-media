@@ -1,0 +1,415 @@
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":2295:3084:2800",
+          "rates_id": "1611570731762155171",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Reguler",
+              "service_id": 1104,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 93000,
+                "max_price": 93000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp93.000",
+                "text_etd": "2-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 27 Jan - 29 Jan",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat Reg",
+                  "shipper_id": 11,
+                  "shipper_product_id": 18,
+                  "shipper_product_name": "Regular Package",
+                  "shipper_product_desc": "Layanan Pengiriman biasa dengan lead time 1-2 hari (kota besar) dan lead time 3-4 hari (Kabupaten/transit)",
+                  "is_show_map": 0,
+                  "shipper_weight": 3000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "WKLfoo68YaUAlilBQ0XOC1tZTck%3D",
+                  "ut": "1611570731",
+                  "promo_code": "",
+                  "price": {
+                    "price": 93000,
+                    "formatted_price": "Rp93.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp93.000",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 27 Jan - 29 Jan",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Reguler",
+              "service_id": 1204,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 66000,
+                "max_price": 66000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp66.000",
+                "text_etd": "5-9 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 27 Jan - 30 Jan",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "AnterAja",
+                  "shipper_id": 23,
+                  "shipper_product_id": 45,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Umumnya 2-4 hari/ 5-9 hari/ \u003e9 hari tergantung rute pengiriman.",
+                  "is_show_map": 0,
+                  "shipper_weight": 3000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "OoO%2FybsDmyNq0BKtjkoApeJdTPg%3D",
+                  "ut": "1611570731",
+                  "promo_code": "",
+                  "price": {
+                    "price": 66000,
+                    "formatted_price": "Rp66.000"
+                  },
+                  "etd": {
+                    "min_etd": 432000,
+                    "max_etd": 777600
+                  },
+                  "texts": {
+                    "text_price": "Rp66.000",
+                    "text_etd": "5-9 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 27 Jan - 30 Jan",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Kargo",
+              "service_id": 1001,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 80000,
+                "max_price": 80000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp80.000",
+                "text_etd": "5-7 hari",
+                "text_notes": "",
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "Estimasi tiba 27 Jan - 29 Jan",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat GOKIL",
+                  "shipper_id": 11,
+                  "shipper_product_id": 43,
+                  "shipper_product_name": "GOKIL",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                  "is_show_map": 0,
+                  "shipper_weight": 3000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "yEuD4Q%2FWQII8oJf1H9dmjpA1zss%3D",
+                  "ut": "1611570731",
+                  "promo_code": "",
+                  "price": {
+                    "price": 80000,
+                    "formatted_price": "Rp80.000"
+                  },
+                  "etd": {
+                    "min_etd": 432000,
+                    "max_etd": 604800
+                  },
+                  "texts": {
+                    "text_price": "Rp80.000",
+                    "text_etd": "5-7 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 27 Jan - 29 Jan",
+                    "error_code": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "promo_stacking": {
+            "is_promo": 1,
+            "promo_code": "WCEPAT",
+            "title": "Bebas Ongkir",
+            "shipper_id": 11,
+            "shipper_product_id": 18,
+            "shipper_name": "SiCepat Reg",
+            "shipper_desc": "2-4 hari|1104",
+            "promo_detail": "",
+            "benefit_desc": "Pengiriman melebihi limit bebas ongkir, kamu cukup bayar \u003cb\u003eRp73.000\u003c/b\u003e",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia\u003c/b\u003e",
+            "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+            "service_id": 1104,
+            "is_applied": 0,
+            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "discounted_rate": 73000,
+            "shipping_rate": 93000,
+            "benefit_amount": 20000,
+            "disabled": false,
+            "hide_shipper_name": true,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "Estimasi tiba 27 Jan - 29 Jan",
+              "error_code": 0
+            }
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
+            }
+          },
+          "pre_order": {
+            "header": "Barang akan dikirim mulai 25 Jan",
+            "label": "PreOrder 3 Hari",
+            "display": false
+          }
+        }
+      }
+    }
+  }
+]
