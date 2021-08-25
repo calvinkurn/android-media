@@ -9,7 +9,6 @@ import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.utils.*
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.not
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
@@ -1967,8 +1966,6 @@ private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelM
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategoryBottom] = not(isDisplayed())
-        it[R.id.textCategorySide] = not(isDisplayed())
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
