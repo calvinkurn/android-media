@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.play.util.scroll.NestedScrollableHost
-        android:id="@+id/nestedScrollableHost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +30,9 @@
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/spacing_lvl3"
         android:paddingBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="@id/nestedScrollableHost"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/nestedScrollableHost"
+        app:layout_constraintTop_toTopOf="parent"
         tools:background="@drawable/ic_product_see_more"
         />
 
