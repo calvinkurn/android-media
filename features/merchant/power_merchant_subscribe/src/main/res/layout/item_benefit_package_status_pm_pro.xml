@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bgBenefitPackageStatus"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvNextUpdatePmProStatus"
+            tools:src="@drawable/bg_pm_pro_advanced_benefit_package" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleBenefitPackageStatus"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="@string/pm_title_benefit_package_status"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelPmProStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toStartOf="@id/tvTitleBenefitPackageStatus"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleBenefitPackageStatus"
+            app:labelType="highlight_dark_grey"
+            tools:text="ADVANCED"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconPmProStatus"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toEndOf="@id/labelPmProStatus"
+            app:layout_constraintTop_toTopOf="@id/labelPmProStatus"
+            app:layout_constraintBottom_toBottomOf="@id/labelPmProStatus"
+            app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/pm_static_525A67_dms" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconPmProDowngradeStatus"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/labelPmProStatus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bgBenefitPackageStatus"
+            app:icon_name="INFORMATION"
+            app:icon_color_light_enable="@color/pm_static_525A67_dms" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvNextUpdatePmProStatus"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:typographyType="body_3"
+            tools:text="@string/pm_next_update_benefit_package_status"
+            app:layout_constraintTop_toBottomOf="@id/bgBenefitPackageStatus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconPmProDowngradeStatus"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

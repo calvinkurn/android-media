@@ -14,6 +14,11 @@ object Constant {
     const val POWER_MERCHANT_CHARGING = "1,25%"
     const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
 
+    const val PM_PRO_ADVANCED = "Advanced"
+    const val PM_PRO_EXPERT = "Expert"
+    const val PM_PRO_ULTIMATE = "Ultimate"
+
+
     object Url {
         const val POWER_MERCHANT_EDU = "https://seller.tokopedia.com/edu/power-merchant/"
         const val POWER_MERCHANT_FEATURES = "https://seller.tokopedia.com/edu/fitur-power-merchant"

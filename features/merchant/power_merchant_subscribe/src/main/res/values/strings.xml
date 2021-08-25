@@ -187,4 +187,9 @@
     <string name="pm_title_profit_package_section">Kamu dapat paket keuntungan %s</string>
     <string name="pm_next_update_benefit_package"><![CDATA[Update selanjutnya: <b>%s</b>. Tidak ada penurunan paket keuntungan pada update berikutnya.]]>></string>
     <string name="pm_learn_more_shop_performance">Pelajari selengkapnya di halaman &lt;a href="#"&gt;Performa Toko&lt;/a&gt;</string>
+    <string name="pm_title_benefit_package_status">Saat ini, kamu dapat paket keuntungan</string>
+    <string name="pm_next_update_benefit_package_status"><![CDATA[Update selanjutnya: %s. Raih <b>Level %s</b> untuk dapat paket keuntungan Expert. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;]]>></string>
+    <string name="pm_title_benefit_package_pm_pro_status">Paket keuntungan Power Merchant PRO</string>
+    <string name="pm_desc_benefit_package_pm_pro_status">Power Merchant PRO memiliki tingkatan paket keuntungan yang bisa diraih berdasarkan level toko. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
+
 </resources>
