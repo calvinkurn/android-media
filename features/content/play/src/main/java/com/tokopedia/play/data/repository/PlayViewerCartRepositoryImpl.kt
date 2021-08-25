@@ -1,7 +1,7 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.play.domain.GetCartCountUseCase
 import com.tokopedia.play.domain.PostAddToCartUseCase
@@ -31,7 +31,7 @@ class PlayViewerCartRepositoryImpl @Inject constructor(
                     productName = productName,
                     shopId = productShopId,
                     quantity = qty,
-                    atcExternalSource = AddToCartRequestParams.ATC_FROM_PLAY,
+                    atcExternalSource = AtcFromExternalSource.ATC_FROM_PLAY,
                     price = price,
                     userId = userSession.userId,
             )

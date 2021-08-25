@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -58,7 +57,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tokopedia.play.extensions.combine
-import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.state.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -1116,7 +1114,14 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
-            is WebSocketAction.Closed -> if (response.reason == WebSocketClosedReason.Error) connectWebSocket(channelId, socketCredential)
+            is WebSocketAction.Closed -> {
+                val reason = response.reason
+                if (reason is WebSocketClosedReason.Error) {
+                    playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
+
+                    connectWebSocket(channelId, socketCredential)
+                }
+            }
         }
     }
 
