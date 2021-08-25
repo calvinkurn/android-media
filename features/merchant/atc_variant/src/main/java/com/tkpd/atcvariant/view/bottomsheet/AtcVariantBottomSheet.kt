@@ -194,7 +194,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
-            shouldSetActivityResult = it.pageSource != AtcVariantHelper.BUNDLING_PAGESOURCE
+            val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
+                    .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
+            shouldSetActivityResult = when (cartRedirCartType) {
+                ProductDetailCommonConstant.KEY_SAVE_BUTTON -> false
+                else -> true
+            }
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
@@ -504,12 +509,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        if (cartType == ProductDetailCommonConstant.KEY_SAVE_BUTTON) {
-            onSaveButtonClicked()
-        } else {
-            this.buttonText = buttonText
-            val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-            doAtc(atcKey)
+        when (cartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUTTON -> {
+                onSaveButtonClicked()
+            }
+            else -> {
+                this.buttonText = buttonText
+                val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+                doAtc(atcKey)
+            }
         }
     }
 
