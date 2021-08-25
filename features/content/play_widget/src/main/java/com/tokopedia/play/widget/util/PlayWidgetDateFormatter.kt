@@ -24,17 +24,22 @@ object PlayWidgetDateFormatter {
         inputPattern: String = yyyymmddThhmmss,
         outputPattern: String = ddmmmmyyyy_hhmm
     ): String {
-        getDeviceGMT()
         return try {
             val inputFormat = SimpleDateFormat(inputPattern, locale)
             val outputFormat = SimpleDateFormat(outputPattern, locale)
             val date = inputFormat.parse(raw)
 
             date?.let {
-                val diff = (getDeviceGMT().toInt() - GMT07.toInt()) / 100
-                val time = it.time + (diff * 60 * 60 * 1000)
+                val calendar = Calendar.getInstance()
+                calendar.time = it
 
-                return@let outputFormat.format(Date(time))
+                val diff = (getDeviceGMT().toInt() - GMT07.toInt())
+                if(diff != 0) {
+                    calendar.add(Calendar.HOUR_OF_DAY, diff / 100)
+                    calendar.add(Calendar.MINUTE, diff % 100)
+                }
+
+                return@let outputFormat.format(calendar.time)
             } ?: raw
         }
         catch (e: Exception){
