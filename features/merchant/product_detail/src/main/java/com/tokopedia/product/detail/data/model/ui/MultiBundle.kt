@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewStub
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -96,7 +95,7 @@ class MultiBundle(parent: View) {
         }
 
         unusedGroups.forEach { group ->
-            group.invisible()
+            group.hide()
         }
 
         val quantityText = weakContext.get()?.getString(

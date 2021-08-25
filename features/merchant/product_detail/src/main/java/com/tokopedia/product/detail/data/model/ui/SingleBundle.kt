@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -29,9 +30,13 @@ class SingleBundle(parent: View) {
         view.show()
 
         image.urlSrc = item.picURL
-        label.text = item.quantity
         name.text = item.name
         price.text = item.bundlePrice
+
+        val quantityLabel = item.quantity
+        label.shouldShowWithAction(quantityLabel.isNotBlank()) {
+            label.text = quantityLabel
+        }
 
         val itemDiscount = item.discountPercentage
         if (itemDiscount.isBlank()) {
