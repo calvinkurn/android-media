@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.SparseArray
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.FolderData
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.imagepicker_insta.util.CursorUtil
@@ -128,21 +129,23 @@ class PhotoImporter {
                                     item.put("nw_st", folderName)
                                     item.put("mt", mediaType)
                                 }
+
+
+                                val folderName = item["nw_st"] as String
+                                val photosData = PhotosData(
+                                    filePath = name,
+                                    folderName = folderName,
+                                    mediaType = item["mt"] as String,
+                                    uri = ContentUris.withAppendedId(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        index
+                                    ),
+                                    _createdDate = dateLong
+                                )
+                                folders.add(folderName)
+                                photosList.add(photosData)
                             }
 
-                            val folderName = item["nw_st"] as String
-                            val photosData = PhotosData(
-                                filePath = name,
-                                folderName = folderName,
-                                mediaType = item["mt"] as String,
-                                uri = ContentUris.withAppendedId(
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                    index
-                                ),
-                                _createdDate = dateLong
-                            )
-                            folders.add(folderName)
-                            photosList.add(photosData)
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
@@ -153,9 +156,29 @@ class PhotoImporter {
                 cur.close()
             }
         }
-        val tempFoldersList = ArrayList(folders)
-        tempFoldersList.add(0, PhotoImporter.ALL)
+        val tempFoldersList = arrayListOf<FolderData>()
+        folders.forEach { folderName->
+            val photo = photosList.first { asset->
+                asset.folder == folderName
+            }
+            val totalPhotos = photosList.filter {asset->
+                asset.folder == folderName
+            }.size
+            tempFoldersList.add(FolderData(folderName,getSubtitle(totalPhotos),photo.contentUri))
+        }
+
+        if(photosList.isNotEmpty()) {
+            tempFoldersList.add(0, FolderData(PhotoImporter.ALL, getSubtitle(photosList.size), photosList.first().contentUri))
+        }
         return PhotosImporterData(tempFoldersList, photosList, null)
+    }
+
+    fun getSubtitle(mediaCount:Int):String{
+        if(mediaCount == 1){
+            return "$mediaCount media"
+        }else{
+            return "$mediaCount medias"
+        }
     }
 
     protected fun locationValid(latitude: Double, longitude: Double): Boolean? {

@@ -26,6 +26,7 @@ import com.tokopedia.imagepicker_insta.di.module.AppModule
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
+import com.tokopedia.imagepicker_insta.models.FolderData
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -52,7 +53,7 @@ class MainFragment: Fragment() {
 
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<Asset>()
-    val folders = arrayListOf<String>()
+    val folders = arrayListOf<FolderData>()
 
     var cameraCaptureFilePath:String?=null
 
@@ -140,8 +141,8 @@ class MainFragment: Fragment() {
             bottomSheet.setChild(folderView)
             bottomSheet.show(childFragmentManager,"BottomSheet Tag")
             folderView.setData(folders)
-            folderView.itemOnClick {
-                refreshImages(it)
+            folderView.itemOnClick {folderData->
+                refreshImages(folderData?.folderTitle)
                 bottomSheet.dismiss()
             }
         }

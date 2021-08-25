@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
@@ -16,12 +17,16 @@ class AssetImageView @JvmOverloads constructor(
             .into(this)
     }
 
-    fun loadAssetThumbnail(asset: Asset){
+    fun loadUriThumbnail(uri: Uri){
         Glide.with(this)
-            .load(asset.contentUri)
+            .load(uri)
             .thumbnail(0.33f)
             .centerCrop()
             .into(this)
+    }
+
+    fun loadAssetThumbnail(asset: Asset){
+        loadUriThumbnail(asset.contentUri)
     }
 
     fun removeAsset(){

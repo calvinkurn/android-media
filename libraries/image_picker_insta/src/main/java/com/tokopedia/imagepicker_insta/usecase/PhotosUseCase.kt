@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker_insta.usecase
 
 import android.content.Context
 import com.tokopedia.imagepicker_insta.PhotoImporter
+import com.tokopedia.imagepicker_insta.models.FolderData
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class PhotosUseCase @Inject constructor() {
         val internalPhotos= importer.importPhotosFromInternalDir(context)
         if(internalPhotos.isNotEmpty()){
             photosImporterData.assets.addAll(internalPhotos)
-            photosImporterData.folders.add(StorageUtil.INTERNAL_FOLDER_NAME)
+            photosImporterData.folders.add(FolderData(StorageUtil.INTERNAL_FOLDER_NAME,importer.getSubtitle(internalPhotos.size),internalPhotos.first().contentUri) )
             photosImporterData.assets.sortByDescending {
                 it.createdDate
             }

@@ -9,7 +9,7 @@ abstract class Asset(val assetPath: String,val folder:String,val contentUri:Uri,
 class Camera:Asset("","", Uri.EMPTY, 0L)
 data class PhotosData(val filePath:String, val folderName:String, val mediaType:String, val uri:Uri, val _createdDate:Long ):Asset(filePath,folderName,uri, _createdDate)
 
-data class PhotosImporterData(val folders:ArrayList<String>,
+data class PhotosImporterData(val folders:ArrayList<FolderData>,
                               val assets: ArrayList<Asset>,
                               val selectedFolder:String?, ){
 
@@ -21,3 +21,5 @@ data class PhotosImporterData(val folders:ArrayList<String>,
         return photosData
     }
 }
+
+data class FolderData(val folderTitle:String,val folderSubtitle:String, val thumbnailUri:Uri)
