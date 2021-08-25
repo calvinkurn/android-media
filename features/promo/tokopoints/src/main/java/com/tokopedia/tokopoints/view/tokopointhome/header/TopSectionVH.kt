@@ -43,6 +43,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 
 class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRuntimeHeightListener, private val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
@@ -302,7 +303,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
             AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
         )
-        cardStatusMatching?.setOnClickListener {
+        containerStatusMatching?.setOnClickListener {
             rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
                 if (url.isNotEmpty()) {
                     RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
@@ -317,7 +318,11 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             }
         }
         playAnimation()
-        backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching)
+        if (itemView.context.isDarkMode()) {
+            backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching_dark)
+        } else {
+            backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching_light)
+        }
         val metadata = rewardTickerResponse?.get(0)?.metadata?.get(0)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             timerTextView?.text = Html.fromHtml(metadata?.text?.content, Html.FROM_HTML_MODE_LEGACY)
