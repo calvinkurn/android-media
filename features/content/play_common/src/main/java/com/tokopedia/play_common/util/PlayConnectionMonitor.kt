@@ -23,37 +23,36 @@ class PlayConnectionMonitor(context: Context) {
     private var networkCallback: ConnectivityManager.NetworkCallback?= null
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                networkCallback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onLost(network: Network?) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onUnavailable() {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onLosing(network: Network?, maxMsToLive: Int) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onAvailable(network: Network?) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.Available)
-                    }
+        try {
+            val nc = object : ConnectivityManager.NetworkCallback() {
+                override fun onLost(network: Network) {
+                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
                 }
-                val networkRequest =
-                        NetworkRequest.Builder()
-                                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                                .build()
-                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-            } catch (ignored: Throwable) {}
-        }
+                override fun onUnavailable() {
+                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+                }
+                override fun onLosing(network: Network, maxMsToLive: Int) {
+                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+                }
+                override fun onAvailable(network: Network) {
+                    _observablePlayConnectionState.postValue(PlayConnectionState.Available)
+                }
+            }
+            networkCallback = nc
+            val networkRequest =
+                    NetworkRequest.Builder()
+                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                            .build()
+            connectivityManager.registerNetworkCallback(networkRequest, nc)
+        } catch (ignored: Throwable) {}
     }
 
     fun getObservablePlayConnectionState(): LiveData<PlayConnectionState> = _observablePlayConnectionState
 
     fun end() {
-        if (networkCallback != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        networkCallback?.let { it ->
             try {
-                connectivityManager.unregisterNetworkCallback(networkCallback)
+                connectivityManager.unregisterNetworkCallback(it)
             } catch (e: Exception) { }
         }
     }

@@ -1033,7 +1033,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA) ?: TravelContactData()
                     widget_traveller_info.setContactName(contactData.name)
                     widget_traveller_info.setContactEmail(contactData.email)
                     widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
@@ -1045,7 +1045,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         data?.let {
-                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER) ?: FlightBookingPassengerModel()
                             bookingViewModel.onPassengerResultReceived(passengerViewModel)
                         }
                     }
@@ -1060,7 +1060,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
                 data?.let {
                     var promoData = PromoData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA)
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
                     when (promoData.state) {
                         TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""

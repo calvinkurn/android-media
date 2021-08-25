@@ -25,14 +25,14 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     private var selectedDepartureTerm: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        selectedDepartureId = intent.getStringExtra(EXTRA_DEPARTURE_ID)
-        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
+        selectedDepartureId = intent.getStringExtra(EXTRA_DEPARTURE_ID) ?: ""
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM) ?: ""
 
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment(): Fragment? {
-        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE_MODEL)
+    override fun getNewFragment(): Fragment {
+        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE_MODEL) ?: FlightPriceModel()
         return FlightSearchReturnFragment.newInstance(flightSearchPassDataModel,
                 selectedDepartureId,
                 intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),

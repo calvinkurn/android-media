@@ -232,7 +232,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(

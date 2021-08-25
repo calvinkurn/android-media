@@ -23,13 +23,13 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
     lateinit var userSession: UserSessionInterface
         @Inject set
 
-    override fun getNewFragment(): Fragment? = UmrahCheckoutFragment.getInstance(
-            intent.getStringExtra(EXTRA_SLUG_NAME),
-            intent.getStringExtra(EXTRA_VARIANT),
+    override fun getNewFragment(): Fragment = UmrahCheckoutFragment.getInstance(
+            intent.getStringExtra(EXTRA_SLUG_NAME) ?: "",
+            intent.getStringExtra(EXTRA_VARIANT) ?: "",
             intent.getIntExtra(EXTRA_PRICE,0),
             intent.getIntExtra(EXTRA_TOTAL_PRICE, 0),
             intent.getIntExtra(EXTRA_TOTAL_PASSENGER,0),
-            intent.getStringExtra(EXTRA_DEPART_DATE),
+            intent.getStringExtra(EXTRA_DEPART_DATE) ?: "",
             intent.getIntExtra(EXTRA_DOWN_PAYMENT_PRICE,0)
     )
 

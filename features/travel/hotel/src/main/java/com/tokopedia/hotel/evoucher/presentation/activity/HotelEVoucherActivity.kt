@@ -27,7 +27,7 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     override fun shouldShowOptionMenu(): Boolean = true
 
     override fun getNewFragment(): Fragment {
-        fragment = HotelEVoucherFragment.getInstance(intent.getStringExtra(EXTRA_ORDER_ID))
+        fragment = HotelEVoucherFragment.getInstance(intent.getStringExtra(EXTRA_ORDER_ID) ?: "")
         return fragment
     }
 
@@ -43,14 +43,14 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
         return true
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showShareMenus()
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (shouldShowOptionMenu()) {
-            if (item?.itemId == R.id.action_share) {
+            if (item.itemId == R.id.action_share) {
                 showShareMenus()
                 return true
             }

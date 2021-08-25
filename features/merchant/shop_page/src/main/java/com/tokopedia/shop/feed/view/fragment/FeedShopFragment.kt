@@ -296,12 +296,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                         onSuccessReportContent()
                     } else {
                         onErrorReportContent(
-                                data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
+                                data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG) ?: ""
                         )
                     }
                 }
                 OPEN_DETAIL -> {
-                    showSnackbar(data!!.getStringExtra("message"))
+                    showSnackbar(data!!.getStringExtra("message") ?: "")
                 }
                 LOGIN_CODE -> {
                     loadInitialData()

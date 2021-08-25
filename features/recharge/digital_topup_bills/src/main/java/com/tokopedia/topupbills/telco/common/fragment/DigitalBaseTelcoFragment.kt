@@ -285,7 +285,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE) ?: ""
                         if (!TextUtils.isEmpty(message)) {
                             showErrorCartDigital(message)
                         }

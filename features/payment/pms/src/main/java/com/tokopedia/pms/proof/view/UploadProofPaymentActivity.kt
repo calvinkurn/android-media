@@ -29,7 +29,7 @@ class UploadProofPaymentActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val paymentListModel: BasePaymentModel =
-            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA)
+            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA) ?: BasePaymentModel()
         return UploadProofPaymentFragment.createInstance(paymentListModel)
     }
 

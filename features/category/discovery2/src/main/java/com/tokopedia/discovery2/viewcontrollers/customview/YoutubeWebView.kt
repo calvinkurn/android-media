@@ -101,8 +101,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                             youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
                             youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
                             playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null) {
-        youtubeJSInterface = YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
+        val youtubeJSInterface = YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
             youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued,playerReady)
+        this.youtubeJSInterface = youtubeJSInterface
         addJavascriptInterface(youtubeJSInterface, jsInterface)
     }
 

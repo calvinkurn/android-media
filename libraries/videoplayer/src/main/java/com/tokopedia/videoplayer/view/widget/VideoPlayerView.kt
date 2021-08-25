@@ -45,8 +45,8 @@ class VideoPlayerView @JvmOverloads constructor(
                     val retriever = MediaMetadataRetriever()
                     retriever.setDataSource(uri.toString(), emptyMap())
                     yield()
-                    mVideoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH).toInt()
-                    mVideoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT).toInt()
+                    mVideoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt() ?: 0
+                    mVideoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
                 }
                 super.setVideoURI(uri)
             }

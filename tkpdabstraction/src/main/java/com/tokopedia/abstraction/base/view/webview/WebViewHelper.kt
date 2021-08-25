@@ -59,7 +59,6 @@ object WebViewHelper {
      */
      @JvmStatic
      fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-        Log.d("WebviewHelper before URL" , url)
         var returnURl = url;
 
         if (url?.contains("ta.tokopedia.com") == true)
@@ -94,8 +93,6 @@ object WebViewHelper {
             }
 
         }
-
-        Log.d("WebviewHelper updated URL" , returnURl)
         return returnURl
     }
 

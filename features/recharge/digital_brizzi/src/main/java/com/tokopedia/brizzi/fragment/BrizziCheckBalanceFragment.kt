@@ -194,7 +194,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                     DigitalBrizziGqlMutation.emoneyLogBrizzi,
                     needRefreshToken)
         } catch (e: Exception) {
-            Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message)
+            Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message?: "")
         }
     }
 

@@ -285,8 +285,8 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.notif_settting -> {
                 analytics.trackTroubleshooterGearClicked(userSession.userId, userSession.shopId)
                 openNotificationSettingPage()

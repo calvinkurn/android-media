@@ -50,7 +50,7 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
                 else -> getCategoryIntent(uri)
             }
         } else {
-            categoryTitle = intent.getStringExtra(EXTRA_CATEGORY_TITLE)
+            categoryTitle = intent.getStringExtra(EXTRA_CATEGORY_TITLE) ?: ""
             categorySlugName = intent.getStringExtra(EXTRA_CATEGORY_SLUG_NAME)
             departureCityId = intent.getStringExtra(EXTRA_DEPARTURE_CITY_ID)
             departurePeriod = intent.getStringExtra(EXTRA_DEPARTURE_PERIOD)
@@ -58,7 +58,7 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
             priceMax = intent.getIntExtra(EXTRA_PRICE_MAX, 0)
             durationDaysMin = intent.getIntExtra(EXTRA_DURATION_DAYS_MIN, 0)
             durationDaysMax = intent.getIntExtra(EXTRA_DURATION_DAYS_MAX, 0)
-            sort = intent.getStringExtra(EXTRA_SORT)
+            sort = intent.getStringExtra(EXTRA_SORT) ?: ""
         }
     }
 

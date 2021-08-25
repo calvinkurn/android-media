@@ -56,7 +56,7 @@ abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.T
         }
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
@@ -76,10 +76,10 @@ abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.T
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (shouldShowOptionMenu()) {
-            if (item?.itemId ?: "" == R.id.action_overflow_menu ||
-                    item?.itemId ?: "" == R.id.action_overflow_menu_white) {
+            if (item.itemId == R.id.action_overflow_menu ||
+                    item.itemId == R.id.action_overflow_menu_white) {
                 showBottomMenus()
                 return true
             }

@@ -205,7 +205,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.run {
-                        hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
+                        hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA) ?: TravelContactData()
                         renderContactData()
                     }
                 }

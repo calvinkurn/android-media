@@ -1147,11 +1147,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         fromSlide: Boolean = false, model: DynamicPostUiModel? = null
     ) {
         if (handlerAnim != null) {
-            handlerAnim?.removeCallbacks(null)
             handlerAnim = null
         }
         if (handlerHide != null) {
-            handlerHide?.removeCallbacks(null)
             handlerHide = null
         }
         if (!fromSlide) {

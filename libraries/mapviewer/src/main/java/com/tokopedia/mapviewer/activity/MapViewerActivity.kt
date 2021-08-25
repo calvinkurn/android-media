@@ -14,11 +14,11 @@ class MapViewerActivity : BaseSimpleActivity(){
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
     override fun getNewFragment(): Fragment = MapViewerFragment.getInstance(
-            intent.getStringExtra(EXTRA_NAME),
+            intent.getStringExtra(EXTRA_NAME) ?: "",
             intent.getDoubleExtra(EXTRA_LATITUDE, 0.0),
             intent.getDoubleExtra(EXTRA_LONGITUDE, 0.0),
-            intent.getStringExtra(EXTRA_ADDRESS),
-            intent.getStringExtra(EXTRA_PIN)
+            intent.getStringExtra(EXTRA_ADDRESS) ?: "",
+            intent.getStringExtra(EXTRA_PIN) ?: ""
     )
 
 

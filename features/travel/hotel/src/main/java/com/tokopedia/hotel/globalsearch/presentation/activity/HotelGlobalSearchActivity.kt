@@ -19,8 +19,8 @@ open class HotelGlobalSearchActivity : HotelBaseActivity() {
 
     override fun getNewFragment(): Fragment? =
             HotelGlobalSearchFragment.getInstance(
-                    intent.getStringExtra(EXTRA_CHECK_IN_DATE),
-                    intent.getStringExtra(EXTRA_CHECK_OUT_DATE),
+                    intent.getStringExtra(EXTRA_CHECK_IN_DATE) ?: "",
+                    intent.getStringExtra(EXTRA_CHECK_OUT_DATE) ?: "",
                     intent.getIntExtra(EXTRA_NUM_OF_GUESTS, 0),
                     intent.getIntExtra(EXTRA_NUM_OF_ROOMS, 0))
 

@@ -33,7 +33,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
     @Inject
     lateinit var viewModelProvider:  ViewModelProvider.Factory
 
-    override fun getVMFactory(): ViewModelProvider.Factory? {
+    override fun getVMFactory(): ViewModelProvider.Factory {
        return viewModelProvider
     }
 

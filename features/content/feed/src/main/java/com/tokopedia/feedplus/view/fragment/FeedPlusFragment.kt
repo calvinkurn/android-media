@@ -783,14 +783,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         when (requestCode) {
             OPEN_DETAIL -> if (resultCode == Activity.RESULT_OK)
-                showSnackbar(data.getStringExtra("message"))
+                showSnackbar(data.getStringExtra("message")?: "")
             OPEN_KOL_COMMENT -> if (resultCode == Activity.RESULT_OK) {
                 val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
                     view?.let {
                         Toaster.build(
                             it,
-                            serverErrorMsg,
+                            serverErrorMsg?: "",
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
                             getString(R.string.cta_refresh_feed),
@@ -810,7 +810,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     onSuccessReportContent()
                 } else {
                     onErrorReportContent(
-                        data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
+                        data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG) ?: ""
                     )
                 }
             }
@@ -820,7 +820,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 adapter.getlist().firstOrNull { it is OnboardingViewModel }?.let {
                     (it as? OnboardingViewModel)?.dataList?.forEach { interestPickDataViewModel ->
                         interestPickDataViewModel.isSelected =
-                            selectedIdList.contains(interestPickDataViewModel.id)
+                            selectedIdList?.contains(interestPickDataViewModel.id) == true
                     }
                 }
                 adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)

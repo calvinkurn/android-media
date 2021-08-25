@@ -79,21 +79,21 @@ object WebViewHelper {
                     val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
 
                     if (clientID != null && url.contains("js.tokopedia.com")) {
-                        var tokopediaEncodedUrl = uri!!.getQueryParameter("url")
+                        val tokopediaEncodedUrl = uri.getQueryParameter("url")
 
                         if (tokopediaEncodedUrl != null) {
                             var tokopediaDecodedUrl =
-                                URLDecoder.decode(tokopediaEncodedUrl!!, "UTF-8")
+                                URLDecoder.decode(tokopediaEncodedUrl, "UTF-8")
                             val tokopediaUri = Uri.parse(tokopediaDecodedUrl)
                             tokopediaDecodedUrl = tokopediaUri.buildUpon()
                                 .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
                                 .toString()
 
-                            returnURl = replaceUriParameter(uri!!, "url", tokopediaDecodedUrl)
+                            returnURl = replaceUriParameter(uri, "url", tokopediaDecodedUrl)
                         }
-                    } else if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
+                    } else if (clientID != null && url.contains(HOST_TOKOPEDIA)) {
                         returnURl =
-                            uri!!.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID)
+                            uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID)
                                 .build().toString()
                     }
                 }

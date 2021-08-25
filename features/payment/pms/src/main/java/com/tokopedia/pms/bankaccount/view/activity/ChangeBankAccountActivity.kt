@@ -40,7 +40,7 @@ class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponen
 
     override fun getNewFragment(): Fragment {
         val paymentListModel: BasePaymentModel =
-            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA)
+            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA) ?: BasePaymentModel()
         return ChangeBankAccountFragment.createInstance(paymentListModel)
     }
 

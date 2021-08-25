@@ -25,7 +25,7 @@ abstract class BaseViewModelActivity<T : BaseViewModel> : BaseSimpleActivity(), 
         lifecycle.addObserver(getLifeCycleObserver(bVM))
     }
 
-    protected open fun getVMFactory(): ViewModelProvider.Factory? {
+    protected open fun getVMFactory(): ViewModelProvider.Factory {
         return ViewModelProvider.AndroidViewModelFactory(this.application)
     }
 

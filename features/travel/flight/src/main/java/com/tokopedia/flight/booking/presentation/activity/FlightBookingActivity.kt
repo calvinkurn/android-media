@@ -23,12 +23,12 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
 
     override fun getNewFragment(): Fragment {
-        val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)
-        val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID)
-        val departureTerm = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_TERM)
-        val returnTerm = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_TERM)
-        val searchPassDataModel: FlightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA)
-        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE)
+        val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID) ?: ""
+        val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID) ?: ""
+        val departureTerm = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_TERM) ?: ""
+        val returnTerm = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_TERM) ?: ""
+        val searchPassDataModel: FlightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA) ?: FlightSearchPassDataModel()
+        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE) ?: FlightPriceModel()
         return FlightBookingFragment.newInstance(searchPassDataModel,
                 departureId, arrivalId, departureTerm, returnTerm, priceModel)
     }

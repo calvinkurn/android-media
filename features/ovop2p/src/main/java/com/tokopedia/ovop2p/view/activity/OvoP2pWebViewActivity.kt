@@ -17,7 +17,7 @@ class OvoP2pWebViewActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferC
 
     override fun getNewFragment(): Fragment {
         updateTitle(intent.getStringExtra(TITLE))
-        return BaseSessionWebViewFragment.newInstance(intent.getStringExtra(URL))
+        return BaseSessionWebViewFragment.newInstance(intent.getStringExtra(URL) ?: "")
     }
 
     private fun initInjector() {

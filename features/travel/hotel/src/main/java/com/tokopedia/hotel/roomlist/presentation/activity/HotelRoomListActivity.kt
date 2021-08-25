@@ -30,14 +30,14 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
 
     override fun getNewFragment(): Fragment = HotelRoomListFragment.createInstance(
             intent.getLongExtra(HotelRoomListFragment.ARG_PROPERTY_ID, 0),
-            intent.getStringExtra(HotelRoomListFragment.ARG_PROPERTY_NAME),
-            intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_IN),
-            intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_OUT),
+            intent.getStringExtra(HotelRoomListFragment.ARG_PROPERTY_NAME) ?: "",
+            intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_IN) ?: "",
+            intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_OUT) ?: "",
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ADULT, 0),
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_CHILDREN, 0),
             intent.getIntExtra(HotelRoomListFragment.ARG_TOTAL_ROOM, 0),
-            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_TYPE),
-            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_NAME))
+            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_TYPE) ?: "",
+            intent.getStringExtra(HotelRoomListFragment.ARG_DESTINATION_NAME) ?: "")
 
     override fun shouldShowOptionMenu(): Boolean = false
 

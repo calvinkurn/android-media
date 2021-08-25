@@ -261,7 +261,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
                             // Stop check voucher job to prevent previous promo override
                             topupBillsViewModel.stopCheckVoucher()
-                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
+                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
                             setupPromoTicker(promoData)
                         }
                     }
