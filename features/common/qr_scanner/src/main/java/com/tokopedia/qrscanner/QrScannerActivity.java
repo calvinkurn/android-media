@@ -297,7 +297,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     public String checkQRPeduliLindungi() {
         Uri uri = getIntent().getData();
        if(uri != null){
-           return uri.getQueryParameter("redirect");
+           return ApplinkConst.WEBVIEW + "?url=" + uri.getQueryParameter("redirect");
        }
        else {
            return "";
