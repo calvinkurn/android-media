@@ -209,6 +209,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     isHotelDetailSuccess = false
+                    showErrorView(it.throwable)
                 }
             }
             isHotelInfoLoaded = true
@@ -223,6 +224,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     isHotelReviewSuccess = false
+                    showErrorView(it.throwable)
                 }
             }
             isHotelReviewLoaded = true
