@@ -25,7 +25,7 @@
         app:typographyType="body_3"
         tools:text="Tampilkan lebih Banyak" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_chevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

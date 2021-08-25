@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 
 data class AceSearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -17,7 +18,53 @@ data class AceSearchProductModel(
             @SerializedName("data")
             @Expose
             val data: SearchProductData = SearchProductData()
-    )
+    ) {
+
+        fun getResponseCode() = header.responseCode
+
+        fun getAlternativeKeyword(): String {
+            val alternativeKeywordList = generateAlternativeKeywordList()
+
+            return if (alternativeKeywordList.isEmpty()) SearchCategoryTrackingConst.Misc.NONE
+            else alternativeKeywordList.joinToString()
+        }
+
+        private fun generateAlternativeKeywordList(): List<String> {
+            val alternativeKeywordList = mutableListOf<String>()
+
+            if (isUseSuggestionKeyword())
+                addAllSuggestionKeyword(alternativeKeywordList)
+            else if (isUseRelatedKeyword())
+                addAllRelatedKeyword(alternativeKeywordList)
+
+            return alternativeKeywordList
+        }
+
+        private fun isUseSuggestionKeyword() = getResponseCode() == "7"
+
+        private fun addAllSuggestionKeyword(alternativeKeywordList: MutableList<String>) {
+            val suggestion = data.suggestion.suggestion
+
+            if (suggestion.isNotBlank())
+                alternativeKeywordList.add(suggestion)
+        }
+
+        private fun isUseRelatedKeyword() =
+            listOf("3", "4", "5", "6").contains(getResponseCode())
+
+        private fun addAllRelatedKeyword(alternativeKeywordList: MutableList<String>) {
+            val related = data.related
+
+            val relatedKeyword = related.relatedKeyword
+            if (relatedKeyword.isNotBlank())
+                alternativeKeywordList.add(relatedKeyword)
+
+            val otherRelatedKeyword = related.otherRelatedList
+                .map { it.keyword }
+                .filter { it.isNotBlank() }
+            alternativeKeywordList.addAll(otherRelatedKeyword)
+        }
+    }
 
     data class SearchProductHeader(
             @SerializedName("totalData")
