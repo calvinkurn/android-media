@@ -61,7 +61,9 @@
       ],
       "userId": ".*",
       "channelId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "event": "select_content",
@@ -78,7 +80,9 @@
       ],
       "userId": ".*",
       "channelId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "event": "clickHomepage",
@@ -86,7 +90,9 @@
       "eventAction": "click remind me",
       "eventLabel": "\\d+ - \\d+ - .+ - .+",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "event": "clickHomepage",
@@ -94,7 +100,9 @@
       "eventAction": "click on remove remind me",
       "eventLabel": "\\d+ - \\d+ - .+ - .+",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace"
     },
     {
       "event": "clickHomepage",
