@@ -62,36 +62,32 @@ open class GetFacebookCredentialUseCase @Inject constructor() {
     }
 
     private fun getFacebookEmail(accessToken: AccessToken, subscriber: GetFacebookCredentialSubscriber, context: Context?) {
-        val request = GraphRequest.newMeRequest(
-                accessToken
-        ) { `object`: JSONObject?, response: GraphResponse ->
-            if (response.error == null && `object` != null) {
+        val request = GraphRequest.newMeRequest(accessToken) { obj, response ->
+            if (response?.error == null && obj != null) {
                 val gson = Gson()
-                val data = gson.fromJson(`object`.toString(), FacebookRequestData::class.java)
+                val data = gson.fromJson(obj.toString(), FacebookRequestData::class.java)
                 if (data != null) {
                     when {
                         data.email.isNotEmpty() -> {
                             subscriber.onSuccessEmail(accessToken, data.email)
                         }
                         data.phone.isNotEmpty() -> {
-                            subscriber.onSuccessPhone(accessToken,
-                                    transform(data.phone))
+                            subscriber.onSuccessPhone(accessToken, transform(data.phone))
                         }
                         else -> {
                             LoginManager.getInstance().logOut()
-                            subscriber.onError(MessageErrorException(
-                                    context?.getString(R.string.error_login_using_facebook)))
+                            subscriber.onError(MessageErrorException(context?.getString(R.string.error_login_using_facebook)))
                         }
                     }
                 }
             } else {
-                val errorCode = response.error.errorCode
-                val subErrorCode = response.error.subErrorCode
-                val errorMessage = (context?.getString(R.string.error_login_using_facebook)
-                        + " " + errorCode + " " + subErrorCode)
+                val errorCode = response?.error?.errorCode
+                val subErrorCode = response?.error?.subErrorCode
+                val errorMessage = (context?.getString(R.string.error_login_using_facebook) + " " + errorCode + " " + subErrorCode)
                 subscriber.onError(MessageErrorException(errorMessage))
             }
         }
+
         val parameters = Bundle()
         val permission = getFacebookPermission(context)
         parameters.putString("fields", permission)

@@ -30,6 +30,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               status
               countdown_start: countdownStart
               countdown_end: countdownEnd
+              countdown_end_delay: countdownEndDelay
             }
           }
         }

@@ -3,10 +3,6 @@ package com.tokopedia.digital.product.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -20,6 +16,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
@@ -139,8 +139,8 @@ public class DigitalSearchNumberFragment extends BaseDaggerFragment
     }
 
     private void setClientNumberInputType() {
-        if (clientNumber != null && (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC))) {
+        if (clientNumber != null && (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL.getValue())
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC.getValue()))) {
             editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else {

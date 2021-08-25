@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -29,9 +30,11 @@ class HomeProductRecomViewHolder(
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
 
     private var channelId = ""
+    private var isOoc = false
 
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
+        isOoc = element.id == PRODUCT_RECOM_OOC
         productRecom.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
@@ -58,14 +61,14 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
+        listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName, isOoc)
     }
 
     override fun onSeeAllBannerClicked(
         data: RecommendationCarouselData,
         applink: String
     ) {
-        listener?.onSeeAllBannerClicked(channelId, data.recommendationData.title)
+        listener?.onSeeAllBannerClicked(channelId, data.recommendationData.title, isOoc)
     }
 
     override fun onRecomProductCardClicked(
@@ -75,7 +78,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString())
+        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -117,10 +120,23 @@ class HomeProductRecomViewHolder(
         )
     }
 
+    fun submitList(data: HomeProductRecomUiModel?) {
+        data?.recomWidget?.let {
+            productRecom.bind(
+                carouselData = RecommendationCarouselData(
+                    recommendationData = it,
+                    state = RecommendationCarouselData.STATE_READY,
+                ),
+                widgetListener = this,
+                scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
+            )
+        }
+    }
+
     interface HomeProductRecomListener {
-        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String)
-        fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String)
-        fun onSeeAllBannerClicked(channelId: String, headerName: String)
+        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean)
+        fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)
+        fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean)
         fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
         fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
         fun onGetCarouselScrollPosition(adapterPosition: Int): Int

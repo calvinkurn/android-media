@@ -136,6 +136,11 @@ object ApplinkConstInternalGlobal {
 
     const val PARAM_CALL_BACK = "callBack"
 
+    // UserIdentificationInfoSimpleActivity
+    // tokopedia-android-internal://global/user-identification-only
+    @JvmField
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
+
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
     const val INBOX_TALK = "$INTERNAL_GLOBAL/inbox-talk"
@@ -271,7 +276,13 @@ object ApplinkConstInternalGlobal {
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
+    const val WEBVIEW_BASE = "$INTERNAL_GLOBAL/webview"
+    const val BROWSER = "$INTERNAL_GLOBAL/browser"
+
     const val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
+    const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
 

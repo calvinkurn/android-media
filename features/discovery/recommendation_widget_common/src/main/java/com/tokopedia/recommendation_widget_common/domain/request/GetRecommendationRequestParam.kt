@@ -35,6 +35,7 @@ data class GetRecommendationRequestParam(
         if (categoryIds.isNotEmpty())
             requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
         requestMap[KEYWORDS] = keywords
+        requestMap[PAGE_NAME] = pageName
         if(xSource.isNotEmpty())
             requestMap[X_SOURCE] = xSource
         if(xDevice.isNotEmpty())

@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.PAYLOAD_POST_VISIBLE
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -17,6 +20,7 @@ import java.util.*
 
 object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
+    private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val TYPE_VIDEO = "video"
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
@@ -24,13 +28,53 @@ object FeedScrollListenerNew {
             val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
             val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             for (i in firstPosition..lastPosition) {
+                val item = getCardViewModel(list, i)
                 if (isVideoCard(list, i)) {
-                    val item = getVideoCardViewModel(list, i)
                     if (item != null) {
                         getVideoModelScrollListener(layoutManager, recyclerView, i, item)
                     }
+                } else if (isImageCard(list, i)) {
+                    if (item != null) {
+                        getImagePostScrollListener(layoutManager, recyclerView, i, item)
+                    }
                 }
             }
+        }
+    }
+
+    private fun getImagePostScrollListener(
+        layoutManager: LinearLayoutManager?,
+        recyclerView: RecyclerView,
+        i: Int,
+        item: FeedXMedia
+    ) {
+        val rvRect = Rect()
+        recyclerView.getGlobalVisibleRect(rvRect)
+        val rowRect = Rect()
+        layoutManager?.findViewByPosition(i)?.getGlobalVisibleRect(rowRect)
+        val videoViewRect = Rect()
+        layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
+            ?.getGlobalVisibleRect(videoViewRect)
+        val imageView =
+            layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
+        if (imageView != null) {
+            val percentVideo: Int
+            val visibleVideo: Int = if (rowRect.bottom >= rvRect.bottom) {
+                rvRect.bottom - videoViewRect.top
+            } else {
+                videoViewRect.bottom - rvRect.top
+            }
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
+
+            val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
+
+            if (isStateChanged && item.isImageImpressedFirst) {
+                item.isImageImpressedFirst = false
+                Objects.requireNonNull(recyclerView.adapter)
+                    .notifyItemChanged(i, PAYLOAD_POST_VISIBLE)
+            }
+            if(percentVideo <= 0)
+                item.isImageImpressedFirst = true
         }
     }
 
@@ -56,7 +100,7 @@ object FeedScrollListenerNew {
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * 100 / imageView.height
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             var isStateChanged = false
             if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
@@ -81,7 +125,15 @@ object FeedScrollListenerNew {
         } != null))
     }
 
-    private fun getVideoCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+
+    private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+        return (list.size > position && list[position] is DynamicPostUiModel && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
+                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+            it.type == TYPE_IMAGE
+        } != null))
+    }
+
+    private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
             return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
         } catch (e: Exception) {

@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -39,13 +40,15 @@ import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapter
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyModel
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
+import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
 import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
+import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -59,13 +62,15 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
-
+private const val CLICK_FILTER = "click - filter produk"
+private const val CLICK_FILTER_TERAPKAN = "click - terapkan pop up filter"
 class ProductTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: ProductAdapter
     private var totalProductCount = -1
     private var singleAction = false
     private var getDateCallBack: FetchDate? = null
+    private var changePlacementFilter: ChangePlacementFilter? = null
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
@@ -73,7 +78,10 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
+    private var itemList: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
+    private var placementType: Int = 0
+    private var isWhiteListedUser: Boolean = false
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -149,16 +157,27 @@ class ProductTabFragment : BaseDaggerFragment() {
         viewModel.getGroupProductData(page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 groupFilterSheet.getSelectedStatusId(), startDate
-                , endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
+                , endDate, groupFilterSheet.getSelectedAdPlacementType(), onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.placementType = arguments?.getInt("placementType", 0)!!
+        this.isWhiteListedUser = arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false
         fetchData()
+        setPlacementTicker()
         btnFilter.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.onSubmitClick = { fetchData() }
+            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
+            groupFilterSheet.onSubmitClick = {
+                changePlacementFilter?.getSelectedFilter(groupFilterSheet.getSelectedAdPlacementType())
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                    CLICK_FILTER_TERAPKAN, "${groupFilterSheet.getSelectedAdPlacementType()} - ${groupFilterSheet.getSelectedStatusId()} - ${groupFilterSheet.getSelectedSortId()}")
+                setPlacementTicker()
+                fetchData()
+            }
         }
 
         close_butt.setOnClickListener {
@@ -197,9 +216,11 @@ class ProductTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
             putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
+            putExtra(ParamObject.ISWHITELISTEDUSER, isWhiteListedUser)
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_PRODUK, "")
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TAMBAH_PRODUK, "")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -302,16 +323,37 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     private fun fetchData() {
         adIds.clear()
+        itemList.clear()
         currentPageNum = 1
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
-
         viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), startDate, endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(), onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
+    }
+
+    private fun setPlacementTicker() {
+        placement_tiker.visibility = when(isWhiteListedUser) {
+            true -> View.VISIBLE
+            false -> View.GONE
+        }
+        when(groupFilterSheet.getSelectedAdPlacementType()) {
+            0 -> {
+                placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
+                placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
+            }
+            2 -> {
+                placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_pencerian)
+                placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_pencerian))
+            }
+            3 -> {
+                placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_rekoemendasi)
+                placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))
+            }
+        }
     }
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
@@ -325,20 +367,23 @@ class ProductTabFragment : BaseDaggerFragment() {
         recyclerviewScrollListener.updateStateAfterGetData()
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()
                 && groupFilterSheet.getSelectedSortId() == ""
-                && groupFilterSheet.getSelectedStatusId() == null) {
+                && groupFilterSheet.getSelectedStatusId() == null
+                && groupFilterSheet.getSelectedAdPlacementType() == null) {
             totalProductCount = totalCount
         }
         response.data.forEach {
             adIds.add(it.adId.toString())
+            itemList.add(it.itemId.toString())
             adapter.items.add(ProductItemModel(it))
         }
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
             val endDate = getDateCallBack?.getEndDate() ?: ""
             viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats, groupFilterSheet.getSelectedSortId(),
-                    groupFilterSheet.getSelectedStatusId())
+                    groupFilterSheet.getSelectedStatusId(), groupFilterSheet.getSelectedAdPlacementType())
         }
         setFilterCount()
+        (activity as TopAdsGroupDetailViewActivity).getBidForKeywords(itemList)
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
     }
 
@@ -405,9 +450,15 @@ class ProductTabFragment : BaseDaggerFragment() {
             getDateCallBack = context
     }
 
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        if(context is ChangePlacementFilter)
+            changePlacementFilter = context
+    }
     override fun onDetach() {
         super.onDetach()
         getDateCallBack = null
+        changePlacementFilter = null
     }
 
 

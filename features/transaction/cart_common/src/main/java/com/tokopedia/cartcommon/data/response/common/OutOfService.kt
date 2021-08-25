@@ -1,7 +1,10 @@
 package com.tokopedia.cartcommon.data.response.common
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class OutOfService(
         @SerializedName("buttons")
         val buttons: List<Button> = emptyList(),
@@ -15,7 +18,7 @@ data class OutOfService(
         val image: String = "",
         @SerializedName("title")
         val title: String = ""
-) {
+) : Parcelable {
     companion object {
         const val ID_MAINTENANCE = "1"
         const val ID_OVERLOAD = "2"
@@ -24,6 +27,10 @@ data class OutOfService(
         const val TYPE_SERVER_DOWN = "Server Down"
         const val TYPE_RATE_LIMITER = "Got Rate Limiter"
         const val TYPE_NO_INTERNET_CONNECTION = "No internet connection"
+    }
+
+    fun isOutOfService(): Boolean {
+        return id.isNotBlank() && id != "0"
     }
 
     fun getErrorType(): String {
