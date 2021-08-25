@@ -6,13 +6,15 @@
     android:layout_height="@dimen/play_product_featured_height"
     android:background="@drawable/bg_play_product_featured"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <com.tokopedia.play.view.custom.ProductIconView
         android:id="@+id/ic_play_featured_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:pic_totalProduct="15" />
+        tools:pic_totalProduct="15"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_check_product"
@@ -20,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:text="Cek Barang"
-        app:typographyType="small" />
+        app:typographyType="small"
+        />
 
 </LinearLayout>
