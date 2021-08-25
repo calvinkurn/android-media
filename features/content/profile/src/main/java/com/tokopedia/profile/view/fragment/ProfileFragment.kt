@@ -989,7 +989,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         shopId: String,
         isFollowed: Boolean,
     ) {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented as it is a common interface method")
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {

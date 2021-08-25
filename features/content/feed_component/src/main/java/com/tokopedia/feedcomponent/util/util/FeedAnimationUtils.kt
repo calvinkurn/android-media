@@ -124,11 +124,10 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
 }
 
 fun showViewWithSlideAnimation(view: ViewGroup) {
-    view.visible()
-        TransitionManager.beginDelayedTransition(
-            view,
-            AutoTransition().setDuration(300)
-        )
+    TransitionManager.beginDelayedTransition(
+        view,
+        AutoTransition()
+    )
 }
 
 

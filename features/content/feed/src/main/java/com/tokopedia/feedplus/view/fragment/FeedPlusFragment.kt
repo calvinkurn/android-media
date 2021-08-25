@@ -1000,16 +1000,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
         try {
             return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
         } catch (e: Exception) {
-            e.localizedMessage
+            Timber.d(e.localizedMessage)
         }
         return null
     }
 
     private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
-            it.type == TYPE_IMAGE
-        } != null))
+
+        if (list.size > position && list[position] is DynamicPostUiModel) {
+            val item = (list[position] as DynamicPostUiModel).feedXCard
+            return (item.typename == TYPE_FEED_X_CARD_POST
+                    && (item.media.isNotEmpty()
+                    && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
     }
 
     private fun registerNewFeedReceiver() {

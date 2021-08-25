@@ -15,7 +15,7 @@
         android:src="@drawable/ic_product_tag_circle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/content_product_tag_dot"
+        android:contentDescription="@string/feed_product_tag_dot"
         tools:visibility="gone"
         />
     <ImageView
@@ -23,10 +23,10 @@
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/unify_space_8"
         android:visibility="invisible"
-        android:src="@drawable/ic_up"
+        android:src="@drawable/ic_feed_up"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/product_tag_expanded_card"
-        android:contentDescription="@string/content_product_tag_up"
+        android:contentDescription="@string/feed_product_tag_up"
         tools:visibility="visible"
         />
     <ImageView
@@ -34,10 +34,10 @@
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/unify_space_8"
         android:visibility="invisible"
-        android:src="@drawable/ic_down"
+        android:src="@drawable/ic_feed_down"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_expanded_card"
-        android:contentDescription="@string/content_product_tag_down"
+        android:contentDescription="@string/feed_product_tag_down"
         tools:visibility="visible"
         />
     <androidx.cardview.widget.CardView
@@ -69,12 +69,12 @@
                 android:ellipsize="marquee"
                 android:layout_marginStart="@dimen/dp_8"
                 android:singleLine="true"
-                android:text="Fellow - Stagg EKG Electric Pour Over Kett"
                 android:textColor="@color/Unify_N0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Fellow - Stagg EKG Electric Pour Over Kett"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_slashed_price_text"
@@ -83,7 +83,6 @@
                 android:paddingEnd="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:visibility="gone"
-                android:text="Rp2.750.000"
                 app:typographyType="body_3"
                 android:singleLine="true"
                 android:textColor="@color/Unify_NN400"
@@ -91,6 +90,7 @@
                 app:layout_constraintStart_toStartOf="@id/product_name_text"
                 app:layout_constraintTop_toBottomOf="@id/product_name_text"
                 tools:visibility="visible"
+                tools:text="Rp2.750.000"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -99,7 +99,6 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
-                android:text="Rp2.750.000"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 android:singleLine="true"
@@ -107,6 +106,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/product_slashed_price_text"
                 app:layout_constraintStart_toEndOf="@id/product_slashed_price_text"
                 app:layout_constraintTop_toTopOf="@id/product_slashed_price_text"
+                tools:text="Rp2.750.000"
                 />
 
             <com.tokopedia.iconunify.IconUnify

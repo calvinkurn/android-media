@@ -708,8 +708,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
-                            layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-
+                            layoutLihatProdukParent.layoutTransition.apply {
+                                enableTransitionType(LayoutTransition.CHANGING)
+                            }
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -761,9 +762,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (!productTagText.isVisible) {
+                                            showViewWithSlideAnimation(layoutLihatProdukParent)
                                             productTagText.apply {
                                                 visible()
-                                                showViewWithSlideAnimation(layoutLihatProdukParent)
                                             }
                                         } else if(!productTagBubbleShowing) {
                                             productTagText.gone()
@@ -929,7 +930,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMute = !isMute
                 if (isMute)
                     listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
-                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
         }
@@ -977,7 +978,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
-                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1267,8 +1268,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
                 handlerAnim?.postDelayed({
+                    showViewWithSlideAnimation(layoutLihatProdukParent)
                     productTagText.apply {
-                        showViewWithSlideAnimation(layoutLihatProdukParent)
                         visible()
                     }
 

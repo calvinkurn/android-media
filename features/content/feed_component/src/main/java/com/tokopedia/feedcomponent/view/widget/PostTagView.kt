@@ -26,6 +26,8 @@ private const val POSITION_BOTTOM = 2
 private const val POINTER_HEIGHT = 8
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
+private const val CENTER_POS_X = 0.5
+private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.75
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
@@ -51,12 +53,10 @@ class PostTagView @JvmOverloads constructor(
     private var postImageWidth: Int = 0
     private var postImageHeight: Int = 0
     private var position: Int = 0
-    private var feedXTag: FeedXMediaTagging
+    private var feedXTag: FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
 
     init {
-        (context as LifecycleOwner).lifecycle.addObserver(this)
-        this.feedXTag = feedXMediaTagging
         initialBubbleVisible = false
         val view =
             LayoutInflater.from(context).inflate(R.layout.product_tag_detail_view, this, true)
@@ -98,7 +98,7 @@ class PostTagView @JvmOverloads constructor(
             productViewPrice.text = product.priceFmt
         }
 
-        if (feedXTag.posY > 0.75) {
+        if (feedXTag.posY > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
             this.finalPointerView = productTagPointerBottom
             position = POSITION_TOP
         } else {
@@ -178,7 +178,7 @@ class PostTagView @JvmOverloads constructor(
     private fun setProductTagBubbleStartMargin(
         bubbleInflatedWidth: Int
     ): Int {
-        return if (feedXTag.posX <= 0.5) {
+        return if (feedXTag.posX <= CENTER_POS_X) {
             if (dotMarginStart >= bubbleInflatedWidth / 2)
                 dotMarginStart - bubbleInflatedWidth / 2
             else
