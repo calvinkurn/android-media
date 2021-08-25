@@ -111,6 +111,8 @@ class HomePlayWidgetAnalyticListener(
         )
                 .appendUserId(userId)
                 .appendChannelId(item.channelId)
+                .appendBusinessUnit("play")
+                .appendCurrentSite("tokopediamarketplace")
                 .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
@@ -140,6 +142,8 @@ class HomePlayWidgetAnalyticListener(
         )
                 .appendChannelId(item.channelId)
                 .appendUserId(userId)
+                .appendBusinessUnit("play")
+                .appendCurrentSite("tokopediamarketplace")
                 .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
@@ -155,7 +159,9 @@ class HomePlayWidgetAnalyticListener(
                                 "$channelPositionInList - " +
                                 "${item.poolType} - " +
                                 if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo",
-                        UserId.KEY to userId
+                        UserId.KEY to userId,
+                        BusinessUnit.KEY to "play",
+                        CurrentSite.KEY to "tokopediamarketplace"
                 )
         )
     }
