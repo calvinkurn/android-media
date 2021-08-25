@@ -114,7 +114,6 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
-import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -156,12 +155,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
-        const val DELAY_SCROLL_TO_POSITION = 40L
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
-
+        private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         fun createInstance(
                 shopId: String,
                 isOfficialStore: Boolean,
@@ -2249,7 +2247,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
                                 val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
-                                recyclerView.stepScrollToPositionWithDelay(finalPosition, DELAY_SCROLL_TO_POSITION)
+                                recyclerView.stepScrollToPositionWithDelay(finalPosition, PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY)
                             }
                         }
                     }

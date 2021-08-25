@@ -26,7 +26,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -146,7 +145,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     private fun initWithAttr(context: Context, attributeSet: AttributeSet) {
         val attributeArray = context.obtainStyledAttributes(attributeSet, com.tokopedia.unifycomponents.R.styleable.UnifyImage)
         type = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_type, TYPE_RECT)
-        cornerRadius = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_corner_radius, DEFAULT_CORNER_RADIUS)
+        cornerRadius = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_corner_radius, DEFAULT_CORNER_RADIUS  )
         placeholder =
                 attributeArray.getResourceId(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_placeholder, 0)
         var attrCustomLoadingAvd =
@@ -184,7 +183,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         var reloadPaddingV = measuredHeight / 2 - 16.toPx()
         var reloadIconPaddingV = measuredHeight / 2 - 12.toPx()
 
-        if (measuredWidth.toDp() > 256 && measuredHeight.toDp() > 256) {
+        if (measuredWidth.toDp() > MINIMUM_MEASURED_WIDTH && measuredHeight.toDp() > MINIMUM_MEASURED_HEIGHT) {
             // reload dimension is 48dp for large image (< 256dp)
             reloadPaddingH = measuredWidth / 2 - 24.toPx()
             reloadIconPaddingH = measuredWidth / 2 - 16.toPx()
@@ -215,7 +214,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
             /**
              * saveLayer without flag was added in API 21
              */
-            Build.VERSION.SDK_INT >= API_21 -> canvas.saveLayer(
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> canvas.saveLayer(
                     RectF(0f, 0f, width.toFloat(), height.toFloat()),
                     null
             )
@@ -228,9 +227,9 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     Canvas.ALL_SAVE_FLAG
             )
         }
-        if (Build.VERSION.SDK_INT > API_27) canvas.clipPath(path)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) canvas.clipPath(path)
         super.draw(canvas)
-        if (Build.VERSION.SDK_INT < API_28) canvas.drawPath(path, paint)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) canvas.drawPath(path, paint)
         canvas.restoreToCount(save)
     }
 
@@ -339,8 +338,8 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         super.onDraw(canvas)
 
         if (isLoadError || (!hasImageUrl && placeholder == 0)) {
-            if (measuredWidth.toDp() <= MAX_MEASURED_WIDTH || measuredHeight.toDp() <= MAX_MEASURED_HEIGHT) {
-                if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
+            if (measuredWidth.toDp() <= MINIMUM_MEASURED_WIDTH || measuredHeight.toDp() <= MINIMUM_MEASURED_HEIGHT) {
+                if (!isRetryable) {
                     prevScaleType = scaleType
                     scaleType = ScaleType.FIT_CENTER
                 }
@@ -523,11 +522,9 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     companion object {
         const val TYPE_RECT = 0
         const val TYPE_CIRCLE = 1
-        const val DEFAULT_CORNER_RADIUS = 8
-        const val MAX_MEASURED_WIDTH = 256
-        const val MAX_MEASURED_HEIGHT = 256
-        const val API_21 = 21
-        const val API_27 = 27
-        const val API_28 = 28
+        private const val DEFAULT_CORNER_RADIUS = 8
+        private const val MINIMUM_MEASURED_WIDTH = 256
+        private const val MINIMUM_MEASURED_HEIGHT = 256
+
     }
 }

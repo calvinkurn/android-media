@@ -32,6 +32,9 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_SINGLE = 6
         private const val SPAN_SIZE_DOUBLE = 3
         private const val SPAN_SIZE_TRIPLE = 2
+        private const val SPAN_SIZE_DOUBLE_DATA_SIZE = 2
+        private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
+
     }
 
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
@@ -42,8 +45,8 @@ class ShopHomeMultipleImageColumnViewHolder(
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (element.data?.size) {
-                    2 -> SPAN_SIZE_DOUBLE
-                    3 -> SPAN_SIZE_TRIPLE
+                    SPAN_SIZE_DOUBLE_DATA_SIZE -> SPAN_SIZE_DOUBLE
+                    SPAN_SIZE_TRIPLE_DATA_SIZE -> SPAN_SIZE_TRIPLE
                     else -> SPAN_SIZE_SINGLE
                 }
             }
