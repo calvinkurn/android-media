@@ -46,7 +46,7 @@ object DeeplinkMapperDigital {
                 if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
-                else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+                else ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
