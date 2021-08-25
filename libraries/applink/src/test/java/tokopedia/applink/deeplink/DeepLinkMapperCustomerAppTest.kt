@@ -1467,24 +1467,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check affiliate dashboard appLink then should return tokopedia internal affiliate dashboard in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/dashboard"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_DASHBOARD, expectedDeepLink)
-    }
-
-    @Test
-    fun `check affiliate education appLink then should return tokopedia internal affiliate education in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/education"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_EDUCATION, expectedDeepLink)
-    }
-
-    @Test
-    fun `check affiliate explore appLink then should return tokopedia internal affiliate explore in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/explore"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_EXPLORE, expectedDeepLink)
-    }
-
-    @Test
     fun `check play detail appLink then should return tokopedia internal play detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play/1234"
         val appLink = UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, "1234")
