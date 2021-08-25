@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.reading.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -35,6 +36,7 @@ class ReadReviewHighlightedTopic: BaseCustomView {
         topicRating = findViewById(R.id.read_review_topic_rating)
         topicTitle = findViewById(R.id.read_review_highlighted_topic_title)
         reviewCount = findViewById(R.id.read_review_highlighted_topic_review_count)
+        topicRating?.background = ContextCompat.getDrawable(context, R.drawable.bg_highlighted_topic_rating)
     }
 
     fun setHighlightedTopic(topic: ProductTopic) {
