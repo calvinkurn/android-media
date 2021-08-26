@@ -44,6 +44,7 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.webview.KEY_TITLEBAR
 
 
 class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRuntimeHeightListener, private val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
@@ -306,7 +307,12 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         containerStatusMatching?.setOnClickListener {
             rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
                 if (url.isNotEmpty()) {
-                    RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                    val intent = RouteManager.getIntent(
+                        itemView.context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    )
+                    intent.putExtra(KEY_TITLEBAR, false)
+                    itemView.context.startActivity(intent)
                 }
                 AnalyticsTrackerUtil.sendEvent(
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

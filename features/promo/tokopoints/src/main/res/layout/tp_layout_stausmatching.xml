@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_right_arrow_white" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
@@ -64,6 +64,8 @@
                 app:timer_unify_single_type="auto"
                 android:visibility="gone"
                 android:layout_marginBottom="@dimen/dp_6"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:timer_unify_single_showClockIcon="true"
                 app:timer_unify_single_textWidth="wrap"/>
 
@@ -71,8 +73,11 @@
                 android:id="@+id/timer_text_view"
                 app:typographyType="body_3"
                 android:textColor="@color/Unify_N0"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/dp_4"
+                app:layout_constraintTop_toBottomOf="@id/countdown_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
