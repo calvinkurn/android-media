@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -132,18 +133,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
-//        autoCompleteAdapter1.updateItems(
-//            CommonTopupBillsDataMapper
-//                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
-        autoCompleteAdapter.updateItems(mutableListOf(
-            TopupBillsAutoCompleteContactDataView("", "081208120812"),
-            TopupBillsAutoCompleteContactDataView("Misael2", "081908190819"),
-            TopupBillsAutoCompleteContactDataView("", "081999999999"),
-            TopupBillsAutoCompleteContactDataView("Misael4", "08219283903"),
-            TopupBillsAutoCompleteContactDataView("Misael5", "08568068068"),
-            TopupBillsAutoCompleteContactDataView("Misael6", "085691919191"),
-            TopupBillsAutoCompleteContactDataView("Misael7", "085691029101")))
-//        autoCompleteAdapter1.updateItems(mutableListOf())
+        autoCompleteAdapter.updateItems(
+            CommonTopupBillsDataMapper
+                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
     private fun hideErrorInputNumber() {
