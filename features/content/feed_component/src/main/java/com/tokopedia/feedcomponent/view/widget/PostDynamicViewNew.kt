@@ -761,8 +761,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 productTagBubbleShowing = item.showExpandedView()
                                             }
                                         }
+                                        showViewWithSlideAnimation(layoutLihatProdukParent)
                                         if (!productTagText.isVisible) {
-                                            showViewWithSlideAnimation(layoutLihatProdukParent)
                                             productTagText.apply {
                                                 visible()
                                             }
@@ -1267,8 +1267,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
+                showViewWithSlideAnimation(layoutLihatProdukParent)
                 handlerAnim?.postDelayed({
-                    showViewWithSlideAnimation(layoutLihatProdukParent)
                     productTagText.apply {
                         visible()
                     }
