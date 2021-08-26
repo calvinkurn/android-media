@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -37,8 +38,8 @@ class FlowStateUseCaseTest {
 
         val result = uut(Unit).single()
 
-        assert(result is Success)
-        assert((result as Success).data.id == case.id)
+        assertTrue(result is Success)
+        assertTrue((result as Success).data.id == case.id)
     }
 
     @Test
@@ -48,8 +49,8 @@ class FlowStateUseCaseTest {
 
         val result = uut(Unit).single()
 
-        assert(result is Fail)
-        assert((result as Fail).throwable.message == case.message)
+        assertTrue(result is Fail)
+        assertTrue((result as Fail).throwable.message == case.message)
     }
 
 }

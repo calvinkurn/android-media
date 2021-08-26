@@ -10,6 +10,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -36,8 +37,8 @@ class CoroutineUseCaseTest {
 
             val result = uut(Unit)
 
-            assert(result.id == case.id)
-            assert(result.msg == case.msg)
+            assertTrue(result.id == case.id)
+            assertTrue(result.msg == case.msg)
         }
 
     @Test(expected = RuntimeException::class)

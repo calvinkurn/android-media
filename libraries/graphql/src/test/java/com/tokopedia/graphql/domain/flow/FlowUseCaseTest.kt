@@ -7,10 +7,12 @@ import com.tokopedia.graphql.domain.example.GetNoParamFlowUseCase
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
+import junit.framework.Assert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -36,8 +38,8 @@ class FlowUseCaseTest {
 
             val result = uut(Unit).single()
 
-            assert(result.id == case.id)
-            assert(result.msg == case.msg)
+            assertTrue(result.id == case.id)
+            assertTrue(result.msg == case.msg)
         }
 
     @Test(expected = RuntimeException::class)
