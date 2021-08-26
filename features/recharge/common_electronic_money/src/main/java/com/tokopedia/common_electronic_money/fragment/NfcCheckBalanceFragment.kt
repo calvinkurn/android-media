@@ -332,14 +332,13 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     protected fun goToNewTapcash(): Boolean {
-//        return try {
-//            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//                    RollenceKey.KEY_VARIANT_TAPCASH, RollenceKey.VARIANT_OLD_TAPCASH
-//            ) == RollenceKey.VARIANT_NEW_TAPCASH
-//        } catch (e: Exception) {
-//            false
-//        }
-        return true
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    RollenceKey.KEY_VARIANT_TAPCASH, RollenceKey.VARIANT_OLD_TAPCASH
+            ) == RollenceKey.VARIANT_NEW_TAPCASH
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {
