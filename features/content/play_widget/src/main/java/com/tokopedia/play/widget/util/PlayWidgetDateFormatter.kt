@@ -17,6 +17,8 @@ object PlayWidgetDateFormatter {
     private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
     private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
 
+    private const val GMT_DIVIDER = 100
+
     private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
     fun formatDate(
@@ -35,8 +37,8 @@ object PlayWidgetDateFormatter {
 
                 val diff = (getDeviceGMT().toInt() - GMT07.toInt())
                 if(diff != 0) {
-                    calendar.add(Calendar.HOUR_OF_DAY, diff / 100)
-                    calendar.add(Calendar.MINUTE, diff % 100)
+                    calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
+                    calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)
                 }
 
                 return@let outputFormat.format(calendar.time)
