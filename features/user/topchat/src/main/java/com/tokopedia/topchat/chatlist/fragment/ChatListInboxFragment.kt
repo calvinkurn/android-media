@@ -493,8 +493,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 adapter?.onNewItemChatFromSelfMessage(newChat, viewModel.pinnedMsgId, it)
                 setIndicatorCurrentActiveChat(newChat.msgId)
             }
-        } else {
-            if (newChat.isFromMySelf(role, userSession.userId)) return
+        } else if (!newChat.isFromMySelf(role, userSession.userId)) {
             adapter?.onNewItemChatMessage(newChat, viewModel.pinnedMsgId)
             increaseNotificationCounter()
         }

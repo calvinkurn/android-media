@@ -2255,15 +2255,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     fun toggleTemplateChatWhenFlex(toggle: Boolean) {
-        try {
-            if (chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
+            try {
                 if (!toggle) {
                     getViewState().hideTemplateChat()
-                } else if(toggle && viewStateShouldShowTemplate()) {
+                } else if (toggle && viewStateShouldShowTemplate()) {
                     getViewState().showTemplateChat()
                 }
-            }
-        } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {}
+        }
     }
 
     private fun removeAttachmentIfNecessary(savedInstance: Bundle?) {

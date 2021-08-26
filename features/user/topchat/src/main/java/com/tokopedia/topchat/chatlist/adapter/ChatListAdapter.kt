@@ -293,13 +293,13 @@ class ChatListAdapter constructor(
         }
     }
 
-    fun getItemPosition(msgId: String): Pair<ItemChatListPojo?, Int?> {
+    fun getItemPosition(msgId: String): Pair<ItemChatListPojo, Int>? {
         for(i in list.indices) {
             if(list[i] is ItemChatListPojo && (list[i] as ItemChatListPojo).msgId == msgId) {
                 return Pair((list[i] as ItemChatListPojo), i)
             }
         }
-        return Pair(null, null)
+        return null
     }
 
     fun deselectActiveChatIndicator(currentActiveChat: ItemChatListPojo) {
