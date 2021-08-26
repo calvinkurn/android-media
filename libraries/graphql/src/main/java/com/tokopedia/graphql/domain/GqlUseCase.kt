@@ -10,8 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
  * This class is the result of an improvement from the existing GraphqlUseCase (or related).
  *
  * this class is created in order to achieve flexibility in further development of domain layer.
- * currently, [GqlUseCase] is used in base class for [CoroutineUseCase], [CoroutineStateUseCase],
- * [FlowUseCase], and [FlowStateUseCase].
+ * currently, [GqlUseCase] is used in base class for [CoroutineUseCase], [CoroutineStateUseCase]
  *
  * This class has 3 functions in it:
  * - execute()

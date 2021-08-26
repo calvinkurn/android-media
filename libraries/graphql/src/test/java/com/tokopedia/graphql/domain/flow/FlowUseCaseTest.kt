@@ -28,17 +28,17 @@ class FlowUseCaseTest {
     }
 
     @Test
-    fun `when given success response should return output model with id`() = dispatcher.runBlockingTest {
-        val case = FooModel(1, "message")
-        coEvery { repository.getReseponse(any(), any()) } returns MockUtil.createSuccessResponse(
-            case
-        )
+    fun `when given success response should return output model with id`() =
+        dispatcher.runBlockingTest {
+            val case = FooModel(1, "message")
+            coEvery { repository.getReseponse(any(), any()) } returns
+                    MockUtil.createSuccessResponse(case)
 
-        val result = uut(Unit).single()
+            val result = uut(Unit).single()
 
-        assert(result.id == case.id)
-        assert(result.msg == case.msg)
-    }
+            assert(result.id == case.id)
+            assert(result.msg == case.msg)
+        }
 
     @Test(expected = RuntimeException::class)
     fun `when given error response should throw Runtime exception`() = dispatcher.runBlockingTest {

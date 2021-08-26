@@ -12,17 +12,9 @@ import kotlinx.coroutines.flow.flow
  * this class is created in order to achieve flexibility in further development of domain layer.
  * currently, [GqlUseCase] is used in base class for [FlowUseCase], and [FlowStateUseCase].
  *
- * This class has 3 functions in it:
- * - execute()
- *   This function is to determine the target request that will be managed to get data
- *   from certain sources, both network and local sources.
- *
- * - graphqlQuery()
- *   This function defines the query graphql that will be used to determine what data to get.
- *
- * - request()
- *   this function is a helper to request data to the graphql service based on
- *   predefined parameters and queries.
+ * Opened access modifier for repository and graphqlQuery because of
+ * reified inline function IllegalAccessError.
+ * https://youtrack.jetbrains.com/issue/KT-22625
  */
 abstract class GqlFlowUseCase<Input, out Output>(val repository: GraphqlRepository) {
 

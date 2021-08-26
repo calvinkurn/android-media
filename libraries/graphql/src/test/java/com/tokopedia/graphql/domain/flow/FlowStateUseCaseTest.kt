@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
 import com.tokopedia.graphql.domain.example.GetNoParamFlowStateUseCase
-import com.tokopedia.graphql.domain.example.GetNoParamStateUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.clearAllMocks
@@ -12,7 +11,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -34,9 +32,8 @@ class FlowStateUseCaseTest {
     @Test
     fun `when given success response should return Success with id`() = dispatcher.runBlockingTest {
         val case = FooModel(1, "message")
-        coEvery { repository.getReseponse(any(), any()) } returns MockUtil.createSuccessResponse(
-            case
-        )
+        coEvery { repository.getReseponse(any(), any()) } returns
+                MockUtil.createSuccessResponse(case)
 
         val result = uut(Unit).single()
 
