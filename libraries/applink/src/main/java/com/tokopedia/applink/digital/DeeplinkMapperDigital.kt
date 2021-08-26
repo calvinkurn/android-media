@@ -22,6 +22,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
+    const val MENU_ID_PARAM = "menu_id"
     const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
@@ -44,10 +45,12 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
+                        !uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty())
+                            getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
-                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, RECHARGE_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
