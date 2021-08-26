@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
+import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
  * @author : Steven 01/01/19
@@ -157,6 +158,9 @@ object TopChatWebSocketParam {
             addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
             addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
             addProperty("postal_code", userLocationInfo.postal_code)
+            addProperty(
+                "address_name", AddressUtil.getAddressMasking(userLocationInfo.label)
+            )
             addProperty("latlon", latlon)
         }
     }
