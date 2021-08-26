@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.miscDependencies.lifeCycleCommon
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
