@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
@@ -13,12 +14,12 @@ import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
-import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
 
@@ -445,8 +446,8 @@ object ShopPageHomeMapper {
     private fun mapToShowcaseListItemUiModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             widgetName: String
-    ) : List<ShopHomeShowcaseListItemUiModel> {
-        return data.map {
+    ): List<ShopHomeShowcaseListItemUiModel> {
+        val uiModelData = data.map {
             ShopHomeShowcaseListItemUiModel().apply {
                 id = it.linkId.toString()
                 imageUrl = it.imageUrl
@@ -454,6 +455,11 @@ object ShopPageHomeMapper {
                 name = it.showcaseName
                 viewType = widgetName
             }
+        }
+        return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
+            ShopHomeShowcaseListBaseWidgetViewHolder.getReorderShowcasePositionForTwoRowsSlider(uiModelData)
+        } else {
+            uiModelData
         }
     }
 

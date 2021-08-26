@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
+import kotlin.math.roundToInt
 
 /**
  * author by Rafli Syam on 05/08/2021
@@ -35,6 +37,29 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         const val LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE = 1
         const val LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE = 2
         const val LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE = 3
+
+        fun getReorderShowcasePositionForTwoRowsSlider(
+                showcaseListItemData: List<ShopHomeShowcaseListItemUiModel>
+        ): List<ShopHomeShowcaseListItemUiModel> {
+            val listSize = showcaseListItemData.size
+            val thresholds = ((listSize.toDouble() / 2).roundToInt())
+            val newList = MutableList(listSize) { ShopHomeShowcaseListItemUiModel() }
+            var pointer = 1
+            newList[0] = showcaseListItemData.first()
+            newList[listSize - 1] = showcaseListItemData.last()
+            showcaseListItemData.forEachIndexed { index, showcase ->
+                if (index.isMoreThanZero() && index < listSize) {
+                    if (index < thresholds) {
+                        newList[(index + pointer)] = showcase
+                        pointer++
+                    } else {
+                        pointer--
+                        newList[(index - pointer)] = showcase
+                    }
+                }
+            }
+            return newList
+        }
     }
 
     private var tvCarouselTitle : TextView? = null
