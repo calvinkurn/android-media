@@ -413,39 +413,44 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     fun onMinPriceFilterEdited(priceFilterViewModel: PriceFilterViewModel, minPriceValue: Int) {
-        val minMaxPriceRangeOption = priceFilterViewModel.getMinMaxPriceRangeOption()
-        val minimumPossibleValue = minMaxPriceRangeOption?.valMin ?: 0.toString()
+        onPriceFilterEdited(priceFilterViewModel, Option.KEY_PRICE_MIN, minPriceValue) {
+            priceFilterViewModel.minPriceFilterValue = it
+        }
+    }
 
-        val normalizedMinPriceValue =
-                if (minPriceValue <= minimumPossibleValue.toIntOrZero()) "" else minPriceValue.toString()
+    private fun onPriceFilterEdited(
+        priceFilterViewModel: PriceFilterViewModel,
+        priceFilterKey: String,
+        priceValue: Int,
+        updatePriceFilterViewModel: (String) -> Unit,
+    ) {
+        val minMaxPriceRange = priceFilterViewModel.getMinMaxPriceRange()
+        val normalizedMinPriceValue = priceValue.coerceToString(minMaxPriceRange)
 
-        applyPriceFilter(priceFilterViewModel, Option.KEY_PRICE_MIN, normalizedMinPriceValue)
+        applyPriceFilter(priceFilterViewModel, priceFilterKey, normalizedMinPriceValue)
         refreshMapParameter()
 
-        priceFilterViewModel.minPriceFilterValue = minPriceValue.toString()
+        updatePriceFilterViewModel(priceValue.toString())
         priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
 
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
 
-    private fun PriceFilterViewModel.getMinMaxPriceRangeOption(): Option? {
-        return priceFilter.options.find { it.isMinMaxRangePriceOption }
+    private fun PriceFilterViewModel.getMinMaxPriceRange(): IntRange {
+        val minMaxOption = priceFilter.options.find { it.isMinMaxRangePriceOption }
+        val valMin = minMaxOption?.valMin?.toIntOrNull() ?: 0
+        val valMax = minMaxOption?.valMax?.toIntOrNull() ?: Int.MAX_VALUE
+
+        return valMin..valMax
     }
+
+    private fun Int.coerceToString(range: IntRange) =
+        if (this !in range) "" else this.toString()
 
     fun onMaxPriceFilterEdited(priceFilterViewModel: PriceFilterViewModel, maxPriceValue: Int) {
-        val minMaxPriceRangeOption = priceFilterViewModel.getMinMaxPriceRangeOption()
-        val maximumPossibleValue = minMaxPriceRangeOption?.valMax ?: Integer.MAX_VALUE.toString()
-
-        val normalizedMaxPriceValue =
-                if (maxPriceValue >= maximumPossibleValue.toIntOrZero()) "" else maxPriceValue.toString()
-
-        applyPriceFilter(priceFilterViewModel, Option.KEY_PRICE_MAX, normalizedMaxPriceValue)
-        refreshMapParameter()
-
-        priceFilterViewModel.maxPriceFilterValue = maxPriceValue.toString()
-        priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
-
-        isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
+        onPriceFilterEdited(priceFilterViewModel, Option.KEY_PRICE_MAX, maxPriceValue) {
+            priceFilterViewModel.maxPriceFilterValue = it
+        }
     }
 
     fun onSortItemClick(sortItemViewModel: SortItemViewModel) {
