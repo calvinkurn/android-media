@@ -55,9 +55,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:itemCount="2"
-                tools:listitem="@layout/item_parameter_relief_detail" />
+                tools:listitem="@layout/item_parameter_protected_detail" />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/cardDescParameterRelief"

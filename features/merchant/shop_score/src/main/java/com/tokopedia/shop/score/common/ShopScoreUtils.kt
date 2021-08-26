@@ -7,8 +7,11 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -18,6 +21,8 @@ import java.io.IOException
 import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 
 object ShopScoreUtils {
@@ -84,13 +89,28 @@ fun getNPastDaysPenalty(): Int {
     val calendar = Calendar.getInstance(getLocale())
     calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - ShopScoreConstant.FOUR_WEEKS)
     return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        Calendar.SATURDAY -> 6
-        Calendar.FRIDAY -> 5
-        Calendar.THURSDAY -> 4
-        Calendar.WEDNESDAY -> 3
-        Calendar.TUESDAY -> 2
-        Calendar.MONDAY -> 1
-        else -> 0
+        Calendar.SATURDAY -> ShopScoreConstant.SIX_NUMBER
+        Calendar.FRIDAY -> ShopScoreConstant.FIVE_NUMBER
+        Calendar.THURSDAY -> ShopScoreConstant.FOUR_NUMBER
+        Calendar.WEDNESDAY -> ShopScoreConstant.THREE_NUMBER
+        Calendar.TUESDAY -> ShopScoreConstant.TWO_NUMBER
+        Calendar.MONDAY -> ShopScoreConstant.ONE_NUMBER
+        else -> ShopScoreConstant.ZERO_NUMBER
+    }
+}
+
+fun getNNextDaysProtectedParameter(totalRemainderDays: Int): Int {
+    val calendar = Calendar.getInstance(getLocale())
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)
+    return when (calendar.get(Calendar.DAY_OF_WEEK)) {
+        Calendar.TUESDAY -> ShopScoreConstant.SIX_NUMBER
+        Calendar.WEDNESDAY -> ShopScoreConstant.FIVE_NUMBER
+        Calendar.THURSDAY -> ShopScoreConstant.FOUR_NUMBER
+        Calendar.FRIDAY -> ShopScoreConstant.THREE_NUMBER
+        Calendar.SATURDAY -> ShopScoreConstant.TWO_NUMBER
+        Calendar.SUNDAY -> ShopScoreConstant.ONE_NUMBER
+        Calendar.MONDAY -> ShopScoreConstant.ZERO_NUMBER
+        else -> ShopScoreConstant.ZERO_NUMBER
     }
 }
 

@@ -57,6 +57,10 @@ interface ItemFaqListener {
     fun onArrowClicked(position: Int)
 }
 
+interface ProtectedParameterListener {
+    fun onProtectedParameterChevronClicked(protectedParameterDate: String)
+}
+
 interface ItemTimerNewSellerListener {
     fun onBtnShopPerformanceToFaqClicked()
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)

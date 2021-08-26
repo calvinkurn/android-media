@@ -94,7 +94,12 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         tvShopScoreValue?.apply {
             text = shopScore
             if (shopScoreNumber < ShopScoreConstant.SHOP_AGE_SIXTY) {
-
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    )
+                )
             } else {
                 setTextColor(
                     ContextCompat.getColor(

@@ -35,10 +35,7 @@ import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperRespons
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
 import com.tokopedia.shop.score.performance.presentation.adapter.*
 import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.*
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPopupEndTenure
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
+import com.tokopedia.shop.score.performance.presentation.bottomsheet.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
@@ -55,7 +52,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
     ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
     GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener,
-    ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener {
+    ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener, ProtectedParameterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -69,10 +66,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private val shopPerformanceAdapterTypeFactory by lazy {
         ShopPerformanceAdapterTypeFactory(
-            this, this,
-            this, this,
-            this, this, this,
-            this, this, this, this, this
+            ShopPerformanceTypeFactoryListener(
+                this, this,
+                this, this,
+                this, this, this,
+                this, this, this, this, this, this
+            )
         )
     }
 
@@ -350,6 +349,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 ShopScoreConstant.SELLER_EDU_PM_PRO_URL
             )
         }
+    }
+
+
+    override fun onProtectedParameterChevronClicked(protectedParameterDate: String) {
+        val bottomSheetProtectedParameter = BottomSheetProtectedParameter.createInstance(
+            protectedParameterDate
+        )
+        bottomSheetProtectedParameter.show(childFragmentManager)
     }
 
     private fun setPageBackground() {
@@ -734,14 +741,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
-                    counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>()
-                        .firstOrNull()?.scorePenalty.orZero()
+                    val headerShopPerformanceUiModel =
+                        it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()
+                    counterPenalty = headerShopPerformanceUiModel?.scorePenalty.orZero()
                     showPenaltyBadge()
-                    if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
-                        Handler().postDelayed({
-                            scrollToItemParameterDetailCoachMark()
-                            showCoachMark()
-                        }, COACH_MARK_RENDER_SHOW)
+                    processShowCoachMark()
+                    headerShopPerformanceUiModel?.let { headerPerformanceUiModel ->
+                        showPopupEndTenureNewSeller(
+                            headerPerformanceUiModel
+                        )
                     }
                 }
                 is Fail -> {
@@ -757,6 +765,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     )
                 }
             }
+        }
+    }
+
+    private fun processShowCoachMark() {
+        if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
+            Handler().postDelayed({
+                scrollToItemParameterDetailCoachMark()
+                showCoachMark()
+            }, COACH_MARK_RENDER_SHOW)
         }
     }
 
@@ -796,6 +813,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun showPopupEndTenureNewSeller(
         headerShopPerformanceUiModel: HeaderShopPerformanceUiModel
     ) {
+        val isShowPopupEndTenure = shopScoreCoachMarkPrefs?.getIsShowPopupEndTenure()
+        if (isShowPopupEndTenure == true) return
+
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val popupEndTenureUiModel = PopupEndTenureUiModel(
             shopType = headerShopPerformanceUiModel.shopType,
@@ -804,14 +824,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
         val bottomSheetPopupEndTenure =
             BottomSheetPopupEndTenure.newInstance(cacheManager?.id.orEmpty())
-        val isShowPopupEndTenure = shopScoreCoachMarkPrefs?.getIsShowPopupEndTenure()
 
         bottomSheetPopupEndTenure.setOnDismissListener {
             if (isShowPopupEndTenure == false) {
-                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(isShowPopupEndTenure)
+                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(true)
             }
         }
         if (isShowPopupEndTenure == false) {
+            cacheManager?.put(
+                BottomSheetPopupEndTenure.KEY_ITEM_END_TENURE_POP_UP,
+                popupEndTenureUiModel
+            )
             bottomSheetPopupEndTenure.show(childFragmentManager)
         }
     }

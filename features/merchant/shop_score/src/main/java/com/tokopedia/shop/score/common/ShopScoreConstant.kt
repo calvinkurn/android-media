@@ -119,4 +119,12 @@ object ShopScoreConstant {
     const val AND_TEXT = "dan"
 
     const val NULL_NUMBER = -1L
+
+    const val ZERO_NUMBER = 0
+    const val ONE_NUMBER = 1
+    const val TWO_NUMBER = 2
+    const val THREE_NUMBER = 3
+    const val FOUR_NUMBER = 4
+    const val FIVE_NUMBER = 5
+    const val SIX_NUMBER = 6
 }

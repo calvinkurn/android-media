@@ -9,13 +9,11 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefi
 import com.tokopedia.shop.score.performance.presentation.model.SectionPMPotentialPMProUiModel
 import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.*
 import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.tv_pm_reputation_value
-import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
 class ItemPMPotentialPMProViewHolder(
     view: View,
     private val itemStatusPMProListener: ItemPMPotentialPMProListener
-) :
-    AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
+) : AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_pm_to_pm_pro

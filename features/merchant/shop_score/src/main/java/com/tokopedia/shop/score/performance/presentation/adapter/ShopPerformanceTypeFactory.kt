@@ -18,4 +18,5 @@ interface ShopPerformanceTypeFactory {
     fun type(sectionRMPMProBenefitUIModel: SectionRMPotentialPMProUiModel): Int
     fun type(sectionPMPotentialPMProUiModel: SectionPMPotentialPMProUiModel): Int
     fun type(itemStatusPMProUiModel: ItemStatusPMProUiModel): Int
+    fun type(protectedParameterSectionUiModel: ProtectedParameterSectionUiModel): Int
 }

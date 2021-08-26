@@ -6,7 +6,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.*
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
@@ -14,6 +14,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -42,12 +43,12 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
-import com.tokopedia.shop.score.common.ShopScorePrefManager
-import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
+import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.DateTimeException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -164,6 +165,10 @@ class ShopScoreMapper @Inject constructor(
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
 
+            if (isShowProtectedParameter(shopAge.toInt())) {
+                add(getProtectedParameterSection(shopScoreResult?.shopScoreDetail, shopAge.toInt()))
+            }
+
             val recommendationTools =
                 shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
             if (recommendationTools?.isNotEmpty() == true) {
@@ -259,8 +264,6 @@ class ShopScoreMapper @Inject constructor(
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
                         ?: ""
                     this.showCardNewSeller = true
-                    val nextSellerDays = SHOP_AGE_SIXTY - shopAge
-                    val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0)
                         ?: ""
                 }
@@ -505,11 +508,21 @@ class ShopScoreMapper @Inject constructor(
                 OPEN_TOKOPEDIA_SELLER_KEY
             )
 
+            val isShowProtectedParameter = isShowProtectedParameter(shopAge.toInt())
+
             val shopScoreLevelFilter =
                 shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }
             val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
-            sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
+            val filterShopScoreLevelParam = if (isShowProtectedParameter) {
+                sortShopScoreLevelParam.filterNot {
+                    it.identifier == TOTAL_BUYER_KEY ||
+                            it.identifier == OPEN_TOKOPEDIA_SELLER_KEY
+                }
+            } else {
+                sortShopScoreLevelParam
+            }
+            filterShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
 
                 val roundNextMinValue = shopScoreDetail.nextMinValue
 
@@ -599,7 +612,8 @@ class ShopScoreMapper @Inject constructor(
                         valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
-                        isDividerHide = index + 1 == shopScoreLevelSize,
+                        isDividerHide = if (isShowProtectedParameter) true
+                        else index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
                         parameterValueDetailPerformance = parameterItemDetailPerformance,
                         shopAge = shopAge
@@ -884,6 +898,42 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
+    private fun getProtectedParameterSection(shopScoreLevelList:
+                                             List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+                                             shopAge: Int
+    ): ProtectedParameterSectionUiModel {
+        val totalBuyer =
+            shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
+        val openTokopediaSeller =
+            shopScoreLevelList?.find { it.identifier == OPEN_TOKOPEDIA_SELLER_KEY }?.title.orEmpty()
+        return ProtectedParameterSectionUiModel(
+            listOf(
+                ItemProtectedParameterUiModel(totalBuyer),
+                ItemProtectedParameterUiModel(
+                    openTokopediaSeller
+                )
+            ),
+            protectedParameterDate = getProtectedParameterDaysDate(shopAge)
+        )
+    }
+
+    private fun isShowProtectedParameter(shopAge: Int): Boolean {
+        return shopAge in SHOP_AGE_THREE..SHOP_AGE_FIFTY_NINE
+    }
+
+    private fun getProtectedParameterDaysDate(shopAge: Int): String {
+        return try {
+            val date = Calendar.getInstance(getLocale())
+            val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
+            val targetDays = getNNextDaysProtectedParameter(diffDays)
+            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
+            format(date.timeInMillis, PATTERN_DATE_TEXT)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
     private fun getShopType(
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
         isOfficialStore: Boolean
@@ -940,6 +990,8 @@ class ShopScoreMapper @Inject constructor(
     companion object {
         const val SHOP_AGE_NINETY = 90
         const val SHOP_AGE_NINETY_SIX = 96
+        const val SHOP_AGE_FIFTY_NINE = 59
+        const val SHOP_AGE_THREE = 3
         const val ORDER_SUCCESS_RATE_INDEX = 0
         const val CHAT_DISCUSSION_REPLY_SPEED_INDEX = 1
         const val SPEED_SENDING_ORDERS_INDEX = 2

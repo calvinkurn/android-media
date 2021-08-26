@@ -30,6 +30,8 @@ class ItemDetailPerformanceViewHolder(
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
         const val START_INDEX_HEX_STRING = 2
+        const val SIXTEEN_PADDING = 16
+        const val ZERO_PADDING = 0
     }
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
@@ -76,9 +78,19 @@ class ItemDetailPerformanceViewHolder(
 
             if (element?.isDividerHide == true) {
                 setCardItemDetailPerformanceBackground()
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
+                cardItemDetailShopPerformance?.setPadding(
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx()
+                )
             } else {
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
+                cardItemDetailShopPerformance?.setPadding(
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx()
+                )
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
             tvPerformanceValue?.text =

@@ -8,14 +8,23 @@ import javax.inject.Inject
 class ShopScoreCommonMapper @Inject constructor() {
 
     fun mapToGetShopInfo(shopInfoPeriodWrapperResponse: ShopInfoPeriodWrapperResponse): ShopInfoPeriodUiModel {
+        val dateShopCreated = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result
+            ?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
         return ShopInfoPeriodUiModel(
-                periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
-                isNewSeller = GoldMerchantUtil.isNewSeller(shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()),
-                isEndTenureNewSeller = GoldMerchantUtil.isTenureNewSeller(shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()
-                        ?.createInfo?.shopCreated.orEmpty()),
-                shopAge = GoldMerchantUtil.totalDays(shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()),
-                periodStartDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodStartDate.orEmpty(),
-                periodEndDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodEndDate.orEmpty()
+            periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
+            isNewSeller = GoldMerchantUtil.isNewSeller(
+                dateShopCreated
+            ),
+            isEndTenureNewSeller = GoldMerchantUtil.isTenureNewSeller(
+                dateShopCreated
+            ),
+            shopAge = GoldMerchantUtil.totalDays(
+                dateShopCreated
+            ),
+            periodStartDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo
+                ?.periodStartDate.orEmpty(),
+            periodEndDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo
+                ?.periodEndDate.orEmpty(),
         )
     }
 }
