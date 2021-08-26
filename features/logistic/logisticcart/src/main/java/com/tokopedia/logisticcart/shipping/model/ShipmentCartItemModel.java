@@ -104,6 +104,8 @@ public class ShipmentCartItemModel implements Parcelable {
     // Flag for tracking
     private boolean hasShownCourierError;
 
+    private boolean isTokoNow;
+
     public ShipmentCartItemModel() {
     }
 
@@ -165,6 +167,7 @@ public class ShipmentCartItemModel implements Parcelable {
         autoCourierSelection = in.readByte() != 0;
         courierSelectionErrorTitle = in.readString();
         courierSelectionErrorDescription = in.readString();
+        isTokoNow = in.readByte() != 0;
     }
 
     @Override
@@ -226,6 +229,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeByte((byte) (autoCourierSelection ? 1 : 0));
         dest.writeString(courierSelectionErrorTitle);
         dest.writeString(courierSelectionErrorDescription);
+        dest.writeByte((byte) (isTokoNow ? 1 : 0));
     }
 
     @Override
@@ -289,6 +293,7 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setShopTypeInfoData(shipmentCartItemModel.getShopTypeInfoData());
         newShipmentCartItemModel.setDisableChangeCourier(shipmentCartItemModel.isDisableChangeCourier());
         newShipmentCartItemModel.setAutoCourierSelection(shipmentCartItemModel.isAutoCourierSelection());
+        newShipmentCartItemModel.setTokoNow(shipmentCartItemModel.isTokoNow());
         return newShipmentCartItemModel;
     }
 
@@ -806,6 +811,14 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setHasShownCourierError(boolean hasShownCourierError) {
         this.hasShownCourierError = hasShownCourierError;
+    }
+
+    public boolean isTokoNow() {
+        return isTokoNow;
+    }
+
+    public void setTokoNow(boolean tokoNow) {
+        isTokoNow = tokoNow;
     }
 
     @Override
