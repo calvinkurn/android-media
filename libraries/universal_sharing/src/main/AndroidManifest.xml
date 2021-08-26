@@ -21,7 +21,7 @@
         <activity
             android:exported="true"
             android:label=""
-            android:name=".view.GlobalSharingActivity"
+            android:name=".view.activity.GlobalSharingActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
 
             <intent-filter>
