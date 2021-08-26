@@ -598,10 +598,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun onScrollToTop() {
-        view?.let {
-            rv?.post {
-                rv?.smoothScrollToPosition(RV_TOP_POSITION)
-            }
+        rv?.post {
+            rv?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
