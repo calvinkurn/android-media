@@ -1,27 +1,18 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.ByProduct
 
-@Generated("com.robohorse.robopojogenerator")
 data class ProductInvenageTotal(
-
-        @field:SerializedName("by_product")
+        @SerializedName("by_product")
         val byProduct: ByProduct = ByProduct(),
-
-        @field:SerializedName("is_counted_by_user")
+        @SerializedName("is_counted_by_user")
         val isCountedByUser: Boolean = false,
-
-        @field:SerializedName("is_counted_by_product")
+        @SerializedName("is_counted_by_product")
         val isCountedByProduct: Boolean = false,
-
-        @field:SerializedName("by_user")
+        @SerializedName("by_user")
         val byUser: ByUser = ByUser(),
-
-        @field:SerializedName("by_user_text")
+        @SerializedName("by_user_text")
         val byUserText: ByUserText = ByUserText(),
-
-        @field:SerializedName("by_product_text")
+        @SerializedName("by_product_text")
         val byProductText: ByProductText = ByProductText()
 )

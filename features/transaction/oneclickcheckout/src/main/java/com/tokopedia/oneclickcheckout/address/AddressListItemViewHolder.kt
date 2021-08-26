@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.address
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -16,6 +17,7 @@ class AddressListItemViewHolder(private val binding: CardAddressListBinding, pri
         private const val MAIN_ADDRESS_STATUS = 2
     }
 
+    @SuppressLint("SetTextI18n")
     fun bind(data: RecipientAddressModel) {
         setVisibility(data)
         setPrimary(data)

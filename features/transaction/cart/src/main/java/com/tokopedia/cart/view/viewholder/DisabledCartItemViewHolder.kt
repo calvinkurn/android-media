@@ -5,14 +5,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.HolderItemCartErrorBinding
-import com.tokopedia.cart.domain.model.cartlist.ActionData
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_FOLLOWSHOP
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SIMILARPRODUCT
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
-import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,12 +25,13 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
     var showDivider: Boolean = false
 
     fun bind(data: DisabledCartItemHolderData) {
-        renderProductInfo(data)
-        renderDefaultActionState()
-        renderProductAction(data)
-        renderDivider(data)
+//        renderProductInfo(data)
+//        renderDefaultActionState()
+//        renderProductAction(data)
+//        renderDivider(data)
     }
 
+/*
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
         with(binding) {
             tvProductName.text = data.productName
@@ -96,18 +91,18 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
         if (data.actionsData.isNotEmpty()) {
             data.actionsData.forEach {
                 when (it.id) {
-                    ACTION_WISHLIST, ACTION_WISHLISTED -> {
+                    Action.ACTION_WISHLIST, Action.ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
                     }
-                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT, ACTION_FOLLOWSHOP -> {
+                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP -> {
                         when {
-                            data.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER && it.id == ACTION_CHECKOUTBROWSER -> {
+                            data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
                             }
-                            data.selectedUnavailableActionId == ACTION_SIMILARPRODUCT && it.id == ACTION_SIMILARPRODUCT -> {
+                            data.selectedUnavailableActionId == Action.ACTION_SIMILARPRODUCT && it.id == Action.ACTION_SIMILARPRODUCT -> {
                                 renderActionSimilarProduct(it, data)
                             }
-                            data.selectedUnavailableActionId == ACTION_FOLLOWSHOP && it.id == ACTION_FOLLOWSHOP -> {
+                            data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
                                 renderFollowShop(it, data)
                             }
                         }
@@ -131,7 +126,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
         }
     }
 
-    private fun renderFollowShop(actionData: ActionData, data: DisabledCartItemHolderData) {
+    private fun renderFollowShop(actionData: Action, data: DisabledCartItemHolderData) {
         binding.tvProductUnavailableAction.apply {
             text = actionData.message
             setOnClickListener {
@@ -201,4 +196,5 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
             View.GONE
         }
     }
+*/
 }

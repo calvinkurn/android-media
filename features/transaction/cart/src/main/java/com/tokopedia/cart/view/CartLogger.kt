@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -28,11 +28,11 @@ object CartLogger {
         }
     }
 
-    fun logOnErrorUpdateCartForCheckout(throwable: Throwable, cartItemDataList: List<CartItemData>) {
+    fun logOnErrorUpdateCartForCheckout(throwable: Throwable, cartItemDataList: List<CartItemHolderData>) {
         if (shouldTriggerLog(throwable)) {
             val productIdList = mutableListOf<String>()
             cartItemDataList.forEach { cartItemData ->
-                productIdList.add(cartItemData.originData.productId)
+                productIdList.add(cartItemData.productId)
             }
             val errorMessage = throwable.message ?: "unknown exception"
             val mapData = mapOf(

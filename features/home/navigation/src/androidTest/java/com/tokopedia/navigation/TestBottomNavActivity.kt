@@ -48,6 +48,20 @@ class TestBottomNavActivity: AppCompatActivity() {
                 useBadge = true,
                 animSpeed = 1f,
                 animToEnabledSpeed = 3f))
+        menu.add(
+            BottomMenu(
+                id = 3,
+                title = resources.getString(R.string.uoh),
+                animName = R.raw.bottom_nav_uoh,
+                animToEnabledName = R.raw.bottom_nav_uoh_to_enabled,
+                imageName = R.drawable.ic_bottom_nav_uoh_active,
+                imageEnabledName = R.drawable.ic_bottom_nav_uoh_enabled,
+                activeButtonColor = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                useBadge = true,
+                animSpeed = 1f,
+                animToEnabledSpeed = 3f
+            )
+        )
         bottomNav.setMenu(menu)
         bottomNav.setMenuClickListener(object: IBottomClickListener {
             override fun menuClicked(position: Int, id: Int): Boolean {

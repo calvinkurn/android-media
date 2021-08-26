@@ -91,7 +91,6 @@ object CartListPresenterValidateUseTest : Spek({
 
             Then("should update promo state") {
                 verify {
-                    view.updateListRedPromos(validateUseModel)
                     view.updatePromoCheckoutStickyButton(validateUseModel.promoUiModel)
                 }
             }

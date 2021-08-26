@@ -34,30 +34,6 @@ val QUERY_ADD_TO_CART = """
             }
         """.trimIndent()
 
-val QUERY_ADD_TO_CART_OCC = """
-    mutation add_to_cart_occ(${"$"}param : OneClickCheckoutATCParam) {
-        add_to_cart_occ(param: ${"$"}param) {
-            error_message
-            status
-            data {
-                message
-                success
-                data {
-                    cart_id
-                    customer_id
-                    is_scp
-                    is_trade_in
-                    notes
-                    product_id
-                    quantity
-                    shop_id
-                    warehouse_id
-                }
-            }
-        }
-    }
-""".trimIndent()
-
 val MUTATION_ADD_TO_CART_BUNDLE = """
     mutation add_to_cart_bundle(${'$'}params: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {
       add_to_cart_bundle(params: ${'$'}params, chosen_address: ${'$'}chosen_address, dummy: ${'$'}dummy) {

@@ -23,7 +23,6 @@ class ValidateUseSubscriber(private val view: ICartListView?,
 
     override fun onNext(response: ValidateUsePromoRevampUiModel?) {
         response?.promoUiModel?.let {
-            view?.updateListRedPromos(response)
             presenter.setUpdateCartAndValidateUseLastResponse(UpdateAndValidateUseData().apply {
                 promoUiModel = response.promoUiModel
             })

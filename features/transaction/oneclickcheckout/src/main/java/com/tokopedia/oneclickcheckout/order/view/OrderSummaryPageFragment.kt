@@ -351,10 +351,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.shop = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(adapter.shopIndex)
+                    adapter.notifyItemChanged(OrderSummaryPageAdapter.shopIndex)
                 }
             } else {
-                adapter.notifyItemChanged(adapter.shopIndex)
+                adapter.notifyItemChanged(OrderSummaryPageAdapter.shopIndex)
             }
         }
     }
@@ -366,15 +366,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.products = it
             when {
                 newSize > oldSize -> {
-                    adapter.notifyItemRangeChanged(adapter.productStartIndex, oldSize)
+                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex, oldSize)
                     adapter.notifyItemRangeInserted(oldSize, newSize - oldSize)
                 }
                 newSize == oldSize -> {
-                    adapter.notifyItemRangeChanged(adapter.productStartIndex, oldSize)
+                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex, oldSize)
                 }
                 newSize < oldSize -> {
-                    adapter.notifyItemRangeChanged(adapter.productStartIndex, newSize)
-                    adapter.notifyItemRangeRemoved(adapter.productStartIndex + newSize, oldSize - newSize)
+                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex, newSize)
+                    adapter.notifyItemRangeRemoved(OrderSummaryPageAdapter.productStartIndex + newSize, oldSize - newSize)
                 }
             }
         }
@@ -393,14 +393,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             lastGroupIndex = index
                         }
                         else -> {
-                            adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
+                            adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
                             startGroupIndex = -1
                             lastGroupIndex = startGroupIndex
                         }
                     }
                 }
                 if (startGroupIndex > -1 && lastGroupIndex > -1) {
-                    adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
+                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
                 }
             }
         }
@@ -601,6 +601,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                         startActivityForResult(intent, REQUEST_CODE_PROMO)
                                     }
                                 })
+                        promoNotEligibleBottomSheet.dismissListener = {
+                            refresh()
+                        }
                         promoNotEligibleBottomSheet.show(requireContext(), parentFragmentManager)
                         orderSummaryAnalytics.eventViewBottomSheetPromoError()
                     }
@@ -767,7 +770,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             it.post {
                 try {
                     val scrollview = binding.rvOrderSummaryPage
-                    val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.products.size + 2) as? OrderPreferenceCard
+                    val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.preferenceIndex) as? OrderPreferenceCard
                             ?: return@post
                     val coachMarkItems = ArrayList<CoachMark2Item>()
                     for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
@@ -788,7 +791,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     // manual scroll first item
                     val firstView = coachMarkItems.firstOrNull()?.anchorView
                     firstView?.post {
-                        scrollview.scrollToPosition(adapter.products.size + 1)
+                        scrollview.scrollToPosition(adapter.preferenceIndex)
                         coachMark.showCoachMark(coachMarkItems, null)
                         // trigger first analytics
                         triggerCoachMarkAnalytics(onboarding, 0)
@@ -979,10 +982,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             binding.rvOrderSummaryPage.scrollToPosition(0)
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.tickerIndex, 2)
                 }
             } else {
-                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+                adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.tickerIndex, 2)
             }
             if (data.hasValidProfile) {
                 binding.rvOrderSummaryPage.show()
@@ -1090,6 +1093,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     paymentPassData.redirectUrl = redirectParam.url
                     paymentPassData.queryString = redirectParam.form
                     paymentPassData.method = redirectParam.method
+                    paymentPassData.transactionId = checkoutOccResult.paymentParameter.transactionId
+                    paymentPassData.paymentId = checkoutOccResult.paymentParameter.transactionId
 
                     shouldUpdateCart = false
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
@@ -1113,7 +1118,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         return SNAP_TO_START
                     }
                 }
-                linearSmoothScroller.targetPosition = index + 3
+                linearSmoothScroller.targetPosition = index + OrderSummaryPageAdapter.productStartIndex
                 it.startSmoothScroll(linearSmoothScroller)
             }
         }
@@ -1128,9 +1133,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.updateCart()
         }
 
-        override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String) {
+        override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String) {
             PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, "", protectionTitle)
+            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
         }
 
         override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {

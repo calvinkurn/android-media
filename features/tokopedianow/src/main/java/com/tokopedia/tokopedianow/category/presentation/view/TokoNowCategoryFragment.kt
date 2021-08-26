@@ -9,22 +9,36 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CLP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_CLP_RECOM_OOC
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_CLP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_CLP_RECOM_OOC
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
-class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
+class TokoNowCategoryFragment:
+        BaseSearchCategoryFragment(),
+        CategoryAisleListener,
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener {
 
     companion object {
-
         @JvmStatic
         fun create(): TokoNowCategoryFragment {
             return TokoNowCategoryFragment()
@@ -84,6 +98,8 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
             emptyProductListener = this,
             categoryAisleListener = this,
             outOfCoverageListener = this,
+            recommendationCarouselListener = this,
+            tokoNowCategoryGridListener = this,
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -205,4 +221,53 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         CategoryTracking.sendDecreaseQtyEvent(getViewModel().categoryL1)
     }
+
+    override fun getImpressionEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            IMPRESSION_CLP_RECOM_OOC
+        } else {
+            IMPRESSION_CLP_PRODUCT_TOKONOW
+        }
+    }
+
+    override fun getClickEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            CLICK_CLP_RECOM_OOC
+        } else {
+            CLICK_CLP_PRODUCT_TOKONOW
+        }
+    }
+
+    override fun getAtcEventAction(isOOC: Boolean): String {
+        return CLICK_ATC_CLP_PRODUCT_TOKONOW
+    }
+
+    override fun getEventCategory(isOOC: Boolean): String {
+        return TOKONOW_CATEGORY_PAGE
+    }
+
+    override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
+        return if (isOOC) {
+            String.format(
+                VALUE_LIST_OOC,
+                RECOM_LIST_PAGE,
+                recommendationItem.recommendationType,
+                if (recommendationItem.isTopAds) VALUE_TOPADS else ""
+            )
+        } else {
+            RECOM_LIST_PAGE_NON_OOC
+        }
+    }
+
+    override fun getEventLabel(isOOC: Boolean): String {
+        return getViewModel().categoryIdTracking
+    }
+
+    override fun onCategoryRetried() {
+        getViewModel().onCategoryGridRetry()
+    }
+
+    override fun onAllCategoryClicked() { }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) { }
 }

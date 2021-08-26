@@ -3,8 +3,8 @@ package com.tokopedia.cart.view
 import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -16,21 +16,17 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 interface ICartListView : CustomerView {
 
     fun refreshCartWithSwipeToRefresh()
 
     fun getAllShopDataList(): List<CartShopHolderData>
 
-    fun getAllCartDataList(): List<CartItemData>
+    fun getAllCartDataList(): List<CartItemHolderData>
 
-    fun getAllAvailableCartDataList(): List<CartItemData>
+    fun getAllAvailableCartDataList(): List<CartItemHolderData>
 
-    fun getAllSelectedCartDataList(): List<CartItemData>?
+    fun getAllSelectedCartDataList(): List<CartItemHolderData>?
 
     fun getCartId(): String
 
@@ -38,12 +34,12 @@ interface ICartListView : CustomerView {
 
     fun hideProgressLoading()
 
-    fun renderInitialGetCartListDataSuccess(cartListData: CartListData?)
+    fun renderInitialGetCartListDataSuccess(cartData: CartData)
 
     fun renderErrorInitialGetCartListData(throwable: Throwable)
 
     fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
-                                    cartItemDataList: List<CartItemData>,
+                                    cartItemDataList: List<CartItemHolderData>,
                                     checkoutProductEligibleForCashOnDelivery: Boolean,
                                     condition: Int)
 
@@ -53,7 +49,7 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(outOfService: OutOfService)
 
-    fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
+    fun renderDetailInfoSubTotal(qty: String, subtotalPrice: Double, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 
@@ -104,8 +100,6 @@ interface ICartListView : CustomerView {
     fun goToLite(url: String)
 
     fun updateCartCounter(counter: Int)
-
-    fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
 
     fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 

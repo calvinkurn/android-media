@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class OrderShop(
@@ -40,7 +39,7 @@ data class OrderShop(
         // Analytics
         var hasTriggerViewOverweightTicker: Boolean = false,
         var hasTriggerViewErrorOrderLevelTicker: Boolean = false
-) : OrderItem {
+) {
 
     val isError: Boolean
         get() = errors.isNotEmpty()
@@ -51,5 +50,6 @@ data class OrderShop(
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+        const val WEIGHT_KG_DIVIDER = 1000.0
     }
 }

@@ -7,16 +7,13 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieDrawable
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -33,12 +30,13 @@ class InteractiveTapView : ConstraintLayout {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val flInteractiveTap: FrameLayout
+    private val flInteractiveFollow: FrameLayout
     private val timerTap: TimerUnifySingle
-    private val iconTap: IconUnify
     private val tvTapAction: TextView
     private val clTapBackground: RoundedConstraintLayout
     private val lottieConfettiTap: LottieAnimationView
     private val lottieButtonTap: LottieAnimationView
+    private val groupLottieTap: Group
 
     private val lottieConfettiListener: Animator.AnimatorListener
 
@@ -54,12 +52,13 @@ class InteractiveTapView : ConstraintLayout {
         val view = View.inflate(context, R.layout.view_interactive_tap, this)
 
         flInteractiveTap = view.findViewById(R.id.fl_interactive_tap)
+        flInteractiveFollow = view.findViewById(R.id.fl_interactive_follow)
         timerTap = view.findViewById(R.id.timer_tap)
-        iconTap = view.findViewById(R.id.icon_tap)
         tvTapAction = view.findViewById(R.id.tv_tap_action)
         clTapBackground = view.findViewById(R.id.cl_tap_background)
         lottieConfettiTap = view.findViewById(R.id.lottie_confetti_tap)
         lottieButtonTap = view.findViewById(R.id.lottie_button_tap)
+        groupLottieTap = view.findViewById(R.id.group_lottie_tap)
 
         lottieConfettiListener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -73,6 +72,18 @@ class InteractiveTapView : ConstraintLayout {
             }
 
             override fun onAnimationRepeat(animation: Animator) {}
+        }
+
+        flInteractiveTap.setOnClickListener {
+            mListener?.onTapClicked(this)
+        }
+
+        lottieButtonTap.setOnClickListener {
+            mListener?.onTapClicked(this)
+        }
+
+        flInteractiveFollow.setOnClickListener {
+            mListener?.onFollowClicked(this)
         }
 
         setupView(view)
@@ -125,30 +136,25 @@ class InteractiveTapView : ConstraintLayout {
     }
 
     fun showFollowMode(shouldShow: Boolean) {
-        changeMode(
-                if (!shouldShow) Mode.Tap
-                else Mode.Follow
-        )
+        if (shouldShow) {
+            groupLottieTap.invisible() //Invisible to keep the guideline position
+            flInteractiveTap.gone()
+            flInteractiveFollow.visible()
 
-        flInteractiveTap.setOnClickListener(getButtonTapClickedListener(isFollowMode = shouldShow))
+            tvTapAction.text = context.getString(R.string.play_interactive_tap_action_follow_text)
+        } else {
+            groupLottieTap.visible()
+            invalidateLottieState()
+            flInteractiveFollow.gone()
+
+            tvTapAction.text = context.getString(R.string.play_interactive_tap_action_tap_text)
+        }
+
         lottieButtonTap.setOnClickListener(getButtonTapClickedListener(isFollowMode = shouldShow))
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    private fun changeMode(mode: Mode) {
-        when (mode) {
-            Mode.Follow -> {
-                iconTap.setImage(IconUnify.USER_ADD)
-                tvTapAction.text = context.getString(R.string.play_interactive_tap_action_follow_text)
-            }
-            Mode.Tap -> {
-                iconTap.setImage(IconUnify.GIFT)
-                tvTapAction.text = context.getString(R.string.play_interactive_tap_action_tap_text)
-            }
-        }
     }
 
     private fun playTapAnimation() {
@@ -192,13 +198,8 @@ class InteractiveTapView : ConstraintLayout {
 
         private const val MAX_RETRY_COUNT = 3
 
-        private const val LOTTIE_CONFETTI_MIN_PROGRESS = 0.2f
+        private const val LOTTIE_CONFETTI_MIN_PROGRESS = 0.4f
         private const val LOTTIE_START_PROGRESS = 0f
-    }
-
-    private enum class Mode {
-        Follow,
-        Tap
     }
 
     interface Listener {
