@@ -1512,11 +1512,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         boolean stillHasPromo = false;
         if (validateUsePromoRevampUiModel != null) {
-            if (validateUsePromoRevampUiModel.getPromoUiModel().getCodes().size() > 0) {
+            PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
+            if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
                 stillHasPromo = true;
             }
             for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode())) {
+                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode()) && !voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     stillHasPromo = true;
                     break;
                 }
