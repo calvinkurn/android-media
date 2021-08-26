@@ -20,6 +20,7 @@ class LinkAccountActivity : BaseSimpleActivity(), HasComponent<LinkAccountCompon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.elevation = 0f
     }
 
     override fun getNewFragment(): Fragment {

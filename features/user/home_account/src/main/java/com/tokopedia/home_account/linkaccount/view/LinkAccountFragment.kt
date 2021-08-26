@@ -1,7 +1,7 @@
 package com.tokopedia.home_account.linkaccount.view
 
 import android.content.Context
-import android.graphics.Typeface
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -137,11 +137,10 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
-            message.indexOf(getString(R.string.label_call_tokopedia)),
-            message.indexOf(getString(R.string.label_call_tokopedia)) + getString(R.string.label_call_tokopedia).length,
+            message.indexOf("Hubungi"),
+            message.length,
             0
         )
         binding?.fragmentLinkAccountBottomText?.movementMethod = LinkMovementMethod.getInstance()
@@ -171,20 +170,36 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     }
 
     private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
+        val phone = if(this.phoneNo.isNotEmpty()) {
+            this.phoneNo
+        } else {
+            userSessionInterface.phoneNumber
+        }
+
         return UserAccountDataView(
             isLinked = status == "linked",
-            status = if(status == "linked") userSessionInterface.phoneNumber else "Belum terhubung",
+            status = if(status == "linked") {
+                "$phone - "
+            } else {
+                "Belum tersambung"
+            },
             partnerName = "Gojek",
-            linkDate = "Linked on ${formatDate(linkedDate)}"
+            linkDate = "Tersambung ${formatDate(linkedDate)}"
         )
     }
 
     private fun formatDate(mDate: String): String {
         return try {
             val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(mDate) ?: ""
-            SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date)
+            SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(date)
         } catch (e: Exception) {
             mDate
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == LINK_ACCOUNT_WEBVIEW_REQUEST) {
+            viewModel.getLinkStatus(userSessionInterface.phoneNumber.isEmpty())
         }
     }
 
@@ -197,11 +212,12 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         const val BASE_URL = "https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
+        const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 
         fun goToLinkPage(activity: FragmentActivity?) {
             activity?.run {
-                val i = LinkAccountWebViewActivity.newInstance(this, LinkAccountFragment.getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
-                startActivity(i)
+                val i = LinkAccountWebViewActivity.newInstance(this, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
+                startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
             }
         }
 

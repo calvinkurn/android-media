@@ -26,5 +26,8 @@ data class LinkStatus(
     @SerializedName("partner_user_id")
     val partnerId: String = "",
     @SerializedName("linked_time")
-    val linkedDate: String = ""
+    val linkedDate: String = "",
+
+    @Transient
+    var phoneNo: String = ""
 )
