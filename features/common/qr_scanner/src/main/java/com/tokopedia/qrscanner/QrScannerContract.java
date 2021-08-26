@@ -32,7 +32,9 @@ public interface QrScannerContract {
 
         void goToEventRedeemPage(String url);
 
-        String checkQRPeduliLindungi();
+        boolean isFromPeduliLindungi();
+
+        String getCallbackUrlFromPeduliLindungi();
     }
 
     interface Presenter extends CustomerPresenter<View> {
