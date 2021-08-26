@@ -508,7 +508,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
-                            .plus("<font color='#6D7588'><b>")
+                            .plus("<font color='#6D7588'>")
                             .plus(context.getString(R.string.feed_component_read_more_button))
                             .plus("</b></font>")
                     )
@@ -709,7 +709,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
                             layoutLihatProdukParent.layoutTransition.apply {
-                                enableTransitionType(LayoutTransition.CHANGING)
+//                                enableTransitionType(LayoutTransition.CHANGING)
+                                setDuration(LayoutTransition.CHANGING,300)
                             }
 
                             like_anim.setImageDrawable(

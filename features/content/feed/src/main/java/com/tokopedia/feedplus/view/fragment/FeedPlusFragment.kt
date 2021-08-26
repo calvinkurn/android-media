@@ -1007,7 +1007,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
 
-        if (list.size > position && list[position] is DynamicPostUiModel) {
+        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
             val item = (list[position] as DynamicPostUiModel).feedXCard
             return (item.typename == TYPE_FEED_X_CARD_POST
                     && (item.media.isNotEmpty()
