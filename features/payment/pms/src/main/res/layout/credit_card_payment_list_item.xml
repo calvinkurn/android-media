@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             tools:text="@string/pms_deferred_payment_waiting_label"
             app:labelType="general_light_orange"
+            app:layout_goneMarginRight="@dimen/unify_space_12"
             app:layout_constraintBottom_toBottomOf="@id/cardMenu"
             app:layout_constraintEnd_toStartOf="@+id/cardMenu"
             app:layout_constraintTop_toTopOf="@+id/cardMenu" />
