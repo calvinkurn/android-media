@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="fitCenter"
         app:imageDpiSupportType="singleDpi"
-        app:remoteFileName="saldo_img_empty_list.png" />
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_empty_title_text"
