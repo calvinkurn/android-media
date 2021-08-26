@@ -36,7 +36,6 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
     private var likeButton: IconUnify? = null
-    private var variantName: Typography? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_image_preview_review_detail, this)
@@ -50,7 +49,6 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         reviewText = findViewById(R.id.review_gallery_review)
         likeCount = findViewById(R.id.review_gallery_like_count)
         likeButton = findViewById(R.id.review_gallery_like_icon)
-        variantName = findViewById(R.id.review_image_preview_variant)
     }
 
     fun setPhotoCount(index: Int, total: Long) {
@@ -109,11 +107,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     fun setVariantName(variantName: String) {
-        if (variantName.isEmpty()) return
-        this.variantName?.apply {
-            text = context.getString(R.string.review_gallery_variant, variantName)
-            show()
-        }
+        basicInfo?.setVariantName(variantName)
     }
 
 }

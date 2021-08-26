@@ -67,7 +67,7 @@ import javax.inject.Inject
 class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
-    ReviewReportBottomSheetListener,
+    ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
     ReadReviewAttachedImagesListener, ReviewPerformanceMonitoringContract {
 
     companion object {
@@ -663,6 +663,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         loadData(defaultInitialPage)
     }
 
+    override fun onHighlightedTopicClicked(topicName:String, topicPosition: Int) {
+        ReadReviewTracking.trackOnClickTopicRating(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
+        reviewHeader?.updateFilterFromHighlightedTopic(topicName)
+        viewModel.setFilterFromHighlightedTopic(topicName, isProductReview)
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -769,7 +775,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
-            setHighlightedTopics(ratingAndTopics.topics)
+            setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
             show()
         }
     }

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductTopic
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -45,7 +46,9 @@ class ReadReviewHighlightedTopic: BaseCustomView {
         reviewCount?.text = context.getString(R.string.review_reading_highlighted_topic_review_count, topic.reviewCount)
     }
 
-    fun setListener() {
-
+    fun setListener(listener: ReadReviewHighlightedTopicListener, topicPosition: Int) {
+        setOnClickListener {
+            listener.onHighlightedTopicClicked(topicTitle?.text.toString(), topicPosition)
+        }
     }
 }

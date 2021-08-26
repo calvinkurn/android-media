@@ -16,6 +16,7 @@ import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.sortfilter.SortFilter
@@ -55,7 +56,8 @@ class ReadReviewHeader : BaseCustomView {
     private var topicLeft: ReadReviewHighlightedTopic? = null
     private var topicRight: ReadReviewHighlightedTopic? = null
 
-    var isProductReview: Boolean = true
+    private var isProductReview: Boolean = true
+    private var topicFilterChipIndex: Int = 0
 
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_header, this)
@@ -103,6 +105,7 @@ class ReadReviewHeader : BaseCustomView {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
+            topicFilterChipIndex = filter.indexOf(topicFilter)
         }
         val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
@@ -243,14 +246,21 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
-    fun setHighlightedTopics(topics: List<ProductTopic>) {
+    fun setHighlightedTopics(topics: List<ProductTopic>, listener: ReadReviewHighlightedTopicListener) {
         val highlightedTopic = listOf(topicLeft, topicRight)
         topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
             highlightedTopic[index]?.apply {
                 setHighlightedTopic(productTopic)
-                setListener()
+                this.setListener(listener, index)
                 show()
             }
+        }
+    }
+
+    fun updateFilterFromHighlightedTopic(title: String) {
+        sortFilter?.chipItems?.getOrNull(topicFilterChipIndex)?.apply {
+            this.title = title
+            type = ChipsUnify.TYPE_SELECTED
         }
     }
 }

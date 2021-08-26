@@ -265,7 +265,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 if (isFromGallery) {
                     ReviewReportBottomSheet.newInstance(
                         galleryRoutingData.getSelectedReview()?.feedbackId ?: "",
-                        shopId,
+                        galleryRoutingData.shopId,
                         this
                     ).show(it, ReviewReportBottomSheet.TAG)
                 } else {
@@ -471,7 +471,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             it.rating,
                             it.reviewTime,
                             it.reviewerName,
-                            it.review
+                            it.review,
+                            it.variantName
                         )
                 }
             } else {
@@ -481,7 +482,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             productRating,
                             reviewCreateTimestamp,
                             user.fullName,
-                            message
+                            message,
+                            variantName
                         )
                 }
             }
@@ -549,9 +551,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun updateReviewDetailByPosition(isFirstTimeUpdate: Boolean = false) {
         with(galleryRoutingData) {
+            currentRecyclerViewPosition = currentPosition
             this.loadedReviews.firstOrNull {
-                it.imageNumber == if (isFirstTimeUpdate) currentPosition
-                else currentRecyclerViewPosition
+                it.imageNumber == currentRecyclerViewPosition
             }?.let { selectedReview ->
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {

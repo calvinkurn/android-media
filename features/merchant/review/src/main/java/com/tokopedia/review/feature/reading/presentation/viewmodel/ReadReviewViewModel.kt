@@ -227,6 +227,12 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
+    fun setFilterFromHighlightedTopic(topic: String, isProductReview: Boolean) {
+        val topicsMap = getTopicsMap(isProductReview)
+        this.filter.topic = FilterType.FilterTopic(topicsMap[topic] ?: "")
+        resetPage(isProductReview)
+    }
+
     fun setFilterWithImage(isActive: Boolean, isProductReview: Boolean) {
         if (isActive) {
             this.filter.withImage = null

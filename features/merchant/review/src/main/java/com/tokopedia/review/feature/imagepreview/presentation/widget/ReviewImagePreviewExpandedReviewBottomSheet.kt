@@ -15,12 +15,13 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG = "Review Gallery Expanded Review BottomSheet Tag"
-        fun createInstance(rating: Int, timeStamp: String, reviewerName: String, reviewMessage: String): ReviewImagePreviewExpandedReviewBottomSheet {
+        fun createInstance(rating: Int, timeStamp: String, reviewerName: String, reviewMessage: String, variantName: String = ""): ReviewImagePreviewExpandedReviewBottomSheet {
             return ReviewImagePreviewExpandedReviewBottomSheet().apply {
                 this.rating = rating
                 this.timeStamp = timeStamp
                 this.reviewerName = reviewerName
                 this.reviewMessage = reviewMessage
+                this.variantName = variantName
             }
         }
     }
@@ -29,6 +30,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
     private var timeStamp = ""
     private var reviewerName = ""
     private var reviewMessage = ""
+    private var variantName = ""
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
@@ -52,6 +54,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify() {
             setRating(rating)
             setCreateTime(timeStamp)
             setReviewerName(reviewerName)
+            setVariantName(variantName)
         }
     }
 
