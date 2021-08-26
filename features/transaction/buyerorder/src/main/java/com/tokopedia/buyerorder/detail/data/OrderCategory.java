@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.list.data;
+package com.tokopedia.buyerorder.detail.data;
 
 /**
  * Created by baghira on 20/04/18.
@@ -12,6 +12,7 @@ public class OrderCategory {
     public static final String FLIGHTS = "FLIGHTS";
     public static final String HOTELS = "HOTELS";
     public static final String MARKETPLACE = "MARKETPLACE";
+    public static final String BELANJA = "belanja";
     public static final String SURVEY_PARAM = "params";
     public static final String EVENTS = "EVENTS";
     public static final String EVENT = "EVENT";
