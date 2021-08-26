@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-abstract class CoroutineStateUseCase<Input, out Output: Any> constructor(
+abstract class CoroutineStateUseCase<Input, out Output : Any> constructor(
     repository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher
 ) : GqlUseCase<Input, Output>(repository) {

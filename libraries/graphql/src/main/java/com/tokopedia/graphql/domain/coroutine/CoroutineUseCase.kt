@@ -5,7 +5,7 @@ import com.tokopedia.graphql.domain.GqlUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-abstract class CoroutineUseCase<Input, out Output: Any> constructor(
+abstract class CoroutineUseCase<Input, out Output : Any> constructor(
     repository: GraphqlRepository,
     private val dispatcher: CoroutineDispatcher
 ) : GqlUseCase<Input, Output>(repository) {
