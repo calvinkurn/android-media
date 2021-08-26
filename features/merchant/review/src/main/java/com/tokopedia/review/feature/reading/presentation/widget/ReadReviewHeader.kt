@@ -65,12 +65,26 @@ class ReadReviewHeader : BaseCustomView {
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
-        sortFilter?.sortFilterItems?.setPadding(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                0,
-                0,
-                0
-        )
+        sortFilter?.sortFilterPrefix?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val sortFilterPrefixVisibility = sortFilter?.sortFilterPrefix?.visibility
+            if(sortFilterPrefixVisibility == View.GONE){
+                configPaddingForGoneSortFilterPrefix()
+            }else{
+                configPaddingForVisibleSortFilterPrefix()
+            }
+        }
+    }
+
+    private fun configPaddingForVisibleSortFilterPrefix() {
+        val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+        sortFilter?.setPadding(paddingTop, 0, 0, 0)
+        sortFilter?.sortFilterItems?.setPadding(0, 0, 0, 0)
+    }
+
+    private fun configPaddingForGoneSortFilterPrefix() {
+        val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+        sortFilter?.setPadding(0, 0, 0, 0)
+        sortFilter?.sortFilterItems?.setPadding(paddingTop, 0, 0, 0)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
