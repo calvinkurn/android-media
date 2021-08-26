@@ -210,7 +210,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         mainView?.hide()
         kycBenefitLayout?.show()
         KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
-            onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED)
+            analytics?.eventClickOnNextOnBoarding()
+            goToFormActivity()
         }, closeButtonAction = {
             activity?.onBackPressed()
         })
@@ -262,7 +263,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
         button?.setText(R.string.kyc_failed_button)
         button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_REJECTED))
+        button?.setOnClickListener(onGoToFormActivityButton())
         analytics?.eventViewRejectedPage()
     }
 
@@ -328,13 +329,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
-    private fun onGoToFormActivityButton(status: Int): View.OnClickListener {
+    private fun onGoToFormActivityButton(): View.OnClickListener {
         return View.OnClickListener { v: View? ->
-            when (status) {
-                KYCConstant.STATUS_NOT_VERIFIED -> analytics?.eventClickOnNextOnBoarding()
-                KYCConstant.STATUS_REJECTED -> analytics?.eventClickNextRejectedPage()
-                else -> {}
-            }
+            analytics?.eventClickNextRejectedPage()
             goToFormActivity()
         }
     }
