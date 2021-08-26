@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.common.fragment
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -10,7 +9,6 @@ import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
@@ -56,14 +54,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 /**
@@ -542,21 +534,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 }
             }
         })
-    }
-
-    fun <T> debounce(
-        waitMs: Long = 300L,
-        coroutineScope: CoroutineScope,
-        destinationFunction: (T) -> Unit
-    ): (T) -> Unit {
-        var debounceJob: Job? = null
-        return { param: T ->
-            debounceJob?.cancel()
-            debounceJob = coroutineScope.launch {
-                delay(waitMs)
-                destinationFunction(param)
-            }
-        }
     }
 
     abstract fun onCollapseAppBar()

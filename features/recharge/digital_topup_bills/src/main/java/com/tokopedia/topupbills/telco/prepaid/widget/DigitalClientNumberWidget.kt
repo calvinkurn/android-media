@@ -67,8 +67,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
         inputNumberField.textFieldInput.run {
             inputType = InputType.TYPE_CLASS_TEXT
-            threshold = 1
-            dropDownVerticalOffset = 10
+            threshold = AUTOCOMPLETE_THRESHOLD
+            dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
 
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -82,7 +82,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (count != 0) {
                         btnClear.visibility = View.VISIBLE
-//                        autoCompleteAdapter.filter.filter(s)
                     }
                     listener.onRenderOperator()
                 }
@@ -249,5 +248,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
+
+        private const val AUTOCOMPLETE_THRESHOLD = 1
+        private const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10
     }
 }

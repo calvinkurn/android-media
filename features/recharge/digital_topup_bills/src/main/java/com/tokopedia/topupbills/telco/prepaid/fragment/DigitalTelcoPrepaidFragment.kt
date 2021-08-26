@@ -9,7 +9,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
@@ -25,7 +24,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
@@ -200,12 +198,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         subscribeUi()
         initViewPager()
         buyWidget.setBuyButtonLabel(getString(R.string.telco_pick_product))
-
-        viewPager.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                telcoClientNumberWidget.hideSoftKeyboard()
-            }
-        }
 
         //load data
         getCatalogMenuDetail()
@@ -630,16 +622,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         performanceMonitoringStopTrace()
         val favNumbers = data.favoriteNumbers
         seamlessFavNumberList.addAll(favNumbers)
-        telcoClientNumberWidget.setAutoCompleteList(favNumbers)
-        // TODO: [Misael] revert nanti ya janlup, dan hapus si setAutoComplete diatas
-//        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
-//            autoSelectTabProduct = true
-//            telcoClientNumberWidget.run {
-//                setAutoCompleteList(favNumbers)
-//                setInputNumber(favNumbers[0].clientNumber)
-//                setContactName(favNumbers[0].clientName)
-//            }
-//        }
+        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+            autoSelectTabProduct = true
+            telcoClientNumberWidget.run {
+                setAutoCompleteList(favNumbers)
+                setInputNumber(favNumbers[0].clientNumber)
+                setContactName(favNumbers[0].clientName)
+            }
+        }
     }
 
     override fun errorSetFavNumbers() {
