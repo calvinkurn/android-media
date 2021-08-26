@@ -19,6 +19,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_SOURCE_SEARCH
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
@@ -53,7 +54,19 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.RELATEDKEYWORD
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
@@ -78,8 +91,13 @@ import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -199,6 +217,9 @@ abstract class BaseSearchCategoryViewModel(
             SingleLiveEvent<Triple<Int, String, RecommendationItem>>()
     val addToCartRecommendationItemTrackingLiveData: LiveData<Triple<Int, String, RecommendationItem>> =
             addToCartRecommendationTrackingMutableLiveData
+
+    protected val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
+    val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
     init {
         updateQueryParams()
@@ -351,6 +372,7 @@ abstract class BaseSearchCategoryViewModel(
     protected fun onGetFirstPageSuccess(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
+            searchProduct: SearchProduct,
     ) {
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
@@ -362,6 +384,7 @@ abstract class BaseSearchCategoryViewModel(
         initFilterController(headerDataView)
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
         processEmptyState(isEmptyProductList)
+        sendGeneralSearchTracking(searchProduct)
         updateViewForFirstPage(isEmptyProductList)
     }
 
@@ -606,6 +629,42 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun processEmptyState(isEmptyProductList: Boolean) {
 
     }
+
+    protected open fun sendGeneralSearchTracking(searchProduct: SearchProduct) {
+        val searchProductHeader = searchProduct.header
+        val eventLabel = getKeywordForGeneralSearchTracking() +
+            "|${searchProductHeader.keywordProcess}" +
+            "|${searchProductHeader.responseCode}" +
+            "|$BUSINESS_UNIT_PHYSICAL_GOODS" +
+            "|$TOKONOW" +
+            "|$TOKOPEDIA_NOW" +
+            "|${searchProductHeader.totalData}"
+        val previousKeyword = getPreviousKeywordForGeneralSearchTracking()
+        val pageSource = getPageSourceForGeneralSearchTracking()
+
+        val generalSearchDataLayer = mapOf(
+            EVENT to EVENT_CLICK_TOKONOW,
+            EVENT_ACTION to GENERAL_SEARCH,
+            EVENT_CATEGORY to TOP_NAV,
+            EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+            KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            RELATEDKEYWORD to "$previousKeyword - ${searchProduct.getAlternativeKeyword()}",
+            PAGESOURCE to pageSource,
+        )
+
+        generalSearchEventMutableLiveData.value = generalSearchDataLayer
+    }
+
+    protected open fun getKeywordForGeneralSearchTracking() = ""
+
+    private fun getPreviousKeywordForGeneralSearchTracking(): String {
+        val previousKeyword = queryParam[PREVIOUS_KEYWORD] ?: ""
+
+        return if (previousKeyword.isBlank()) NONE else previousKeyword
+    }
+
+    protected abstract fun getPageSourceForGeneralSearchTracking(): String
 
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
         clearVisitableListLiveData()

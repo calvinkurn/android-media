@@ -45,16 +45,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     private PerformanceMonitoring splashTrace;
     private boolean isApkTempered;
 
-    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination;
-        destination = new Intent(context, ConsumerSplashScreen.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        return destination;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
