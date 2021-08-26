@@ -19,7 +19,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateTitle"
-        android:layout_width="379dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/tokopedianow_common_empty_state_title"
@@ -33,7 +33,7 @@
         android:id="@+id/tokonowBullet1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
@@ -42,9 +42,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateDesc1"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/dp_12"
         android:text="@string/tokopedianow_common_empty_state_desc_1"
         android:textColor="@color/Unify_NN600"
@@ -58,7 +58,7 @@
         android:id="@+id/tokonowBullet2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
@@ -67,9 +67,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateDesc2"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/tokopedianow_common_empty_state_desc_2"
         android:textColor="@color/Unify_NN600"
