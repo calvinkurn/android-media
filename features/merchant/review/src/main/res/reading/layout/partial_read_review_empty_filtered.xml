@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_empty_list_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/review_reading_empty_filter_title"

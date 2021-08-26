@@ -551,7 +551,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun updateReviewDetailByPosition(isFirstTimeUpdate: Boolean = false) {
         with(galleryRoutingData) {
-            currentRecyclerViewPosition = currentPosition
+            if (isFirstTimeUpdate) currentRecyclerViewPosition = currentPosition
             this.loadedReviews.firstOrNull {
                 it.imageNumber == currentRecyclerViewPosition
             }?.let { selectedReview ->
