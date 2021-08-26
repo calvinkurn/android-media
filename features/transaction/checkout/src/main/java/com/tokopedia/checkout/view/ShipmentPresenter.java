@@ -1804,7 +1804,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
+        boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -1887,8 +1887,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
-        shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
-        shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setBlackbox(shipmentDetailData.isBlackbox());
+        shippingParam.setPreorder(shipmentDetailData.getPreorder());
         shippingParam.setAddressId(recipientAddressModel.getId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
