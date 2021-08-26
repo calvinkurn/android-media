@@ -69,7 +69,9 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
                     product.getProductPrice(),
                     product.getProductName(),
                     product.getOriginalPrice(),
-                    product.getDiscountPercentage()
+                    product.getDiscountPercentage(),
+                    false,
+                    ""
             ));
         }
         activityContract.finishActivityWithResult(resultProducts);
