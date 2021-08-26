@@ -10,6 +10,7 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -30,13 +31,9 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-/**
- * Created by Irfan Khoirul on 2020-01-07.
- */
-
 object CartListPresenterGetCartListTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
@@ -64,7 +61,7 @@ object CartListPresenterGetCartListTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
@@ -84,8 +81,8 @@ object CartListPresenterGetCartListTest : Spek({
             val emptyCartListData = CartListData()
 
             Given("empty response") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartRevampV3UseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -115,8 +112,8 @@ object CartListPresenterGetCartListTest : Spek({
             val emptyCartListData = CartListData()
 
             Given("empty response") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartRevampV3UseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -159,8 +156,8 @@ object CartListPresenterGetCartListTest : Spek({
             }
 
             Given("throw error") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getCartRevampV3UseCase.buildParams(any(), any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 
@@ -196,8 +193,8 @@ object CartListPresenterGetCartListTest : Spek({
                 add(recommendationWidget)
             }
             Given("throw error") {
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getCartRevampV3UseCase.buildParams(any(), any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 

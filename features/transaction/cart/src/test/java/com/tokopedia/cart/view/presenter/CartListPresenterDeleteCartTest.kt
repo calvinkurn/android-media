@@ -28,13 +28,9 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-/**
- * Created by Irfan Khoirul on 2020-01-07.
- */
-
 object CartListPresenterDeleteCartTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartListSimplifiedUseCase: GetCartRev = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()

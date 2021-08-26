@@ -3,44 +3,36 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-/**
- * Created by Irfan Khoirul on 2020-01-07.
- */
-
 object CartListPresenterUpdateCartTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
@@ -68,7 +60,7 @@ object CartListPresenterUpdateCartTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
@@ -85,23 +77,20 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData().apply {
-                        isCod = true
-                        pricePlan = 1000.0
-                    }
-                    updatedData = CartItemData.UpdatedData().apply {
-                        quantity = 10
-                    }
+            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+                add(CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000
+                    quantity = 10
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -125,23 +114,20 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with eligible COD") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData().apply {
-                        isCod = true
-                        pricePlan = 1000.0
-                    }
-                    updatedData = CartItemData.UpdatedData().apply {
-                        quantity = 10
-                    }
+            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+                add(CartItemHolderData().apply {
+                    isCod = true
+                    productPrice = 1000
+                    quantity = 10
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -165,23 +151,20 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with not eligible COD") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val cartItemDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData().apply {
-                        isCod = false
-                        pricePlan = 1000000.0
-                    }
-                    updatedData = CartItemData.UpdatedData().apply {
-                        quantity = 10
-                    }
+            val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+                add(CartItemHolderData().apply {
+                    isCod = false
+                    productPrice = 1000000
+                    quantity = 10
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -201,12 +184,12 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("state user have not uncheck and recheck item") {
@@ -226,12 +209,12 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("state user have uncheck and recheck item") {
@@ -251,23 +234,22 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_ITEM") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
-                    shopGroupAvailableData = ShopGroupAvailableData().apply {
-                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                            add(CartItemHolderData(
-                                    isSelected = false
-                            ))
-                        }
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(CartItemHolderData().apply {
+                            isSelected = false
+                        })
                     }
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -287,22 +269,31 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_SHOP") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
-                    shopGroupAvailableData = ShopGroupAvailableData()
-                    setAllItemSelected(true)
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(CartItemHolderData().apply {
+                            isSelected = true
+                        })
+                    }
+                    isAllSelected = true
                 })
                 add(CartShopHolderData().apply {
-                    shopGroupAvailableData = ShopGroupAvailableData()
-                    setAllItemSelected(false)
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(CartItemHolderData().apply {
+                            isSelected = false
+                        })
+                    }
+                    isAllSelected = false
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -322,37 +313,35 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("success update cart with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
 
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
-                    shopGroupAvailableData = ShopGroupAvailableData().apply {
-                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                            add(CartItemHolderData(
-                                    isSelected = true
-                            ))
-                            add(CartItemHolderData(
-                                    isSelected = false
-                            ))
-                        }
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(CartItemHolderData().apply {
+                            isSelected = true
+                        })
+                        add(CartItemHolderData().apply {
+                            isSelected = false
+                        })
                     }
-                    setAllItemSelected(false)
+                    isAllSelected = false
+                    isPartialSelected = true
                 })
                 add(CartShopHolderData().apply {
-                    shopGroupAvailableData = ShopGroupAvailableData().apply {
-                        cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
-                            add(CartItemHolderData(
-                                    isSelected = false
-                            ))
-                        }
+                    productUiModelList = mutableListOf<CartItemHolderData>().apply {
+                        add(CartItemHolderData().apply {
+                            isSelected = false
+                        })
                     }
-                    setAllItemSelected(false)
+                    isAllSelected = false
                 })
             }
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.just(updateCartData)
+                val mockResponse = DataProvider.provideUpdateCartSuccess()
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             Given("shop data list") {
@@ -366,47 +355,6 @@ object CartListPresenterUpdateCartTest : Spek({
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
                 verify {
                     view.renderToShipmentFormSuccess(any(), any(), any(), CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM)
-                }
-            }
-        }
-
-        Scenario("success update cart with only tokonow products") {
-
-            val updateCartData = UpdateCartData().apply {
-                isSuccess = true
-            }
-            val shopDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = true)))
-                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = true)))
-                add(CartItemData(originData = CartItemData.OriginData(isTokoNow = false)))
-            }
-
-            val updateParam = slot<RequestParams>()
-            println("update")
-
-            Given("update cart data") {
-                every {
-                    updateCartUseCase.createObservable(match {
-                        println("update1")
-                        val updateRequest = it.getObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
-                        updateRequest.size == 2
-                    })
-                } returns Observable.just(updateCartData)
-            }
-
-            Given("shop data list") {
-                println("update2")
-                every { view.getAllAvailableCartDataList() } answers { shopDataList }
-            }
-
-            When("process to update cart data") {
-                println("update3")
-                cartListPresenter.processUpdateCartData(true, true)
-            }
-
-            Then("should update cart with only tokonow products") {
-                verify {
-                    updateCartUseCase.createObservable(any())
                 }
             }
         }
@@ -435,10 +383,14 @@ object CartListPresenterUpdateCartTest : Spek({
 
         Scenario("failed update cart with exception") {
 
-            val exception = CartResponseErrorException("Error message")
+            val mockResponse = DataProvider.provideUpdateCartFailed()
+            val exception = ResponseErrorException(mockResponse.error.joinToString(", "))
 
             Given("update cart data") {
-                every { updateCartUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+                coEvery { updateCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+                }
             }
 
             When("process to update cart data") {
