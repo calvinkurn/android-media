@@ -664,6 +664,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onHighlightedTopicClicked(topicName:String, topicPosition: Int) {
+        clearAllData()
+        showListOnlyLoading()
         ReadReviewTracking.trackOnClickTopicRating(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
         reviewHeader?.updateFilterFromHighlightedTopic(topicName)
         viewModel.setFilterFromHighlightedTopic(topicName, isProductReview)
