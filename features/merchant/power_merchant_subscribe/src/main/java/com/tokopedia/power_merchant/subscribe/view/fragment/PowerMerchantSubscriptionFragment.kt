@@ -133,8 +133,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         }
     }
 
-    override fun showUpdateInfoBottomSheet() {
-        val fragment = UpdateInfoBottomSheet.createInstance()
+    override fun showUpdateInfoBottomSheet(gradeName: String) {
+        val fragment = PMProBenefitPackageStatusBottomSheet.createInstance(gradeName)
         if (childFragmentManager.isStateSaved || fragment.isAdded) return
         fragment.show(childFragmentManager)
     }
@@ -637,14 +637,13 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
                 grade = grade,
                 nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
                 nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
+                currentShopLevel = data.currentPMGrade?.shopLevel.orEmpty(),
                 pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 isAutoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orFalse(),
                 items = benefits
         )
     }
-
-    private fun getBenefitPackage() {}
 
     private fun getShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade

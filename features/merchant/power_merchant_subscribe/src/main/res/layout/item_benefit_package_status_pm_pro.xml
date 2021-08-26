@@ -42,7 +42,6 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="@id/tvTitleBenefitPackageStatus"
             app:layout_constraintTop_toBottomOf="@id/tvTitleBenefitPackageStatus"
-            app:labelType="highlight_dark_grey"
             tools:text="ADVANCED"/>
 
         <com.tokopedia.iconunify.IconUnify
@@ -56,10 +55,11 @@
             app:icon_name="INFORMATION"
             app:icon_color_light_enable="@color/pm_static_525A67_dms" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/iconPmProDowngradeStatus"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
+            app:lottie_rawRes="@raw/pm_pro_downgrade_status"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
@@ -68,8 +68,8 @@
             app:layout_constraintStart_toEndOf="@id/labelPmProStatus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bgBenefitPackageStatus"
-            app:icon_name="INFORMATION"
-            app:icon_color_light_enable="@color/pm_static_525A67_dms" />
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvNextUpdatePmProStatus"

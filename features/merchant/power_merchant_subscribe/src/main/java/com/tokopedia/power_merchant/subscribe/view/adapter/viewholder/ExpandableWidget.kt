@@ -34,7 +34,6 @@ class ExpandableWidget(
             if (element.isPmPro()) {
                 viewPmProBenefitSection.visible()
                 viewPmBenefitSection.gone()
-                viewPmProBenefitSection.setOnExpandedChanged(true)
             } else {
                 viewPmProBenefitSection.gone()
                 viewPmBenefitSection.visible()
@@ -59,7 +58,7 @@ class ExpandableWidget(
             handleExpandableView()
         }
         viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
-            listener.showUpdateInfoBottomSheet()
+            listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
         }
     }
 
@@ -67,7 +66,6 @@ class ExpandableWidget(
         with(itemView) {
             val shouldExpanded = rvPmExpandableItem.visibility != View.VISIBLE
             viewPmBenefitSection.setOnExpandedChanged(shouldExpanded)
-            viewPmProBenefitSection.setOnExpandedChanged(shouldExpanded)
             if (shouldExpanded) {
                 rvPmExpandableItem.visible()
             } else {
@@ -94,6 +92,6 @@ class ExpandableWidget(
     }
 
     interface Listener {
-        fun showUpdateInfoBottomSheet()
+        fun showUpdateInfoBottomSheet(gradeName: String)
     }
 }

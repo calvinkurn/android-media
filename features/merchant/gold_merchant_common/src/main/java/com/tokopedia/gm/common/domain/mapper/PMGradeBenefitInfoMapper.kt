@@ -15,12 +15,12 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: PMGradeBenefitInfoModel?): PMGradeBenefitInfoUiModel {
         return PMGradeBenefitInfoUiModel(
-                nextMonthlyRefreshDate = getRefreshDateFmt(response?.nextMonthlyRefreshDate.orEmpty()),
-                nextQuarterlyCalibrationRefreshDate = getRefreshDateFmt(response?.nextQuarterlyCalibrationRefreshDate.orEmpty()),
-                currentPMGrade = getCurrentPMGrade(response?.currentPMGrade),
-                currentPMBenefits = getPMGradeBenefits(response?.currentPMBenefits),
-                nextPMGrade = getNextPMGrade(response?.nextPMGrade),
-                nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits)
+            nextMonthlyRefreshDate = getRefreshDateFmt(response?.nextMonthlyRefreshDate.orEmpty()),
+            nextQuarterlyCalibrationRefreshDate = getRefreshDateFmt(response?.nextQuarterlyCalibrationRefreshDate.orEmpty()),
+            currentPMGrade = getCurrentPMGrade(response?.currentPMGrade),
+            currentPMBenefits = getPMGradeBenefits(response?.currentPMBenefits),
+            nextPMGrade = getNextPMGrade(response?.nextPMGrade),
+            nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits)
         )
     }
 
@@ -28,10 +28,10 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
         pmGradeBenefitList?.let { list ->
             return list.map {
                 PMGradeWithBenefitsUiModel(
-                        gradeName = it.gradeName.orEmpty(),
-                        isActive = it.isActive ?: false,
-                        pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                        benefits = getPMGradeBenefits(it.benefits)
+                    gradeName = it.gradeName.orEmpty(),
+                    isActive = it.isActive ?: false,
+                    pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
+                    benefits = getPMGradeBenefits(it.benefits)
                 )
             }
         }
@@ -41,12 +41,12 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     private fun getNextPMGrade(nextPmGrade: NextPMGradeModel?): PMNextGradeUiModel? {
         nextPmGrade?.let {
             return PMNextGradeUiModel(
-                    shopLevel = it.shopLevel.orZero(),
-                    shopScoreMin = it.shopScoreMin.orZero(),
-                    shopScoreMax = it.shopScoreMax.orZero(),
-                    gradeName = it.gradeName.orEmpty(),
-                    imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
-                    backgroundUrl = it.backgroundUrl
+                shopLevel = it.shopLevel.orZero(),
+                shopScoreMin = it.shopScoreMin.orZero(),
+                shopScoreMax = it.shopScoreMax.orZero(),
+                gradeName = it.gradeName.orEmpty(),
+                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
+                backgroundUrl = it.backgroundUrl
             )
         }
         return null
@@ -55,15 +55,15 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     private fun getPMGradeBenefits(currentBenefits: List<PMGradeBenefitModel>?): List<PMGradeBenefitUiModel>? {
         currentBenefits?.let { list ->
             return list.sortedBy { it.sequenceNum }
-                    .map {
-                        PMGradeBenefitUiModel(
-                                categoryName = it.categoryName.orEmpty(),
-                                benefitName = it.benefitName.orEmpty(),
-                                sequenceNum = it.sequenceNum.orZero(),
-                                appLink = it.appLink,
-                                iconUrl = it.iconUrl
-                        )
-                    }
+                .map {
+                    PMGradeBenefitUiModel(
+                        categoryName = it.categoryName.orEmpty(),
+                        benefitName = it.benefitName.orEmpty(),
+                        sequenceNum = it.sequenceNum.orZero(),
+                        appLink = it.appLink,
+                        iconUrl = it.iconUrl
+                    )
+                }
         }
         return null
     }
@@ -71,9 +71,10 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     private fun getCurrentPMGrade(currentPmGrade: CurrentPmGradeModel?): PMCurrentGradeUiModel? {
         currentPmGrade?.let {
             return PMCurrentGradeUiModel(
-                    gradeName = it.gradeName.orEmpty(),
-                    imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
-                    backgroundUrl = it.backgroundUrl.orEmpty()
+                gradeName = it.gradeName.orEmpty(),
+                shopLevel = it.shopLevel.orEmpty(),
+                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
+                backgroundUrl = it.backgroundUrl.orEmpty(),
             )
         }
         return null
