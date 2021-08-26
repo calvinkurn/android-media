@@ -2101,7 +2101,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
                 ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
-                shippingDurationBottomsheet.show(activity, getFragmentManager(), this,
+                shippingDurationBottomsheet.show(activity, getParentFragmentManager(), this,
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.isLeasingProduct(), pslCode, products,

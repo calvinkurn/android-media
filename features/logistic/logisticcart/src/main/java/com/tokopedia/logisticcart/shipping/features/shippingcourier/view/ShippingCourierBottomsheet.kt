@@ -67,11 +67,11 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     private fun initData(shippingCourierUiModels: List<ShippingCourierUiModel>?, recipientAddressModel: RecipientAddressModel?, cartPosition: Int) {
         bundle = Bundle()
         if (shippingCourierUiModels != null) {
-            bundle!!.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, ArrayList(shippingCourierUiModels))
-            bundle!!.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels[0].preOrderModel)
+            bundle?.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, ArrayList(shippingCourierUiModels))
+            bundle?.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels[0].preOrderModel)
         }
-        bundle!!.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-        bundle!!.putInt(ARGUMENT_CART_POSITION, cartPosition)
+        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
+        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
     }
 
     private fun initBottomSheet(activity: Activity) {
@@ -83,9 +83,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.isDragable = true
         bottomSheet?.isHideable = true
         bottomSheet?.setCloseClickListener {
-            if (shippingCourierBottomsheetListener != null) {
-                shippingCourierBottomsheetListener!!.onCourierShipmentRecommendationCloseClicked()
-            }
+            shippingCourierBottomsheetListener?.onCourierShipmentRecommendationCloseClicked()
             bottomSheet?.dismiss()
         }
     }
@@ -124,10 +122,10 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun loadData() {
         if (bundle != null) {
-            mRecipientAddress = bundle!!.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            val cartPosition = bundle!!.getInt(ARGUMENT_CART_POSITION)
-            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = bundle!!.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
-            mPreOrderModel = bundle!!.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
+            mRecipientAddress = bundle?.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
+            val cartPosition = bundle?.getInt(ARGUMENT_CART_POSITION) ?: 0
+            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = bundle?.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
+            mPreOrderModel = bundle?.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
@@ -160,11 +158,9 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
         val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
         val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
-        if (shippingCourierBottomsheetListener != null) {
-            shippingCourierBottomsheetListener!!.onCourierChoosen(
-                    shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
-                    !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint)
-        }
+        shippingCourierBottomsheetListener?.onCourierChoosen(
+                shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
+                !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint)
         bottomSheet?.dismiss()
     }
 
@@ -194,9 +190,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
             showLoading()
-            if (shippingCourierBottomsheetListener != null) {
-                shippingCourierBottomsheetListener!!.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
-            }
+            shippingCourierBottomsheetListener?.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
         }
     }
 
