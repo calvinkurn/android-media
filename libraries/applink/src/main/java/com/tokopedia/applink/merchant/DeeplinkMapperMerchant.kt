@@ -149,26 +149,6 @@ object DeeplinkMapperMerchant {
                 .toString()
     }
 
-    fun getRegisteredNavigationProductBundle(uri: Uri): String {
-        // TODO: Need to handle the default value in activity level
-        val segments = uri.pathSegments
-        val bundleId = uri.getQueryParameter(PARAM_BUNDLE_ID) ?: "0"
-        val selectedProductIds = uri.getQueryParameter(PARAM_SELECTED_PRODUCT_IDS) ?: "0"
-        val source = uri.getQueryParameter(PARAM_SOURCE) ?: ""
-        val cartIds = uri.getQueryParameter(PARAM_CART_IDS) ?: "0"
-
-        val productId = segments.last()
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
-        return Uri.parse(newUri)
-                .buildUpon()
-                .appendQueryParameter(PARAM_BUNDLE_ID, bundleId)
-                .appendQueryParameter(PARAM_SELECTED_PRODUCT_IDS, selectedProductIds)
-                .appendQueryParameter(PARAM_SOURCE, source)
-                .appendQueryParameter(PARAM_CART_IDS, cartIds)
-                .build()
-                .toString()
-    }
-
     fun isShopPageDeeplink(uri: Uri?): Boolean {
         return uri?.let {
             val pathSegment = it.pathSegments ?: return false
