@@ -191,30 +191,30 @@ class ShopScoreMapper @Inject constructor(
                     when {
                         //RM Section logic
                         powerMerchantResponse.status == PMStatusConst.INACTIVE -> {
-                            if (shopAge >= SHOP_AGE_SIXTY) {
-                                if (isNewSellerProjection) {
+                            if (isNewSeller) {
+                                if (isEligiblePM == true) {
                                     add(
-                                        mapToItemCurrentStatusRMUiModel(isNewSellerProjection)
+                                        mapToItemCurrentStatusRMUiModel(isNewSeller)
                                     )
-                                    return@apply
-                                } else {
-                                    when {
-                                        isEligiblePMPro == true -> {
-                                            add(mapToSectionRMEligibleToPMPro())
-                                            return@apply
-                                        }
-                                        isEligiblePM == true -> {
-                                            add(
-                                                mapToItemCurrentStatusRMUiModel(
-                                                    isNewSellerProjection
-                                                )
+                                }
+                                return@apply
+                            } else {
+                                when {
+                                    isEligiblePMPro == true -> {
+                                        add(mapToSectionRMEligibleToPMPro())
+                                        return@apply
+                                    }
+                                    isEligiblePM == true -> {
+                                        add(
+                                            mapToItemCurrentStatusRMUiModel(
+                                                isNewSellerProjection
                                             )
-                                            return@apply
-                                        }
-                                        else -> {
-                                            add(mapToCardPotentialBenefitNonEligible())
-                                            return@apply
-                                        }
+                                        )
+                                        return@apply
+                                    }
+                                    else -> {
+                                        add(mapToCardPotentialBenefitNonEligible())
+                                        return@apply
                                     }
                                 }
                             }
@@ -228,7 +228,7 @@ class ShopScoreMapper @Inject constructor(
                                     return@apply
                                 }
                                 else -> {
-                                    add(mapToItemPMUiModel(isNewSellerProjection))
+                                    add(mapToItemPMUiModel(isNewSeller))
                                     return@apply
                                 }
                             }
