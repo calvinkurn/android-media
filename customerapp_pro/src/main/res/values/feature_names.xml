@@ -367,4 +367,7 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
+
+    <!-- Review   -->
+    <string name="title_review">Ulasan</string>
 </resources>

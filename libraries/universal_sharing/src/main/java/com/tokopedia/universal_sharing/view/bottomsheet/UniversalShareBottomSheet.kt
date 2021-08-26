@@ -21,6 +21,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
@@ -182,11 +184,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         this.bottomSheetListener = bottomSheetListener
     }
 
-    fun show(fragmentManager: FragmentManager?) {
-        fragmentManager?.let {
-            show(it, TAG)
-        }
-        screenshotDetector?.stop()
+    fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
+        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
+            ?: fragmentManager?.let { show(it, TAG) }
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -548,6 +548,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
+        screenshotDetector?.stop()
         var customBottomSheetEnabled = true
         if(!TextUtils.isEmpty(featureFlagRemoteConfigKey)){
             val remoteConfig = FirebaseRemoteConfigImpl(context)

@@ -781,6 +781,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onBulkProcessOrderButtonClicked() {
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
+        SomAnalytics.eventClickBulkAcceptOrder(userSession.userId, userSession.shopId, getSelectedOrderIds())
     }
 
     override fun onMenuItemClicked(keyAction: String) {
@@ -803,6 +804,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
+                SomAnalytics.eventClickBulkRequestPickup(
+                    userSession.userId,
+                    userSession.shopId,
+                    getSelectedOrderIds()
+                )
             }
         }
     }
@@ -2629,16 +2635,24 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 rvSomList?.stopScroll()
                 somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderPosition, 0)
                 rvSomList?.post {
-                    somListLayoutManager?.findViewByPosition(firstNewOrderPosition)?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
+                    somListLayoutManager?.findViewByPosition(firstNewOrderPosition)
+                        ?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
                         if (getVisiblePercent(it) == 0) {
-                            CoachMarkPreference.setShown(it.context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
+                            CoachMarkPreference.setShown(
+                                it.context,
+                                SHARED_PREF_NEW_SOM_LIST_COACH_MARK,
+                                true
+                            )
                             rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
                             rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                             currentNewOrderWithCoachMark = firstNewOrderPosition
                             shouldShowCoachMark = false
                             val coachMarkItems = createCoachMarkItems(it)
                             coachMark?.isDismissed = false
-                            coachMark?.showCoachMark(step = coachMarkItems, index = coachMarkIndexToShow)
+                            coachMark?.showCoachMark(
+                                step = coachMarkItems,
+                                index = coachMarkIndexToShow
+                            )
                         }
                     }
                 }
@@ -2931,8 +2945,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 bottomSheetDismissed = true
             }
         }
-        bottomSheetDismissed = somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
-        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed =
+            somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed =
+            orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somOrderEditAwbBottomSheet?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }
