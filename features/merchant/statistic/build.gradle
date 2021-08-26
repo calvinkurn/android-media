@@ -17,7 +17,6 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        jcenter()
         google()
     }
     dependencies {
@@ -41,6 +40,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.charts)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.icon

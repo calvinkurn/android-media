@@ -67,7 +67,8 @@ class AddressRevampRobot {
     }
 
     fun searchKotaKecamatan(keyword: String) {
-        onView(withId(R.id.et_search_district_recommendation))
+        onView(withId(R.id.search_page_input)).perform(click())
+        onView(withId(R.id.searchbar_textfield))
                 .perform(click(), typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
@@ -79,7 +80,7 @@ class AddressRevampRobot {
 
     fun clickPostalCode() {
         onView(withId(R.id.et_kodepos))
-                .perform(click())
+                .perform(click(), closeSoftKeyboard())
     }
 
     fun clickPostalCodeItem() {

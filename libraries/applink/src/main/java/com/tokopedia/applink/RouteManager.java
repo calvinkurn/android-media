@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -447,5 +448,9 @@ public class RouteManager {
         }
     }
 
+    public static Intent getSplashScreenIntent(Context context){
+        PackageManager pm = context.getPackageManager();
+        return pm.getLaunchIntentForPackage(context.getPackageName());
+    }
 
 }

@@ -13,18 +13,28 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import java.lang.Exception
 
-class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?) {
+class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?,
+                         private val permissionListener: PermissionListener? = null) {
 
     private var contentObserver: ContentObserver? = null
-    val pendingRegex = ".pending"
-    val screenShotRegex = "screenshot"
+    private val pendingRegex = ".pending"
+    private val screenShotRegex = "screenshot"
+    private val actionPermissionDialog = "click - access photo media and files"
+    private val labelAllow = "allow"
+    private val labelDeny = "deny"
+    private val readingDelayTime = 1100L
     private var ssUriPath = ""
 
     fun start() {
@@ -149,12 +159,42 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
-    fun detectScreenshots(fragment: Fragment) {
+    fun detectScreenshots(fragment: Fragment,  display:(() -> Unit)? = null, requestPermission:Boolean = false,
+                          toastView: View? = null) {
         if (haveStoragePermission()) {
             start()
+            display?.invoke()
         } else {
-            requestPermission(fragment)
+            if(requestPermission) {
+                showCustomPermissionDialog(fragment, toastView, display)
+            }
         }
+    }
+
+    private fun showCustomPermissionDialog(fragment: Fragment, toastView: View?, display:(() -> Unit)?){
+        var permissionDialogCustom = DialogUnify(fragment.requireContext(), DialogUnify.VERTICAL_ACTION,
+            DialogUnify.WITH_ILLUSTRATION).apply {
+            setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
+            setPrimaryCTAClickListener {
+                display?.invoke()
+                requestPermission(fragment)
+                dismiss()
+                permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_primary_cta))
+            }
+            setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
+            setSecondaryCTAClickListener {
+                dismiss()
+                toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
+                Handler().postDelayed({
+                    display?.invoke()
+                }, readingDelayTime)
+                permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
+            }
+            setTitle(fragment.getString(R.string.permission_dialog_title))
+            setDescription(fragment.getString(R.string.permission_dialog_description))
+            setImageDrawable(R.drawable.permission_dialog_image)
+            }
+        permissionDialogCustom.show()
     }
 
     fun onRequestPermissionsResult(
@@ -165,6 +205,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             READ_EXTERNAL_STORAGE_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     start()
+                    permissionListener?.permissionAction(actionPermissionDialog, labelAllow)
+                }else{
+                    permissionListener?.permissionAction(actionPermissionDialog, labelDeny)
                 }
                 return
             }

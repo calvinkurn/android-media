@@ -81,10 +81,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
@@ -102,6 +99,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener,
+        ShopShowcaseEmptySearchListener,
         SortFilterBottomSheet.Callback {
 
     interface ShopPageProductListResultFragmentListener {
@@ -184,7 +182,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             viewModel.userId
         } else "0"
     var localCacheModel: LocalCacheModel? = null
-
+    private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
                 null,
@@ -195,6 +193,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 this,
                 null,
                 null,
+                this,
                 this,
                 this,
                 true,
@@ -307,6 +306,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     public override fun loadInitialData() {
         updateCurrentPageLocalCacheModelData()
         isLoadingInitialData = true
+        isEmptyState = false
+        shopProductAdapter.clearShopPageChangeGridSection()
+        shopProductAdapter.clearShopPageProductResultEmptyState()
         shopProductAdapter.clearProductList()
         shopProductAdapter.clearAllNonDataElement()
         showLoading()
@@ -426,6 +428,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
             }
+            rvDefaultPaddingBottom = it.paddingBottom
         }
     }
 
@@ -621,6 +624,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
                     changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
                 }
+            } else {
+                if (keyword.isEmpty()) {
+                    shopProductSortFilterUiModel?.apply {
+                        isShowSortFilter = false
+                    }?.let { shopProductAdapter.setSortFilterData(it) }
+                }
             }
         }
 
@@ -628,6 +637,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             showLoading()
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
+            updateScrollListenerState(false)
         } else {
             shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
@@ -640,12 +650,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
         view?.let {
-            recyclerView?.setPadding(
-                    toDp(12),
-                    toDp(0),
-                    toDp(12),
-                    toDp(82)
-            )
+            recyclerView?.apply {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        resources.getDimension(R.dimen.dp_82).toInt()
+                )
+            }
             partialShopNplFollowersViewLayout?.translationY = it.height.toFloat()
         }
     }
@@ -668,24 +680,29 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideShopFollowersView() {
-        recyclerView?.setPadding(
-                toDp(12),
-                toDp(0),
-                toDp(12),
-                toDp(8)
-        )
+        recyclerView?.apply {
+            setPadding(
+                    paddingLeft,
+                    paddingTop,
+                    paddingRight,
+                    rvDefaultPaddingBottom
+            )
+        }
         partialShopNplFollowersView?.setupVisibility = false
         partialShopNplFollowersViewLayout?.invisible()
     }
 
-    private fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-    }
-
     private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {
         hideLoading()
-        shopProductAdapter.clearAllElements()
-        shopProductAdapter.addEmptyStateData(productList)
+        if(keyword.isEmpty()){
+            shopProductAdapter.addEmptyShowcaseResultState()
+        } else {
+            shopProductAdapter.addEmptySearchResultState()
+        }
+        if(productList.isNotEmpty()) {
+            shopProductAdapter.addProductSuggestion(productList)
+        }
+        shopProductAdapter.notifyDataSetChanged()
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
@@ -1422,6 +1439,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 .build()
                 .toString()
         RouteManager.route(context, searchPageUri)
+    }
+
+    override fun onShowcaseEmptyBackButtonClicked() {
+        activity?.finish()
     }
 
 }

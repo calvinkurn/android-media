@@ -31,7 +31,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var isFollowed: Boolean = false
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
-    private var dismissedByClosing = false
+    var dismissedByClosing = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
