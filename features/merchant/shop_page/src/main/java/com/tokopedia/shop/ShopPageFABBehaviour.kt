@@ -10,6 +10,11 @@ import android.animation.Animator
 
 
 class ShopPageFABBehaviour(context: Context, attrs: AttributeSet) : CoordinatorLayout.Behavior<View>() {
+
+    companion object{
+        private const val ANIMATION_DURATION = 250L
+    }
+
     private var isAnimate = false
     private val animationListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(p0: Animator?) {
@@ -36,12 +41,12 @@ class ShopPageFABBehaviour(context: Context, attrs: AttributeSet) : CoordinatorL
             if (!isAnimate) {
                 val layoutParams = child.layoutParams as CoordinatorLayout.LayoutParams
                 val bottomMargin = layoutParams.bottomMargin
-                child.animate().setListener(animationListener).setDuration(250).translationY((child.height + bottomMargin).toFloat()).setInterpolator(LinearInterpolator()).start()
+                child.animate().setListener(animationListener).setDuration(ANIMATION_DURATION).translationY((child.height + bottomMargin).toFloat()).setInterpolator(LinearInterpolator()).start()
             }
 
         } else if (dyConsumed < 0) {
             if (!isAnimate) {
-                child.animate().setListener(animationListener).setDuration(250).translationY(0f).setInterpolator(LinearInterpolator()).start()
+                child.animate().setListener(animationListener).setDuration(ANIMATION_DURATION).translationY(0f).setInterpolator(LinearInterpolator()).start()
             }
         }
     }
