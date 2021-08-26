@@ -85,18 +85,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:visibility="visible"
-        app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_white"
+        app:drawableLeftCompat="@drawable/ic_gojek_outline"
         android:id="@+id/link_account_profile_btn"
         android:background="@drawable/link_account_label_rounded"
         android:textColor="#ffffff"
         app:typographyType="heading_6"
+        android:drawablePadding="5dp"
         android:text="@string/link_account_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:labelType="general_dark_green"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_email"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
 

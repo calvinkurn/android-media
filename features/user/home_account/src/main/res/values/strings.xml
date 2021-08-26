@@ -108,11 +108,11 @@
     <string name="link_account_btn_primary">Let’s Do It!</string>
     <string name="link_account_label">Link Account to Gojek</string>
 
-    <string name="label_link_account">Akun yang terhubung</string>
-    <string name="link_account_layout_description">Atur aplikasi dan website yang terhubung ke akun Tokopedia-mu.</string>
+    <string name="label_link_account">Akun Tersambung</string>
+    <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>
 
     <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
-    <string name="label_call_tokopedia">Butuh bantuan? Hubungi Tokopedia Care</string>
+    <string name="label_call_tokopedia">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
 
     <string name="label_link_account_menu_skip">Lewati</string>
 </resources>
