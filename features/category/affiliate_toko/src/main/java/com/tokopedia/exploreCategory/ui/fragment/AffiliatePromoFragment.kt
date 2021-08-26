@@ -43,15 +43,16 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
     }
 
     private fun afterViewCreated() {
-        product_link_et.run {
-            textInputLayout.isHelperTextEnabled = false
-        }
+        product_link_et.setRelatedView(dim_layer)
         global_error.run {
             show()
-            errorTitle.text = getString(R.string.affiliate_choose_product)
-            errorDescription.text = getString(R.string.affiliate_choose_product_description)
+            errorTitle.text = getString(R.string.affiliate_never_bought_product)
+            errorDescription.text = getString(R.string.affiliate_still_buy_products)
             setButtonFull(true)
-            errorAction.text = getString(R.string.affiliate_promote_affiliatw)
+            errorAction.text = getString(R.string.affiliate_paste_link)
+            errorAction.setOnClickListener {
+               product_link_et.editingState(true)
+            }
             errorSecondaryAction.gone()
         }
     }

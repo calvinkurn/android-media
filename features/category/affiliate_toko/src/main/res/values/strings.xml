@@ -2,9 +2,9 @@
     <string name="app_name">affiliate_toko</string>
     <string name="label_affiliate">Affiliate</string>
 
-    <string name="home">Home</string>
-    <string name="promo">Promosikan</string>
-    <string name="bantuan">Bantuan</string>
+    <string name="affiliate_home">Home</string>
+    <string name="affiliate_promo">Promosikan</string>
+    <string name="affiliate_bantuan">Bantuan</string>
 
     <string name="tag_lottie_animation_view">lottieAnimationView</string>
     <string name="tag_title_textview">titleTextView</string>
@@ -16,5 +16,8 @@
     <string name="affiliate_promoted_products">Produk yang dipromosikan</string>
     <string name="affiliate_where_to_promote">Mau promosikan di mana?</string>
     <string name="affiliate_copy_link">Salin Link</string>
-    <string name="paste_product_link">Tempel link produk di sini</string>
+    <string name="affiliate_never_bought_product">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="affiliate_still_buy_products">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia </string>
+    <string name="affiliate_paste_link">Tempel Link</string>
+    <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
 </resources>

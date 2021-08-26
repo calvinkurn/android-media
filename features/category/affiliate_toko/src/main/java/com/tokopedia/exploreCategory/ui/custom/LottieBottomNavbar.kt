@@ -1,4 +1,4 @@
-package com.tokopedia.exploreCategory.ui.bottomnav
+package com.tokopedia.exploreCategory.ui.custom
 
 import android.animation.Animator
 import android.content.Context

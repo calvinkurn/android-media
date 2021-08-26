@@ -17,7 +17,7 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
         app:toolbarInitialTheme="light"
-        app:toolbarTitle="@string/bantuan" />
+        app:toolbarTitle="@string/affiliate_bantuan" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

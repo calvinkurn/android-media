@@ -18,7 +18,7 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
         app:toolbarInitialTheme="light"
-        app:toolbarTitle="@string/promo" />
+        app:toolbarTitle="@string/affiliate_promo" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_link_text"
@@ -29,9 +29,9 @@
         app:layout_constraintTop_toBottomOf="@id/navToolbar"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        android:text="@string/paste_product_link" />
+        android:text="@string/affiliate_paste_product_link" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify2
+    <com.tokopedia.exploreCategory.ui.custom.AffiliateLinkTextField
         android:id="@+id/product_link_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,5 +62,18 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dim_layer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_link_et"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

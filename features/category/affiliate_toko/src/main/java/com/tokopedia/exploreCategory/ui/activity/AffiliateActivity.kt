@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.exploreCategory.ui.bottomnav.AffiliateBottomNavbar
-import com.tokopedia.exploreCategory.ui.bottomnav.IBottomClickListener
+import com.tokopedia.exploreCategory.ui.custom.AffiliateBottomNavbar
+import com.tokopedia.exploreCategory.ui.custom.IBottomClickListener
 import com.tokopedia.exploreCategory.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.exploreCategory.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.exploreCategory.ui.fragment.AffiliatePromoFragment
