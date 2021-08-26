@@ -470,8 +470,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check webview parent home appLink then should empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.WEBVIEW_PARENT_HOME, "")
+    fun `check webview parent home appLink then return webviewbackhome`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webviewbackhome"
+        assertEqualsDeepLinkMapper(ApplinkConst.WEBVIEW_PARENT_HOME, expectedDeepLink)
     }
 
     @Test
@@ -1036,6 +1037,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller info detail with url appLink then should return webview`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview?url=https://www.tokopedia.com/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL + "?url=https://www.tokopedia.com/help", expectedDeepLink)
+    }
+
+    @Test
     fun `check inbox ticket appLink then should return tokopedia internal inbox ticket in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://customercare/inbox-list"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX_TICKET, expectedDeepLink)
@@ -1546,11 +1553,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check consumer splash screen appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.CONSUMER_SPLASH_SCREEN, "")
-    }
-
-    @Test
     fun `check home credit ktp without type appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE, "")
     }
@@ -1897,9 +1899,24 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, expectedDeepLink)
     }
 
+    @Test
+    fun `check webview mapping`() {
+        val queryParam = "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webview" + queryParam
+        assertEqualsDeepLinkMapper(ApplinkConst.WEBVIEW + queryParam, expectedDeepLink)
+    }
+
+    @Test
+    fun `check browser mapping`() {
+        val queryParam = "?ext=true&titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/browser" + queryParam
+        assertEqualsDeepLinkMapper(ApplinkConst.BROWSER + queryParam, expectedDeepLink)
+    }
+
     private fun setRemoteConfig(isEnabled: Boolean) {
         every {
             FirebaseRemoteConfigInstance.get(mockk(relaxed = true)).getBoolean(any())
         } returns isEnabled
     }
+
 }

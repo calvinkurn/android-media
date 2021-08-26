@@ -100,7 +100,7 @@ public class DeeplinkUTMUtils {
 
         Uri referrerUri = getReferrer(activity);
 
-        boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
+        boolean isAmpUri = "true".equalsIgnoreCase(maps.get(KEY_AMP));
 
         if (isOriginalUrlAmp) {
             campaign = createAmpOrganicCampaign(maps);

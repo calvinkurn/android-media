@@ -173,7 +173,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             viewModel.userId
         } else "0"
     var localCacheModel: LocalCacheModel? = null
-
+    private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
                 null,
@@ -407,6 +407,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
             }
+            rvDefaultPaddingBottom = it.paddingBottom
         }
     }
 
@@ -607,12 +608,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
         view?.let {
-            recyclerView?.setPadding(
-                    toDp(12),
-                    toDp(0),
-                    toDp(12),
-                    toDp(82)
-            )
+            recyclerView?.apply {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        resources.getDimension(R.dimen.dp_82).toInt()
+                )
+            }
             partialShopNplFollowersViewLayout?.translationY = it.height.toFloat()
         }
     }
@@ -635,18 +638,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideShopFollowersView() {
-        recyclerView?.setPadding(
-                toDp(12),
-                toDp(0),
-                toDp(12),
-                toDp(8)
-        )
+        recyclerView?.apply {
+            setPadding(
+                    paddingLeft,
+                    paddingTop,
+                    paddingRight,
+                    rvDefaultPaddingBottom
+            )
+        }
         partialShopNplFollowersView?.setupVisibility = false
         partialShopNplFollowersViewLayout?.invisible()
-    }
-
-    private fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {

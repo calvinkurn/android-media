@@ -33,6 +33,10 @@ object SomAnalytics {
     private const val CLICK_BULK_PRINT_ACTION = "click print labels at once"
     private const val CLICK_BULK_PRINT_ACTION_YES = "click print labels - yes"
     private const val CLICK_BULK_PRINT_ACTION_CANCEL = "click print labels - cancel"
+    private const val CLICK_BULK_ACCEPT_ALL = "click accept all"
+    private const val BULK_ACCEPT_ORDER = "bulk accept order"
+    private const val CLICK_REQUEST_PICKUP_ALL = "click request pickup all"
+    private const val BULK_REQUEST_PICKUP = "bulk request pickup"
     private const val CUSTOM_DIMENSION_USER_ID = "userId"
     private const val CUSTOM_DIMENSION_SHOP_ID = "shopId"
     private const val CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
@@ -218,6 +222,36 @@ object SomAnalytics {
                 CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
                 CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
                 CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickBulkAcceptOrder(userId: String, shopId: String, orderIdList: List<String>) {
+        val orderIds = orderIdList.joinToString(separator = ",") { it }
+        val data = mapOf(
+            TrackAppUtils.EVENT to CLICK_SOM,
+            TrackAppUtils.EVENT_ACTION to CLICK_BULK_ACCEPT_ALL,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to "$BULK_ACCEPT_ORDER - $orderIds",
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+            CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+            CUSTOM_DIMENSION_USER_ID to userId,
+            CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickBulkRequestPickup(userId: String, shopId: String, orderIdList: List<String>) {
+        val orderIds = orderIdList.joinToString(separator = ",") { it }
+        val data = mapOf(
+            TrackAppUtils.EVENT to CLICK_SOM,
+            TrackAppUtils.EVENT_ACTION to CLICK_REQUEST_PICKUP_ALL,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to "$BULK_REQUEST_PICKUP - $orderIds",
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+            CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+            CUSTOM_DIMENSION_USER_ID to userId,
+            CUSTOM_DIMENSION_SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
