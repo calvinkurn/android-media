@@ -22,7 +22,7 @@ object ReviewImagePreviewTracking {
                     feedbackId,
                     (!isLiked).toString()
                 ),
-                if (isFromGallery) ReviewImagePreviewTrackingConstants.EVENT_CATEGORY else ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY,
+                if (isFromGallery) ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY else ReviewImagePreviewTrackingConstants.EVENT_CATEGORY,
                 productId
             )
         )

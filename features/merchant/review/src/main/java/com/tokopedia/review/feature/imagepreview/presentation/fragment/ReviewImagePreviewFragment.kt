@@ -453,7 +453,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun openExpandedReviewBottomSheet() {
         if (isProductReview) {
             ReviewImagePreviewTracking.trackOnSeeAllClicked(
-                productReview.feedbackID,
+                if(isFromGallery) galleryRoutingData.getSelectedReview()?.feedbackId ?: "" else productReview.feedbackID,
                 productId,
                 isFromGallery
             )
