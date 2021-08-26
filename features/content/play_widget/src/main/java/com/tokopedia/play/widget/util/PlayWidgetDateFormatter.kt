@@ -14,15 +14,15 @@ object PlayWidgetDateFormatter {
     private const val Z = "Z"
     private const val GMT07 = "+0700"
 
-    private const val yyyymmddThhmmss = "yyyy-MM-dd'T'HH:mm:ss"
-    private const val ddmmmmyyyy_hhmm = "dd MMMM yyyy - HH:mm"
+    private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
+    private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
 
     private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
     fun formatDate(
         raw: String,
-        inputPattern: String = yyyymmddThhmmss,
-        outputPattern: String = ddmmmmyyyy_hhmm
+        inputPattern: String = yyyyMMddTHHmmss,
+        outputPattern: String = ddMMMMyyyy_HHmm
     ): String {
         return try {
             val inputFormat = SimpleDateFormat(inputPattern, locale)
