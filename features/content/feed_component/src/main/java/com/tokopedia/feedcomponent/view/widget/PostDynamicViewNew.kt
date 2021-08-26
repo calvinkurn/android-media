@@ -1,7 +1,10 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -67,7 +70,8 @@ private const val LAST_FEED_POSITION = 5
 private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
-private const val TIMER_TO_BE_SHOWN = 3000L
+private const val TIME_THREE_SEC = 3000L
+private const val TIME_FOUR_SEC = 4000L
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
@@ -76,6 +80,7 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
+private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
@@ -115,7 +120,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var positionInFeed: Int = 0
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
-    var startTime = System.currentTimeMillis()
+    private var handlerAnim: Handler? = null
+    private var handlerHide: Handler? = null
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
@@ -241,7 +247,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val count = followers.count
         val isVideo = mediaType != TYPE_IMAGE
 
-        if (count >= 100) {
+        if (count >= FOLLOW_COUNT_THRESHOLD) {
             followCount.text =
                 String.format(
                     context.getString(R.string.feed_header_follow_count_text),
@@ -647,6 +653,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun bindItems(
         feedXCard: FeedXCard,
     ) {
@@ -679,13 +686,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 media.forEach { feedMedia ->
 
                     if (feedMedia.type == TYPE_IMAGE) {
-                        val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
-                        val param = LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                        imageItem.layoutParams = param
-                        imageItem.run {
+                        val imageItem = getImageView()
+                        feedMedia.isImageImpressedFirst = true
+                        feedMedia.imageView = imageItem
+                        imageItem?.run {
                             findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
                                 products.isNotEmpty()
@@ -698,21 +702,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
-                            productTagText.gone()
                             imagePostListener.userImagePostImpression(
                                 positionInFeed,
                                 pageControl.indicatorCurrentPosition
                             )
-                            productTagText.postDelayed({
-                                if (products.isNotEmpty()) {
-                                    productTagText.apply {
-                                        visible()
-                                        animate().alpha(1f).start()
-                                    }
-                                }
-
-                            }, TIME_SECOND)
-
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
@@ -813,19 +806,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 true
                             }
                         }
-                        addItem(imageItem)
+                        if (imageItem != null) {
+                            addItem(imageItem)
+                        }
 
                     } else {
-                        addItem(
-                            setVideoCarouselView(
-                                feedMedia,
-                                feedXCard.id,
-                                products,
-                                feedXCard.author.id,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed
+                        setVideoCarouselView(
+                            feedMedia,
+                            feedXCard.id,
+                            products,
+                            feedXCard.author.id,
+                            feedXCard.typename,
+                            feedXCard.followers.isFollowed
+                        )?.let {
+                            addItem(
+                                it
                             )
-                        )
+                        }
                     }
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -840,9 +837,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             feedXCard.author.id,
                             positionInFeed
                         )
-                        if (media[current].type == TYPE_IMAGE)
+                        if (media[current].type == TYPE_IMAGE) {
                             videoPlayer?.pause()
-                        else {
+                            bindImage(feedXCard.tags, feedXCard.media[current])
+                        } else {
                             detach(true)
                             media[current].canPlay = true
                             playVideo(feedXCard, current)
@@ -863,14 +861,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         id: String,
         type: String,
         isFollowed: Boolean
-    ): View {
-        val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
-        val param = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+    ): View? {
+        val videoItem = getVideoItem()
         feedMedia.canPlay = false
-        videoItem?.layoutParams = param
         feedMedia.videoView = videoItem
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
@@ -897,7 +890,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 toggleVolume(videoPlayer?.isMute() != true)
             }
         }
-        return (videoItem)
+        return videoItem
     }
 
     private fun setVideoControl(
@@ -910,8 +903,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
-
-            video_tag_text.postDelayed({
+            if (handlerAnim == null)
+                handlerAnim = Handler(Looper.getMainLooper())
+            handlerAnim?.postDelayed({
                 video_tag_text.visible()
                 video_tag_text.animate().alpha(1F).start()
             }, TIME_SECOND)
@@ -947,7 +941,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         hideVideoLoading()
                         timer_view.visible()
                         var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
-                        object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
+                        object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
                                 timer_view.text =
@@ -970,6 +964,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             feedXCard,
                             (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
                         )
+
                     }
                 })
             }
@@ -1151,11 +1146,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun detach(
         fromSlide: Boolean = false, model: DynamicPostUiModel? = null
     ) {
+        if (handlerAnim != null) {
+            handlerAnim?.removeCallbacks(null)
+            handlerAnim = null
+        }
+        if (handlerHide != null) {
+            handlerHide?.removeCallbacks(null)
+            handlerHide = null
+        }
         if (!fromSlide) {
             carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
+            videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null
@@ -1192,5 +1197,53 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.resume()
         else
             videoPlayer?.pause()
+    }
+
+    fun bindImage(products: List<FeedXProduct>, media: FeedXMedia) {
+        val imageItem = media.imageView
+        imageItem?.run {
+            findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
+            val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
+            productTagText.gone()
+            if (handlerAnim == null)
+                handlerAnim = Handler(Looper.getMainLooper())
+            if (!productTagText.isVisible && products.isNotEmpty()) {
+                handlerAnim?.postDelayed({
+                    productTagText.apply {
+                        visible()
+                        animate().alpha(1f).start()
+                    }
+
+                }, TIME_SECOND)
+            }
+            if (handlerHide == null)
+                handlerHide = Handler(Looper.getMainLooper())
+            handlerHide?.postDelayed({
+                productTagText.apply {
+                    gone()
+                    animate().alpha(0f).start()
+                }
+            }, TIME_FOUR_SEC)
+        }
+    }
+
+    private fun getImageView(): View? {
+        val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
+        val param = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        imageItem.layoutParams = param
+        return imageItem
+    }
+
+    private fun getVideoItem(): View? {
+        val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
+        val param = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        videoItem?.layoutParams = param
+        return videoItem
     }
 }

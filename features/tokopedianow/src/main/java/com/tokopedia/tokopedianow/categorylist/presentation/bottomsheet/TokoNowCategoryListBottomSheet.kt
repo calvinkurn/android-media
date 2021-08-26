@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.accordion.AccordionDataUnify
@@ -140,6 +141,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
                 iconUrl = category.imageUrl,
                 expandableView = createCategoryList(category)
             )
+            context?.let {
+                accordionDataUnify.expandableView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            }
             addCategoryGroup(accordionDataUnify, categoryList)
         }
         hideLoader()
@@ -158,6 +162,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
             } else {
                 analytics.onCollapseLevelOneCategory(categoryList[position].id)
             }
+        }
+        context?.let {
+            accordionCategoryList?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 

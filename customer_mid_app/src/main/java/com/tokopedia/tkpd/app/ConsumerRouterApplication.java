@@ -44,7 +44,6 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
@@ -288,7 +287,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
