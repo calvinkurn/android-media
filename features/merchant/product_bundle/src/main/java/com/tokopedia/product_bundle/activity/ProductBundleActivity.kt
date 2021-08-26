@@ -39,16 +39,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
         private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
         private const val SOURCE = "source"
         private const val CART_IDS = "cartIds"
-        const val EXTRA_PRODUCT_ID: String = "product_id"
-
-        // TODO("remove if unused")
-        fun createInstance(context: Context?, product_id: String? = null): Intent {
-            val intent = Intent(context, ProductBundleActivity::class.java)
-            product_id?.let {
-                intent.putExtra(EXTRA_PRODUCT_ID, product_id)
-            }
-            return intent
-        }
     }
 
     @Inject
