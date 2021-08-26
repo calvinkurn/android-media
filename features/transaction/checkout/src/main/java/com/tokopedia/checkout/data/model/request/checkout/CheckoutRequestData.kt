@@ -159,6 +159,7 @@ object CheckoutRequestGqlDataMapper {
             tokopediaCornerData = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
+
         }
     }
 

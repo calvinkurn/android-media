@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 abstract class BaseTokoNowActivity : BaseActivity() {
 
@@ -34,7 +35,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         fragmentContainer.fitsSystemWindows = false
         fragmentContainer.requestApplyInsets()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isDarkMode()) {
             var flags: Int = fragmentContainer.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             fragmentContainer.systemUiVisibility = flags

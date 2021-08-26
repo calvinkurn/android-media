@@ -21,16 +21,20 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
@@ -99,7 +103,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
-                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG){
+                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+                                             addFragmentLifecycleObserver: Boolean = false){
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
@@ -107,8 +112,24 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 if (screenshotDetector == null) {
                     screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener)
                 }
+                if(addFragmentLifecycleObserver){
+                    setFragmentLifecycleObserverForScreenShot(fragment)
+                }
                 screenshotDetector?.detectScreenshots(fragment)
             }
+        }
+
+        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment){
+            fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    getScreenShotDetector()?.start()
+                }
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    clearScreenShotDetector()
+                }
+            })
         }
 
         //Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
@@ -194,11 +215,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         this.bottomSheetListener = bottomSheetListener
     }
 
-    fun show(fragmentManager: FragmentManager?) {
-        fragmentManager?.let {
-            show(it, TAG)
-        }
-        screenshotDetector?.stop()
+    fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
+        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
+            ?: fragmentManager?.let { show(it, TAG) }
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -560,6 +579,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
+        screenshotDetector?.stop()
         var customBottomSheetEnabled = true
         if(!TextUtils.isEmpty(featureFlagRemoteConfigKey)){
             val remoteConfig = FirebaseRemoteConfigImpl(context)

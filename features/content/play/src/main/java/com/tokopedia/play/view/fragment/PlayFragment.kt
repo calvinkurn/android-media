@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -25,12 +26,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
@@ -44,15 +44,14 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -230,12 +229,14 @@ class PlayFragment @Inject constructor(
 
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
-        if (playViewModel.videoPlayer.isYouTube) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
-        } else {
-            fragmentVideoView.safeInit()
-            fragmentVideoView.show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (playViewModel.videoPlayer.isYouTube) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            } else {
+                fragmentVideoView.safeInit()
+                fragmentVideoView.show()
+            }
         }
     }
 
@@ -360,7 +361,6 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeSocketInfo()
         observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
@@ -375,18 +375,6 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-
-    private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
-            when(it) {
-                is PlaySocketInfo.Reconnect ->
-                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
-                is PlaySocketInfo.Error ->
-                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
-            }
-        })
-    }
-
     private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
@@ -600,15 +588,17 @@ class PlayFragment @Inject constructor(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (isFreezeOrBanned) {
-            fragmentYouTubeView.safeRelease()
-            fragmentYouTubeView.hide()
-            return
-        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (isFreezeOrBanned) {
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                return@launchWhenResumed
+            }
 
-        if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            }
         }
     }
     //endregion

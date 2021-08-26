@@ -442,16 +442,17 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun getGroupData() : HashMap<String, Any?> {
         var dataMap = HashMap<String, Any?>()
 
-        bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
-        bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
         dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
-        dataMap[BID_TYPE] =  bidTypeData
         dataMap[GROUPID] = ""
         dataMap[NAME_EDIT] = true
         dataMap[ParamObject.ACTION_TYPE] = ACTION_CREATE
         if (stepperModel?.autoBidState?.isNotEmpty() == true) {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
+        } else {
+            bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+            dataMap[BID_TYPE] =  bidTypeData
         }
 
         dataMap[STRATEGIES] = strategies

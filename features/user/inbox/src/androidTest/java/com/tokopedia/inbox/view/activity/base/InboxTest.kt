@@ -93,6 +93,8 @@ abstract class InboxTest {
     ) {
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        } else {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         }
         val uri = buildIntent().build()
         val intent = Intent().apply {
