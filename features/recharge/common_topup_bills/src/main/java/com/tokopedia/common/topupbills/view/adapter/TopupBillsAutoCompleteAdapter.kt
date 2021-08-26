@@ -85,16 +85,16 @@ class TopupBillsAutoCompleteAdapter(
         holder.run {
             val contact = getItem(pos) as TopupBillsAutoCompleteContactDataView
             if (contact.name.isNotEmpty()) {
-                tvClientName.text = getSpandableBoldText(contact.name, listener.getFilterText())
-                tvClientNumber.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
-                tvClientNumber.show()
-                tvClientName.gravity = Gravity.BOTTOM
+                setToTwoLineView(
+                    getSpandableBoldText(contact.name, listener.getFilterText()),
+                    getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
+                )
             } else {
-                tvClientName.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
-                tvClientNumber.hide()
-                tvClientName.gravity = Gravity.CENTER_VERTICAL
+                setToOneLineView(
+                    getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
+                )
             }
-            container.requestLayout()
+            requestLayout()
         }
 
         return tempView!!
@@ -200,10 +200,27 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     inner class AutoCompleteItemViewHolder(
-        var container: ConstraintLayout,
-        var tvClientName: TextView,
-        var tvClientNumber: TextView
-    )
+        private var container: ConstraintLayout,
+        private var firstLine: TextView,
+        private var secondLine: TextView
+    ) {
+        fun setToOneLineView(txt1: CharSequence) {
+            firstLine.text = txt1
+            secondLine.hide()
+            firstLine.gravity = Gravity.CENTER_VERTICAL
+        }
+
+        fun setToTwoLineView(txt1: CharSequence, txt2: CharSequence) {
+            firstLine.text = txt1
+            secondLine.text = txt2
+            secondLine.show()
+            firstLine.gravity = Gravity.BOTTOM
+        }
+
+        fun requestLayout() {
+            container.requestLayout()
+        }
+    }
 
     interface ContactArrayListener {
         fun getFilterText(): String
