@@ -149,7 +149,7 @@
     <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_see_all_comments">Lihat semua %s komentar</string>
     <string name="feed_component_add_comment">Comment as %s…</string>
-    <string name="feed_component_read_more_button">Selengkapnya</string>
+    <string name="feed_component_read_more_button">selengkapnya</string>
 
     <!-- REPORT BOTTOMSHEET -->
     <string name="feed_common_reason_type_spam" translatable="false">spam</string>

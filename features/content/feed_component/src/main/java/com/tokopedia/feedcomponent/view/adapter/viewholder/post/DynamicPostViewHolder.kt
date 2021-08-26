@@ -96,6 +96,7 @@ open class DynamicPostViewHolder(v: View,
 
         const val POSTTAG_PRODUCT = "product"
         const val POSTTAG_BUTTONCTA = "buttoncta"
+        const val ANIMATION_DURATION = 2000L
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -267,7 +268,7 @@ open class DynamicPostViewHolder(v: View,
         Handler().postDelayed({
             itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
-        }, 2000)
+        }, ANIMATION_DURATION)
     }
 
 

@@ -1834,12 +1834,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun isAutomaticOpenShareUser(): Boolean {
+        val USER_ID_DEV = 32044530
+        val USER_ID_QA_1 = 6215930
+        val USER_ID_QA_2 = 17211048
+        val USER_ID_REM_1 = 17
+        val USER_ID_REM_2 = 23
+        val VALUE_50 = 50
         val userId = userSession.userId.toIntOrNull() ?: 0
-        return (userId % 50 == 17
-                || userId % 50 == 23
-                || userId == 32044530 //dev's userId
-                || userId == 6215930 //QA's userId
-                || userId == 17211048 //QA's userId
+        return (userId % VALUE_50 == USER_ID_REM_1
+                || userId % VALUE_50 == USER_ID_REM_2
+                || userId == USER_ID_DEV //dev's userId
+                || userId == USER_ID_QA_1 //QA's userId
+                || userId == USER_ID_QA_2 //QA's userId
                 || remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_ALL, false))
                 && remoteConfig.getBoolean(RemoteConfigKey.AFFILIATE_PROFILE_SHARE_RULES, true)
     }
