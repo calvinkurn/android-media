@@ -710,16 +710,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
         context?.let {
-            val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val rates = viewModel.getVariantAggregatorData()?.getRatesEstimateByProductId(productId)
-            val bottomSheetData = viewModel.getVariantAggregatorData()?.getRatesBottomSheetData(productId)
-
-            if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
+            val data = viewModel.ratesLiveData.value as? Success ?: return false
 
             ProductDetailCommonBottomSheetBuilder.getShippingErrorBottomSheet(
                     it,
-                    bottomSheetData,
-                    rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,
+                    data.data.errorBottomSheet,
+                    data.data.p2RatesData.p2RatesError.firstOrNull()?.errorCode ?: 0,
                     onButtonClicked = { errorCode ->
                         goToChooseAddress(errorCode)
                     },
@@ -844,7 +840,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         context?.let {
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId) ?: ""
+            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
+                    ?: ""
 
             val bottomSheet = if (isTokoNow) {
                 ProductDetailCommonBottomSheetBuilder.getUspTokoNowBottomSheet(it)
@@ -856,6 +853,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 }
 
-interface AtcVariantBottomSheetListener{
-    fun onTokoCabangClicked(uspImageUrl:String)
+interface AtcVariantBottomSheetListener {
+    fun onTokoCabangClicked(uspImageUrl: String)
 }

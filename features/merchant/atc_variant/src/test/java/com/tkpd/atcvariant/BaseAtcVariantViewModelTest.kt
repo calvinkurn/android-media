@@ -101,6 +101,21 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
+    fun assertRatesData(assertSuccess: Boolean,
+                        containProductId: String = "",
+                        expectedSubtitle: String = "",
+                        expectedTitle: String = "") {
+        if (assertSuccess) {
+            val data = (viewModel.ratesLiveData.value as Success).data
+
+            Assert.assertEquals(data.listfProductId.contains(containProductId), true)
+            Assert.assertEquals(data.errorBottomSheet.title, expectedTitle)
+            Assert.assertEquals(data.errorBottomSheet.subtitle, expectedSubtitle)
+        } else {
+            Assert.assertTrue(viewModel.ratesLiveData.value is Fail)
+        }
+    }
+
     fun decideFailValueHitGqlAggregator() {
         coEvery {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)

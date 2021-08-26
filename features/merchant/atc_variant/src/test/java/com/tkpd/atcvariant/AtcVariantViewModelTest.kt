@@ -107,6 +107,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1
         )
         assertButton(expectedCartText = "Simpan Perubahan")
+        assertRestrictionData(assertSuccess = false)
     }
     //endregion
 
@@ -195,6 +196,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1
         )
         assertButton(expectedCartText = "Simpan Perubahan")
+        assertRestrictionData(assertSuccess = false)
     }
 
     /**
@@ -256,6 +258,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedCartType = "remind_me",
                 expectedCartColor = "secondary_green",
                 expectedCartText = "Ingatkan Saya")
+
+        assertRestrictionData(assertSuccess = false)
     }
 
     //endregion
@@ -304,6 +308,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedProductId = "2147818586",
                 expectedDescription = "desc re gan",
                 expectedTitle = "title re gan gold")
+
+        assertRatesData(
+                assertSuccess = true,
+                containProductId = "2147818586",
+                expectedTitle = "Jarak pengiriman terlalu jauh",
+                expectedSubtitle = "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu."
+        )
     }
 
     /**
@@ -339,6 +350,19 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedCartType = "empty",
                 expectedCartColor = "disabled",
                 expectedCartText = "Stok Habis")
+        assertRestrictionData(assertSuccess = false)
+    }
+
+    @Test
+    fun `bottom sheet rates not null but not error after click variant`() {
+        `render initial variant with given child id not buyable and hit gql tokonow`()
+
+        val warnaId = "121018"
+        val unguId = "254083"
+
+        viewModel.onVariantClicked(true, warnaId, unguId, "image variant", 1)
+
+        assertRestrictionData(assertSuccess = false)
     }
     //endregion
 

@@ -32,7 +32,9 @@ import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -101,6 +103,10 @@ class AtcVariantViewModel @Inject constructor(
     val toggleFavoriteShop: LiveData<Result<Boolean>>
         get() = _toggleFavoriteShop
 
+    private val _ratesLiveData = MutableLiveData<Result<P2RatesEstimate>>()
+    val ratesLiveData: LiveData<Result<P2RatesEstimate>>
+        get() = _ratesLiveData
+
     private var isShopOwner: Boolean = false
 
     fun getActivityResultData(): ProductVariantResult = variantActivityResult
@@ -150,17 +156,14 @@ class AtcVariantViewModel @Inject constructor(
 
             _initialData.postValue(list.asSuccess())
 
-
-
             if (!isPartiallySelected) {
                 // if user only select 1 of 2 variant, no need to update the button
                 // this validation only be execute when user clicked variant and fully clicked 2 of 2 variant or 1 of 1
                 _buttonData.postValue(cartData.asSuccess())
 
                 //generate restriction data (shop followers or exclusive campaign)
-                val restrictionData = aggregatorData?.reData?.getReByProductId(productId = selectedVariantChild?.productId
-                        ?: "")
-                assignReData(restrictionData)
+                assignReData(aggregatorData?.reData, selectedVariantChild?.productId ?: "")
+                assignRatesData(selectedVariantChild?.productId ?: "")
 
                 updateActivityResult(
                         selectedProductId = selectedVariantChild?.productId ?: "",
@@ -250,10 +253,6 @@ class AtcVariantViewModel @Inject constructor(
                     shouldShowDeleteButton = shouldShowDeleteButton,
                     uspImageUrl = aggregatorData?.uspImageUrl ?: "")
 
-            //generate restriction data (shop followers or exclusive campaign)
-            val restrictionData = aggregatorData?.reData?.getReByProductId(productId = selectedChild?.productId
-                    ?: "")
-
             if (visitables != null) {
                 _initialData.postValue(visitables.asSuccess())
                 updateActivityResult(
@@ -263,7 +262,8 @@ class AtcVariantViewModel @Inject constructor(
                 _initialData.postValue(Throwable().asFail())
             }
 
-            assignReData(restrictionData)
+            assignReData(aggregatorData?.reData, selectedChild?.productId ?: "")
+            assignRatesData(selectedChild?.productId ?: "")
             _buttonData.postValue(cartData.asSuccess())
         }) {
             _buttonData.postValue(it.asFail())
@@ -285,8 +285,19 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun assignRatesData(productId: String) {
+        val data = getVariantAggregatorData() ?: return
+        val rates = data.getP2RatesEstimateByProductId(productId)
+        val shouldHide = data.shouldHideRatesBottomSheet(rates)
+        if (rates == null || shouldHide) {
+            _ratesLiveData.postValue(Throwable().asFail())
+        } else {
+            _ratesLiveData.postValue(rates.asSuccess())
+        }
+    }
 
-    private fun assignReData(restrictionData: RestrictionData?) {
+    private fun assignReData(reResponse: RestrictionInfoResponse?, productId: String) {
+        val restrictionData = reResponse?.getReByProductId(productId = productId)
         if (restrictionData == null) {
             _restrictionData.postValue(Throwable().asFail())
         } else {

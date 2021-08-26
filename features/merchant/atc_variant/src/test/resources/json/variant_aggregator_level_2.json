@@ -6,6 +6,60 @@
         "Message": ""
       }
     },
+    "ratesEstimate": [
+      {
+        "bottomsheet": {
+          "buttonCopy": "Ganti Alamat, yuk",
+          "iconURL": "https://ecs7.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
+          "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu.",
+          "title": "Jarak pengiriman terlalu jauh"
+        },
+        "data": {
+          "cheapestShippingPrice": 0,
+          "courierLabel": "",
+          "destination": "",
+          "eTAText": "",
+          "errors": [
+            {
+              "Code": 50504,
+              "DevMessage": "pdp: Out of coverage",
+              "Message": "pdp: Out of coverage"
+            }
+          ],
+          "icon": "",
+          "subtitle": "tidak ada kurir bro",
+          "title": "out of coverage bro",
+          "totalService": 0
+        },
+        "products": [
+          "2147818586"
+        ],
+        "warehouseID": "0"
+      },
+      {
+        "bottomsheet": {
+          "buttonCopy": "Ganti Alamat, yuk",
+          "iconURL": "https://ecs7.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
+          "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu.",
+          "title": "Jarak pengiriman terlalu jauh"
+        },
+        "data": {
+          "cheapestShippingPrice": 0,
+          "courierLabel": "",
+          "destination": "",
+          "eTAText": "",
+          "errors": [],
+          "icon": "",
+          "subtitle": "tidak ada kurir bro",
+          "title": "out of coverage bro",
+          "totalService": 0
+        },
+        "products": [
+          "2147818592"
+        ],
+        "warehouseID": "0"
+      }
+    ],
     "restrictionInfo": {
       "message": " Exclusive Discount: ok;",
       "restrictionData": [
