@@ -216,4 +216,7 @@ yang ditemukan</string>
     <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
     <string name="title_topchat_resend">Kirim ulang</string>
     <string name="title_topchat_delete">Hapus</string>
+
+    <string name="desc_topchat_broadcast_campaign_started">Dimulai pada</string>
+    <string name="desc_topchat_broadcast_campaign_ongoing">Dimulai pada</string>
 </resources>

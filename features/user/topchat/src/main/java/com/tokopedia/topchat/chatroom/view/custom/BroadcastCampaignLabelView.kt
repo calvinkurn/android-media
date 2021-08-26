@@ -73,11 +73,14 @@ class BroadcastCampaignLabelView : LinearLayout {
         countdown?.onFinish = null
     }
 
-    // TODO: Adjust wording
     private fun bindDescText(banner: ImageAnnouncementViewModel) {
         val description = when (banner.statusCampaign) {
-            CampaignStatus.STARTED -> "Dimulai pada"
-            CampaignStatus.ON_GOING -> "Berakhir dalam"
+            CampaignStatus.STARTED -> context.getString(
+                R.string.desc_topchat_broadcast_campaign_started
+            )
+            CampaignStatus.ON_GOING -> context.getString(
+                R.string.desc_topchat_broadcast_campaign_ongoing
+            )
             CampaignStatus.ENDED -> banner.finishedDescription
             else -> null
         } ?: return

@@ -592,6 +592,66 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertBroadcastCampaignLabelAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(
+                    position, R.id.broadcast_campaign_label
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelDescAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(
+                    position, R.id.tp_broadcast_campaign_status
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelCountdownAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(
+                    position, R.id.tu_bc_countdown
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateIconAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateTextAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
