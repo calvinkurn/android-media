@@ -1015,7 +1015,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNoSelectedCourierNormalShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter) {
         if (shipmentCartItemModel.isDisableChangeCourier()) {
-            if (shipmentCartItemModel.hasGeolocation()) {
+            if (shipmentCartItemModel.getHasGeolocation()) {
                 renderFailShipmentState(shipmentCartItemModel, currentAddress, ratesDataConverter);
             }
         } else {

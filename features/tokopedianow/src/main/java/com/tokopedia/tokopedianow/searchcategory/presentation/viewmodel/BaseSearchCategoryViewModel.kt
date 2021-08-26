@@ -19,6 +19,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_SOURCE_SEARCH
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
@@ -53,7 +54,20 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.RELATEDKEYWORD
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -77,8 +91,13 @@ import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -115,9 +134,11 @@ abstract class BaseSearchCategoryViewModel(
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
-    private var allMiniCartItemList: List<MiniCartItem>? = null
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    protected var allMiniCartItemList: List<MiniCartItem>? = null
+    protected var cartItemsNonVariant: List<MiniCartItem>? = null
+        private set
+    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+        private set
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -196,6 +217,9 @@ abstract class BaseSearchCategoryViewModel(
             SingleLiveEvent<Triple<Int, String, RecommendationItem>>()
     val addToCartRecommendationItemTrackingLiveData: LiveData<Triple<Int, String, RecommendationItem>> =
             addToCartRecommendationTrackingMutableLiveData
+
+    protected val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
+    val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
     init {
         updateQueryParams()
@@ -348,6 +372,7 @@ abstract class BaseSearchCategoryViewModel(
     protected fun onGetFirstPageSuccess(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
+            searchProduct: SearchProduct,
     ) {
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
@@ -359,6 +384,7 @@ abstract class BaseSearchCategoryViewModel(
         initFilterController(headerDataView)
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
         processEmptyState(isEmptyProductList)
+        sendGeneralSearchTracking(searchProduct)
         updateViewForFirstPage(isEmptyProductList)
     }
 
@@ -550,14 +576,7 @@ abstract class BaseSearchCategoryViewModel(
                 ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
-                labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
-                    LabelGroupDataView(
-                            url = labelGroup.url,
-                            title = labelGroup.title,
-                            position = labelGroup.position,
-                            type = labelGroup.type,
-                    )
-                },
+                labelGroupDataViewList = product.labelGroupList.map(::mapToLabelGroupDataView),
                 labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
                     LabelGroupVariantDataView(
                             title = labelGroupVariant.title,
@@ -588,6 +607,14 @@ abstract class BaseSearchCategoryViewModel(
                 )
             else null
 
+    protected open fun mapToLabelGroupDataView(labelGroup: ProductLabelGroup) =
+        LabelGroupDataView(
+            url = labelGroup.url,
+            title = labelGroup.title,
+            position = labelGroup.position,
+            type = labelGroup.type,
+        )
+
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())
             addAll(createFooterVisitableList())
@@ -602,6 +629,42 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun processEmptyState(isEmptyProductList: Boolean) {
 
     }
+
+    protected open fun sendGeneralSearchTracking(searchProduct: SearchProduct) {
+        val searchProductHeader = searchProduct.header
+        val eventLabel = getKeywordForGeneralSearchTracking() +
+            "|${searchProductHeader.keywordProcess}" +
+            "|${searchProductHeader.responseCode}" +
+            "|$BUSINESS_UNIT_PHYSICAL_GOODS" +
+            "|$TOKONOW" +
+            "|$TOKOPEDIA_NOW" +
+            "|${searchProductHeader.totalData}"
+        val previousKeyword = getPreviousKeywordForGeneralSearchTracking()
+        val pageSource = getPageSourceForGeneralSearchTracking()
+
+        val generalSearchDataLayer = mapOf(
+            EVENT to EVENT_CLICK_TOKONOW,
+            EVENT_ACTION to GENERAL_SEARCH,
+            EVENT_CATEGORY to TOP_NAV,
+            EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+            KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            RELATEDKEYWORD to "$previousKeyword - ${searchProduct.getAlternativeKeyword()}",
+            PAGESOURCE to pageSource,
+        )
+
+        generalSearchEventMutableLiveData.value = generalSearchDataLayer
+    }
+
+    protected open fun getKeywordForGeneralSearchTracking() = ""
+
+    private fun getPreviousKeywordForGeneralSearchTracking(): String {
+        val previousKeyword = queryParam[PREVIOUS_KEYWORD] ?: ""
+
+        return if (previousKeyword.isBlank()) NONE else previousKeyword
+    }
+
+    protected abstract fun getPageSourceForGeneralSearchTracking(): String
 
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
         clearVisitableListLiveData()
@@ -757,8 +820,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewGetProductCount(option: Option) {
-        val mapParameter = queryParam + mapOf(option.key to option.value)
+        val queryParamWithoutOption = queryParam.toMutableMap().apply { removeOption(option) }
+        val mapParameter = queryParamWithoutOption + mapOf(option.key to option.value)
         onViewGetProductCount(mapParameter)
+    }
+
+    private fun MutableMap<String, String>.removeOption(option: Option) {
+        remove(option.key)
+        remove(OptionHelper.getKeyRemoveExclude(option))
     }
 
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
@@ -768,8 +837,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
-        queryParamMutable.remove(chosenCategoryFilter.key)
-        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(chosenCategoryFilter))
+        queryParamMutable.removeOption(chosenCategoryFilter)
 
         filterController.refreshMapParameter(queryParam)
     }
@@ -824,8 +892,7 @@ abstract class BaseSearchCategoryViewModel(
             val updatedProductIndices = mutableListOf<Int>()
 
             visitableList.forEachIndexed { index, visitable ->
-                if (visitable is ProductItemDataView)
-                    updateProductItemQuantity(index, visitable, updatedProductIndices)
+                updateQuantityInVisitable(visitable, index, updatedProductIndices)
             }
 
             updateRecommendationListQuantity(recommendationList)
@@ -849,6 +916,15 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
             miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
+
+    protected open fun updateQuantityInVisitable(
+        visitable: Visitable<*>,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        if (visitable is ProductItemDataView)
+            updateProductItemQuantity(index, visitable, updatedProductIndices)
+    }
 
     private fun updateProductItemQuantity(
             index: Int,
@@ -877,12 +953,12 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
-    private fun getProductNonVariantQuantity(productId: String): Int {
+    protected fun getProductNonVariantQuantity(productId: String): Int {
         val cartItem = cartItemsNonVariant?.find { it.productId == productId }
         return cartItem?.quantity ?: 0
     }
 
-    private fun getProductVariantTotalQuantity(parentProductId: String): Int {
+    protected fun getProductVariantTotalQuantity(parentProductId: String): Int {
         val cartItemsVariantGrouped = cartItemsVariantGrouped
         val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
         val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
@@ -944,7 +1020,7 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun addToCart(
+    protected fun addToCart(
             productId: String,
             shopId: String,
             quantity: Int,
@@ -964,7 +1040,7 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    private fun updateCartMessageSuccess(successMessage: String) {
+    protected fun updateCartMessageSuccess(successMessage: String) {
         successATCMessageMutableLiveData.value = successMessage
     }
 
@@ -980,7 +1056,7 @@ abstract class BaseSearchCategoryViewModel(
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun onAddToCartFailed(throwable: Throwable) {
+    protected fun onAddToCartFailed(throwable: Throwable) {
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
@@ -998,13 +1074,13 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun updateCart(
+    protected fun updateCart(
             productId: String,
             quantity: Int,
             onSuccess: (UpdateCartV2Data) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
                 cartId = miniCartItem.cartId,
@@ -1039,12 +1115,12 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun deleteCart(
+    protected fun deleteCart(
             productId: String,
             onSuccess: (RemoveFromCartData) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
+        val miniCartItem = allMiniCartItemList?.find { it.productId == productId } ?: return
 
         deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
         deleteCartUseCase.execute(onSuccess, onError)

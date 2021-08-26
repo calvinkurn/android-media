@@ -3,7 +3,6 @@ package com.tokopedia.applink.digital
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
@@ -25,7 +24,6 @@ object DeeplinkMapperDigital {
     const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
-    const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
@@ -46,12 +44,12 @@ object DeeplinkMapperDigital {
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
                 if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
-                else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) getDigitalCheckoutNavigation(context, deeplink)
+                else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
-                getDigitalCheckoutNavigation(context, deeplink)
+                ApplinkConsInternalDigital.CHECKOUT_DIGITAL
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
                 getDigitalSmartcardNavigation(deeplink)
@@ -73,13 +71,6 @@ object DeeplinkMapperDigital {
             }
             else -> deeplink
         }
-    }
-
-    private fun getDigitalCheckoutNavigation(context: Context, deeplink: String): String {
-        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-        val getDigitalCart = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT, true)
-        return if (getDigitalCart) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
-                else ApplinkConsInternalDigital.CART_DIGITAL
     }
 
     private fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {

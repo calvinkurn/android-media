@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -63,6 +64,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -538,6 +540,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
         } else {
             productPriceEditIcon?.hide()
+        }
+
+        // Set max length to 9 digits price
+        productPriceField?.let {
+            it.textFieldInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PRICE))
         }
 
         productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {

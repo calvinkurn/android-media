@@ -163,7 +163,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             isGlobalErrorShow = false,
                             mandiriGetSocketTimeout = true
                     )
-                } else if((throwable is UnknownHostException) || errorMessage.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                } else if((throwable is UnknownHostException) || errMsg.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title)+ " "+ errorMessage.second,
                             "",
