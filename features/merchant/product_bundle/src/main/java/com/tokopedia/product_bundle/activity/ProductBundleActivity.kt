@@ -79,6 +79,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
             source = if (data?.getQueryParameter(SOURCE) == null) "" else it.getQueryParameter(SOURCE)!!
             cartIds = if (data?.getQueryParameter(CART_IDS) == null) "" else it.getQueryParameter(CART_IDS)!!
         }
+        viewModel.getBundleInfo(productId.toLongOrZero())
+
         setupToolbarActions()
 
         observePageState()
