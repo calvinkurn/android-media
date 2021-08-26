@@ -19,6 +19,16 @@
                 }
               },
               {
+                  "type": "",
+                  "id": 12,
+                  "attributes": {
+                  "name": "PLN",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+                  "description": ""
+                }
+               },
+              {
                 "type": "",
                 "id": 18,
                 "attributes": {

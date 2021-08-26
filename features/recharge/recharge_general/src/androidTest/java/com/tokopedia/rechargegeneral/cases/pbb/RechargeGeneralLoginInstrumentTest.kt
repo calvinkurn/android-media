@@ -92,8 +92,8 @@ class RechargeGeneralLoginInstrumentTest {
         stubSearchNumber()
 
         Thread.sleep(3000)
-        validate_favorite_number()
         validate_recent_transaction()
+        validate_favorite_number()
         validate_promo()
 
         MatcherAssert.assertThat(
