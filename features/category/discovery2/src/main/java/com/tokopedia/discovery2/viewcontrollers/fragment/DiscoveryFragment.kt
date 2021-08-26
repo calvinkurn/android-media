@@ -607,7 +607,7 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
