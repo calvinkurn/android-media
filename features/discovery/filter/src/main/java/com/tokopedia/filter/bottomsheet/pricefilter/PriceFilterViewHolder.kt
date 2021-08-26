@@ -107,7 +107,8 @@ internal class PriceFilterViewHolder(
         textFiedlLabelText.text = title
 
         textFieldInput.run {
-            setText(value)
+            if (value != this.text.toString()) setText(value)
+
             setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) priceFilterViewListener.onPriceTextOutOfFocus()
             }
