@@ -36,7 +36,7 @@ data class CheckoutRequestGqlData(
 ) {
     companion object {
         const val FEATURE_TYPE_REGULAR_PRODUCT = 3
-        const val FEATURE_TYPE_TOKONOW_PRODUCT = 11
+        const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
     }
 }
 
