@@ -342,7 +342,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     private fun onSuccessCustomData() {
         this.operatorData = (viewModel.catalogPrefixSelect.value as Success).data
-        renderProductFromCustomData(false)
+        renderProductFromCustomData()
     }
 
     private fun onErrorCustomData() {
@@ -571,7 +571,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun renderPromoAndRecommendation()
 
-    protected abstract fun renderProductFromCustomData(isDelayed: Boolean)
+    protected abstract fun renderProductFromCustomData()
 
     protected abstract fun setupCheckoutData()
 

@@ -403,7 +403,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         showOnBoarding()
     }
 
-    override fun renderProductFromCustomData(isDelayed: Boolean) {
+    override fun renderProductFromCustomData() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
                 showProducts = true
@@ -419,7 +419,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     sharedModelPrepaid.setVisibilityTotalPrice(false)
                     telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
                     renderProductViewPager()
-                    getProductListData(isDelayed)
+                    getProductListData()
                 }
             }
         } catch (exception: Exception) {
@@ -474,17 +474,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 dgCategoryIds, topupAnalytics.getCategoryName(categoryId))
         }
 
-        override fun onRenderOperator(isDelayed: Boolean) {
+        override fun onRenderOperator() {
             operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                 if (it) {
                     getPrefixOperatorData()
                 } else {
-                    renderProductFromCustomData(isDelayed)
+                    renderProductFromCustomData()
                 }
             }
         }
 
-        // TODO: [Misael] check ini
         override fun onClearAutoComplete() {
             topupAnalytics.eventClearInputNumber()
             showProducts = false
@@ -493,25 +492,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             productId = 0
             operatorId = ""
             sharedModelPrepaid.setVisibilityTotalPrice(false)
-        }
-
-        override fun onClientNumberHasFocus(clientNumber: String) {
-//            operatorId = ""
-//            productId = 0
-//            sharedModelPrepaid.setVisibilityTotalPrice(false)
-
-//            telcoClientNumberWidget.clearFocusAutoComplete()
-
-//            val dgCategoryIds = arrayListOf(
-//                TelcoCategoryType.CATEGORY_PULSA.toString(),
-//                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-//                TelcoCategoryType.CATEGORY_ROAMING.toString()
-//            )
-//
-//            navigateFavoriteNumberPage(
-//                clientNumber, favNumberList,
-//                dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
-//            )
         }
     }
 
@@ -524,7 +504,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setContactName(contactName)
     }
 
-    private fun getProductListData(isDelayed: Boolean = false) {
+    private fun getProductListData() {
         sharedModelPrepaid.setProductListShimmer(true)
         validatePhoneNumber(operatorData, telcoClientNumberWidget)
         if (operatorId.isNotEmpty()) {

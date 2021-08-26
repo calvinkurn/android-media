@@ -79,18 +79,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // TODO: [Docs] diganti gini supaya ketika delete manual icon clear n operator masih ada
                     if (count != 0) {
                         btnClear.visibility = View.VISIBLE
-                        autoCompleteAdapter.filter.filter(s)
+//                        autoCompleteAdapter.filter.filter(s)
                     }
-
-                    /** [Misael] Delete Soon
-                     * Ini buat bedain text yg dateng dari copas/manually typed.
-                     * kalau copas ngga perlu delay waktu render
-                     *  */
-                    val isManuallyTypedNumber = count <= 1
-                    listener.onRenderOperator(isManuallyTypedNumber)
+                    listener.onRenderOperator()
                 }
             })
 
@@ -100,18 +93,19 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
             }
 
-            setOnClickListener {
-                it?.run {
-                    listener.onClientNumberHasFocus(inputNumberField.textFieldInput.text.toString())
-                }
-            }
-
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
                     clearFocus()
                     hideSoftKeyboard()
                 }
                 true
+            }
+
+            setOnItemClickListener { _, _, position, _ ->
+                val item = autoCompleteAdapter.getItem(position)
+                if (item is TopupBillsAutoCompleteContactDataView) {
+                    setContactName(item.name)
+                }
             }
         }
 
@@ -255,9 +249,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     interface ActionListener {
         fun onNavigateToContact()
-        fun onRenderOperator(isDelayed: Boolean)
+        fun onRenderOperator()
         fun onClearAutoComplete()
-        fun onClientNumberHasFocus(clientNumber: String)
     }
 
     companion object {

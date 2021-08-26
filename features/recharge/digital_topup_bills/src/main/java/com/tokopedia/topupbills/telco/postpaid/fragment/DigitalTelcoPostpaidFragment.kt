@@ -294,12 +294,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId))
             }
 
-            override fun onRenderOperator(isDelayed: Boolean) {
+            override fun onRenderOperator() {
                 operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
                         getPrefixOperatorData()
                     } else {
-                        renderProductFromCustomData(isDelayed)
+                        renderProductFromCustomData()
                     }
                 }
             }
@@ -311,15 +311,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 buyWidget.setVisibilityLayout(false)
-            }
-
-            // TODO: [Misael] mgkn ini bisa didelete nanti
-            override fun onClientNumberHasFocus(clientNumber: String) {
-//                postpaidClientNumberWidget.clearFocusAutoComplete()
-//                navigateFavoriteNumberPage(
-//                    clientNumber, favNumberList,
-//                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId)
-//                )
             }
         })
 
@@ -412,7 +403,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun renderProductFromCustomData(isDelayed: Boolean) {
+    override fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
                 operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {

@@ -3,12 +3,14 @@ package com.tokopedia.common.topupbills.view.adapter
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteView
@@ -71,6 +73,7 @@ class TopupBillsAutoCompleteAdapter(
         if (tempView == null) {
             tempView = inflater.inflate(R.layout.item_topup_bills_autocomplete_number, null)
             holder = AutoCompleteItemViewHolder(
+                tempView.findViewById(R.id.common_topup_bills_autocomplete_contact_container),
                 tempView.findViewById(R.id.common_topup_bills_autocomplete_name),
                 tempView.findViewById(R.id.common_topup_bills_autocomplete_number)
             )
@@ -85,11 +88,15 @@ class TopupBillsAutoCompleteAdapter(
                 tvClientName.text = getSpandableBoldText(contact.name, listener.getFilterText())
                 tvClientNumber.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
                 tvClientNumber.show()
+                tvClientName.gravity = Gravity.BOTTOM
             } else {
                 tvClientName.text = getSpandableBoldText(contact.phoneNumber, listener.getFilterText())
                 tvClientNumber.hide()
+                tvClientName.gravity = Gravity.CENTER_VERTICAL
             }
+            container.requestLayout()
         }
+
         return tempView!!
     }
 
@@ -193,8 +200,9 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     inner class AutoCompleteItemViewHolder(
-        val tvClientName: TextView,
-        val tvClientNumber: TextView
+        var container: ConstraintLayout,
+        var tvClientName: TextView,
+        var tvClientNumber: TextView
     )
 
     interface ContactArrayListener {
