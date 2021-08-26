@@ -63,6 +63,7 @@ import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
+import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -432,7 +433,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     protected open fun addDummyToService(image: ImageUploadViewModel) {
         val dummyPosition = UploadImageChatService.findDummy(image)
-        if(dummyPosition == null) {
+        if (dummyPosition == null) {
             val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
             UploadImageChatService.dummyMap.add(uploadImageDummy)
         }
@@ -582,7 +583,7 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String
     ) {
         val startTime = SendableViewModel.generateStartTime()
-        val addressMasking = getAddressMasking()
+        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
         val ctaButton = attachment.ctaButton
         val productName = ctaButton.productName
         val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
@@ -592,21 +593,6 @@ open class TopChatRoomPresenter @Inject constructor(
             thisMessageId, question.content, startTime,
             opponentId, question.intent, products
         )
-    }
-
-    @Suppress("MagicNumber")
-    private fun getAddressMasking(): String {
-        val addressLabel = userLocationInfo.label.trim()
-        val addresses = addressLabel.split(" ").toMutableList()
-        for (i in addresses.indices) {
-            val word = addresses[i]
-            val wordCount = word.length
-            val removedPercentage = 0.3
-            val totalRemovedWord = ceil((wordCount * removedPercentage)).toInt()
-            val endIndex = wordCount - totalRemovedWord
-            addresses[i] = "${word.substring(0, endIndex)}${"*".repeat(totalRemovedWord)}"
-        }
-        return addresses.joinToString(" ")
     }
 
     /**
@@ -767,9 +753,9 @@ open class TopChatRoomPresenter @Inject constructor(
         launch {
             try {
                 val result = moveChatToTrashUseCase.execute(messageId)
-                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                if (result.chatMoveToTrash.list.isNotEmpty()) {
                     val deletedChat = result.chatMoveToTrash.list.first()
-                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                    if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
                         onSuccessDeleteConversation()
                     } else {
                         onError(Throwable(deletedChat.detailResponse))
