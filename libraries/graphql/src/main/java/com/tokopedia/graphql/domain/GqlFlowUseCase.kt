@@ -1,19 +1,16 @@
 package com.tokopedia.graphql.domain
 
-import com.tokopedia.graphql.R
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 
 /**
- * This is the base class for the domain layer by using the GraphQL service.
- * This class is the result of an improvement from the existing GraphqlUseCase (or related).
+ * This is the base class for the domain layer by using the GraphQL service for Flow Use Case.
  *
  * this class is created in order to achieve flexibility in further development of domain layer.
- * currently, [GqlUseCase] is used in base class for [CoroutineUseCase], [CoroutineStateUseCase],
- * [FlowUseCase], and [FlowStateUseCase].
+ * currently, [GqlUseCase] is used in base class for [FlowUseCase], and [FlowStateUseCase].
  *
  * This class has 3 functions in it:
  * - execute()
@@ -27,13 +24,12 @@ import kotlinx.coroutines.flow.flowOf
  *   this function is a helper to request data to the graphql service based on
  *   predefined parameters and queries.
  */
-abstract class GqlFlowUseCase<Input, out Output>(protected val repository: GraphqlRepository) {
+abstract class GqlFlowUseCase<Input, out Output>(val repository: GraphqlRepository) {
 
     /*
     * override this to set the graphql query
     * */
-    protected abstract fun graphqlQuery(): String
-
+    abstract fun graphqlQuery(): String
 
 
     /*
@@ -41,10 +37,12 @@ abstract class GqlFlowUseCase<Input, out Output>(protected val repository: Graph
     * */
     protected suspend inline fun <reified Output> request(params: Map<String, Any>): Flow<Output> {
 
-        val request = GraphqlRequest(graphqlQuery(), Output::class.java, params)
-        val response = repository.getReseponse(listOf(request))
+        return flow {
+            val request = GraphqlRequest(graphqlQuery(), Output::class.java, params)
+            val response = repository.getReseponse(listOf(request))
+            emit(response.getSuccessData())
+        }
 
-        return flowOf(response.getSuccessData())
     }
 
 }
