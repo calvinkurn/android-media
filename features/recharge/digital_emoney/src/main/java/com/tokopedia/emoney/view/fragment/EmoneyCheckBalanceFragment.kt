@@ -112,7 +112,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        if (CardUtils.isTapcashCard(intent)) {
+        if (CardUtils.isTapcashCard(intent) && goToNewTapcash()) {
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
                     DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
         } else if (CardUtils.isEmoneyCard(intent)){
