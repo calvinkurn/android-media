@@ -34,6 +34,8 @@ object DeeplinkMapperMerchant {
     private const val SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE = 2
     private const val PARAM_SELLER_TAB = "tab"
     private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
+    private const val SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE = 3
+    private const val SHOP_PAGE_RESULT_ETALASE_INTERNAL_PATH_SEGMENT_SIZE = 3
 
     private const val PARAM_URL = "url"
 
@@ -198,7 +200,7 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathEtalase = "etalase"
-            return if (pathSegment.size == 3)
+            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE)
                 it.toString().startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathEtalase)
             else false
         } ?: false
@@ -228,7 +230,7 @@ object DeeplinkMapperMerchant {
     fun getShopPageResultEtalaseInternalAppLink(uri: Uri?): String {
         return uri?.let {
             val pathSegment = uri.pathSegments ?: return it.toString()
-            return if (pathSegment.size == 3) {
+            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_INTERNAL_PATH_SEGMENT_SIZE) {
                 val shopId = pathSegment[0]
                 val etalaseId = pathSegment[2]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, shopId, etalaseId)
