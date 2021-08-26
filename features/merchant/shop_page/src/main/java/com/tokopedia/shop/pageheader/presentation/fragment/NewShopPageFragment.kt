@@ -369,6 +369,7 @@ class NewShopPageFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
+        removeTemporaryShopImage(shopImageFilePath)
         UniversalShareBottomSheet.clearScreenShotDetector()
         super.onDestroy()
     }
@@ -1093,7 +1094,6 @@ class NewShopPageFragment :
 
     override fun onResume() {
         super.onResume()
-        removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
         UniversalShareBottomSheet.getScreenShotDetector()?.start()
@@ -2468,7 +2468,7 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, this)
     }
 
     override fun onRequestPermissionsResult(

@@ -173,7 +173,7 @@ public class ShipmentDataConverter {
             ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
+            shipmentCartItemModel.setBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
@@ -256,7 +256,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
-        shipmentCartItemModel.setIsLeasingProduct(groupShop.isLeasingProduct());
+        shipmentCartItemModel.setLeasingProduct(groupShop.isLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
         shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
