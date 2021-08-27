@@ -53,7 +53,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
     @Test
     fun should_show_ended_state_when_ongoing_campaign_finished_countdown() {
         // Given
-        val endWording = getChatUseCase.getEndWordingBanner(
+        val endWording = getChatUseCase.getEndWordingBannerFrom(
             getChatUseCase.broadcastCampaignAboutToEnd
         )
         getChatUseCase.response = getChatUseCase.broadcastCampaignAboutToEnd
@@ -73,7 +73,24 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
     }
 
-    // TODO: should_show_ended_state_when_campaign_status_is_started
+    @Test
+    fun should_show_ended_state_when_campaign_status_is_ended() {
+        // Given
+        val endWording = getChatUseCase.getEndWordingBannerFrom(
+            getChatUseCase.broadcastCampaignEnded
+        )
+        getChatUseCase.response = getChatUseCase.broadcastCampaignEnded
+        launchChatRoomActivity()
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+    }
+
     // TODO: should show ended state when end date is invalid or has passed
     // TODO: should hide campaign label when broadcast does not have campaign
 

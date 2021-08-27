@@ -30,6 +30,10 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    /**
+     * Broadcast response region below
+     * /====================/
+     */
     val defaultBroadcastCampaignLabel: GetExistingChatPojo
         get() = AndroidFileUtil.parse(
             broadcastCampaignLabelPath,
@@ -59,6 +63,19 @@ class GetChatUseCaseStub @Inject constructor(
             ) { attr ->
                 attr.addProperty(endDate, getNext6Hours())
                 attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+            }
+        }
+
+    val broadcastCampaignEnded: GetExistingChatPojo
+        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(endDate, getNext3Seconds())
+                attr.addProperty(status_campaign, CampaignStatus.ENDED)
             }
         }
 
@@ -153,7 +170,7 @@ class GetChatUseCaseStub @Inject constructor(
         )
     }
 
-    fun getEndWordingBanner(broadcastCampaignAboutToEnd: GetExistingChatPojo): String {
+    fun getEndWordingBannerFrom(broadcastCampaignAboutToEnd: GetExistingChatPojo): String {
         val attributes = broadcastCampaignAboutToEnd.chatReplies
             .list[0].chats[0].replies[0].attachment.attributes
         val banner = CommonUtil.fromJson<ImageAnnouncementPojo>(
