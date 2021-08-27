@@ -252,13 +252,13 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      */
     private fun startAnimate(image: ImageView) {
         val start = image.y
-        val end = image.y - 500
+        val end = image.y - SHOT_DISTANCE
 
         val threshold = (end - ((end - start) / 2))
         var alpha = image.alpha
 
-        val xStart = image.x - 20
-        val xEnd = image.x + 20
+        val xStart = image.x - LIMIT_BOUNCING_DISTANCE
+        val xEnd = image.x + LIMIT_BOUNCING_DISTANCE
         var xCurrent = image.x
 
         var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
@@ -276,7 +276,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
              * Change alpha when current Y coordinate below the threshold
              */
             if(value <= threshold) {
-                alpha -= 0.05f
+                alpha -= FADE_OUT_MULTIPLIER
                 image.alpha = alpha
             }
 
@@ -294,14 +294,14 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                         else xMoveCenter.counter++
                     }
                     PlaySpamLikeMove.Right -> {
-                        xCurrent += 5
+                        xCurrent += BOUNCING_MULTIPLIER_X
                         image.x = xCurrent
                         if(xCurrent > xEnd) {
                             xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Left, 0)
                         }
                     }
                     PlaySpamLikeMove.Left -> {
-                        xCurrent -= 5
+                        xCurrent -= BOUNCING_MULTIPLIER_X
                         image.x = xCurrent
                         if(xCurrent < xStart) {
                             xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Right, 0)
@@ -336,5 +336,10 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     companion object {
         private const val INCREASE_SHOT = 1
         private const val DECREASE_SHOT = -1
+
+        private const val SHOT_DISTANCE = 500
+        private const val LIMIT_BOUNCING_DISTANCE = 20
+        private const val FADE_OUT_MULTIPLIER = 0.05F
+        private const val BOUNCING_MULTIPLIER_X = 5
     }
 }
