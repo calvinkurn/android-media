@@ -49,7 +49,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         return EMPTY_STRING
     }
 
-    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {
+    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {
         if (banners.isNotEmpty()) {
             banners.forEach { banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
@@ -70,12 +70,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         EVENT_PROMO_VIEW to mapOf(
                                 KEY_PROMOTIONS to list))
                 map[KEY_E_COMMERCE] = eCommerce
+                map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+                map[BUSINESS_UNIT] = HOME_BROWSE
+                map[USER_ID] = userID ?: EMPTY_STRING
                 trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
         }
     }
 
-    override fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
+    override fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
         val list = ArrayList<Map<String, Any>>()
@@ -97,6 +100,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_CAMPAIGN_CODE] = "${if (banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[USER_ID] = userID ?: EMPTY_STRING
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }

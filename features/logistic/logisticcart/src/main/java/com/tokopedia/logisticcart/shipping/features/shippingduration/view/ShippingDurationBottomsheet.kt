@@ -67,7 +67,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private var mIsCorner = false
 
     fun show(activity: Activity,
-             fragmentManager: FragmentManager?,
+             fragmentManager: FragmentManager,
              shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
              shipmentDetailData: ShipmentDetailData,
              selectedServiceId: Int,
@@ -86,50 +86,48 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc)
         initBottomSheet(activity)
         initView(activity)
-        bottomSheet!!.show(fragmentManager!!, this.javaClass.simpleName)
+        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
     private fun initBottomSheet(activity: Activity) {
         bottomSheet = BottomSheetUnify()
-        bottomSheet!!.showCloseIcon = true
-        bottomSheet!!.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
-        bottomSheet!!.clearContentPadding = true
-        bottomSheet!!.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-        bottomSheet!!.isDragable = true
-        bottomSheet!!.isHideable = true
-        bottomSheet!!.setShowListener {
+        bottomSheet?.showCloseIcon = true
+        bottomSheet?.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
+        bottomSheet?.clearContentPadding = true
+        bottomSheet?.customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+        bottomSheet?.isDragable = true
+        bottomSheet?.isHideable = true
+        bottomSheet?.setShowListener {
             chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE)
-            presenter!!.attachView(this)
+            presenter?.attachView(this)
             loadData()
         }
-        bottomSheet!!.setOnDismissListener {
-            presenter!!.detachView()
+        bottomSheet?.setOnDismissListener {
+            presenter?.detachView()
         }
-        bottomSheet!!.setCloseClickListener {
-            if (shippingDurationBottomsheetListener != null) {
-                shippingDurationBottomsheetListener!!.onShippingDurationButtonCloseClicked()
-            }
-            bottomSheet!!.dismiss()
+        bottomSheet?.setCloseClickListener {
+            shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
+            bottomSheet?.dismiss()
         }
     }
 
     private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
         bundle = Bundle()
-        bundle!!.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
-        bundle!!.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
-        bundle!!.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-        bundle!!.putInt(ARGUMENT_CART_POSITION, cartPosition)
-        bundle!!.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
-        bundle!!.putInt(ARGUMENT_COD_HISTORY, codHistory)
-        bundle!!.putBoolean(ARGUMENT_IS_LEASING, isLeasing)
-        bundle!!.putString(ARGUMENT_PSL_CODE, pslCode)
-        bundle!!.putParcelableArrayList(ARGUMENT_PRODUCTS, products)
-        bundle!!.putString(ARGUMENT_CART_STRING, cartString)
-        bundle!!.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
-        bundle!!.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
-        bundle!!.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
-        bundle!!.putInt(ARGUMENT_PO_TIME, preOrderTime)
-        bundle!!.putString(ARGUMENT_MVC, mvc)
+        bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
+        bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
+        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
+        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
+        bundle?.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
+        bundle?.putInt(ARGUMENT_COD_HISTORY, codHistory)
+        bundle?.putBoolean(ARGUMENT_IS_LEASING, isLeasing)
+        bundle?.putString(ARGUMENT_PSL_CODE, pslCode)
+        bundle?.putParcelableArrayList(ARGUMENT_PRODUCTS, products)
+        bundle?.putString(ARGUMENT_CART_STRING, cartString)
+        bundle?.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
+        bundle?.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
+        bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
+        bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
+        bundle?.putString(ARGUMENT_MVC, mvc)
     }
 
     private fun initializeInjector() {
@@ -181,44 +179,44 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     private fun setupRecyclerView(cartPosition: Int) {
-        shippingDurationAdapter!!.setShippingDurationAdapterListener(this)
-        shippingDurationAdapter!!.setCartPosition(cartPosition)
+        shippingDurationAdapter?.setShippingDurationAdapterListener(this)
+        shippingDurationAdapter?.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false)
-        rvDuration!!.layoutManager = linearLayoutManager
-        rvDuration!!.adapter = shippingDurationAdapter
+        rvDuration?.layoutManager = linearLayoutManager
+        rvDuration?.adapter = shippingDurationAdapter
     }
 
     override fun showLoading() {
-        llContent!!.visibility = View.GONE
-        llNetworkErrorView!!.visibility = View.GONE
-        pbLoading!!.visibility = View.VISIBLE
+        llContent?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.GONE
+        pbLoading?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        pbLoading!!.visibility = View.GONE
-        llNetworkErrorView!!.visibility = View.GONE
-        llContent!!.visibility = View.VISIBLE
+        pbLoading?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.GONE
+        llContent?.visibility = View.VISIBLE
     }
 
     override fun showErrorPage(message: String) {
-        pbLoading!!.visibility = View.GONE
-        llContent!!.visibility = View.GONE
-        llNetworkErrorView!!.visibility = View.VISIBLE
+        pbLoading?.visibility = View.GONE
+        llContent?.visibility = View.GONE
+        llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
     }
 
     override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter!!.setShippingDurationViewModels(serviceDataList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
+        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
         if (promoViewModel?.etaData != null && promoViewModel.etaData.textEta.isEmpty() && promoViewModel.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
             sendAnalyticCourierPromo(serviceDataList)
         }
         if (promoViewModel != null) {
-            mPromoTracker!!.eventViewPromoLogisticTicker(promoViewModel.promoCode)
+            mPromoTracker?.eventViewPromoLogisticTicker(promoViewModel.promoCode)
             if (promoViewModel.disabled) {
-                mPromoTracker!!.eventViewPromoLogisticTickerDisable(promoViewModel.promoCode)
+                mPromoTracker?.eventViewPromoLogisticTickerDisable(promoViewModel.promoCode)
             }
         }
     }
@@ -236,7 +234,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
         for (shippingDurationUiModel in shippingDurationUiModelList) {
-            shippingDurationBottomsheetListener!!.onShowDurationListWithCourierPromo(
+            shippingDurationBottomsheetListener?.onShowDurationListWithCourierPromo(
                     shippingDurationUiModel.serviceData.isPromo == 1,
                     shippingDurationUiModel.serviceData.serviceName
             )
@@ -244,13 +242,13 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun showNoCourierAvailable(message: String?) {
-        shippingDurationBottomsheetListener!!.onNoCourierAvailable(message)
-        bottomSheet!!.dismiss()
+        shippingDurationBottomsheetListener?.onNoCourierAvailable(message)
+        bottomSheet?.dismiss()
     }
 
     override fun stopTrace() {
         if (!isChooseCourierTraceStopped) {
-            chooseCourierTracePerformance!!.stopTrace()
+            chooseCourierTracePerformance?.stopTrace()
             isChooseCourierTraceStopped = true
         }
     }
@@ -285,11 +283,11 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
         if (shippingDurationBottomsheetListener != null) {
             try {
-                shippingDurationBottomsheetListener!!.onShippingDurationChoosen(
+                shippingDurationBottomsheetListener?.onShippingDurationChoosen(
                         shippingCourierUiModelList, presenter!!.getCourierItemData(shippingCourierUiModelList),
                         mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                         flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
-                bottomSheet!!.dismiss()
+                bottomSheet?.dismiss()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -305,14 +303,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-        mPromoTracker!!.eventClickPromoLogisticTicker(data.promoCode)
+        mPromoTracker?.eventClickPromoLogisticTicker(data.promoCode)
         // Project Army
-        val serviceData = shippingDurationAdapter!!.getRatesDataFromLogisticPromo(data.serviceId)
+        val serviceData = shippingDurationAdapter?.getRatesDataFromLogisticPromo(data.serviceId)
         if (serviceData == null) {
             showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
             return
         }
-        val courierData = presenter!!.getCourierItemDataById(data.shipperProductId, serviceData.shippingCourierViewModelList)
+        val courierData = presenter?.getCourierItemDataById(data.shipperProductId, serviceData.shippingCourierViewModelList)
         if (courierData == null) {
             showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
             return
@@ -328,14 +326,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         courierData.etaText = data.etaData.textEta
         courierData.etaErrorCode = data.etaData.errorCode
         try {
-            shippingDurationBottomsheetListener!!.onLogisticPromoChosen(
+            shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                     serviceData.shippingCourierViewModelList, courierData,
                     mRecipientAddress, mCartPosition,
                     serviceData.serviceData, false, data.promoCode, data.serviceId)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        bottomSheet!!.dismiss()
+        bottomSheet?.dismiss()
     }
 
     companion object {
