@@ -218,5 +218,5 @@ yang ditemukan</string>
     <string name="title_topchat_delete">Hapus</string>
 
     <string name="desc_topchat_broadcast_campaign_started">Dimulai pada</string>
-    <string name="desc_topchat_broadcast_campaign_ongoing">Dimulai pada</string>
+    <string name="desc_topchat_broadcast_campaign_ongoing">Berakhir dalam</string>
 </resources>
