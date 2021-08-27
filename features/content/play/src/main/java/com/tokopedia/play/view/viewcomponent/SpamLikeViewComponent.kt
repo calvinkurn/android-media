@@ -27,12 +27,12 @@ class SpamLikeViewComponent(
     val maxShot: Long
         get() = spamLike.getMaxShot().toLong()
 
-    fun shot(amount: Int = 1) {
+    fun shot(amount: Int = 1, reduceOpacity: Boolean = false) {
         CoroutineScope(Dispatchers.IO + job).launch {
             for(i in 1..amount * LIKE_ICON_MULTIPLIER) {
                 delay(100)
                 withContext(Dispatchers.Main) {
-                    spamLike.shot()
+                    spamLike.shot(reduceOpacity)
                 }
             }
         }

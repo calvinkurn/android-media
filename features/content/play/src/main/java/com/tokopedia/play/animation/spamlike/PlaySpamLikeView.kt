@@ -43,6 +43,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     private val duration = 1500L
     private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
+    private var blurOpacity: Float = 0.5F
 
     private var parentView: ViewGroup? = null
     private val job = SupervisorJob()
@@ -145,7 +146,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * 7. Set Coroutine for Popping Image from Queue
      * 8. Check Whether Additional Shot is Required Or Not
      */
-    fun shot() {
+    fun shot(reduceOpacity: Boolean) {
         if(loveList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
 
         if(shot < maxShot) {
@@ -159,7 +160,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                     PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(love, sizeMultiply)
                 }
 
-                val image = prepareImage(love, dimension)
+                val image = prepareImage(love, dimension, reduceOpacity)
 
                 parentView?.addView(image)
                 startAnimate(image)
@@ -192,7 +193,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                 dot?.let {
                     DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
 
-                    val image = prepareImage(it, Pair(20, 20))
+                    val image = prepareImage(it, Pair(20, 20), false)
 
                     parentView?.addView(image)
                     startAnimate(image)
@@ -217,7 +218,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         return Pair(x, y)
     }
 
-    private fun prepareImage(drawable: Drawable, size: Pair<Int, Int>): ImageView {
+    private fun prepareImage(drawable: Drawable, size: Pair<Int, Int>, reduceOpacity: Boolean): ImageView {
         val image = ImageView(context)
         image.setImageBitmap(Bitmap.createScaledBitmap(drawable.toBitmap(), size.first, size.second, true))
 
@@ -225,6 +226,8 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         image.x = coordinate.first
         image.y = coordinate.second
         image.id = View.generateViewId()
+
+        if(reduceOpacity) image.alpha = blurOpacity
 
         return image
     }
