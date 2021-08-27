@@ -154,7 +154,11 @@ object TopChatWebSocketParam {
         userLocationInfo: LocalCacheModel
     ): JsonObject {
         return JsonObject().apply {
-            val latlon = "${userLocationInfo.lat},${userLocationInfo.long}"
+            val lat = userLocationInfo.lat
+            val long = userLocationInfo.long
+            val latlon = if (lat.isNotEmpty() && long.isNotEmpty()) {
+                "$lat,$long"
+            } else ""
             addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
             addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
             addProperty("postal_code", userLocationInfo.postal_code)
