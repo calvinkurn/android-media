@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -8,7 +9,10 @@ import kotlinx.coroutines.withContext
 import rx.Observable
 import javax.inject.Inject
 
-class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
+class ValidatorEngine @Inject constructor(
+    private val dao: GtmLogDBSource,
+    private val analyticsParser: AnalyticsMapParser
+) {
 
     enum class Mode {
         SUBSET_ALL, SUBSET_ORDER, EXACT_ALL, EXACT_ORDER;
@@ -75,7 +79,7 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
         val errors = StringBuilder()
         var alreadyFoundEvent = false
         for (gtm in this) {
-            val mapGtm = gtm.data.toJsonMap()
+            val mapGtm = analyticsParser.toJsonMap(gtm.data)
             val result = comparator.data.canValidate(mapGtm, currentMode.isInExact())
 
             if (result.isValid) {
@@ -99,7 +103,7 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
 
     private fun List<GtmLogDB>.findContaining(comparator: Validator): GtmLogDB? {
         for (gtm in this) {
-            val mapGtm = gtm.data.toJsonMap()
+            val mapGtm = analyticsParser.toJsonMap(gtm.data)
             if (comparator.data.canValidate(mapGtm, currentMode.isInExact()).isValid) {
                 return gtm
             }

@@ -6,8 +6,9 @@ import com.tokopedia.analyticsdebugger.cassava.validator.core.JsonMap
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.net.URLDecoder
+import javax.inject.Inject
 
-class AnalyticsMapParser {
+class AnalyticsMapParser @Inject constructor() {
 
     private val gson: Gson = GsonBuilder()
         .registerTypeAdapter(object : TypeToken<Double>() {}.type, BigDoubleAdapter())
