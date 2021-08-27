@@ -41,7 +41,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackShareClick() {}
     open fun trackSearchClick() {}
     open fun trackGlobalNavBarClick(buttonName : String, userID : String?) {}
-    open fun trackLihatSemuaClick(headerName: String?) {}
+    open fun trackLihatSemuaClick(dataItem: DataItem?) {}
     open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
     open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}
     open fun trackClickSeeAllBanner() {}

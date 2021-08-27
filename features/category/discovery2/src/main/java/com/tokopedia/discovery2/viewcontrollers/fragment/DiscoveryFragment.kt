@@ -882,7 +882,7 @@ class DiscoveryFragment :
     }
 
     override fun onLihatSemuaClick(data: DataItem) {
-        getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
+        getDiscoveryAnalytics().trackLihatSemuaClick(data)
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
