@@ -10,11 +10,11 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPEDIA_NOW}"
 
-    //TokoMartHomeActivity
+    //TokoNowHomeActivity
     @JvmField
     val HOME = "$INTERNAL_TOKOPEDIA_NOW/home"
 
-    //TokoMartCategoryListActivity
+    //TokoNowCategoryListActivity
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
@@ -26,4 +26,8 @@ object ApplinkConstInternalTokopediaNow {
 
     @JvmField
     val OLD_TOKOMART = "${ApplinkConstInternalGlobal.DISCOVERY}/tokomart"
+
+    //TokoNowRecentPurchaseActivity
+    @JvmField
+    val RECENT_PURCHASE = "$INTERNAL_TOKOPEDIA_NOW/recent-purchase"
 }

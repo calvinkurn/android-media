@@ -77,5 +77,23 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recentpurchase.presentation.activity.TokoNowRecentPurchaseActivity"
+            android:exported="true"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:path="@string/path_tokopedia_now_recent_purchase"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
