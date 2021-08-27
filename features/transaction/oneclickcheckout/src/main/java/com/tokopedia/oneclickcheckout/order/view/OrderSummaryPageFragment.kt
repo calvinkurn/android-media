@@ -602,7 +602,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                     }
                                 })
                         promoNotEligibleBottomSheet.dismissListener = {
-                            if (view == null) {
+                            if (view != null) {
                                 refresh()
                             }
                         }
