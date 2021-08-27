@@ -493,6 +493,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
+        String RECENT_PURCHASE = "tokopedia://now/recent-purchase";
     }
 
     interface Query {
