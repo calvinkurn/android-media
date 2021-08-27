@@ -26,7 +26,7 @@ class CartCheckoutAnalyticsTest {
         }
     }
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val context = InstrumentationRegistry.getInstrumentation().context
 
     @get:Rule
     var cassavaRule = CassavaTestRule()

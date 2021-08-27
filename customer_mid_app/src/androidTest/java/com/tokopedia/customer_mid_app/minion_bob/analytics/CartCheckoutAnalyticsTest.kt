@@ -29,7 +29,7 @@ class CartCheckoutAnalyticsTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule()
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
     @Before
     fun setup() {
@@ -65,7 +65,7 @@ class CartCheckoutAnalyticsTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics  {
             waitForData()
-            hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            hasPassedAnalytics(cassavaRule, "44")
         }
     }
 
@@ -86,7 +86,7 @@ class CartCheckoutAnalyticsTest {
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
         private const val CHECKOUT_KEY = "checkout"
 
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
     }
 
 }
