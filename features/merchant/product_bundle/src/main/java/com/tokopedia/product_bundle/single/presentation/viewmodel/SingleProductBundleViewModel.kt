@@ -1,177 +1,174 @@
 package com.tokopedia.product_bundle.single.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
-import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product_bundle.common.data.model.response.BundleItem
-import com.tokopedia.product_bundle.common.data.model.response.Child
-import com.tokopedia.product_bundle.common.data.model.response.Selection
-import com.tokopedia.product_bundle.common.data.model.response.VariantOption
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.single.presentation.model.*
+import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_QTY
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SingleProductBundleViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers
+        private val dispatcher: CoroutineDispatchers,
+        private val addToCartBundleUseCase: AddToCartBundleUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
 
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
     val singleProductBundleUiModel: LiveData<SingleProductBundleUiModel>
         get() = mSingleProductBundleUiModel
 
-    fun getBundleData() {
-        mSingleProductBundleUiModel.value = SingleProductBundleUiModel(
-                50,
-                List(10) { SingleProductBundleItem(
-                        "Paket isi 3",
-                        "Women’s Breathable Low-cut Short Socks Cotton Blend",
-                        "Rp300.000",
-                        "Rp200.000",
-                        45,
-                        "https://placekitten.com/200/300"
-                )},
-                "Rp100.000",
-                "Rp90.000",
-                "Rp10.000",
-                10
+    private val mTotalAmountUiModel = MutableLiveData<TotalAmountUiModel>()
+    val totalAmountUiModel: LiveData<TotalAmountUiModel>
+        get() = mTotalAmountUiModel
+
+    private val mAddToCartResult = MutableLiveData<AddToCartBundleDataModel>()
+    val addToCartResult: LiveData<AddToCartBundleDataModel>
+        get() = mAddToCartResult
+
+    private val mToasterError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val toasterError: LiveData<SingleProductBundleErrorEnum>
+        get() = mToasterError
+
+    private val mDialogError = MutableLiveData<SingleProductBundleDialogModel>()
+    val dialogError: LiveData<SingleProductBundleDialogModel>
+        get() = mDialogError
+
+    private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val pageError: LiveData<SingleProductBundleErrorEnum>
+        get() = mPageError
+
+    fun setBundleInfo(
+        context: Context,
+        bundleInfo: List<BundleInfo>,
+        selectedBundleId: String,
+        selectedProductId: Long
+    ) {
+        val bundleModel = BundleInfoToSingleProductBundleMapper
+            .mapToSingleProductBundle(context, bundleInfo, selectedBundleId, selectedProductId)
+
+        if (bundleModel.items.isEmpty()) {
+            mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+            mPageError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+        } else {
+            mSingleProductBundleUiModel.value = bundleModel
+            mPageError.value = SingleProductBundleErrorEnum.NO_ERROR
+        }
+    }
+
+    fun getVariantText(selectedProductVariant: ProductVariant, selectedProductId: String): String {
+        var resultText = ""
+        val variant = selectedProductVariant.variants
+        val variantChild = selectedProductVariant.getChildByProductId(selectedProductId)
+
+        if (variantChild != null) {
+            resultText = getVariantText(variant, variantChild.optionIds)
+        }
+
+        return resultText
+    }
+
+    fun getVariantText(productVariant: List<Variant>, optionIds: List<String>): String {
+        val resultText = mutableListOf<String?>()
+        optionIds.forEachIndexed { index, optionId ->
+            val option = productVariant[index].options.find {
+                it.id == optionId
+            }
+            if (option != null) {
+                resultText.add(option.value)
+            }
+        }
+        return resultText.joinToString(", ")
+    }
+
+    fun updateTotalAmount(originalPrice: Double, discountedPrice: Double, quantity: Int) {
+        mTotalAmountUiModel.value = TotalAmountUiModel(
+            price = CurrencyFormatUtil.convertPriceValueToIdrFormat(discountedPrice * quantity, false),
+            slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice * quantity, false),
+            discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
+            priceGap = CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(originalPrice - discountedPrice) * quantity, false)
         )
     }
 
-    fun generateBundleItem(): BundleItem {
-        return BundleItem(
-            productID = 123450L,
-            selections = listOf(
-                Selection(
-                    productVariantID = 6000,
-                    variantID = 29,
-                    name = "ukuran",
-                    identifier = "size",
-                    options = listOf(
-                        VariantOption(
-                            10,
-                            10,
-                            "S",
-                            ""
-                        ),
-                        VariantOption(
-                            11,
-                            10,
-                            "M",
-                            ""
-                        ),
-                    ),
+    fun validateAndCheckout(parentProductID: Long, selectedDataList: List<SingleProductBundleSelectedItem>) {
+        val selectedData = selectedDataList.firstOrNull {
+            it.isSelected
+        }
 
-                ),
-                Selection(
-                    productVariantID = 6001,
-                    variantID = 1,
-                    name = "warna",
-                    identifier = "color",
-                    options = listOf(
-                        VariantOption(
-                            1,
-                            1,
-                            "Putih",
-                            ""
-                        ),
-                        VariantOption(
-                            2,
-                            1,
-                            "Hitam",
-                            ""
-                        ),
-                    ),
+        when {
+            selectedData == null -> {
+                // data not selected
+                mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED
+                return
+            }
+            selectedData.productId.isEmpty() -> {
+                // variant not selected
+                mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
+                return
+            }
+            else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
+                selectedData.shopId, selectedData.quantity)
+        }
+    }
 
+    private fun addToCart(
+        parentProductID: Long,
+        bundleId: String,
+        productId: String,
+        shopId: String,
+        quantity: Int
+    ) {
+        val customerId = userSession.userId
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                addToCartBundleUseCase.setParams(
+                    AddToCartBundleRequestParams(
+                        shopId = shopId,
+                        bundleId = bundleId,
+                        bundleQty = BUNDLE_QTY,
+                        selectedProductPdp = parentProductID.toString(),
+                        listOf(
+                            ProductDetail(
+                                customerId = customerId,
+                                isProductParent = productId == parentProductID.toString(),
+                                productId = productId,
+                                quantity = quantity,
+                                shopId = shopId
+                            )
+                        )
                     )
-            ),
-            children = listOf(
-                Child(
-                    productID = 123451L,
-                    originalPrice = 10000,
-                    bundlePrice = 9000,
-                    stock = 10,
-                    minOrder = 1,
-                    optionIds = listOf(10, 1),
-                    name = "child 1",
-                    picURL = "https://placekitten.com/200/300"
-                ),
-                Child(
-                    productID = 123452L,
-                    originalPrice = 10000,
-                    bundlePrice = 8000,
-                    stock = 10,
-                    minOrder = 1,
-                    optionIds = listOf(10, 2),
-                    name = "child 2",
-                    picURL = "https://placekitten.com/200/200"
-                ),
-                Child(
-                    productID = 123453L,
-                    originalPrice = 10000,
-                    bundlePrice = 9000,
-                    stock = 10,
-                    minOrder = 1,
-                    optionIds = listOf(11, 1),
-                    name = "child 3",
-                    picURL = "https://placekitten.com/200/300"
-                ),
-                Child(
-                    productID = 123454L,
-                    originalPrice = 10000,
-                    bundlePrice = 8000,
-                    stock = 10,
-                    minOrder = 1,
-                    optionIds = listOf(11, 2),
-                    name = "child 4",
-                    picURL = "https://placekitten.com/200/200"
-                ),
+                )
+                addToCartBundleUseCase.executeOnBackground()
+            }
+            if (result.data.isNotEmpty()) {
+                mAddToCartResult.value = result
+            } else {
+                mDialogError.value = SingleProductBundleDialogModel(
+                    title = result.message.firstOrNull(),
+                    message = result.message.lastOrNull(),
+                    type = SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH
+                )
+            }
+        }, onError = {
+            mDialogError.value = SingleProductBundleDialogModel(
+                message = it.localizedMessage,
+                type = SingleProductBundleDialogModel.DialogType.DIALOG_NORMAL
             )
-        )
-    }
-
-    fun generateCartRedirection(): Map<String, CartTypeData> {
-        return mapOf(
-            "123451" to CartTypeData(
-                productId = "123451",
-                availableButtons = listOf(
-                    AvailableButton(
-                        text = "Henlo1",
-                        color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN
-                    )
-                )
-            ),
-            "123452" to CartTypeData(
-                productId = "123452",
-                availableButtons = listOf(
-                    AvailableButton(
-                        text = "Henlo2",
-                        color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN
-                    )
-                )
-            ),
-            "123453" to CartTypeData(
-                productId = "123453",
-                availableButtons = listOf(
-                    AvailableButton(
-                        text = "Henlo3",
-                        color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN
-                    )
-                )
-            ),
-            "123454" to CartTypeData(
-                productId = "123454",
-                availableButtons = listOf(
-                    AvailableButton(
-                        text = "Henlo4",
-                        color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN
-                    )
-                )
-            ),
-        )
+        })
     }
 
 }

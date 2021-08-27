@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:text="Terjual 50 paket"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,17 +33,27 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/ge_bundle_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:globalerrors_type="PAGE_FULL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.totalamount.TotalAmount
         android:id="@+id/total_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:unify_total_amount_cta_text="Beli Paket"
+        app:unify_total_amount_cta_text="@string/action_buy"
         app:unify_total_amount_enable_shadow="true"
         app:unify_total_amount_enable_title_chevron="false"
         app:unify_total_amount_subtitle_text="Hemat Rp0"
-        app:unify_total_amount_text="Rp0"
-        app:unify_total_amount_title_suffix_text="Rp0"
+        app:unify_total_amount_text="@string/single_bundle_default_price"
+        app:unify_total_amount_title_suffix_text="@string/single_bundle_default_price"
         app:unify_total_amount_title_text=" " />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

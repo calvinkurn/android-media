@@ -8,4 +8,7 @@
         <attr name="discountprice_discount_amount" format="string" />
         <attr name="discountprice_slashprice" format="string" />
     </declare-styleable>
+    <declare-styleable name="ErrorLabelView">
+        <attr name="errorlabel_text" format="string" />
+    </declare-styleable>
 </resources>
