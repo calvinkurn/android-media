@@ -12,7 +12,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getErrorCodeSimple
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getRandomString
-import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
