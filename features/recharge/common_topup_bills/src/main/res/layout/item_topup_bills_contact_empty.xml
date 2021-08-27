@@ -25,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="@id/common_topup_bills_contact_empty_img"
         app:typographyType="heading_2"
         android:gravity="center"
-        android:text="Hmm, belum ada kontak di HP kamu" />
+        android:text="@string/common_topup_contact_empty_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/common_topup_bills_contact_empty_desc"
@@ -36,6 +36,6 @@
         app:layout_constraintEnd_toEndOf="@id/common_topup_bills_contact_empty_img"
         app:typographyType="body_2"
         android:gravity="center"
-        android:text="Cek lagi di sini kalau sudah ada kontak tersimpan di HP kamu, ya."/>
+        android:text="@string/common_topup_contact_empty_desc"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

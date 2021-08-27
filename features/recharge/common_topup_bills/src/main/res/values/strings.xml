@@ -69,4 +69,6 @@
     <string name="common_topup_contact_permission_title">Boleh akses kontak kamu?</string>
     <string name="common_topup_contact_permission_desc">Kamu bakal makin gampang transaksi buat teman dan keluarga.</string>
     <string name="common_topup_contact_permission_settings_button">Ke Pengaturan HP</string>
+    <string name="common_topup_contact_empty_title">Hmm, belum ada kontak di HP kamu</string>
+    <string name="common_topup_contact_empty_desc">Cek lagi di sini kalau sudah ada kontak tersimpan di HP kamu, ya.</string>
 </resources>
