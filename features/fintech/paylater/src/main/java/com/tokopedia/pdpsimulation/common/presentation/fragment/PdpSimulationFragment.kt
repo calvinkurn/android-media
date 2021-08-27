@@ -28,7 +28,6 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
-import com.tokopedia.pdpsimulation.paylater.presentation.simulation.PayLaterSimulationFragment
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
@@ -105,7 +104,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun getSimulationProductInfo() {
         parentDataGroup.visible()
         when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
+            is PayLater -> payLaterViewModel.getPayLaterProductData()
             is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
         }
     }
@@ -170,10 +169,12 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         paylaterTabLayout?.run {
             setupWithViewPager(payLaterViewPager)
             getUnifyTabLayout().removeAllTabs()
-            addNewTab(context.getString(R.string.pdp_simulation_tab_title))
             when (paymentMode) {
-                is CreditCard -> addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
-                else -> addNewTab(context.getString(R.string.pay_later_offer_details_tab_title))
+                is CreditCard -> {
+                    addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
+                    addNewTab(context.getString(R.string.pdp_simulation_tab_title))
+                }
+                else -> View.GONE
             }
         }
     }
@@ -185,8 +186,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                         CreditCardTncFragment.newInstance(this))
             }
             else -> {
-                listOf<Fragment>(PayLaterSimulationFragment.newInstance(this),
-                        PayLaterOffersFragment.newInstance(this))
+                listOf<Fragment>(PayLaterOffersFragment.newInstance(this))
             }
         }
     }
