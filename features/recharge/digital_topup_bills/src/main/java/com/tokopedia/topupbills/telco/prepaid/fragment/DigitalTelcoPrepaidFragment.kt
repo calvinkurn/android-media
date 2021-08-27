@@ -17,12 +17,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -466,6 +461,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             productId = 0
             operatorId = ""
+            sharedModelPrepaid.clearCatalogProductList()
             sharedModelPrepaid.setVisibilityTotalPrice(false)
         }
 
