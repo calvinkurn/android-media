@@ -154,5 +154,6 @@ const val DISCOVERY_DEFAULT_PAGE_TYPE  = "general"
 const val PAGE_SOURCE = "pageSource"
 const val CLICK_REMIND_ME = "click remind me"
 const val CLICK_CANCEL_REMIND_ME = "click cancel remind me"
-const val SCROLL_DEPTH_RATE = "scroll depth rate"
+const val SCROLL_DEPTH_RATE_MANUAL = "scroll depth rate - manual"
+const val SCROLL_DEPTH_RATE_AUTO = "scroll depth rate - autoscroll"
 

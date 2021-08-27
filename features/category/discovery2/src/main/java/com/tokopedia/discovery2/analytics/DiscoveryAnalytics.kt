@@ -1223,10 +1223,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {
+    override fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {
         val map: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to EVENT_CLICK_DISCOVERY,
-                KEY_EVENT_ACTION to SCROLL_DEPTH_RATE,
+                KEY_EVENT_ACTION to if (isManualScroll) SCROLL_DEPTH_RATE_MANUAL else SCROLL_DEPTH_RATE_AUTO,
                 KEY_EVENT_CATEGORY to VALUE_DISCOVERY_PAGE,
                 KEY_EVENT_LABEL to "$screenScrollPercentage%  - ${lastVisibleComponent?.name ?: ""} - ${lastVisibleComponent?.creativeName ?: ""}",
                 BUSINESS_UNIT to HOME_BROWSE,

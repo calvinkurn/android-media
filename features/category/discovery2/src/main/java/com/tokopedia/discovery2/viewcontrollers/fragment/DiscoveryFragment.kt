@@ -143,6 +143,7 @@ class DiscoveryFragment :
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
+    private var isManualScroll = true
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -651,6 +652,7 @@ class DiscoveryFragment :
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
                     recyclerView.smoothScrollToPosition(position)
+                    isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
@@ -868,7 +870,7 @@ class DiscoveryFragment :
         if(lastVisibleComponent == null){
             updateLastVisibleComponent()
         }
-        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent, isManualScroll)
         openScreenStatus = false
     }
 
