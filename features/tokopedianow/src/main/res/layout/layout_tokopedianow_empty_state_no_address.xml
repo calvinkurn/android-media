@@ -19,11 +19,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_8"
         android:gravity="center"
         android:text="@string/tokopedianow_common_empty_state_title"
-        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateDesc1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateIcon"
@@ -33,7 +34,7 @@
         android:id="@+id/tokonowBullet1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
@@ -45,12 +46,12 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/tokopedianow_common_empty_state_desc_1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateDesc2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tokonowBullet1"
+        app:layout_constraintStart_toEndOf="@+id/tokonowBullet1"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
         app:typographyType="body_2" />
 
@@ -58,7 +59,7 @@
         android:id="@+id/tokonowBullet2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
@@ -74,8 +75,8 @@
         android:text="@string/tokopedianow_common_empty_state_desc_2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonChangeAddress"
-        app:layout_constraintEnd_toEndOf="@id/tokonowEmptyStateDesc1"
-        app:layout_constraintStart_toEndOf="@id/tokonowBullet2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tokonowBullet2"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
         app:typographyType="body_2" />
 
