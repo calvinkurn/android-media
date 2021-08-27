@@ -164,10 +164,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         }
     }
 
-    override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int, isSpecialPromo: Boolean) {
-        if (isSpecialPromo)
-            topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName,
-                    position, userSession.userId, titleProduct)
+    override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
+        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName,
+                position, userSession.userId, titleProduct)
 
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
         telcoTelcoProductView.selectMccmProductItem(position)
