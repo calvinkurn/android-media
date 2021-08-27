@@ -30,7 +30,7 @@ class SpamLikeViewComponent(
     fun shot(amount: Int = 1, reduceOpacity: Boolean = false) {
         CoroutineScope(Dispatchers.IO + job).launch {
             for(i in 1..amount * LIKE_ICON_MULTIPLIER) {
-                delay(100)
+                delay(SPAMMING_LIKE_DELAY)
                 withContext(Dispatchers.Main) {
                     spamLike.shot(reduceOpacity)
                 }
@@ -46,5 +46,6 @@ class SpamLikeViewComponent(
 
     companion object {
         private const val LIKE_ICON_MULTIPLIER = 3
+        private const val SPAMMING_LIKE_DELAY = 200L
     }
 }
