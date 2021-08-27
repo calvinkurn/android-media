@@ -61,7 +61,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
-            affiliateHomeViewModel.getAffiliateProductCards()
+            affiliateHomeViewModel.getAffiliateValidateUser()
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
@@ -99,6 +99,18 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                 else
                     adapter.stopShimmer()
             }
+        })
+        affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
+            global_error.run {
+                show()
+                errorTitle.text = error
+                setActionClickListener {
+                    affiliateHomeViewModel.getAffiliateValidateUser()
+                }
+            }
+        })
+        affiliateHomeViewModel.validateUserdata().observe(this, { validateUserdata ->
+            //TODO
         })
         affiliateHomeViewModel.getProductCards().observe(this, { products ->
             if (products.isNotEmpty()) {
@@ -139,7 +151,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             AFFILIATE_LOGIN_REQUEST_CODE -> {
                 affiliate_progress_bar?.gone()
                 if (resultCode == Activity.RESULT_OK) {
-                    affiliateHomeViewModel.getAffiliateProductCards()
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
