@@ -89,19 +89,12 @@ inline fun ImageView.loadImageRounded(
     )
 }
 
-inline fun ImageView.loadIcon(
-        url: String?,
-        crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties)
-    .useCache(false)
-    .useBlurHash(false)
-
-    /*
-     * loadIcon() extension must be haven't placeholder,
-     * the loader effect should be handled by team by
-     * using own shimmering.
-     * */
-    .setPlaceHolder(-1))
+fun ImageView.loadIcon(url: String?) {
+    GlideApp
+        .with(context)
+        .load(url)
+        .into(this)
+}
 
 fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {
