@@ -21,6 +21,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
         private val activity: Activity,
@@ -31,6 +32,7 @@ class BuyerOrderDetailNavigator(
         private const val KEY_URL = "url"
         private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
+        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
     }
@@ -78,8 +80,13 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
+        val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
+            trackingUrl
+        } else {
+            URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
+        }
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)

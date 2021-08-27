@@ -51,6 +51,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
+        private const val DEFAULT_VALUE_INDEX = 0
+        private const val POSITION_INDEX_COUNTER = 1
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
@@ -79,6 +81,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private var productId: String = ""
     private var areComponentsHidden = false
     private var isLikeValueChange: Boolean = false
+    private var isProductReview: Boolean = true
 
     override fun getScreenName(): String {
         return ""
@@ -98,8 +101,11 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
         if (index != RecyclerView.NO_POSITION) {
-            ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-            reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+            if(isProductReview)
+                ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
+            else
+                ReviewGalleryTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
+            reviewDetail?.setPhotoCount(index + POSITION_INDEX_COUNTER, productReview.imageAttachments.size)
         }
     }
 
@@ -165,9 +171,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 with(SaveInstanceCacheManager(context, it)) {
                     productReview = get(ReadReviewFragment.PRODUCT_REVIEW_KEY, ProductReview::class.java)
                             ?: ProductReview()
-                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
+                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: DEFAULT_VALUE_INDEX
                     shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
                     productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
+                    isProductReview =get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true
                 }
             }
         }
@@ -219,7 +226,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike)
                 setLikeButtonClickListener {
-                    ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
+                    if(isProductReview)
+                        ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
+                    else
+                        ReviewGalleryTracking.trackOnShopReviewLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), shopId)
                     viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
                 }
                 setLikeButtonImage(likeDislike.isLiked())
@@ -290,7 +300,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun openExpandedReviewBottomSheet() {
-        ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        if(isProductReview)
+            ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        else
+            ReviewGalleryTracking.trackOnShopReviewSeeAllClicked(productReview.feedbackID, productId)
         if (expandedReviewBottomSheet == null) {
             with(productReview) {
                 expandedReviewBottomSheet = ReviewGalleryExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)

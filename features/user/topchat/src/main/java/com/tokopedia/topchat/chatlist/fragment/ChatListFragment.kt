@@ -597,6 +597,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         onUserVisibleChanged(isVisibleToUser)
     }
 
+    override fun onScrollToTop() {
+        rv?.post {
+            rv?.smoothScrollToPosition(RV_TOP_POSITION)
+        }
+    }
+
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")
         chatTabListContract?.notifyViewCreated()
@@ -793,6 +799,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
+
+        private const val RV_TOP_POSITION = 0
 
         @JvmStatic
         fun createFragment(title: String): ChatListFragment {

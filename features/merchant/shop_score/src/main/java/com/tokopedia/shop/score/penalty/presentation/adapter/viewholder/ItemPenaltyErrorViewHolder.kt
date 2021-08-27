@@ -8,7 +8,10 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorLis
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import kotlinx.android.synthetic.main.item_shop_penalty_error_state.view.*
 
-class ItemPenaltyErrorViewHolder(view: View, private val itemPenaltyErrorListener: ItemPenaltyErrorListener): AbstractViewHolder<ItemPenaltyErrorUiModel>(view) {
+class ItemPenaltyErrorViewHolder(
+    view: View,
+    private val itemPenaltyErrorListener: ItemPenaltyErrorListener
+) : AbstractViewHolder<ItemPenaltyErrorUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_shop_penalty_error_state

@@ -22,42 +22,25 @@ const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buy
 class StaticBuyerModelGenerator private constructor() {
 
     companion object {
-        fun getModel(context: Context, accountDataModel: AccountDataModel?, remoteConfig: RemoteConfig, isUseUoh: Boolean): List<ParcelableViewModel<*>> {
+        fun getModel(context: Context, accountDataModel: AccountDataModel?, remoteConfig: RemoteConfig): List<ParcelableViewModel<*>> {
             val viewItems = arrayListOf<ParcelableViewModel<*>>()
 
             viewItems.add(MenuTitleViewModel().apply {
                 title = context.getString(R.string.title_menu_transaction)
             })
 
-            if (isUseUoh) {
-                viewItems.add(MenuGridIconNotificationViewModel().apply {
-                     items = getUohMenu(context, accountDataModel)
-                })
+            viewItems.add(MenuGridIconNotificationViewModel().apply {
+                 items = getUohMenu(context, accountDataModel)
+            })
 
-                viewItems.add(MenuListViewModel().apply {
-                    menu = accountDataModel?.uohOrderCount?.activeTicketsText
-                    menuDescription = context.getString(R.string.e_ticket_desc)
-                    count = accountDataModel?.uohOrderCount?.activeTickets.toIntOrZero()
-                    applink = UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_E_TIKET)
-                    titleTrack = AccountConstants.Analytics.PEMBELI
-                    sectionTrack = context.getString(R.string.title_menu_transaction)
-                })
-            } else {
-                viewItems.add(MenuListViewModel().apply {
-                    menu = context.getString(R.string.title_menu_waiting_for_payment)
-                    menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
-                    val paymentStatus = accountDataModel?.notifications?.buyerOrder?.paymentStatus?: "0"
-                    count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
-                    applink = ApplinkConst.PMS
-                    titleTrack = AccountConstants.Analytics.PEMBELI
-                    sectionTrack = context.getString(R.string.title_menu_transaction)
-                })
-
-                viewItems.add(MenuGridViewModel().apply {
-                    title = context.getString(R.string.title_menu_other_transaction)
-                    items = getDigitalOrderMenu(context, remoteConfig)
-                })
-            }
+            viewItems.add(MenuListViewModel().apply {
+                menu = accountDataModel?.uohOrderCount?.activeTicketsText
+                menuDescription = context.getString(R.string.e_ticket_desc)
+                count = accountDataModel?.uohOrderCount?.activeTickets.toIntOrZero()
+                applink = UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_E_TIKET)
+                titleTrack = AccountConstants.Analytics.PEMBELI
+                sectionTrack = context.getString(R.string.title_menu_transaction)
+            })
 
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.ulasan)

@@ -25,6 +25,8 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -43,23 +45,21 @@ public class ConsumerSplashScreen extends SplashScreen {
     private PerformanceMonitoring splashTrace;
     private boolean isApkTempered;
 
-    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination;
-        destination = new Intent(context, ConsumerSplashScreen.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        return destination;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
                 .start(this.getApplication());
+        setUserIdNewRelic();
         executeInBackground();
+    }
+
+    private void setUserIdNewRelic() {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
     }
 
     private void checkInstallReferrerInitialised() {
