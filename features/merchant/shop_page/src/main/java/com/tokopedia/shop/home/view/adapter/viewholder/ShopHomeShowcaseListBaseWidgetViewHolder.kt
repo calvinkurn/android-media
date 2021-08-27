@@ -67,11 +67,12 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
 
     init {
         initView()
+        initRecyclerView()
     }
 
     override fun bind(element: ShopHomeShowcaseListSliderUiModel) {
         tvCarouselTitle?.text = element.header.title
-        initRecyclerView(element.showcaseListItem)
+        childWidgetAdapter.updateDataSet(element.showcaseListItem)
     }
 
     private fun initView() {
@@ -79,7 +80,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         recyclerView = itemView.findViewById(R.id.rvShowcaseListWidget)
     }
 
-    private fun initRecyclerView(showcaseListItemData: List<ShopHomeShowcaseListItemUiModel>) {
+    private fun initRecyclerView() {
         recyclerView?.apply {
             setHasFixedSize(true)
             layoutManager = when (layoutManagerType) {
@@ -101,6 +102,5 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
             }
             adapter = childWidgetAdapter
         }
-        childWidgetAdapter.updateDataSet(showcaseListItemData)
     }
 }
