@@ -26,16 +26,15 @@ class SingleBundle(parent: View) {
     private val discount: Label = view.findViewById(R.id.product_bundling_single_discount)
     private val slash: Typography = view.findViewById(R.id.product_bundling_single_slash)
 
-    fun process(item: BundleInfo.BundleItem) {
+    fun process(item: BundleInfo.BundleItem, bundleName: String) {
         view.show()
 
         image.urlSrc = item.picURL
         name.text = item.name
         price.text = item.bundlePrice
 
-        val quantityLabel = item.quantity
-        label.shouldShowWithAction(quantityLabel.isNotBlank()) {
-            label.text = quantityLabel
+        label.shouldShowWithAction(bundleName.isNotBlank()) {
+            label.text = bundleName
         }
 
         val itemDiscount = item.discountPercentage
