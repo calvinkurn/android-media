@@ -74,7 +74,6 @@ class GetChatUseCaseStub @Inject constructor(
                 repliesPosition = 0,
                 responseObj = response
             ) { attr ->
-                attr.addProperty(endDate, getNext3Seconds())
                 attr.addProperty(status_campaign, CampaignStatus.ENDED)
             }
         }
@@ -89,6 +88,18 @@ class GetChatUseCaseStub @Inject constructor(
             ) { attr ->
                 attr.addProperty(endDate, getNext3Seconds())
                 attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+            }
+        }
+
+    val broadcastNoCampaign: GetExistingChatPojo
+        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(is_campaign, false)
             }
         }
 
@@ -138,6 +149,7 @@ class GetChatUseCaseStub @Inject constructor(
     private val startDate = "startDate"
     private val endDate = "endDate"
     private val status_campaign = "status_campaign"
+    private val is_campaign = "is_campaign"
 
     private fun alterAttachmentAttributesAt(
         listPosition: Int,

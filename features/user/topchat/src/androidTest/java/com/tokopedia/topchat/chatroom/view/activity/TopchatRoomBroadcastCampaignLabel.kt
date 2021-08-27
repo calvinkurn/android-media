@@ -91,7 +91,14 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
     }
 
-    // TODO: should show ended state when end date is invalid or has passed
-    // TODO: should hide campaign label when broadcast does not have campaign
+    @Test
+    fun should_hide_campaign_label_when_broadcast_does_not_have_campaign() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadcastNoCampaign
+        launchChatRoomActivity()
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
+    }
 
 }
