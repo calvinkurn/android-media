@@ -4,7 +4,6 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -14,6 +13,8 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_A
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BANNER
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BROADMATCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BROADMATCH_LIHAT_SEMUA
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CARI_BARANG_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_JUMPER
@@ -25,12 +26,15 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_P
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BROADMATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -76,7 +80,6 @@ object SearchTracking {
         const val IMPRESSION_BANNER = "impression - banner"
         const val CLICK_BANNER = "click - banner"
         const val CLICK_APPLY_CATEGORY_FILTER = "click - apply category filter"
-        const val EVENT_ACTION_CLICK_SEARCH_BAR_VALUE = "click - search - search bar"
         const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
         const val CLICK_CATEGORY_JUMPER = "click - category jumper"
         const val CLICK_CARI_BARANG_DI_TOKONOW = "click - cari barang di tokonow"
@@ -86,13 +89,15 @@ object SearchTracking {
             "click product on tokonow product recommendation"
         const val CLICK_ATC_SRP_PRODUCT_TOKONOW =
             "click add to cart on tokonow product recommendation"
-
         const val IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
         const val CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+        const val IMPRESSION_BROADMATCH = "impression - broad match"
+        const val CLICK_BROADMATCH = "click - broad match"
+        const val CLICK_BROADMATCH_LIHAT_SEMUA = "click - broad match lihat semua"
     }
 
     object Category {
-        const val TOKONOW_TOP_NAV = "tokonow - top nav"
+        const val TOP_NAV = "top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKONOW_EMPTY_RESULT =
@@ -101,29 +106,16 @@ object SearchTracking {
     }
 
     object Misc {
-        const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
         const val RECOM_LIST_PAGE = "searchproduct"
         const val RECOM_LIST_PAGE_EMPTY_SEARCH =
             "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
+        const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
-    }
-
-    fun sendSearchBarClickEvent(keyword: String) {
-        sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_TOKONOW,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
-                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV,
-                        EVENT_LABEL, keyword,
-                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-                )
-        )
     }
 
     fun sendProductImpressionEvent(
@@ -144,7 +136,7 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
-                        productItemDataView.getAsImpressionObjectDataLayer(filterSortValue)
+                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
                     )
                 )
         ) as HashMap<String, Any>
@@ -152,7 +144,7 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun ProductItemDataView.getAsImpressionObjectDataLayer(
+    private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
             filterSortValue: String,
     ): Any {
         return getAsObjectDataLayerMap(filterSortValue).also {
@@ -493,5 +485,127 @@ object SearchTracking {
                         KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 )
         )
+    }
+
+    fun sendBroadMatchImpressionEvent(
+        trackingQueue: TrackingQueue,
+        broadMatchItemDataView: BroadMatchItemDataView,
+        keyword: String,
+        userId: String,
+    ) {
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_ACTION, IMPRESSION_BROADMATCH,
+            EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+            EVENT_LABEL, "$keyword - ${broadMatchItemDataView.alternativeKeyword}",
+            KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+            KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            USER_ID, userId,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCYCODE, IDR,
+                IMPRESSIONS, DataLayer.listOf(
+                    broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
+                )
+            )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    private fun BroadMatchItemDataView.getAsImpressionClickObjectDataLayer(): Any {
+        return getAsObjectDataLayerMap().also {
+            it.putAll(DataLayer.mapOf(
+                "list", TOKONOW_BROAD_MATCH,
+                "position", position,
+            ))
+        }
+    }
+
+    private fun BroadMatchItemDataView.getAsObjectDataLayerMap(): MutableMap<String, Any> {
+        return DataLayer.mapOf(
+            "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+            "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+            "id", id,
+            "name", name,
+            "price", price,
+            "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+        )
+    }
+
+    fun sendBroadMatchClickEvent(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        keyword: String,
+        userId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_ACTION, CLICK_BROADMATCH,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - ${broadMatchItemDataView.alternativeKeyword}",
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_BROAD_MATCH),
+                        PRODUCTS, DataLayer.listOf(
+                            broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
+                        )
+                    ),
+                )
+            )
+        )
+    }
+
+    fun sendBroadMatchSeeAllClickEvent(broadMatchDataView: BroadMatchDataView, keyword: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_BROADMATCH_LIHAT_SEMUA,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - ${broadMatchDataView.keyword}",
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendBroadMatchAddToCartEvent(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        keyword: String,
+        userId: String,
+        quantity: Int,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, ADD_TO_CART,
+                EVENT_ACTION, CLICK_TAMBAH_KE_KERANJANG,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - ${broadMatchItemDataView.alternativeKeyword}",
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    ADD, DataLayer.mapOf(
+                        PRODUCTS, DataLayer.listOf(
+                            broadMatchItemDataView.getAsATCObjectDataLayer(quantity)
+                        )
+                    ),
+                    CURRENCYCODE, IDR,
+                ),
+            )
+        )
+    }
+
+    private fun BroadMatchItemDataView.getAsATCObjectDataLayer(quantity: Int): Any {
+        return getAsObjectDataLayerMap().also {
+            it.putAll(DataLayer.mapOf(
+                "dimension40", TOKONOW_BROAD_MATCH,
+                "quantity", quantity,
+                "shop_id", shop.id,
+                "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+            ))
+        }
     }
 }

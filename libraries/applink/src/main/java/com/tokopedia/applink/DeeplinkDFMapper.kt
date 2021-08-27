@@ -5,6 +5,7 @@ import android.net.Uri
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
@@ -187,6 +188,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
+    const val DF_MERCHANT_REVIEW = "df_merchant_review"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
@@ -341,21 +343,21 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
-            }, DF_BASE, R.string.title_product_review))
+            }, DF_MERCHANT_REVIEW, R.string.title_product_review))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_EXPECTED_PATH_SIZE)
-            }, DF_BASE, R.string.title_review_inbox))
+            }, DF_MERCHANT_REVIEW, R.string.title_review_inbox))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_DETAIL_EXPECTED_PATH_SIZE)
-            }, DF_BASE, R.string.title_review_detail))
+            }, DF_MERCHANT_REVIEW, R.string.title_review_detail))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
-            }, DF_BASE, R.string.title_create_review))
+            }, DF_MERCHANT_REVIEW, R.string.title_create_review))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||

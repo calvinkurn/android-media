@@ -42,7 +42,6 @@ class PlayWidgetCardMediumTranscodeViewHolder(
     private val loaderLoading: LoaderUnify = itemView.findViewById(R.id.loader_loading)
     private val llError: LinearLayout = itemView.findViewById(R.id.ll_error)
     private val btnErrorDelete: UnifyButton = itemView.findViewById(R.id.btn_error_delete)
-    private val ivGiveaway: ImageView = itemView.findViewById(R.id.iv_giveaway)
 
     private val transcodingCoverTarget = object : CustomTarget<Bitmap>() {
         override fun onLoadCleared(placeholder: Drawable?) {
@@ -95,8 +94,6 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         llWidgetContainer.visibility = View.VISIBLE
         llLoadingContainer.visibility = View.VISIBLE
         llError.visibility = View.GONE
-
-        ivGiveaway.visibility = View.GONE
     }
 
     private fun setFailedTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
