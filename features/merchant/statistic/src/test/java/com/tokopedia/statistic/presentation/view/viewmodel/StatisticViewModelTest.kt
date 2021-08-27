@@ -5,6 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -489,7 +490,10 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get post widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -513,7 +517,10 @@ class StatisticViewModelTest {
 
     @Test
     fun `should failed when get post widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -581,7 +588,10 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -605,7 +615,10 @@ class StatisticViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 

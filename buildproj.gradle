@@ -7,10 +7,6 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        jcenter()
-        maven { url "https://maven.google.com" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -22,11 +18,22 @@ allprojects {
             url "https://jitpack.io"
             credentials { username authToken }
         }
-        maven { url "https://www.jitpack.io" }
         flatDir {
-            dirs '../aars'
+            dirs rootProject.file('aars')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    //handle new relic keep in JDK 8
+    afterEvaluate { Project p ->
+        List<String> newRelicPlugins = ["com.newrelic", "com.newrelic.agent.android"]
+
+        for(String s: newRelicPlugins) {
+            if (p.plugins.findPlugin(s)) {
+                p.tasks.withType(JavaCompile).all {
+                    it.options.compilerArgs += ['--release', '8']
+                }
+            }
+        }
     }
 }
 
@@ -50,6 +57,9 @@ afterEvaluate {
         }
     }
 }
+
+task("runJacoco")
+task("runUnitTest")
 
 subprojects {
     tasks.withType(Test) {
@@ -99,6 +109,26 @@ subprojects {
                     substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) with module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)
                 }
             }
+        }
+    }
+    project.afterEvaluate {
+        def isLibrary = project.plugins.hasPlugin("com.android.library")
+        def isApp = project.plugins.hasPlugin("com.android.application")
+        def isDF = project.plugins.hasPlugin("com.android.dynamic-feature")
+        if (project.tasks.findByName("jacocoTestReport")!= null) {
+            def task = project.path + ":jacocoTestReport"
+            rootProject.tasks.runJacoco.dependsOn(task)
+            if (isApp) {
+                task = project.path + ":testLiveProdDebugUnitTest"
+                rootProject.tasks.runUnitTest.dependsOn(task)
+            } else if (isLibrary && !isDF ){
+                task = project.path + ":testDebugUnitTest"
+                rootProject.tasks.runUnitTest.dependsOn(task)
+            }
+        }
+
+        if (isLibrary) {
+            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
     }
 }

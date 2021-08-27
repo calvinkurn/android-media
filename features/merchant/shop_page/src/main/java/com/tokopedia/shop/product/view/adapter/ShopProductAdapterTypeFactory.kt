@@ -32,6 +32,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
                                     private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
                                     private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+                                    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
@@ -125,6 +126,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductEmptySearchViewHolder.LAYOUT
     }
 
+    fun type(shopProductEmptyShowcaseUiModel: ShopProductEmptyShowcaseUiModel): Int {
+        return ShopProductEmptyShowcaseViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         when (type) {
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
@@ -132,6 +137,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
             ShopProductTitleEmptyViewHolder.LAYOUT -> return ShopProductTitleEmptyViewHolder(parent)
             ShopProductEmptySearchViewHolder.LAYOUT -> return ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
+            ShopProductEmptyShowcaseViewHolder.LAYOUT -> return ShopProductEmptyShowcaseViewHolder(parent, shopShowcaseEmptySearchListener)
             ErrorNetworkWrapViewHolder.LAYOUT -> return ErrorNetworkWrapViewHolder(parent)
             ShopProductEtalaseTitleViewHolder.LAYOUT -> return ShopProductEtalaseTitleViewHolder(parent)
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)

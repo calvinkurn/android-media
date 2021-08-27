@@ -283,12 +283,23 @@ object VoucherCreationTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    private fun sendGeneralTracking(event: String,
-                                    category: String,
-                                    action: String,
-                                    label: String,
-                                    screenName: String,
-                                    userId: String,
+    fun sendBroadCastChatClickTracking(category: String, shopId: String) {
+        sendGeneralTracking(
+            event = VoucherCreationAnalyticConstant.Event.CLICK_MERCHANT_VOUCHER,
+            action = VoucherCreationAnalyticConstant.EventAction.Click.BROADCAST_CREATION,
+            category = category,
+            label = shopId,
+            currentSite = VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            businessUnit = VoucherCreationAnalyticConstant.Values.COMMUNICATION
+        )
+    }
+
+    private fun sendGeneralTracking(event: String = "",
+                                    category: String = "",
+                                    action: String = "",
+                                    label: String = "",
+                                    screenName: String = "",
+                                    userId: String = "",
                                     currentSite: String = VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
                                     businessUnit: String = VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
                                     pageSource: String? = null) {

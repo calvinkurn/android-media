@@ -11,5 +11,7 @@ data class TopAdsImageViewModel(
         var nextPageToken: String? = "",
         var applink: String? = "",
         var position: Int = 0,
-        var shopId: String = ""
+        var shopId: String = "",
+        var currentPage: String = "",
+        var kind: String = ""
 )

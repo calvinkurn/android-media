@@ -8,14 +8,14 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -109,14 +109,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
                                                              private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-                                                             private val moveProductToWarehouseUseCase: Lazy<MoveProductToWarehouseUseCase>,
-                                                             private val moveProductToEtalaseUseCase: Lazy<MoveProductToEtalaseUseCase>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
                                                              private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
-                                                             private val addToCartOccUseCase: Lazy<AddToCartOccUseCase>,
+                                                             private val addToCartOccUseCase: Lazy<AddToCartOccMultiUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
@@ -187,14 +185,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _statusFilterTopAdsProduct = MutableLiveData<Result<Boolean>>()
     val statusFilterTopAdsProduct: LiveData<Result<Boolean>>
         get() = _statusFilterTopAdsProduct
-
-    private val _moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
-    val moveToWarehouseResult: LiveData<Result<Boolean>>
-        get() = _moveToWarehouseResult
-
-    private val _moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
-    val moveToEtalaseResult: LiveData<Result<Boolean>>
-        get() = _moveToEtalaseResult
 
     private val _toggleFavoriteResult = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
@@ -379,8 +369,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getProductInfoP3UseCase.get().cancelJobs()
         toggleFavoriteUseCase.get().cancelJobs()
         trackAffiliateUseCase.get().cancelJobs()
-        moveProductToWarehouseUseCase.get().cancelJobs()
-        moveProductToEtalaseUseCase.get().cancelJobs()
         getRecommendationUseCase.get().unsubscribe()
         removeWishlistUseCase.get().unsubscribe()
         submitTicketSubscription?.unsubscribe()
@@ -560,8 +548,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
-                is AddToCartOccRequestParams -> {
-                    getAddToCartOccUseCase(requestParams)
+                is AddToCartOccMultiRequestParams -> {
+                    getAddToCartOccUseCase(atcParams)
                 }
             }
         }) {
@@ -607,9 +595,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
+    private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
         val result = withContext(dispatcher.io) {
-            addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
+            addToCartOccUseCase.get().setParams(atcParams).executeOnBackground().mapToAddToCartDataModel()
         }
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
@@ -925,24 +913,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun moveProductToWareHouse(productId: String) {
-        launchCatchError(block = {
-            moveProductToWarehouseUseCase.get().createParams(productId, userId, deviceId)
-            _moveToWarehouseResult.value = moveProductToWarehouseUseCase.get().executeOnBackground().getIsSuccess().asSuccess()
-        }) {
-            _moveToWarehouseResult.value = it.asFail()
-        }
-    }
-
-    fun moveProductToEtalase(productId: String, selectedEtalaseId: String, selectedEtalaseName: String) {
-        launchCatchError(block = {
-            moveProductToEtalaseUseCase.get().createParams(productId, selectedEtalaseId, selectedEtalaseName, userId, deviceId)
-            _moveToEtalaseResult.value = moveProductToEtalaseUseCase.get().executeOnBackground().getIsSuccess().asSuccess()
-        }) {
-            _moveToEtalaseResult.value = it.asFail()
-        }
-    }
-
     fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
         trackAffiliateUseCase.get().params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
         trackAffiliateUseCase.get().execute({
@@ -1010,14 +980,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _toggleTeaserNotifyMe.value = it.asFail()
         }
-    }
-
-    fun cancelWarehouseUseCase() {
-        moveProductToWarehouseUseCase.get().cancelJobs()
-    }
-
-    fun cancelEtalaseUseCase() {
-        moveProductToEtalaseUseCase.get().cancelJobs()
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {

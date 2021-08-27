@@ -355,6 +355,7 @@ object AnalyticsTrackerUtil {
             const val ITEM_VARIANT="item_variant"
             const val PRICE = "price"
             const val FREEONGKIR = "bebas ongkir"
+            const val KUPON_ITEMNAME = "tokopoints/kupon-saya - p%s - promo list"
         }
     }
 

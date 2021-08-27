@@ -528,10 +528,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onSuccessLoginBiometric() {
+        analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
     }
 
     private fun onErrorLoginBiometric(throwable: Throwable) {
+        analytics.trackOnLoginFingerprintFailed(throwable.message ?:"")
         onErrorLogin("Error Login Fingerprint", "", throwable)
     }
 
@@ -723,6 +725,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             setLeftDrawableForFingerprint()
             show()
             setOnClickListener {
+                analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
         }
@@ -1064,7 +1067,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (GlobalConfig.isSellerApp()) {
                 setLoginSuccessSellerApp()
             } else {
-                it.setResult(Activity.RESULT_OK)
+
+                val bundle = Bundle()
+
+                if (isFromRegister) {
+                    bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+                }
+
+                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                 it.finish()
             }
 
@@ -1180,17 +1190,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onErrorLogin(errorMessage: String?, flow: String) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
-
         dismissLoadingLogin()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         loggingError(flow, errorMessage)
     }
 
     private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
-
         dismissLoadingLogin()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         loggingErrorWithThrowable(flow, errorMessage, throwable)
     }
 
@@ -1248,8 +1256,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return remoteConfigInstance.abTestPlatform
     }
 
-    fun isEnableFingerprintRollout(): Boolean =
-            getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
+    fun isEnableFingerprintRollout(): Boolean {
+        if (Build.VERSION.SDK_INT == OS_11) {
+            return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isNotEmpty()
+        }
+        return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
+    }
 
 
     fun isEnableEncryptRollout(): Boolean {
@@ -1384,7 +1396,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun showGetAdminTypeError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         dismissLoadingLogin()
     }
 
@@ -1585,11 +1597,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     viewModel.getUserInfo()
                 }
-            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
-                data?.extras?.let {
-                    val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
-                    val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-                    onSuccessChooseAccountFingerprint(email, token)
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT) {
+                if(resultCode == Activity.RESULT_OK) {
+                    data?.extras?.let {
+                        val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
+                        val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
+                        onSuccessChooseAccountFingerprint(email, token)
+                    }
+                } else {
+                    showToaster(getString(R.string.error_login_fp_error))
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
@@ -1626,7 +1642,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onErrorVerifyFingerprint() {
-        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.error_login_fp_error))
+        showToaster(getString(R.string.error_login_fp_error))
+    }
+
+    private fun showToaster(message: String?) {
+        if(context != null) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message ?: getString(R.string.error_register_webview),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        }
     }
 
     private fun onSuccessChooseAccountFingerprint(email: String, validateToken: String) {
@@ -1635,8 +1664,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
 
         if (enable2FA) {
@@ -1973,6 +2001,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
+
+        private const val OS_11 = 30
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

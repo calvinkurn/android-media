@@ -5,9 +5,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CashOnDeliveryProduct(
-        var isCodAvailable: Int,
+        var isCodAvailable: Int?,
         val codText: String?,
-        val codPrice: Int,
+        val codPrice: Int?,
         val formattedPrice: String?,
         val tncText: String?,
         val tncLink: String?
