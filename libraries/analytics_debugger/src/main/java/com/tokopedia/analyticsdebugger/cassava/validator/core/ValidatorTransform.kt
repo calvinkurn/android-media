@@ -26,12 +26,6 @@ fun String.toJsonMap(): JsonMap {
     }
 }
 
-internal fun JsonMap.toJson(): String =
-        GsonBuilder()
-                .setPrettyPrinting()
-                .create()
-                .toJson(this)
-
 internal fun GtmLogDB.toUiModel() = GtmLogUi(
         this.id, this.data, this.name, this.timestamp
 )

@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
+import android.net.NetworkRequest
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
