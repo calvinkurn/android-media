@@ -60,12 +60,12 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
+    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel, isMultipleLike: Boolean) {
         /**
          * TODO: backend is not yet setup for multiplelike, so spamming like right now will counted 1 like
          * to prevent unconsistency view, we take the largest likes
          */
-        tvTotalLikes.text = if(totalLikes.totalLike > totalLikes.previousLike) totalLikes.totalLikeFormatted
+        tvTotalLikes.text = if(totalLikes.totalLike > totalLikes.previousLike || !isMultipleLike) totalLikes.totalLikeFormatted
                             else totalLikes.previousLikeFormatted
     }
 

@@ -718,7 +718,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 isFirstTime = false
                 viewModel.firstLikeShot = false
 
-                likeView.setTotalLikes(it)
+                likeView.setTotalLikes(it, playViewModel.isAllowMultipleLike)
             }
         })
     }
