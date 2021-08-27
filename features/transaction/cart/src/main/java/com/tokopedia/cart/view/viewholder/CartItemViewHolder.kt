@@ -18,7 +18,6 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
@@ -124,6 +123,19 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                             binding.textMoveToWishlist.gone()
                         } else {
                             renderActionWishlist(it, data)
+                        }
+                    }
+                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP -> {
+                        when {
+                            data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
+                                renderActionCheckoutInBrowser(it, data)
+                            }
+                            data.selectedUnavailableActionId == Action.ACTION_SIMILARPRODUCT && it.id == Action.ACTION_SIMILARPRODUCT -> {
+                                renderActionSimilarProduct(it, data)
+                            }
+                            data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
+                                renderFollowShop(it, data)
+                            }
                         }
                     }
                     Action.ACTION_DELETE -> {
@@ -664,6 +676,47 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             if (position != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemProductClicked(data)
             }
+        }
+    }
+
+    private fun renderActionCheckoutInBrowser(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotBlank()) {
+                    actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, action)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            actionListener?.onShowTickerTobacco()
+            show()
+        }
+    }
+
+    private fun renderActionSimilarProduct(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotBlank()) {
+                    actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
+            show()
+        }
+    }
+
+    private fun renderFollowShop(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.shopId.isNotEmpty()) {
+                    actionListener?.onFollowShopClicked(data.shopId, data.errorType)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            show()
         }
     }
 

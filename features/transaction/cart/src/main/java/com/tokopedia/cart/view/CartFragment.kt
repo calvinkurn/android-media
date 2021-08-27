@@ -1324,22 +1324,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return wishlistsWishlistActionListener as WishListActionListener
     }
 
-    override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView) {
-        setProductImageAnimationData(imageView, true)
-
-        cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
-        val isLastItem = cartAdapter.allCartItemData.size == 1
-
-        // If unavailable item > 1 and state is collapsed, then expand first
-        var forceExpand = false
-        if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
-            collapseOrExpandDisabledItem()
-            forceExpand = true
-        }
-
-        dPresenter.processAddCartToWishlist(data.productId, data.cartId, isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM, forceExpand)
-    }
-
     override fun onAddLastSeenToWishlist(productId: String) {
         dPresenter.processAddToWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
     }
@@ -3093,10 +3077,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onDeleteDisabledItem(data: DisabledCartItemHolderData) {
-    }
-
-    override fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, action: Action) {
+    override fun onTobaccoLiteUrlClicked(url: String, data: CartItemHolderData, action: Action) {
         cartPageAnalytics.eventClickCheckoutMelaluiBrowserOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco()
         dPresenter.redirectToLite(url)
@@ -3350,7 +3331,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
-        routeToApplink(cartItemHolderData.editBundleApplink)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
+            startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
+        }
     }
 
 }
