@@ -703,7 +703,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 if(playViewModel.isAllowMultipleLike) {
                     isAnimate = false
-                    spamLikeView.shot(shotAmount.toInt())
+                    spamLikeView.shot(shotAmount.toInt(), it.source != LikeSource.UserAction)
 
                     if(orientation.isLandscape) {
                         fadeInFadeOutAnimation.cancel()
