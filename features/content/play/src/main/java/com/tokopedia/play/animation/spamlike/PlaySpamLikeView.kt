@@ -255,7 +255,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         val end = image.y - 500
 
         val threshold = (end - ((end - start) / 2))
-        var alpha = 1.0f
+        var alpha = image.alpha
 
         val xStart = image.x - 20
         val xEnd = image.x + 20
