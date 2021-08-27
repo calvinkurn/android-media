@@ -22,6 +22,7 @@ class SearchProductLoadMoreGqlUseCase(
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
             addProductAdsRequest(requestParams, params)
+            addHeadlineAdsRequest(requestParams, searchProductParams)
         }
 
         graphqlUseCase.clearRequest()

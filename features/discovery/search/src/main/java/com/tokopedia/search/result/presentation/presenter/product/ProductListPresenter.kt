@@ -24,7 +24,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -184,8 +183,6 @@ class ProductListPresenter @Inject constructor(
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var hasFullThreeDotsOptions = false
-    private var cpmModel: CpmModel? = null
-    private var cpmDataList: MutableList<CpmData>? = null
     private var isABTestNavigationRevamp = false
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
@@ -511,7 +508,8 @@ class ProductListPresenter @Inject constructor(
         productList.addAll(list)
 
         val searchProduct = searchProductModel.searchProduct
-        processHeadlineAds(searchParameter, list)
+
+        processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
@@ -596,6 +594,15 @@ class ProductListPresenter @Inject constructor(
 
     private fun mapFreeOngkir(freeOngkir: FreeOngkir): FreeOngkirDataView {
         return FreeOngkirDataView(freeOngkir.isActive, freeOngkir.imageUrl)
+    }
+
+    private fun processHeadlineAdsLoadMore(
+        searchProductModel: SearchProductModel,
+        list: MutableList<Visitable<*>>,
+    ) {
+        processHeadlineAds(searchProductModel) { _, cpmDataView ->
+            processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
+        }
     }
 
     private fun loadMoreDataSubscriberOnComplete() {
@@ -1023,16 +1030,12 @@ class ProductListPresenter @Inject constructor(
             view.trackEventImpressionBannedProducts(false)
         }
 
-        productDataView.cpmModel?.let {
-            cpmModel = it
-            cpmDataList = it.data
-        }
-
         topAdsCount = 1
         productList = createProductItemVisitableList(productDataView)
         list.addAll(productList)
 
-        processHeadlineAds(searchParameter, list)
+        processHeadlineAdsFirstPage(searchProductModel, list)
+
         additionalParams = productDataView.additionalParams
 
         inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
@@ -1110,36 +1113,31 @@ class ProductListPresenter @Inject constructor(
                 && (productDataView.suggestionModel?.suggestionText?.isNotEmpty() == true)
     }
 
-    private fun processHeadlineAds(searchParameter: Map<String, Any>, visitableList: MutableList<Visitable<*>>) {
-        val cpmDataList = cpmDataList ?: return
-        val canProcessHeadlineAds = isHeadlineAdsAllowed() && cpmDataList.isNotEmpty()
+    private fun processHeadlineAdsFirstPage(
+        searchProductModel: SearchProductModel,
+        list: MutableList<Visitable<*>>,
+    ) {
+        processHeadlineAds(searchProductModel) { index, cpmDataView ->
+            if (index == 0)
+                processHeadlineAdsAtTop(list, cpmDataView)
+            else
+                processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
+        }
+    }
 
-        if (!canProcessHeadlineAds) return
+    private fun processHeadlineAds(
+        searchProductModel: SearchProductModel,
+        process: (Int, CpmDataView) -> Unit,
+    ) {
+        if (!isHeadlineAdsAllowed()) return
 
-        val cpmDataIterator = cpmDataList.iterator()
+        val cpmModel = searchProductModel.cpmModel
 
-        while (cpmDataIterator.hasNext()) {
-            val data = cpmDataIterator.next()
-            val position = if (data.cpm == null) -1 else data.cpm.position
+        cpmModel.data?.forEachIndexed { index, cpmData ->
+            if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
-            if (position < 0 || !shouldShowCpmShop(data)) {
-                cpmDataIterator.remove()
-                continue
-            }
-
-            if (position > productList.size) continue
-
-            try {
-                val cpmDataView = createCpmDataView(data) ?: continue
-
-                if (position == 0 || position == 1) processHeadlineAdsAtTop(visitableList, cpmDataView)
-                else processHeadlineAdsAtPosition(visitableList, position, cpmDataView)
-
-                cpmDataIterator.remove()
-            } catch (exception: java.lang.Exception) {
-                exception.printStackTrace()
-                view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-            }
+            val cpmDataView = createCpmDataView(cpmModel, cpmData)
+            process(index, cpmDataView)
         }
     }
 
@@ -1164,15 +1162,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
 
-    private fun createCpmDataView(cpmData: CpmData): CpmDataView? {
-        if (cpmModel == null) return null
-        val cpmForViewModel = createCpmForViewModel(cpmData) ?: return null
+    private fun createCpmDataView(cpmModel: CpmModel, cpmData: CpmData): CpmDataView {
+        val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
         return CpmDataView(cpmForViewModel)
     }
 
-    private fun createCpmForViewModel(cpmData: CpmData): CpmModel? {
-        val cpmModel = cpmModel ?: return null
-
+    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: CpmData): CpmModel {
         return CpmModel().apply {
             header = cpmModel.header
             status = cpmModel.status
