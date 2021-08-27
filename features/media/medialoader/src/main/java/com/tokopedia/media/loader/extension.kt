@@ -19,8 +19,8 @@ import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTa
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url, Properties())
 
 fun ImageView.loadAsGif(
-        url: String,
-        properties: Properties.() -> Unit
+    url: String,
+    properties: Properties.() -> Unit
 ) = loadGifImage(this, url, Properties().apply(properties))
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
@@ -32,25 +32,25 @@ fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 inline fun ImageView.loadImage(
-        url: String?,
-        crossinline properties: Properties.() -> Unit = {}
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties))
 
 inline fun ImageView.loadImageFitCenter(
-        url: String?,
-        crossinline properties: Properties.() -> Unit = {}
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties).fitCenter())
 
 inline fun ImageView.loadImageWithoutPlaceholder(
-        url: String?,
-        crossinline properties: Properties.() -> Unit = {}
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
         .apply(properties)
         .setPlaceHolder(-1))
 
 inline fun ImageView.loadImageCircle(
-        url: String?,
-        crossinline properties: Properties.() -> Unit = {}
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties().apply(properties)
         .isCircular(true)
 
@@ -63,33 +63,36 @@ inline fun ImageView.loadImageCircle(
 )
 
 fun ImageView.loadImageRounded(
-        resource: Int,
-        rounded: Float
+    resource: Int,
+    rounded: Float
 ) = this.setImageResource(resource)
 
 inline fun ImageView.loadImageRounded(
-        data: Bitmap,
-        rounded: Float = DEFAULT_ROUNDED,
-        crossinline properties: Properties.() -> Unit = {}
+    data: Bitmap,
+    rounded: Float = DEFAULT_ROUNDED,
+    crossinline properties: Properties.() -> Unit = {}
 ) {
     call(data, Properties()
-            .apply(properties)
-            .setRoundedRadius(rounded)
+        .apply(properties)
+        .setRoundedRadius(rounded)
     )
 }
 
 inline fun ImageView.loadImageRounded(
-        url: String?,
-        rounded: Float = DEFAULT_ROUNDED,
-        crossinline properties: Properties.() -> Unit = {}
+    url: String?,
+    rounded: Float = DEFAULT_ROUNDED,
+    crossinline properties: Properties.() -> Unit = {}
 ) {
     call(url, Properties()
-            .apply(properties)
-            .setRoundedRadius(rounded)
+        .apply(properties)
+        .setRoundedRadius(rounded)
     )
 }
 
-fun ImageView.loadIcon(url: String?) {
+inline fun ImageView.loadIcon(
+    url: String?,
+    crossinline properties: Properties.() -> Unit = {}
+) {
     GlideApp
         .with(context)
         .load(url)
@@ -117,8 +120,8 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
     if (context.isValid()) {
         try {
             loadImageBuilder(
-                    imageView = this,
-                    properties = properties.setSource(source)
+                imageView = this,
+                properties = properties.setSource(source)
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -133,15 +136,15 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
 }
 
 fun <T: View> loadImageWithTarget(
-        context: Context,
-        url: String,
-        properties: Properties.() -> Unit,
-        mediaTarget: MediaTarget<T>
+    context: Context,
+    url: String,
+    properties: Properties.() -> Unit,
+    mediaTarget: MediaTarget<T>
 ) {
     loadImageWithTarget(
-            context,
-            Properties().apply(properties).setSource(url),
-            mediaTarget
+        context,
+        Properties().apply(properties).setSource(url),
+        mediaTarget
     )
 }
 
