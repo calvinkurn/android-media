@@ -27,6 +27,8 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -284,7 +286,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
                 inputNumberActionType = InputNumberActionType.CONTACT
-                navigateContact()
+
+                val clientNumber = postpaidClientNumberWidget.getInputNumber()
+                navigateContact(
+                    clientNumber, favNumberList,
+                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId))
             }
 
             override fun onRenderOperator() {
@@ -484,7 +490,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
-        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        if (!inputNumberActionTypeIndex.isLessThanZero()) {
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        }
         postpaidClientNumberWidget.run {
             setContactName(clientName)
             setInputNumber(clientNumber)
