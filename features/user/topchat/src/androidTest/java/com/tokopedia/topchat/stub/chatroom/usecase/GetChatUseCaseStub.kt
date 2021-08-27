@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
@@ -61,6 +62,19 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val broadcastCampaignAboutToEnd: GetExistingChatPojo
+        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(endDate, getNext3Seconds())
+                attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+            }
+        }
+
     /**
      * return next week timestamp in seconds
      */
@@ -76,6 +90,15 @@ class GetChatUseCaseStub @Inject constructor(
     private fun getNext6Hours(): Long {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR_OF_DAY, 6)
+        return calendar.timeInMillis / 1_000
+    }
+
+    /**
+     * return the next 1 seconds timestamp from now in seconds
+     */
+    private fun getNext3Seconds(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.SECOND, 3)
         return calendar.timeInMillis / 1_000
     }
 
@@ -128,5 +151,14 @@ class GetChatUseCaseStub @Inject constructor(
         return CommonUtil.fromJson(
             responseObj.toString(), GetExistingChatPojo::class.java
         )
+    }
+
+    fun getEndWordingBanner(broadcastCampaignAboutToEnd: GetExistingChatPojo): String {
+        val attributes = broadcastCampaignAboutToEnd.chatReplies
+            .list[0].chats[0].replies[0].attachment.attributes
+        val banner = CommonUtil.fromJson<ImageAnnouncementPojo>(
+            attributes, ImageAnnouncementPojo::class.java
+        )
+        return banner.wording
     }
 }

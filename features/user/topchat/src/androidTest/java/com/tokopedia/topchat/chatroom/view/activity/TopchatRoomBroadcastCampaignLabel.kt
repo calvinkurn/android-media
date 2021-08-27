@@ -6,8 +6,11 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
+
+    // TODO: verify label background color
 
     @Test
     fun should_show_starting_state_when_campaign_status_is_started() {
@@ -47,8 +50,30 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
     }
 
-    // TODO: should show ended state when campaign status is started
-    // TODO: should show ended state when ongoing campaign finished countdown
+    @Test
+    fun should_show_ended_state_when_ongoing_campaign_finished_countdown() {
+        // Given
+        val endWording = getChatUseCase.getEndWordingBanner(
+            getChatUseCase.broadcastCampaignAboutToEnd
+        )
+        getChatUseCase.response = getChatUseCase.broadcastCampaignAboutToEnd
+        launchChatRoomActivity()
+
+        // When
+        // Wait for countdown to finish
+        val waitTime = TimeUnit.SECONDS.toMillis(3)
+        waitForIt(waitTime)
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+    }
+
+    // TODO: should_show_ended_state_when_campaign_status_is_started
     // TODO: should show ended state when end date is invalid or has passed
     // TODO: should hide campaign label when broadcast does not have campaign
 
