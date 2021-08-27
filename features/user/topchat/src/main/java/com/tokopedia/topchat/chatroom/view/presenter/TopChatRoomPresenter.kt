@@ -639,8 +639,12 @@ open class TopChatRoomPresenter @Inject constructor(
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
             TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime,
-                attachmentsPreview, intention, userLocationInfo
+                thisMessageId = messageId,
+                messageText = sendMessage,
+                startTime = startTime,
+                attachments = attachmentsPreview,
+                intention = intention,
+                userLocationInfo = userLocationInfo
             )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
@@ -654,7 +658,12 @@ open class TopChatRoomPresenter @Inject constructor(
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
             TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime, products, intention
+                thisMessageId = messageId,
+                messageText = sendMessage,
+                startTime = startTime,
+                attachments = products,
+                intention = intention,
+                userLocationInfo = userLocationInfo
             )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
