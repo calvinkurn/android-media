@@ -48,12 +48,34 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val broadcastCampaignOnGoing: GetExistingChatPojo
+        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(endDate, getNext6Hours())
+                attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+            }
+        }
+
     /**
      * return next week timestamp in seconds
      */
     private fun getNextWeekTimestamp(): Long {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, 7)
+        return calendar.timeInMillis / 1_000
+    }
+
+    /**
+     * return the next 6 hours timestamp from now in seconds
+     */
+    private fun getNext6Hours(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR_OF_DAY, 6)
         return calendar.timeInMillis / 1_000
     }
 
@@ -74,6 +96,7 @@ class GetChatUseCaseStub @Inject constructor(
     private val cta_button = "cta_button"
     // broadcast campaign label
     private val startDate = "startDate"
+    private val endDate = "endDate"
     private val status_campaign = "status_campaign"
 
     private fun alterAttachmentAttributesAt(

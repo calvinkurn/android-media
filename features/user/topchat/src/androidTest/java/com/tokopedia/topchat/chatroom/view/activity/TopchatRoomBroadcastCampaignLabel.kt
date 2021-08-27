@@ -28,8 +28,28 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelStartDateTextAt(1, isDisplayed())
     }
 
+    @Test
+    fun should_show_ongoing_state_when_campaign_status_is_ongoing() {
+        // Given
+        getChatUseCase.response = getChatUseCase.broadcastCampaignOnGoing
+        launchChatRoomActivity()
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(
+            1, withText(
+                R.string.desc_topchat_broadcast_campaign_ongoing
+            )
+        )
+        assertBroadcastCampaignLabelCountdownAt(1, isDisplayed())
+        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+    }
+
     // TODO: should show ended state when campaign status is started
     // TODO: should show ended state when ongoing campaign finished countdown
     // TODO: should show ended state when end date is invalid or has passed
+    // TODO: should hide campaign label when broadcast does not have campaign
 
 }
