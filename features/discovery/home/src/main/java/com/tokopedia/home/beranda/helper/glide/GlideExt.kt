@@ -65,14 +65,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 
 fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadIcon(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
+    this.loadIcon(url)
     }
 }
 
