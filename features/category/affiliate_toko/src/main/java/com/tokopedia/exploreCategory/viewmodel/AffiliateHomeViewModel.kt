@@ -3,7 +3,9 @@ package com.tokopedia.exploreCategory.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.exploreCategory.model.AffiliatePerformanceData
 import com.tokopedia.exploreCategory.model.AffiliateValidateUserData
+import com.tokopedia.exploreCategory.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.exploreCategory.usecase.AffiliateValidateUserStatus
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -11,21 +13,31 @@ import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val useCase: AffiliateValidateUserStatus,
+        private val affiliateValidateUseCase: AffiliateValidateUserStatus,
+        private val affiliatePerformanceData: AffiliatePerformanceUseCase,
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
-    private var productCards = MutableLiveData<ArrayList<Int>>()
+    private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
+    private var affiliatePerformance = MutableLiveData<AffiliatePerformanceData>()
     private var errorMessage = MutableLiveData<String>()
-    fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
-    fun getProductCards(): LiveData<ArrayList<Int>> = productCards
-    fun getErrorMessage(): LiveData<String> = errorMessage
-    fun validateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
 
     fun getAffiliateValidateUser() {
+        launchCatchError(block = {
+            progressBar.value = false
+            validateUserdata.value = affiliateValidateUseCase.validateUserStatus(userSessionInterface.userId, userSessionInterface.email)
+        }, onError = {
+            progressBar.value = false
+            it.printStackTrace()
+            errorMessage.value = it.localizedMessage
+        })
+    }
+
+    fun getAffiliatePerformance() {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            validateUserdata.value = useCase.validateUserStatus(userSessionInterface.userId, userSessionInterface.email)
+            shimmerVisibility.value = false
+            affiliatePerformance.value = affiliatePerformanceData.affiliatePerformance(userSessionInterface.userId)
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
@@ -44,4 +56,10 @@ class AffiliateHomeViewModel @Inject constructor(
     fun isUserLoggedIn(): Boolean {
         return userSessionInterface.isLoggedIn
     }
+
+    fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
+    fun getErrorMessage(): LiveData<String> = errorMessage
+    fun validateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getAffiliatePerformanceData(): LiveData<AffiliatePerformanceData> = affiliatePerformance
+    fun progressBar(): LiveData<Boolean> = progressBar
 }

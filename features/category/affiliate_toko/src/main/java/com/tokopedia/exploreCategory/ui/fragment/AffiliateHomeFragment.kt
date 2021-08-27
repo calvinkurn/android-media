@@ -56,7 +56,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
     }
 
     private fun afterViewCreated() {
-        affiliate_progress_bar?.gone()
         if (!affiliateHomeViewModel.isUserLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
@@ -100,6 +99,14 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                     adapter.stopShimmer()
             }
         })
+        affiliateHomeViewModel.progressBar().observe(this, { visibility ->
+            if (visibility != null) {
+                if (visibility)
+                    affiliate_progress_bar?.show()
+                else
+                    affiliate_progress_bar?.gone()
+            }
+        })
         affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
             global_error.run {
                 show()
@@ -110,16 +117,19 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             }
         })
         affiliateHomeViewModel.validateUserdata().observe(this, { validateUserdata ->
-            //TODO
+            if(validateUserdata.validateUserStatus.data.isEligible){
+                affiliateHomeViewModel.getAffiliatePerformance()
+            }
         })
-        affiliateHomeViewModel.getProductCards().observe(this, { products ->
-            if (products.isNotEmpty()) {
-                for (product in products) {
-                    adapter.addElement(AffiliateProductCardVHViewModel(product))
+        affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
+            affiliatePerformance.affiliatePerformance.data.links.items.let { products ->
+                if (products.isNotEmpty()) {
+                    for (product in products) {
+                        adapter.addElement(AffiliateProductCardVHViewModel(product))
+                    }
+                } else {
+                    showNoAffiliate()
                 }
-                //TODO
-            } else {
-                showNoAffiliate()
             }
         })
     }
@@ -149,7 +159,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             AFFILIATE_LOGIN_REQUEST_CODE -> {
-                affiliate_progress_bar?.gone()
                 if (resultCode == Activity.RESULT_OK) {
                     affiliateHomeViewModel.getAffiliateValidateUser()
                 }
