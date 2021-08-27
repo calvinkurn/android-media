@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
 
 class FavoriteNumberNotFoundViewHolder(
         private val binding: ItemTopupBillsFavoriteNumberNotFoundBinding,
