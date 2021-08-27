@@ -16,5 +16,6 @@ class ResultProduct constructor(
     val priceBefore: String = "",
     val dropPercentage: String = "",
     val isFreeOngkirActive: Boolean = false,
-    val imgUrlFreeOngkir: String = ""
+    val imgUrlFreeOngkir: String = "",
+    val stock: Int = 1
 ) : Parcelable

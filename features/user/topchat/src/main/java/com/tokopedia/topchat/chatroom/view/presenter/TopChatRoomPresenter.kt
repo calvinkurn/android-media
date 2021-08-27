@@ -833,7 +833,8 @@ open class TopChatRoomPresenter @Inject constructor(
                 priceBefore = resultProduct.priceBefore,
                 dropPercentage = resultProduct.dropPercentage,
                 productFsIsActive = resultProduct.isFreeOngkirActive,
-                productFsImageUrl = resultProduct.imgUrlFreeOngkir
+                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+                remainingStock = resultProduct.stock
 
             )
             if (productPreview.notEnoughRequiredData()) continue

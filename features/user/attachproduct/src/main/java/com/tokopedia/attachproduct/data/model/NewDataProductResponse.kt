@@ -38,5 +38,9 @@ data class NewDataProductResponse (
     val discountPercentage: String = "",
 
     @SerializedName("freeOngkir")
-    val freeOngkir: DataFreeOngkirResponse = DataFreeOngkirResponse()
+    val freeOngkir: DataFreeOngkirResponse = DataFreeOngkirResponse(),
+
+    @SerializedName("stock")
+    val stock: Int = 1
+
 )
