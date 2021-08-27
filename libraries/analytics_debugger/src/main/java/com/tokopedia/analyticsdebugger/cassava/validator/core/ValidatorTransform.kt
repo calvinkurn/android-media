@@ -14,6 +14,9 @@ fun JsonRegexPair.toDefaultValidator() = Validator(this.second, id = this.first)
 
 fun JsonMap.toDefaultValidator() = Validator(this)
 
+/**
+ * Prefer to use [AnalyticsMapParser] if possible
+* */
 fun String.toJsonMap(): JsonMap {
     val jsonType = object : TypeToken<Map<String, Any>>() {}.type
     return try {

@@ -58,7 +58,13 @@ class ValidatorEngine @Inject constructor(
                         Status.SUCCESS
                     }
                 }
-                newResult.add(case.copy(status = status, matches = matched, errors = tests.errorCause))
+                newResult.add(
+                    case.copy(
+                        status = status,
+                        matches = matched,
+                        errors = tests.errorCause
+                    )
+                )
             } else {
                 newResult.add(case.copy(status = Status.FAILURE, errors = tests.errorCause))
             }
@@ -85,11 +91,14 @@ class ValidatorEngine @Inject constructor(
             if (result.isValid) {
                 resultList.add(gtm)
             } else if (result.errorCause.isNotEmpty()) {
-                errors.append(buildErrorStringWithEventAndLabel(
+                errors.append(
+                    buildErrorStringWithEventAndLabel(
                         comparator.data[EVENT_KEY].toString(),
                         mapGtm[EVENT_LABEL_KEY].toString(),
                         result.errorCause,
-                        alreadyFoundEvent))
+                        alreadyFoundEvent
+                    )
+                )
             }
 
             alreadyFoundEvent = true
@@ -111,13 +120,18 @@ class ValidatorEngine @Inject constructor(
         return null
     }
 
-    private fun buildErrorStringWithEventAndLabel(eventName: String, eventLabel: String, errorMessage: String, alreadyFoundEvent: Boolean): String {
+    private fun buildErrorStringWithEventAndLabel(
+        eventName: String,
+        eventLabel: String,
+        errorMessage: String,
+        alreadyFoundEvent: Boolean
+    ): String {
         val sb = StringBuilder()
         if (!alreadyFoundEvent) {
             sb.append("Found event name \"$eventName\" with label \"$eventLabel\",")
-                    .appendLine()
-                    .append("but: ")
-                    .appendLine()
+                .appendLine()
+                .append("but: ")
+                .appendLine()
         }
         sb.append("- ").append(errorMessage).appendLine()
 
