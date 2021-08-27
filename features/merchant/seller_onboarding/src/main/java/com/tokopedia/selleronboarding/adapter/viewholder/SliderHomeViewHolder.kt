@@ -30,17 +30,14 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
         private const val PIVOT_VALUE = 0.5f
     }
 
+    private val animationObserver by lazy {
+        itemView.findViewById<View>(R.id.viewObserver)
+    }
+
     override fun bind(element: SobSliderHomeUiModel) {
         with(itemView) {
-            tvSobSliderHome.viewTreeObserver.addOnDrawListener {
-                tvSobSliderHome.alpha = itemView.viewObserver.alpha
-                tvSobSliderHome.translationY = itemView.viewObserver.translationY
-            }
-            addOnImpressionListener(element.impressionHolder) {
-                itemView.imgSobHome.scaleX = itemView.viewObserver.scaleX
-                itemView.imgSobHome.scaleY = itemView.viewObserver.scaleY
-                runOneTimePopInAnimation()
-            }
+            setupAnimation(element)
+
             imgSobHome?.loadImage(SobImageSliderUrl.IMG_SOB_HOME) {
                 setPlaceHolder(R.drawable.img_sob_home)
             }
@@ -48,12 +45,29 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
         }
     }
 
+    private fun setupAnimation(element: SobSliderHomeUiModel) {
+        with(itemView) {
+            viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderHome?.alpha = animationObserver.alpha
+                tvSobSliderHome?.translationY = animationObserver.translationY
+
+                return@addOnPreDrawListener true
+            }
+
+            addOnImpressionListener(element.impressionHolder) {
+                itemView.imgSobHome.scaleX = animationObserver.scaleX
+                itemView.imgSobHome.scaleY = animationObserver.scaleY
+                runOneTimePopInAnimation()
+            }
+        }
+    }
+
     private fun setupImageViewObserver() {
         with(itemView.imgSobHome) {
             viewTreeObserver.addOnDrawListener {
-                scaleX = itemView.viewObserver.scaleX
-                scaleY = itemView.viewObserver.scaleY
-                alpha = itemView.viewObserver.alpha
+                scaleX = animationObserver.scaleX
+                scaleY = animationObserver.scaleY
+                alpha = animationObserver.alpha
             }
         }
     }

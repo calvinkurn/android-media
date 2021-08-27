@@ -5,7 +5,6 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -51,10 +50,7 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapLiveFollowers(response)
     }
 
-    override fun mapLiveStream(
-        channelId: String,
-        media: CreateLiveStreamChannelResponse.GetMedia
-    ): LiveStreamInfoUiModel {
+    override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return if (!isMock) uiMapper.mapLiveStream(channelId, media)
         else mockMapper.mapLiveStream(channelId, media)
     }
@@ -133,6 +129,7 @@ class PlayBroadcastConfigurableMapper(
         return if (!isMock) uiMapper.mapBannedEvent(bannedEvent, event)
         else mockMapper.mapBannedEvent(bannedEvent, event)
     }
+
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         return if (!isMock) uiMapper.mapInteractiveConfig(response)
         else mockMapper.mapInteractiveConfig(response)

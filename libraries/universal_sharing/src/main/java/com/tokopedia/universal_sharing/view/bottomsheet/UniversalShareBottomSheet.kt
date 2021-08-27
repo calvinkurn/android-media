@@ -21,20 +21,25 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -76,6 +81,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var screenshotDetector: ScreenshotDetector? = null
 
         private const val DELAY_TIME_MILLISECOND = 500L
+        private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
+        const val CUSTOM_SHARE_SHEET = 1
+        const val SCREENSHOT_SHARE_SHEET = 2
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -96,16 +104,45 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
-                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG){
+                                             fragment: Fragment,
+                                             remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+                                             addFragmentLifecycleObserver: Boolean = false,
+                                             permissionListener: PermissionListener? = null){
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
             if(isEnabled) {
                 if (screenshotDetector == null) {
-                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener)
+                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener, permissionListener)
+                }
+                if(addFragmentLifecycleObserver){
+                    setFragmentLifecycleObserverForScreenShot(fragment)
                 }
                 screenshotDetector?.detectScreenshots(fragment)
             }
+        }
+
+        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment){
+            fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    getScreenShotDetector()?.start()
+                }
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    clearScreenShotDetector()
+                }
+            })
+        }
+
+        //Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
+        //This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
+        fun getShareBottomSheetType() : Int{
+            var shareSheetType = CUSTOM_SHARE_SHEET
+            if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+                shareSheetType = SCREENSHOT_SHARE_SHEET
+            }
+            return shareSheetType
         }
 
         fun getScreenShotDetector(): ScreenshotDetector? {
@@ -119,8 +156,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         fun clearState(){
             screenshotDetector?.stop()
-            screenshotDetector = null
             clearData()
+        }
+
+        fun clearScreenShotDetector(){
+            screenshotDetector?.stop()
+            screenshotDetector?.screenShotListener = null
+            screenshotDetector = null
         }
     }
 
@@ -176,11 +218,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         this.bottomSheetListener = bottomSheetListener
     }
 
-    fun show(fragmentManager: FragmentManager?) {
-        fragmentManager?.let {
-            show(it, TAG)
-        }
-        screenshotDetector?.stop()
+    fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
+        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
+            ?: fragmentManager?.let { show(it, TAG) }
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -266,37 +306,38 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun generateSocialMediaList(context: Context?): List<ShareModel> {
-        return mutableListOf(
-            ShareModel.Whatsapp().apply {
-                packageName = PACKAGE_NAME_WHATSAPP
-                socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
-                feature = channelStr
-                campaign = campaignStr
-                channel =  SharingUtil.labelWhatsapp
-                shareOnlyLink = isImageOnlySharing
+        val socialMediaList: MutableList<ShareModel> = mutableListOf()
+        socialMediaList.add( ShareModel.Whatsapp().apply {
+            packageName = PACKAGE_NAME_WHATSAPP
+            socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
+            feature = channelStr
+            campaign = campaignStr
+            channel =  SharingUtil.labelWhatsapp
+            shareOnlyLink = isImageOnlySharing
+            appIntent = getAppIntent(MimeType.IMAGE, packageName)
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_whatsapp) }
+        })
+        socialMediaList.add(ShareModel.Facebook().apply {
+            packageName = PACKAGE_NAME_FACEBOOK
+            socialMediaName = context?.resources?.getString(R.string.label_facebook)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelFbfeed
+            shareOnlyLink = isImageOnlySharing
+            if(isImageOnlySharing){
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_whatsapp) }
-            },
-            ShareModel.Facebook().apply {
-                packageName = PACKAGE_NAME_FACEBOOK
-                socialMediaName = context?.resources?.getString(R.string.label_facebook)
-                feature = channelStr
-                campaign = campaignStr
-                channel = SharingUtil.labelFbfeed
-                shareOnlyLink = isImageOnlySharing
-                if(isImageOnlySharing){
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                }
-                else{
-                    appIntent = getAppIntent(MimeType.TEXT, packageName)
-                }
-                appIntent?.component = ComponentName(
-                    PACKAGE_NAME_FACEBOOK,
-                    FACEBOOK_FEED_ACTIVITY
-                )
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_facebook) }
-            },
-            ShareModel.Facebook().apply {
+            }
+            else{
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+            }
+            appIntent?.component = ComponentName(
+                PACKAGE_NAME_FACEBOOK,
+                FACEBOOK_FEED_ACTIVITY
+            )
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_facebook) }
+        })
+        if(!TextUtils.isEmpty(savedImagePath)){
+            socialMediaList.add( ShareModel.Facebook().apply {
                 packageName = PACKAGE_NAME_FACEBOOK
                 //facebook story can share only the images
                 socialMediaName = context?.resources?.getString(R.string.label_facebook_story)
@@ -306,63 +347,75 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_icon_fbstories3) }
-            },
-                ShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
-                    socialMediaName = context?.resources?.getString(R.string.label_instagram)
-                    feature = channelStr
-                    campaign = campaignStr
-                    channel = SharingUtil.labelIgfeed
-                    shareOnlyLink = true
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
-                },
-                ShareModel.Instagram().apply {
-                    packageName = PACKAGE_NAME_INSTAGRAM
-                    socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
-                    feature = channelStr
-                    campaign = campaignStr
-                    channel = SharingUtil.labelIgstory
-                    shareOnlyLink = true
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_igstory) }
-                },
-                ShareModel.Line().apply {
-                    packageName = PACKAGE_NAME_LINE
-                    socialMediaName = context?.resources?.getString(R.string.label_line)
-                    feature = channelStr
-                    campaign = campaignStr
-                    channel = SharingUtil.labelLine
-                    shareOnlyLink = isImageOnlySharing
-                    if(isImageOnlySharing){
-                        appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    }
-                    else{
-                        appIntent = getAppIntent(MimeType.TEXT, packageName)
-                    }
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_line) }
-                },
-                ShareModel.Twitter().apply {
-                    packageName = PACKAGE_NAME_TWITTER
-                    socialMediaName = context?.resources?.getString(R.string.label_twitter)
-                    feature = channelStr
-                    campaign = campaignStr
-                    channel = SharingUtil.labelTwitter
-                    shareOnlyLink = isImageOnlySharing
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
-                },
-                ShareModel.Telegram().apply {
-                    packageName = PACKAGE_NAME_TELEGRAM
-                    socialMediaName = context?.resources?.getString(R.string.label_telegram)
-                    feature = channelStr
-                    campaign = campaignStr
-                    channel = SharingUtil.labelTelegram
-                    shareOnlyLink = isImageOnlySharing
-                    appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                    socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
-                }
-        ).filterNot {
+            })
+            socialMediaList.add(ShareModel.Instagram().apply {
+                packageName = PACKAGE_NAME_INSTAGRAM
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_feed)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelIgfeed
+                shareOnlyLink = true
+                appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+            })
+            socialMediaList.add(ShareModel.Instagram().apply {
+                packageName = PACKAGE_NAME_INSTAGRAM
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelIgstory
+                shareOnlyLink = true
+                appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_igstory) }
+            })
+        }else{
+            socialMediaList.add(ShareModel.Instagram().apply {
+                packageName = PACKAGE_NAME_INSTAGRAM
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_msg)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelIgMessage
+                shareOnlyLink = false
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+            })
+        }
+        socialMediaList.add(ShareModel.Line().apply {
+            packageName = PACKAGE_NAME_LINE
+            socialMediaName = context?.resources?.getString(R.string.label_line)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelLine
+            shareOnlyLink = isImageOnlySharing
+            if(isImageOnlySharing){
+                appIntent = getAppIntent(MimeType.IMAGE, packageName)
+            }
+            else{
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+            }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_line) }
+        })
+        socialMediaList.add(ShareModel.Twitter().apply {
+            packageName = PACKAGE_NAME_TWITTER
+            socialMediaName = context?.resources?.getString(R.string.label_twitter)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelTwitter
+            shareOnlyLink = isImageOnlySharing
+            appIntent = getAppIntent(MimeType.IMAGE, packageName)
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
+        })
+        socialMediaList.add(ShareModel.Telegram().apply {
+            packageName = PACKAGE_NAME_TELEGRAM
+            socialMediaName = context?.resources?.getString(R.string.label_telegram)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelTelegram
+            shareOnlyLink = isImageOnlySharing
+            appIntent = getAppIntent(MimeType.IMAGE, packageName)
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
+        })
+        return socialMediaList.filterNot {
             (it.packageName!!.isNotEmpty() && it.appIntent != null && getResolvedActivity(context, it.appIntent) == null)
         }
     }
@@ -427,15 +480,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     previewImgUrl: String = "",
                     imageList: ArrayList<String>? = null,
                     takeSS : ((view: View, imageSaved: ((String)->Unit)) -> Unit)? = null){
-        thumbNailTitle = tnTitle
         imageOptionsList = imageList
 
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
+            thumbNailTitle = SCREENSHOT_TITLE
         }
         else {
+            thumbNailTitle = tnTitle
             thumbNailImageUrl = tnImage
             previewImageUrl = previewImgUrl
         }
@@ -528,6 +582,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
+        screenshotDetector?.stop()
         var customBottomSheetEnabled = true
         if(!TextUtils.isEmpty(featureFlagRemoteConfigKey)){
             val remoteConfig = FirebaseRemoteConfigImpl(context)

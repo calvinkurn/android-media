@@ -3,7 +3,6 @@ package com.tokopedia.shop.common.util
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.shop.common.data.model.MerchantVoucherCouponUiModel
 import com.tokopedia.shop.common.data.model.ResultStatus
-import com.tokopedia.shop.common.data.model.Titles
 
 object ShopPageMapper {
     fun mapToVoucherCouponUiModel(data: TokopointsCatalogMVCSummary?, shopId: String?): MerchantVoucherCouponUiModel? {
@@ -14,13 +13,8 @@ object ShopPageMapper {
                             message = data.resultStatus?.message,
                             status = data.resultStatus?.status
                     ),
-                    titles = listOf(Titles(
-                            text = data.titles?.firstOrNull()?.text,
-                            icon = data.titles?.firstOrNull()?.icon
-                    )),
+                    animatedInfoList = data.animatedInfoList,
                     isShown = data.isShown,
-                    subTitle = data.subTitle,
-                    imageURL = data.imageURL,
                     shopId = shopId
             )
         }

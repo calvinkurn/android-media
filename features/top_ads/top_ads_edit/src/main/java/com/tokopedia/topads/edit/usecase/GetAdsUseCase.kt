@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

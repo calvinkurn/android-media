@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.di.broadcast
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,18 +12,19 @@ import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAn
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 
 /**
  * Created by jegul on 20/05/20
@@ -57,8 +59,12 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
-        return PlayBroadcastSocketImpl(userSession, cacheHandler)
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+        return PlayWebSocketImpl(
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers
+        )
     }
 
     @Provides

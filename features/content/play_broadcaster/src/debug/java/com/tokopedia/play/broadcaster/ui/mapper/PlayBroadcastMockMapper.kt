@@ -107,6 +107,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> {
         return listOf(
+                TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
                 TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
                 TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
                 TrafficMetricUiModel(TrafficMetricType.ShopVisit, "1200"),
