@@ -179,7 +179,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         return UserAccountDataView(
             isLinked = status == "linked",
             status = if(status == "linked") {
-                "$phone - "
+                "+$phone - "
             } else {
                 "Belum tersambung"
             },
@@ -191,7 +191,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     private fun formatDate(mDate: String): String {
         return try {
             val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(mDate) ?: ""
-            SimpleDateFormat("MMM dd yyyy", Locale.getDefault()).format(date)
+            SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
         } catch (e: Exception) {
             mDate
         }

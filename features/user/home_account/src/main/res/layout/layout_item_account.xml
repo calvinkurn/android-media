@@ -13,7 +13,7 @@
         android:id="@+id/item_account_partner_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/img_gojek"
+        android:src="@drawable/ic_gojek_logo"
         app:layout_constraintBottom_toBottomOf="@+id/item_account_status"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_account_partner_name" />

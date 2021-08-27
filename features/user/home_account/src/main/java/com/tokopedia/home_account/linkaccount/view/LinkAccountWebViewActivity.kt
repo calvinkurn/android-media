@@ -2,10 +2,7 @@ package com.tokopedia.home_account.linkaccount.view
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 
 /**
@@ -24,9 +21,16 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        toolbar.hide()
+    fun showToolbar() {
+        supportActionBar?.show()
+    }
+
+    fun hideToolbar() {
+        supportActionBar?.hide()
+    }
+
+    fun hideToolbarBackBtn() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -50,7 +54,6 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
 
     override fun getNewFragment(): Fragment {
         val mUrl = intent.getStringExtra(KEY_URL)
-        println(mUrl)
-        return BaseSessionWebViewFragment.newInstance(mUrl)
+        return LinkAccountWebviewFragment.newInstance(mUrl)
     }
 }
