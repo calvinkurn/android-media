@@ -88,19 +88,32 @@
                 tools:itemCount="4"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/affiliate_product_card_shimmer_item_layout"
-                tools:orientation="vertical"  />
+                tools:orientation="vertical" />
+
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                android:id="@+id/affiliate_no_product_iv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:background="@color/Unify_N0"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_40"
+                android:visibility="gone"
+                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
+                app:imageDpiSupportType="singleDpi"
+                app:layout_constraintTop_toBottomOf="@id/user_image"
+                tools:visibility="visible" />
 
 
             <com.tokopedia.globalerror.GlobalError
                 android:id="@+id/global_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/Unify_N0"
                 android:gravity="center"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/user_image"
-                tools:visibility="gone" />
+                app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_iv"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

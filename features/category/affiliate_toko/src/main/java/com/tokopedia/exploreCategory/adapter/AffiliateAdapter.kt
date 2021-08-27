@@ -1,6 +1,7 @@
 package com.tokopedia.exploreCategory.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateShareVHViewModel
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateShimmerVHViewModel
 
 class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
@@ -16,5 +17,17 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
 
     fun stopShimmer(){
         this.visitables.clear()
+    }
+
+    fun addShareOptions(){
+        this.visitables.clear()
+        addElement(AffiliateShareVHViewModel("Instagram"))
+        addElement(AffiliateShareVHViewModel("TikTok"))
+        addElement(AffiliateShareVHViewModel("Youtube"))
+        addElement(AffiliateShareVHViewModel("Facebook"))
+        addElement(AffiliateShareVHViewModel("Twitter"))
+        addElement(AffiliateShareVHViewModel("Blog"))
+        addElement(AffiliateShareVHViewModel("Whatsapp"))
+        addElement(AffiliateShareVHViewModel("Line"))
     }
 }

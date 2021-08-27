@@ -22,5 +22,11 @@ class AffiliateShareItemViewHolder(itemView: View)
     override fun bind(element: AffiliateShareVHViewModel?) {
         val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, R.color.Unify_GN500))
         itemView.share_button.setDrawable(iconCopyGreen)
+        itemView.share_platform.text = element?.name
+        setObserver()
+    }
+
+    private fun setObserver() {
+
     }
 }

@@ -25,6 +25,7 @@ import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliatePromotionBottomShee
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
 import java.util.ArrayList
@@ -71,14 +72,18 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
     }
 
     private fun showNoAffiliate() {
-        global_error.show()
-        global_error.errorTitle.text = getString(R.string.affiliate_choose_product)
-        global_error.errorDescription.text = getString(R.string.affiliate_choose_product_description)
-        global_error.setButtonFull(true)
-        global_error.errorAction.text = getString(R.string.affiliate_promote_affiliatw)
-        global_error.errorSecondaryAction.gone()
-        global_error.setActionClickListener {
-            AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
+        affiliate_no_product_iv.show()
+        global_error.run {
+            show()
+            errorIllustration.hide()
+            errorTitle.text = getString(R.string.affiliate_choose_product)
+            errorDescription.text = getString(R.string.affiliate_choose_product_description)
+            setButtonFull(true)
+            errorAction.text = getString(R.string.affiliate_promote_affiliatw)
+            errorSecondaryAction.gone()
+            setActionClickListener {
+                AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
+            }
         }
     }
 

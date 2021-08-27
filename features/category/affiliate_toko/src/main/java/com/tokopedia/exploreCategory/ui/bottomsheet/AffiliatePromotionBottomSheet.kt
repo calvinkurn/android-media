@@ -48,6 +48,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(){
             it.adapter = adapter
         }
 
+        adapter.addShareOptions()
         setChild(contentView)
     }
 
