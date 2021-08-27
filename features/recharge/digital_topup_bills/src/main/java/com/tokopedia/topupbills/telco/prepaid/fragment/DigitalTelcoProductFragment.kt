@@ -164,8 +164,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         }
     }
 
-    override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
-        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, titleProduct)
+    override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int, isSpecialPromo: Boolean) {
+        if (isSpecialPromo)
+            topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName,
+                    position, userSession.userId, titleProduct)
+
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
         telcoTelcoProductView.selectMccmProductItem(position)
     }
@@ -342,7 +345,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         telcoTelcoProductView.hide()
         error?.let {
             if (!it.message.isNullOrEmpty()) {
-                 Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
+                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
                         Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }

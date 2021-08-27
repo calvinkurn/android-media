@@ -26,6 +26,8 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
     var selectedMccmPosition = RecyclerView.NO_POSITION
     lateinit var adapter: TelcoProductAdapter
 
+    var isSpecialPromo: Boolean = false
+
     override fun bind(element: TelcoCatalogDataCollection) {
         with(itemView) {
             if (element.products.isEmpty()) hide()
@@ -35,12 +37,14 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                 } else {
                     telco_mccm_title_product.text = element.name
                     telco_mccm_title_product.show()
+
+                    isSpecialPromo = element.name.equals(SPECIAL_PROMO_TITLE, true)
                 }
 
                 telco_mccm_rv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(PRODUCT_MCCM, object : TelcoProductViewHolder.OnClickListener {
                     override fun onClickItemProduct(element: TelcoProduct, position: Int) {
-                        listener?.onClickMccm(element, position)
+                        listener?.onClickMccm(element, position, isSpecialPromo)
                     }
 
                     override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
@@ -104,7 +108,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                 }
             }
         }
-        if (digitalTrackProductTelcoList.isNotEmpty()) {
+        if (digitalTrackProductTelcoList.isNotEmpty() && isSpecialPromo) {
             listener?.onTrackImpressionMccmProductsList(digitalTrackProductTelcoList)
         }
     }
@@ -119,12 +123,14 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
 
     interface OnClickListener {
         fun onTrackImpressionMccmProductsList(productList: List<DigitalTrackProductTelco>)
-        fun onClickMccm(element: TelcoProduct, position: Int)
+        fun onClickMccm(element: TelcoProduct, position: Int, isSpecialPromo: Boolean)
         fun onClickLihatDetail(element: TelcoProduct, position: Int)
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_telco_mccm_list_section_product
+
+        private const val SPECIAL_PROMO_TITLE = "Promo Spesial Buat Kamu"
     }
 }

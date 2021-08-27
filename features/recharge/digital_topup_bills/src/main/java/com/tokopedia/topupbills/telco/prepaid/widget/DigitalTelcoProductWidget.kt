@@ -150,8 +150,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             listener.onTrackImpressionMccmProductsList(productList)
         }
 
-        override fun onClickMccm(element: TelcoProduct, position: Int) {
-            listener.onClickMccmProduct(element, position)
+        override fun onClickMccm(element: TelcoProduct, position: Int, isSpecialPromo: Boolean) {
+            listener.onClickMccmProduct(element, position, isSpecialPromo)
             adapter.selectedMccmPosition = position
         }
 
@@ -264,7 +264,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
-        fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int)
+        fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int, isSpecialPromo: Boolean)
         fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int)
         fun onSeeMoreMccmProduct(itemProduct: TelcoProduct, position: Int)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
