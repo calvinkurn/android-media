@@ -224,6 +224,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_PROMO = 456
         const val NAVIGATION_SHIPMENT = 567
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
+        const val NAVIGATION_EDIT_BUNDLE = 789
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -403,6 +404,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_SHOP_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
         }
     }
 
@@ -449,6 +451,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val bundleId = data?.getStringExtra("bundle_id")
+            bundleId?.let {
+                val cartItems = cartAdapter.getCartItemByBundleId(it)
+                if (cartItems.isNotEmpty()) {
+                    val allCartItemDataList = cartAdapter.allCartItemData
+                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItems, false, false, true)
+                }
+            }
+        }
+    }
 
     // Initialization Section
 
@@ -2616,7 +2630,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                          removeAllItems: Boolean,
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          isMoveToWishlist: Boolean,
-                                         isFromGlobalCheckbox: Boolean) {
+                                         isFromGlobalCheckbox: Boolean,
+                                         forceReloadCart: Boolean) {
         var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
         if (isMoveToWishlist) {
@@ -2637,7 +2652,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         setTopLayoutVisibility()
 
-        if (removeAllItems) {
+        if (forceReloadCart || removeAllItems) {
             refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()

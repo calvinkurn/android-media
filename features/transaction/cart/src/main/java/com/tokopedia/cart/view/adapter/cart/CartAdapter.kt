@@ -777,6 +777,27 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    fun getCartItemByBundleId(bundleId: String): List<CartItemHolderData> {
+        val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
+        loop@ for (data in cartDataList) {
+            if (cartItemHolderDataList.isNotEmpty()) {
+                break@loop
+            }
+            when (data) {
+                is CartShopHolderData -> {
+                    data.productUiModelList.forEach { cartItemHolderData ->
+                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId) {
+                            cartItemHolderDataList.add(cartItemHolderData)
+                        }
+                    }
+                }
+                hasReachAllShopItems(data) -> break@loop
+            }
+        }
+
+        return cartItemHolderDataList
+    }
+
     fun getCartShopHolderDataByIndex(index: Int): CartShopHolderData? {
         return if (cartDataList[index] is CartShopHolderData) {
             cartDataList[index] as CartShopHolderData
