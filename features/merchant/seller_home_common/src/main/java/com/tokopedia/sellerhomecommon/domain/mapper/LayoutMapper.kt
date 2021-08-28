@@ -42,6 +42,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                             )
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
+                            WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )

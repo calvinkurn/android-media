@@ -6,10 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 
-class MilestoneViewHolder(itemView: View): AbstractViewHolder<MilestoneWidgetUiModel>(itemView) {
+class MilestoneViewHolder(
+    itemView: View
+) : AbstractViewHolder<MilestoneWidgetUiModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.shc_milestone_widget
+        val RES_LAYOUT = R.layout.shc_milestone_widget
     }
 
     private val onLoadingView: View by itemView.viewStubInflater(R.id.stubShcMilestoneLoading)
