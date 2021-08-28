@@ -39,6 +39,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -103,14 +104,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
-                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
-                                             addFragmentLifecycleObserver: Boolean = false){
+                                             fragment: Fragment,
+                                             remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
+                                             addFragmentLifecycleObserver: Boolean = false,
+                                             permissionListener: PermissionListener? = null){
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
             if(isEnabled) {
                 if (screenshotDetector == null) {
-                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener)
+                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener, permissionListener)
                 }
                 if(addFragmentLifecycleObserver){
                     setFragmentLifecycleObserverForScreenShot(fragment)

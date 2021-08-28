@@ -98,7 +98,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -127,7 +127,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
-import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -902,7 +901,7 @@ class ShopPageHomeTracking(
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
                 DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
-                SHOP_REF to customDimensionShopPage.shopRef.orEmpty(),
+                DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
                 DIMENSION_83 to boe
         )
     }
