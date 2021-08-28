@@ -127,10 +127,10 @@
         android:id="@+id/status_matching_container"
         layout="@layout/tp_layout_stausmatching"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tp_statusmataching_height"
+        android:layout_height="wrap_content"
         android:layout_below="@id/card_point"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_8"
         android:visibility="visible" />
 
@@ -139,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/status_matching_container"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
         android:visibility="gone" />
 
 </RelativeLayout>

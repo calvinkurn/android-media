@@ -11,11 +11,13 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +45,6 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
 
 
@@ -63,11 +64,12 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
     private var cardContainer: ConstraintLayout? = null
     private var containerUserSaving: ConstraintLayout? = null
     private var containerStatusMatching: View? = null
-    private var backGroundImage: AppCompatImageView? = null
     private var cardStatusMatching: CardUnify? = null
     private var confettiAnim: LottieAnimationView? = null
     private var timerTextView: Typography? = null
     private var statusMatchingTimer: TimerUnifySingle? = null
+    private var parentStatusMatching : ConstraintLayout ? =null
+    private var arrowIcon : AppCompatImageView?=null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -85,11 +87,11 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         cardContainer = itemView.findViewById(R.id.container_saving)
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
         containerStatusMatching = itemView.findViewById(R.id.status_matching_container)
-        backGroundImage = itemView.findViewById(R.id.iv_background)
         cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
         confettiAnim = itemView.findViewById(R.id.confetti_lottie)
         timerTextView = itemView.findViewById(R.id.timer_text_view)
         statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
+        arrowIcon = itemView.findViewById(R.id.ic_arrow_icon_status)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -324,11 +326,6 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             }
         }
         playAnimation()
-        if (itemView.context.isDarkMode()) {
-            backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching_dark)
-        } else {
-            backGroundImage?.setBackgroundResource(R.drawable.bg_statusmatching_light)
-        }
         val metadata = rewardTickerResponse?.get(0)?.metadata?.get(0)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             timerTextView?.text = Html.fromHtml(metadata?.text?.content, Html.FROM_HTML_MODE_LEGACY)
@@ -336,7 +333,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             timerTextView?.text = Html.fromHtml(metadata?.text?.content)
         }
         if(metadata?.isShowTime == true){
-            statusMatchingTimer?.show()
+            setContainerWithTimer()
             setTimer(metadata)
         }
     }
@@ -354,6 +351,34 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
                 metadata?.timeRemainingSeconds = it / 1000
             }
         }
+    }
+
+    private fun setContainerWithTimer(){
+        statusMatchingTimer?.show()
+        parentStatusMatching = itemView.findViewById(R.id.container_statusmatching)
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(parentStatusMatching)
+        constraintSet.connect(
+            R.id.timer_text_view,
+            ConstraintSet.TOP,
+            R.id.countdown_status,
+            ConstraintSet.BOTTOM,
+            0
+        )
+        constraintSet.applyTo(parentStatusMatching)
+
+        val layoutParamsTextView = timerTextView?.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParamsTextView.topMargin = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+        timerTextView?.layoutParams = layoutParamsTextView
+
+        val layoutParamsIcon = arrowIcon?.layoutParams
+        layoutParamsIcon?.height = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+        layoutParamsIcon?.width = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+        arrowIcon?.layoutParams = layoutParamsIcon
+
+        val layoutParams = cardStatusMatching?.layoutParams
+        layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        cardStatusMatching?.layoutParams = layoutParams
     }
 
     private fun playAnimation(){

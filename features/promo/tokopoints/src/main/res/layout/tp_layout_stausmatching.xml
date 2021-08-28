@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_statusmatching"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_10"
     android:layout_marginEnd="@dimen/dp_10"
     android:animateLayoutChanges="true"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:clipChildren="true"
+    android:clipToPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_statusmatching"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@drawable/tp_bg_statusmatching"
+        android:clipChildren="true"
+        android:clipToPadding="true">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/iv_gojek"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_gojek_icon"
+            android:translationX="@dimen/dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,50 +41,48 @@
             app:lottie_speed="1" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ic_arrow_icon"
+            android:id="@+id/ic_arrow_icon_status"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:translationX="@dimen/dp_10"
+            app:layout_constraintBottom_toBottomOf="@id/iv_gojek"
+            app:layout_constraintEnd_toEndOf="@id/iv_gojek"
+            app:layout_constraintStart_toStartOf="@id/iv_gojek"
+            app:layout_constraintTop_toTopOf="@id/iv_gojek"
+            app:srcCompat="@drawable/ic_ticker_arrow_right_white" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/countdown_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/timer_text_view"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_right_arrow_white" />
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_textWidth="wrap"
+            app:timer_unify_single_type="auto"
+            app:timer_unify_single_variant="alternate" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/timer_text_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_52"
-            android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
+            android:textColor="@color/Unify_R100"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/ic_arrow_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_gojek"
+            app:layout_constraintRight_toLeftOf="@id/iv_gojek"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-                android:id="@+id/countdown_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:timer_unify_single_variant="alternate"
-                app:timer_unify_single_type="auto"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_6"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:timer_unify_single_showClockIcon="true"
-                app:timer_unify_single_textWidth="wrap"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/timer_text_view"
-                app:typographyType="body_3"
-                android:textColor="@color/Unify_N0"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="@dimen/dp_4"
-                app:layout_constraintTop_toBottomOf="@id/countdown_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text=" vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
+vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
+vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
+           " />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
