@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
-import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
+import com.tokopedia.selleronboarding.utils.adjustImageGravity
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
@@ -22,8 +23,6 @@ class SliderManageViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_manage_view_holder
-
-        private const val IMG_ROTATION = 180f
     }
 
     private val animationObserver by lazy {
@@ -59,28 +58,36 @@ class SliderManageViewHolder(
         }
     }
 
-    private fun setManageImageUrl() {
-        with(itemView) {
-            imgSobManage1?.loadImage(R.drawable.img_sob_manage_stock)
-            imgSobManage2?.loadImage(R.drawable.img_sob_som_card)
+    private fun setManageImageUrl() = with(itemView) {
+        imgSobManage1?.let {
+            it.loadImage(R.drawable.img_sob_manage_stock)
+            it.adjustImageGravity(
+                R.drawable.img_sob_manage_stock,
+                OnboardingConst.Gravity.START_BOTTOM
+            )
+        }
 
-            OnboardingUtils.loadImageAsBitmap(
-                context,
-                SobImageSliderUrl.IMG_MANAGE_STOCK,
-                IMG_ROTATION
-            ) {
-                imgSobManage1?.loadImage(it)
+        imgSobManage2?.let {
+            it.loadImage(R.drawable.img_sob_som_card)
+            it.adjustImageGravity(R.drawable.img_sob_som_card, OnboardingConst.Gravity.END_TOP)
+        }
+
+        loadRemoteImages()
+    }
+
+    private fun loadRemoteImages() = with(itemView) {
+        OnboardingUtils.loadImageAsBitmap(context, OnboardingConst.ImageUrl.IMG_MANAGE_STOCK) {
+            imgSobManage1?.let { imgView ->
+                imgView.loadImage(it)
+                imgView.adjustImageGravity(it, OnboardingConst.Gravity.START_BOTTOM)
             }
+        }
 
-            OnboardingUtils.loadImageAsBitmap(
-                context,
-                SobImageSliderUrl.IMG_SOM_CARD,
-                IMG_ROTATION
-            ) {
-                imgSobManage2?.loadImage(it)
+        OnboardingUtils.loadImageAsBitmap(context, OnboardingConst.ImageUrl.IMG_SOM_CARD) {
+            imgSobManage2?.let { img ->
+                img.loadImage(it)
+                img.adjustImageGravity(it, OnboardingConst.Gravity.END_TOP)
             }
         }
     }
-
-
 }

@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
-import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
+import com.tokopedia.selleronboarding.utils.adjustImageGravity
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
 
@@ -19,8 +20,6 @@ class SliderMessageViewHolder(itemView: View) :
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_message_view_holder
-
-        private const val IMG_ROTATION = 180f
     }
 
     private val observer by lazy {
@@ -32,7 +31,7 @@ class SliderMessageViewHolder(itemView: View) :
             setupAnimation()
 
             imgSobMessageBg?.loadImage(R.drawable.bg_sob_circle)
-            setMessageImageUrl()
+            showIllustrations()
         }
     }
 
@@ -60,22 +59,42 @@ class SliderMessageViewHolder(itemView: View) :
         }
     }
 
-    private fun setMessageImageUrl() {
-        with(itemView) {
-            imgSobMessage1?.loadImage(R.drawable.img_sob_widget_android)
-            imgSobMessage2?.loadImage(SobImageSliderUrl.IMG_SMART_REPLY) {
-                setPlaceHolder(R.drawable.img_sob_smart_reply)
-            }
-            imgSobMessage3?.loadImage(SobImageSliderUrl.IMG_BROADCAST_CHAT) {
-                setPlaceHolder(R.drawable.img_sob_broadcast_chat)
-            }
+    private fun showIllustrations() = with(itemView) {
+        showMessageIllustration()
+        showSmartReplyIllustration()
+
+        imgSobMessage3?.loadImage(OnboardingConst.ImageUrl.IMG_BROADCAST_CHAT) {
+            setPlaceHolder(R.drawable.img_sob_broadcast_chat)
+        }
+    }
+
+    private fun showMessageIllustration() {
+        itemView.imgSobMessage1?.let { imgView ->
+            val imgGravity = OnboardingConst.Gravity.START_BOTTOM
+            val drawableRes = R.drawable.img_sob_widget_android
+            imgView.loadImage(drawableRes)
+            imgView.adjustImageGravity(drawableRes, imgGravity)
 
             OnboardingUtils.loadImageAsBitmap(
-                context,
-                SobImageSliderUrl.IMG_SOB_WIDGET_ANDROID,
-                IMG_ROTATION
+                imgView.context,
+                OnboardingConst.ImageUrl.IMG_SOB_WIDGET_ANDROID
             ) {
-                imgSobMessage1?.loadImage(it)
+                imgView.loadImage(it)
+                imgView.adjustImageGravity(it, imgGravity)
+            }
+        }
+    }
+
+    private fun showSmartReplyIllustration() {
+        itemView.imgSobMessage2?.let { imgView ->
+            val imgGravity = OnboardingConst.Gravity.END_CENTER_VERTICAL
+            val drawableRes = R.drawable.img_sob_smart_reply
+            imgView.loadImage(drawableRes)
+            imgView.adjustImageGravity(drawableRes, imgGravity)
+
+            OnboardingUtils.loadImageAsBitmap(imgView.context, OnboardingConst.ImageUrl.IMG_SMART_REPLY) {
+                imgView.loadImage(it)
+                imgView.adjustImageGravity(it, imgGravity)
             }
         }
     }

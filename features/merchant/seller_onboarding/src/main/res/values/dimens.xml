@@ -12,5 +12,6 @@
     <dimen name="sob_dimen_88">88dp</dimen>
     <dimen name="sob_dimen_104">104dp</dimen>
     <dimen name="sob_dimen_112">112dp</dimen>
+    <dimen name="sob_dimen_120">120dp</dimen>
     <dimen name="sob_dimen_144">144dp</dimen>
 </resources>

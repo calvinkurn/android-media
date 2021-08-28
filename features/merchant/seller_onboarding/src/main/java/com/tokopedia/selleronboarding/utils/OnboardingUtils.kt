@@ -16,10 +16,14 @@ import com.tokopedia.media.loader.module.GlideApp
 object OnboardingUtils {
 
     private const val STATUS_BAR_DEFAULT_HEIGHT = 24
+    private const val KEY_STATUS_BAR_HEIGHT = "status_bar_height"
+    private const val KEY_DIMEN = "dimen"
+    private const val KEY_ANDROID = "android"
+    private const val ROTATION_DEF_VALUE = 0f
 
     fun getStatusBarHeight(context: Context): Int {
         var height = context.dpToPx(STATUS_BAR_DEFAULT_HEIGHT).toInt()
-        val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        val resId = context.resources.getIdentifier(KEY_STATUS_BAR_HEIGHT, KEY_DIMEN, KEY_ANDROID)
         if (resId > 0) {
             height = context.resources.getDimensionPixelSize(resId)
         }
@@ -29,13 +33,14 @@ object OnboardingUtils {
     fun loadImageAsBitmap(
         context: Context,
         url: String,
-        rotation: Float,
+        rotation: Float = ROTATION_DEF_VALUE,
         callback: (Bitmap) -> Unit
     ) {
         GlideApp.with(context)
             .asBitmap()
             .load(url)
             .into(object : CustomTarget<Bitmap>() {
+
                 override fun onResourceReady(
                     resource: Bitmap,
                     transition: Transition<in Bitmap>?
@@ -44,8 +49,8 @@ object OnboardingUtils {
                     matrix.postRotate(rotation)
                     val rotatedBitmap = Bitmap.createBitmap(
                         resource,
-                        0,
-                        0,
+                        ROTATION_DEF_VALUE.toInt(),
+                        ROTATION_DEF_VALUE.toInt(),
                         resource.width,
                         resource.height,
                         matrix,

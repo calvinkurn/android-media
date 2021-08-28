@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderStatisticsUiModel
-import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_statistics_view_holder.view.*
 
@@ -26,7 +26,7 @@ class SliderStatisticsViewHolder(itemView: View) :
 
     override fun bind(element: SobSliderStatisticsUiModel) {
         with(itemView) {
-            imgSobStatistic?.loadImage(SobImageSliderUrl.IMG_STATISTIC) {
+            imgSobStatistic?.loadImage(OnboardingConst.ImageUrl.IMG_STATISTIC) {
                 setPlaceHolder(R.drawable.img_sob_statistic)
             }
 

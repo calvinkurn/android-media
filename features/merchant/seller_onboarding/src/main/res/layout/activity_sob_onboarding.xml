@@ -18,17 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_sob_full" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSobSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sob_skip_btn_top_margin"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:padding="@dimen/unify_space_4"
-        android:text="@string/sob_skip"
-        android:textColor="@color/Unify_N700_68"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobHeader"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/sob_dimen_112"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backgroundSob"
+        app:srcCompat="@drawable/ic_toped_anniv" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/sobViewPager"
@@ -40,15 +38,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgSobHeader"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/sob_dimen_112"
-        android:scaleType="fitXY"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSobSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sob_skip_btn_top_margin"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:focusable="true"
+        android:padding="@dimen/unify_space_4"
+        android:text="@string/sob_skip"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/backgroundSob"
-        app:srcCompat="@drawable/ic_toped_anniv" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnSobPrev"

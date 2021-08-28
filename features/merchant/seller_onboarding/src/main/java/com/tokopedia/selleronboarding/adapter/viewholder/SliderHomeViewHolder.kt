@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderHomeUiModel
-import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 
@@ -36,7 +36,7 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
             setupAnimation(element)
 
             imgSobHome?.run {
-                loadImage(SobImageSliderUrl.IMG_SOB_HOME) {
+                loadImage(OnboardingConst.ImageUrl.IMG_SOB_HOME) {
                     setPlaceHolder(R.drawable.img_sob_home)
                 }
             }
