@@ -260,6 +260,8 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         setupLifecycleObserver()
     }
 
+    override fun onScrollToTop() {}
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(webSocket)
     }

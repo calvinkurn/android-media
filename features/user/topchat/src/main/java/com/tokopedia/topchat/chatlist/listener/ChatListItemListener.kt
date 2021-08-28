@@ -21,4 +21,5 @@ interface ChatListItemListener {
     fun getSupportChildFragmentManager(): FragmentManager
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
     fun returnToSellerHome()
+    fun onScrollToTop()
 }

@@ -5,15 +5,16 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
@@ -22,7 +23,6 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
@@ -31,15 +31,16 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -51,7 +52,6 @@ import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_INIT_FLOW
 import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -75,7 +75,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
@@ -94,7 +93,7 @@ open class HomeRevampViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
         private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
         private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-        private val getAtcUseCase: Lazy<AddToCartOccUseCase>,
+        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
@@ -136,6 +135,10 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_COUNT = 1
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
+
+    val beautyFestLiveData: LiveData<Int>
+        get() = _beautyFestLiveData
+    private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
 
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
@@ -838,19 +841,21 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
-            val requestParams = RequestParams()
             val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-            requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                    productId = grid.id,
-                    quantity = quantity,
-                    shopId = grid.shopId,
-                    warehouseId = grid.warehouseId,
-                    productName = grid.name,
-                    price = grid.price,
+            val addToCartResult = getAtcUseCase.get().setParams(AddToCartOccMultiRequestParams(
+                    carts = listOf(
+                            AddToCartOccMultiCartParam(
+                                    productId = grid.id,
+                                    quantity = quantity,
+                                    shopId = grid.shopId,
+                                    warehouseId = grid.warehouseId,
+                                    productName = grid.name,
+                                    price = grid.price
+                            )
+                    ),
                     userId = getUserId()
-            ))
-            val addToCartResult = getAtcUseCase.get().createObservable(requestParams).toBlocking().first()
-            if(addToCartResult.status == STATUS_OK) {
+            )).executeOnBackground().mapToAddToCartDataModel()
+            if(!addToCartResult.isStatusError()) {
                 _oneClickCheckoutHomeComponent.postValue(Event(
                         mapOf(
                                 ATC to addToCartResult,
@@ -1033,11 +1038,8 @@ open class HomeRevampViewModel @Inject constructor(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-        }
-
-        if (!homeNewDataModel.isProcessingAtf && !homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateRecommendationSection(
-                onNeedTabLoad = { getFeedTabData() }
+                    onNeedTabLoad = { getFeedTabData() }
             )
         }
         _homeLiveData.postValue(homeDataModel)
@@ -1656,5 +1658,18 @@ open class HomeRevampViewModel @Inject constructor(
                 deleteWidget(topAdsModel, index)
             }
         }
+    }
+
+    fun getBeautyFest(data: List<Visitable<*>>) {
+        //beauty fest event will qualify if contains "isChannelBeautyFest":true
+        launchCatchError(coroutineContext, {
+            if (Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_TRUE)
+            else
+                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_FALSE)
+        }, {
+            it.printStackTrace()
+            _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
+        })
     }
 }

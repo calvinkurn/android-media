@@ -21,7 +21,6 @@ import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse;
-import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
@@ -29,8 +28,7 @@ import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
-import com.tokopedia.buyerorder.list.common.OrderListContants;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -210,7 +208,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 details = data.orderDetails();
                                 getView().setDetailsData(data.orderDetails());
                                 if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)
-                                        || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
+                                        || orderCategory.equalsIgnoreCase(OrderCategory.BELANJA)) {
                                     requestCancelInfo = details.getRequestCancelInfo();
                                 }
                                 orderListAnalytics.sendOrderDetailImpression(

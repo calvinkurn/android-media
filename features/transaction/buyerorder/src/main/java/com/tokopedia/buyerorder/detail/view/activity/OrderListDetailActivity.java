@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder.detail.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.OrderListDetailFragment;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.user.session.UserSession;
 
