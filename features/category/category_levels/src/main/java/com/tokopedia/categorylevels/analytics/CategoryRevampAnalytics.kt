@@ -346,7 +346,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         return categoryPageIdentifier
     }
 
-    override fun trackLihatSemuaClick(headerName: String?) {
+    override fun trackLihatSemuaClick(dataItem: DataItem?) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = "$categoryPageIdentifier - $CAROUSEL_BEST_SELLER"))
     }
 
