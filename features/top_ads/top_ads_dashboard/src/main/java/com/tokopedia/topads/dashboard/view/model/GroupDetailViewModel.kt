@@ -15,6 +15,7 @@ import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -57,6 +58,7 @@ class GroupDetailViewModel @Inject constructor(
     private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
     private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
     private val groupInfoUseCase: GroupInfoUseCase,
+    private val getHeadlineInfoUseCase: GetHeadlineInfoUseCase,
     private val bidInfoUseCase: BidInfoUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
@@ -98,6 +100,20 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
+
+    fun getHeadlineInfo(resources: Resources, groupId: String, onSuccess: (HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) -> Unit) {
+        getHeadlineInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+            com.tokopedia.topads.common.R.raw.get_headline_detail))
+        getHeadlineInfoUseCase.setParams(groupId)
+        getHeadlineInfoUseCase.executeQuerySafeMode(
+            {
+                onSuccess(it.topAdsGetPromoGroup?.data!!)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
+    }
+
     fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: (GetDashboardProductStatistics) -> Unit, selectedSortId: String, selectedStatusId: Int?, goalId: Int) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
@@ -112,8 +128,8 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
-        bidInfoUseCase.setParams(suggestions, ParamObject.GROUP)
+    fun getBidInfo(suggestions: List<DataSuggestions>, sourceValue: String, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+        bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT, sourceValue)
         bidInfoUseCase.executeQuerySafeMode(
             {
                 onSuccess(it.topadsBidInfo.data)
@@ -275,6 +291,7 @@ class GroupDetailViewModel @Inject constructor(
         topAdsGetGroupListUseCase.unsubscribe()
         topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
+        getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
     }

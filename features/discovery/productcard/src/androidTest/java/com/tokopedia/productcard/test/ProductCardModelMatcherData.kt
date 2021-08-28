@@ -64,9 +64,9 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelVariantColor())
     it.add(testLabelVariantSize())
     it.add(testLabelBestSeller())
-    it.add(testLabelBestSellerVariant2())
-    it.add(testLabelBestSellerVariant3())
-    it.add(testLabelBestSellerVariant4())
+    it.add(testLabelBestSellerAndCategorySide())
+    it.add(testLabelBestSellerAndCategoryBottom())
+    it.add(testLabelCategorySideAndBottomWithoutBestSeller())
     it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
     it.add(testLabelETA())
     it.add(testLabelCategory())
@@ -1862,16 +1862,12 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelBestSellerVariant2(): ProductCardModelMatcher {
-    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
+private fun testLabelBestSellerAndCategorySide(): ProductCardModelMatcher {
     val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
-    val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di Kategori Baju Anak", type = "textLightGrey")
+    val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di iOS", type = "textLightGrey")
 
     val productCardModel = ProductCardModel(
-        productName = "Test Label Best Seller Category 2",
+        productName = "Test Label Best Seller Category Side",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -1882,16 +1878,14 @@ private fun testLabelBestSellerVariant2(): ProductCardModelMatcher {
         freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         isTopAds = true,
         hasThreeDots = true,
-        labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign, labelBestSeller, labelCategorySide)
+        labelGroupList = listOf(labelBestSeller, labelCategorySide)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -1899,22 +1893,18 @@ private fun testLabelBestSellerVariant2(): ProductCardModelMatcher {
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategorySide] = isDisplayed()
+        it[R.id.textCategorySide] = isDisplayedWithText(labelCategorySide.title)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelBestSellerVariant3(): ProductCardModelMatcher {
-    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
-    val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "#1", type = "#E1AA1D")
-    val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di Kategori Baju Anak", type = "textLightGrey")
+private fun testLabelBestSellerAndCategoryBottom(): ProductCardModelMatcher {
+    val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
+    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di iOS", type = "textLightGrey")
 
     val productCardModel = ProductCardModel(
-        productName = "Test Label Best Seller Category 3",
+        productName = "Test Label Best Seller Category Bottom",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -1925,16 +1915,14 @@ private fun testLabelBestSellerVariant3(): ProductCardModelMatcher {
         freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         isTopAds = true,
         hasThreeDots = true,
-        labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign, labelBestSeller, labelCategorySide)
+        labelGroupList = listOf(labelBestSeller, labelCategoryBottom)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -1942,22 +1930,18 @@ private fun testLabelBestSellerVariant3(): ProductCardModelMatcher {
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategorySide] = isDisplayed()
+        it[R.id.textCategoryBottom] = isDisplayedWithText(labelCategoryBottom.title)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testLabelBestSellerVariant4(): ProductCardModelMatcher {
-    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
-    val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris #1", type = "#E1AA1D")
-    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di Kategori Baju Anak", type = "textLightGrey")
+private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelMatcher {
+    val labelCategorySide = LabelGroup(position = LABEL_CATEGORY_SIDE, title = "di iOS", type = "textLightGrey")
+    val labelCategoryBottom = LabelGroup(position = LABEL_CATEGORY_BOTTOM, title = "di iOS", type = "textLightGrey")
 
     val productCardModel = ProductCardModel(
-        productName = "Test Label Best Seller Category 4",
+        productName = "Test Label Category Side and Bottom without Best Seller",
         productImageUrl = productImageUrl,
         formattedPrice = "Rp7.999.000",
         shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -1968,16 +1952,13 @@ private fun testLabelBestSellerVariant4(): ProductCardModelMatcher {
         freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         isTopAds = true,
         hasThreeDots = true,
-        labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign, labelBestSeller, labelCategoryBottom)
+        labelGroupList = listOf(labelCategorySide, labelCategoryBottom)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textTopAds] = isDisplayed()
-        it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -1985,7 +1966,6 @@ private fun testLabelBestSellerVariant4(): ProductCardModelMatcher {
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategoryBottom] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

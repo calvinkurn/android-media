@@ -53,11 +53,11 @@ class SellerOnboardingActivity : BaseActivity() {
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(R.drawable.ic_toped_anniv),
-            SobSliderMessageUiModel(R.drawable.ic_toped_anniv),
-            SobSliderManageUiModel(R.drawable.ic_toped_anniv),
-            SobSliderPromoUiModel(R.drawable.ic_toped_anniv),
-            SobSliderStatisticsUiModel(R.drawable.ic_toped_anniv)
+            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
+            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
+            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
+            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
+            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
         )
     }
 
@@ -107,8 +107,8 @@ class SellerOnboardingActivity : BaseActivity() {
             val viewObserver = page.findViewById<View>(R.id.viewObserver)
             val r = TRANSFORMER_SCALE_MULTIPLIER - abs(position)
             val absPos = abs(position)
-            viewObserver.scaleX = (OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER)
-            viewObserver.scaleY = (OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER)
+            viewObserver.scaleX = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
+            viewObserver.scaleY = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
             viewObserver.translationY = (absPos * VIEW_OBSERVER_Y_TRANSLATION)
             when {
                 (position <= TRANSFORMER_FULL_PAGE_POSITION) -> {

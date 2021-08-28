@@ -339,9 +339,9 @@ class RechargeCCFragment : BaseDaggerFragment() {
             REQUEST_CODE_CART -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
-                            showErrorToaster(MessageErrorException(message))
+                        val error = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(error.message)) {
+                            showErrorToaster(error)
                         }
                     }
                 }

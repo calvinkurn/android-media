@@ -8,7 +8,7 @@ abstract class ShopSearchProductDataModel: Visitable<ShopSearchProductAdapterTyp
     abstract var type: Type
 
     enum class Type{
-        TYPE_PDP,TYPE_SEARCH_STORE,TYPE_SEARCH_SRP
+        TYPE_PDP,TYPE_SEARCH_STORE
     }
 
 }
