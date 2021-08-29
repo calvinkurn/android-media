@@ -90,6 +90,9 @@
     <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
     <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
     <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    
+    <!-- Other menu header revamp -->
+    <string name="sah_new_other_shop_open">Toko Buka</string>
 
     <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
     <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
