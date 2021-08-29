@@ -344,8 +344,6 @@ class PlayViewModel @Inject constructor(
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
     //endregion
 
-    private var channelInfoJob: Job? = null
-
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
             viewModelScope.launch(dispatchers.immediate) {
@@ -670,7 +668,6 @@ class PlayViewModel @Inject constructor(
     fun defocusPage(shouldPauseVideo: Boolean) {
         isActive.compareAndSet(true, false)
 
-        stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
 
@@ -780,7 +777,8 @@ class PlayViewModel @Inject constructor(
     fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
-        viewModelScope.launch {
+        socketJob?.cancel()
+        socketJob = viewModelScope.launch {
             val socketCredential = try {
                 withContext(dispatchers.io) {
                     return@withContext getSocketCredentialUseCase.executeOnBackground()
@@ -789,17 +787,16 @@ class PlayViewModel @Inject constructor(
                 SocketCredential()
             }
 
-            socketJob = launch {
-                playChannelWebSocket.listenAsFlow()
-                        .collect {
-                            handleWebSocketResponse(it, channelId, socketCredential)
-                        }
-            }
-
+            if (!isActive) return@launch
             connectWebSocket(
                     channelId = channelId,
                     socketCredential = socketCredential
             )
+
+            playChannelWebSocket.listenAsFlow()
+                    .collect {
+                        handleWebSocketResponse(it, channelId, socketCredential)
+                    }
         }
     }
 
@@ -808,16 +805,12 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopWebSocket() {
+        socketJob?.cancel()
         playChannelWebSocket.close()
     }
 
     private fun stopInteractive() {
         _interactive.value = PlayInteractiveUiState.NoInteractive
-    }
-
-    private fun stopJob() {
-        channelInfoJob?.cancel()
-        socketJob?.cancel()
     }
 
     /**
