@@ -48,13 +48,13 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
             relatedView?.show()
             showKeyboard(editText)
         }else {
-            hideKeyboard(editText)
             relatedView?.hide()
+            hideKeyboard(editText)
         }
     }
 
     override fun dispatchKeyEventPreIme(event: KeyEvent?): Boolean {
-        if (event?.keyCode === KeyEvent.KEYCODE_BACK) {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             editingState(false)
             return true
         }

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="menu_home" type="id"/>
-    <item name="menu_feed" type="id"/>
-    <item name="menu_os" type="id"/>
-    <item name="menu_cart" type="id"/>
-    <item name="menu_account" type="id"/>
+    <item name="menu_home_affiliate" type="id"/>
+    <item name="menu_promo_affiliate" type="id"/>
+    <item name="menu_help_affiliate" type="id"/>
 </resources>
