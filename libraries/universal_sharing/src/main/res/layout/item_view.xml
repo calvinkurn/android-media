@@ -31,7 +31,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/universal_share_ic_check_circle"
-        android:background="@drawable/circle_white"
+        android:background="@drawable/universal_sharing_circle_white"
         android:scaleType="center"
         android:contentDescription="@string/desc_img_selector"
         app:layout_constraintLeft_toLeftOf="parent"
