@@ -2,7 +2,9 @@ package com.tokopedia.sellerhome.settings.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -17,6 +19,7 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFac
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
@@ -39,6 +42,14 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private val otherMenuAdapter by lazy {
         adapter as? OtherMenuAdapter
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_new_other_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,6 +84,8 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
         return OtherMenuAdapter(context, this, adapterTypeFactory)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_sah_new_other_menu
 
     override fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"

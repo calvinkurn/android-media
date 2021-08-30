@@ -76,4 +76,6 @@
     <dimen name="sah_new_other_item_shop_badge_shimmer_width">92dp</dimen>
     <dimen name="sah_new_other_item_error_margin">6dp</dimen>
     <dimen name="sah_new_other_item_shop_follower_shimmer_width">62dp</dimen>
+    <dimen name="sah_new_other_header_shop_name_margin_bottom">11dp</dimen>
+    <dimen name="sah_new_other_header_share_width">18dp</dimen>
 </resources>
