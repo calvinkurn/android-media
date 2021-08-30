@@ -35,7 +35,8 @@ interface ICartListPresenter {
                               removedCartItems: List<CartItemHolderData>,
                               addWishList: Boolean,
                               forceExpandCollapsedUnavailableItems: Boolean = false,
-                              isFromGlobalCheckbox: Boolean = false)
+                              isFromGlobalCheckbox: Boolean = false,
+                              forceReloadCart: Boolean = false)
 
     fun processUndoDeleteCartItem(cartIds: List<String>);
 

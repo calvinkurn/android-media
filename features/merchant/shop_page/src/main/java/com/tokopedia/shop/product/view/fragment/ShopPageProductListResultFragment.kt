@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -28,9 +29,13 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -87,6 +92,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -151,6 +157,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var partialShopNplFollowersViewLayout: View? = null
     private var partialShopNplFollowersView: PartialButtonShopFollowersView? = null
+    private var srpPageId = ""
+    private var srpPageTitle = ""
+    private var navSource = ""
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -173,7 +182,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             viewModel.userId
         } else "0"
     var localCacheModel: LocalCacheModel? = null
-
+    private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
                 null,
@@ -241,6 +250,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
             isShopPageProductSearchResultTrackerAlreadySent = savedInstanceState.getBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, false)
         }
+        getIntentData()
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortId ?: "")
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
@@ -265,6 +275,17 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             (it as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         observeLiveData()
+    }
+
+    private fun getIntentData() {
+        activity?.intent?.data?.let { it ->
+            it.getQueryParameter(SearchApiConst.SRP_PAGE_ID)?.let { srpPageId ->
+                sourceRedirection = SEARCH_AUTOCOMPLETE_PAGE_SOURCE
+                this@ShopPageProductListResultFragment.srpPageId = srpPageId
+            }
+            srpPageTitle = it.getQueryParameter(SearchApiConst.SRP_PAGE_TITLE).orEmpty()
+            navSource = it.getQueryParameter(SearchApiConst.NAVSOURCE).orEmpty()
+        }
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -407,6 +428,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
             }
+            rvDefaultPaddingBottom = it.paddingBottom
         }
     }
 
@@ -464,10 +486,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
                     if(!isShopPageProductSearchResultTrackerAlreadySent) {
-                        when (sourceRedirection) {
-                            ShopSearchProductFragment.SEARCH_SUBMIT_RESULT_REDIRECTION -> sendShopPageProductSearchResultTracker(productList.isEmpty())
-                            ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(productList.isEmpty())
-                        }
+                        sendShopPageSearchResultTracker(it.data)
                     }
                     renderProductList(productList, hasNextPage, totalProductData)
                     if(!isAlreadyCheckRestrictionInfo) {
@@ -538,7 +557,31 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
     }
 
-    private fun sendShopPageProductSearchResultTracker(isProductResultListEmpty: Boolean) {
+    private fun sendShopPageSearchResultTracker(productResponseUiModel: GetShopProductUiModel) {
+        when (sourceRedirection) {
+            ShopSearchProductFragment.SEARCH_SUBMIT_RESULT_REDIRECTION -> sendShopPageProductSubmitSearchResultTracker(
+                    productResponseUiModel.listShopProductUiModel.isEmpty()
+            )
+            ShopSearchProductFragment.ETALASE_CLICK_RESULT_REDIRECTION -> sendShopPageProductSearchClickEtalaseProductResultTracker(
+                    productResponseUiModel.listShopProductUiModel.isEmpty()
+            )
+            SEARCH_AUTOCOMPLETE_PAGE_SOURCE -> sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel)
+        }
+    }
+
+    private fun sendShopPageProductAutoCompleteSearchResultTracker(productResponseUiModel: GetShopProductUiModel) {
+        shopPageTracking?.sendShopPageAutoCompleteSearchResultTracker(
+                keyword,
+                productResponseUiModel.shopProductSuggestion.keyword_process,
+                productResponseUiModel.shopProductSuggestion.response_code.toString(),
+                navSource,
+                shopId.orEmpty(),
+                productResponseUiModel.totalProductData,
+                shopName.orEmpty()
+        )
+    }
+
+    private fun sendShopPageProductSubmitSearchResultTracker(isProductResultListEmpty: Boolean) {
         isShopPageProductSearchResultTrackerAlreadySent = true
         shopPageTracking?.sendShopPageProductSearchResultTracker(
                 isMyShop, keyword, isProductResultListEmpty, customDimensionShopPage
@@ -607,12 +650,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
         view?.let {
-            recyclerView?.setPadding(
-                    toDp(12),
-                    toDp(0),
-                    toDp(12),
-                    toDp(82)
-            )
+            recyclerView?.apply {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        resources.getDimension(R.dimen.dp_82).toInt()
+                )
+            }
             partialShopNplFollowersViewLayout?.translationY = it.height.toFloat()
         }
     }
@@ -635,18 +680,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideShopFollowersView() {
-        recyclerView?.setPadding(
-                toDp(12),
-                toDp(0),
-                toDp(12),
-                toDp(8)
-        )
+        recyclerView?.apply {
+            setPadding(
+                    paddingLeft,
+                    paddingTop,
+                    paddingRight,
+                    rvDefaultPaddingBottom
+            )
+        }
         partialShopNplFollowersView?.setupVisibility = false
         partialShopNplFollowersViewLayout?.invisible()
-    }
-
-    private fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {
@@ -704,7 +747,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
-                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
+                    shopName.orEmpty(),
+                    navSource
             )
         } else {
             shopPageTracking?.clickProductListEmptyState(
@@ -750,7 +795,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
                     keyword,
-                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE
+                    shopProductUiModel.etalaseType ?: DEFAULT_VALUE_ETALASE_TYPE,
+                    shopName.orEmpty(),
+                    navSource
             )
         } else {
             shopPageTracking?.impressionProductListEmptyState(
@@ -1181,6 +1228,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         val SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT = "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
+        private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
+        private const val DEFAULT_SHOWCASE_ID = "0"
+        private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
 
         @JvmStatic
         fun createInstance(shopId: String,
@@ -1350,10 +1400,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     fun onSearchBarClicked() {
-        redirectToShopSearchProduct()
+        if (GlobalConfig.isSellerApp()) {
+            redirectToShopSearchProductPage()
+        } else {
+            redirectToSearchAutoCompletePage()
+        }
     }
 
-    private fun redirectToShopSearchProduct() {
+    private fun redirectToShopSearchProductPage() {
         context?.let {
             shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
             startActivity(createIntent(
@@ -1367,6 +1421,24 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopRef
             ))
         }
+    }
+    private fun redirectToSearchAutoCompletePage() {
+        shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
+        val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
+                ApplinkConst.SHOP_ETALASE,
+                shopId,
+                DEFAULT_SHOWCASE_ID
+        ), "utf-8")
+        val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                .buildUpon()
+                .appendQueryParameter(SearchApiConst.Q, keyword)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
+                .build()
+                .toString()
+        RouteManager.route(context, searchPageUri)
     }
 
     override fun onShowcaseEmptyBackButtonClicked() {

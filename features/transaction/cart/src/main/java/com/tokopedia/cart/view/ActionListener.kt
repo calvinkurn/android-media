@@ -1,9 +1,10 @@
 package com.tokopedia.cart.view
 
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -27,8 +28,6 @@ interface ActionListener {
     fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
-
-    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView)
 
     fun onAddLastSeenToWishlist(productId: String)
 
@@ -60,21 +59,9 @@ interface ActionListener {
 
     fun onButtonAddToCartClicked(productModel: Any)
 
-    fun onShowActionSeeOtherProduct(productId: String, errorType: String)
-
-    fun onSimilarProductUrlClicked(similarProductUrl: String)
-
-    fun onFollowShopClicked(shopId: String, errorType: String)
-
     fun onDeleteAllDisabledProduct();
 
-    fun onDeleteDisabledItem(data: DisabledCartItemHolderData)
-
     fun onSeeErrorProductsClicked()
-
-    fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, action: Action)
-
-    fun onShowTickerTobacco()
 
     fun onCollapseAvailableItem(index: Int)
 

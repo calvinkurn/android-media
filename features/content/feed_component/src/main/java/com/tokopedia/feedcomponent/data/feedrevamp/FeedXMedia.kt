@@ -26,5 +26,6 @@ data class FeedXMedia(
     var imageView: View? = null,
     var canPlay: Boolean = false,
     var isImageImpressedFirst: Boolean = true
+
 )
 

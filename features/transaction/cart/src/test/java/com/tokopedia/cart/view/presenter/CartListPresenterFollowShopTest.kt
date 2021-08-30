@@ -9,6 +9,7 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -32,7 +33,7 @@ import rx.subscriptions.CompositeSubscription
 
 object CartListPresenterFollowShopTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
@@ -60,7 +61,7 @@ object CartListPresenterFollowShopTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
@@ -87,7 +88,7 @@ object CartListPresenterFollowShopTest : Spek({
             Given("follow shop data") {
                 every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
                 every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             When("process follow shop") {
@@ -109,7 +110,7 @@ object CartListPresenterFollowShopTest : Spek({
             Given("follow shop data") {
                 every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
                 every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
+                every { getCartRevampV3UseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
             When("process follow shop") {

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
@@ -83,5 +84,10 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onCartItemShowRemainingQty(productId: String)
         fun onCartItemShowInformationLabel(productId: String, informationLabel: String)
         fun onEditBundleClicked(cartItemHolderData: CartItemHolderData)
+        fun onTobaccoLiteUrlClicked(url: String, data: CartItemHolderData, action: Action)
+        fun onShowTickerTobacco()
+        fun onSimilarProductUrlClicked(similarProductUrl: String)
+        fun onShowActionSeeOtherProduct(productId: String, errorType: String)
+        fun onFollowShopClicked(shopId: String, errorType: String)
     }
 }

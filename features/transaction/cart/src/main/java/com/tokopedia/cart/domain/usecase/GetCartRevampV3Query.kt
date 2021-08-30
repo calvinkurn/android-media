@@ -153,21 +153,6 @@ fun getQueryCartRevampV3(): String {
                     country_name
                     is_allow_manage
                     shop_domain
-                    shop_shipments {
-                      ship_id
-                      ship_name
-                      ship_code
-                      ship_logo
-                      ship_prods {
-                        ship_prod_id
-                        ship_prod_name
-                        ship_group_id
-                        ship_group_name
-                        minimum_weight
-                        additional_fee
-                      }
-                      is_dropship_enabled
-                    }
                     is_gold
                     is_official
                     shop_type_info {
@@ -182,7 +167,25 @@ fun getQueryCartRevampV3(): String {
                   cart_string
                   cart_details {
                     cart_id
-                    product {
+                    bundle_detail {
+                      bundle_description
+                      bundle_group_id
+                      bundle_id
+                      bundle_max_order
+                      bundle_min_order
+                      bundle_name
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_qty
+                      bundle_quota
+                      bundle_status
+                      bundle_type
+                      EditBundleAppLink
+                      slash_price_label
+                    }
+                    products {
                       product_information
                       product_tracker_data {
                         attribution
@@ -398,21 +401,6 @@ fun getQueryCartRevampV3(): String {
                     country_name
                     is_allow_manage
                     shop_domain
-                    shop_shipments {
-                      ship_id
-                      ship_name
-                      ship_code
-                      ship_logo
-                      ship_prods {
-                        ship_prod_id
-                        ship_prod_name
-                        ship_group_id
-                        ship_group_name
-                        minimum_weight
-                        additional_fee
-                      }
-                      is_dropship_enabled
-                    }
                     is_gold
                     is_official
                     shop_type_info {
@@ -428,7 +416,25 @@ fun getQueryCartRevampV3(): String {
                   cart_details {
                     cart_id
                     selected_unavailable_action_link
-                    product {
+                    bundle_detail {
+                      bundle_description
+                      bundle_group_id
+                      bundle_id
+                      bundle_max_order
+                      bundle_min_order
+                      bundle_name
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_qty
+                      bundle_quota
+                      bundle_status
+                      bundle_type
+                      EditBundleAppLink
+                      slash_price_label
+                    }
+                    products {
                       product_information
                       product_tracker_data {
                         attribution

@@ -224,6 +224,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_PROMO = 456
         const val NAVIGATION_SHIPMENT = 567
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
+        const val NAVIGATION_EDIT_BUNDLE = 789
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -403,6 +404,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_SHOP_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
         }
     }
 
@@ -449,6 +451,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val bundleId = data?.getStringExtra("bundle_id")
+            bundleId?.let {
+                val cartItems = cartAdapter.getCartItemByBundleId(it)
+                if (cartItems.isNotEmpty()) {
+                    val allCartItemDataList = cartAdapter.allCartItemData
+                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItems, false, false, true)
+                }
+            }
+        }
+    }
 
     // Initialization Section
 
@@ -1322,22 +1336,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
         return wishlistsWishlistActionListener as WishListActionListener
-    }
-
-    override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView) {
-        setProductImageAnimationData(imageView, true)
-
-        cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
-        val isLastItem = cartAdapter.allCartItemData.size == 1
-
-        // If unavailable item > 1 and state is collapsed, then expand first
-        var forceExpand = false
-        if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
-            collapseOrExpandDisabledItem()
-            forceExpand = true
-        }
-
-        dPresenter.processAddCartToWishlist(data.productId, data.cartId, isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM, forceExpand)
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -2632,7 +2630,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                          removeAllItems: Boolean,
                                          forceExpandCollapsedUnavailableItems: Boolean,
                                          isMoveToWishlist: Boolean,
-                                         isFromGlobalCheckbox: Boolean) {
+                                         isFromGlobalCheckbox: Boolean,
+                                         forceReloadCart: Boolean) {
         var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
 
         if (isMoveToWishlist) {
@@ -2653,7 +2652,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         setTopLayoutVisibility()
 
-        if (removeAllItems) {
+        if (forceReloadCart || removeAllItems) {
             refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()
@@ -3093,10 +3092,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onDeleteDisabledItem(data: DisabledCartItemHolderData) {
-    }
-
-    override fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, action: Action) {
+    override fun onTobaccoLiteUrlClicked(url: String, data: CartItemHolderData, action: Action) {
         cartPageAnalytics.eventClickCheckoutMelaluiBrowserOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco()
         dPresenter.redirectToLite(url)
@@ -3350,7 +3346,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onEditBundleClicked(cartItemHolderData: CartItemHolderData) {
-        routeToApplink(cartItemHolderData.editBundleApplink)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
+            startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
+        }
     }
 
 }
