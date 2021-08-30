@@ -698,6 +698,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
+    override fun onPostTagBubbleClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct,
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override fun onPostTagItemBSImpression(
         activityId: String,
         postTagItemList: List<FeedXProduct>,

@@ -2,6 +2,7 @@ package com.tokopedia.shop.home
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -10,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.ViewGroup
-
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -23,15 +23,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
-import java.lang.Exception
 import java.net.URI
 import java.util.*
 
@@ -302,6 +304,10 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         }
     }
 
+    fun setImageUrlTileMode(url: String) {
+        loadImageTileMode(url)
+    }
+
     private fun applyLoopingAnimatedVectorDrawable() {
         shimmeringPlaceholder?.registerAnimationCallback(object :
                 Animatable2Compat.AnimationCallback() {
@@ -334,7 +340,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
         if (isLoadError || (!hasImageUrl && placeholder == 0)) {
             if (measuredWidth.toDp() <= MINIMUM_MEASURED_WIDTH || measuredHeight.toDp() <= MINIMUM_MEASURED_HEIGHT) {
-                if (!isRetryable) {
+                if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
                     prevScaleType = scaleType
                     scaleType = ScaleType.FIT_CENTER
                 }
@@ -401,6 +407,25 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     }
                 })
                 .into(this)
+    }
+
+    private fun loadImageTileMode(url: String) {
+        if(!context.isValidGlideContext()) return
+
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap?>?
+                ) {
+                    val bitmapDrawable = BitmapDrawable(context.resources, resource)
+                    bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                    this@ShopCarouselBannerImageUnify.setImageDrawable(bitmapDrawable)
+                }
+            })
     }
 
     private fun loadImage(url: String, placeholderHeight: Int?, isSkipCache: Boolean) {

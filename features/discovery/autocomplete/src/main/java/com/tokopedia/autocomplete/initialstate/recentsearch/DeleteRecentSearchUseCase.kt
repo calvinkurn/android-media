@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -71,29 +73,27 @@ class DeleteRecentSearchUseCase(
         private const val DELETE_ALL_TRUE = "true"
         private const val DELETE_ALL_FALSE = "false"
 
-        fun getParams(registrationId: String, userId: String, item: BaseItemInitialStateSearch): RequestParams {
-            val params = RequestParams.create()
+        fun getParams(
+            registrationId: String,
+            userId: String,
+            item: BaseItemInitialStateSearch,
+            navSource: String
+        ): RequestParams {
+            val params = getParams(registrationId, userId, DELETE_ALL_FALSE, navSource)
 
             params.putString(KEY_Q, item.title)
             params.putString(KEY_TYPE, item.type)
             params.putString(KEY_ITEM_ID, item.productId)
 
-            var uniqueId = AuthHelper.getMD5Hash(registrationId)
-            if (!TextUtils.isEmpty(userId)) {
-                uniqueId = AuthHelper.getMD5Hash(userId)
-                params.putString(KEY_USER_ID, userId)
-            }
-
-            params.putString(KEY_UNIQUE_ID, uniqueId)
-            params.putString(KEY_DELETE_ALL, DELETE_ALL_FALSE)
-            params.putString(KEY_DEVICE, DEFAULT_DEVICE)
-            params.putString(DEVICE_ID, registrationId)
-            params.putString(KEY_SOURCE, DEFAULT_SOURCE)
-
             return params
         }
 
-        fun getParams(registrationId: String, userId: String): RequestParams {
+        fun getParams(
+            registrationId: String,
+            userId: String,
+            deleteAllValue: String = DELETE_ALL_TRUE,
+            navSource: String
+        ): RequestParams {
             val params = RequestParams.create()
 
             var uniqueId = AuthHelper.getMD5Hash(registrationId)
@@ -103,10 +103,11 @@ class DeleteRecentSearchUseCase(
             }
 
             params.putString(KEY_UNIQUE_ID, uniqueId)
-            params.putString(KEY_DELETE_ALL, DELETE_ALL_TRUE)
+            params.putString(KEY_DELETE_ALL, deleteAllValue)
             params.putString(KEY_DEVICE, DEFAULT_DEVICE)
             params.putString(DEVICE_ID, registrationId)
             params.putString(KEY_SOURCE, DEFAULT_SOURCE)
+            params.putString(NAVSOURCE, navSource)
 
             return params
         }

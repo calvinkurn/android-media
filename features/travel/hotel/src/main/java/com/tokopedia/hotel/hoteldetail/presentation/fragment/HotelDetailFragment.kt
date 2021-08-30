@@ -332,8 +332,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
 
             context?.run {
-                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
-            }
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
