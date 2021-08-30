@@ -17,11 +17,11 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
 import timber.log.Timber
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -46,8 +46,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_paylater_offers, container, false)
     }
@@ -56,6 +56,29 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
         observeViewModel()
+        renderSortFilter()
+    }
+
+    private fun renderSortFilter() {
+        val filterData = ArrayList<SortFilterItem>()
+        filterData.add(SortFilterItem(
+            "abc"
+        ) { callApi(2) })
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+
+        sortFilter.addItem(filterData)
+
+    }
+
+    private fun callApi(i: Int) {
+
     }
 
     private fun observeViewModel() {
@@ -92,6 +115,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
         payLaterViewModel.getPayLaterApplicationStatus(false)
         payLaterOffersShimmerGroup.gone()
+        sortFilter.visible()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 pdpSimulationCallback?.showNoNetworkView()
@@ -115,6 +139,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     // set payLater + application status data in pager adapter
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterOffersShimmerGroup.gone()
+        sortFilter.visible()
         payLaterDataGroup.visible()
         val payLaterProductList = ArrayList<PayLaterItemProductData>()
         payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
@@ -130,6 +155,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
                 try {
                     payLaterOffersShimmerGroup.gone()
+                    sortFilter.visible()
                     payLaterDataGroup.visible()
                     pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
                 } catch (e: Exception) {
