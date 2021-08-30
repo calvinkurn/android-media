@@ -2,9 +2,13 @@ package com.tokopedia.sellerhome.settings.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -23,13 +27,15 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 //TODO: Preserve name OtherMenuFragment and move the older one to different path
 class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
-    SettingTrackingListener, OtherMenuAdapter.Listener {
+    SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuContentAnimator.Listener {
 
     companion object {
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
@@ -44,6 +50,13 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter as? OtherMenuAdapter
     }
 
+    private var scrollView: NestedScrollView? = null
+    private var otherMenuHeader: ConstraintLayout? = null
+    private var contentMotionLayout: MotionLayout? = null
+
+    private var motionLayoutAnimator: OtherMenuContentAnimator? = null
+    private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,6 +67,7 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         setupView()
     }
 
@@ -99,8 +113,46 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         startActivity(Intent(context, MenuSettingActivity::class.java))
     }
 
+    override fun onInitialAnimationCompleted() {
+        motionLayoutAnimator?.animateShareButtonSlideIn()
+    }
+
+    override fun onShareButtonAnimationCompleted() {
+        // TODO: Animate scroll view
+    }
+
+    private fun initView() {
+        view?.run {
+            contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
+            scrollView = findViewById(R.id.sv_sah_new_other)
+            otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
+        }
+    }
+
     private fun setupView() {
+        setupRecyclerView()
+        setupScrollHeaderAnimator()
+        setupContentAnimator()
+    }
+
+    private fun setupRecyclerView() {
         (getRecyclerView(view) as? VerticalRecyclerView)?.clearItemDecoration()
         otherMenuAdapter?.populateAdapterData()
+    }
+
+    private fun setupScrollHeaderAnimator() {
+        val tv = TypedValue()
+        if (activity?.theme?.resolveAttribute(android.R.attr.actionBarSize, tv, true) == true) {
+            val actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            scrollHeaderAnimator = OtherMenuHeaderAnimator(scrollView, otherMenuHeader, actionBarHeight).also {
+                it.init()
+            }
+        }
+    }
+
+    private fun setupContentAnimator() {
+        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
+            it.animateInitialSlideIn()
+        }
     }
 }

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@drawable/bg_sah_new_other_header_pm"
+    android:background="@drawable/bg_sah_new_other_header_pm"
     tools:layout_height="@dimen/layout_lvl7">
 
     <com.tokopedia.unifyprinciples.Typography

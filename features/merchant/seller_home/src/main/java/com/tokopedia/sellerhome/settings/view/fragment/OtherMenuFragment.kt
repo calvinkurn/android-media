@@ -27,9 +27,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -684,11 +681,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun observeRecyclerViewScrollListener() {
         scrollView?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
-            calculateSearchBarView(scrollView.scrollY)
+            calculateStatusBarView(scrollView.scrollY)
         })
     }
 
-    private fun calculateSearchBarView(offset: Int) {
+    private fun calculateStatusBarView(offset: Int) {
         val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
         val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
 
