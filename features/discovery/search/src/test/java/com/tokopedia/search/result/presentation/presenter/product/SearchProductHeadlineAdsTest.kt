@@ -9,7 +9,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import io.mockk.every
@@ -87,11 +86,19 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         val expectedCpmModel = searchProductModel.cpmModel
+        val expectedCpmData = expectedCpmModel.data.last()
         `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
+        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
+    }
 
+    private fun `Then verify CPM after last product cards`(
+        expectedCpmModel: CpmModel,
+        expectedCpmData: CpmData,
+    ) {
         val firstSeparatorIndex = visitableList.indexOfLast { it is ProductItemDataView } + 1
+
         visitableList[firstSeparatorIndex].shouldBeInstanceOf<SeparatorDataView>()
-        visitableList[firstSeparatorIndex + 1].assertCpmModel(expectedCpmModel, expectedCpmModel.data.last())
+        visitableList[firstSeparatorIndex + 1].assertCpmModel(expectedCpmModel, expectedCpmData)
         visitableList[firstSeparatorIndex + 2].shouldBeInstanceOf<SeparatorDataView>()
     }
 
@@ -108,10 +115,8 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         `When load more data`()
 
         val expectedCpmModel = searchProductModelPage2.cpmModel
-        val firstSeparatorIndex = visitableList.indexOfLast { it is ProductItemDataView } + 1
-        visitableList[firstSeparatorIndex].shouldBeInstanceOf<SeparatorDataView>()
-        visitableList[firstSeparatorIndex + 1].assertCpmModel(expectedCpmModel, expectedCpmModel.data.first())
-        visitableList[firstSeparatorIndex + 2].shouldBeInstanceOf<SeparatorDataView>()
+        val expectedCpmData = expectedCpmModel.data.first()
+        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
     }
 
     private fun `Given search product load more API will return search product model`(
