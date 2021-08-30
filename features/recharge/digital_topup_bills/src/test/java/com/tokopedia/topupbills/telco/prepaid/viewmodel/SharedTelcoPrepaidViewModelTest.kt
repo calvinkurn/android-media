@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -195,5 +194,23 @@ class SharedTelcoPrepaidViewModelTest {
 
         //then
         assert(sharedTelcoPrepaidViewModel.expandView.value ?: false)
+    }
+
+    @Test
+    fun setInputWidgetFocus_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setInputWidgetFocus(true)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.inputWidgetFocus.value ?: false)
+    }
+
+    @Test
+    fun setProductListShimmer_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setProductListShimmer(true)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.loadingProductList.value ?: false)
     }
 }
