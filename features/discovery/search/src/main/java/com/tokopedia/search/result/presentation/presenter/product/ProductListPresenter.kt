@@ -146,6 +146,8 @@ class ProductListPresenter @Inject constructor(
                 SearchApiConst.SRP_PAGE_TITLE,
         )
         private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
+        private const val HEADLINE_ADS_COUNT_FIRST_PAGE = 2
+        private const val HEADLINE_ADS_COUNT_LOAD_MORE = 1
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -600,7 +602,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { _, cpmDataView ->
+        processHeadlineAds(searchProductModel, HEADLINE_ADS_COUNT_LOAD_MORE) { _, cpmDataView ->
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
@@ -1117,7 +1119,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { index, cpmDataView ->
+        processHeadlineAds(searchProductModel, HEADLINE_ADS_COUNT_FIRST_PAGE) { index, cpmDataView ->
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
@@ -1127,6 +1129,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun processHeadlineAds(
         searchProductModel: SearchProductModel,
+        headlineAdsCount: Int,
         process: (Int, CpmDataView) -> Unit,
     ) {
         if (!isHeadlineAdsAllowed()) return
@@ -1134,6 +1137,7 @@ class ProductListPresenter @Inject constructor(
         val cpmModel = searchProductModel.cpmModel
 
         cpmModel.data?.forEachIndexed { index, cpmData ->
+            if (index >= headlineAdsCount) return
             if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
             val cpmDataView = createCpmDataView(cpmModel, cpmData)
@@ -1185,7 +1189,11 @@ class ProductListPresenter @Inject constructor(
         visitableList.add(firstProductIndex, cpmDataView)
     }
 
-    private fun processHeadlineAdsAtPosition(visitableList: MutableList<Visitable<*>>, position: Int, cpmDataView: CpmDataView) {
+    private fun processHeadlineAdsAtPosition(
+        visitableList: MutableList<Visitable<*>>,
+        position: Int,
+        cpmDataView: CpmDataView,
+    ) {
         val headlineAdsVisitableList = listOf(
                 SeparatorDataView(),
                 cpmDataView,

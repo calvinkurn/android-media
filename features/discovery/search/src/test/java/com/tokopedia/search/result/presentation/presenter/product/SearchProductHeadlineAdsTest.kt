@@ -18,7 +18,7 @@ import rx.Subscriber
 
 private const val headlineAdsSingleFirstPage = "searchproduct/headlineads/headline-ads-single-first-page.json"
 private const val headlineAdsMultipleFirstPage = "searchproduct/headlineads/headline-ads-multiple-first-page.json"
-private const val headlineAdsSecondPage = "searchproduct/with-topads-and-headline-ads.json"
+private const val headlineAdsMultipleSecondPage = "searchproduct/headlineads/headline-ads-multiple-second-page.json"
 
 internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() {
 
@@ -86,7 +86,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         val expectedCpmModel = searchProductModel.cpmModel
-        val expectedCpmData = expectedCpmModel.data.last()
+        val expectedCpmData = expectedCpmModel.data[1]
         `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
         `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
     }
@@ -105,7 +105,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     @Test
     fun `headline ads at end of page 2`() {
         val searchProductModel = headlineAdsMultipleFirstPage.jsonToObject<SearchProductModel>()
-        val searchProductModelPage2 = headlineAdsSecondPage.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = headlineAdsMultipleSecondPage.jsonToObject<SearchProductModel>()
 
         `Given search product API will return search product model`(searchProductModel)
         `Given search product load more API will return search product model`(searchProductModelPage2)
