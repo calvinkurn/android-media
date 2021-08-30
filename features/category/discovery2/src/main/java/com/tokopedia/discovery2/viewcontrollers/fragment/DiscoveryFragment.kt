@@ -243,7 +243,7 @@ class DiscoveryFragment :
             val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
+                if (dy >= 0) {
                     ivToTop.hide()
                     calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
