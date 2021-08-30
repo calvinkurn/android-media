@@ -101,10 +101,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
         })
         affiliateHomeViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
-                if (visibility)
+                if (visibility) {
+                    nested_scroll_view?.hide()
                     affiliate_progress_bar?.show()
-                else
+                } else {
+                    nested_scroll_view?.show()
                     affiliate_progress_bar?.gone()
+                }
             }
         })
         affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
@@ -112,12 +115,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                 show()
                 errorTitle.text = error
                 setActionClickListener {
-                    affiliateHomeViewModel.getAffiliateValidateUser()
+                    AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
+//                    affiliateHomeViewModel.getAffiliateValidateUser()
                 }
             }
         })
         affiliateHomeViewModel.validateUserdata().observe(this, { validateUserdata ->
-            if(validateUserdata.validateUserStatus.data.isEligible){
+            if (validateUserdata.validateUserStatus.data.isEligible) {
                 affiliateHomeViewModel.getAffiliatePerformance()
             }
         })
