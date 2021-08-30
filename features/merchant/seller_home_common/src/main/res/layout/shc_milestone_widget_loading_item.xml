@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
@@ -19,7 +18,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:corners="5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tvShcMilestoneLoadingItem1"
@@ -27,8 +26,8 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
             app:corners="5"
-            app:layout_constraintTop_toTopOf="@id/imgMilestoneLoading"
-            app:layout_constraintStart_toEndOf="@id/imgMilestoneLoading" />
+            app:layout_constraintStart_toEndOf="@id/imgMilestoneLoading"
+            app:layout_constraintTop_toTopOf="@id/imgMilestoneLoading" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tvShcMilestoneLoadingItem2"
@@ -55,7 +54,7 @@
             android:layout_width="@dimen/shc_dimen_80dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/shc_dimen_22dp"
+            android:layout_marginBottom="@dimen/layout_lvl2"
             app:corners="5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem3"

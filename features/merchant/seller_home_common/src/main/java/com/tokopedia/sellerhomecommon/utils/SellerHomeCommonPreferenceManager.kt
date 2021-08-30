@@ -4,7 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import javax.inject.Inject
 
-class SellerHomeCommonPreferenceManager @Inject constructor(@ApplicationContext private val context: Context) {
+class SellerHomeCommonPreferenceManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     companion object {
         private const val SHARED_PREF_NAME = "seller_home_common_pref"

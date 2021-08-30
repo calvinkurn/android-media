@@ -40,7 +40,7 @@ data class MilestoneData(
     val finishMission: FinishMission = FinishMission(),
     @Expose
     @SerializedName("mission")
-    val mission: List<Mission> = listOf(),
+    val mission: List<Mission>? = emptyList(),
     @Expose
     @SerializedName("progressBar")
     val progressBar: MissionProgressBar = MissionProgressBar(),
@@ -60,35 +60,36 @@ data class MilestoneData(
     data class Mission(
         @Expose
         @SerializedName("button")
-        val button: Button = Button(),
+        val button: Button? = Button(),
         @Expose
         @SerializedName("imageUrl")
-        val imageUrl: String = "",
+        val imageUrl: String? = "",
         @Expose
         @SerializedName("missionCompletionStatus")
-        val missionCompletionStatus: Boolean = false,
+        val missionCompletionStatus: Boolean? = false,
         @Expose
         @SerializedName("subtitle")
-        val subtitle: String = "",
+        val subtitle: String? = "",
         @Expose
         @SerializedName("title")
-        val title: String = ""
+        val title: String? = ""
     )
 
     data class FinishMission(
         @Expose
         @SerializedName("button")
-        val button: ButtonFinish = ButtonFinish(),
+        val button: ButtonFinish? = ButtonFinish(),
         @Expose
         @SerializedName("imageUrl")
-        val imageUrl: String = "",
+        val imageUrl: String? = "",
         @Expose
         @SerializedName("subtitle")
-        val subtitle: String = "",
+        val subtitle: String? = "",
         @Expose
         @SerializedName("title")
-        val title: String = ""
+        val title: String? = ""
     )
+
     data class Cta(
         @Expose
         @SerializedName("applink")

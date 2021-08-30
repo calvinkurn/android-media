@@ -345,8 +345,11 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         )
     }
 
-    private fun mapToMilestoneWidget(widget: WidgetModel, isFromCache: Boolean): RecommendationWidgetUiModel {
-        return RecommendationWidgetUiModel(
+    private fun mapToMilestoneWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): MilestoneWidgetUiModel {
+        return MilestoneWidgetUiModel(
             id = (widget.id ?: 0L).toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),

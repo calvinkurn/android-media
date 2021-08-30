@@ -9,19 +9,19 @@ import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.SellerHomeCommonPreferenceManager
 import javax.inject.Inject
 
-class MilestoneMapper @Inject constructor(private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager) {
+class MilestoneMapper @Inject constructor(
+    private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager
+) {
 
     fun mapMilestoneResponseToUiModel(
         data: List<MilestoneData>,
         isFromCache: Boolean
     ): List<MilestoneDataUiModel> {
+
         return data.map {
-            val missionMilestone = mapGetMilestoneMission(it.mission)
-                    .zip(listOf(mapGetMilestoneFinish(it.finishMission)))
-                    .flatMap { item ->
-                        listOf(item.first, item.second)
-                    }
-            MilestoneDataUiModel(
+            val missionMilestone = mapGetMilestoneMission(it.mission.orEmpty())
+                .plus(mapGetMilestoneFinish(it.finishMission))
+            return@map MilestoneDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 error = it.errorMsg.orEmpty(),
                 isFromCache = isFromCache,
@@ -43,30 +43,32 @@ class MilestoneMapper @Inject constructor(private val sellerHomeCommonPreference
     private fun mapGetMilestoneMission(missionData: List<MilestoneData.Mission>): List<MilestoneMissionUiModel> {
         return missionData.map {
             val buttonMissionData = it.button
-            MilestoneMissionUiModel(
+            return@map MilestoneMissionUiModel(
                 itemMissionKey = BaseMilestoneMissionUiModel.MISSION_KEY,
-                imageUrl = it.imageUrl,
-                title = it.title,
-                subTitle = it.subtitle,
-                missionCompletionStatus = it.missionCompletionStatus,
+                imageUrl = it.imageUrl.orEmpty(),
+                title = it.title.orEmpty(),
+                subTitle = it.subtitle.orEmpty(),
+                missionCompletionStatus = it.missionCompletionStatus.orFalse(),
                 buttonMission = MilestoneMissionUiModel.ButtonMission(
-                    title = buttonMissionData.title,
-                    url = buttonMissionData.url,
-                    urlType = buttonMissionData.urlType,
-                    appLink = buttonMissionData.applink,
-                    buttonStatus = buttonMissionData.buttonStatus
+                    title = buttonMissionData?.title.orEmpty(),
+                    url = buttonMissionData?.url.orEmpty(),
+                    urlType = buttonMissionData?.urlType
+                        ?: BaseMilestoneMissionUiModel.REDIRECT_URL_TYPE,
+                    appLink = buttonMissionData?.applink.orEmpty(),
+                    buttonStatus = buttonMissionData?.buttonStatus
+                        ?: BaseMilestoneMissionUiModel.DISABLED_BUTTON_STATUS
                 )
             )
         }
     }
 
-    private fun mapGetMilestoneFinish(finishData: MilestoneData.FinishMission): MilestoneFinishMissionUiModel {
-        val buttonFinishData = finishData.button
-        return MilestoneFinishMissionUiModel(
+    private fun mapGetMilestoneFinish(finishData: MilestoneData.FinishMission): List<MilestoneFinishMissionUiModel> {
+        val buttonFinishData = finishData.button ?: return emptyList()
+        val finishedMission = MilestoneFinishMissionUiModel(
             itemMissionKey = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
-            imageUrl = finishData.imageUrl,
-            title = finishData.title,
-            subTitle = finishData.subtitle,
+            imageUrl = finishData.imageUrl.orEmpty(),
+            title = finishData.title.orEmpty(),
+            subTitle = finishData.subtitle.orEmpty(),
             buttonMission = MilestoneFinishMissionUiModel.ButtonFinishMission(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,
@@ -75,6 +77,7 @@ class MilestoneMapper @Inject constructor(private val sellerHomeCommonPreference
                 buttonStatus = buttonFinishData.buttonStatus
             )
         )
+        return listOf(finishedMission)
     }
 
     private fun mapGetMilestoneCta(ctaData: MilestoneData.Cta): MilestoneCtaUiModel {

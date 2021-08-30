@@ -12,92 +12,193 @@ import com.tokopedia.usecase.RequestParams
 class GetMilestoneDataUseCase(
     private val gqlRepository: GraphqlRepository,
     private val mapper: MilestoneMapper
-): BaseGqlUseCase<List<MilestoneDataUiModel>>() {
+) : BaseGqlUseCase<List<MilestoneDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetMilestoneDataResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            QUERY, GetMilestoneDataResponse::class.java,
+            params.parameters
+        )
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
+        /*val response = Gson().fromJson(DUMMY, GetMilestoneDataResponse::class.java)
+
+        val data = mapper.mapMilestoneResponseToUiModel(
+            response.fetchMilestoneWidgetData?.data.orEmpty(),
+            false
+        )
+        return data*/
         val gqlErrors = gqlResponse.getError(GetMilestoneDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val response: GetMilestoneDataResponse? = gqlResponse.getData<GetMilestoneDataResponse>(
-                GetMilestoneDataResponse::class.java)
+                GetMilestoneDataResponse::class.java
+            )
             response?.let {
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-                return mapper.mapMilestoneResponseToUiModel(it.fetchMilestoneWidgetData?.data.orEmpty(), isFromCache)
-            } ?: throw NullPointerException("milestone widget data can not be null")
+                return mapper.mapMilestoneResponseToUiModel(
+                    it.fetchMilestoneWidgetData?.data.orEmpty(),
+                    isFromCache
+                )
+            }
+            throw NullPointerException("milestone widget data can not be null")
         } else {
-            throw RuntimeException(gqlErrors.joinToString(" - ") { it.message })
+            throw RuntimeException(gqlErrors.firstOrNull()?.message.orEmpty())
         }
     }
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
-        private const val SHOP_QUEST_KEY = "shopQuest"
+
         private val QUERY = """
             query fetchMilestoneWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchMilestoneWidgetData(dataKeys: ${'$'}dataKeys) {
-                data{
-                    dataKey
+                data {
+                  dataKey
+                  title
+                  subtitle
+                  backgroundColor
+                  backgroundImageUrl
+                  showNumber
+                  progressBar {
+                    description
+                    percentage
+                    percentageFormatted
+                    taskCompleted
+                    totalTask
+                  }
+                  mission {
+                    imageUrl
                     title
                     subtitle
-                    backgroundColor
-                    backgroundImageUrl
-                    showNumber
-                    progressBar{
-                      description
-                      percentage
-                      percentageFormatted
-                      taskCompleted
-                      totalTask
-                    }
-                    mission{
-                      imageUrl
+                    missionCompletionStatus
+                    button {
                       title
-                      subtitle
-                      missionCompletionStatus
-                      button{
-                        title
-                        urlType
-                        url
-                        applink
-                        buttonStatus
-                      }
-                    }
-                    finishMission{
-                      imageUrl
-                      title
-                      subtitle
-                      button{
-                        title
-                        urlType
-                        url
-                        applink
-                        buttonStatus
-                      }
-                    }
-                    cta{
-                      text
+                      urlType
                       url
                       applink
+                      buttonStatus
                     }
-                    error
-                    errorMsg
-                    showWidget
                   }
+                  finishMission {
+                    imageUrl
+                    title
+                    subtitle
+                    button {
+                      title
+                      urlType
+                      url
+                      applink
+                      buttonStatus
+                    }
+                  }
+                  cta {
+                    text
+                    url
+                    applink
+                  }
+                  error
+                  errorMsg
+                  showWidget
                 }
               }
             }
         """.trimIndent()
 
         fun createParams(dataKeys: List<String>): RequestParams = RequestParams.create().apply {
-            val dataKeys = dataKeys.map {
+            val mDataKeys = dataKeys.map {
                 DataKeyModel(
                     key = it,
                     jsonParams = "{}"
                 )
             }
-            putObject(DATA_KEYS, dataKeys)
+            putObject(DATA_KEYS, mDataKeys)
         }
+
+        private val DUMMY = """
+            {
+              "fetchMilestoneWidgetData": {
+                "data": [
+                  {
+                    "dataKey": "shopQuest",
+                    "showWidget": true,
+                    "title": "Misi berjualan tokopedia",
+                    "subtitle": "Sebelum mulai berjualan, selesaikan misi berikut agar tokomu jadi lebih tepercaya!",
+                    "backgroundColor": "#000000",
+                    "backgroundImageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
+                    "showNumber": false,
+                    "progressBar": {
+                      "description": "Kemajuan",
+                      "percentage": 100,
+                      "percentageFormatted": "0 dari 4 (0%)",
+                      "taskCompleted": 1,
+                      "totalTask": 1
+                    },
+                    "mission": [
+                      {
+                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
+                        "title": "Tambah lebih banyak produk",
+                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
+                        "missionCompletionStatus": false,
+                        "button": {
+                          "title": "Tambah Produk",
+                          "urlType": 1,
+                          "url": "www.tokopedia.com",
+                          "applink": "www.tokopedia.com",
+                          "buttonStatus": 1
+                        }
+                      },
+                      {
+                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
+                        "title": "Tambah lebih banyak produk",
+                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
+                        "missionCompletionStatus": false,
+                        "button": {
+                          "title": "Tambah Produk",
+                          "urlType": 1,
+                          "url": "www.tokopedia.com",
+                          "applink": "www.tokopedia.com",
+                          "buttonStatus": 1
+                        }
+                      },
+                      {
+                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
+                        "title": "Tambah lebih banyak produk",
+                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
+                        "missionCompletionStatus": false,
+                        "button": {
+                          "title": "Tambah Produk",
+                          "urlType": 1,
+                          "url": "www.tokopedia.com",
+                          "applink": "www.tokopedia.com",
+                          "buttonStatus": 1
+                        }
+                      },
+                      {
+                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
+                        "title": "Tambah lebih banyak produk",
+                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
+                        "missionCompletionStatus": false,
+                        "button": {
+                          "title": "Tambah Produk",
+                          "urlType": 1,
+                          "url": "www.tokopedia.com",
+                          "applink": "www.tokopedia.com",
+                          "buttonStatus": 1
+                        }
+                      }
+                    ],
+                    "finishMission": {},
+                    "cta": {
+                      "text": "Selengkapnya",
+                      "url": "www.tokopedia.com",
+                      "applink": "www.tokopedia.com"
+                    },
+                    "error": false,
+                    "errorMsg": ""
+                  }
+                ]
+              }
+            }
+        """.trimIndent()
     }
 }

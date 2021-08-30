@@ -1,31 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?><?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/containerShcMilestoneError"
+    android:id="@+id/containerShcMilestoneLoading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/tvShcMilestoneLoadingStateTitle"
-        android:layout_width="@dimen/shc_dimen_164dp"
-        android:layout_height="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcMilestoneErrorTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Misi berjualan tokopedia" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tvShcMilestoneLoadingItem1"
         android:layout_width="@dimen/shc_dimen_260dp"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="5"
-        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingStateTitle"
-        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingStateTitle" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcMilestoneErrorTitle" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tvShcMilestoneLoadingItem2"
@@ -33,8 +33,8 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:corners="5"
-        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem1"
-        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem1" />
+        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem1"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem1" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tvShcMilestoneLoadingItem3"
@@ -42,21 +42,29 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:corners="5"
-        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem2"
-        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem2" />
+        app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem2"
+        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem2" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMilestoneItemWidget"
-        android:layout_width="@dimen/layout_lvl0"
+    <include
+        android:id="@+id/shimmerShcMilestoneItem1"
+        layout="@layout/shc_milestone_widget_loading_item"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/shc_milestone_widget_loading_item"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcMilestoneLoadingItem3" />
+
+    <include
+        android:id="@+id/shimmerShcMilestoneItem2"
+        layout="@layout/shc_milestone_widget_loading_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/shimmerShcMilestoneItem1"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcMilestoneLoadingItem3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
