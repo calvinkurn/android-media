@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by Irfan Khoirul on 08/08/18.
  */
 @Parcelize
-class ShippingDurationUiModel() : Parcelable, RatesViewModelType {
+class ShippingDurationUiModel : Parcelable, RatesViewModelType {
     var serviceData: ServiceData = ServiceData()
     var shippingCourierViewModelList: List<ShippingCourierUiModel> = emptyList()
     var isSelected: Boolean = false

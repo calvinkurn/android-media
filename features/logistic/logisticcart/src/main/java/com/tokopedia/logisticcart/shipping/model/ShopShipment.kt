@@ -2,7 +2,6 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 /**
  * @author anggaprasetiyo on 22/02/18.
@@ -13,6 +12,6 @@ class ShopShipment : Parcelable {
     var shipName = ""
     var shipCode = ""
     var shipLogo = ""
-    var shipProds: List<ShipProd> = ArrayList()
+    var shipProds: List<ShipProd> = emptyList()
     var isDropshipEnabled = false
 }

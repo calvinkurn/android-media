@@ -9,5 +9,5 @@ import dagger.Component
 @ShippingCourierScope
 @Component(modules = [ShippingCourierModule::class])
 interface ShippingCourierComponent {
-    fun inject(shippingCourierBottomsheet: ShippingCourierBottomsheet?)
+    fun inject(shippingCourierBottomsheet: ShippingCourierBottomsheet)
 }
