@@ -4,15 +4,17 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 
 class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldUnify2(context,attrs) {
 
     private var relatedView : View? = null
-
+    private var editState = false
     init {
         labelText.hide()
         textInputLayout.isHelperTextEnabled = false
@@ -21,8 +23,10 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
                 editingState(true)
         }
         editText.setOnClickListener {
-            editingState(true)
+            if(editText.hasFocus())
+                editingState(true)
         }
+        editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
     }
 
     fun setRelatedView(relatedView : View){
@@ -30,6 +34,17 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
             editingState(false)
         }
         this.relatedView = relatedView
+    }
+
+    fun setDoneAction(action : () -> Unit){
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                editingState(false)
+                action.invoke()
+                true
+            }else
+                false
+        }
     }
 
     private fun showKeyboard(view: View) {
@@ -44,6 +59,7 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
     }
 
     fun editingState(state : Boolean){
+        this.editState = state
         if(state){
             relatedView?.show()
             showKeyboard(editText)

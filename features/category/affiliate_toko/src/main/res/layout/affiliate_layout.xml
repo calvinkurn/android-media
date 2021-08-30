@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_48"
         tools:layout_height="100dp"
-        android:elevation="15dp"
         app:buttonColor="@color/Unify_N500"
         app:buttonContainerBackgroundColor="@color/Unify_N0"
         app:buttonsHeight="@dimen/unify_space_48"
@@ -25,7 +24,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:setViewPagerSwipeable="false"
-        app:navbarElevation="15dp"
         app:viewPagerBackground="@color/Unify_N0"
         xmlns:tools="http://schemas.android.com/tools" />
 
