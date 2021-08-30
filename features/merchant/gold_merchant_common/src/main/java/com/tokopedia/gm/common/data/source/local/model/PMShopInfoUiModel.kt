@@ -6,6 +6,7 @@ package com.tokopedia.gm.common.data.source.local.model
 
 data class PMShopInfoUiModel(
         val isNewSeller: Boolean = true,
+        val is30DaysFirstMonday: Boolean = false,
         val isKyc: Boolean = false,
         val kycStatusId: Int = 0, //pls refer https://tokopedia.atlassian.net/wiki/spaces/AUT/pages/452132984/KYC+-+Know+Your+Customer
         val shopScore: Int = 0,
@@ -26,9 +27,12 @@ data class PMShopInfoUiModel(
         const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD = 70
         const val DEFAULT_ORDER_THRESHOLD = 3L
         const val DEFAULT_NIV_THRESHOLD = 350000L
+        const val KYC_STATUS_APPROVED = 4
     }
 
     fun isEligibleShopScore() = shopScore >= shopScoreThreshold
 
     fun isEligibleShopScorePmPro() = shopScore >= shopScorePmProThreshold
+
+    fun isKycVerified() = kycStatusId == KYC_STATUS_APPROVED
 }

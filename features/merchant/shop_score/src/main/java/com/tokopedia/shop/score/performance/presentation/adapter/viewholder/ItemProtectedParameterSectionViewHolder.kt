@@ -1,6 +1,8 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
@@ -8,8 +10,10 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMPotential
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemProtectedParameterAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ProtectedParameterListener
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
+import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
 import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
 import kotlinx.android.synthetic.main.item_parameter_protected_section.view.*
+import timber.log.Timber
 
 class ItemProtectedParameterSectionViewHolder(
     view: View,
@@ -24,6 +28,7 @@ class ItemProtectedParameterSectionViewHolder(
 
     override fun bind(element: ProtectedParameterSectionUiModel?) {
         with(itemView) {
+            setCardItemProtectedBackground()
             cardDescParameterRelief?.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
                     element?.protectedParameterDate.orEmpty()
@@ -36,6 +41,21 @@ class ItemProtectedParameterSectionViewHolder(
             }
         }
         setAdapterProtectedParameter(element)
+    }
+
+    private fun setCardItemProtectedBackground() {
+        try {
+            with(itemView) {
+                context?.let {
+                    containerNewSellerParameterRelief?.background = ContextCompat.getDrawable(
+                        context,
+                        R.drawable.corner_rounded_performance_list
+                    )
+                }
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
     }
 
     private fun setAdapterProtectedParameter(data: ProtectedParameterSectionUiModel?) {

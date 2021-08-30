@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.*
@@ -47,8 +48,6 @@ import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.DateTimeException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -612,7 +611,7 @@ class ShopScoreMapper @Inject constructor(
                         valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
-                        isDividerHide = if (isShowProtectedParameter) true
+                        isDividerHide = if (isShowProtectedParameter) false
                         else index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
                         parameterValueDetailPerformance = parameterItemDetailPerformance,
@@ -925,7 +924,7 @@ class ShopScoreMapper @Inject constructor(
         return try {
             val date = Calendar.getInstance(getLocale())
             val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
-            val targetDays = getNNextDaysProtectedParameter(diffDays)
+            val targetDays = GoldMerchantUtil.getNNextDaysDependsFirstMonday(diffDays)
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
             format(date.timeInMillis, PATTERN_DATE_TEXT)
         } catch (e: ParseException) {
@@ -958,11 +957,6 @@ class ShopScoreMapper @Inject constructor(
         date.set(Calendar.MINUTE, 0)
         date.set(Calendar.SECOND, 0)
         return date
-    }
-
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
-        val sdf = SimpleDateFormat(pattern, locale)
-        return sdf.format(timeMillis)
     }
 
     private fun getNumberFormatted(valueResponse: Double): String {

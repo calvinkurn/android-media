@@ -99,21 +99,6 @@ fun getNPastDaysPenalty(): Int {
     }
 }
 
-fun getNNextDaysProtectedParameter(totalRemainderDays: Int): Int {
-    val calendar = Calendar.getInstance(getLocale())
-    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)
-    return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        Calendar.TUESDAY -> ShopScoreConstant.SIX_NUMBER
-        Calendar.WEDNESDAY -> ShopScoreConstant.FIVE_NUMBER
-        Calendar.THURSDAY -> ShopScoreConstant.FOUR_NUMBER
-        Calendar.FRIDAY -> ShopScoreConstant.THREE_NUMBER
-        Calendar.SATURDAY -> ShopScoreConstant.TWO_NUMBER
-        Calendar.SUNDAY -> ShopScoreConstant.ONE_NUMBER
-        Calendar.MONDAY -> ShopScoreConstant.ZERO_NUMBER
-        else -> ShopScoreConstant.ZERO_NUMBER
-    }
-}
-
 fun getNPastDaysTimeStamp(daysBefore: Int): Date {
     val date = Calendar.getInstance(getLocale())
     date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - daysBefore)

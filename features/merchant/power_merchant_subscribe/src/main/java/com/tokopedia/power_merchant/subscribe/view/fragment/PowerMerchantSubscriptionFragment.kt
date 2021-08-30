@@ -152,6 +152,10 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         bottomSheet.show(childFragmentManager)
     }
 
+    override fun onMembershipStatusClickListener() {
+        
+    }
+
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
         val bottomSheet = PMProStatusInfoBottomSheet.createInstance(model)
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
@@ -159,6 +163,10 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         }
 
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onPMProNewSellerLearnMore() {
+
     }
 
     protected fun showErrorToaster(message: String, actionText: String) {
@@ -550,7 +558,6 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
         val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
-                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
                 && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
@@ -687,38 +694,17 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     }
 
     private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
-        pmBasicInfo?.shopInfo?.let {
-            val benefitList = listOf(
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
-                            icon = IconUnify.COURIER_FAST
-                    ),
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_2),
-                            icon = IconUnify.SEARCH
-                    ),
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_3),
-                            icon = IconUnify.COURIER
-                    ),
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_4),
-                            imgUrl = PMConstant.Images.PM_PRO_BADGE
-                    ),
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_5),
-                            icon = IconUnify.CALL_CENTER
-                    ),
-                    PMProBenefitUiModel(
-                            description = getString(R.string.pm_pro_general_benefit_6),
-                            icon = IconUnify.STAR_CIRCLE
-                    )
-            )
-            return WidgetUpgradePmProUiModel(
+        context?.let { context ->
+            pmBasicInfo?.shopInfo?.let {
+                return WidgetUpgradePmProUiModel(
                     shopInfo = it,
-                    registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), it),
-                    generalBenefits = benefitList
-            )
+                    registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(
+                        requireContext(),
+                        it
+                    ),
+                    generalBenefits = PMRegistrationTermHelper.getBenefitList(context)
+                )
+            }
         }
         return null
     }

@@ -235,9 +235,11 @@ class ShopGradeWidget(
         if (isPmStatusActive) {
             tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
+            pmNewSeller.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         } else {
             tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.pm_static_r600_dms))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
+            pmNewSeller.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600))
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
         tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))

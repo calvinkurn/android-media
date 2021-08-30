@@ -5,7 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PATTERN_DATE_TEXT
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
@@ -18,19 +20,22 @@ import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetUpgradePmProUiModel
 import kotlinx.android.synthetic.main.widget_upgrade_pm_pro.view.*
+import java.text.ParseException
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 10/05/21
  */
 
 class UpgradePmProWidget(
-        itemView: View?,
-        private val listener: Listener,
-        private val powerMerchantTracking: PowerMerchantTracking
+    itemView: View?,
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetUpgradePmProUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_upgrade_pm_pro
+        private const val THIRTY_DAYS = 30
     }
 
     private val termAdapter by lazy { RegistrationTermAdapter() }
@@ -40,6 +45,58 @@ class UpgradePmProWidget(
         showTermsList(element.registrationTerms)
         showGeneralBenefits(element.generalBenefits)
         setupUpgradeCta(element)
+        setupNewSeller(element)
+    }
+
+    private fun setupNewSeller(element: WidgetUpgradePmProUiModel) {
+        val shopInfo = element.shopInfo
+        with(itemView) {
+            if (shopInfo.isNewSeller) {
+                if (shopInfo.is30DaysFirstMonday) {
+                    viewPmUpgradeTermSection?.tvTermStatus?.hide()
+                    if (shopInfo.isEligiblePmPro) {
+                        tvPmUpgradePmProTitle?.text =
+                            getString(R.string.pm_title_new_seller_eligible_after_30_days)
+                        tvPmUpgradeBenefitDescription?.text =
+                            getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                    } else {
+                        tvPmUpgradePmProTitle?.text =
+                            getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
+                        tvPmUpgradeBenefitDescription?.text =
+                            getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
+                        hidePmProUpgradeSection()
+                    }
+                } else {
+                    tvPmUpgradePmProTitle?.text =
+                        getString(
+                            R.string.pm_title_new_seller_before_30_days,
+                            getDaysDate(shopInfo.shopAge)
+                        )
+                    viewPmUpgradeTermSection?.tvTermStatus?.hide()
+                    hidePmProUpgradeSection()
+                }
+            } else {
+                tvPmUpgradePmProDesc?.hide()
+            }
+        }
+    }
+
+    private fun getDaysDate(shopAge: Long): String {
+        return try {
+            val date = Calendar.getInstance(GoldMerchantUtil.getLocale())
+            val diffDays = (THIRTY_DAYS - shopAge)
+            val targetDays = GoldMerchantUtil.getNNextDaysDependsFirstMonday(diffDays.toInt())
+            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
+            GoldMerchantUtil.format(date.timeInMillis, PATTERN_DATE_TEXT)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    private fun View.hidePmProUpgradeSection() {
+        tvPmProTncDescription?.hide()
+        btnPmProUpgrade?.hide()
     }
 
     private fun setupUpgradeCta(element: WidgetUpgradePmProUiModel) = with(itemView) {
@@ -51,13 +108,14 @@ class UpgradePmProWidget(
         }
     }
 
-    private fun showGeneralBenefits(benefits: List<PMProBenefitUiModel>) = with(itemView.rvPmUpgradeBenefits) {
-        val benefitAdapter = PMProBenefitAdapter(benefits)
-        layoutManager = object : LinearLayoutManager(context) {
-            override fun canScrollVertically(): Boolean = false
+    private fun showGeneralBenefits(benefits: List<PMProBenefitUiModel>) =
+        with(itemView.rvPmUpgradeBenefits) {
+            val benefitAdapter = PMProBenefitAdapter(benefits)
+            layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean = false
+            }
+            adapter = benefitAdapter
         }
-        adapter = benefitAdapter
-    }
 
     private fun showTermsList(terms: List<RegistrationTermUiModel>) {
         with(itemView.rvPmUpgradeTerms) {
@@ -76,14 +134,21 @@ class UpgradePmProWidget(
         viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
 
         if (element.shopInfo.isEligiblePmPro) {
-            tvPmUpgradeBenefitDescription.text = getString(R.string.pm_pro_upgrade_eligible_description, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
+            tvPmUpgradeBenefitDescription.text = getString(
+                R.string.pm_pro_upgrade_eligible_description,
+                Constant.POWER_MERCHANT_PRO_CHARGING
+            ).parseAsHtml()
             tvPmProTncDescription.visible()
             btnPmProUpgrade.visible()
             showTncMessage()
             setExpandedChanged(false)
         } else {
             val threshold = element.shopInfo.shopScorePmProThreshold
-            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
+            tvPmUpgradeBenefitDescription.text = context.resources.getString(
+                R.string.pm_pro_upgrade_not_eligible_description,
+                threshold,
+                Constant.POWER_MERCHANT_PRO_CHARGING
+            ).parseAsHtml()
             tvPmProTncDescription.gone()
             btnPmProUpgrade.gone()
             setExpandedChanged(true)
@@ -110,10 +175,10 @@ class UpgradePmProWidget(
         val clickableText = "S&K"
         val ctaTextColor = com.tokopedia.unifycomponents.R.color.Unify_G500
         val termDescription = PowerMerchantSpannableUtil.createSpannableString(
-                text = context.getString(R.string.pm_pro_upgrade_tnc_description).parseAsHtml(),
-                highlightText = clickableText,
-                colorId = context.getResColor(ctaTextColor),
-                isBold = true
+            text = context.getString(R.string.pm_pro_upgrade_tnc_description).parseAsHtml(),
+            highlightText = clickableText,
+            colorId = context.getResColor(ctaTextColor),
+            isBold = true
         ) {
             listener.onUpgradePmProTnCClickListener()
         }
@@ -136,5 +201,6 @@ class UpgradePmProWidget(
     interface Listener {
         fun onUpgradePmProClickListener(adapterPosition: Int)
         fun onUpgradePmProTnCClickListener()
+        fun onMembershipStatusClickListener()
     }
 }

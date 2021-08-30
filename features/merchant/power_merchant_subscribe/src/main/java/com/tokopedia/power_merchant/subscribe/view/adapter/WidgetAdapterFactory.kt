@@ -31,4 +31,8 @@ interface WidgetAdapterFactory {
     fun type(model: WidgetTickerUiModel): Int
 
     fun type(model: WidgetUpgradePmProUiModel): Int
+
+    fun type(model: WidgetPMProNewSellerHeaderUiModel): Int
+
+    fun type(model: WidgetPmProNewSellerBenefitUiModel): Int
 }

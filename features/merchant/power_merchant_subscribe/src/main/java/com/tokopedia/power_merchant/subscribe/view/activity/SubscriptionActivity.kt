@@ -345,15 +345,24 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun setOnTabIndexSelected(data: PowerMerchantBasicInfoUiModel, tabIndex: Int) {
         val isPmProSelected = tabIndex == 1
+        val isNewSeller = data.shopInfo.isNewSeller
 
         if (isPmProSelected) {
             imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM_PRO)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
-            tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
+            if (isNewSeller) {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro_new_seller)
+            } else {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
+            }
         } else {
             imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
-            tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
+            if (isNewSeller) {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_new_seller)
+            } else {
+                tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
+            }
         }
 
         setupFooterView(data, isPmProSelected)

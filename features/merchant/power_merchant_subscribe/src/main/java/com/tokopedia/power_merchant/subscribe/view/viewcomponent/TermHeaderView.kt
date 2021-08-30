@@ -21,7 +21,7 @@ class TermHeaderView : LinearLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val tvTermStatus: Typography
+    val tvTermStatus: Typography
     private val icExpandedStatus: IconUnify
     private var onClickCallback: ((Boolean) -> Unit)? = null
     private var isExpanded = true

@@ -52,6 +52,17 @@
             tools:textColor="@color/Unify_N0" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/pmNewSeller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:text="@string/pm_new_seller"
+            tools:textColor="@color/Unify_N0"
+            app:typographyType="body_2"
+            app:layout_constraintTop_toBottomOf="@id/tvPmShopGrade"
+            app:layout_constraintStart_toStartOf="@id/tvPmShopGrade"/>
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmShopGradeStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

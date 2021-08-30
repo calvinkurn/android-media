@@ -23,14 +23,27 @@ object Constant {
         const val POWER_MERCHANT_EDU = "https://seller.tokopedia.com/edu/power-merchant/"
         const val POWER_MERCHANT_FEATURES = "https://seller.tokopedia.com/edu/fitur-power-merchant"
         const val POWER_MERCHANT_PRO_EDU = "https://seller.tokopedia.com/edu/power-merchant-pro"
-        const val PM_PRO_BENEFIT_PACKAGE_EDU = "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
-        const val POWER_MERCHANT_TERMS_AND_CONDITION = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
+        const val PM_PRO_BENEFIT_PACKAGE_EDU =
+            "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
+        const val POWER_MERCHANT_TERMS_AND_CONDITION =
+            "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
     }
 
     object Image {
-        const val PM_BG_UPSALE_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_upsale_pm_pro.png"
-        const val PM_BG_REGISTRATION_PM = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm.png"
-        const val PM_BG_REGISTRATION_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm_pro.png"
+        const val PM_BG_UPSALE_PM_PRO =
+            "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_upsale_pm_pro.png"
+        const val PM_BG_REGISTRATION_PM =
+            "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm.png"
+        const val PM_BG_REGISTRATION_PM_PRO =
+            "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm_pro.png"
+        const val IC_HERO_PM_NEW_SELLER =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_hero_pm_pro_new_seller.png"
+        const val IC_PM_PRO_NEW_SELLER_VERIFIED =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_verified.png"
+        const val IC_PM_PRO_NEW_SELLER_SCORE =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_score.png"
+        const val IC_PM_PRO_NEW_SELLER_TRANSACTION =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_transaction.png"
     }
 }

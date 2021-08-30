@@ -26,30 +26,42 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
 
     override fun bind(element: WidgetPotentialUiModel) {
         with(itemView) {
+
             rvPmPotential.layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
             rvPmPotential.adapter = PotentialAdapter(benefitList)
 
-            tvPmPotentialDescription.text = context.getString(R.string.pm_registration_potential_description, Constant.POWER_MERCHANT_CHARGING, Constant.OLD_POWER_MERCHANT_CHARGING).parseAsHtml()
+            if (element.isNewSeller) {
+                tvPmPotentialDescription.text = context.getString(
+                    R.string.pm_registration_potential_description_new_seller,
+                    Constant.POWER_MERCHANT_CHARGING
+                ).parseAsHtml()
+            } else {
+                tvPmPotentialDescription.text = context.getString(
+                    R.string.pm_registration_potential_description,
+                    Constant.POWER_MERCHANT_CHARGING,
+                    Constant.OLD_POWER_MERCHANT_CHARGING
+                ).parseAsHtml()
+            }
         }
     }
 
     private fun getBenefitList(): Lazy<List<PotentialItemUiModel>> {
         return lazy {
             listOf(
-                    PotentialItemUiModel(
-                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_01,
-                            description = getString(R.string.pm_potential_benefit_01)
-                    ),
-                    PotentialItemUiModel(
-                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_02,
-                            description = getString(R.string.pm_potential_benefit_02)
-                    ),
-                    PotentialItemUiModel(
-                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_03,
-                            description = getString(R.string.pm_potential_benefit_03)
-                    )
+                PotentialItemUiModel(
+                    imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_01,
+                    description = getString(R.string.pm_potential_benefit_01)
+                ),
+                PotentialItemUiModel(
+                    imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_02,
+                    description = getString(R.string.pm_potential_benefit_02)
+                ),
+                PotentialItemUiModel(
+                    imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_03,
+                    description = getString(R.string.pm_potential_benefit_03)
+                )
             )
         }
     }
