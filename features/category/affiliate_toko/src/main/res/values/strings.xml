@@ -11,7 +11,7 @@
     <string name="tag_badge_textview">badgeTextView</string>
     <string name="affiliate_choose_product">Pilih produknya dulu, ya!</string>
     <string name="affiliate_choose_product_description">Kamu bisa pilih produk yang sesuai dengan personamu sebelum mulai dipromosikan.</string>
-    <string name="affiliate_hai_ana_sal">Hai,</string>
+    <string name="affiliate_hai_ana_sal">☀️ Selamat siang!</string>
     <string name="affiliate_promote_affiliatw">Promosikan Produk Affiliate</string>
     <string name="affiliate_promoted_products">Produk yang dipromosikan</string>
     <string name="affiliate_where_to_promote">Mau promosikan di mana?</string>
@@ -20,4 +20,6 @@
     <string name="affiliate_still_buy_products">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia </string>
     <string name="affiliate_paste_link">Tempel Link</string>
     <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
+    <string name="affiliate_active">Aktif</string>
+    <string name="affiliate_inactive">Tidak Aktif</string>
 </resources>
