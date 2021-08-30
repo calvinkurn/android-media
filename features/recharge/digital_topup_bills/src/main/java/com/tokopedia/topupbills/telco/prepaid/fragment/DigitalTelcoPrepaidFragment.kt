@@ -446,7 +446,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
-        override fun onNavigateToContact() {
+        override fun onNavigateToContact(isSwitchChecked: Boolean) {
             val clientNumber = telcoClientNumberWidget.getInputNumber()
             val dgCategoryIds = arrayListOf(
                 TelcoCategoryType.CATEGORY_PULSA.toString(),
@@ -455,7 +455,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             )
             navigateContact(
                 clientNumber, favNumberList,
-                dgCategoryIds, topupAnalytics.getCategoryName(categoryId))
+                dgCategoryIds, topupAnalytics.getCategoryName(categoryId),
+                isSwitchChecked
+            )
         }
 
         override fun onRenderOperator() {
@@ -636,6 +638,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             telcoClientNumberWidget.run {
                 setInputNumber(favNumbers[0].clientNumber)
                 setContactName(favNumbers[0].clientName)
+                setFavoriteNumber(favNumbers)
             }
         }
     }
