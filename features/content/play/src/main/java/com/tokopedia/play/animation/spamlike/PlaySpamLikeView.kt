@@ -51,11 +51,11 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     private val imageList = mutableListOf<ImageView>()
 
     init {
-        val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeAnimation)
+        val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeView)
 
-        isBouncing = type.getBoolean(R.styleable.PlaySpamLikeAnimation_bouncing, false)
-        isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeAnimation_additionalShot, false)
-        maxShot = type.getInteger(R.styleable.PlaySpamLikeAnimation_maxShot, 30)
+        isBouncing = type.getBoolean(R.styleable.PlaySpamLikeView_bouncing, false)
+        isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeView_additionalShot, false)
+        maxShot = type.getInteger(R.styleable.PlaySpamLikeView_maxShot, 30)
 
         type.recycle()
 
