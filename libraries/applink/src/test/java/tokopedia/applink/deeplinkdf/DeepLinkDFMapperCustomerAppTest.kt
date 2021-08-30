@@ -966,4 +966,28 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/product/123/review"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
     }
+
+    @Test
+    fun `check old product review appLink then should return DF_MERCHANT_REVIEW in customerapp`() {
+        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/product/123/review-old"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
+    }
+
+    @Test
+    fun `check inbox reputation appLink then should return DF_MERCHANT_REVIEW in customerapp`() {
+        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/review"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
+    }
+
+    @Test
+    fun `check create review appLink then should return DF_MERCHANT_REVIEW in customerapp`() {
+        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/product-review/create/123/456/"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
+    }
+
+    @Test
+    fun `check review detail appLink then should return DF_MERCHANT_REVIEW in customerapp`() {
+        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/review/detail/123/"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
+    }
 }
