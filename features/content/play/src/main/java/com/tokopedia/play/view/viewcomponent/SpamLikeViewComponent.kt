@@ -42,13 +42,13 @@ class SpamLikeViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         job.cancelChildren()
-        spamLike.clear()
+        spamLike.clear(true)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         job.cancel()
-        spamLike.clear()
+        spamLike.clear(false)
     }
 
     companion object {

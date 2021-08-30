@@ -364,8 +364,10 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         }
     }
 
-    fun clear() {
-        job.cancelChildren()
+    fun clear(isOnPause: Boolean) {
+        if(isOnPause) job.cancelChildren()
+        else job.cancel()
+
         imageList.forEach {
             parentView?.removeView(it)
         }
