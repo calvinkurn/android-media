@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:layout_marginEnd="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivPaylaterPartner"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitlePaymentPartner"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/unify_font_14"
+            app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
+            app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="@string/kredivo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubTitlePaylaterPartner"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
+            app:typographyType="body_3"
+            tools:text="Yuk, daftar sekarang!" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/simulasiHeading"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintLeft_toLeftOf="@id/ivPaylaterPartner"
+            app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartner"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Simulasi pembayaran" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/interestText"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
+            app:layout_constraintTop_toBottomOf="@id/simulasiHeading"
+            app:typographyType="body_3"
+            tools:text="Interest (0%)" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/serviceFeeText"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
+            app:layout_constraintRight_toRightOf="@id/simulasiHeading"
+            app:layout_constraintTop_toBottomOf="@id/interestText"
+            app:typographyType="body_3"
+            tools:text="Biaya Layanan (Gratis di Bulan Pertama)" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/interestAmount"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+
+            app:layout_constraintBottom_toBottomOf="@id/interestText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/interestText"
+            app:typographyType="body_3"
+            tools:text="Rp0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/serviceFeeAmount"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/serviceFeeText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/serviceFeeText"
+            app:typographyType="body_3"
+            tools:text="Rp0" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/duration"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_font_20"
+            android:background="@color/transparent"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/serviceFeeText"
+            app:typographyType="body_1"
+            tools:text="30 Hari" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/totalAmount"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:paddingRight="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintBottom_toBottomOf="@id/duration"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/duration"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="Rp1.600.000" />
+
+        <View
+            android:id="@+id/bg_grey"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_interest_amount"
+            android:elevation="-1dp"
+            android:padding="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="@id/duration"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/duration">
+
+        </View>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/insuranceDetail"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/duration"
+            app:typographyType="small"
+            tools:text="Belum termasuk ongkir atau biaya asuransi" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnHowToUse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/insuranceDetail"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            tools:text="@string/pay_later_see_how_to_use" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/borderGrey"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pay_later_divider_height_dp_1"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnHowToUse" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/whyText"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/borderGrey"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Kenapa Kredivo?" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPaymentDesciption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginTop="@dimen/unify_space_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/whyText"
+            tools:listitem="@layout/base_payment_offer_description_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

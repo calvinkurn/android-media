@@ -67,7 +67,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
     }
 
-    private val isCreditCardModeAvailable: Boolean = false
+    private val isCreditCardModeAvailable: Boolean = true
     private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
@@ -171,10 +171,12 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             getUnifyTabLayout().removeAllTabs()
             when (paymentMode) {
                 is CreditCard -> {
-                    addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
                     addNewTab(context.getString(R.string.pdp_simulation_tab_title))
+                    addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
                 }
-                else -> View.GONE
+                else -> {
+                    this.getUnifyTabLayout().gone()
+                }
             }
         }
     }
