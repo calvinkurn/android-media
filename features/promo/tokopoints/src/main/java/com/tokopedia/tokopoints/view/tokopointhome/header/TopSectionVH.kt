@@ -371,10 +371,10 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         layoutParamsTextView.topMargin = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
         timerTextView?.layoutParams = layoutParamsTextView
 
-        val layoutParamsIcon = arrowIcon?.layoutParams
+     /*   val layoutParamsIcon = arrowIcon?.layoutParams
         layoutParamsIcon?.height = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
         layoutParamsIcon?.width = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-        arrowIcon?.layoutParams = layoutParamsIcon
+        arrowIcon?.layoutParams = layoutParamsIcon*/
 
         val layoutParams = cardStatusMatching?.layoutParams
         layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
