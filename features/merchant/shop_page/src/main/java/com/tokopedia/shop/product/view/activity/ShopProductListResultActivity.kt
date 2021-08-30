@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
@@ -80,6 +81,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
                 intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
                 intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA)?.getString(QUERY_SEARCH, "").orEmpty()
                 intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
+                intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
                 else -> ""
             }
         } else {
@@ -96,8 +98,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
-        etalaseId = if (pathSegments.size >= 4) {
-            data?.pathSegments?.getOrNull(3).orEmpty()
+        etalaseId = if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
+            data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
         } else {
             "0"
         }
@@ -187,6 +189,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_SORT = "sort"
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
+        private const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
+        private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
         private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
         fun createIntent(context: Context?, shopId: String?, keyword: String?,
                          etalaseId: String?, attribution: String?, sortId: String?, shopRef: String?): Intent {

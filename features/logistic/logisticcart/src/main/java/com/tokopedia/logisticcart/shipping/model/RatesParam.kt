@@ -125,13 +125,13 @@ data class RatesParam(
             private set
         var is_corner = 0
             private set
-        var shop_id: String = shipping.shopId
+        var shop_id: String = shipping.shopId ?: ""
             private set
         var shop_tier: Int = shipping.shopTier
             private set
-        var token: String = shipping.token
+        var token: String = shipping.token ?: ""
             private set
-        var ut: String = shipping.ut
+        var ut: String = shipping.ut ?: ""
             private set
         var insurance: String = shipping.insurance.toString()
             private set
@@ -139,7 +139,7 @@ data class RatesParam(
             private set
         var order_value: String = shipping.orderValue.toString()
             private set
-        var cat_id: String = shipping.categoryIds
+        var cat_id: String = shipping.categoryIds ?: ""
             private set
         var user_history: Int = -1
             private set
@@ -155,7 +155,7 @@ data class RatesParam(
             private set
         var products: String = RatesParamHelper.generateProducts(shipping)
             private set
-        var unique_id: String = shipping.uniqueId
+        var unique_id: String = shipping.uniqueId ?: ""
             private set
         var is_fulfillment: Boolean = shipping.isFulfillment
             private set
