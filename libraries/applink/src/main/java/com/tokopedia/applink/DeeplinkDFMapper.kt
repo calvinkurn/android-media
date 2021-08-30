@@ -364,6 +364,18 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_REVIEW, R.string.title_product_review))
 
             add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.INBOX_REPUTATION)
+            }, DF_MERCHANT_REVIEW, R.string.title_review_inbox))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.CREATE_REVIEW)
+            }, DF_MERCHANT_REVIEW, R.string.title_create_review))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.REVIEW_DETAIL)
+            }, DF_MERCHANT_REVIEW, R.string.title_review_detail))
+
+            add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
