@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +10,24 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurchaseComponent
@@ -75,6 +80,8 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        setupStatusBar()
+        setupNavToolbar()
         setupRecyclerView()
         setupSwipeRefreshLayout()
         observeLiveData()
@@ -109,9 +116,87 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         miniCartWidget = view?.findViewById(R.id.mini_cart_widget)
     }
 
+    private fun setupStatusBar() {
+        /*
+            this status bar background only shows for android Kitkat below
+            In that version, status bar can't be forced to dark mode
+            We must set background to keep status bar icon visible
+        */
+        activity?.let {
+            statusBarBg?.apply {
+                layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+            }
+            setStatusBarAlpha()
+        }
+    }
+
+    private fun setStatusBarAlpha() {
+        val drawable = statusBarBg?.background
+        drawable?.alpha = 0
+        statusBarBg?.background = drawable
+    }
+
+
+    private fun setupNavToolbar() {
+        setupTopNavigation()
+        navAbTestCondition (
+            ifNavRevamp = {
+                setIconNewTopNavigation()
+            },
+            ifNavOld = {
+                setIconOldTopNavigation()
+            }
+        )
+    }
+
+    private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
+        if (!isNavOld()) {
+            ifNavRevamp.invoke()
+        } else {
+            ifNavOld.invoke()
+        }
+    }
+
+    private fun setupTopNavigation() {
+        navToolbar?.let { toolbar ->
+            activity?.let {
+                toolbar.setupToolbarWithStatusBar(it)
+            }
+        }
+    }
+
+    private fun setIconNewTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+            .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+            .addIcon(IconList.ID_NAV_GLOBAL) {}
+        navToolbar?.setIcon(icons)
+    }
+
+    private fun setIconOldTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+            .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+        navToolbar?.setIcon(icons)
+    }
+
+    private fun onClickCartButton() {}
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        val remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun isNavOld(): Boolean {
+        return try {
+            getAbTestPlatform().getString(ConstantKey.AB_TEST_EXP_NAME, ConstantKey.AB_TEST_VARIANT_OLD) == ConstantKey.AB_TEST_VARIANT_OLD
+        } catch (e: Exception) {
+            e.printStackTrace()
+            true
+        }
+    }
+
     private fun setupRecyclerView() {
         context?.let {
-            rvRecentPurchase = view?.findViewById(R.id.rv_home)
             rvRecentPurchase?.apply {
                 adapter = this@TokoNowRecentPurchaseFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
