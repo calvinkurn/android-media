@@ -4,13 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ScrollView
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
+import com.tokopedia.unifyprinciples.Typography
 
 
 /**
@@ -21,10 +21,10 @@ class PlayLivePusherDebugView : ScrollView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    private val tvStatus: AppCompatTextView
-    private val tvPushInfo: AppCompatTextView
-    private val tvPushUpdatedInfo: AppCompatTextView
-    private val tvFullLog: AppCompatTextView
+    private val tvStatus: Typography
+    private val tvPushInfo: Typography
+    private val tvPushUpdatedInfo: Typography
+    private val tvFullLog: Typography
 
     init {
         val view = View.inflate(context, R.layout.view_play_live_pusher_debug, this)
@@ -32,9 +32,11 @@ class PlayLivePusherDebugView : ScrollView {
         tvPushInfo = view.findViewById(R.id.tv_debug_view_push_info)
         tvPushUpdatedInfo = view.findViewById(R.id.tv_debug_view_push_updated_info)
         tvFullLog = view.findViewById(R.id.tv_debug_view_full_log)
-        val imgClose = view.findViewById<AppCompatImageView>(R.id.img_close)
 
-        imgClose.setOnClickListener { hide() }
+        findViewById<IconUnify>(R.id.ic_close).setOnClickListener {
+            hide()
+        }
+
         tvFullLog.text = "\nSTATUS HISTORY"
     }
 
