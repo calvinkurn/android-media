@@ -125,7 +125,9 @@ class OvoWidgetView: FrameLayout {
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
-        if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
+        if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+            navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP2)
+        ) {
             renderBebasOngkirSection(element)
             containerOvo.weightSum = 0f
         }
