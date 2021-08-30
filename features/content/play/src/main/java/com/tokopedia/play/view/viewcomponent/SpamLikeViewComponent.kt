@@ -46,6 +46,6 @@ class SpamLikeViewComponent(
 
     companion object {
         private const val LIKE_ICON_MULTIPLIER = 3
-        private const val SPAMMING_LIKE_DELAY = 200L
+        private const val SPAMMING_LIKE_DELAY = 100L
     }
 }
