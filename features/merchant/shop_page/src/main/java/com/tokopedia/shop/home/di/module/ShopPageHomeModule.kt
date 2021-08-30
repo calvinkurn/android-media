@@ -1,9 +1,12 @@
 package com.tokopedia.shop.home.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
@@ -15,7 +18,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_OCC_MUTATION
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -29,16 +31,16 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
-import javax.inject.Named
 
 @Module(includes = [ShopPageHomeViewModelModule::class, PlayWidgetModule::class])
 class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    @Named(GQL_ATC_OCC_MUTATION)
-    fun provideAddToCartOCCMutation(@ShopPageContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout);
+    fun provideAddToCartOccMultiUseCase(graphqlRepository: GraphqlRepository,
+                                        addToCartDataMapper: AddToCartDataMapper,
+                                        chosenAddressRequestHelper: ChosenAddressRequestHelper): AddToCartOccMultiUseCase {
+        return AddToCartOccMultiUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
     }
 
     @ShopPageHomeScope

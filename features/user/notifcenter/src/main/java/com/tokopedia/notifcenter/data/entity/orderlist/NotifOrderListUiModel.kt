@@ -7,7 +7,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 
 data class NotifOrderListUiModel(
         @SerializedName("list")
-        var list: List<Card> = listOf()
+        var list: List<OrderWidgetUiModel> = listOf()
 ) : Visitable<NotificationTypeFactory> {
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)

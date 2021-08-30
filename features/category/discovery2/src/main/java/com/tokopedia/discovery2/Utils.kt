@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -311,5 +312,9 @@ class Utils {
                 ?: (component.getComponentsItem()?.size.isMoreThanZero()
                         && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
         }
+        fun getUserId(context: Context?): String {
+            return context?.let { UserSession(it).userId } ?: ""
+        }
+
     }
 }

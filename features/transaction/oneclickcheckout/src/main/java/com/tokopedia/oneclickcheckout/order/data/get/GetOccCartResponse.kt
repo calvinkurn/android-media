@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class GetOccCartResponse(
+class GetOccCartResponse(
         @SerializedName("error_message")
         val errorMessages: List<String> = emptyList(),
         @SerializedName("status")

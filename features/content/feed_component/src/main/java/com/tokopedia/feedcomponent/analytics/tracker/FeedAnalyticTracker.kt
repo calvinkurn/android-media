@@ -884,6 +884,41 @@ class FeedAnalyticTracker
         )
 
     }
+    fun eventClickPostTagitem(
+        activityId: String,
+        product: FeedXProduct,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
+
+        trackEnhancedEcommerceEventNew(
+            PRODUCT_CLICK,
+            CATEGORY_FEED_TIMELINE,
+            String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "product tag",
+                getPostType(type, isFollowed)
+            ),
+            String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                shopId,
+                product.id
+            ),
+            DataLayer.mapOf(CLICK, mapOf(
+                "actionField" to mapOf(
+                    "list" to "/feed - ${getPostType(type, isFollowed)}"
+                ),
+                "products" to getSingleProductListASGC(product, position, type, isFollowed)
+            )
+            )
+        )
+
+
+    }
 
     fun eventClickBSitem(
         activityId: String,
@@ -1017,7 +1052,7 @@ class FeedAnalyticTracker
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
             "dimension39", "/feed - ${getPostType(type, isFollowed)} "
         )
 
@@ -1416,7 +1451,7 @@ class FeedAnalyticTracker
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     "watch",
-                    "video ",
+                    "video",
                     getPostType("", isFollowed = isFollowed, isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -1562,8 +1597,8 @@ class FeedAnalyticTracker
 
         val map = mapOf(
             KEY_EVENT to OPEN_SCREEN,
-            "isLoggedInStatus" to isLoggedInStatus.toString(),
-            KEY_EVENT_SCREEN_NAME to "/feed",
+            SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
+            KEY_EVENT_SCREEN_NAME to Screen.FEED,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_EVENT_USER_ID to userSessionInterface.userId

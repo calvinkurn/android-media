@@ -26,6 +26,7 @@ import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
+import com.tokopedia.profilecompletion.common.ProfileCompletionUtils.removeErrorCode
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -221,20 +222,20 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun onErrorAddPin(throwable: Throwable) {
         dismissLoading()
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
+        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage.removeErrorCode())
         onError(throwable)
         displayInitPin()
     }
 
     private fun onErrorCheckPin(throwable: Throwable) {
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-        trackingPinUtil.trackFailedInputCreatePin(errorMessage)
+        trackingPinUtil.trackFailedInputCreatePin(errorMessage.removeErrorCode())
         onError(throwable)
     }
 
     private fun onErrorSkipOtpPin(throwable: Throwable) {
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
+        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage.removeErrorCode())
         onError(throwable)
     }
 

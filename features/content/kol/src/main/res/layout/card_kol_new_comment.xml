@@ -30,10 +30,10 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_2"
+            android:paddingTop="@dimen/dp_2"
             android:layout_toEndOf="@id/avatar"
             app:layout_constraintStart_toEndOf="@id/avatar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/comment" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/comment"
@@ -85,7 +85,7 @@
                 android:id="@+id/btn_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_36"
                 android:text="@string/kol_reply"
                 app:unifyButtonSize="micro"
                 app:unifyButtonVariant="text" />

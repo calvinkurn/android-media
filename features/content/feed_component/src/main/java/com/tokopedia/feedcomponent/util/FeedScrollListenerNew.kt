@@ -20,6 +20,7 @@ import java.util.*
 
 object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
+    private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val TYPE_VIDEO = "video"
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
@@ -34,7 +35,7 @@ object FeedScrollListenerNew {
                     }
                 } else if (isImageCard(list, i)) {
                     if (item != null) {
-                        getImagePostScrollListener(layoutManager, recyclerView, i)
+                        getImagePostScrollListener(layoutManager, recyclerView, i, item)
                     }
                 }
             }
@@ -44,7 +45,8 @@ object FeedScrollListenerNew {
     private fun getImagePostScrollListener(
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
-        i: Int
+        i: Int,
+        item: FeedXMedia
     ) {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
@@ -62,14 +64,17 @@ object FeedScrollListenerNew {
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * 100 / imageView.height
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
 
-            if (isStateChanged) {
+            if (isStateChanged && item.isImageImpressedFirst) {
+                item.isImageImpressedFirst = false
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, PAYLOAD_POST_VISIBLE)
             }
+            if(percentVideo <= 0)
+                item.isImageImpressedFirst = true
         }
     }
 
@@ -95,18 +100,20 @@ object FeedScrollListenerNew {
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * 100 / imageView.height
+            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             var isStateChanged = false
             if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
                 if (!item.canPlay) isStateChanged = true
                 item.canPlay = true
             } else {
-                //  if (item.canPlay) isStateChanged = true
+                if(percentVideo <= 0)
+                    item.isImageImpressedFirst = true
                 item.canPlay = false
             }
 
-            if (isStateChanged) {
+            if (isStateChanged && item.isImageImpressedFirst) {
+                item.isImageImpressedFirst = false
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
             }
