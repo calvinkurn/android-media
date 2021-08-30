@@ -16,7 +16,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingBottom="@dimen/home_margin_16_dp_product_card"
         >
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
@@ -30,6 +30,7 @@
             android:id="@+id/master_product_card_deals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:translationY="@dimen/home_padding_vertical_use_compat_padding_product_card"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />

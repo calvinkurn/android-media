@@ -51,6 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/home_margin_12_dp_product_card"
+            android:paddingTop="@dimen/home_margin_12_dp_product_card"
             android:clipToPadding="false"
             android:paddingStart="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl3"
