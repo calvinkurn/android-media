@@ -7,15 +7,6 @@
       "eventCategory": "digital - smart bill management - add bills",
       "currentSite": "tokopediaDigitalRecharge",
       "event": "clickSmartBill",
-      "eventAction": "click input field",
-      "sessionIris": ".*",
-      "eventLabel": ".*"
-    },
-    {
-      "businessUnit": "top up and tagihan",
-      "eventCategory": "digital - smart bill management - add bills",
-      "currentSite": "tokopediaDigitalRecharge",
-      "event": "clickSmartBill",
       "eventAction": "click x - top information box",
       "sessionIris": ".*",
       "eventLabel": ".*"
@@ -103,6 +94,15 @@
       "currentSite": "tokopediaDigitalRecharge",
       "event": "clickSmartBill",
       "eventAction": "click back",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click input field",
       "sessionIris": ".*",
       "eventLabel": ".*"
     }

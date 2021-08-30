@@ -162,7 +162,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 price = enquiryData?.attributes?.price?.toIntOrNull() ?: 0
             }
 
-            adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this), this)
+            arguments?.let {
+                isAddSBM = it.getBoolean(EXTRA_PARAM_IS_ADD_BILLS, false)
+            }
+
+            adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this, isAddSBM), this)
         }
 
         arguments?.let {
@@ -172,7 +176,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             productId = it.getInt(EXTRA_PARAM_PRODUCT_ID, 0)
             hasInputData = operatorId > 0
             rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
-            isAddSBM = it.getBoolean(EXTRA_PARAM_IS_ADD_BILLS, false)
         }
     }
 
@@ -867,6 +870,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
+
+        if(isAddSBM){
+            commonTopupBillsAnalytics.clickInputFieldTelcoAddBills(categoryName)
+        }
         updateInputData(label, input)
     }
 
@@ -887,10 +894,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
             showProductSelectDropdown(field, productData, getString(R.string.product_select_label))
         } else if (enquiryData != null) {
-            if(isAddSBM){
-                commonTopupBillsAnalytics.clickInputFieldTelcoAddBills(categoryName)
+            if(!isAddSBM){
+                showFavoriteNumbersPage(favoriteNumbers, enquiryData)
             }
-            showFavoriteNumbersPage(favoriteNumbers, enquiryData)
         }
     }
 

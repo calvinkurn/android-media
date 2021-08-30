@@ -26,7 +26,6 @@ import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivi
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
@@ -108,10 +107,9 @@ class RechargeGeneralAddBillsActivityTest {
         Espresso.onView(withId(R.id.rv_digital_product)).check(ViewAssertions.matches(isDisplayed()))
         Espresso.onView(withId(R.id.rv_digital_product)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
-                        0, ViewActions.typeText("0812")
+                        0, ViewActions.typeText("11111111111")
                 )
         )
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(withText("1111111111110812"), 1)).perform(click())
         Thread.sleep(3000)
     }
 
