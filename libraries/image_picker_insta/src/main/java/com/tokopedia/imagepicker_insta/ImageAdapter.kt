@@ -4,14 +4,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
+import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
 
-class ImageAdapter(val dataList: List<Asset>, val contentHeight: Int, var onCameraIconClick: Function0<Unit>) :
+class ImageAdapter(val dataList: List<ImageAdapterData>,
+                   val contentHeight: Int, var onCameraIconClick: Function0<Unit>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var itemSelectCallback: Function2<Asset, Boolean, Unit>? = null
+    var itemSelectCallback: Function2<ImageAdapterData, Boolean, Unit>? = null
     val selectedPositions = mutableSetOf<Int>()
 
+    fun isSelectedPositionsEmpty():Boolean{
+        return selectedPositions.isEmpty()
+    }
+
+    fun addSelectedItem(position: Int){
+        selectedPositions.add(position)
+    }
+
+    fun clearSelectedItems(){
+        selectedPositions.clear()
+    }
 
     private val TYPE_CAMERA = 0
     private val TYPE_ASSET = 1
@@ -25,7 +38,7 @@ class ImageAdapter(val dataList: List<Asset>, val contentHeight: Int, var onCame
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (dataList[position] is Camera) return TYPE_CAMERA
+        if (dataList[position].asset is Camera) return TYPE_CAMERA
         return TYPE_ASSET
     }
 
@@ -33,7 +46,7 @@ class ImageAdapter(val dataList: List<Asset>, val contentHeight: Int, var onCame
         if (holder is CameraViewHolder) {
             holder.setData()
         } else if (holder is PhotosViewHolder) {
-            holder.setData(dataList[position])
+            holder.setData(dataList[position].asset)
             holder.setChecked(selectedPositions.contains(position))
 
             holder.itemView.setOnClickListener {

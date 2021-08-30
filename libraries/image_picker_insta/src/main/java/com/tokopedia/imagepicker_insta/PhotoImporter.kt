@@ -6,10 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.SparseArray
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.FolderData
-import com.tokopedia.imagepicker_insta.models.PhotosData
-import com.tokopedia.imagepicker_insta.models.PhotosImporterData
+import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.util.CursorUtil
 import com.tokopedia.imagepicker_insta.util.FileUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -170,7 +167,11 @@ class PhotoImporter {
         if(photosList.isNotEmpty()) {
             tempFoldersList.add(0, FolderData(PhotoImporter.ALL, getSubtitle(photosList.size), photosList.first().contentUri))
         }
-        return PhotosImporterData(tempFoldersList, photosList, null)
+        val imageAdapterDataList = ArrayList<ImageAdapterData>()
+        photosList.forEach {
+            imageAdapterDataList.add(ImageAdapterData(it))
+        }
+        return PhotosImporterData(tempFoldersList, imageAdapterDataList, null)
     }
 
     fun getSubtitle(mediaCount:Int):String{

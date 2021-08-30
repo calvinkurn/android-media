@@ -34,7 +34,7 @@ class PickerViewModel @Inject constructor(
             } else if (photosImporterData == null) {
                 photosLiveData.postValue(LiveDataResult.error(Exception("No Images found")))
             } else {
-                val tempList = photosImporterData!!.assets.filter { it.folder == folderName }
+                val tempList = photosImporterData!!.imageAdapterDataList.filter { it.asset.folder == folderName }
                 photosLiveData.postValue(LiveDataResult.success(PhotosImporterData(photosImporterData!!.folders, ArrayList(tempList), folderName)))
             }
 

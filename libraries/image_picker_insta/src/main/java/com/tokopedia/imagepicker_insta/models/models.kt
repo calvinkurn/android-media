@@ -10,16 +10,25 @@ class Camera:Asset("","", Uri.EMPTY, 0L)
 data class PhotosData(val filePath:String, val folderName:String, val mediaType:String, val uri:Uri, val _createdDate:Long ):Asset(filePath,folderName,uri, _createdDate)
 
 data class PhotosImporterData(val folders:ArrayList<FolderData>,
-                              val assets: ArrayList<Asset>,
+                              val imageAdapterDataList: ArrayList<ImageAdapterData>,
                               val selectedFolder:String?, ){
 
-    fun addCameraImage(filePath: String):Asset{
+    fun addCameraImage(filePath: String):ImageAdapterData{
         val file = File(filePath)
         val folderName = FileUtil.getFolderName(filePath)
-        val photosData = PhotosData(filePath, folderName, States.mediaType.camera.value(), Uri.fromFile(file),file.lastModified())
-        assets.add(0,photosData)
-        return photosData
+        val imageAdapterData = ImageAdapterData(PhotosData(filePath, folderName, States.mediaType.camera.value(), Uri.fromFile(file),file.lastModified()))
+        imageAdapterDataList.add(0,imageAdapterData)
+        return imageAdapterData
     }
 }
 
 data class FolderData(val folderTitle:String,val folderSubtitle:String, val thumbnailUri:Uri)
+
+data class ImageAdapterData(val asset:Asset, val isSelected:Boolean = false, val isInMultiSelectMode:Boolean = false)
+
+object BundleData {
+    val TITLE = "title"
+    val SUB_TITLE = "subtitle"
+    val ICON_RES = "icon_res"
+    val MENU_TITLE = "menu_title"
+}

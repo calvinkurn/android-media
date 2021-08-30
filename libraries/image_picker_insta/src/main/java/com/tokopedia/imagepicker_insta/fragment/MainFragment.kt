@@ -27,6 +27,7 @@ import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.FolderData
+import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -38,24 +39,25 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 
-class MainFragment: Fragment() {
+class MainFragment : Fragment() {
 
     val EDITOR_REQUEST_CODE = 221
 
     lateinit var viewModel: PickerViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var rv:RecyclerView
+    lateinit var rv: RecyclerView
     lateinit var selectedImage: AssetImageView
-    lateinit var recentSection:LinearLayout
-    lateinit var tvSelectedFolder:AppCompatTextView
+    lateinit var recentSection: LinearLayout
+    lateinit var tvSelectedFolder: AppCompatTextView
 
     lateinit var imageAdapter: ImageAdapter
-    val imageDataList = ArrayList<Asset>()
+    val imageDataList = ArrayList<ImageAdapterData>()
     val folders = arrayListOf<FolderData>()
 
-    var cameraCaptureFilePath:String?=null
+    var cameraCaptureFilePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,45 +67,55 @@ class MainFragment: Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val menuTitle = (activity as? MainActivity)?.menuTitle ?: getString(R.string.imagepicker_insta_lanjut)
+        menu.add(Menu.NONE, 1, Menu.NONE, menuTitle)
+        menu.findItem(1).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.imagepicker_insta_menu,menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.imagepicker_insta_lanjut-> proceedNextStep()
+            1-> {
+                proceedNextStep()
+                return true
+            }
         }
-        return true
+
+        return false
     }
 
-    private fun proceedNextStep(){
-        if(imageAdapter.selectedPositions.isNotEmpty()){
+    private fun proceedNextStep() {
+        if (imageAdapter.isSelectedPositionsEmpty()) {
             val assets = imageAdapter.selectedPositions.map {
-                imageAdapter.dataList[it].assetPath
+                imageAdapter.dataList[it].asset.assetPath
             }
             val assetList = ArrayList(assets)
-            val intent = ImageEditorActivity.getIntent(context,
-                ImageEditorBuilder(assetList,
-                    defaultRatio = ImageRatioType.RATIO_1_1))
-            startActivityForResult(intent,EDITOR_REQUEST_CODE)
-        }else{
-            Toast.makeText(context,"Select any image first",Toast.LENGTH_SHORT).show()
+            val intent = ImageEditorActivity.getIntent(
+                context,
+                ImageEditorBuilder(
+                    assetList,
+                    defaultRatio = ImageRatioType.RATIO_1_1
+                )
+            )
+            startActivityForResult(intent, EDITOR_REQUEST_CODE)
+        } else {
+            Toast.makeText(context, "Select any image first", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun handleCameraPermissionCallback(){
-        if(activity is MainActivity){
-            (activity as MainActivity).cameraPermissionCallback = { hasAllPermission->
-                if(hasAllPermission){
+    fun handleCameraPermissionCallback() {
+        if (activity is MainActivity) {
+            (activity as MainActivity).cameraPermissionCallback = { hasAllPermission ->
+                if (hasAllPermission) {
                     openCamera()
-                }else{
-                    Toast.makeText(context,"Please allow Permissions",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Please allow Permissions", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    fun initDagger(){
+    fun initDagger() {
         val component = DaggerImagePickerComponent.builder()
             .appModule(AppModule((context as AppCompatActivity).application))
             .build()
@@ -113,6 +125,7 @@ class MainFragment: Fragment() {
             viewModel = viewModelProvider[PickerViewModel::class.java]
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = LayoutInflater.from(context).inflate(R.layout.imagepicker_insta_fragment_main, container, false)
         initViews(v)
@@ -122,157 +135,166 @@ class MainFragment: Fragment() {
         return v
     }
 
-    fun initViews(v:View){
+    fun initViews(v: View) {
         rv = v.findViewById(R.id.rv)
         selectedImage = v.findViewById(R.id.selected_image_view)
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
-        val toolbar:Toolbar = v.findViewById(R.id.toolbar)
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        val toolbar: Toolbar = v.findViewById(R.id.toolbar)
+        (activity as MainActivity).run {
+            setSupportActionBar(toolbar)
+            if (toolbarIconRes != 0) {
+                toolbar.setNavigationIcon(toolbarIconRes)
+            }
+            supportActionBar?.title = this.toolbarTitle
+            supportActionBar?.subtitle = this.toolbarSubTitle
+        }
         setupRv()
     }
 
-    fun setClicks(){
+    fun setClicks() {
         recentSection.setOnClickListener {
-            if(folders.isEmpty()) return@setOnClickListener
+            if (folders.isEmpty()) return@setOnClickListener
 
             val bottomSheet = BottomSheetUnify()
             val folderView = FolderChooserView(it.context)
             bottomSheet.setChild(folderView)
-            bottomSheet.show(childFragmentManager,"BottomSheet Tag")
+            bottomSheet.show(childFragmentManager, "BottomSheet Tag")
             folderView.setData(folders)
-            folderView.itemOnClick {folderData->
+            folderView.itemOnClick { folderData ->
                 refreshImages(folderData?.folderTitle)
                 bottomSheet.dismiss()
             }
         }
     }
 
-    fun refreshImages(folderName:String?){
+    fun refreshImages(folderName: String?) {
         viewModel.getImagesByFolderName(folderName)
     }
 
-    fun setupRv(){
+    fun setupRv() {
 
         val columnCount = 3
-        rv.layoutManager = GridLayoutManager(context,columnCount)
-        val width = context?.resources?.displayMetrics?.widthPixels?:0
-        val contentHeight = width/columnCount
-        imageAdapter = ImageAdapter(imageDataList, contentHeight,this::handleOnCameraIconTap)
+        rv.layoutManager = GridLayoutManager(context, columnCount)
+        val width = context?.resources?.displayMetrics?.widthPixels ?: 0
+        val contentHeight = width / columnCount
+        imageAdapter = ImageAdapter(imageDataList, contentHeight, this::handleOnCameraIconTap)
         rv.adapter = imageAdapter
         val itemPadding = 4.toPx().toInt()
-        rv.addItemDecoration(GridItemDecoration(itemPadding,true))
+        rv.addItemDecoration(GridItemDecoration(itemPadding, true))
     }
 
 
-    fun openCamera(){
+    fun openCamera() {
         cameraCaptureFilePath = null
         cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this))
     }
 
-    fun handleOnCameraIconTap(){
-        if(activity is MainActivity){
-                PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
+    fun handleOnCameraIconTap() {
+        if (activity is MainActivity) {
+            PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
         }
     }
 
-    fun setObservers(){
-        viewModel.photosLiveData.observe(viewLifecycleOwner,{
-            when(it.status){
-                LiveDataResult.STATUS.LOADING->{
-                    Toast.makeText(context,"Loading",Toast.LENGTH_SHORT).show()
+    fun setObservers() {
+        viewModel.photosLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
                 }
-                LiveDataResult.STATUS.SUCCESS->{
+                LiveDataResult.STATUS.SUCCESS -> {
 
                     imageDataList.clear()
-                    imageDataList.add(Camera())
+                    imageDataList.add(ImageAdapterData(Camera(), false, false))
                     folders.clear()
 
-                    if(!it.data?.assets.isNullOrEmpty()){
-                        imageDataList.addAll(it.data!!.assets)
-
+                    if (!it.data?.imageAdapterDataList.isNullOrEmpty()) {
+                        imageDataList.addAll(it.data!!.imageAdapterDataList)
+                        imageAdapter.clearSelectedItems()
+                        imageAdapter.addSelectedItem(1)
 
                         //update folders
-                        if(!it.data.folders.isNullOrEmpty()){
+                        if (!it.data.folders.isNullOrEmpty()) {
                             folders.addAll(it.data.folders)
                             tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
-                        Toast.makeText(context,"List updated",Toast.LENGTH_SHORT).show()
-                    }else{
+                        Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
+                    } else {
                         tvSelectedFolder.text = "No Photos are available"
-                        Toast.makeText(context,"No data",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
                 }
-                LiveDataResult.STATUS.ERROR->{
-                    Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+                LiveDataResult.STATUS.ERROR -> {
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                 }
             }
         })
 
-        imageAdapter.itemSelectCallback = {asset: Asset, isSelected: Boolean ->
-            if(isSelected){
-                selectedImage.loadAsset(asset)
-            }else{
+        imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
+            if (isSelected) {
+                selectedImage.loadAsset(imageAdapterData.asset)
+            } else {
                 selectedImage.removeAsset()
             }
         }
     }
 
-    fun getPhotos(){
+    fun getPhotos() {
         viewModel.getPhotos()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            CameraUtil.REQUEST_IMAGE_CAPTURE->{
-                if(resultCode == Activity.RESULT_OK){
+        when (requestCode) {
+            CameraUtil.REQUEST_IMAGE_CAPTURE -> {
+                if (resultCode == Activity.RESULT_OK) {
                     handleCameraSuccessResponse()
                 }
             }
-            EDITOR_REQUEST_CODE->{
+            EDITOR_REQUEST_CODE -> {
                 handleEditorCallback(data)
             }
         }
     }
 
-    private fun handleEditorCallback(data:Intent?){
+    private fun handleEditorCallback(data: Intent?) {
         val imageOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         imageOrPathList.size
     }
 
-    private fun handleCameraSuccessResponse(){
+    private fun handleCameraSuccessResponse() {
         /*
         * 1. Add image to viewModel's list
         * 2. add image to selected image
         * 3. Add image to gallery
         * 4. Clear current Image file path
         * */
-        if(!cameraCaptureFilePath.isNullOrEmpty()){
-            val asset = viewModel.photosImporterData?.addCameraImage(cameraCaptureFilePath!!)
-            if(asset!=null) {
-                selectedImage.loadAsset(asset)
-                addAssetToGallery(asset)
-                addToCurrnetDisplayedList(asset)
+        if (!cameraCaptureFilePath.isNullOrEmpty()) {
+            val imageAdapterData = viewModel.photosImporterData?.addCameraImage(cameraCaptureFilePath!!)
+            if (imageAdapterData != null) {
+                selectedImage.loadAsset(imageAdapterData.asset)
+                addAssetToGallery(imageAdapterData.asset)
+                addToCurrnetDisplayedList(imageAdapterData)
             }
 
             cameraCaptureFilePath = null
         }
     }
-    private fun addAssetToGallery(asset:Asset){
+
+    private fun addAssetToGallery(asset: Asset) {
         viewModel.insertIntoGallery(asset)
     }
 
-    private fun addToCurrnetDisplayedList(asset: Asset){
+    private fun addToCurrnetDisplayedList(imageAdapterData: ImageAdapterData) {
 
-        if(tvSelectedFolder.text == Environment.DIRECTORY_PICTURES ||
+        if (tvSelectedFolder.text == Environment.DIRECTORY_PICTURES ||
             tvSelectedFolder.text == PhotoImporter.ALL ||
             tvSelectedFolder.text == StorageUtil.INTERNAL_FOLDER_NAME
-                ){
-            imageDataList.add(1,asset)
-            imageAdapter.selectedPositions.add(1)
+        ) {
+            imageDataList.add(1, imageAdapterData)
+            imageAdapter.addSelectedItem(1)
             imageAdapter.notifyItemInserted(1)
         }
     }
