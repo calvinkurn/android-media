@@ -1399,10 +1399,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         override fun onPermissionGranted() {
                             locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
                                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                                    requireActivity().getString(R.string.hotel_search_map_location_desc))
                         }
 
-                    }, getString(R.string.hotel_destination_need_permission))
+                    }, getString(R.string.hotel_search_map_location_desc))
         }
 
     }
