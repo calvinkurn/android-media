@@ -523,6 +523,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
+
+        likeView.setIsMultipleLike(playViewModel.isAllowMultipleLike)
     }
 
     private fun setupInsets(view: View) {
@@ -693,7 +695,6 @@ class PlayUserInteractionFragment @Inject constructor(
             private var isFirstTime = true
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                val isAnimate: Boolean
                 val shotAmount = minOf(
                     if(viewModel.firstLikeShot) it.totalLike else it.totalLike - it.previousLike,
                     spamLikeView.maxShot
@@ -702,7 +703,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (isFirstTime) likeView.setEnabled(true)
 
                 if(playViewModel.isAllowMultipleLike) {
-                    isAnimate = false
                     spamLikeView.shot(shotAmount.toInt(), it.source != LikeSource.UserAction)
 
                     if(orientation.isLandscape) {
@@ -710,15 +710,12 @@ class PlayUserInteractionFragment @Inject constructor(
                         triggerImmersive(false)
                     }
                 }
-                else {
-                    isAnimate = it.source == LikeSource.UserAction && !isFirstTime
-                }
 
-                likeView.playLikeAnimation(it.isLiked, isAnimate)
+                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
                 isFirstTime = false
                 viewModel.firstLikeShot = false
 
-                likeView.setTotalLikes(it, playViewModel.isAllowMultipleLike)
+                likeView.setTotalLikes(it)
             }
         })
     }

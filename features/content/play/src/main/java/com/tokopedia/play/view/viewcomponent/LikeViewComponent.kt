@@ -28,6 +28,8 @@ class LikeViewComponent(
     private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
+    private var isMultipleLike: Boolean = false
+
     private val likeAnimatorListener = object : Animator.AnimatorListener {
 
         override fun onAnimationRepeat(animation: Animator?) {
@@ -56,11 +58,11 @@ class LikeViewComponent(
                 listener.onLikeClicked(this, shouldLike)
             }
         } else {
-            vLikeClickArea.setOnClickListener {  }
+            vLikeClickArea.setOnClickListener { }
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel, isMultipleLike: Boolean) {
+    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
         /**
          * TODO: backend is not yet setup for multiplelike, so spamming like right now will counted 1 like
          * to prevent unconsistency view, we take the largest likes
@@ -75,6 +77,15 @@ class LikeViewComponent(
             if (animate) animationLike.playAnimation()
             else animationLike.progress = END_ANIMATED_PROGRESS
         }
+    }
+
+    fun setIsMultipleLike(isMultipleLike: Boolean) {
+        this.isMultipleLike = isMultipleLike
+
+        animationLike.setAnimation(
+            if(isMultipleLike) R.raw.anim_spam_like
+            else R.raw.anim_play_like
+        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
