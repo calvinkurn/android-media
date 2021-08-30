@@ -1,7 +1,9 @@
 package com.tokopedia.layanan_finansial.view.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
@@ -18,15 +21,24 @@ import com.tokopedia.layanan_finansial.view.Analytics.EVENT_PROMO_VIEW
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
+import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
-class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
+class LayananAdapter(private val list: List<LayananListItem>, private val type: String) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
 
 
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+       init {
+           if (!type.equals(LayananSectionView.VERTICAL)) {
+               itemView.layoutParams.width = itemView.context.dpToPx(itemView.context.resources.getDimension(R.dimen.lf_card_width).toInt()).toInt()
+           }
+       }
+
+
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
                ImageLoader.LoadImage(icon,layananListItem.iconUrl)
