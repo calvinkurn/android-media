@@ -37,7 +37,7 @@ class InvoiceDetailActivity : BaseSimpleWebViewActivity() {
         webView.settings.domStorageEnabled
         webView.settings.builtInZoomControls
         webView.settings.displayZoomControls
-        val data = intent.extras?.getString(KEY_URL, "defaultKey")
+        val data = intent.extras?.getString(KEY_URL, "defaultKey") ?: ""
         webView.loadUrl(data)
 
         onPrintClicked(webView)
