@@ -51,7 +51,7 @@ data class SomListOrderListResponse(
                 val orderId: String = "",
                 @SerializedName("order_product")
                 @Expose
-                val orderProduct: List<OrderProduct> = listOf(),
+                val orderProduct: List<Product> = listOf(),
                 @SerializedName("order_resi")
                 @Expose
                 val orderResi: String = "",
@@ -105,7 +105,7 @@ data class SomListOrderListResponse(
                     val bundle: List<BundleProduct> = emptyList(),
                     @Expose
                     @SerializedName("non_bundle")
-                    val nonBundle: List<BundleProduct.OrderProductBundle> = emptyList()
+                    val nonBundle: List<Product> = emptyList()
                 ) {
                     data class BundleProduct(
                         @Expose
@@ -116,39 +116,9 @@ data class SomListOrderListResponse(
                         val bundleQuantity: Int = 1,
                         @Expose
                         @SerializedName("order_detail")
-                        val orderDetail: List<OrderProductBundle> = emptyList()
-                    ) {
-                        data class OrderProductBundle(
-                            @SerializedName("product_id")
-                            @Expose
-                            override val productId: String = "",
-                            @SerializedName("product_name")
-                            @Expose
-                            override val productName: String = "",
-                            @SerializedName("picture")
-                            @Expose
-                            override val picture: String = "",
-                            @Expose
-                            @SerializedName("product_qty")
-                            override val productQty: Int = 1
-                        ) : Product()
-                    }
+                        val orderDetail: List<Product> = emptyList()
+                    )
                 }
-
-                data class OrderProduct(
-                    @SerializedName("product_id")
-                    @Expose
-                    override val productId: String = "",
-                    @SerializedName("product_name")
-                    @Expose
-                    override val productName: String = "",
-                    @SerializedName("picture")
-                    @Expose
-                    override val picture: String = "",
-                    @Expose
-                    @SerializedName("product_qty")
-                    override val productQty: Int = 1
-                ) : Product()
 
                 data class Button(
                     @SerializedName("key")
@@ -168,12 +138,19 @@ data class SomListOrderListResponse(
                     val popUp: PopUp = PopUp()
                 )
 
-                abstract class Product {
-                    abstract val productId: String
-                    abstract val productName: String
-                    abstract val picture: String
-                    abstract val productQty: Int
-                }
+                data class Product(
+                    @SerializedName("product_id")
+                    @Expose
+                    val productId: String = "",
+                    @SerializedName("product_name")
+                    @Expose
+                    val productName: String = "",
+                    @SerializedName("picture")
+                    @Expose
+                    val picture: String = "",
+                    @Expose
+                    @SerializedName("product_qty")
+                    val productQty: Int = 1)
             }
         }
     }
