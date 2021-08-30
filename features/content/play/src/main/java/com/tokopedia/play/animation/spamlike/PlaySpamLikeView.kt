@@ -278,8 +278,11 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         /**
          * Setup bouncing constraint
          */
-        val xStart = image.x - LIMIT_BOUNCING_DISTANCE
-        val xEnd = image.x + LIMIT_BOUNCING_DISTANCE
+        val bouncingLimit = (LOWER_LIMIT_BOUNCING_DISTANCE..UPPER_LIMIT_BOUNCING_DISTANCE).random()
+        val bouncingMultiplier = (LOWER_BOUNCING_MULTIPLIER_X..UPPER_BOUNCING_MULTIPLIER_X).random()
+
+        val xStart = image.x - bouncingLimit
+        val xEnd = image.x + bouncingLimit
         var xCurrent = image.x
         var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
 
@@ -327,14 +330,14 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                         else xMoveCenter.counter++
                     }
                     PlaySpamLikeMove.Right -> {
-                        xCurrent += BOUNCING_MULTIPLIER_X
+                        xCurrent += bouncingMultiplier
                         image.x = xCurrent
                         if(xCurrent > xEnd) {
                             xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Left, 0)
                         }
                     }
                     PlaySpamLikeMove.Left -> {
-                        xCurrent -= BOUNCING_MULTIPLIER_X
+                        xCurrent -= bouncingMultiplier
                         image.x = xCurrent
                         if(xCurrent < xStart) {
                             xMove = PlaySpamLikeMove.Center(PlaySpamLikeMove.Right, 0)
@@ -371,9 +374,11 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         private const val DECREASE_SHOT = -1
 
         private const val SHOT_DISTANCE = 500
-        private const val LIMIT_BOUNCING_DISTANCE = 20
-        private const val FADE_OUT_MULTIPLIER = 0.03F
-        private const val BOUNCING_MULTIPLIER_X = 5
+        private const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
+        private const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
+        private const val LOWER_BOUNCING_MULTIPLIER_X = 3
+        private const val UPPER_BOUNCING_MULTIPLIER_X = 8
+        private const val FADE_OUT_MULTIPLIER = 0.04F
         private const val SCALING_UP_MULTIPLIER = 0.1F
     }
 }
