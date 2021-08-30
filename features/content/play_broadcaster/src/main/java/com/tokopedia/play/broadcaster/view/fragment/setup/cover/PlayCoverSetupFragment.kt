@@ -202,7 +202,6 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data)) {
-//            (activity as? PlayBroadcastActivity)?.startPreview()
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
