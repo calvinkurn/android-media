@@ -31,7 +31,6 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
-import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
@@ -56,7 +55,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -66,7 +64,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
-import java.io.Serializable
 import javax.inject.Inject
 
 /**
@@ -662,8 +659,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         val intent = Intent()
         intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
-        intent.putExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL, popupTitle)
-        intent.putExtra(RESULT_POPUP_BODY_INSTANT_CANCEL, popupBody)
         activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_INSTANT_CANCEL_BUYER, intent)
         activity?.finish()
     }

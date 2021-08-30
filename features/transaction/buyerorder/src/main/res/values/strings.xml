@@ -112,6 +112,7 @@
     </string>
 
     <string name="mengerti_button">Mengerti</string>
+    <string name="pusat_bantuan_button">Hubungi Pusat Bantuan</string>
     <string name="min_char_reason_lainnya">Min. 15 karakter</string>
     <string name="cancellation_no_connection_title">Koneksi internetmu terganggu!</string>
     <string name="cancellation_no_connection_desc">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
