@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,16 +9,16 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
-class HomeChooseAddressWidgetViewHolder(
+class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
         private val tokoNowListener: TokoNowView? = null,
-        private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
-): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
+        private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null
+): AbstractViewHolder<TokoNowChooseAddressWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -29,7 +29,7 @@ class HomeChooseAddressWidgetViewHolder(
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var coachMark: CoachMark2? = null
 
-    override fun bind(element: HomeChooseAddressWidgetUiModel?) {
+    override fun bind(element: TokoNowChooseAddressWidgetUiModel?) {
         setupChooseAddressWidget()
     }
 
@@ -41,7 +41,7 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressServerDown() {
-                    homeChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
+                    tokoNowChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
@@ -95,7 +95,7 @@ class HomeChooseAddressWidgetViewHolder(
         }
     }
 
-    interface HomeChooseAddressWidgetListener {
+    interface TokoNowChooseAddressWidgetListener {
         fun onChooseAddressWidgetRemoved()
     }
 }

@@ -10,11 +10,13 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecentPurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
@@ -22,7 +24,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.*
 class HomeAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
     private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
-    private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
+    private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null,
@@ -31,15 +33,15 @@ class HomeAdapterTypeFactory(
 
     // region Common TokoNow Component
     override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowRecentPurchaseUiModel): Int = TokoNowRecentPurchaseViewHolder.LAYOUT
     // endregion
 
     // region TokoNow Home Component
-    override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowRecentPurchaseUiModel): Int = TokoNowRecentPurchaseViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -62,10 +64,11 @@ class HomeAdapterTypeFactory(
         return when(type) {
             // region Common TokoNow Component
             TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
+            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             // endregion
 
             // region TokoNow Home Component
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
             HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowListener, homeProductRecomListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)
@@ -78,7 +81,6 @@ class HomeAdapterTypeFactory(
                 DynamicLegoBannerViewHolder(view, listener, null)
             }
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
-            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
             // endregion
             else -> super.createViewHolder(view, type)
         }
