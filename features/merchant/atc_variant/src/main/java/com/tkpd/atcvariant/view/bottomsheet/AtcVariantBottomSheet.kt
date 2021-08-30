@@ -605,6 +605,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         doAtc(ProductDetailCommonConstant.BUY_BUTTON)
     }
 
+    override fun onChatButtonClick() {
+        goToTopChat()
+    }
+
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         when (cartType) {
             ProductDetailCommonConstant.KEY_SAVE_BUTTON -> {

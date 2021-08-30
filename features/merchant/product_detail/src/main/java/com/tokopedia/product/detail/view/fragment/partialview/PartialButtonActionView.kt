@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_MIN_QTY
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
@@ -60,6 +61,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     private val icDeleteNonVar = view.findViewById<IconUnify>(R.id.btn_delete_tokonow_non_var)
     private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_tokonow_non_var)
+    private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
 
     companion object {
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
@@ -67,6 +69,10 @@ class PartialButtonActionView private constructor(val view: View,
         private const val QUANTITY_REGEX = "[^0-9]"
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
         private const val DEFAULT_TOTAL_STOCK = 1
+    }
+
+    init {
+        btnChat.generateTopchatButtonPdp()
     }
 
     fun setButtonP1(preOrder: PreOrder?) {
@@ -171,8 +177,8 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun renderTopChat(unavailableButton: List<String>) = with(view) {
-        btn_topchat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
-        btn_topchat.setOnClickListener {
+        btnChat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+        btnChat.setOnClickListener {
             buttonListener.topChatButtonClicked()
         }
     }
@@ -183,8 +189,8 @@ class PartialButtonActionView private constructor(val view: View,
         renderNormalButtonCartRedirection()
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
-        btn_topchat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
-        btn_topchat.setOnClickListener {
+        btnChat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+        btnChat.setOnClickListener {
             buttonListener.topChatButtonClicked()
         }
 
@@ -337,7 +343,7 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             qtyButtonPdp.hide()
             hideButtonEmptyAndTopAds()
-            btn_topchat.visibility = View.VISIBLE
+            btnChat.visibility = View.VISIBLE
             btn_buy_now.text = context.getString(
                     if (preOrder?.isPreOrderActive() == true) {
                         R.string.action_preorder
@@ -363,7 +369,7 @@ class PartialButtonActionView private constructor(val view: View,
 
             btn_buy_now.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
             btn_add_to_cart.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
-            btn_topchat.setOnClickListener {
+            btnChat.setOnClickListener {
                 buttonListener.topChatButtonClicked()
             }
         }
@@ -379,7 +385,7 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             containerTokonowVar.hide()
             btn_empty_stock.hide()
-            btn_topchat.hide()
+            btnChat.hide()
             btn_buy_now.hide()
             btn_add_to_cart.hide()
             qtyButtonPdp.hide()
@@ -402,8 +408,8 @@ class PartialButtonActionView private constructor(val view: View,
             containerTokonowVar.hide()
             btn_empty_stock.show()
             qtyButtonPdp.hide()
-            btn_topchat.showWithCondition(!isShopOwner)
-            btn_topchat.setOnClickListener { buttonListener.topChatButtonClicked() }
+            btnChat.showWithCondition(!isShopOwner)
+            btnChat.setOnClickListener { buttonListener.topChatButtonClicked() }
         }
     }
 

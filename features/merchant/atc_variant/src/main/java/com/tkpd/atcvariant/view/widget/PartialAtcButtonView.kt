@@ -8,6 +8,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -18,6 +19,8 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private val btnBuy = view.findViewById<UnifyButton>(R.id.btn_buy_variant)
     private val btnAtc = view.findViewById<UnifyButton>(R.id.btn_atc_variant)
+    private val btnChat = view.findViewById<UnifyButton>(R.id.btn_chat_variant)
+
     private var isShopOwner: Boolean = false
     val shadowDrawable: Drawable? by lazy {
         view.generateBackgroundWithShadow(
@@ -46,6 +49,7 @@ class PartialAtcButtonView private constructor(val view: View,
 
     init {
         view.background = shadowDrawable
+        btnChat.generateTopchatButtonPdp()
     }
 
     fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
@@ -77,6 +81,15 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private fun renderCartRedirectionButton(cartRedirectionData: CartTypeData?) {
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
+        val unavailableButton = cartRedirectionData?.unavailableButtons ?: listOf()
+
+        btnChat?.run {
+            shouldShowWithAction(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton) {
+                setOnClickListener {
+                    buttonListener.onChatButtonClick()
+                }
+            }
+        }
 
         btnBuy.run {
             val firstButton = availableButton.firstOrNull()
@@ -160,6 +173,8 @@ class PartialAtcButtonView private constructor(val view: View,
                 buttonListener.addToCartClick(text.toString())
             }
         }
+
+        btnChat.show()
     }
 
     private fun showNoStockButton() {
@@ -169,12 +184,14 @@ class PartialAtcButtonView private constructor(val view: View,
             generateTheme(ProductDetailCommonConstant.KEY_BUTTON_DISABLE)
         }
 
+        btnChat.show()
         btnAtc.hide()
     }
 }
 
 interface PartialAtcButtonListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
+    fun onChatButtonClick()
 
     //Listener for fallback button
     fun addToCartClick(buttonText: String)
