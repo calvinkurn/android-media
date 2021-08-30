@@ -115,7 +115,10 @@ class OvoWidgetView: FrameLayout {
 
     private fun renderLogin(element: HeaderDataModel) {
         navRollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            RollenceKey.NAVIGATION_EXP_TOP_NAV,
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+            )
         )
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
