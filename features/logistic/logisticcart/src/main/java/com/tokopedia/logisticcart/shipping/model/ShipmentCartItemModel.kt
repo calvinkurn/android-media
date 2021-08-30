@@ -31,6 +31,7 @@ class ShipmentCartItemModel : Parcelable {
     var shopLocation: String? = null
     var shopAlertMessage: String? = null
     var shopTypeInfoData: ShopTypeInfoData? = null
+    var isTokoNow: Boolean = false
 
     // Cart item state
     var cartString: String? = null

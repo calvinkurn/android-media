@@ -29,10 +29,6 @@ class PlayWidgetAutoPlayCoordinator(
 
     private lateinit var mConfig: PlayWidgetConfigUiModel
 
-    override fun onWidgetAttached(widgetCardsContainer: RecyclerView) {
-        startAutoPlay(widgetCardsContainer)
-    }
-
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         startAutoPlay(widgetCardsContainer)
     }
