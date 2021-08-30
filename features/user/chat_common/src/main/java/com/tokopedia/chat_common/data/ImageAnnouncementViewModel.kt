@@ -72,7 +72,7 @@ constructor(
         blastId = item.blastId,
         source = item.source
     ) {
-        this.finishedDescription = attributes.wording
+        this.finishedDescription = attributes.endStateWording
         this.isCampaign = attributes.isCampaign
         this.statusCampaign = attributes.statusCampaign
         this.startDate = attributes.startDate

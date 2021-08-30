@@ -21,7 +21,7 @@ class ImageAnnouncementPojo {
 
     @SerializedName("wording_end_state")
     @Expose
-    var wording: String = ""
+    var endStateWording: String = ""
     @SerializedName("is_campaign")
     @Expose
     var isCampaign: Boolean = false

@@ -188,6 +188,6 @@ class GetChatUseCaseStub @Inject constructor(
         val banner = CommonUtil.fromJson<ImageAnnouncementPojo>(
             attributes, ImageAnnouncementPojo::class.java
         )
-        return banner.wording
+        return banner.endStateWording
     }
 }
