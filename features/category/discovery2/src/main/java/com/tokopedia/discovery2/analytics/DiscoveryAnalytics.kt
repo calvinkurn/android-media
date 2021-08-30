@@ -49,7 +49,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         return EMPTY_STRING
     }
 
-    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {
+    override fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {
         if (banners.isNotEmpty()) {
             banners.forEach { banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
@@ -70,12 +70,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         EVENT_PROMO_VIEW to mapOf(
                                 KEY_PROMOTIONS to list))
                 map[KEY_E_COMMERCE] = eCommerce
+                map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+                map[BUSINESS_UNIT] = HOME_BROWSE
+                map[USER_ID] = userID ?: EMPTY_STRING
                 trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
         }
     }
 
-    override fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
+    override fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
         val list = ArrayList<Map<String, Any>>()
@@ -97,6 +100,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_CAMPAIGN_CODE] = "${if (banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[USER_ID] = userID ?: EMPTY_STRING
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -142,7 +148,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
                     KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - ${componentName}",
-                    KEY_CREATIVE to it.name.toString(),
+                    KEY_CREATIVE to "${it.name ?: EMPTY_STRING}${if(!banner.shopId.isNullOrEmpty()){" - ${banner.shopId}"} else EMPTY_STRING}",
                     KEY_POSITION to bannerPosition + 1,
                     KEY_PROMO_ID to compID
             ))
@@ -443,11 +449,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackLihatSemuaClick(headerName: String?) {
-        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
+    override fun trackLihatSemuaClick(dataItem: DataItem?) {
+        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = dataItem?.title
                 ?: EMPTY_STRING)
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         getTracker().sendGeneralEvent(map)
     }
 
@@ -793,7 +801,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val map = createGeneralEvent(eventName = EVENT_CLICK_COUPON, eventAction = CLAIM_COUPON_CLICK,
                 eventLabel = "${coupon?.name} - ${coupon?.couponCode}")
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = promotions
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -814,7 +822,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_VIEW to mapOf(
                         KEY_PROMOTIONS to list))
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -835,7 +843,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendGeneralEvent(map)
     }
@@ -845,7 +853,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = CLICK_ON_MINI_COUPON_USE,
                 eventLabel = "${clickCouponData.codePromo} - ${clickCouponData.realCode}")
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -854,7 +862,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = CLICK_PHONE_VERIFIED,
                 eventLabel = EMPTY_STRING)
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -863,7 +871,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = CLICK_PHONE_CLOSED,
                 eventLabel = EMPTY_STRING)
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -940,7 +948,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -966,7 +974,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                     EVENT_PROMO_VIEW to mapOf(
                             KEY_PROMOTIONS to list))
             map[PAGE_TYPE] = pageType
-            map[PAGE_TYPE] = removedDashPageIdentifier
+            map[PAGE_PATH] = removedDashPageIdentifier
             map[KEY_E_COMMERCE] = eCommerce
             trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
@@ -992,7 +1000,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_CATEGORY_ID] = banner.trackingFields?.categoryId ?: EMPTY_STRING
         map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -1000,7 +1008,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackBannerCarouselLihat() {
         val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL_BANNER_CAROUSEL, eventLabel = EMPTY_STRING)
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1024,7 +1032,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = TOP_ADS_HEADLINE_IMPRESSION, eventLabel = EMPTY_STRING)
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -1042,7 +1050,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -1075,7 +1083,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = CPM_PRODUCT_LIST_IMPRESSION, eventLabel = EMPTY_STRING)
         map[KEY_CAMPAIGN_CODE] = campaignCode
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -1115,7 +1123,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = "${cpmData.id}-${cpmData.cpm.cpmShop.id}-$productID")
         map[KEY_CAMPAIGN_CODE] = campaignCode
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
         productCardItemList = EMPTY_STRING
@@ -1130,7 +1138,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = CLICK_VIEW_ALL_HEADER,
                 eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName - $unifyTabValue")
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1142,7 +1150,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1154,7 +1162,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1167,7 +1175,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
         map[PAGE_TYPE] = pageType
-        map[PAGE_TYPE] = removedDashPageIdentifier
+        map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1181,9 +1189,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 USER_ID to (userID ?: ""),
                 BUSINESS_UNIT to HOME_BROWSE,
                 PAGE_TYPE to pageType,
-                PAGE_PATH to removeDashPageIdentifier(pageIdentifier),
-                PAGE_TYPE to pageType,
-                PAGE_TYPE to removedDashPageIdentifier)
+                PAGE_PATH to removedDashPageIdentifier)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1225,8 +1231,24 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 KEY_EVENT_LABEL to "$screenScrollPercentage%  - ${lastVisibleComponent?.name ?: ""} - ${lastVisibleComponent?.creativeName ?: ""}",
                 BUSINESS_UNIT to HOME_BROWSE,
                 CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
-                PAGE_PATH to pagePath,
+                PAGE_PATH to removedDashPageIdentifier,
                 PAGE_TYPE to pageType)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun trackUnifyShare(event : String, eventAction : String, userID: String?,
+                                 eventLabel : String,) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to eventDiscoveryCategory,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            USER_ID to "${if (userID.isNullOrBlank()) 0 else userID}",
+            BUSINESS_UNIT to SHARING_EXPERIENCE,
+            PAGE_TYPE to pageType,
+            PAGE_PATH to removedDashPageIdentifier
+        )
         getTracker().sendGeneralEvent(map)
     }
 }

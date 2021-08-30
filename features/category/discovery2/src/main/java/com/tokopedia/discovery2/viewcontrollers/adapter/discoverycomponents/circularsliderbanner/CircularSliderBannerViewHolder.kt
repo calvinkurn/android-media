@@ -12,6 +12,7 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager.IndicatorPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -25,20 +26,19 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
     private lateinit var sliderBannerViewModel: CircularSliderBannerViewModel
-    private lateinit var bannerCircularAdapter: BannerCircularAdapter
+    private val bannerCircularAdapter: BannerCircularAdapter  = BannerCircularAdapter(listOf(), this)
     private val cvSliderBanner: CircularViewPager = itemView.findViewById(R.id.circular_slider_banner)
     private val sliderIndicator: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
         sliderBannerViewModel.getItemsList()?.let {
-            bannerCircularAdapter = BannerCircularAdapter(it, this)
+            sendBannerImpression()
             cvSliderBanner.setAdapter(bannerCircularAdapter)
+            cvSliderBanner.setItemList(it)
             setSlideProperties(it)
             setUpIndicator(it)
         }
-        sendFirstBannerImpression()
-        sendBannerImpression()
     }
 
     private fun setSlideProperties(item: ArrayList<CircularModel>) {
@@ -79,10 +79,6 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
         sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
     }
 
-    private fun sendFirstBannerImpression() {
-        trackBannerImpressionGTM(0)
-    }
-
     private fun sendBannerImpression() {
         cvSliderBanner.setPageChangeListener(object : CircularPageChangeListener {
             override fun onPageScrolled(position: Int) {
@@ -94,13 +90,23 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
 
     fun trackBannerImpressionGTM(position : Int = 0){
         sliderBannerViewModel.getBannerItem(position)?.let {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(arrayListOf(it), sliderBannerViewModel.getComponentPosition())
+            it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                arrayListOf(it),
+                position,
+                Utils.getUserId(fragment.context)
+            )
         }
     }
 
     override fun onClick(position: Int) {
         sliderBannerViewModel.getBannerItem(position)?.let {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, sliderBannerViewModel.getComponentPosition())
+            it.positionForParentItem = sliderBannerViewModel.getComponentPosition()
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(
+                it,
+                position,
+                Utils.getUserId(fragment.context)
+            )
             if (!it.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, it.applinks)
         }
     }

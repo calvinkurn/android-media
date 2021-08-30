@@ -30,7 +30,8 @@ public class OrderListAnalytics {
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
-    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG = "my purchase list detail - dg";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL_MP = "my purchase list detail - mp";
     private static final String EVENT_CATEGORY_ORDER_DETAIL_PAGE = "digital - order detail page";
 
     private static final String ACTION = "view purchase attempt";
@@ -170,7 +171,7 @@ public class OrderListAnalytics {
     public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, item.getTrackingData().getItemType() + " - " + item.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(

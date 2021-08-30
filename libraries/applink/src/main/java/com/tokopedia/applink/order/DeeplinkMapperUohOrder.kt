@@ -250,8 +250,8 @@ object DeeplinkMapperUohOrder {
 
     private fun getOmsOrderDetailInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
-        return when {
-            uri.pathSegments.size == 1 -> {
+        return when (uri.pathSegments.size) {
+            1 -> {
                 val orderId: String = if (!uri.pathSegments[0].isNullOrBlank()) {
                     uri.pathSegments[0]
                 } else {
@@ -259,10 +259,10 @@ object DeeplinkMapperUohOrder {
                 }
 
                 Uri.parse(OMS_INTERNAL_ORDER)
-                        .buildUpon()
-                        .appendQueryParameter(PATH_ORDER_ID, orderId)
-                        .build()
-                        .toString()
+                    .buildUpon()
+                    .appendQueryParameter(PATH_ORDER_ID, orderId)
+                    .build()
+                    .toString()
             }
             else -> ""
         }

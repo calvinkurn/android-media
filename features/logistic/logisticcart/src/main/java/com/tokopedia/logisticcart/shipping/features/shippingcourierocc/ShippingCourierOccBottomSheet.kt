@@ -44,12 +44,12 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
         rvShipping.adapter = ShippingCourierOccAdapter(list, this, this)
     }
 
-    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
-        listener.onCourierChosen(shippingCourierViewModel)
+    override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
+        listener.onCourierChosen(shippingCourierUiModel)
         bottomSheetUnify.dismiss()
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>?, cartPosition: Int, serviceData: ServiceData?) {
+    override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
 
     }
 

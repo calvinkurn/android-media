@@ -26,6 +26,8 @@ object BuyerConsts {
     const val PARAM_STATUS_INFO = "status_info"
     const val PARAM_CACHE_ID = "cache_id"
     const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
+    const val PARAM_HELP_LINK_URL = "help_link_url"
+    const val PARAM_SOURCE_UOH = "source_uoh"
     const val ACTION_OK = "OK"
     const val LAINNYA = "lainnya"
     const val KEY_SETELAH = "setelah"
@@ -40,6 +42,9 @@ object BuyerConsts {
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
     const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
     const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
+    const val INSTANT_CANCEL_BUYER_REQUEST = 100
+    const val RESULT_CODE_SUCCESS = 1
+    const val RESULT_CODE_BACK = 0
 
     const val TICKER_TYPE_ERROR = "error"
     const val TICKER_TYPE_INFORMATION = "info"
