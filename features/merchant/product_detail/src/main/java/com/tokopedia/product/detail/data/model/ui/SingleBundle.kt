@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -25,13 +26,16 @@ class SingleBundle(parent: View) {
     private val discount: Label = view.findViewById(R.id.product_bundling_single_discount)
     private val slash: Typography = view.findViewById(R.id.product_bundling_single_slash)
 
-    fun process(item: BundleInfo.BundleItem) {
+    fun process(item: BundleInfo.BundleItem, bundleName: String) {
         view.show()
 
         image.urlSrc = item.picURL
-        label.text = item.quantity
         name.text = item.name
         price.text = item.bundlePrice
+
+        label.shouldShowWithAction(bundleName.isNotBlank()) {
+            label.text = bundleName
+        }
 
         val itemDiscount = item.discountPercentage
         if (itemDiscount.isBlank()) {

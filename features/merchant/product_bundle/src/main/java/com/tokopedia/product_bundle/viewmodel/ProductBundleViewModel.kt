@@ -1,18 +1,221 @@
 package com.tokopedia.product_bundle.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.model.request.ProductData
+import com.tokopedia.product_bundle.common.data.model.request.RequestData
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
+import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
+import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.product_bundle.common.util.AtcVariantMapper
+import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.common.data.mapper.InventoryError
+import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
+import com.tokopedia.product_bundle.common.util.ResourceProvider
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductBundleViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+    private val rscProvider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getBundleInfoUseCase: GetBundleInfoUseCase,
+    private val addToCartBundleUseCase: AddToCartBundleUseCase
+) : BaseViewModel(dispatchers.main) {
 
-    fun getProductInfo() {
+    companion object {
+        private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
+        private const val PRODUCT_BUNDLE_STATUS_ACTIVE = 1
+        private const val PRODUCT_BUNDLE_STATUS_INACTIVE = -1
+        private const val PRODUCT_BUNDLE_STATUS_UPCOMING = 2
+        private const val PRODUCT_BUNDLE_STATUS_EXPIRED = -2
+        private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
+        private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
+        private const val PREORDER_TYPE_DAY: Int = 1
+        private const val PREORDER_TYPE_MONTH: Int = 2
+    }
+
+    var parentProductID: Long = 0L
+
+    private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
+
+    private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
+    val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
+    val inventoryError = Transformations.map(getBundleInfoResultLiveData) { result ->
+        InventoryError() // TODO('implement error mapper')
+    }
+
+    private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
+    val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData
+
+    private val isErrorLiveData = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean> get() = isErrorLiveData
+
+    private val mPageState = MutableLiveData<ProductBundleState>()
+    val pageState: LiveData<ProductBundleState> get() = mPageState
+
+    fun getBundleInfo(productId: Long) {
+        parentProductID = productId
+        mPageState.value = ProductBundleState.LOADING
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                getBundleInfoUseCase.setParams(
+                    squad = GetBundleInfoConstant.SQUAD_VALUE,
+                    usecase = GetBundleInfoConstant.USECASE_VALUE,
+                    requestData = RequestData(
+                        variantDetail = true,
+                        CheckCampaign = true,
+                        BundleGroup = true,
+                        Preorder = true
+                    ),
+                    productData = ProductData(productID = productId.toString())
+                )
+                getBundleInfoUseCase.executeOnBackground()
+            }
+            getBundleInfoResultLiveData.value = Success(result)
+            mPageState.value = ProductBundleState.SUCCESS
+        }, onError = {
+            getBundleInfoResultLiveData.value = Fail(it)
+            mPageState.value = ProductBundleState.ERROR
+        })
+    }
+
+    fun getDefaultProductBundleSelection(productBundleMasters: List<ProductBundleMaster>): ProductBundleMaster? {
+        return productBundleMasters.firstOrNull()
+    }
+
+    fun getSelectedProductBundleDetails(): List<ProductBundleDetail> {
+        return productBundleMap[selectedProductBundleMaster.value] ?: listOf()
+    }
+
+    fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
+        this.selectedProductBundleMasterLiveData.value = productBundleMaster
+    }
+
+    fun isPreOrderActive(preOrderStatus: String): Boolean {
+        return preOrderStatus == PREORDER_STATUS_ACTIVE
+    }
+
+    fun getPreOrderTimeUnitWording(processTypeNum: Int): String {
+        return when (processTypeNum) {
+            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay() ?: ""
+            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
+            else -> ""
+        }
+    }
+
+    fun addProductBundleToCart() {
 
     }
 
-    fun getBundleInfo() {
+    fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
+        return ProductBundleMaster(
+            bundleId = bundleInfo.bundleID,
+            bundleName = bundleInfo.name,
+            preOrderStatus = bundleInfo.preorder.status,
+            processDay = bundleInfo.preorder.processDay,
+            processTypeNum = bundleInfo.preorder.processTypeNum
+        )
+    }
 
+    fun mapBundleItemsToBundleDetail(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+        return bundleItems.map { bundleItem ->
+            val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
+            ProductBundleDetail(
+                productId = bundleItem.productID,
+                productImageUrl = bundleItem.picURL,
+                productName = bundleItem.name,
+                originalPrice = bundleItem.originalPrice,
+                bundlePrice = bundleItem.bundlePrice,
+                discountAmount = calculateDiscountPercentage(
+                    originalPrice = bundleItem.originalPrice,
+                    bundlePrice = bundleItem.bundlePrice
+                ),
+                productVariant = if (productVariant.hasVariant) productVariant else null
+            )
+        }
+    }
+
+    fun updateProductBundleMap(bundleMaster: ProductBundleMaster, bundleDetail: List<ProductBundleDetail>) {
+        productBundleMap[bundleMaster] = bundleDetail
+    }
+
+    fun updateProductBundleDetail(selectedProductId: Long,
+                                  parentProductId: Long,
+                                  mapOfSelectedVariantOption: MutableMap<String, String>): ProductBundleDetail? {
+        val productBundleMaster = selectedProductBundleMaster.value ?: ProductBundleMaster()
+        val productBundleDetails = productBundleMap[productBundleMaster]
+        var target: ProductBundleDetail? = null
+        productBundleDetails?.let { bundleDetails ->
+            target = bundleDetails.firstOrNull { productBundleDetail -> productBundleDetail.productId == parentProductId }
+            target?.apply {
+                val selectedProductVariant = getVariantChildFromProductId(selectedProductId.toString())
+                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero()
+                this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
+                this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
+                this.mapOfSelectedVariantOption = mapOfSelectedVariantOption
+                this.selectedVariantText = getSelectedVariantText(productVariant, mapOfSelectedVariantOption)
+            }
+        }
+        return target
+    }
+
+    private fun getSelectedVariantText(selectedProductVariant: ProductVariant?,
+                                       mapOfSelectedVariantOption: MutableMap<String, String>, ): String {
+        val selectedVariantTexts = mutableListOf<String?>()
+        val variantOptionIds = mapOfSelectedVariantOption.values
+        val variants = selectedProductVariant?.variants ?: listOf()
+        variantOptionIds.forEachIndexed { index, optionId ->
+            val option = variants[index].options.find {
+                it.id == optionId
+            }
+            if (option != null) {
+                selectedVariantTexts.add(option.value)
+            }
+        }
+        return selectedVariantTexts.joinToString()
+    }
+
+    fun getProductBundleMasters(): List<ProductBundleMaster> {
+        return productBundleMap.keys.toList()
+    }
+
+    fun getProductBundleDetails(productBundleMaster: ProductBundleMaster): List<ProductBundleDetail>? {
+        return productBundleMap[productBundleMaster]
+    }
+
+    fun isSingleProductBundle(bundleInfo: List<BundleInfo>): Boolean {
+        if (bundleInfo.isEmpty()) return false
+        val bundleItems = bundleInfo.first().bundleItems
+        return bundleItems.size == SINGLE_PRODUCT_BUNDLE_ITEM_SIZE
+    }
+
+    fun calculateDiscountPercentage(originalPrice: Double, bundlePrice: Double): Int {
+        return DiscountUtil.getDiscountPercentage(originalPrice, bundlePrice)
+    }
+
+    fun calculateTotalPrice(productBundleDetails: List<ProductBundleDetail>): Double {
+        return productBundleDetails.map { it.originalPrice }.sum()
+    }
+
+    fun calculateTotalBundlePrice(productBundleDetails: List<ProductBundleDetail>): Double {
+        return productBundleDetails.map { it.bundlePrice }.sum()
+    }
+
+    fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {
+        return originalPrice - bundlePrice
     }
 }

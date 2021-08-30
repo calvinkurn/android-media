@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.common.util
 import androidx.fragment.app.Fragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
@@ -10,8 +11,12 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 object AtcVariantNavigation {
 
     fun showVariantBottomSheet(fragment: Fragment, bundleItem: BundleItem) {
-        val saveButtonText = fragment.getString(R.string.variant_bottomsheet_action_save)
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
+        showVariantBottomSheet(fragment, productVariant)
+    }
+
+    fun showVariantBottomSheet(fragment: Fragment, productVariant: ProductVariant) {
+        val saveButtonText = fragment.getString(R.string.action_save)
         val cartRedirections = AtcVariantHelper.generateSaveCartRedirection(productVariant, saveButtonText)
             ?: emptyMap()
 
@@ -38,5 +43,4 @@ object AtcVariantNavigation {
             }
         }
     }
-
 }

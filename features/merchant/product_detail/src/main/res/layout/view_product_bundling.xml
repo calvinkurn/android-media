@@ -47,28 +47,27 @@
         app:typographyType="body_3"
         tools:text="PO 6 hari" />
 
-    <FrameLayout
-        android:id="@+id/product_bundling_content"
+    <ViewStub
+        android:id="@+id/product_bundling_stub_multi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_icon_main">
+        android:layout_marginTop="@dimen/dp_16"
+        android:inflatedId="@id/product_bundling_stub_multi"
+        android:layout="@layout/view_product_bundling_multi"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_icon_main"
+        tools:visibility="visible" />
 
-        <ViewStub
-            android:id="@+id/product_bundling_stub_multi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/view_product_bundling_multi"
-            tools:visibility="visible" />
-
-        <ViewStub
-            android:id="@+id/product_bundling_stub_single"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/view_product_bundling_single" />
-
-    </FrameLayout>
-
+    <ViewStub
+        android:id="@+id/product_bundling_stub_single"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:inflatedId="@id/product_bundling_stub_single"
+        android:layout="@layout/view_product_bundling_single"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_stub_multi"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/product_bundling_line"
@@ -76,8 +75,7 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/Unify_N50"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_content"
-        tools:ignore="UnknownId"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_stub_single"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -139,9 +137,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pdp_bundling_button_see"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/product_bundling_total_quantity"
         app:layout_constraintRight_toRightOf="@id/product_bundling_info"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_line"
+        app:layout_constraintTop_toTopOf="@id/product_bundling_total_slash"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />

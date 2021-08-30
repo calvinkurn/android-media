@@ -412,7 +412,9 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TokopediaNow.SEARCH) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopediaNowSearch(ctx, deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(ctx, deeplink) },
             DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalGlobal.TELEPHONY_MASKING),
-            DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS)
+            DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
+            DLP.matchPattern(ApplinkConst.PRODUCT_BUNDLE, targetDeeplink = { ctx, uri, deeplink, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) })
     )
 
     fun getTokopediaSchemeList():List<DLP>{
