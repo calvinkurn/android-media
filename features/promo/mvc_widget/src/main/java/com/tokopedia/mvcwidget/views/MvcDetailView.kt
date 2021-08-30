@@ -16,12 +16,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -56,6 +57,12 @@ class MvcDetailView @JvmOverloads constructor(
 
     @MvcSource
     private var mvcSource: Int = MvcSource.DEFAULT
+
+    private var mvcTracker : MvcTracker? = null
+
+    override fun getMvcTracker(): MvcTracker? {
+        return mvcTracker
+    }
 
     override fun getMvcSource(): Int {
         return mvcSource
@@ -168,7 +175,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, true)
+            mvcTracker?.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -179,7 +186,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
-            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, false)
+            mvcTracker?.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -187,7 +194,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, true)
+            mvcTracker?.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -198,12 +205,13 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
-            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, false)
+            mvcTracker?.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
+        this.mvcTracker = mvcTracker
         this.shopId = shopId
         this.mvcSource = mvcSource
         viewModel.getListData(shopId)
@@ -258,9 +266,9 @@ class MvcDetailView @JvmOverloads constructor(
         adapter.updateList(tempList)
         if(!tempList.isNullOrEmpty()){
             if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
-                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, userSession?.userId, this.mvcSource)
+                mvcTracker?.viewCoupons(response.data.followWidget.type,this.shopId, userSession?.userId, this.mvcSource)
             }else{
-                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
+                mvcTracker?.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }
     }

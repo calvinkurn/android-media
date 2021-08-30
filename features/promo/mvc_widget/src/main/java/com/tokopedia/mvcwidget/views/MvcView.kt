@@ -7,6 +7,10 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
@@ -31,6 +35,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     var shopId: String = ""
     var isTokomember = false
+    val mvcTracker = MvcTracker()
 
     @MvcSource
     var source: Int = MvcSource.SHOP
@@ -63,14 +68,20 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 }
             }
 
-            Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
+            mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction: (() -> Unit)? = null) {
+    fun setData(mvcData: MvcData,
+                shopId: String,
+                @MvcSource source: Int,
+                startActivityForResultFunction: (() -> Unit)? = null,
+                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl()
+    ) {
         this.source = source
         this.shopId = shopId
         this.startActivityForResultFunction = startActivityForResultFunction
+        this.mvcTracker.trackerImpl = mvcTrackerImpl
         setMVCData(mvcData.animatedInfoList)
     }
 
@@ -98,7 +109,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     fun sendImpressionTrackerForPdp(){
         if(this.shopId.isNotEmpty()){
             if(isTokomember){
-                Tracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
+                mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
             }
         }
     }

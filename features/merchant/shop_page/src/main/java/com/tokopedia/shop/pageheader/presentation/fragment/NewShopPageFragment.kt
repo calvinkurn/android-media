@@ -47,7 +47,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException

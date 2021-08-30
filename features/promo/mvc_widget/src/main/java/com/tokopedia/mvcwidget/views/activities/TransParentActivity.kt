@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.promoui.common.dpToPx
@@ -24,6 +26,7 @@ class TransParentActivity : BaseActivity() {
     private var childView: MvcDetailView? = null
     private var appLink : String?=null
     private var shopName : String?=null
+    private var mvcTracker : MvcTracker?=null
 
     companion object {
         const val SHOP_ID = "shopId"
@@ -88,17 +91,18 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
         childView = MvcDetailView(this)
 
+
         if (!appLink.isNullOrEmpty()) {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
                 bottomSheet.dismiss()
-                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1, userSession.userId) }
+                shopName?.let { it1 -> mvcTracker?.userClickBottomSheetCTA(it1, userSession.userId) }
                 RouteManager.route(this,appLink)
             }
         }
         bottomSheet.setChild(childView)
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
-        childView?.show(shopId, false, mvcSource)
+        childView?.show(shopId, false, mvcSource, mvcTracker)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)
@@ -112,7 +116,7 @@ class TransParentActivity : BaseActivity() {
                     setResult(MvcView.RESULT_CODE_OK,intent)
                 }
                 finish()
-                Tracker.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
+                mvcTracker?.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
             }
         }
 
