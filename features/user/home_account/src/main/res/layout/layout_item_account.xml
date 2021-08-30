@@ -61,17 +61,16 @@
         app:layout_constraintTop_toTopOf="@+id/item_account_partner_name"
         app:typographyType="body_3" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/item_account_view_btn"-->
-<!--        android:visibility="gone"-->
-<!--        android:src="@drawable/ic_right_arrow"-->
-<!--        android:textColor="@color/unify_G500"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/item_account_linked_date"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/item_account_partner_name"-->
-<!--    />-->
+    <ImageView
+        android:id="@+id/item_account_view_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_right_arrow"
+        android:visibility="gone"
+        android:padding="@dimen/unify_space_8"
+        app:layout_constraintBottom_toBottomOf="@+id/item_account_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/item_account_partner_name" />
 
     <View
         android:layout_width="0dp"

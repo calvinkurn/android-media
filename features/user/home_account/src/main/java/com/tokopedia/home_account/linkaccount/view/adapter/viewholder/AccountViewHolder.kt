@@ -26,6 +26,7 @@ open class AccountViewHolder(
         binding?.itemAccountPartnerName?.text = item.partnerName
         if(item.isLinked) {
             binding?.itemAccountLinkBtn?.hide()
+            binding?.itemAccountViewBtn?.show()
             binding?.itemAccountLinkedDate?.show()
             binding?.itemAccountContainer?.setOnClickListener { listener.onViewAccountClicked() }
             binding?.itemAccountLinkedDate?.text = item.linkDate
@@ -33,6 +34,7 @@ open class AccountViewHolder(
         else  {
             binding?.itemAccountLinkedDate?.hide()
             binding?.itemAccountLinkBtn?.show()
+            binding?.itemAccountViewBtn?.hide()
             binding?.itemAccountContainer?.setOnClickListener { listener.onLinkAccountClicked() }
         }
 
