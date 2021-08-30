@@ -139,7 +139,6 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
 
 
     private fun setupNavToolbar() {
-        navToolbar = view?.findViewById(R.id.nav_toolbar)
         setupTopNavigation()
         navAbTestCondition (
             ifNavRevamp = {
@@ -198,7 +197,6 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
 
     private fun setupRecyclerView() {
         context?.let {
-            rvRecentPurchase = view?.findViewById(R.id.rv_home)
             rvRecentPurchase?.apply {
                 adapter = this@TokoNowRecentPurchaseFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
