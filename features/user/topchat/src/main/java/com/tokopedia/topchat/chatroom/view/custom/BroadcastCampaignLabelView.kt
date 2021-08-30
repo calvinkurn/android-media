@@ -127,7 +127,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         if (banner.hasOngoingCampaign()) {
             countdown?.show()
             val calendar = Calendar.getInstance().apply {
-                time = Date(banner.endDataMillis)
+                timeInMillis = banner.endDateMillis
             }
             countdown?.targetDate = calendar
             countdown?.onFinish = {

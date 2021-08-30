@@ -47,12 +47,12 @@ constructor(
     var endDate: String = ""
         private set
 
-    val endDataMillis get() = endDate.toLongOrZero() * 1_000
-    val startDataMillis get() = startDate.toLongOrZero() * 1_000
+    val endDateMillis get() = endDate.toLongOrZero() * 1_000
+    val startDateMillis get() = startDate.toLongOrZero() * 1_000
 
     val startDateFormatted: String
         get() {
-            return TimeHelper.format(startDataMillis, "dd MMM yyyy", TimeHelper.localeID)
+            return TimeHelper.format(startDateMillis, "dd MMM yyyy", TimeHelper.localeID)
         }
 
     constructor(
