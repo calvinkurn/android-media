@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -307,6 +308,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     fun showUniversalShareBottomSheet(fragmentManager: FragmentManager?,
+                                      fragment: Fragment,
                                       data: ProductData,
                                       isLog: Boolean = false,
                                       view: View? = null,
@@ -341,7 +343,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             "", productImgList)
         }
         onImpressShareWidget(productData.userId, productData.productId)
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, fragment)
     }
     //endregion
 }

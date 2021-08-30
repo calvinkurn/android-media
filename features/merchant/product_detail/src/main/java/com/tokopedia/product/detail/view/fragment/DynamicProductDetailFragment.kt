@@ -164,6 +164,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
@@ -188,7 +189,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         ProductAccessRequestDialogFragment.Listener,
         PartialButtonActionListener,
         ProductDetailBottomSheetListener,
-        PartialButtonShopFollowersListener {
+        PartialButtonShopFollowersListener,
+        ScreenShotListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -326,6 +328,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         renderInitialAffiliate()
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     override fun onSwipeRefresh() {
@@ -2430,6 +2433,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             shareProductInstance?.showUniversalShareBottomSheet(
                     fragmentManager = it.supportFragmentManager,
+                    fragment = this,
                     data = productData,
                     isLog = true,
                     view = view,
@@ -3654,4 +3658,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
         return false
     }
+
+    override fun screenShotTaken() {
+        shareProduct()
+    }
+
 }
