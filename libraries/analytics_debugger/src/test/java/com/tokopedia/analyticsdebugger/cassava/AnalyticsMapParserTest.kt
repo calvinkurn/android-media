@@ -35,11 +35,11 @@ class AnalyticsMapParserTest {
     }
 
     @Test
-    fun `given big double when parsed should return exact json primitive and vice versa`() {
+    fun `given big double when parsed should return exponential notation and vice versa`() {
         val bigDouble = 2000000000.0
         val parsed = """
             {
-              "price": 2000000000
+              "price": 2.0E9
             }
         """.trimIndent()
         val case = mapOf<String, Any>(

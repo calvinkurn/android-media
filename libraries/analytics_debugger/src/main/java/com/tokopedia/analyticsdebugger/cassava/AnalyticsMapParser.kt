@@ -11,7 +11,6 @@ import javax.inject.Inject
 class AnalyticsMapParser @Inject constructor() {
 
     private val gson: Gson = GsonBuilder()
-        .registerTypeAdapter(object : TypeToken<Double>() {}.type, BigDoubleAdapter())
         .disableHtmlEscaping()
         .setPrettyPrinting()
         .create()
@@ -33,6 +32,10 @@ class AnalyticsMapParser @Inject constructor() {
         }
     }
 
+    /**
+     * This adapter will converts big decimal such as 2000000000.0 to 2000000000 instead of 2.0E9
+     * Currently, not being used
+     * */
     class BigDoubleAdapter : JsonSerializer<Double> {
         override fun serialize(
             src: Double?,
