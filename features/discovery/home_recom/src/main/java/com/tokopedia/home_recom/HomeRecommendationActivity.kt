@@ -16,6 +16,7 @@ import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
+import com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 
@@ -41,6 +42,10 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
             putExtra(PRODUCT_ID, productId)
         }
+
+        private const val PARAM_TOKONOW = "tokonow"
+        private const val URL_PATH_1 = 1
+        private const val URL_PATH_2 = 2
     }
 
     override fun getParentViewResourceID(): Int = com.tokopedia.home_recom.R.id.recom_container
@@ -56,20 +61,32 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun getNewFragment(): Fragment {
         return when{
             intent.data != null -> {
-                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
-                        getSimilarRecomPageProductId(),
-                        getRef(),
-                        getSource(),
-                        getInternalRef(),
-                        FragmentInflater.ACTIVITY
-                )
-                else RecommendationFragment
-                        .newInstance(
-                                getRecomPageProductId(),
-                                getSource(),
+                when {
+                    isTokonowProductList(intent?.data?.toString() ?: "") -> {
+                        InfiniteTokonowRecomFragment.newInstance(
+                                getTokonowRecomProductId(),
                                 getRef(),
+                                getSource(),
                                 getInternalRef(),
-                                FragmentInflater.ACTIVITY)
+                                FragmentInflater.ACTIVITY
+                        )
+                    }
+                    isSimilarProduct(intent?.data?.toString()
+                            ?: "") -> SimilarProductRecommendationFragment.newInstance(
+                            getSimilarRecomPageProductId(),
+                            getRef(),
+                            getSource(),
+                            getInternalRef(),
+                            FragmentInflater.ACTIVITY
+                    )
+                    else -> RecommendationFragment
+                            .newInstance(
+                                    getRecomPageProductId(),
+                                    getSource(),
+                                    getRef(),
+                                    getInternalRef(),
+                                    FragmentInflater.ACTIVITY)
+                }
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)
@@ -87,7 +104,14 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     private fun getInternalRef() = intent.data?.getQueryParameter("search_ref") ?: ""
 
     private fun getSimilarRecomPageProductId() =
-            if (isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1)
+            if (isNumber(intent.data?.pathSegments?.get(URL_PATH_1)
+                            ?: "")) intent.data?.pathSegments?.get(URL_PATH_1)
+                    ?: ""
+            else ""
+
+    private fun getTokonowRecomProductId() =
+            if (isNumber(intent.data?.pathSegments?.get(URL_PATH_2)
+                            ?: "")) intent.data?.pathSegments?.get(URL_PATH_2)
                     ?: ""
             else ""
 
@@ -98,8 +122,13 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @param url is string variable for checking this is number or not
      * @return boolean
      */
-    private fun isSimilarProduct(url: String): Boolean{
+
+    private fun isSimilarProduct(url: String): Boolean {
         return url.contains("/d/") || url.contains("/d?") || url.contains("/d")
+    }
+
+    private fun isTokonowProductList(url: String): Boolean {
+        return url.contains(PARAM_TOKONOW)
     }
 
     /**
@@ -108,7 +137,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @param text is string variable for checking this is number or not
      * @return boolean
      */
-    private fun isNumber(text: String): Boolean{
+    private fun isNumber(text: String): Boolean {
         return (text.toIntOrNull() != null)
     }
 
