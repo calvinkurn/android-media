@@ -48,7 +48,7 @@ class GetChatUseCaseStub @Inject constructor(
                 repliesPosition = 0,
                 responseObj = response
             ) { attr ->
-                attr.addProperty(startDate, getNextWeekTimestamp())
+                attr.addProperty(start_date, getNextWeekTimestamp())
                 attr.addProperty(status_campaign, CampaignStatus.STARTED)
             }
         }
@@ -61,7 +61,7 @@ class GetChatUseCaseStub @Inject constructor(
                 repliesPosition = 0,
                 responseObj = response
             ) { attr ->
-                attr.addProperty(endDate, getNext6Hours())
+                attr.addProperty(end_date, getNext6Hours())
                 attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
             }
         }
@@ -86,7 +86,7 @@ class GetChatUseCaseStub @Inject constructor(
                 repliesPosition = 0,
                 responseObj = response
             ) { attr ->
-                attr.addProperty(endDate, getNext3Seconds())
+                attr.addProperty(end_date, getNext3Seconds())
                 attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
             }
         }
@@ -146,8 +146,8 @@ class GetChatUseCaseStub @Inject constructor(
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
     // broadcast campaign label
-    private val startDate = "startDate"
-    private val endDate = "endDate"
+    private val start_date = "start_date"
+    private val end_date = "end_date"
     private val status_campaign = "status_campaign"
     private val is_campaign = "is_campaign"
 

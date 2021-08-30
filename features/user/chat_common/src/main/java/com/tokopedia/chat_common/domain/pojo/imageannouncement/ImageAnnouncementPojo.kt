@@ -19,7 +19,7 @@ class ImageAnnouncementPojo {
     @Expose
     var isHideBanner: Boolean = false
 
-    @SerializedName("wording")
+    @SerializedName("wording_end_state")
     @Expose
     var wording: String = ""
     @SerializedName("is_campaign")
@@ -28,10 +28,10 @@ class ImageAnnouncementPojo {
     @SerializedName("status_campaign")
     @Expose
     var statusCampaign: Int = 1
-    @SerializedName("startDate")
+    @SerializedName("start_date")
     @Expose
     var startDate: String = ""
-    @SerializedName("endDate")
+    @SerializedName("end_date")
     @Expose
     var endDate: String = ""
 }
