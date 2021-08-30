@@ -66,14 +66,15 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     }
 
     private fun setDefaultLoveList() {
-        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_shipping_voucher))
-        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_special_voucher))
+        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_star))
+        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_heart))
+        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_multiple_like_thumb))
     }
 
     private fun setDefaultSizeList() {
         sizeList.add(Pair(50, 50))
 
-        sizeMultiplyList.add(1.0f)
+        sizeMultiplyList.add(0.3f)
     }
 
     private fun setDefaultDotList() {
@@ -228,6 +229,17 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         image.id = View.generateViewId()
 
         if(reduceOpacity) image.alpha = blurOpacity
+
+        image.background = ContextCompat.getDrawable(
+            context,
+            when((1..3).random()) {
+                1 -> R.drawable.bg_play_multiple_like_red
+                2 -> R.drawable.bg_play_multiple_like_green
+                3 -> R.drawable.bg_play_multiple_like_purple
+                else -> R.drawable.bg_play_multiple_like_red
+            }
+        )
+        image.setPadding(24, 24, 24, 24)
 
         return image
     }
