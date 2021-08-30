@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -213,7 +214,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         val fixCoordinate = IntArray(2)
         view.getLocationInWindow(fixCoordinate)
 
-        val x = (fixCoordinate[0]..fixCoordinate[0] + view.measuredWidth).random().toFloat()
+        val x = (fixCoordinate[0]..(fixCoordinate[0] + UPPER_LIMIT_RANDOM_X_POSITION)).random().toFloat()
         val y = fixCoordinate[1].toFloat() + view.measuredHeight
 
         return Pair(x, y)
@@ -378,7 +379,8 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         private const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
         private const val LOWER_BOUNCING_MULTIPLIER_X = 3
         private const val UPPER_BOUNCING_MULTIPLIER_X = 8
-        private const val FADE_OUT_MULTIPLIER = 0.04F
+        private const val UPPER_LIMIT_RANDOM_X_POSITION = 50
+        private const val FADE_OUT_MULTIPLIER = 0.05F
         private const val SCALING_UP_MULTIPLIER = 0.1F
     }
 }
