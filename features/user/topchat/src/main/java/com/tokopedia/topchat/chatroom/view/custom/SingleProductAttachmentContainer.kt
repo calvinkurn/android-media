@@ -203,7 +203,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindPrice(product)
             bindStatusContainer(product)
             bindRating(product)
-            bindFreeShipping(product)
+            bindFreeShipping(product, commonListener.isSeller())
             bindFooter(product)
             bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
@@ -494,8 +494,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindFreeShipping(product: ProductAttachmentViewModel) {
-        if (product.hasFreeShipping()) {
+    private fun bindFreeShipping(product: ProductAttachmentViewModel, isSeller: Boolean) {
+        if (product.hasFreeShipping() && !isSeller) {
             freeShippingImage?.show()
             ImageHandler.loadImageRounded2(context, freeShippingImage, product.getFreeShippingImageUrl())
         } else {
