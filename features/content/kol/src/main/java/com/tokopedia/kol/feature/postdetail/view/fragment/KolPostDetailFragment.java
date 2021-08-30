@@ -1068,4 +1068,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onVideoStopTrack(@NotNull FeedXCard feedXCard, long duration) {
 
     }
+
+    @Override
+    public void onPostTagBubbleClick(int positionInFeed, @NonNull String redirectUrl, @NonNull FeedXProduct postTagItem) {
+
+    }
 }

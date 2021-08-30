@@ -1329,6 +1329,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         binding?.quickFilterSortHotelSearchMap?.show()
+        binding?.quickFilterSortHotelSearchMap?.indicatorCounter = hotelSearchMapViewModel.getFilterCount()
     }
 
     private fun initiateAdvancedFilter(filters: List<FilterV2>, sort: List<Sort>) {
