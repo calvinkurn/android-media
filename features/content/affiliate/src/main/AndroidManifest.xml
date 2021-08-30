@@ -15,10 +15,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="@string/host_affiliate"
-                    android:path="@string/path_af_dashboard"
-                    android:scheme="@string/internal_scheme"/>
+<!--                <data-->
+<!--                    android:host="@string/host_affiliate"-->
+<!--                    android:path="@string/path_af_dashboard"-->
+<!--                    android:scheme="@string/internal_scheme"/>-->
             </intent-filter>
         </activity>
         <activity
