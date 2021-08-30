@@ -76,6 +76,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         sizeList.add(Pair(50, 50))
 
         sizeMultiplyList.add(0.3f)
+        sizeMultiplyList.add(0.2f)
     }
 
     private fun setDefaultDotList() {
@@ -240,7 +241,9 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
                 else -> R.drawable.bg_play_multiple_like_red
             }
         )
-        image.setPadding(24, 24, 24, 24)
+
+        val padding = size.first / 2
+        image.setPadding(padding, padding, padding, padding)
 
         return image
     }
@@ -314,7 +317,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
              */
             if(value <= threshold) {
                 alpha -= FADE_OUT_MULTIPLIER
-                if(alpha > 0F) image.alpha = alpha
+                image.alpha = alpha
             }
 
             /**
