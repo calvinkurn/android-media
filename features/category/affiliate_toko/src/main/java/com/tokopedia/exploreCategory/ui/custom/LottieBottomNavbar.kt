@@ -228,7 +228,7 @@ class LottieBottomNavbar : LinearLayout {
                 }
             }
             if (bottomMenu.animName == null) {
-                bottomMenu.imageName?.let {
+                bottomMenu.imageEnabledName?.let {
                     icon.setImageResource(it)
                 }
             }
@@ -445,7 +445,7 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
-    fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
+    fun isDeviceAnimationDisabled() = true
 
     fun getAnimationScale(context: Context): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {

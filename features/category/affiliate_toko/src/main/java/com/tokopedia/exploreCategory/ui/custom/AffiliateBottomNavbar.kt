@@ -12,9 +12,9 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
     private val isNewNavigation = false
 
     fun populateBottomNavigationView(){
-        menu.add(BottomMenu(R.id.menu_home, context.resources.getString(R.string.affiliate_home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_feed, context.resources.getString(R.string.affiliate_promo), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_os, context.resources.getString(R.string.affiliate_bantuan), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_P500, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_home_affiliate, context.resources.getString(R.string.affiliate_home), null, null, R.drawable.ic_bottom_nav_home_active_affiliate, R.drawable.ic_bottom_nav_home_inactive_affiliate, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_promo_affiliate, context.resources.getString(R.string.affiliate_promo), null, null, R.drawable.ic_bottom_nav_promo_active_affiliate, R.drawable.ic_bottom_nav_promo_inactive_affiliate, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_help_affiliate, context.resources.getString(R.string.affiliate_bantuan), null , null , R.drawable.ic_bottom_nav_help_active_affiliate, R.drawable.ic_bottom_nav_help_inactive_affiliate, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f))
         bottomNavigation?.setMenu(menu, isNewNavigation)
         bottomNavigation?.setMenuClickListener(menuListener)
         setSelected(AffiliateActivity.HOME_MENU)
