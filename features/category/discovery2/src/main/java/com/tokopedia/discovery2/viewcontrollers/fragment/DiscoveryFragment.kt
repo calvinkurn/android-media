@@ -70,6 +70,10 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
@@ -113,7 +117,8 @@ class DiscoveryFragment :
     View.OnClickListener,
     LihatSemuaViewHolder.OnLihatSemuaClickListener,
     TabLayout.OnTabSelectedListener,
-    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
+    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener,
+    MiniCartWidgetListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -132,6 +137,7 @@ class DiscoveryFragment :
     private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private var pageInfoHolder:PageInfo? = null
+    private var miniCartWidget: MiniCartWidget? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -153,6 +159,7 @@ class DiscoveryFragment :
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shareType: Int = 1
+    private var localCacheModel: LocalCacheModel? = null
 
 
     companion object {
@@ -204,6 +211,7 @@ class DiscoveryFragment :
         mDiscoveryFab = view.findViewById(R.id.fab)
         initToolbar(view)
         initChooseAddressWidget(view)
+        updateCurrentPageLocalCacheModelData()
         initView(view)
     }
 
@@ -245,6 +253,8 @@ class DiscoveryFragment :
         ivToTop = view.findViewById(R.id.toTopImg)
         coordinatorLayout = view.findViewById(R.id.parent_coordinator)
         parentLayout = view.findViewById(R.id.parent_frame)
+        miniCartWidget = view.findViewById(R.id.miniCartWidget)
+
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
@@ -448,6 +458,31 @@ class DiscoveryFragment :
                     chooseAddressWidget?.hide()
                     chooseAddressWidgetDivider?.hide()
                 }
+            }
+        })
+
+        discoveryViewModel.miniCart.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                setupMiniCart(it.data)
+            }
+        })
+
+        discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                getMiniCart()
+            }
+        })
+
+        discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                miniCartWidget?.updateData(shopIds)
+            }
+        })
+
+        discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                getMiniCart()
             }
         })
     }
@@ -966,6 +1001,8 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
+
+        getMiniCart()
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
@@ -1124,6 +1161,36 @@ class DiscoveryFragment :
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
         }
+    }
+
+    private fun getMiniCart() {
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        discoveryViewModel.getMiniCart(shopId, warehouseId)
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
+        if(data.isShowMiniCartWidget) {
+            val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+            miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
+            miniCartWidget?.show()
+            bottomNav?.hide()
+        } else {
+            miniCartWidget?.hide()
+        }
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            miniCartWidget?.hide()
+        }
+        // TODO: Update the product card with new data
     }
 
     private fun hideSystemUi() {

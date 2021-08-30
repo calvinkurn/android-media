@@ -76,6 +76,20 @@
         android:visibility="gone"
         tools:visbility="visible" />
 
+    <com.tokopedia.minicart.common.widget.MiniCartWidget
+        android:id="@+id/miniCartWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:tabBackground="@color/Unify_N0"
+        android:visibility="gone"
+        app:tabPaddingEnd="@dimen/dp_0"
+        app:tabMode="fixed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/bottomNav"
         android:layout_width="@dimen/dp_0"
