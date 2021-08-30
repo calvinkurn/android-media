@@ -58,8 +58,6 @@ class DynamicItemActionView @JvmOverloads constructor(
         notifFirstLayout = view.findViewById(R.id.notif_tokopoint)
         notifCenterLayout = view.findViewById(R.id.notif_voucher)
         notifRightLayout = view.findViewById(R.id.notif_tokomember)
-        dividerOne = view.findViewById(R.id.divider1)
-        dividerTwo = view.findViewById(R.id.divider2)
         addView(view)
     }
 
@@ -143,13 +141,6 @@ class DynamicItemActionView @JvmOverloads constructor(
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
                     text)
-        }
-    }
-
-    fun setVisibilityDivider(visibility: Int, position: Int) {
-        when (position) {
-            1 -> dividerOne.visibility = visibility
-            else -> dividerTwo.visibility = visibility
         }
     }
 

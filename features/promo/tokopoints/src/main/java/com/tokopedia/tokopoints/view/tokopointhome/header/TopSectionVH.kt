@@ -154,8 +154,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 2)
                     }
                 }
-
-                dynamicAction?.setVisibilityDivider(View.VISIBLE, i)
             }
         }
     }
