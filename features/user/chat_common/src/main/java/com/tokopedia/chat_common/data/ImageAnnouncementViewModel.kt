@@ -52,8 +52,10 @@ constructor(
 
     val startDateFormatted: String
         get() {
-            return TimeHelper.format(startDateMillis, "dd MMM yyyy", TimeHelper.localeID)
+            return TimeHelper.format(startDateMillis, startDateFormat, TimeHelper.localeID)
         }
+
+    private var startDateFormat = "dd MMM yyyy"
 
     constructor(
         item: Reply, attributes: ImageAnnouncementPojo
