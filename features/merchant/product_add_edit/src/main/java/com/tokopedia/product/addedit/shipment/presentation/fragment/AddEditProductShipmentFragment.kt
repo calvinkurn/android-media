@@ -62,6 +62,8 @@ import com.tokopedia.product.addedit.productlimitation.presentation.dialog.Produ
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
@@ -73,7 +75,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -109,7 +110,6 @@ class AddEditProductShipmentFragment:
     private var shipmentListConventional: RecyclerView? = null
     private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
     private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
-    private var bottomSheetInfoShipment: BottomSheetUnify? = null
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -364,8 +364,10 @@ class AddEditProductShipmentFragment:
         }
 
         btnChangeOnDemandShipment?.setOnClickListener {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
-            startActivityForResult(intent, 1234)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC).apply {
+                putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+            }, 1234)
         }
 
         btnChangeConventionalShipment?.setOnClickListener {
@@ -374,11 +376,11 @@ class AddEditProductShipmentFragment:
         }
 
         btnIconOnDemand?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(fragmentManager, ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE)
+            ShipmentInfoBottomSheet().show(childFragmentManager, ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE)
         }
 
         btnIconConventional?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(fragmentManager, ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE)
+            ShipmentInfoBottomSheet().show(childFragmentManager, ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE)
         }
     }
 

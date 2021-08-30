@@ -27,6 +27,7 @@ data class ShipperCPLModel(
 data class ShipperProductCPLModel(
     var shipperProductId: Int = 0,
     var shipperProductName: String = "",
-    var uiHidden: Boolean = false
+    var uiHidden: Boolean = false,
+    var isActive: Boolean = false
 )
 

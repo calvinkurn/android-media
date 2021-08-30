@@ -6,18 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.databinding.FragmentCustomProductLogisticBinding
 import com.tokopedia.editshipping.di.customproductlogistic.DaggerCustomProductLogisticComponent
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_PRODUCT_ID
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOP_ID
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class CustomProductLogisticFragment : BaseDaggerFragment() {
+class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLItemAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -26,7 +31,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(CustomProductLogisticViewModel::class.java)
     }
 
-    private val cplItemAdapter by lazy { CPLItemAdapter() }
+    private val cplItemOnDemandAdapter by lazy { CPLItemAdapter(this) }
+    private val cplItemConventionalAdapter by lazy { CPLItemAdapter(this) }
+
+    private var shopId: Long = 0
+    private var productId: String = ""
+    private var shipperProduct: String = ""
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -36,6 +46,14 @@ class CustomProductLogisticFragment : BaseDaggerFragment() {
         DaggerCustomProductLogisticComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            shopId = it.getLong(EXTRA_SHOP_ID)
+            productId = it.getString(EXTRA_PRODUCT_ID) ?: ""
+        }
     }
 
     override fun onCreateView(
@@ -52,17 +70,18 @@ class CustomProductLogisticFragment : BaseDaggerFragment() {
         initViews()
         initAdapter()
         initObserver()
+        setupButton()
     }
 
     private fun initViews() {
-        viewModel.getCPLList(0, "123")
+        viewModel.getCPLList(shopId, productId)
     }
 
     private fun initAdapter() {
         binding.apply {
-            rvOnDemandCpl.adapter = cplItemAdapter
+            rvOnDemandCpl.adapter = cplItemOnDemandAdapter
             rvOnDemandCpl.layoutManager = LinearLayoutManager(context)
-            rvConventionalCpl.adapter = cplItemAdapter
+            rvConventionalCpl.adapter = cplItemConventionalAdapter
             rvConventionalCpl.layoutManager = LinearLayoutManager(context)
         }
     }
@@ -86,8 +105,39 @@ class CustomProductLogisticFragment : BaseDaggerFragment() {
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
-        /*on demand only*/
-        cplItemAdapter.addData(data.shipperList[0].shipper)
+        cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+        cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
+    }
+
+    private fun setupButton() {
+        binding.btnSaveShipper.setOnClickListener {
+            if (shipperProduct.isEmpty()) {
+                Toaster.build(
+                    requireView(),
+                    getString(R.string.toaster_cpl_error),
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR
+                ).show()
+                binding.btnSaveShipper.isEnabled = false
+            } else {
+                /*Save on this*/
+            }
+        }
+    }
+
+    companion object {
+        fun newInstance(extra: Bundle): CustomProductLogisticFragment {
+            return CustomProductLogisticFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
+                    putString(EXTRA_PRODUCT_ID, extra.getString(EXTRA_SHOP_ID))
+                }
+            }
+        }
+    }
+
+    override fun onCheckboxItemClicked() {
+        binding.btnSaveShipper.isEnabled = true
     }
 
 }

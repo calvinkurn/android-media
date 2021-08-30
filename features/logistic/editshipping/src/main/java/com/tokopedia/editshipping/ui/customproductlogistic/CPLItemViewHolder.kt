@@ -5,11 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
-class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding): RecyclerView.ViewHolder(binding.root) {
+class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, private val listener: CPLItemAdapter.CPLItemAdapterListener): RecyclerView.ViewHolder(binding.root) {
 
-    private val cplShipperItamAdapter = CPLShipperItemAdapter()
+    private val cplShipperItemAdapter = CPLShipperItemAdapter()
 
     fun bindData(data: ShipperCPLModel) {
         val shipperProductData = data.shipperProduct
@@ -17,6 +19,7 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding): Rec
 
         hideUnusedLayout()
 
+        binding.shipmentName.text = data.shipperName
         binding.imgShipmentItem.let {
             ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
         }
@@ -40,17 +43,31 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding): Rec
     private fun setAdapterData(data: ShipperCPLModel) {
         binding.shipmentItemList.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = cplShipperItamAdapter
+            adapter = cplShipperItemAdapter
         }
 
-        cplShipperItamAdapter.addData(data.shipperProduct)
+        cplShipperItemAdapter.addData(data.shipperProduct)
     }
 
     private fun setItemChecked(data: ShipperCPLModel) {
+        if (binding.cbShipmentItem.isChecked) {
+            binding.itemChildLayout.visible()
+        } else {
+            binding.itemChildLayout.gone()
+        }
 
+        binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
+            listener.onCheckboxItemClicked()
+            cplShipperItemAdapter.updateChecked(isChecked)
+            if (isChecked) {
+                binding.itemChildLayout.visible()
+            } else {
+                binding.itemChildLayout.gone()
+            }
+        }
     }
 
     companion object {
-        fun getViewHolder(binding: ItemShippingEditorCardBinding) = CPLItemViewHolder(binding)
+        fun getViewHolder(binding: ItemShippingEditorCardBinding, listener: CPLItemAdapter.CPLItemAdapterListener) = CPLItemViewHolder(binding, listener)
     }
 }

@@ -88,5 +88,7 @@
     <string name="detail_fitur">Detail Fitur</string>
     <string name="shipper_detail_bottomsheet_title">Detail Kurir Pengiriman</string>
 
+    <!--Custom Product Logistic-->
     <string name="title_activity_cpl">Detail Kurir Pengiriman</string>
+    <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
 </resources>

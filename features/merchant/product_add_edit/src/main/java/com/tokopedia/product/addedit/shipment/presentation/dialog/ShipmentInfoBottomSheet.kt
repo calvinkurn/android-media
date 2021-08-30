@@ -36,7 +36,7 @@ class ShipmentInfoBottomSheet: BottomSheetUnify() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupShipmentInfoBottomShet()
+        setupShipmentInfoBottomSheet()
     }
 
     private fun initChildLayout() {
@@ -44,7 +44,7 @@ class ShipmentInfoBottomSheet: BottomSheetUnify() {
         setChild(view)
     }
 
-    private fun setupShipmentInfoBottomShet() {
+    private fun setupShipmentInfoBottomSheet() {
         val tvShipmentInfoDesc = requireView().findViewById<Typography>(R.id.tv_info_desc)
         val btnClose = requireView().findViewById<UnifyButton>(R.id.btn_close)
 

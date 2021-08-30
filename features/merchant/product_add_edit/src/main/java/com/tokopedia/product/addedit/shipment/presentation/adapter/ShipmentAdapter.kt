@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.product.addedit.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.text.StringBuilder
 
@@ -35,7 +36,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
 
     inner class ShipmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
+        private val shipmentItemImage = itemView.findViewById<ImageUnify>(R.id.img_shipment_item)
         private val shipmentItemName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 

@@ -32,14 +32,26 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         notifyDataSetChanged()
     }
 
+    fun updateChecked(checked: Boolean) {
+        cplShipperItem.forEach {
+            it.isActive = checked
+        }
+        notifyDataSetChanged()
+    }
+
     inner class CPLShipperItemViewHolder(private val binding: ItemShipperProductNameBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(data: ShipperProductCPLModel) {
             val lastItem = cplShipperItem.last()
             binding.shipperProductName.text = data.shipperProductName
+            binding.shipperProductCb.isChecked = data.isActive
 
             if (data == lastItem) {
                 binding.dividerShipment.visibility = View.GONE
+            }
+
+            binding.shipperProductCb.setOnCheckedChangeListener { _, isChecked ->
+                data.isActive = isChecked
             }
         }
     }

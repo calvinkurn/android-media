@@ -31,7 +31,7 @@
 
             <ImageView
                 android:id="@+id/img_shipment_item"
-                android:layout_width="@dimen/dp_52"
+                android:layout_width="@dimen/dp_64"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +84,7 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/shipment_category"
                 app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -97,7 +98,7 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/label_feature_items"
-                android:visibility="visible"
+                android:visibility="gone"
                 tools:itemCount="4"
                 app:layout_constraintTop_toBottomOf="@id/layout_coupon"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -111,6 +112,7 @@
                 app:layout_constraintTop_toTopOf="@id/rv_shipment_label"
                 app:layout_constraintBottom_toBottomOf="@id/rv_shipment_label"
                 app:icon_name="INFORMATION"
+                android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
 
