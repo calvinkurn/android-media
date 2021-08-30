@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
     <string name="event_ticket_voucher_number">E-Voucher</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
@@ -52,11 +51,6 @@
     <string name="average_rating">Cukup</string>
     <string name="very_good_rating">Sangat Mengerti</string>
     <string name="good_rating">Mengerti</string>
-    <string name="tkpdtransaction_web_title">Info Pembeli</string>
-    <string name="search_hint_text">Cari produk, toko, atau invoice</string>
-    <string name="label_title_error_no_connection_initial_cart_data">Terjadi kesalahan koneksi</string>
-    <string name="label_transaction_error_message_try_again">Silahkan coba lagi</string>
-    <string name="label_title_button_retry">COBA LAGI</string>
     <string name="order_list_title_recommendation">Rekomendasi untuk Anda</string>
     <string name="survey_submit">Terimakasih atas pendapat anda</string>
     <string name="tkpdtransaction_lets_hunt_fav_stuff">Cari barang impianmu dulu, yuk!</string>

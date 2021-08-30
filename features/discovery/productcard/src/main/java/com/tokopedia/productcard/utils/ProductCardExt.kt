@@ -292,6 +292,19 @@ internal fun renderLabelBestSeller(
     }
 }
 
+private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
+    if (labelBestSellerModel == null) hide()
+    else showLabelBestSeller(labelBestSellerModel)
+}
+
+private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
+    show()
+
+    val defaultColor = "#E1AA1D"
+    background.overrideColor(labelBestSellerModel.type, defaultColor)
+    text = labelBestSellerModel.title
+}
+
 internal fun renderLabelBestSellerCategorySide(
     isShow: Boolean,
     textCategorySide: Typography?,
@@ -304,6 +317,17 @@ internal fun renderLabelBestSellerCategorySide(
     } else {
         textCategorySide.initLabelCategorySide(null)
     }
+}
+
+private fun Typography.initLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup?) {
+    if (categorySideModel == null) hide()
+    else showLabelCategorySide(categorySideModel)
+}
+
+private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup) {
+    show()
+    text = categorySideModel.title
+    setTextColor(categorySideModel.type.toUnifyTextColor(context))
 }
 
 internal fun renderLabelBestSellerCategoryBottom(
@@ -320,33 +344,9 @@ internal fun renderLabelBestSellerCategoryBottom(
     }
 }
 
-private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
-    if (labelBestSellerModel == null) hide()
-    else showLabelBestSeller(labelBestSellerModel)
-}
-
-private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
-    show()
-
-    val defaultColor = "#E1AA1D"
-    background.overrideColor(labelBestSellerModel.type, defaultColor)
-    text = labelBestSellerModel.title
-}
-
-private fun Typography.initLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup?) {
-    if (categorySideModel == null) hide()
-    else showLabelCategorySide(categorySideModel)
-}
-
 private fun Typography.initLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup?) {
     if (categoryBottomModel == null) hide()
     else showLabelCategoryBottom(categoryBottomModel)
-}
-
-private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup) {
-    show()
-    text = categorySideModel.title
-    setTextColor(categorySideModel.type.toUnifyTextColor(context))
 }
 
 private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup) {

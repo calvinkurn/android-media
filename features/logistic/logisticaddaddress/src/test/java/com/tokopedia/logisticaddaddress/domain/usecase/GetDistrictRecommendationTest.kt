@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticaddaddress.di.RawQueryConstant
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
@@ -32,24 +33,7 @@ class GetDistrictRecommendationTest {
 
     @Before
     fun setup() {
-        val queryTest = """
-        query GetDistrictRecommendation(${"$"}query: String, ${"$"}page: String){
-          kero_district_recommendation(query: ${"$"}query, page: ${"$"}page) {
-            district {
-              district_id
-              district_name
-              city_id
-              city_name
-              province_id
-              province_name
-              zip_code
-            }
-            next_available
-          }
-        }
-        """.trimIndent()
-
-        every { queryMapMock.get(RawQueryConstant.GET_DISTRICT_RECOMMENDATION) } answers { queryTest }
+        every { queryMapMock.get(RawQueryConstant.GET_DISTRICT_RECOMMENDATION) } answers { KeroLogisticQuery.district_recommendation }
         usecaseUt = GetDistrictRecommendation(queryMapMock, gqlUsecaseMock, testSchedProvider)
     }
 
