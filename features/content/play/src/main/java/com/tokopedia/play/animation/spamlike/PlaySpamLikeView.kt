@@ -263,17 +263,31 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * 5. Animate
      */
     private fun startAnimate(image: ImageView) {
+        /**
+         * Setup Distance
+         */
         val start = image.y
         val end = image.y - SHOT_DISTANCE
 
+        /**
+         * Setup fade out constraint
+         */
         val threshold = (end - ((end - start) / 2))
         var alpha = image.alpha
 
+        /**
+         * Setup bouncing constraint
+         */
         val xStart = image.x - LIMIT_BOUNCING_DISTANCE
         val xEnd = image.x + LIMIT_BOUNCING_DISTANCE
         var xCurrent = image.x
-
         var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
+
+        /**
+         * Setup scaling constraint
+         */
+        image.scaleX = 0F
+        image.scaleY = 0F
 
         val move = ValueAnimator.ofFloat(start, end)
         move.addUpdateListener {
@@ -283,6 +297,13 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
             val value = it.animatedValue as Float
             image.y = value
 
+            /**
+             * Scaling up when appear first time
+             */
+            if(image.scaleX < 1.0F) {
+                image.scaleX = image.scaleX + 0.1F
+                image.scaleY = image.scaleY + 0.1F
+            }
 
             /**
              * Change alpha when current Y coordinate below the threshold
