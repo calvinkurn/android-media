@@ -300,9 +300,9 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
             /**
              * Scaling up when appear first time
              */
-            if(image.scaleX < 1.0F) {
-                image.scaleX = image.scaleX + 0.1F
-                image.scaleY = image.scaleY + 0.1F
+            if(image.scaleX < 1F && value > threshold) {
+                image.scaleX = image.scaleX + SCALING_UP_MULTIPLIER
+                image.scaleY = image.scaleY + SCALING_UP_MULTIPLIER
             }
 
             /**
@@ -310,7 +310,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
              */
             if(value <= threshold) {
                 alpha -= FADE_OUT_MULTIPLIER
-                image.alpha = alpha
+                if(alpha > 0F) image.alpha = alpha
             }
 
             /**
@@ -372,7 +372,8 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
         private const val SHOT_DISTANCE = 500
         private const val LIMIT_BOUNCING_DISTANCE = 20
-        private const val FADE_OUT_MULTIPLIER = 0.05F
+        private const val FADE_OUT_MULTIPLIER = 0.03F
         private const val BOUNCING_MULTIPLIER_X = 5
+        private const val SCALING_UP_MULTIPLIER = 0.1F
     }
 }
