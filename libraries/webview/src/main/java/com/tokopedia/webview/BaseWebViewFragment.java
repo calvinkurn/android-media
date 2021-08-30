@@ -104,7 +104,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
-    private static final String GOJEK_APP_LINK = "https://gojek.link/";
+    private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
