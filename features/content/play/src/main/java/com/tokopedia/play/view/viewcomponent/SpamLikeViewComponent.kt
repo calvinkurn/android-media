@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
@@ -36,6 +37,12 @@ class SpamLikeViewComponent(
                 }
             }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        job.cancelChildren()
+        spamLike.clear()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

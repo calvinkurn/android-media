@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -366,7 +365,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
     }
 
     fun clear() {
-        job.cancel()
+        job.cancelChildren()
         imageList.forEach {
             parentView?.removeView(it)
         }
