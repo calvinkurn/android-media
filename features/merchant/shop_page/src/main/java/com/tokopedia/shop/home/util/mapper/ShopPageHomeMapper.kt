@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.util.mapper
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
@@ -261,7 +262,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
-            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name)
+            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -445,7 +446,8 @@ object ShopPageHomeMapper {
 
     private fun mapToShowcaseListItemUiModel(
             data: List<ShopLayoutWidget.Widget.Data>,
-            widgetName: String
+            widgetName: String,
+            widgetHeader: ShopLayoutWidget.Widget.Header
     ): List<ShopHomeShowcaseListItemUiModel> {
         val uiModelData = data.map {
             ShopHomeShowcaseListItemUiModel().apply {
@@ -454,6 +456,7 @@ object ShopPageHomeMapper {
                 appLink = it.appLink
                 name = it.showcaseName
                 viewType = widgetName
+                isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
             }
         }
         return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
