@@ -2,7 +2,7 @@ package com.tokopedia.localizationchooseaddress.domain.model
 
 data class StateChooseAddressParam(
         val status: Int,
-        val addressId: Int,
+        val addressId: Int?,
         val receiverName: String,
         val addressName: String,
         val latitude: String,
@@ -12,7 +12,7 @@ data class StateChooseAddressParam(
         val isTokonow: Boolean
 ) {
 
-    fun toMap(): Map<Any, Any> = mapOf(
+    fun toMap(): Map<Any?, Any?> = mapOf(
             "status" to status,
             "addr_id" to addressId,
             "addr_name" to addressName,

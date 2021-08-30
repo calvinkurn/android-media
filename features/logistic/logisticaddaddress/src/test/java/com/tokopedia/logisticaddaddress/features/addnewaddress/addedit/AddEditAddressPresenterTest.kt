@@ -2,12 +2,12 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.DataAddAddress
+import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
-import com.tokopedia.logisticaddaddress.domain.model.add_address.Data
-import com.tokopedia.logisticaddaddress.domain.model.add_address.KeroAddAddress
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.KeroDistrictRecommendation
@@ -53,9 +53,11 @@ class AddEditAddressPresenterTest {
     @Test
     fun `save address succcess from positive form`() {
         val model = SaveAddressDataModel()
-        val successGql = AddAddressResponse(KeroAddAddress(
-                Data(isSuccess = 1, addrId = 99)
-        ))
+        val successGql = AddAddressResponse(
+            KeroAddAddress(
+                DataAddAddress(isSuccess = 1, addrId = 99)
+            )
+        )
 
         every { saveUseCase.execute(any(), "1")
         } returns Observable.just(successGql)
@@ -73,7 +75,7 @@ class AddEditAddressPresenterTest {
     fun `save address not succcess from negative form`() {
         val model = SaveAddressDataModel()
         val notSuccessResponse = AddAddressResponse(KeroAddAddress(
-                Data(isSuccess = 0)
+                DataAddAddress(isSuccess = 0)
         ))
 
         every { saveUseCase.execute(any(), any())

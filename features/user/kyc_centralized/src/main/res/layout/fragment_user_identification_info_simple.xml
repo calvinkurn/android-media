@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" >
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -76,13 +76,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/uii_simple_loader"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:visibility="visible" />
+        <include layout="@layout/layout_kyc_benefit"
+            android:id="@+id/layout_benefit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
