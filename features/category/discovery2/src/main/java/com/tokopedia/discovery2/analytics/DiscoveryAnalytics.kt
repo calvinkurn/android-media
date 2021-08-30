@@ -449,11 +449,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackLihatSemuaClick(headerName: String?) {
-        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
+    override fun trackLihatSemuaClick(dataItem: DataItem?) {
+        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = dataItem?.title
                 ?: EMPTY_STRING)
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         getTracker().sendGeneralEvent(map)
     }
 
@@ -1231,6 +1233,22 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
                 PAGE_PATH to removedDashPageIdentifier,
                 PAGE_TYPE to pageType)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun trackUnifyShare(event : String, eventAction : String, userID: String?,
+                                 eventLabel : String,) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to eventDiscoveryCategory,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            USER_ID to "${if (userID.isNullOrBlank()) 0 else userID}",
+            BUSINESS_UNIT to SHARING_EXPERIENCE,
+            PAGE_TYPE to pageType,
+            PAGE_PATH to removedDashPageIdentifier
+        )
         getTracker().sendGeneralEvent(map)
     }
 }
