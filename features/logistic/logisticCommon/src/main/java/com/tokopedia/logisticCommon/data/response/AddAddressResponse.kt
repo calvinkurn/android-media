@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddAddressResponse (
@@ -25,6 +26,7 @@ data class DataAddAddress(
         @SerializedName("is_success")
         val isSuccess: Int = 0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
         val addrId: Int = 0,
 
@@ -39,6 +41,7 @@ data class DataAddAddress(
 )
 
 data class ChosenAddressAddResponse(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
         var addressId: Int = 0,
         @SerializedName("receiver_name")
@@ -63,6 +66,7 @@ data class ChosenAddressAddResponse(
         var postalCode: String = ""
 )
 
+@SuppressLint("Invalid Data Type")
 data class TokonowAddAddress(
         @SerializedName("shop_id")
         val shopId: Long = 0,
