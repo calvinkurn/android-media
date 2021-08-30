@@ -153,7 +153,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     }
 
     override fun onMembershipStatusClickListener() {
-        
+
     }
 
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {

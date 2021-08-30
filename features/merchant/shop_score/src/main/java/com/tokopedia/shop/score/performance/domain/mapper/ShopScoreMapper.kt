@@ -924,7 +924,7 @@ class ShopScoreMapper @Inject constructor(
         return try {
             val date = Calendar.getInstance(getLocale())
             val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
-            val targetDays = GoldMerchantUtil.getNNextDaysDependsFirstMonday(diffDays)
+            val targetDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays)
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
             format(date.timeInMillis, PATTERN_DATE_TEXT)
         } catch (e: ParseException) {

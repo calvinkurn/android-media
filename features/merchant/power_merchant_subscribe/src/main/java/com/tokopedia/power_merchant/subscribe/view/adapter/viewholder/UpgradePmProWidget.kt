@@ -85,7 +85,7 @@ class UpgradePmProWidget(
         return try {
             val date = Calendar.getInstance(GoldMerchantUtil.getLocale())
             val diffDays = (THIRTY_DAYS - shopAge)
-            val targetDays = GoldMerchantUtil.getNNextDaysDependsFirstMonday(diffDays.toInt())
+            val targetDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays.toInt())
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
             GoldMerchantUtil.format(date.timeInMillis, PATTERN_DATE_TEXT)
         } catch (e: ParseException) {
