@@ -15,6 +15,7 @@ import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ShopType
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
@@ -26,6 +27,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     private var tvShopScoreValue: Typography? = null
     private var tvTipsIncreasePerformance: Typography? = null
     private var tickerTipsIncreasePerformance: Ticker? = null
+    private var btnUnderstand: UnifyButton? = null
 
     override fun getLayoutResId(): Int = R.layout.bottom_sheet_new_seller_shop_score
 
@@ -52,6 +54,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         tvShopScoreValue = findViewById(R.id.tvShopScoreValue)
         tvTipsIncreasePerformance = findViewById(R.id.tvTipsIncreasePerformance)
         tickerTipsIncreasePerformance = findViewById(R.id.tickerTipsIncreasePerformance)
+        btnUnderstand = findViewById(R.id.btnUnderstand)
     }
 
     private fun setupData() {
@@ -69,6 +72,13 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
         setShopScore(popupEndTenureUiModel?.shopScore.orEmpty())
         setupLevelBarNewSeller(popupEndTenureUiModel?.shopLevel.orEmpty())
         toggleTipsNewSeller(popupEndTenureUiModel)
+        setupBtnUnderstand()
+    }
+
+    private fun setupBtnUnderstand() {
+        btnUnderstand?.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel?) {
@@ -84,8 +94,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
                     tickerTipsIncreasePerformance?.hide()
                 }
             }
-            else -> {
-            }
+            else -> {}
         }
     }
 
