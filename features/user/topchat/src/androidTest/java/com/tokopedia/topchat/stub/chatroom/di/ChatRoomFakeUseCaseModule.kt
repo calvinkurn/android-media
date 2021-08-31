@@ -9,6 +9,7 @@ import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -251,5 +252,22 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCase(
+        stub: GetExistingMessageIdUseCaseStub
+    ): GetExistingMessageIdUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCaseStub(
+        gqlUseCase: GraphqlUseCaseStub<GetExistingMessageIdPojo>,
+        dispatchers: CoroutineDispatchers
+    ): GetExistingMessageIdUseCaseStub {
+        return GetExistingMessageIdUseCaseStub(gqlUseCase, dispatchers)
     }
 }

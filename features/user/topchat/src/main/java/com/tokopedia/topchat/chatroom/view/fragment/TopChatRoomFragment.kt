@@ -635,7 +635,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(
+    protected open fun onSuccessGetExistingChatFirstTime(
         chatRoom: ChatroomViewModel, chat: ChatReplies
     ) {
         setupFirstTimeOnly(chatRoom, chat)

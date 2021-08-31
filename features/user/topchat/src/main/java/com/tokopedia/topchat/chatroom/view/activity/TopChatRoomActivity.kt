@@ -146,7 +146,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         }
     }
 
-    private fun scanPathQuery(data: Uri?) {
+    protected open fun scanPathQuery(data: Uri?) {
         data?.let {
             val pathSegments = it.pathSegments
             when {

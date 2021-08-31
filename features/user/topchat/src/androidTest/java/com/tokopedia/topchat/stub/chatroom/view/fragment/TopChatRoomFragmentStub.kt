@@ -8,7 +8,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateImpl
 
-class TopChatRoomFragmentStub : TopChatRoomFragment() {
+open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(

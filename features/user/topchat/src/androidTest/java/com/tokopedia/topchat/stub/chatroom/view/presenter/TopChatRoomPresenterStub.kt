@@ -24,7 +24,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import javax.inject.Inject
 
-class TopChatRoomPresenterStub @Inject constructor(
+open class TopChatRoomPresenterStub @Inject constructor(
     tkpdAuthInterceptor: TkpdAuthInterceptor,
     fingerprintInterceptor: FingerprintInterceptor,
     userSession: UserSessionInterface,
