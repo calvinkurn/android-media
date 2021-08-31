@@ -132,7 +132,7 @@ object AtcVariantHelper {
                 productId = productId,
                 availableButtons = listOf(
                         AvailableButton(
-                                cartType = ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                                cartType = ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
                                 color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
                                 text = buttonText,
                                 showRecommendation = false
