@@ -95,6 +95,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 } else {
                     params.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
                 }
+
+                val textFieldNotesParams = textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
+                textFieldNotesParams.leftMargin = marginStart
+                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
+                textNotesParams.leftMargin = marginStart
+                val textNotesFilledParams = textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
+                textNotesFilledParams.leftMargin = marginStart
             }
         } else {
             with(binding) {
@@ -107,6 +114,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                 constraintSet.connect(R.id.iu_image_product, ConstraintSet.TOP, R.id.container_product_information, ConstraintSet.TOP, 0)
                 constraintSet.applyTo(containerProductInformation)
                 renderCheckBoxProduct(data)
+
+                val textFieldNotesParams = textFieldNotes.layoutParams as ViewGroup.MarginLayoutParams
+                textFieldNotesParams.leftMargin = 0
+                val textNotesParams = textNotes.layoutParams as ViewGroup.MarginLayoutParams
+                textNotesParams.leftMargin = 0
+                val textNotesFilledParams = textNotesFilled.layoutParams as ViewGroup.MarginLayoutParams
+                textNotesFilledParams.leftMargin = 0
             }
         }
     }
@@ -532,20 +546,24 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         with(binding) {
             textFieldNotes.gone()
             textNotesFilled.text = element.notes
-            setProductNotesWidth()
+            setProductNotesWidth(element)
             textNotesFilled.show()
             textNotesChange.show()
             textNotes.gone()
         }
     }
 
-    private fun setProductNotesWidth() {
+    private fun setProductNotesWidth(data: CartItemHolderData) {
         with(binding) {
             val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
             val textNotesChangeWidth = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
             val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
             val screenWidth = getScreenWidth()
-            val maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
+            var maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
+            if (data.isBundlingItem) {
+                val bundlingSeparatorMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_48)
+                maxNotesWidth -= bundlingSeparatorMargin
+            }
 
             textNotesFilled.measure(0, 0)
             val currentWidth = textNotesFilled.measuredWidth
