@@ -22,8 +22,7 @@ data class NewAttachProductItemUiModel(
     val isFreeOngkirActive: Boolean,
     val imgUrlFreeOngkir: String,
     val stock: Int
-)
-    : Visitable<NewAttachProductListAdapterTypeFactory>, Parcelable {
+) : Visitable<NewAttachProductListAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactoryNew: NewAttachProductListAdapterTypeFactory): Int {
         return typeFactoryNew.type(this)

@@ -36,8 +36,6 @@ class AttachProductViewModel @Inject constructor
     val cacheHasNext: Boolean
         get() = _cacheHasNext
 
-
-
     override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
             val result = useCaseNew(generateParam(query, shopId, page, warehouseId))
@@ -58,7 +56,6 @@ class AttachProductViewModel @Inject constructor
             _products.value = Fail(it)
         })
     }
-
 
     override fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>) {
         if (_checkedList.isNotEmpty()) {
