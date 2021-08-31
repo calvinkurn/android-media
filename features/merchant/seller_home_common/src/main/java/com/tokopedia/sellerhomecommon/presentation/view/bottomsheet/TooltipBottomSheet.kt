@@ -35,7 +35,11 @@ class TooltipBottomSheet : BottomSheetUnify() {
     }
 
     fun init(context: Context, tooltip: TooltipUiModel) {
-        setTitle(tooltip.title)
+        if (tooltip.title.isNotBlank()) {
+            setTitle(tooltip.title)
+        } else {
+            showHeader = false
+        }
         val child = SellerHomeBottomSheetContent(context)
         child.setTooltipData(tooltip)
         setChild(child)
