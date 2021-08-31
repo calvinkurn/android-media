@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -13,12 +14,13 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 05/10/20.
  */
+@GqlQuery(PlayWidgetUseCase.QUERY_NAME, PlayWidgetUseCase.QUERY)
 class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepository) : UseCase<PlayWidget>() {
 
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): PlayWidget {
-        val gqlRequest = GraphqlRequest(query, PlayWidgetResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(GetPlayWidgetV2Query.GQL_QUERY, PlayWidgetResponse::class.java, params)
         val gqlResponse = repository.getReseponse(
                 listOf(gqlRequest),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -33,8 +35,20 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
     companion object {
 
-        private const val query = """
-        query playGetWidgetV2(${'$'}widgetType: String!, ${'$'}authorId: String, ${'$'}authorType: String){
+        private const val PARAM_WIDGET_TYPE = "widgetType"
+        private const val PARAM_AUTHOR_ID = "authorId"
+        private const val PARAM_AUTHOR_TYPE = "authorType"
+        private const val PARAM_IS_WIFI = "isWifi"
+
+        const val QUERY_NAME = "GetPlayWidgetV2Query"
+
+        const val QUERY = """
+        query playGetWidgetV2(
+            ${'$'}$PARAM_WIDGET_TYPE: String!, 
+            ${'$'}$PARAM_AUTHOR_ID: String, 
+            ${'$'}$PARAM_AUTHOR_TYPE: String,
+            ${'$'}$PARAM_IS_WIFI: Boolean,
+        ){
           playGetWidgetV2(
             req: {
               widgetType:${'$'}widgetType,
@@ -116,17 +130,15 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         }
         """
 
-        private const val PARAM_WIDGET_TYPE = "widgetType"
-        private const val PARAM_AUTHOR_ID = "authorId"
-        private const val PARAM_AUTHOR_TYPE = "authorType"
-
         @JvmStatic
         fun createParams(
-                widgetType: WidgetType
+                widgetType: WidgetType,
+                isWifi: Boolean,
         ): Map<String, Any> = mapOf(
                 PARAM_AUTHOR_ID to widgetType.authorId,
                 PARAM_AUTHOR_TYPE to widgetType.authorType,
-                PARAM_WIDGET_TYPE to widgetType.typeKey
+                PARAM_WIDGET_TYPE to widgetType.typeKey,
+                PARAM_IS_WIFI to isWifi,
         )
     }
 
