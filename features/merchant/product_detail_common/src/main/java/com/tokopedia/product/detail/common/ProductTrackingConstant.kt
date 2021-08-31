@@ -163,6 +163,8 @@ object ProductTrackingConstant {
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
         const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
+        const val ACTION_CLICK_VARIANT = "click - pilih variant"
+
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
         const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
@@ -237,6 +239,7 @@ object ProductTrackingConstant {
         const val EVENT_LABEL_CLICK_PRODUCT_BUNDLING_MULTIPLE = "product_id:%s; bundling_id:%s; bundling_type:multiple;"
         const val EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
         const val VIEW_LABEL_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val EVENT_LABEL_FLOW_CHOOSE_VARIANT = "flow:%s;"
     }
 
     object Report {

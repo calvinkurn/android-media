@@ -197,7 +197,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
                     .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
             shouldSetActivityResult = when (cartRedirCartType) {
-                ProductDetailCommonConstant.KEY_SAVE_BUTTON -> false
+                ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> false
                 else -> true
             }
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
@@ -509,7 +509,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         when (cartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUTTON -> {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                ProductTrackingCommon.eventClickPilihVariant(adapter?.getHeaderDataModel()?.productId
+                        ?: "", pageSource, cartType)
                 onSaveButtonClicked()
             }
             else -> {
