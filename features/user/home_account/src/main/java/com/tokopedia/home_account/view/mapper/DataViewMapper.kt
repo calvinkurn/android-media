@@ -122,7 +122,7 @@ class DataViewMapper @Inject constructor(
                 title = title?.textAttributes?.text ?: "",
                 body = body?.textAttributes?.text ?: "",
                 type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS,
-                urlIcon = AccountConstants.Url.TOKOPOINTS_ICON,
+                urlIcon = tokopoint?.iconImageURL.orEmpty(),
                 applink = tokopoint?.redirectAppLink ?: "",
                 isTitleBold = title?.textAttributes?.isBold ?: false,
                 isBodyBold = body?.textAttributes?.isBold ?: false,
