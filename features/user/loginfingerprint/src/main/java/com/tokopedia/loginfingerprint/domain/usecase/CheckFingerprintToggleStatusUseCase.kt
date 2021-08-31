@@ -46,8 +46,8 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
         const val PARAM_USER_ID = "userID"
 
         val query: String = """
-            query check_otp_toggle(${'$'}userID: String!) {
-                OTPBiometricCheckToggleStatus(userID: ${'$'}userID) {
+            query check_otp_toggle(${'$'}userID: String!, ${'$'}device_biometrics: String!) {
+                OTPBiometricCheckToggleStatus(userID: ${'$'}userID, device_biometrics: ${'$'}device_biometrics) {
                     is_active
                     is_success
                     error_message

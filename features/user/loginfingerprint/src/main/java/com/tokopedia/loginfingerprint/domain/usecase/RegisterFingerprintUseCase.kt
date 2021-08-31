@@ -61,8 +61,8 @@ class RegisterFingerprintUseCase @Inject constructor(
 
     companion object {
         val query: String = """
-            query register_fingerprint (${'$'}publicKey: String!, ${'$'}signature: String!, ${'$'}datetime: String!){
-                RegisterFingerprint(publicKey: ${'$'}publicKey, signature: ${'$'}signature, datetime: ${'$'}datetime) {
+            query register_fingerprint (${'$'}publicKey: String!, ${'$'}signature: String!, ${'$'}datetime: String!, ${'$'}device_biometrics: String!){
+                RegisterFingerprint(publicKey: ${'$'}publicKey, signature: ${'$'}signature, datetime: ${'$'}datetime, device_biometrics: ${'$'}device_biometrics) {
                     success
                     message
                     errorMessage
