@@ -137,7 +137,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     val bundleInfo = productBundleData.getBundleInfo.bundleInfo
                     val longSelectedProductIds = selectedProductIds.map { it.toLong() }
                     val inventoryError = InventoryErrorMapper.mapToInventoryError(result, bundleId, longSelectedProductIds)
-                    val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock varaint is 0
+                    val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
                     if (bundleInfo.isNotEmpty()) {
                         val productBundleFragment = when {
                             inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
@@ -145,10 +145,10 @@ class ProductBundleActivity : BaseSimpleActivity() {
                                 entryPointFragment
                             }
                             viewModel.isSingleProductBundle(bundleInfo) -> {
-                                val parentProductID = viewModel.parentProductID
                                 val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
-                                SingleProductBundleFragment.newInstance(parentProductID, bundleInfo,
-                                    bundleId.toString(), selectedProductId, emptyVariantProductIds)
+                                SingleProductBundleFragment.newInstance(productId, bundleInfo,
+                                    bundleId.toString(), selectedProductId, emptyVariantProductIds,
+                                    source)
                             }
                             else -> {
                                 MultipleProductBundleFragment.newInstance(bundleInfo, emptyVariantProductIds)

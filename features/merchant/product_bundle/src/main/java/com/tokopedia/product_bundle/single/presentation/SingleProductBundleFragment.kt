@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.single.presentation
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -21,6 +24,8 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_BUNDLE_ID
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -42,11 +47,12 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
-    private val parentProductID: Long = 0L,
+    private val parentProductID: String = "",
     private val bundleInfo: List<BundleInfo> = emptyList(),
     private val selectedBundleId: String = "",
     private val selectedProductId: Long = 0L,
-    private val emptyVariantProductIds: List<String> = emptyList()
+    private val emptyVariantProductIds: List<String> = emptyList(),
+    private val pageSource: String = ""
 ) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
@@ -148,7 +154,14 @@ class SingleProductBundleFragment(
 
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
-            requireActivity().finish()
+            if (pageSource == PAGE_SOURCE_CART) {
+                val intent = Intent()
+                intent.putExtra(EXTRA_BUNDLE_ID, it.requestParams.bundleId)
+                activity?.setResult(Activity.RESULT_OK, intent)
+            } else {
+                RouteManager.route(context, ApplinkConst.CART)
+            }
+            activity?.finish()
         })
     }
 
@@ -267,12 +280,14 @@ class SingleProductBundleFragment(
     companion object {
         @JvmStatic
         fun newInstance(
-            parentProductID: Long,
+            parentProductID: String,
             bundleInfo: List<BundleInfo>,
             selectedBundleId: String = "",
             selectedProductId: Long = 0L,
-            emptyVariantProductIds: List<String>
+            emptyVariantProductIds: List<String> = emptyList(),
+            pageSource: String = ""
         ) =
-            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId, selectedProductId, emptyVariantProductIds)
+            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId,
+                selectedProductId, emptyVariantProductIds, pageSource)
     }
 }
