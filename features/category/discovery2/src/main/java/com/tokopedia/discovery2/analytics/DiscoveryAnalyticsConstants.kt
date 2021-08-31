@@ -154,4 +154,19 @@ const val DISCOVERY_DEFAULT_PAGE_TYPE  = "general"
 const val PAGE_SOURCE = "pageSource"
 const val CLICK_REMIND_ME = "click remind me"
 const val CLICK_CANCEL_REMIND_ME = "click cancel remind me"
+const val SCROLL_DEPTH_RATE = "scroll depth rate"
+const val SHARE = "share"
+const val UTM_DISCOVERY  = "Discovery"
+const val SHARING_EXPERIENCE  = "sharingexperience"
+const val VIEW_DISCOVERY_IRIS  = "viewDiscoveryIris"
+
+const val UNIFY_CLICK_SHARE  = "click - share button"
+const val UNIFY_CLOSE_SHARE  = "click - close share bottom sheet"
+const val VIEW_UNIFY_SHARE  = "view on sharing channel"
+const val CLICK_SHARE_CHANNEL  = "click - sharing channel"
+
+const val VIEW_SCREENSHOT_SHARE  = "view - screenshot share bottom sheet"
+const val UNIFY_CLOSE_SCREENSHOT_SHARE  = "click - close screenshot share bottom sheet"
+const val CLICK_SCREENSHOT_SHARE_CHANNEL  = "click - channel share bottom sheet - screenshot"
+
 

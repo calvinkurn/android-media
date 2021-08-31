@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopPenaltyDetailViewModel @Inject constructor(
-        dispatchers: CoroutineDispatchers,
-        private val penaltyMapper: PenaltyMapper
+    dispatchers: CoroutineDispatchers,
+    private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _penaltyDetailData = MutableLiveData<ShopPenaltyDetailUiModel>()

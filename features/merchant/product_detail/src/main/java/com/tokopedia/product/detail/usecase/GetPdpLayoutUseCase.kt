@@ -15,11 +15,14 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
+                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         val QUERY = """
@@ -200,6 +203,18 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         text
                       }
                     }
+                    ... on pdpDataCategoryCarousel {
+                        titleCarousel
+                        linkText
+                        applink
+                        list {
+                          categoryID
+                          icon
+                          title
+                          isApplink
+                          applink
+                        }
+                    }
                      ... on pdpDataCustomInfo {
                        icon
                        title
@@ -312,6 +327,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
+        val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
+            requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
+        }
+
         gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 

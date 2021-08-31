@@ -378,8 +378,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     @Override
-    public void navigateToWebView(String protectionLinkUrl) {
-        mActionListener.navigateToProtectionMore(protectionLinkUrl);
+    public void navigateToWebView(CartItemModel cartItemModel) {
+        mActionListener.navigateToProtectionMore(cartItemModel);
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
@@ -671,7 +671,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderPurchaseProtection(CartItemModel cartItemModel) {
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() && !cartItemModel.isError() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable() && !cartItemModel.isError()) {
-            mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
+            mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
             mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
@@ -1015,7 +1015,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNoSelectedCourierNormalShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter) {
         if (shipmentCartItemModel.isDisableChangeCourier()) {
-            if (shipmentCartItemModel.hasGeolocation()) {
+            if (shipmentCartItemModel.getHasGeolocation()) {
                 renderFailShipmentState(shipmentCartItemModel, currentAddress, ratesDataConverter);
             }
         } else {

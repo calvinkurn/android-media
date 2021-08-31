@@ -31,7 +31,7 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
+import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
@@ -49,6 +49,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -81,6 +82,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -97,14 +103,17 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val ROTATION = 90f
+const val CUSTOM_SHARE_SHEET = 1
+const val SCREENSHOT_SHARE_SHEET = 2
 
 class DiscoveryFragment :
-        BaseDaggerFragment(),
-        SwipeRefreshLayout.OnRefreshListener,
-        View.OnClickListener,
-        LihatSemuaViewHolder.OnLihatSemuaClickListener,
-        TabLayout.OnTabSelectedListener,
-        ChooseAddressWidget.ChooseAddressWidgetListener {
+    BaseDaggerFragment(),
+    SwipeRefreshLayout.OnRefreshListener,
+    View.OnClickListener,
+    LihatSemuaViewHolder.OnLihatSemuaClickListener,
+    TabLayout.OnTabSelectedListener,
+    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -122,6 +131,7 @@ class DiscoveryFragment :
     private var shouldShowChooseAddressWidget:Boolean = true
     private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
+    private var pageInfoHolder:PageInfo? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -138,6 +148,12 @@ class DiscoveryFragment :
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var lastVisibleComponent: ComponentsItem? = null
+    private var screenScrollPercentage = 0
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var shareType: Int = 1
+
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -178,7 +194,7 @@ class DiscoveryFragment :
         with(context) {
             if (this is DiscoveryActivity) {
                 this.discoveryComponent
-                        .inject(this@DiscoveryFragment)
+                    .inject(this@DiscoveryFragment)
             }
         }
     }
@@ -239,6 +255,7 @@ class DiscoveryFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
                     ivToTop.hide()
+                    calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
@@ -248,7 +265,7 @@ class DiscoveryFragment :
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)
-                        && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     ivToTop.hide()
                 }
                 if (scrollDist > MINIMUM) {
@@ -268,6 +285,48 @@ class DiscoveryFragment :
         })
     }
 
+    private fun calculateScrollDepth(recyclerView: RecyclerView) {
+        if(::discoveryViewModel.isInitialized){
+            val offset =
+                recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+            val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+            val range = recyclerView.computeVerticalScrollRange() // max scroll height
+
+            val currentScrollDepth = discoveryViewModel.getScrollDepth(offset, extent, range)
+            if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
+                screenScrollPercentage = currentScrollDepth
+            }
+            updateLastVisibleComponent()
+        }
+    }
+
+    private fun updateLastVisibleComponent() {
+        if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName)
+        ) {
+            return
+        }
+        staggeredGridLayoutManager?.findLastVisibleItemPositions(null)?.let { positionArray ->
+            if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
+                if (discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+
+                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
+                ) {
+                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                        .getComponent(
+                            lastVisibleComponent!!.parentComponentId,
+                            lastVisibleComponent!!.pageEndPoint
+                        )
+                }
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -284,7 +343,8 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
@@ -338,6 +398,7 @@ class DiscoveryFragment :
         discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
@@ -374,11 +435,11 @@ class DiscoveryFragment :
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
                 if (widgetVisibilityStatus) {
-                    if(shouldShowChooseAddressWidget) {
+                    if (shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                     }
-                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
@@ -397,11 +458,11 @@ class DiscoveryFragment :
             val coachMark = CoachMark2(requireContext())
             coachMark.isOutsideTouchable = true
             coachMarkItem.add(
-                    CoachMark2Item(
-                            it,
-                            getString(R.string.choose_address_title),
-                            getString(R.string.choose_address_description)
-                    )
+                CoachMark2Item(
+                    it,
+                    getString(R.string.choose_address_title),
+                    getString(R.string.choose_address_description)
+                )
             )
             coachMark.showCoachMark(coachMarkItem)
         }
@@ -457,10 +518,10 @@ class DiscoveryFragment :
                 }
             } else {
                 navToolbar.setIcon(
-                        IconBuilder()
-                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
-                                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                    IconBuilder()
+                        .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
                 navToolbar.updateNotification()
             }
@@ -473,37 +534,140 @@ class DiscoveryFragment :
         }
     }
 
+
     private fun handleShareClick(data: PageInfo?) {
         if (showOldToolbar) {
             getDiscoveryAnalytics().trackShareClick()
         } else {
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                linkerDataMapper(data), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if (linkerShareData.url != null) {
-                    Utils.shareData(activity, data?.share?.description, linkerShareData.url)
-                }
-            }
 
-            override fun onError(linkerError: LinkerError) {
-                Utils.shareData(activity, data?.share?.description, data?.share?.url)
-            }
-        }))
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            sendUnifyShareGTM()
+            showUniversalShareBottomSheet(data)
+        }else{
+            discoDefaultShare(data)
+        }
+    }
+    
+    private fun discoDefaultShare(data: PageInfo?) {
+        data?.let {
+            LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0,
+                    linkerDataMapper(it), object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult) {
+                            if (linkerShareData.url != null) {
+                                Utils.shareData(
+                                    activity,
+                                    it.share?.description,
+                                    linkerShareData.url
+                                )
+                            }
+                        }
+
+                        override fun onError(linkerError: LinkerError) {
+                            Utils.shareData(activity, it.share?.description, it.share?.url)
+                        }
+                    })
+            )
+        }
     }
 
     private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url
-                ?: "", discoComponentQuery)
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(
+            data?.share?.url
+                ?: "", discoComponentQuery
+        )
         linkerData.description = data?.share?.description ?: ""
+        linkerData.ogTitle = data?.share?.title ?: ""
+        linkerData.ogDescription = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
+    }
+
+    private fun showUniversalShareBottomSheet(data: PageInfo?) {
+        data?.let { pageInfo ->
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@DiscoveryFragment)
+                setUtmCampaignData(
+                    this@DiscoveryFragment.context?.resources?.getString(R.string.discovery) ?: UTM_DISCOVERY,
+                    if(UserSession(this@DiscoveryFragment.context).userId.isNullOrEmpty()) "0"
+                    else UserSession(this@DiscoveryFragment.context).userId,
+                    discoveryViewModel.getShareUTM(pageInfo),
+                    this@DiscoveryFragment.context?.resources?.getString(R.string.share) ?: SHARE
+                )
+                setMetaData(
+                    pageInfo.share?.title ?: "",
+                    pageInfo.share?.image ?: ""
+                )
+                setOgImageUrl(pageInfo.share?.image ?: "")
+            }
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment)
+            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+            getDiscoveryAnalytics().trackUnifyShare(
+                VIEW_DISCOVERY_IRIS,
+                if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
+                getUserID()
+            )
+        }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = linkerDataMapper(pageInfoHolder)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        getDiscoveryAnalytics().trackUnifyShare(
+            EVENT_CLICK_DISCOVERY,
+            if (shareType == CUSTOM_SHARE_SHEET) CLICK_SHARE_CHANNEL else CLICK_SCREENSHOT_SHARE_CHANNEL,
+            getUserID(), shareModel.channel ?: ""
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareString = "${pageInfoHolder?.share?.description} ${linkerShareData?.url}"
+                    shareModel.subjectName = pageInfoHolder?.share?.title ?: ""
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        activity,
+                        view,
+                        shareString
+                    )
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    universalShareBottomSheet?.dismiss()
+                    discoDefaultShare(pageInfoHolder)
+                }
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY,
+            if (shareType == CUSTOM_SHARE_SHEET) UNIFY_CLOSE_SHARE else UNIFY_CLOSE_SCREENSHOT_SHARE,
+            getUserID())
+        universalShareBottomSheet?.dismiss()
+    }
+
+    private fun sendUnifyShareGTM() {
+        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
+    }
+
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet(pageInfoHolder)
     }
 
     private fun setToolBarPageInfoOnFail() {
@@ -521,22 +685,22 @@ class DiscoveryFragment :
 
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
-                IconBuilder()
-                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+            IconBuilder()
+                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
         navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
         navToolbar.setupSearchbar(
-                hints = listOf(HintData(placeholder = data?.searchTitle
-                        ?: getString(R.string.discovery_default_search_title))),
-                searchbarClickCallback = {
-                    handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
-                    handleSearchClick(data)
-                },
-                disableDefaultGtmTracker = true
+            hints = listOf(HintData(placeholder = data?.searchTitle
+                ?: getString(R.string.discovery_default_search_title))),
+            searchbarClickCallback = {
+                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                handleSearchClick(data)
+            },
+            disableDefaultGtmTracker = true
         )
     }
 
@@ -572,12 +736,12 @@ class DiscoveryFragment :
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
                 ServerLogger.log(Priority.P2, "DISCOVERY_PAGE_ERROR",
-                        mapOf(
-                                "identifier" to discoveryViewModel.pageIdentifier,
-                                "path" to discoveryViewModel.pagePath,
-                                "type" to discoveryViewModel.pageType,
-                                "err" to Log.getStackTraceString(it.throwable)
-                        ))
+                    mapOf(
+                        "identifier" to discoveryViewModel.pageIdentifier,
+                        "path" to discoveryViewModel.pagePath,
+                        "type" to discoveryViewModel.pageType,
+                        "err" to Log.getStackTraceString(it.throwable)
+                    ))
             }
         }
         globalError.show()
@@ -587,7 +751,7 @@ class DiscoveryFragment :
         }
     }
 
-    private fun hideGlobalError(){
+    private fun hideGlobalError() {
         globalError.hide()
     }
 
@@ -618,7 +782,7 @@ class DiscoveryFragment :
             showTextAnimation(data)
             data.thumbnailUrlMobile?.let { showImageOnFab(context, it) }
             setClick(data.applinks?.toEmptyStringIfNull().toString(), data.shopId?.toIntOrNull()
-                    ?: 0)
+                ?: 0)
         }
     }
 
@@ -691,10 +855,10 @@ class DiscoveryFragment :
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                    if (this.componentPosition != null && this.componentPosition!! >= 0) {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                         discoveryBaseViewModel?.loggedInCallback()
-                    }else{
+                    } else {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     }
                 }
@@ -775,13 +939,13 @@ class DiscoveryFragment :
 
     private fun stopDiscoveryPagePerformanceMonitoring() {
         recyclerView.viewTreeObserver
-                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
-                        pageLoadTimePerformanceInterface?.stopMonitoring()
-                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    }
-                })
+            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.stopMonitoring()
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
     }
 
     override fun onResume() {
@@ -802,6 +966,7 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -816,7 +981,12 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
+        if(lastVisibleComponent == null){
+            updateLastVisibleComponent()
+        }
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
+        UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
@@ -829,7 +999,7 @@ class DiscoveryFragment :
     }
 
     override fun onLihatSemuaClick(data: DataItem) {
-        getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
+        getDiscoveryAnalytics().trackLihatSemuaClick(data)
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -886,11 +1056,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return analytics.getHostSource()
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return analytics.getHostTrackingSource()
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -901,7 +1071,7 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return analytics.getEventLabel()
+        return EMPTY_STRING
     }
 
     private fun fetchUserLatestAddressData() {
@@ -928,7 +1098,7 @@ class DiscoveryFragment :
     fun showCustomContent(view: View){
         hideSystemUi()
         coordinatorLayout.hide()
-        view.rotation = 90f
+        view.rotation = ROTATION
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = activity?.let {
             val metrics = DisplayMetrics()
@@ -978,6 +1148,4 @@ class DiscoveryFragment :
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
     }
-
-
 }

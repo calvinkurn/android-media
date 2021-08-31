@@ -30,11 +30,9 @@ class AddressRobot {
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
-                .check(matches(isDisplayed()))
-                .perform(typeText(keyword), closeSoftKeyboard())
-        // delay for text field debounce
-        Thread.sleep(7000)
+        onView(withId(R.id.layout_search)).perform(click())
+        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), closeSoftKeyboard())
+        waitForData()
     }
 
     fun selectFirstItem() {
@@ -53,7 +51,8 @@ class AddressRobot {
     }
 
     fun searchCityWithKeyword(keyword: String) {
-        onView(withId(R.id.et_search_district_recommendation))
+        onView(withId(R.id.layout_search)).perform(click())
+        onView(allOf(withId(R.id.searchbar_textfield), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         waitForData()

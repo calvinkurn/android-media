@@ -53,6 +53,7 @@ import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -330,7 +331,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e: Throwable) {
+    private fun showErrorView(error: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
 
@@ -339,14 +340,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 it.containerError.root.visibility = View.VISIBLE
             }
 
-            iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
-            message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
-            sub_message_retry.text = ErrorHandlerHotel.getErrorMessage(context, e)
-
-            button_retry.setOnClickListener {
-                hideErrorView()
-                onErrorRetryClicked()
-            }
+            context?.run {
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
@@ -383,8 +379,22 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         setupMainImage(data.property.images)
 
+        binding?.hotelRatingContainer?.let{
+            it.removeAllViews()
+        }
+        context?.run {
+            val textView = Typography(requireContext())
+            textView.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.bg_search_destination_tag)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                text = data.property.typeName
+                setType(Typography.BODY_3)
+                setWeight(Typography.BOLD)
+                setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+            }
+            binding?.hotelRatingContainer?.addView(textView)
+        }
         binding?.tvHotelName?.text = data.property.name
-        binding?.hotelPropertyType?.text = data.property.typeName
         for (i in 1..data.property.star) {
             context?.run { binding?.hotelRatingContainer?.addView(RatingStarView(this)) }
         }
@@ -437,7 +447,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 HotelShare(this).shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
-                        this.applicationContext)
+                    requireContext())
             }
         }
     }
@@ -479,10 +489,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
-                0 -> {
+                IMAGE_COUNTER_ZERO -> {
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
-                1 -> {
+                IMAGE_COUNTER_FIRST -> {
                     binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -490,7 +500,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                2 -> {
+                IMAGE_COUNTER_SECOND -> {
                     binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -498,7 +508,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                3 -> {
+                IMAGE_COUNTER_THIRD -> {
                     binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -739,6 +749,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     override fun onErrorRetryClicked() {
+        hideErrorView()
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
                     HotelGqlQuery.PROPERTY_DETAIL,
@@ -828,6 +839,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
+
+        const val IMAGE_COUNTER_ZERO = 0
+        const val IMAGE_COUNTER_FIRST = 1
+        const val IMAGE_COUNTER_SECOND = 2
+        const val IMAGE_COUNTER_THIRD = 3
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,

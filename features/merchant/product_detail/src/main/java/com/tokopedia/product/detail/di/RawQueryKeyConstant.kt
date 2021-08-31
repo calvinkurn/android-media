@@ -7,4 +7,8 @@ object RawQueryKeyConstant {
     const val MUTATION_FAVORITE_SHOP = "favorite_shop"
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val MUTATION_NOTIFY_ME = "query_notify_me"
+
+    const val NAME_LAYOUT_ID_DAGGER = "layoutIdPdp"
+    const val PDP_LAYOUT_ID_SHARED_PREF_KEY = "layoutIdSharedPref"
+    const val PDP_LAYOUT_ID_KEY = "layoutIdTest"
 }

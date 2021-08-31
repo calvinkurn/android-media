@@ -676,7 +676,7 @@ public class FeedAnalytics {
                         KEY_USER_ID, userId,
                         EVENT_ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", getProductList(products, position))
+                                "impressions", getProductList(products, position+1))
                 )
         );
     }
@@ -708,6 +708,7 @@ public class FeedAnalytics {
         productItem.put("name", "/feed - topads - card");
         productItem.put("id", adId);
         productItem.put("position", position);
+        productItem.put("creative_name", "");
         productList.add(productItem);
         return productList;
     }

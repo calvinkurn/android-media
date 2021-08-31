@@ -27,19 +27,16 @@
         tools:text="Merah | S"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/emptyStockInfo"
+        android:id="@+id/tv_campaign_stock_count_variant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/product_manage_stock_info_description"
-        android:textColor="@color/Unify_N300"
-        android:lines="2"
-        android:visibility="gone"
+        android:textColor="@color/Unify_G500"
         android:gravity="center_vertical"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
+        android:visibility="gone"
+        app:typographyType="heading_6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
-        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="3 promosi"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.Label
@@ -47,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_editor_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
@@ -56,20 +53,6 @@
         app:labelType="general_light_grey"
         app:labelTitle="@string/product_manage_inactive"
         tools:visibility="visible"/>
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_campaign_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:labelTitle="@string/product_manage_campaign"
-        app:labelType="general_light_red"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
-        app:layout_constraintLeft_toRightOf="@id/label_campaign_stock_inactive"
-        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_editor_name"
-        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_campaign_stock_variant"

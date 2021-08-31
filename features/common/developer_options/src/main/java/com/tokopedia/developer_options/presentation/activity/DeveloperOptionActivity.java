@@ -94,6 +94,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
     String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
 
+
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
@@ -108,7 +109,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
     private UnifyButton resetOnBoarding;
-    private UnifyButton testOnBoarding;
     private UnifyButton vForceCrash;
     private TextFieldUnify remoteConfigPrefix;
     private UnifyButton remoteConfigStartButton;
@@ -271,7 +271,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         vForceCrash = findViewById(R.id.force_crash);
 
         resetOnBoarding = findViewById(R.id.reset_onboarding);
-        testOnBoarding = findViewById(R.id.test_onboarding);
 
         vGoToScreenRecorder = findViewById(R.id.goto_screen_recorder);
 
@@ -343,6 +342,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
+
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+            Intent intent = new Intent(this, ProductDetailDevActivity.class);
+            startActivity(intent);
+        });
 
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override

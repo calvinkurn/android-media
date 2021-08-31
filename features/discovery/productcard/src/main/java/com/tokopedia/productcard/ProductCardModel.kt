@@ -44,12 +44,14 @@ data class ProductCardModel (
         val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
+        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        @Deprecated("determined from product card")
         val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
         val isWideContent: Boolean = false,
         val variant: Variant? = null,
@@ -127,7 +129,7 @@ data class ProductCardModel (
 
     fun canShowQuantityEditor() = nonVariant != null
 
-    fun shouldShowQuantityEditor(): Boolean {
+    fun shouldShowCartEditorComponent(): Boolean {
         return nonVariant?.quantity ?: 0 > 0
     }
 
@@ -161,6 +163,14 @@ data class ProductCardModel (
 
     fun getLabelBestSeller(): LabelGroup? {
         return findLabelGroup(LABEL_BEST_SELLER)
+    }
+
+    fun getLabelCategorySide(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_SIDE)
+    }
+
+    fun getLabelCategoryBottom(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_BOTTOM)
     }
 
     fun getLabelETA(): LabelGroup? {
@@ -200,6 +210,12 @@ data class ProductCardModel (
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategorySide() =
+        isShowLabelBestSeller() && getLabelCategorySide()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategoryBottom() =
+        isShowLabelBestSeller() && getLabelCategoryBottom()?.title?.isNotEmpty() == true
 
     fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
 

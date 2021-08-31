@@ -22,6 +22,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
@@ -66,6 +67,8 @@ class InitialStatePresenter @Inject constructor(
     private fun isTokoNow(): Boolean {
         return UrlParamUtils.isTokoNow(searchParameter)
     }
+
+    private fun getNavSource() = searchParameter[NAVSOURCE] ?: ""
 
     override fun getInitialStateData() {
         val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
@@ -402,9 +405,10 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteRecentSearchItem(item: BaseItemInitialStateSearch) {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId,
-                item
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            item = item,
+            navSource = getNavSource()
         )
         deleteRecentSearchUseCase.execute(
                 params,
@@ -476,8 +480,9 @@ class InitialStatePresenter @Inject constructor(
 
     override fun deleteAllRecentSearch() {
         val params = DeleteRecentSearchUseCase.getParams(
-                userSession.deviceId,
-                userSession.userId
+            registrationId = userSession.deviceId,
+            userId = userSession.userId,
+            navSource = getNavSource()
         )
         deleteRecentSearchUseCase.execute(
                 params,

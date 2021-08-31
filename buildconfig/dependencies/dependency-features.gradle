@@ -121,7 +121,7 @@ ext {
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
-            
+
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
@@ -151,6 +151,7 @@ ext {
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            reviewInbox                     : ":features:merchant:review_inbox",
             sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerAppWidget                 : ":features:merchant:seller_app_widget",
@@ -215,6 +216,7 @@ ext {
             transactionanalytics            : ":features:transaction:transactionanalytics",
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
             cart                            : ":features:transaction:cart",
+            cart_common                     : ":features:transaction:cart_common",
             checkout                        : ":features:transaction:checkout",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
             minicart                        : ":features:transaction:minicart",
@@ -269,9 +271,7 @@ ext {
             tkpdcore                        : ":tkpdcore",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
-            recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp",
-            travel_slice                    : ":features:travel:travel_slice",
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking"
     ]

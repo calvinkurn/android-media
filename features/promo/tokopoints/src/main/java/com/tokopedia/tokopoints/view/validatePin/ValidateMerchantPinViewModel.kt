@@ -21,8 +21,10 @@ class ValidateMerchantPinViewModel @Inject constructor(private val mUseCase: Swi
                 if (data.swipeCoupon.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     swipeCouponLiveData.value = Success(data.swipeCoupon)
                 } else {
-                    if (data.swipeCoupon.resultStatus.messages.size > 0) {
-                        swipeCouponLiveData.value = ErrorMessage(data.swipeCoupon.resultStatus.messages[0])
+                    if (data.swipeCoupon.resultStatus.messages?.isNotEmpty() == true) {
+                        swipeCouponLiveData.value =data.swipeCoupon.resultStatus.messages?.get(0)?.let {
+                            ErrorMessage(it)
+                        }
                     }
                 }
             }
