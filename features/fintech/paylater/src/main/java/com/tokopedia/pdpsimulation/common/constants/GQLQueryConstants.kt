@@ -52,23 +52,6 @@ const val GQL_PAY_LATER_APPLICATION_STATUS = """query getUserApplicationStatus{
     }
 }"""
 
-const val GQL_PAY_LATER_SIMULATION = """query paylater_getSimulation(${'$'}amount: Int!){
-	paylater_getSimulation(amount: ${'$'}amount){
-    gateways {
-      gateway_id
-      gateway_name
-      img_light_url
-      img_dark_url
-      simulation_detail {
-        installment_per_month_ceil
-        interest_pct
-        is_recommended
-        tenure
-      }
-    }
-  }
-}"""
-
 const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Float){
   cc_fetchpdpcreditcardsimulation(Amount: ${'$'}Amount) {
    	data {
@@ -128,4 +111,74 @@ const val GQL_CREDIT_CARD_BANK_LIST = """query {
       }
     }
   }
+}"""
+
+
+const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}Amount: Float) {
+  paylater_getSimulationV2(Amount: ${'$'}Amount) {
+    data {
+      tenure
+      text
+      detail {
+        gateway_id
+        installment_per_month
+        installment_per_month_ceil
+        total_fee
+        total_fee_ceil
+        total_interest
+        total_interest_ceil
+        interest_pct
+        total_with_provision
+        total_with_provision_ceil
+        is_recommended
+        tenure
+        activation_status
+        account_status
+        is_disabled
+        cta {
+          name
+          description_1
+          description_2
+          web_url
+          ios_url
+          android_url
+          cta_type
+          is_redirect_url
+          button_color
+        }
+        gateway_detail {
+          gateway_id
+          name
+          product_code
+          is_active
+          subheader
+          img_light_url
+          img_dark_url
+          faq_url
+          apply_url
+          benefit {
+            content
+            is_highlight
+          }
+          detail {
+            title
+            content
+          }
+          faq {
+            question
+            answer
+          }
+          how_to_use {
+            notes
+            steps
+          }
+          how_to_apply {
+            notes
+            steps
+          }
+          tnc
+        }
+      }
+    } 
+	}
 }"""
