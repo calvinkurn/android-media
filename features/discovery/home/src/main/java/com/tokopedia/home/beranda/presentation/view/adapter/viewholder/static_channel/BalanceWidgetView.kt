@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
@@ -74,7 +75,7 @@ class BalanceWidgetView: FrameLayout {
 
     private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
         val spanCount = when(element.balanceType) {
-            HomeBalanceModel.TYPE_STATE_2 -> LAYOUT_SPAN_2
+            HomeBalanceModel.TYPE_STATE_2 -> DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemContext)
             else -> LAYOUT_SPAN_3
         }
         return GridLayoutManager(itemView.context, spanCount)
