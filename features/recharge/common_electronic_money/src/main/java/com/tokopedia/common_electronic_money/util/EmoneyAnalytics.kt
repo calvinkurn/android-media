@@ -2,7 +2,6 @@ package com.tokopedia.common_electronic_money.util
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import kotlin.collections.HashMap
 
 class EmoneyAnalytics {
 
@@ -66,7 +65,7 @@ class EmoneyAnalytics {
         addComponentClickNFC(map,userId, irisSessionId)
     }
 
-    fun clickTopupEmoney(category: String, operator:String, userId: String, irisSessionId: String) {
+    fun clickTopupEmoney(userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,

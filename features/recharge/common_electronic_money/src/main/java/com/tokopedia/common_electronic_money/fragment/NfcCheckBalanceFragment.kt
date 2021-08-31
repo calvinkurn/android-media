@@ -114,7 +114,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.clickTopupEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId)
                 onProcessTopupNow(getPassData(operatorId, issuerId))
             }
 

@@ -21,8 +21,6 @@ object TapcashObjectMapper {
                         "",
                         1,
                         NFCUtils.formatCardUID(attributes.cardNumber),
-                        issuer_id = 2,
-                        operatorId = "1015",
                         pendingBalance = 0,
                 ),
                 error = EmoneyInquiryError(
