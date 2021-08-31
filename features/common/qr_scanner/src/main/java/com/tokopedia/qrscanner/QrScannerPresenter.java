@@ -86,7 +86,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
         boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
-        boolean isFromPeduliLindungi = getView().isFromPeduliLindungi();
         if (host != null && uri.getPathSegments() != null) {
             if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
@@ -102,7 +101,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             checkBarCode(barcodeData);
         } else if (barcodeData.toLowerCase().contains(EVENT_REDEEM)){
             checkEventRedeem(barcodeData);
-        } else if(isFromPeduliLindungi && (barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT))){
+        } else if(barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT)){
             String path = getView().getCallbackUrlFromPeduliLindungi() + "&payload="+barcodeData;
             openActivity(path);
         }
