@@ -11,6 +11,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navbar"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"
+        android:background="@drawable/affiliate_nav_shadow"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navbar"
+        />
 
     <com.tokopedia.exploreCategory.ui.custom.LottieBottomNavbar
         android:id="@+id/bottom_navbar"

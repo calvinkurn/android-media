@@ -1,13 +1,9 @@
 package com.tokopedia.exploreCategory.ui.fragment
 
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,14 +12,13 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
+import com.tokopedia.exploreCategory.ui.custom.toAffiliateProductModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
-import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.global_error
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
-import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.affiliate_progress_bar
+import kotlinx.android.synthetic.main.affiliate_promotion_product_card.*
 import javax.inject.Inject
 
 class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() {
@@ -54,7 +49,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             setRelatedView(dim_layer)
             setDoneAction { affiliatePromoViewModel.getSearch() }
         }
-        global_error.run {
+        promo_global_error.run {
             show()
             errorTitle.text = getString(R.string.affiliate_never_bought_product)
             errorDescription.text = getString(R.string.affiliate_still_buy_products)
@@ -83,7 +78,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
 
         affiliatePromoViewModel.getErrorMessage().observe(this, { error ->
-            global_error.run {
+            promo_global_error.run {
                 show()
                 errorTitle.text = error
                 setActionClickListener {
@@ -93,7 +88,11 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
-            Toast.makeText(requireContext(),"Data",Toast.LENGTH_LONG).show()
+            affiliateSearchData.cards?.items?.firstOrNull()?.let {
+                promo_global_error.hide()
+                promotion_product_card.show()
+                affiliate_product_card.setProductModel(toAffiliateProductModel(it))
+            }
         })
 
         affiliatePromoViewModel.getAffiliateProductCommissionData().observe(this, { affiliateCommissionData ->

@@ -43,7 +43,15 @@ data class AffiliateSearchData(
                     @SerializedName("htmlText") val htmlText : String?,
                     @SerializedName("type") val type : Int?,
                     @SerializedName("color") val color : String?
-            )
+            ){
+                override fun equals(other: Any?): Boolean {
+                    return other is AdditionalInformation && type == other.type
+                }
+
+                override fun hashCode(): Int {
+                    return type ?: super.hashCode()
+                }
+            }
 
             data class Footer (
                     @SerializedName("footerIcon") val footerIcon : String?,
