@@ -526,6 +526,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
+        postpaidClientNumberWidget.setFilterChipShimmer(false)
     }
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {

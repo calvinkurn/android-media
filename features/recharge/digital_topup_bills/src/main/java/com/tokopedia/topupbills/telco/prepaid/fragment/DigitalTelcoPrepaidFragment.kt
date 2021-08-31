@@ -647,6 +647,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
+        telcoClientNumberWidget.setFilterChipShimmer(false)
     }
 
     private fun performanceMonitoringStopTrace() {
