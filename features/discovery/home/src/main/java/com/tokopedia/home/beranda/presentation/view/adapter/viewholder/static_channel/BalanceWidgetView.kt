@@ -32,7 +32,10 @@ class BalanceWidgetView: FrameLayout {
     private lateinit var containerWidget: FrameLayout
 
     private var tokopointsView: View? = null
+    private var tokopointsViewNew: View? = null
     private var gopayView: View? = null
+    private var gopayViewNew: View? = null
+    private var gopayActivateNewView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -59,10 +62,15 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.balanceType != TYPE_STATE_2) {
-            view_balance_widget_coachmark.visibility = View.GONE
-        } else {
+        if (element.balanceType == TYPE_STATE_2 && !element.isGopayEligible) {
             view_balance_widget_coachmark.visibility = View.INVISIBLE
+            view_balance_widget_coachmark_new.visibility = View.GONE
+        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible) {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.INVISIBLE
+        } else {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.GONE
         }
         containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
@@ -92,5 +100,20 @@ class BalanceWidgetView: FrameLayout {
     fun getGopayView(): View? {
         gopayView = findViewById(R.id.home_coachmark_item_gopay)
         return gopayView
+    }
+
+    fun getGopayNewView(): View? {
+        gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
+        return gopayViewNew
+    }
+
+    fun getGopayActivateNewView(): View? {
+        gopayActivateNewView = findViewById(R.id.home_coachmark_item_gopay_activate_new)
+        return gopayActivateNewView
+    }
+
+    fun getTokopointsNewView(): View? {
+        tokopointsViewNew = findViewById(R.id.home_coachmark_item_tokopoint_new)
+        return tokopointsViewNew
     }
 }

@@ -209,6 +209,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
+    private val _gopayEligibilityLiveData = MutableLiveData<Event<Boolean>>()
+    val gopayEligibilityLiveData: LiveData<Event<Boolean>> get() = _gopayEligibilityLiveData
+
     /**
      * Variable list
      */
@@ -1241,6 +1244,12 @@ open class HomeRevampViewModel @Inject constructor(
                     isWalletDataError = true
             )
         }
+    }
+
+    fun getGopayEligibility() {
+        _gopayEligibilityLiveData.value = Event(true)
+        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = true })
+        getBalanceWidgetData()
     }
 
     private fun getBalanceWidgetData() {

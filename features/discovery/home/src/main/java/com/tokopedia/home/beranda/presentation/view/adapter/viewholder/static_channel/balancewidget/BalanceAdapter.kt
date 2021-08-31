@@ -10,6 +10,8 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +37,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.searchbar.helper.Ease
+import com.tokopedia.searchbar.helper.EasingInterpolator
+import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.item_balance_widget.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by yfsx on 3/1/21.
@@ -75,21 +83,28 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 itemMap.balanceType != HomeBalanceModel.TYPE_STATE_3)
     }
 
-    class Holder(v: View): RecyclerView.ViewHolder(v) {
+    class Holder(v: View): RecyclerView.ViewHolder(v), CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = Dispatchers.Main
+
+        var animationJob: Job? = null
 
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         private var isOvoAvailable: Boolean = false
-        fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
+        fun bind(drawerItem: BalanceDrawerItemModel?,
+                 listener: HomeCategoryListener?,
+                 isOvoAvailable: Boolean
+        ) {
             this.listener = listener
-            renderTokoPoint(drawerItem)
+            renderDrawerItem(drawerItem)
             this.itemView.tag = String.format(
                 itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
             )
             this.isOvoAvailable = isOvoAvailable
         }
 
-        private fun renderTokoPoint(element: BalanceDrawerItemModel?) {
+        private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
             itemView.home_progress_bar_balance_layout.gone()
             itemView.home_container_action_balance.gone()
             when (element?.state) {
@@ -296,8 +311,6 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     )
                 }
             }
-
-
             //error state using shimmering
             element?.defaultIconRes?.let {
                 if (element.drawerItemType == TYPE_WALLET_OVO ||
@@ -320,6 +333,65 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
 
                 if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
+
+            //interpolator
+            element?.alternateBalanceDrawerItem?.let {
+                setDrawerItemWithAnimation(alternateDrawerItem = it, element = element)
+            }
+        }
+
+        private fun setDrawerItemWithAnimation(
+            alternateDrawerItem: List<BalanceDrawerItemModel>,
+            element: BalanceDrawerItemModel?
+        ) {
+            animationJob?.cancel()
+            if (animationJob == null || animationJob?.isActive == false) {
+                animationJob = launch {
+                    alternateDrawerItem.forEach { alternateItem ->
+                        delay(1000)
+                        renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
+                        delay(1000)
+                    }
+                    delay(1000)
+                    element?.let {
+                        renderItemAnimation(element, slideDirection = DIRECTION_DOWN)
+                    }
+                }
+            }
+        }
+
+        private suspend fun renderItemAnimation(item: BalanceDrawerItemModel, slideDirection: Int = DIRECTION_DOWN) {
+            var title: BalanceTextAttribute?
+            var subtitle: BalanceTextAttribute?
+            val slideIn =
+                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_down_in) else
+                    AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_up_in)
+            slideIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
+            val slideOut =
+                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_down) else
+                    AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_up)
+            slideOut.interpolator = EasingInterpolator(Ease.QUART_IN)
+            slideOut.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    title = item.balanceTitleTextAttribute
+                    subtitle = item.balanceSubTitleTextAttribute
+                    renderBalanceText(
+                        textAttr = title,
+                        textView = itemView.home_tv_balance,
+                        tagAttr = null
+                    )
+                    renderBalanceText(
+                        textAttr = subtitle,
+                        textView = itemView.home_tv_btn_action_balance,
+                        tagAttr = null
+                    )
+                    itemView.home_container_action_balance?.startAnimation(slideIn)
+                }
+
+                override fun onAnimationStart(animation: Animation?) {}
+            })
+            itemView.home_container_action_balance?.startAnimation(slideOut)
         }
 
         private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
@@ -401,6 +473,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         companion object {
             private const val TITLE_HEADER_WEBSITE = "Tokopedia"
             private const val KUPON_SAYA_URL_PATH = "kupon-saya"
+            private const val DIRECTION_UP = 0
+            private const val DIRECTION_DOWN = 1
         }
     }
 }
