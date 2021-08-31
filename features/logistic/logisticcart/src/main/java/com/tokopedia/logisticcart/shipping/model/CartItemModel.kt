@@ -55,7 +55,7 @@ data class CartItemModel(
         var diagnosticId: String = "",
         var productInformation: List<String> = emptyList(),
         var productAlertMessage: String = "",
-        var isBundlingItem: Boolean = true,
+        var isBundlingItem: Boolean = false,
         var bundlingItemPosition: Int = 0,
         var bundleId: String = "",
         var bundleGroupId: String = "",

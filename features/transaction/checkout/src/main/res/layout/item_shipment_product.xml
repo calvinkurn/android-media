@@ -244,6 +244,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_product_info"
+                android:layout_marginTop="@dimen/dp_16"
                 android:layout_toEndOf="@+id/v_bundling_product_separator"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
