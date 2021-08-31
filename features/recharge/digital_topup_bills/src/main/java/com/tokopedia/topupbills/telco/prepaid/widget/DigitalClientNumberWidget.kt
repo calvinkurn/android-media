@@ -59,18 +59,22 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
         inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
+        sortFilterChip.run {
+            sortFilterHorizontalScrollView.setPadding(
+                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_16.toPx() ,0)
+            sortFilterHorizontalScrollView.clipToPadding = false
+        }
+
+        initListener()
+    }
+
+    private fun initListener() {
         btnContactPicker.setOnClickListener { listener.onNavigateToContact(false) }
         btnClear.setOnClickListener {
             inputNumberField.textFieldInput.setText("")
             inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
             sortFilterChip.clearFilter()
-        }
-
-        sortFilterChip.run {
-            sortFilterHorizontalScrollView.setPadding(
-                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_16.toPx() ,0)
-            sortFilterHorizontalScrollView.clipToPadding = false
         }
 
         inputNumberField.textFieldInput.run {
