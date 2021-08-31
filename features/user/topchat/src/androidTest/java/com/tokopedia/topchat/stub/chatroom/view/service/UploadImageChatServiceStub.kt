@@ -4,26 +4,14 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.topchat.chatlist.activity.ChatListUploadImageTest
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
-import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
+import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.stub.chatroom.usecase.ReplyChatGQLUseCaseStub
-import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 
 class UploadImageChatServiceStub : UploadImageChatService() {
     override fun inject() {
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-                .fakeAppModule(FakeAppModule(applicationContext))
-                .build()
-        DaggerChatComponentStub.builder()
-                .fakeBaseAppComponent(baseComponent)
-                .chatRoomContextModule(ChatRoomContextModule(this))
-                .build()
-                .inject(this)
-
+        TopchatRoomTest.chatComponentStub?.inject(this)
         (replyChatGQLUseCase as ReplyChatGQLUseCaseStub).response = uploadImageReplyResponse
     }
 
