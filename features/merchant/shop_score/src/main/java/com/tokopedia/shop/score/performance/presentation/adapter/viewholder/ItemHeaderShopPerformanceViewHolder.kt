@@ -65,9 +65,9 @@ class ItemHeaderShopPerformanceViewHolder(
 
     private fun shopScoreFormatted(shopScore: String?): Int {
         return try {
-            shopScore?.toInt() ?: ShopScoreConstant.SHOP_SCORE_NULL
+            shopScore?.toIntOrNull() ?: ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         } catch (e: NumberFormatException) {
-            ShopScoreConstant.SHOP_SCORE_NULL
+            ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         }
     }
 
