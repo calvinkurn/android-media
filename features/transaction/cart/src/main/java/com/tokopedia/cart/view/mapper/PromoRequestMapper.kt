@@ -14,7 +14,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 
 object PromoRequestMapper {
 
-    fun generateValidateUseRequestParams(promoData: Any, selectedCartShopHolderDataList: List<CartShopHolderData>): ValidateUsePromoRequest {
+    fun generateValidateUseRequestParams(promoData: Any?, selectedCartShopHolderDataList: List<CartShopHolderData>): ValidateUsePromoRequest {
         return ValidateUsePromoRequest().apply {
             val tmpOrders = mutableListOf<OrdersItem>()
             selectedCartShopHolderDataList.forEach { cartShopHolderData ->
@@ -30,10 +30,12 @@ object PromoRequestMapper {
                         }
                     }
                     productDetails = tmpProductDetails
-                    if (promoData is PromoUiModel) {
-                        codes = getPromoCodesFromValidateUseByUniqueId(promoData, cartShopHolderData).toMutableList()
-                    } else if (promoData is LastApplyPromo) {
-                        codes = getPromoCodesFromLastApplyByUniqueId(promoData, cartShopHolderData).toMutableList()
+                    promoData?.let {
+                        if (it is PromoUiModel) {
+                            codes = getPromoCodesFromValidateUseByUniqueId(it, cartShopHolderData).toMutableList()
+                        } else if (it is LastApplyPromo) {
+                            codes = getPromoCodesFromLastApplyByUniqueId(it, cartShopHolderData).toMutableList()
+                        }
                     }
                     shippingId = 0
                     spId = 0
@@ -43,10 +45,12 @@ object PromoRequestMapper {
                 tmpOrders.add(ordersItem)
             }
             orders = tmpOrders
-            if (promoData is PromoUiModel) {
-                codes = promoData.codes.toMutableList()
-            } else if (promoData is LastApplyPromo) {
-                codes = promoData.lastApplyPromoData.codes.toMutableList()
+            promoData?.let {
+                if (it is PromoUiModel) {
+                    codes = it.codes.toMutableList()
+                } else if (it is LastApplyPromo) {
+                    codes = it.lastApplyPromoData.codes.toMutableList()
+                }
             }
             state = CartConstant.PARAM_CART
             skipApply = 0
@@ -57,7 +61,7 @@ object PromoRequestMapper {
     private fun getPromoCodesFromLastApplyByUniqueId(lastApplyPromo: LastApplyPromo, cartShopHolderData: CartShopHolderData): List<String> {
         // get from voucher order first
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId.equals(cartShopHolderData.cartString)) {
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
                 val promoCodes = listOf(voucherOrder.code)
                 if (promoCodes.isNotEmpty()) {
                     return promoCodes
@@ -86,7 +90,7 @@ object PromoRequestMapper {
         return cartShopHolderData.promoCodes
     }
 
-    fun generateCouponListRequestParams(promoData: Any, availableCartShopHolderDataList: List<CartShopHolderData>): PromoRequest {
+    fun generateCouponListRequestParams(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>): PromoRequest {
         val orders = mutableListOf<Order>()
         availableCartShopHolderDataList.forEach { cartShopHolderData ->
             val listProductDetail = mutableListOf<ProductDetail>()

@@ -2227,23 +2227,27 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
                     ?: PromoUiModel()
             return PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData)
+        } else {
+            return PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData)
         }
-
-        return ValidateUsePromoRequest()
     }
 
     private fun generateParamsCouponList(): PromoRequest {
-        if (dPresenter.isLastApplyValid()) {
-            val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
-                    ?: LastApplyPromo()
-            return PromoRequestMapper.generateCouponListRequestParams(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
-        } else if (dPresenter.getValidateUseLastResponse() != null) {
-            val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
-                    ?: PromoUiModel()
-            return PromoRequestMapper.generateCouponListRequestParams(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+        when {
+            dPresenter.isLastApplyValid() -> {
+                val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
+                        ?: LastApplyPromo()
+                return PromoRequestMapper.generateCouponListRequestParams(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
+            }
+            dPresenter.getValidateUseLastResponse() != null -> {
+                val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
+                        ?: PromoUiModel()
+                return PromoRequestMapper.generateCouponListRequestParams(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+            }
+            else -> {
+                return PromoRequestMapper.generateCouponListRequestParams(null, cartAdapter.allAvailableShopGroupDataList)
+            }
         }
-
-        return PromoRequest()
     }
 
     private fun renderTickerError(cartData: CartData) {
