@@ -91,13 +91,6 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
-
-        adapter.submitList(listOf(TokoNowEmptyStateOocUiModel(id = "id"), TokoNowRecommendationCarouselUiModel(pageName = "testing", carouselData = RecommendationCarouselData(
-            state = RecommendationCarouselData.STATE_READY,
-            recommendationData = RecommendationWidget(
-                listOf(RecommendationItem(name = "hello"))
-            )
-        ))))
     }
 
     override fun onAttach(context: Context) {
