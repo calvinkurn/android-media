@@ -28,6 +28,7 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
@@ -435,12 +436,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         for (cartItemHolderData in cartItemHolderDataList) {
             if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemHolderData.isTokoNow)) {
                 val updateCartRequest = UpdateCartRequest().apply {
+                    productId = cartItemHolderData.productId
                     cartId = cartItemHolderData.cartId
                     notes = cartItemHolderData.notes
                     quantity = cartItemHolderData.quantity
                     bundleInfo = BundleInfo().apply {
-                        bundleId = cartItemHolderData.bundleId
-                        bundleGroupId = cartItemHolderData.bundleGroupId
+                        bundleId = cartItemHolderData.bundleId.toZeroStringIfNullOrBlank()
+                        bundleGroupId = cartItemHolderData.bundleGroupId.toZeroStringIfNullOrBlank()
                         bundleQty = cartItemHolderData.bundleQuantity
                     }
                 }

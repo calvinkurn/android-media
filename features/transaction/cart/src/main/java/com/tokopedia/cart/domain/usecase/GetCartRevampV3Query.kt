@@ -166,7 +166,6 @@ fun getQueryCartRevampV3(): String {
                   promo_codes
                   cart_string
                   cart_details {
-                    cart_id
                     bundle_detail {
                       bundle_description
                       bundle_group_id
@@ -186,6 +185,7 @@ fun getQueryCartRevampV3(): String {
                       slash_price_label
                     }
                     products {
+                      cart_id
                       product_information
                       product_tracker_data {
                         attribution
@@ -414,8 +414,6 @@ fun getQueryCartRevampV3(): String {
                   promo_codes
                   cart_string
                   cart_details {
-                    cart_id
-                    selected_unavailable_action_link
                     bundle_detail {
                       bundle_description
                       bundle_group_id
@@ -435,6 +433,8 @@ fun getQueryCartRevampV3(): String {
                       slash_price_label
                     }
                     products {
+                      selected_unavailable_action_link
+                      cart_id
                       product_information
                       product_tracker_data {
                         attribution
