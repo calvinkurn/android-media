@@ -70,11 +70,14 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         initViews()
         initAdapter()
         initObserver()
-        setupButton()
     }
 
     private fun initViews() {
+        binding.swipeRefresh.isRefreshing = true
+//        viewModel.getCPLList(2649340, "1685435966")
         viewModel.getCPLList(shopId, productId)
+
+        binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
 
     private fun initAdapter() {
@@ -92,6 +95,11 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 is Success -> {
                     populateView(it.data)
                 }
+                else -> {
+                    binding.swipeRefresh.isRefreshing = true
+                    binding.shippingEditorLayout.gone()
+                    binding.btnSaveShipper.gone()
+                }
             }
         })
     }
@@ -106,23 +114,31 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
         cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
+        cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
         cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
+        cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
     }
 
-    private fun setupButton() {
-        binding.btnSaveShipper.setOnClickListener {
-            if (shipperProduct.isEmpty()) {
-                Toaster.build(
-                    requireView(),
-                    getString(R.string.toaster_cpl_error),
-                    Snackbar.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR
-                ).show()
-                binding.btnSaveShipper.isEnabled = false
-            } else {
-                /*Save on this*/
-            }
+    private fun validateSaveButton() {
+        val activatedSpIds = getListActivatedSpIds(cplItemOnDemandAdapter.getActivateSpIds(), cplItemConventionalAdapter.getActivateSpIds())
+        if (activatedSpIds.isEmpty()) {
+            Toaster.build(
+                requireView(),
+                getString(R.string.toaster_cpl_error),
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
+            binding.btnSaveShipper.isEnabled = false
+        } else {
+            /*save here*/
         }
+    }
+
+    private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {
+        val activatedListShipperIds = mutableListOf<String>()
+        activatedListShipperIds.addAll(onDemandList)
+        activatedListShipperIds.addAll(conventionalList)
+        return activatedListShipperIds.joinToString(separator = ",")
     }
 
     companion object {

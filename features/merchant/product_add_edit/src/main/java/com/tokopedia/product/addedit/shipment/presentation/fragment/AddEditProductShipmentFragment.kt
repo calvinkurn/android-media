@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS
@@ -99,6 +102,7 @@ class AddEditProductShipmentFragment:
     private var radioOptionalInsurance: RadioButtonUnify? = null
     private var tickerInsurance: Ticker? = null
 
+    private var layoutCustomShipment: ConstraintLayout? = null
     private var radiosShipment: RadioGroup? = null
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
@@ -286,6 +290,7 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
         tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
 
+        layoutCustomShipment = requireView().findViewById(R.id.layout_custom_shipment)
         radiosShipment = requireView().findViewById(R.id.radios_cpl)
         radioStandarShipment = requireView().findViewById(R.id.radio_standard_shipment)
         radioCustomShipment = requireView().findViewById(R.id.radio_custom_shipment)
@@ -371,8 +376,10 @@ class AddEditProductShipmentFragment:
         }
 
         btnChangeConventionalShipment?.setOnClickListener {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
-            startActivityForResult(intent, 1234)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC).apply {
+                putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+            }, 1234)
         }
 
         btnIconOnDemand?.setOnClickListener {
@@ -388,9 +395,9 @@ class AddEditProductShipmentFragment:
         radiosShipment?.setOnCheckedChangeListener { _, checkedId ->
             val isStandardShipment = checkedId == R.id.radio_standard_shipment
             if (isStandardShipment)  {
-                //standart shipment sent
+                layoutCustomShipment?.gone()
             } else {
-
+                layoutCustomShipment?.visible()
             }
         }
     }
@@ -477,6 +484,7 @@ class AddEditProductShipmentFragment:
         tfWeightAmount.setText(inputModel.weight.toString())
 
         applyInsuranceValue(inputModel.isMustInsurance)
+        applyShipmentValue(false)
 
         if (!(shipmentViewModel.isAddMode && shipmentViewModel.isFirstMoved)) {
             btnEnd?.visibility = View.GONE
@@ -491,6 +499,11 @@ class AddEditProductShipmentFragment:
         radioRequiredInsurance?.isChecked = mustInsurance
         radioOptionalInsurance?.isChecked = !mustInsurance
         tickerInsurance?.isVisible = !mustInsurance
+    }
+
+    private fun applyShipmentValue(isStandardService: Boolean) {
+        radioStandarShipment?.isChecked = isStandardService
+        radioCustomShipment?.isChecked = !isStandardService
     }
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {

@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
+import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
-class CPLItemAdapter(private val listener: CPLItemAdapterListener) : RecyclerView.Adapter<CPLItemViewHolder>() {
+class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
+    RecyclerView.Adapter<CPLItemViewHolder>() {
 
     var cplItem = mutableListOf<ShipperCPLModel>()
 
@@ -17,7 +19,11 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) : RecyclerVie
     var shipperServices = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLItemViewHolder {
-        val binding = ItemShippingEditorCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemShippingEditorCardBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return CPLItemViewHolder.getViewHolder(binding, listener)
     }
 
@@ -33,6 +39,32 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) : RecyclerVie
         cplItem.clear()
         cplItem.addAll(data)
         notifyDataSetChanged()
+    }
+
+    fun setProductIdsActivated(data: CPLProductModel) {
+        cplItem.forEach { courier ->
+            data.shipperServices.forEach {
+                val cplItemModel = courier.shipperProduct.find { data ->
+                    data.shipperProductId == it
+                }
+                if (cplItemModel?.shipperProductId == it) {
+                    cplItemModel.isActive = true
+                }
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun getActivateSpIds(): List<String> {
+        val activatedListIds = mutableListOf<String>()
+        cplItem.forEach { courier ->
+            courier.shipperProduct.forEach { product ->
+                if (product.isActive) {
+                    activatedListIds.add(product.shipperProductId.toString())
+                }
+            }
+        }
+        return activatedListIds
     }
 
 }

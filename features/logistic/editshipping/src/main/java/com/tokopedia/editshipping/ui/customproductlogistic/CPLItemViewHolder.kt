@@ -50,7 +50,15 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
     }
 
     private fun setItemChecked(data: ShipperCPLModel) {
-        if (binding.cbShipmentItem.isChecked) {
+        data.shipperProduct.forEach {
+            if (it.isActive) {
+                data.isActive = true
+            }
+        }
+
+        binding.cbShipmentItem.isChecked = data.isActive
+
+        if (data.isActive) {
             binding.itemChildLayout.visible()
         } else {
             binding.itemChildLayout.gone()

@@ -54,93 +54,104 @@
 
     </RadioGroup>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_dijemput_kurir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:text="Dijemput Kurir"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/radios_cpl"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_info_on_demand"
-        android:layout_width="@dimen/unify_space_16"
-        android:layout_height="@dimen/unify_space_16"
-        android:layout_marginStart="@dimen/dp_4"
-        app:icon_name="INFORMATION"
-        app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
-        app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
-        app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-        tools:ignore="ContentDescription" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/btn_change_on_demand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:textSize="@dimen/sp_14"
-        android:text="Ubah"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
-        android:textColor="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
-        tools:ignore="ContentDescription" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_on_demand"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_custom_shipment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_add_edit_shipment"
-        app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_agen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:text="Antar ke Kantor Agen"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_on_demand"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"/>
+        app:layout_constraintTop_toBottomOf="@id/radios_cpl">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_info_conventional"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_4"
-        app:layout_constraintTop_toTopOf="@id/tv_agen"
-        app:layout_constraintBottom_toBottomOf="@id/tv_agen"
-        app:layout_constraintStart_toEndOf="@id/tv_agen"
-        app:icon_name="INFORMATION"
-        tools:ignore="ContentDescription" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_dijemput_kurir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="Dijemput Kurir"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_info_on_demand"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
+            app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_on_demand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textSize="@dimen/sp_14"
+            android:text="Ubah"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
+            tools:ignore="ContentDescription" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_on_demand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_add_edit_shipment"
+            app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_agen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="Antar ke Kantor Agen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_on_demand"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_info_conventional"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:layout_constraintTop_toTopOf="@id/tv_agen"
+            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
+            app:layout_constraintStart_toEndOf="@id/tv_agen"
+            app:icon_name="INFORMATION"
+            tools:ignore="ContentDescription" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/btn_change_conventional"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:textSize="@dimen/sp_14"
-        android:text="Ubah"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_agen"
-        android:textColor="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="@id/tv_agen"
-        tools:ignore="ContentDescription" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_conventional"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textSize="@dimen/sp_14"
+            android:text="Ubah"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_agen"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
+            tools:ignore="ContentDescription" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_conventional"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_add_edit_shipment"
-        app:layout_constraintTop_toBottomOf="@id/tv_agen" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_conventional"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_add_edit_shipment"
+            app:layout_constraintTop_toBottomOf="@id/tv_agen" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

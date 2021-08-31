@@ -21,7 +21,8 @@ data class ShipperCPLModel(
     var shipperId: Int = 0,
     var shipperName: String = "",
     var logo: String = "",
-    var shipperProduct: List<ShipperProductCPLModel> = listOf()
+    var shipperProduct: List<ShipperProductCPLModel> = listOf(),
+    var isActive: Boolean = false
 )
 
 data class ShipperProductCPLModel(
