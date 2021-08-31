@@ -147,12 +147,29 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun renderActionDelete(data: CartItemHolderData) {
+        adjustButtonDeleteConstraint(data)
         binding.buttonDeleteCart.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemDeleteButtonClicked(data)
             }
         }
         binding.buttonDeleteCart.show()
+    }
+
+    private fun adjustButtonDeleteConstraint(data: CartItemHolderData) {
+        with(binding) {
+            if (data.isError) {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProductAction)
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
+                constraintSet.applyTo(containerProductAction)
+            } else {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProductAction)
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt())
+                constraintSet.applyTo(containerProductAction)
+            }
+        }
     }
 
     private fun renderCheckBoxProduct(data: CartItemHolderData) {

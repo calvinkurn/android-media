@@ -1029,11 +1029,6 @@
               "id": 2,
               "code": "DELETE",
               "message": ""
-            },
-            {
-              "id": 6,
-              "code": "CHECKOUTBROWSER",
-              "message": "Beli lewat Browser"
             }
           ],
           "unavailable_group": [
