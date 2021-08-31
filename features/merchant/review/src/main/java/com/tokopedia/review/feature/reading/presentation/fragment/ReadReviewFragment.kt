@@ -285,6 +285,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                         totalRatingTextAndImage,
                         characterCount,
                         imageCount,
+                        viewModel.getProductId(),
                         trackingQueue
                 )
             }

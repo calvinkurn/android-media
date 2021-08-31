@@ -22,29 +22,48 @@ object ReadReviewTracking {
         ))
     }
 
-    fun trackOnItemImpressed(feedbackId: String, position: Int, userId: String, countRating: Long, countReview: Long, characterCount: Int, imageCount: Int, trackingQueue: TrackingQueue) {
+    fun trackOnItemImpressed(
+        feedbackId: String,
+        position: Int,
+        userId: String,
+        countRating: Long,
+        countReview: Long,
+        characterCount: Int,
+        imageCount: Int,
+        productId: String,
+        trackingQueue: TrackingQueue
+    ) {
         trackingQueue.putEETracking(
-                hashMapOf(
-                        ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
-                        ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
-                        ReviewTrackingConstant.EVENT_LABEL to String.format(ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION, countRating, countReview),
-                        ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
-                        ReadReviewTrackingConstants.KEY_USER_ID to userId,
-                        ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
-                        ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
-                        ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
-                                ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-                                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
-                                                mapOf(
-                                                        ReadReviewTrackingConstants.KEY_ID to feedbackId,
-                                                        ReadReviewTrackingConstants.KEY_CREATIVE to ReadReviewTrackingConstants.EVENT_CATEGORY,
-                                                        ReadReviewTrackingConstants.KEY_NAME to String.format(ReadReviewTrackingConstants.EE_NAME, characterCount, imageCount),
-                                                        ReadReviewTrackingConstants.KEY_POSITION to position.toString()
-                                                )
-                                        )
-                                )
+            hashMapOf(
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+                ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+                ReviewTrackingConstant.EVENT_LABEL to String.format(
+                    ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION,
+                    countRating,
+                    countReview
+                ),
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                ReadReviewTrackingConstants.KEY_USER_ID to userId,
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                    ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
+                            mapOf(
+                                ReadReviewTrackingConstants.KEY_ID to feedbackId,
+                                ReadReviewTrackingConstants.KEY_CREATIVE to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                                ReadReviewTrackingConstants.KEY_NAME to String.format(
+                                    ReadReviewTrackingConstants.EE_NAME,
+                                    characterCount,
+                                    imageCount
+                                ),
+                                ReadReviewTrackingConstants.KEY_POSITION to position.toString(),
+                                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
+                            )
                         )
+                    )
                 )
+            )
         )
     }
 
