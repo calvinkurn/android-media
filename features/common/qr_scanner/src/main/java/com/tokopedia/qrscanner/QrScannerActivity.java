@@ -294,17 +294,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public boolean isFromPeduliLindungi() {
-        Uri uri = getIntent().getData();
-        if(uri != null){
-            String path = uri.toString();
-            return path.contains("peduli-lindungi");
-        }else {
-            return false;
-        }
-    }
-
-    @Override
     public String getCallbackUrlFromPeduliLindungi() {
         Uri uri = getIntent().getData();
        if(uri != null && uri.getQueryParameter("redirect") != null){
