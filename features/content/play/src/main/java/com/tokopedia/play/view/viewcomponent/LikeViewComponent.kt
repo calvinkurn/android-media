@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -94,7 +93,7 @@ class LikeViewComponent(
             when(animationType) {
                 AnimationType.Default -> R.raw.anim_play_like
                 AnimationType.Spam -> R.raw.anim_spam_like
-                AnimationType.Reminder -> R.raw.anim_reminder_like
+                AnimationType.Reminder -> R.raw.anim_shaking_thumb
             }
         )
         animationLike.playAnimation()
@@ -102,11 +101,6 @@ class LikeViewComponent(
 
     fun setIsMultipleLike(isMultipleLike: Boolean) {
         this.isMultipleLike = isMultipleLike
-
-        animationLike.setAnimation(
-            if(isMultipleLike) R.raw.anim_spam_like
-            else R.raw.anim_play_like
-        )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -146,8 +140,12 @@ class LikeViewComponent(
         const val END_ANIMATED_PROGRESS = 1f
 
         const val COUNTDOWN_INTERVAL = 1000L
-        const val INITIAL_REMINDER_DURATION = 60000L
-        const val REMINDER_DURATION = 300000L
+        const val INITIAL_REMINDER_DURATION = 300000L
+        const val REMINDER_DURATION = 60000L
+
+        // Mock
+//        const val INITIAL_REMINDER_DURATION = 3000L
+//        const val REMINDER_DURATION = 5000L
     }
 
     sealed class AnimationType {
