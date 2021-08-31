@@ -177,4 +177,6 @@ const val VIEW_SCREENSHOT_SHARE  = "view - screenshot share bottom sheet"
 const val UNIFY_CLOSE_SCREENSHOT_SHARE  = "click - close screenshot share bottom sheet"
 const val CLICK_SCREENSHOT_SHARE_CHANNEL  = "click - channel share bottom sheet - screenshot"
 
+const val SCROLL_DEPTH_RATE_MANUAL = "scroll depth rate - manual"
+const val SCROLL_DEPTH_RATE_AUTO = "scroll depth rate - autoscroll"
 
