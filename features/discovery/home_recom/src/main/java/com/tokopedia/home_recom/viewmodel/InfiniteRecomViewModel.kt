@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -9,6 +10,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -44,7 +46,9 @@ class InfiniteRecomViewModel(
     private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
 
 
-    fun getRecommendationFirstPage(pageName: String, productId: String) {
+    fun getRecommendationFirstPage(pageName: String, productId: String, context: Context) {
+        val localAddress = ChooseAddressUtils.getLocalizingAddressData(context)
+        getMiniCart(localAddress?.shop_id ?: "")
         launchCatchError(dispatcher.getIODispatcher(), {
             val params = GetRecommendationRequestParam(
                     pageNumber = 1,
@@ -56,11 +60,6 @@ class InfiniteRecomViewModel(
             if (result.isEmpty()) {
 
             } else {
-                val dataList = mutableListOf<RecommendationItemDataModel>()
-                //need to get minicart data, then append qty to recom data
-                result[0].recommendationItemList.forEach {
-                    dataList.add(RecommendationItemDataModel(it))
-                }
                 _recommendationFirstLiveData.postValue(mappingMiniCartDataToRecommendation(result))
             }
         }) {
