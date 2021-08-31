@@ -15,5 +15,6 @@ annotation class TokoNowLayoutState {
         const val LOADING = 2
         const val HIDE = 3
         const val LOAD_MORE = 4
+        const val LOADED = 5
     }
 }
