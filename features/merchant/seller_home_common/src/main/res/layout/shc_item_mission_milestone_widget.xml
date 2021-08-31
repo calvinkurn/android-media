@@ -1,76 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:card_type="border"
     android:layout_width="@dimen/shc_dimen_290dp"
-    android:layout_height="@dimen/shc_dimen_164dp">
+    android:layout_height="@dimen/shc_dimen_164dp"
+    app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgItemMission"
-            android:layout_width="@dimen/shc_dimen_33dp"
-            android:layout_height="@dimen/shc_dimen_33dp"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:id="@+id/imgShcMission"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTitleItemMission"
+            android:id="@+id/tvShcTitleItemMission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/dp_12"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="heading_6"
+            app:layout_constraintStart_toEndOf="@id/imgShcMission"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imgItemMission"
+            app:typographyType="heading_6"
             tools:text="Atur Pengiriman" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvDescItemMission"
+            android:id="@+id/tvShcDescItemMission"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:typographyType="body_3"
+            android:ellipsize="end"
+            android:maxLines="3"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitleItemMission"
-            app:layout_constraintStart_toEndOf="@id/imgItemMission"
+            app:layout_constraintStart_toEndOf="@id/imgShcMission"
+            app:layout_constraintTop_toBottomOf="@id/tvShcTitleItemMission"
+            app:typographyType="body_3"
             tools:text="Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnMissionCta"
+            android:id="@+id/btnShcMissionCta"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/shc_dimen_12dp"
-            tools:text="Tambah Produk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvShcDescItemMission"
+            app:layout_constraintVertical_bias="1"
+            app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDescItemMission"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            tools:text="Tambah Produk" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPositionMissionWidget"
+            android:id="@+id/tvShcMissionPosition"
             android:layout_width="@dimen/shc_dimen_25dp"
             android:layout_height="@dimen/shc_dimen_30dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/bg_corner_pin_number_milestone_widget"
-            app:typographyType="heading_5"
             android:gravity="center"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
             tools:text="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

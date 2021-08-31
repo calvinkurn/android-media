@@ -49,7 +49,7 @@ class MilestoneMapper @Inject constructor(
                 title = it.title.orEmpty(),
                 subTitle = it.subtitle.orEmpty(),
                 missionCompletionStatus = it.missionCompletionStatus.orFalse(),
-                buttonMission = MilestoneMissionUiModel.ButtonMission(
+                buttonMissionButton = MissionButtonUiModel(
                     title = buttonMissionData?.title.orEmpty(),
                     url = buttonMissionData?.url.orEmpty(),
                     urlType = buttonMissionData?.urlType
@@ -64,12 +64,16 @@ class MilestoneMapper @Inject constructor(
 
     private fun mapGetMilestoneFinish(finishData: MilestoneData.FinishMission): List<MilestoneFinishMissionUiModel> {
         val buttonFinishData = finishData.button ?: return emptyList()
+        if (buttonFinishData.title.isBlank()) {
+            return emptyList()
+        }
+
         val finishedMission = MilestoneFinishMissionUiModel(
             itemMissionKey = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
             imageUrl = finishData.imageUrl.orEmpty(),
             title = finishData.title.orEmpty(),
             subTitle = finishData.subtitle.orEmpty(),
-            buttonMission = MilestoneFinishMissionUiModel.ButtonFinishMission(
+            buttonMissionButton = MissionButtonUiModel(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,
                 urlType = buttonFinishData.urlType,

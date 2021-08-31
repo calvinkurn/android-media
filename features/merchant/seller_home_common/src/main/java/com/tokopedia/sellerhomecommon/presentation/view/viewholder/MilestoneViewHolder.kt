@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -10,9 +11,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
+import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
-import com.tokopedia.unifycomponents.ProgressBarIndicatorItemUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.shc_milestone_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_milestone_widget_loading.view.*
 import kotlinx.android.synthetic.main.shc_milestone_widget_success.view.*
@@ -24,6 +27,8 @@ class MilestoneViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_milestone_widget
+
+        private const val PROGRESS_BAR_MAX_VALUE = 100
     }
 
     private val onLoadingView: View by itemView.viewStubInflater(R.id.stubShcMilestoneLoading)
@@ -54,16 +59,34 @@ class MilestoneViewHolder(
             tvProgressValueMilestoneWidget.text = milestoneValueFmt
 
             setupMilestoneProgress(data.milestoneProgress)
+            setupMilestoneList(data)
+            setupTooltip(tvTitleMilestoneWidget, element)
+        }
+    }
+
+    private fun setupMilestoneList(data: MilestoneDataUiModel) {
+        with(onSuccessView) {
+            rvMissionMilestone.layoutManager = object : LinearLayoutManager(
+                context, HORIZONTAL, false
+            ) {
+                override fun canScrollVertically(): Boolean = false
+            }
+
+            rvMissionMilestone.adapter = getMilestoneAdapter(data)
+        }
+    }
+
+    private fun getMilestoneAdapter(mission: MilestoneDataUiModel): MilestoneMissionAdapter {
+        return MilestoneMissionAdapter(mission) {
+
         }
     }
 
     private fun setupMilestoneProgress(milestoneProgress: MilestoneProgressbarUiModel) {
         with(onSuccessView) {
-            val progressBarIndicator = (0..milestoneProgress.totalTask).map {
-                ProgressBarIndicatorItemUnify(it, it.toString())
-            }
-            progressBarShcMilestone.progressBarIndicator = progressBarIndicator.toTypedArray()
-            progressBarShcMilestone.setValue(milestoneProgress.taskCompleted)
+            val valuePerIndicator = PROGRESS_BAR_MAX_VALUE / milestoneProgress.totalTask
+            progressBarShcMilestone.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
+            progressBarShcMilestone.setValue(milestoneProgress.taskCompleted.times(valuePerIndicator))
         }
     }
 

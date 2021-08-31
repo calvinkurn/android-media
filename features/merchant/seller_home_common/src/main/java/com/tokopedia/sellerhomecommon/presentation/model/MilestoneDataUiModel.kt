@@ -30,22 +30,14 @@ data class MilestoneProgressbarUiModel(
     val totalTask: Int = 0
 )
 
-open class BaseMilestoneMissionUiModel {
+interface BaseMilestoneMissionUiModel {
 
-    open val itemMissionKey: String = ""
-    open val imageUrl: String = ""
-    open val title: String = ""
-    open val subTitle: String = ""
-    open val missionCompletionStatus: Boolean = false
-    open val buttonMission: BaseButtonMission = BaseButtonMission()
-
-    open class BaseButtonMission {
-        open val title: String = ""
-        open val urlType: Int = REDIRECT_URL_TYPE
-        open val url: String = ""
-        open val appLink: String = ""
-        open val buttonStatus: Int = ENABLED_BUTTON_STATUS
-    }
+    val itemMissionKey: String
+    val imageUrl: String
+    val title: String
+    val subTitle: String
+    val missionCompletionStatus: Boolean
+    val buttonMissionButton: MissionButtonUiModel
 
     companion object {
         const val MISSION_KEY = "mission"
@@ -61,41 +53,31 @@ open class BaseMilestoneMissionUiModel {
     }
 }
 
+data class MissionButtonUiModel(
+    val title: String = "",
+    val urlType: Int = BaseMilestoneMissionUiModel.REDIRECT_URL_TYPE,
+    val url: String = "",
+    val appLink: String = "",
+    val buttonStatus: Int = BaseMilestoneMissionUiModel.ENABLED_BUTTON_STATUS
+)
+
 data class MilestoneMissionUiModel(
-    override val itemMissionKey: String = MISSION_KEY,
+    override val itemMissionKey: String = BaseMilestoneMissionUiModel.MISSION_KEY,
     override val imageUrl: String = "",
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val buttonMission: ButtonMission
-) : BaseMilestoneMissionUiModel() {
-
-    data class ButtonMission(
-        override val title: String = "",
-        override val urlType: Int,
-        override val url: String = "",
-        override val appLink: String = "",
-        override val buttonStatus: Int
-    ): BaseButtonMission()
-}
+    override val buttonMissionButton: MissionButtonUiModel = MissionButtonUiModel()
+) : BaseMilestoneMissionUiModel
 
 data class MilestoneFinishMissionUiModel(
-    override val itemMissionKey: String = FINISH_MISSION_KEY,
+    override val itemMissionKey: String = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
     override val imageUrl: String = "",
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val buttonMission: ButtonFinishMission
-): BaseMilestoneMissionUiModel() {
-
-    data class ButtonFinishMission(
-        override val title: String = "",
-        override val urlType: Int,
-        override val url: String = "",
-        override val appLink: String = "",
-        override val buttonStatus: Int
-    ): BaseButtonMission()
-}
+    override val buttonMissionButton: MissionButtonUiModel = MissionButtonUiModel()
+) : BaseMilestoneMissionUiModel
 
 data class MilestoneCtaUiModel(
     val text: String = "",
