@@ -162,6 +162,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
+        // TODO here
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
