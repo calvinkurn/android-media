@@ -4,7 +4,7 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 import com.tokopedia.mvcwidget.trackers.MvcSource
 
 class MvcTracker{
-    lateinit var trackerImpl:MvcTrackerImpl
+    var trackerImpl:MvcTrackerImpl = DefaultMvcTrackerImpl()
     
     //1 Pdp
     //16 Shop
@@ -13,8 +13,8 @@ class MvcTracker{
     }
 
     //3, 18
-    fun clickFollowButton(shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickFollowButton(shopId,userId,source)
+    fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+        trackerImpl.clickFollowButton(widgetType,shopId,userId,source)
     }
 
     //4,10,19, 25
@@ -33,8 +33,8 @@ class MvcTracker{
     }
 
     //7, 22
-    fun clickJadiMemberButton(shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickJadiMemberButton(shopId,userId, source)
+    fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+        trackerImpl.clickJadiMemberButton(widgetType,shopId,userId, source)
     }
 
     //8,11,23,26
@@ -43,12 +43,12 @@ class MvcTracker{
     }
 
     //12, 27
-    fun clickCekInfoButton(shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickCekInfoButton(shopId,userId, source)
+    fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+        trackerImpl.clickCekInfoButton(widgetType,shopId,userId, source)
     }
 
-    fun clickCekInfoButtonClose(shopId: String,userId: String?,@MvcSource source: Int){
-        trackerImpl.clickCekInfoButtonClose(shopId,userId, source)
+    fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int){
+        trackerImpl.clickCekInfoButtonClose(widgetType,shopId,userId, source)
     }
 
     //13,28
@@ -62,8 +62,8 @@ class MvcTracker{
     }
 
     //15, 30
-    fun closeMainBottomSheet(shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.closeMainBottomSheet(shopId,userId, source)
+    fun closeMainBottomSheet(@FollowWidgetType widgetType: String,shopId: String, userId: String?, @MvcSource source: Int) {
+        trackerImpl.closeMainBottomSheet(widgetType,shopId,userId, source)
     }
 
     //Outside MVC - entryPoint
@@ -75,13 +75,13 @@ class MvcTracker{
         trackerImpl.clickLihatExpand(shopId,userId, source)
     }
 
-    fun  clickMulaiBelanjaButton(shopId: String, userId: String?, @MvcSource source: Int){
-        trackerImpl.clickMulaiBelanjaButton(shopId,userId, source)
+    fun  clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int){
+        trackerImpl.clickMulaiBelanjaButton(widgetType,shopId,userId, source)
     }
 
     //Reward GTM for Bottomsheet CTA
-    fun userClickBottomSheetCTA(label: String, userId: String) {
-        trackerImpl.userClickBottomSheetCTA(label,userId)
+    fun userClickBottomSheetCTA(@FollowWidgetType widgetType: String, label: String, userId: String) {
+        trackerImpl.userClickBottomSheetCTA(widgetType,label,userId)
     }
 
     fun tokomemberImpressionOnPdp(shopId: String,userId: String?){

@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
+import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -32,6 +33,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
+    private val mvcActivityCallbacks = MVCActivityCallbacks()
 
     var shopId: String = ""
     var isTokomember = false
@@ -58,18 +60,24 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
+            (context.applicationContext as Application).registerActivityLifecycleCallbacks(mvcActivityCallbacks)
             if (startActivityForResultFunction != null) {
                 startActivityForResultFunction?.invoke()
             } else {
                 if (context is AppCompatActivity) {
-                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
                 } else {
-                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC))
                 }
             }
 
             mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
     }
 
     fun setData(mvcData: MvcData,
@@ -82,6 +90,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.shopId = shopId
         this.startActivityForResultFunction = startActivityForResultFunction
         this.mvcTracker.trackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.hashCodeForMVC = mvcData.hashCode()
         setMVCData(mvcData.animatedInfoList)
     }
 

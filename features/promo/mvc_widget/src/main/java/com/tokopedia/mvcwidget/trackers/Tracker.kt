@@ -101,6 +101,7 @@ annotation class MvcSource {
         const val SHOP = 1
         const val PDP = 2
         const val REWARDS = 3
+        const val DISCO = 4
 
     }
 }

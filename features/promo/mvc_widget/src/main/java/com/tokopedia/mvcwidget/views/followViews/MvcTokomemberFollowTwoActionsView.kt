@@ -139,10 +139,10 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             }
             when(followWidget.type){
                 FollowWidgetType.MEMBERSHIP_OPEN->{
-                    mvcTracker?.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
+                    mvcTracker?.clickCekInfoButton(FollowWidgetType.MEMBERSHIP_OPEN,shopId, UserSession(context).userId, mvcSource)
                 }
                 FollowWidgetType.MEMBERSHIP_CLOSE->{
-                    mvcTracker?.clickCekInfoButtonClose(shopId, UserSession(context).userId, mvcSource)
+                    mvcTracker?.clickCekInfoButtonClose(FollowWidgetType.MEMBERSHIP_CLOSE,shopId, UserSession(context).userId, mvcSource)
                 }
             }
         }

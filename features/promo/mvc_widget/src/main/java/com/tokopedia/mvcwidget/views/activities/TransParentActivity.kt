@@ -26,21 +26,23 @@ class TransParentActivity : BaseActivity() {
     private var childView: MvcDetailView? = null
     private var appLink : String?=null
     private var shopName : String?=null
-    private var mvcTracker : MvcTracker?=null
+    val mvcTracker : MvcTracker = MvcTracker()
+    var mvcDataHashcode : Int = 0
 
     companion object {
         const val SHOP_ID = "shopId"
         const val MVC_SOURCE = "mvcSource"
         const val REDIRECTION_LINK = "redirectionLink"
         const val SHOP_NAME = "shopName"
+        const val DATA_HASH_CODE = "dataHash"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = ""): Intent {
+        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(MVC_SOURCE, source)
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
             intent.putExtra(SHOP_NAME, shopName)
-
+            intent.putExtra(DATA_HASH_CODE,hashCode)
             return intent
         }
 
@@ -61,7 +63,7 @@ class TransParentActivity : BaseActivity() {
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
         shopName = intent.extras?.getString(SHOP_NAME, "") ?: ""
-
+        mvcDataHashcode = intent.extras?.getInt(DATA_HASH_CODE,0)?:0
 
         if (userSession.isLoggedIn) {
             showMvcDetailDialog()
@@ -96,7 +98,7 @@ class TransParentActivity : BaseActivity() {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
                 bottomSheet.dismiss()
-                shopName?.let { it1 -> mvcTracker?.userClickBottomSheetCTA(it1, userSession.userId) }
+                shopName?.let { it1 -> mvcTracker.userClickBottomSheetCTA(childView?.widgetType?:FollowWidgetType.DEFAULT,it1, userSession.userId) }
                 RouteManager.route(this,appLink)
             }
         }
@@ -116,7 +118,7 @@ class TransParentActivity : BaseActivity() {
                     setResult(MvcView.RESULT_CODE_OK,intent)
                 }
                 finish()
-                mvcTracker?.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
+                mvcTracker.closeMainBottomSheet(childView?.widgetType?:FollowWidgetType.DEFAULT, shopId, userSession.userId, mvcSource)
             }
         }
 

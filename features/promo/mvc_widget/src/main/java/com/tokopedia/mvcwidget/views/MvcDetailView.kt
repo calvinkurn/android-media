@@ -39,6 +39,7 @@ class MvcDetailView @JvmOverloads constructor(
     var userSession: UserSession? = null
 
     private val widgetImpression = WidgetImpression()
+    var widgetType : String = FollowWidgetType.DEFAULT
 
     override fun getWidgetImpression(): WidgetImpression {
         return widgetImpression
@@ -266,8 +267,10 @@ class MvcDetailView @JvmOverloads constructor(
         adapter.updateList(tempList)
         if(!tempList.isNullOrEmpty()){
             if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
-                mvcTracker?.viewCoupons(response.data.followWidget.type,this.shopId, userSession?.userId, this.mvcSource)
+                widgetType = response.data.followWidget.type
+                mvcTracker?.viewCoupons(widgetType,this.shopId, userSession?.userId, this.mvcSource)
             }else{
+                widgetType = FollowWidgetType.DEFAULT
                 mvcTracker?.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }

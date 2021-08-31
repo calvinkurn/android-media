@@ -1,17 +1,18 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.util.ArrayList
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -37,25 +38,30 @@ class DiscoMerchantVoucherViewModel(
 
     fun getDataFromUseCase() {
         launchCatchError(block = {
-            Log.e("TEST_TAG", "shop id = ${getShopID()}")
             if (getShopID().isNotEmpty()) {
 //                Find a better way to handle shopid empty case
                 val response =
                     mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(getShopID()))
                 response.data?.let {
-                    _errorState.value = it.isShown?.not()
                     _mvcData.value = MvcData(it.animatedInfoList)
+                    _errorState.value = it.isShown?.not()
                 }
             }
         },
             onError = {
-                Log.e("TEST_TAG", "error for textual data ${it.message}")
                 _errorState.value = true
             })
     }
 
     fun getShopID(): String {
         return components.data?.firstOrNull()?.shopIds?.firstOrNull()?.toString() ?: ""
+    }
+
+    fun updateData(shopID: Any, isShown: Boolean, listInfo: ArrayList<AnimatedInfos>?) {
+        if(shopID == getShopID()){
+            _mvcData.value = MvcData(listInfo)
+            _errorState.value = !isShown
+        }
     }
 
     override val coroutineContext: CoroutineContext

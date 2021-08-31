@@ -4,7 +4,7 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.Tracker
 
-class DefaultMvcTrackerImpl:MvcTrackerImpl {
+open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     //1 Pdp
     //16 Shop
     override fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean) {
@@ -40,7 +40,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //3, 18
-    override fun clickFollowButton(shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -151,7 +151,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //7, 22
-    override fun clickJadiMemberButton(shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -200,7 +200,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //12, 27
-    override fun clickCekInfoButton(shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -221,7 +221,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickCekInfoButtonClose(shopId: String,userId: String?,@MvcSource source: Int){
+    override fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int){
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_MV
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
@@ -277,7 +277,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //15, 30
-    override fun closeMainBottomSheet(shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun closeMainBottomSheet(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -315,7 +315,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickMulaiBelanjaButton(shopId: String, userId: String?, @MvcSource source: Int){
+    override fun clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int){
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_MV
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER_CLOSE
@@ -327,7 +327,7 @@ class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //Reward GTM for Bottomsheet CTA
-    override fun userClickBottomSheetCTA(label: String, userId: String) {
+    override fun userClickBottomSheetCTA(@FollowWidgetType widgetType: String, label: String, userId: String) {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_KUPON
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.REWARDS_CATEGORY
