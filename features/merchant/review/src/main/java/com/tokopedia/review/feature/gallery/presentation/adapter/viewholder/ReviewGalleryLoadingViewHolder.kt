@@ -8,7 +8,7 @@ import com.tokopedia.review.R
 class ReviewGalleryLoadingViewHolder(view: View) : AbstractViewHolder<LoadingMoreModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_review_gallery_shimmering
+        val LAYOUT = R.layout.widget_review_gallery_loading_item
     }
 
     override fun bind(element: LoadingMoreModel?) {

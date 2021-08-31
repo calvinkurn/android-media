@@ -43,6 +43,7 @@ object ReadReviewTracking {
         countReview: Long,
         characterCount: Int,
         imageCount: Int,
+        productId: String,
         trackingQueue: TrackingQueue
     ) {
         trackingQueue.putEETracking(
@@ -69,7 +70,8 @@ object ReadReviewTracking {
                                     characterCount,
                                     imageCount
                                 ),
-                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
+                                ReadReviewTrackingConstants.KEY_POSITION to position.toString(),
+                                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
                             )
                         )
                     )

@@ -18,13 +18,30 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/review_gallery_image_load_error"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:src="@drawable/imagestate_error"
+            android:background="@color/Unify_N50"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_loading_item_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="review_gallery_image_load_error, review_gallery_image_shimmering"
+            app:barrierDirection="bottom" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/review_gallery_rating_shimmering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_gallery_image_shimmering"
+            app:layout_constraintTop_toBottomOf="@id/review_loading_item_barrier"
             app:srcCompat="@drawable/review_ic_rating_star_zero" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView

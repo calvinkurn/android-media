@@ -83,9 +83,8 @@
         app:layout_constraintGuide_percent="0.5"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
 
-    <include
+    <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingItem
         android:id="@+id/review_gallery_item_loading"
-        layout="@layout/item_review_gallery_shimmering"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -95,9 +94,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
 
-    <include
+    <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingItem
         android:id="@+id/review_gallery_item_loading_2"
-        layout="@layout/item_review_gallery_shimmering"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -108,9 +106,8 @@
         app:layout_constraintStart_toStartOf="@id/review_gallery_shimmering_guideline"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
 
-    <include
+    <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingItem
         android:id="@+id/review_gallery_item_loading_3"
-        layout="@layout/item_review_gallery_shimmering"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -120,9 +117,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_item_loading" />
 
-    <include
+    <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingItem
         android:id="@+id/review_gallery_item_loading_4"
-        layout="@layout/item_review_gallery_shimmering"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"

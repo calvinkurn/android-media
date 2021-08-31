@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +34,7 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewG
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingView
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
@@ -69,7 +69,7 @@ class ReviewGalleryFragment :
 
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
-    private var loadingView: ConstraintLayout? = null
+    private var loadingView: ReviewGalleryLoadingView? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
@@ -228,7 +228,6 @@ class ReviewGalleryFragment :
 
     private fun observeReviewImages() {
         viewModel.reviewImages.observe(viewLifecycleOwner, {
-            hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetReviewImages(it.data)
                 is Fail -> onFailGetReviewImages(it.throwable)
@@ -250,11 +249,15 @@ class ReviewGalleryFragment :
     }
 
     private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
+        hideFullPageLoading()
         swipeToRefresh.isRefreshing = false
         renderList(mapToUiModel(productrevGetReviewImage), productrevGetReviewImage.hasNext)
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
+        if (currentPage + 1 == defaultInitialPage) {
+            showFullPageError()
+        }
         showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
             loadData(currentPage)
         }
@@ -342,11 +345,21 @@ class ReviewGalleryFragment :
     }
 
     private fun showFullPageLoading() {
-        loadingView?.show()
+        loadingView?.apply {
+            showLoading()
+            show()
+        }
     }
 
     private fun hideFullPageLoading() {
         loadingView?.hide()
+    }
+
+    private fun showFullPageError() {
+        loadingView?.apply {
+            showError()
+            show()
+        }
     }
 
     private fun showToasterError(message: String, action: () -> Unit) {
