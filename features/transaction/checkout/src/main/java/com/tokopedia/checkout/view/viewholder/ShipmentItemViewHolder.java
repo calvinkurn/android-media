@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -110,7 +111,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography customTickerDescription;
     private Typography customTickerAction;
 
-    private LinearLayout llFrameItemProductContainer;
+    private View vBundlingProductSeparator;
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -247,7 +248,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
         customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
         customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
-        llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
+        vBundlingProductSeparator = itemView.findViewById(R.id.v_bundling_product_separator);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
@@ -617,6 +618,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderPurchaseProtection(cartItemModel);
         renderProductTicker(cartItemModel);
         renderProductProperties(cartItemModel);
+
+        ViewGroup.MarginLayoutParams ivProductImageLayoutParams = (ViewGroup.MarginLayoutParams) ivProductImage.getLayoutParams();
+        ViewGroup.MarginLayoutParams tvOptionalNoteToSellerLayoutParams = (ViewGroup.MarginLayoutParams) tvOptionalNoteToSeller.getLayoutParams();
+        if (cartItemModel.isBundlingItem()) {
+            ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
+            tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
+        } else {
+            ivProductImageLayoutParams.leftMargin = 0;
+            tvOptionalNoteToSellerLayoutParams.leftMargin = 0;
+        }
     }
 
     @SuppressLint("SetTextI18n")
