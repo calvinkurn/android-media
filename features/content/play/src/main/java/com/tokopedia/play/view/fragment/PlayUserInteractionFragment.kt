@@ -702,7 +702,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 if (isFirstTime) likeView.setEnabled(true)
 
-                if(playViewModel.isAllowMultipleLike) {
+                if(playViewModel.isAllowMultipleLike &&
+                    playViewModel.viewerVideoState != PlayViewerVideoState.End &&
+                    playViewModel.viewerVideoState != PlayViewerVideoState.Unknown
+                ) {
                     spamLikeView.shot(shotAmount.toInt(), it.source != LikeSource.UserAction)
 
                     if(orientation.isLandscape) {
