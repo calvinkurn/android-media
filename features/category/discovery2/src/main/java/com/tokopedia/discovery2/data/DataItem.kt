@@ -380,6 +380,20 @@ data class DataItem(
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
 
+//        @SerializedName("hasAddToCard")
+        var hasATC: Boolean = false,
+
+//        @SerializedName("parentId")
+        var parentProductId: Int? = null,
+
+//        @SerializedName("max_quantity")
+        var maxQuanity: Int = 5,
+
+//        @SerializedName("min_quantity")
+        var minQuanity: Int = 1,
+
+        var quantity: Int = 0,
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",

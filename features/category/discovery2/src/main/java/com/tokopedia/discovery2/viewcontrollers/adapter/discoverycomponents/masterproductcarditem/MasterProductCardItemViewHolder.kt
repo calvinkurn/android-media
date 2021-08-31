@@ -16,13 +16,15 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
-class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener{
 
     private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -47,12 +49,20 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
+
+            masterProductCardListView?.setAddVariantClickListener {
+
+            }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
+            }
+
+            masterProductCardGridView?.setAddVariantClickListener {
+
             }
         }
 
@@ -208,5 +218,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
 
     private fun sentNotifyButtonEvent() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+    }
+
+    override fun onQuantityChanged(quantity: Int) {
+        masterProductCardItemViewModel.updateProductQuantity(quantity)
     }
 }

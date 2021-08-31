@@ -228,8 +228,36 @@ class DiscoveryDataMapper {
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
-                hasThreeDots = dataItem.hasThreeDots
+                hasThreeDots = dataItem.hasThreeDots,
+                variant = variantProductCard(dataItem),
+                nonVariant = nonVariantProductCard(dataItem)
         )
+    }
+
+    private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
+        return if (checkForVariantProductCard(dataItem.parentProductId)) {
+            null
+        } else {
+            ProductCardModel.NonVariant(
+                dataItem.quantity,
+                dataItem.minQuanity,
+                dataItem.maxQuanity
+            )
+        }
+    }
+
+    private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
+        return if (checkForVariantProductCard(dataItem.parentProductId)) {
+            ProductCardModel.Variant(
+                dataItem.quantity,
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun checkForVariantProductCard(parentProductId: Int?): Boolean {
+        return parentProductId != null && parentProductId >= 0
     }
 
     private fun setSlashPrice(discountedPrice: String?, price: String?): String {
