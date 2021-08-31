@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_N50">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/rv_container"
@@ -27,7 +28,7 @@
             android:adjustViewBounds="true" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recycler_view_chatroom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/footer"
@@ -149,9 +150,10 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
@@ -267,6 +269,13 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
+            <View
+                android:id="@+id/view_chat_box_padding"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

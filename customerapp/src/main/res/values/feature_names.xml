@@ -80,6 +80,8 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
+    <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
+    <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
