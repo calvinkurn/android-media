@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -102,7 +103,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         } else if (barcodeData.toLowerCase().contains(EVENT_REDEEM)){
             checkEventRedeem(barcodeData);
         } else if(barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT)){
-            String path = getView().getCallbackUrlFromPeduliLindungi() + "&payload="+barcodeData;
+            String path = ApplinkConst.WEBVIEW + "?url=" + getView().getCallbackUrlFromPeduliLindungi() + "&payload="+barcodeData;
             openActivity(path);
         }
         else {
