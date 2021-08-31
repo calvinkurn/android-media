@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImageRatioType
@@ -22,8 +26,8 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
-import com.tokopedia.imagepicker_insta.di.module.AppModule
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
+import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.FolderData
@@ -35,6 +39,7 @@ import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -44,9 +49,6 @@ class MainFragment : Fragment() {
     val EDITOR_REQUEST_CODE = 221
 
     lateinit var viewModel: PickerViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var rv: RecyclerView
     lateinit var selectedImage: AssetImageView
@@ -66,16 +68,18 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = (activity as? MainActivity)?.menuTitle ?: getString(R.string.imagepicker_insta_lanjut)
-        menu.add(Menu.NONE, 1, Menu.NONE, menuTitle)
-        menu.findItem(1).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        MenuManager.addCustomMenu(activity,menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            1-> {
+            MenuManager.MENU_ITEM_ID-> {
                 proceedNextStep()
                 return true
             }
@@ -116,13 +120,10 @@ class MainFragment : Fragment() {
     }
 
     fun initDagger() {
-        val component = DaggerImagePickerComponent.builder()
-            .appModule(AppModule((context as AppCompatActivity).application))
-            .build()
-        component.inject(this)
         if (context is AppCompatActivity) {
-            val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
-            viewModel = viewModelProvider[PickerViewModel::class.java]
+            viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
+            val component = DaggerImagePickerComponent.builder().build()
+            component.inject(viewModel)
         }
     }
 
@@ -141,13 +142,15 @@ class MainFragment : Fragment() {
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
         val toolbar: Toolbar = v.findViewById(R.id.toolbar)
+        val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
+        val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
+        val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
+
         (activity as MainActivity).run {
             setSupportActionBar(toolbar)
-            if (toolbarIconRes != 0) {
-                toolbar.setNavigationIcon(toolbarIconRes)
-            }
-            supportActionBar?.title = this.toolbarTitle
-            supportActionBar?.subtitle = this.toolbarSubTitle
+            toolbarIcon.setImageResource(this.toolbarIconRes)
+            toolbarTitle.text = this.toolbarTitle
+            toolbarSubtitle.text = this.toolbarSubTitle
         }
         setupRv()
     }
@@ -185,18 +188,18 @@ class MainFragment : Fragment() {
     }
 
 
-    fun openCamera() {
+    private fun openCamera() {
         cameraCaptureFilePath = null
         cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this))
     }
 
-    fun handleOnCameraIconTap() {
+    private fun handleOnCameraIconTap() {
         if (activity is MainActivity) {
             PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
         }
     }
 
-    fun setObservers() {
+    private fun setObservers() {
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
@@ -212,6 +215,7 @@ class MainFragment : Fragment() {
                         imageDataList.addAll(it.data!!.imageAdapterDataList)
                         imageAdapter.clearSelectedItems()
                         imageAdapter.addSelectedItem(1)
+                        selectedImage.loadAsset(it.data.imageAdapterDataList.first().asset)
 
                         //update folders
                         if (!it.data.folders.isNullOrEmpty()) {
@@ -241,7 +245,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    fun getPhotos() {
+    private fun getPhotos() {
         viewModel.getPhotos()
     }
 

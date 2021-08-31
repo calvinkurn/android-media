@@ -13,13 +13,16 @@ import com.tokopedia.imagepicker_insta.util.WriteStorageLocation
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class PickerViewModel @Inject constructor(
-    workerDispatcher: CoroutineDispatcher,
-    val photosUseCase: PhotosUseCase,
-    val app: Application
-) : BaseAndroidViewModel(workerDispatcher, app) {
+class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     val TAG = "CameraInsta"
+    override val coroutineContext: CoroutineContext
+        get() = super.coroutineContext + workerDispatcher
+    @Inject
+    lateinit var photosUseCase: PhotosUseCase
+    @Inject
+    lateinit var workerDispatcher: CoroutineDispatcher
 
     val photosLiveData: MutableLiveData<LiveDataResult<PhotosImporterData>> = MutableLiveData()
     var photosImporterData: PhotosImporterData? = null

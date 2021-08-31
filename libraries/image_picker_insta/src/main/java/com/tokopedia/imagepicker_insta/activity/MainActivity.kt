@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        fun getIntent(context: Context, title: String, subtitle:String, toolbarIconRes:Int, menuTitle:String): Intent {
+        fun getIntent(context: Context, title: String? = null, subtitle: String? = null, toolbarIconRes: Int? = null, menuTitle: String? = null): Intent {
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra(BundleData.TITLE, title)
             intent.putExtra(BundleData.SUB_TITLE, subtitle)
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun processIntentData() {
         toolbarTitle = intent.extras?.getString(BundleData.TITLE, "") ?: ""
         toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
-        toolbarIconRes = intent.extras?.getInt(BundleData.ICON_RES) ?: 0
+        toolbarIconRes = intent.extras?.getInt(BundleData.ICON_RES) ?: R.drawable.imagepicker_insta_back_icon
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
 
     }
