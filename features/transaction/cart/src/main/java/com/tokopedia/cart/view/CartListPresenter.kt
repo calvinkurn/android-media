@@ -91,7 +91,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     // Store last validate use response from cart page
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
-    var isLastApplyResponseStillValid = false
+    var isLastApplyResponseStillValid = true
 
     // Store last validate use request for clearing promo if got akamai error
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
