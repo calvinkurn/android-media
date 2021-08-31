@@ -52,6 +52,7 @@ object ProductDetailCommonConstant {
     const val VALUE_REGULER = "reguler"
 
     const val VALUE_PRODUCT_BUNDLING = "product bundling"
+    const val VALUE_TRADE_IN = "trade in"
 
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"

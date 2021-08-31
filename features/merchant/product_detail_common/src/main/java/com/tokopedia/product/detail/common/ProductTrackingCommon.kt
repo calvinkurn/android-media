@@ -13,9 +13,28 @@ import com.tokopedia.track.TrackAppUtils
  */
 object ProductTrackingCommon {
 
+    fun onFollowNplClickedVariantBottomSheet(productId: String, pageSource: String, shopId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Action.CLICK_FOLLOW,
+                String.format(ProductTrackingConstant.Tracking.BUILDER_SHOP_ID, shopId))
+        addAdditionalParams(productId, mapEvent, pageSource)
+    }
+
+    fun onTokoCabangClicked(productId: String, pageSource: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Action.ACTION_CLICK_TOKOCABANG,
+                "")
+        addAdditionalParams(productId, mapEvent, pageSource)
+    }
+
     fun eventClickPilihVariant(productId: String, pageSource: String, cartType: String) {
         val source = when (cartType) {
             ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> ProductDetailCommonConstant.VALUE_PRODUCT_BUNDLING
+            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> ProductDetailCommonConstant.VALUE_TRADE_IN
             else -> ""
         }
 

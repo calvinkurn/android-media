@@ -84,6 +84,7 @@ object ProductTrackingConstant {
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
         const val SELECT_CONTENT = "select_content"
+        const val BUILDER_SHOP_ID = "shop_id:%s"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
@@ -164,6 +165,7 @@ object ProductTrackingConstant {
         const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
         const val ACTION_CLICK_VARIANT = "click - pilih variant"
+        const val ACTION_CLICK_TOKOCABANG = "click - tokocabang hyperlink"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 

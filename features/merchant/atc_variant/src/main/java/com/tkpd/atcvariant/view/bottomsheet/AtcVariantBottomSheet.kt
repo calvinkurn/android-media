@@ -841,13 +841,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun onButtonFollowNplClick() {
-        val aggregatorData = viewModel.getVariantAggregatorData()
-        viewModel.toggleFavorite(aggregatorData?.simpleBasicInfo?.shopID ?: "")
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        val productId = adapter.getHeaderDataModel()?.productId ?: ""
+        val shopId = viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopID ?: ""
+        ProductTrackingCommon.onFollowNplClickedVariantBottomSheet(productId, pageSource, shopId)
+        viewModel.toggleFavorite(shopId)
     }
 
     override fun onTokoCabangClicked(uspImageUrl: String) {
         context?.let {
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
+            val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
             val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
                     ?: ""
@@ -857,6 +861,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             } else {
                 ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
             }
+
+            ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
             bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
