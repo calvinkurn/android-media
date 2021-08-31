@@ -748,7 +748,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun adjustAdminFee() {
+    fun adjustAdminFee() {
         if (orderPayment.value.creditCard.isAfpb) {
             val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
                 userSession.userId, orderTotal.value, orderCart)

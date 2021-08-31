@@ -22,7 +22,7 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
         return mapCreditCardTenorListData(response.ccTenorList)
     }
 
-    private fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {
+    fun generateParam(input: CreditCardTenorListRequest): Map<String, Any?> {
         return mapOf(INPUT to input)
     }
 
