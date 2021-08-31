@@ -2219,33 +2219,37 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun generateParamValidateUsePromoRevamp(): ValidateUsePromoRequest {
-        if (dPresenter.isLastApplyValid()) {
-            val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
-                    ?: LastApplyPromo()
-            return PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData)
-        } else if (dPresenter.getValidateUseLastResponse() != null) {
-            val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
-                    ?: PromoUiModel()
-            return PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData)
-        } else {
-            return PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData)
-        }
-    }
-
-    private fun generateParamsCouponList(): PromoRequest {
-        when {
+        return when {
             dPresenter.isLastApplyValid() -> {
                 val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
                         ?: LastApplyPromo()
-                return PromoRequestMapper.generateCouponListRequestParams(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
+                PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData)
             }
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
                         ?: PromoUiModel()
-                return PromoRequestMapper.generateCouponListRequestParams(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+                PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData)
             }
             else -> {
-                return PromoRequestMapper.generateCouponListRequestParams(null, cartAdapter.allAvailableShopGroupDataList)
+                PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData)
+            }
+        }
+    }
+
+    private fun generateParamsCouponList(): PromoRequest {
+        return when {
+            dPresenter.isLastApplyValid() -> {
+                val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
+                        ?: LastApplyPromo()
+                PromoRequestMapper.generateCouponListRequestParams(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
+            }
+            dPresenter.getValidateUseLastResponse() != null -> {
+                val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
+                        ?: PromoUiModel()
+                PromoRequestMapper.generateCouponListRequestParams(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+            }
+            else -> {
+                PromoRequestMapper.generateCouponListRequestParams(null, cartAdapter.allAvailableShopGroupDataList)
             }
         }
     }
