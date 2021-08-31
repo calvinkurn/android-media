@@ -1,6 +1,8 @@
 package com.tokopedia.atc_common.data.model.request
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import java.math.BigInteger
 
 data class AddToCartBundleRequestParams(
         @SerializedName("shop_id")
@@ -24,8 +26,9 @@ data class ProductDetail(
         var notes: String = "",
         @SerializedName("shop_id")
         val shopId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        val warehouseId: String = "",
+        val warehouseId: BigInteger = 0.toBigInteger(),
         @SerializedName("is_product_parent")
         val isProductParent: Boolean = false,
         @SerializedName("customer_id")
