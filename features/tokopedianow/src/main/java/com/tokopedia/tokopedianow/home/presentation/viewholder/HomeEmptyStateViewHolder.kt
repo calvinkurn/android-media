@@ -11,10 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -32,7 +30,6 @@ class HomeEmptyStateViewHolder(
         const val EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE = "https://images.tokopedia.net/img/android/tokonow/ic_no_address_empty_state_and_local_chache.png"
     }
 
-    private var emptyStateNoAddress: NoAddressEmptyStateView? = null
     private var emptyStateNoAddressAndLocalCache: EmptyStateUnify? = null
     private var emptyStateFailedToFetchData: GlobalError? = null
     private var params: ViewGroup.LayoutParams? = null
@@ -40,7 +37,6 @@ class HomeEmptyStateViewHolder(
     private var divider: View? = null
 
     init {
-        emptyStateNoAddress = itemView.findViewById(R.id.empty_state_no_address)
         emptyStateNoAddressAndLocalCache = itemView.findViewById(R.id.empty_state_no_address_and_local_cache)
         emptyStateFailedToFetchData = itemView.findViewById(R.id.empty_state_failed_to_fetch_data)
         divider = itemView.findViewById(R.id.divider)
@@ -50,37 +46,14 @@ class HomeEmptyStateViewHolder(
 
     override fun bind(element: HomeEmptyStateUiModel?) {
         when(element?.id) {
-            EMPTY_STATE_NO_ADDRESS -> showEmptyStateNoAddress()
             EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE -> showEmptyStateNoAddressAndLocalCache()
             EMPTY_STATE_FAILED_TO_FETCH_DATA -> showEmptyStateFailedToFetchData()
         }
     }
 
-    private fun showEmptyStateNoAddress() {
-        divider?.show()
-        emptyStateFailedToFetchData?.hide()
-        emptyStateNoAddressAndLocalCache?.hide()
-        emptyStateNoAddress?.show()
-        emptyStateNoAddress?.setDescriptionCityName(itemView.context.getString(R.string.tokopedianow_city_name_empty_state_no_address))
-        emptyStateNoAddress?.actionListener = object : NoAddressEmptyStateView.ActionListener {
-            override fun onChangeAddressClicked() {
-                showBottomSheetChooseAddress()
-            }
-
-            override fun onReturnClick() {
-                (itemView.context as? TokoNowHomeActivity)?.finish()
-            }
-        }
-        setParamsLayout(
-            width = ViewGroup.LayoutParams.WRAP_CONTENT,
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-    }
-
     private fun showEmptyStateNoAddressAndLocalCache() {
         divider?.hide()
         emptyStateFailedToFetchData?.hide()
-        emptyStateNoAddress?.hide()
         emptyStateNoAddressAndLocalCache?.show()
         emptyStateNoAddressAndLocalCache?.setImageUrl(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE_IMAGE)
         emptyStateNoAddressAndLocalCache?.setPrimaryCTAClickListener {
@@ -97,7 +70,6 @@ class HomeEmptyStateViewHolder(
 
     private fun showEmptyStateFailedToFetchData() {
         divider?.hide()
-        emptyStateNoAddress?.hide()
         emptyStateNoAddressAndLocalCache?.hide()
         emptyStateFailedToFetchData?.show()
         emptyStateFailedToFetchData?.setActionClickListener {

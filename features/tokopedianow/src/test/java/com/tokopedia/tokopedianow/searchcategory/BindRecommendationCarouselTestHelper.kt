@@ -11,7 +11,7 @@ import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
@@ -63,12 +63,12 @@ class BindRecommendationCarouselTestHelper(
         } returns recommendationWidgetList
     }
 
-    private fun List<Visitable<*>>.findRecomWidget(): RecommendationCarouselDataView =
-            find { it is RecommendationCarouselDataView } as? RecommendationCarouselDataView
+    private fun List<Visitable<*>>.findRecomWidget(): TokoNowRecommendationCarouselUiModel =
+            find { it is TokoNowRecommendationCarouselUiModel } as? TokoNowRecommendationCarouselUiModel
                     ?: throw Throwable("Cannot find recom widget")
 
     private fun `When bind recommendation carousel`(
-            recomWidget: RecommendationCarouselDataView,
+            recomWidget: TokoNowRecommendationCarouselUiModel,
             recomWidgetPosition: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
@@ -76,7 +76,7 @@ class BindRecommendationCarouselTestHelper(
 
     private fun `Then assert mandatory get recommendation request`(
             getRecommendationRequestParam: GetRecommendationRequestParam,
-            recommendationCarouselDataView: RecommendationCarouselDataView,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
     ) {
         assertTokonowRecommendationCarouselRequestParams(
                 getRecommendationRequestParam,
@@ -85,7 +85,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(
-            recomWidget: RecommendationCarouselDataView
+            recomWidget: TokoNowRecommendationCarouselUiModel
     ) {
         val recommendationWidget = recommendationWidgetList.first()
 
@@ -120,7 +120,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert remmendation widget data view state is updated to fail`(
-            recomWidget: RecommendationCarouselDataView
+            recomWidget: TokoNowRecommendationCarouselUiModel
     ) {
         assertThat(recomWidget.carouselData.state, shouldBe(STATE_FAILED))
     }
@@ -141,7 +141,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Given recommendation carousel already success`(
-            recomWidget: RecommendationCarouselDataView,
+            recomWidget: TokoNowRecommendationCarouselUiModel,
             recomWidgetPosition: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)

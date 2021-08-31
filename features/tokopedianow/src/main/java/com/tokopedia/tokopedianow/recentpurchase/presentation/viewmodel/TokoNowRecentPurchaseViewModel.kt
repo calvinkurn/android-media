@@ -18,6 +18,9 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.common.constant.ConstantValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +32,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
@@ -85,6 +89,21 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         },{
             _chooseAddress.postValue(Fail(it))
         }, source)
+    }
+
+    fun getProductRecomOoc() {
+        launchCatchError(block = {
+            val recommendationWidgets = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = ConstantValue.PAGE_NAME_RECOMMENDATION_PARAM,
+                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
+                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
+                )
+            )
+            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+                // get recommendation data
+            }
+        }) { /* nothing to do */ }
     }
 
     fun onCartItemUpdated(productId: String, quantity: Int, shopId: String) {

@@ -7,6 +7,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -19,7 +20,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverag
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import org.hamcrest.CoreMatchers.instanceOf
@@ -194,16 +194,16 @@ private fun assertATCConfiguration(
 fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
         expectedPageName: String,
 ) {
-    assertThat(this, instanceOf(RecommendationCarouselDataView::class.java))
+    assertThat(this, instanceOf(TokoNowRecommendationCarouselUiModel::class.java))
 
-    val recomWidget = this as RecommendationCarouselDataView
+    val recomWidget = this as TokoNowRecommendationCarouselUiModel
     assertThat(recomWidget.pageName, shouldBe(expectedPageName))
     assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
 }
 
 fun assertTokonowRecommendationCarouselRequestParams(
-        getRecommendationRequestParam: GetRecommendationRequestParam,
-        recommendationCarouselDataView: RecommendationCarouselDataView,
+    getRecommendationRequestParam: GetRecommendationRequestParam,
+    recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
 ) {
     assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
