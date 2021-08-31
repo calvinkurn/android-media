@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase.searchproduct
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -52,12 +53,13 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
             addQuickFilterRequest(query, params)
             addProductAdsRequest(requestParams, params)
-            addHeadlineAdsRequest(requestParams, searchProductParams)
+            addHeadlineAdsRequest(requestParams, headlineAdsParams)
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)

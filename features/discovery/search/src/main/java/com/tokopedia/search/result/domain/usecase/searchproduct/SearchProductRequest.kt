@@ -41,21 +41,24 @@ internal fun createTopAdsProductRequest(params: String) =
 
 internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     requestParams: RequestParams,
-    searchProductParams: Map<String?, Any?>,
+    headlineParams: String,
 ) {
     if (!requestParams.isSkipHeadlineAds()) {
-        val headlineParams = createHeadlineParams(searchProductParams)
         add(createHeadlineAdsRequest(headlineParams = headlineParams))
     }
 }
 
-internal fun createHeadlineParams(parameters: Map<String?, Any?>): String {
+internal fun createHeadlineParams(
+    parameters: Map<String?, Any?>,
+    itemCount: String,
+): String {
     val headlineParams = HashMap(parameters)
 
-    headlineParams[TopAdsParams.KEY_EP] = SearchConstant.SearchProduct.HEADLINE
-    headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.SearchProduct.HEADLINE_TEMPLATE_VALUE
-    headlineParams[TopAdsParams.KEY_ITEM] = SearchConstant.SearchProduct.HEADLINE_ITEM_VALUE
-    headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = HEADLINE_PRODUCT_COUNT
+    headlineParams[TopAdsParams.KEY_EP] = SearchConstant.HeadlineAds.HEADLINE
+    headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.HeadlineAds.HEADLINE_TEMPLATE_VALUE
+    headlineParams[TopAdsParams.KEY_ITEM] = itemCount
+    headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.HeadlineAds.HEADLINE_PRODUCT_COUNT
+    headlineParams[SearchConstant.HeadlineAds.INFINITESEARCH] = true
 
     return UrlParamUtils.generateUrlParamString(headlineParams)
 }
@@ -66,8 +69,6 @@ internal fun createHeadlineAdsRequest(headlineParams: String) =
         HeadlineAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
     )
-
-private const val HEADLINE_PRODUCT_COUNT = 3
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query SearchProduct(${'$'}params: String!) {
