@@ -134,12 +134,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check review reminder then should return tokopedia internal review reminder`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review-reminder"
-        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER , expectedDeepLink)
-    }
-
-    @Test
     fun `check seller review then should return tokopedia internal`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/seller-review-detail?productId=123"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_REVIEW + "?productId=123", expectedDeepLink)
@@ -1851,6 +1845,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParam = "?ext=true&titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/browser" + queryParam
         assertEqualsDeepLinkMapper(ApplinkConst.BROWSER + queryParam, expectedDeepLink)
+    }
+
+    @Test
+    fun `check peduli lindungi scan qr applink then should return tokopedia internal qr in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalMarketplace.QR_SCANNEER}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        val appLink = "${ApplinkConst.QRSCAN}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     private fun setRemoteConfig(isEnabled: Boolean) {

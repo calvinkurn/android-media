@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
@@ -189,7 +190,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorUserValidate(throwable: Throwable) {
         dismissLoading()
-        phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable))
+        phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable).removeErrorCode())
         setErrorText(ErrorHandler.getErrorMessage(context, throwable))
     }
 
@@ -203,7 +204,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
         view?.let {
-            phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable))
+            phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable).removeErrorCode())
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }

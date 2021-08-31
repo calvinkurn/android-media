@@ -198,10 +198,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
 
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
-            ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                redirectToSearchResultPage()
-            }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
                 shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
@@ -284,13 +280,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         RouteManager.route(context, appLink)
     }
 
-    private fun redirectToSearchResultPage() {
-        RouteManager.route(
-                context,
-                "$DISCOVERY_SEARCH?q=$searchQuery"
-        )
-    }
-
     private fun observeShopSearchProductResult() {
         viewModel.shopSearchProductResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -329,11 +318,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                     searchQuery,
                     getString(R.string.shop_search_product_in_shop_name, shopName),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
-            ))
-            add(ShopSearchProductFixedResultDataModel(
-                    searchQuery,
-                    getString(R.string.shop_search_product_in_tokopedia),
-                    ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP
             ))
         }
         renderList(listData, false)
