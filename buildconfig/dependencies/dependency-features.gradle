@@ -275,4 +275,8 @@ ext {
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking"
     ]
+
+    testing = [
+            cart_test: ":testing:transaction:cart_test"
+    ]
 }

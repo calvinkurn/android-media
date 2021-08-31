@@ -256,3 +256,6 @@ includeIfEnabled("tkpdabstraction")
 includeIfEnabled("testapp-features:user:logintestapp")
 includeIfEnabled("customerapp")
 includeIfEnabled("customer_mid_app")
+
+includeIfEnabled("testing:transaction:cart_test")
+includeIfEnabled("testing:transaction:checkout_test")

@@ -134,9 +134,9 @@ android {
         test {
             java.srcDir sharedTestDir
         }
-        androidTest {
-            java.srcDirs += sharedTestDir
-        }
+//        androidTest {
+//            java.srcDirs += sharedTestDir
+//        }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
