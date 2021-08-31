@@ -32,4 +32,6 @@
     <string name="digital_client_label">Nomor Telepon</string>
     <string name="telco_pick_product">Beli</string>
     <string name="digital_client_filter_chip_see_all">Lihat Semua</string>
+    <string name="digital_client_filter_chip_coachmark_title">Ini nomor yang sering kamu isi &#9757;</string>
+    <string name="digital_client_filter_chip_coachmark_desc">Kalau mau diisi lagi, tinggal klik di sini aja.</string>
 </resources>

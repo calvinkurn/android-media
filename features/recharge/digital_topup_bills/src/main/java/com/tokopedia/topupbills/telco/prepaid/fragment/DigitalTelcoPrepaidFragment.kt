@@ -24,7 +24,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
@@ -723,15 +722,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun showOnBoarding() {
         context?.run {
-            val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
+            val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_PDP_COACH_MARK_HAS_SHOWN, false)
             if (coachMarkHasShown) {
+                maybeShowFilterChipCoachmark()
                 return
             }
 
             val coachMarks = ArrayList<CoachMark2Item>()
             coachMarks.add(
                 CoachMark2Item(
-                    telcoClientNumberWidget,
+                    telcoClientNumberWidget.findViewById(R.id.text_field_input),
                     getString(R.string.telco_title_showcase_client_number),
                     getString(R.string.telco_label_showcase_client_number)
                 )
@@ -745,13 +745,47 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             )
 
             val coachMark = CoachMark2(this)
-            coachMark.showCoachMark(coachMarks)
+            coachMark.run {
+                onDismissListener = { maybeShowFilterChipCoachmark() }
+                showCoachMark(coachMarks)
+            }
 
             localCacheHandler.apply {
-                putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+                putBoolean(TELCO_PDP_COACH_MARK_HAS_SHOWN, true)
                 applyEditor()
             }
         }
+    }
+
+    private fun maybeShowFilterChipCoachmark() {
+        val chipsCoachMarkHasShown = localCacheHandler.getBoolean(
+            TELCO_CHIPS_COACH_MARK_HAS_SHOWN, false)
+        if (!chipsCoachMarkHasShown) {
+            showFilterChipCoachmark()
+            localCacheHandler.apply {
+                putBoolean(TELCO_CHIPS_COACH_MARK_HAS_SHOWN, true)
+                applyEditor()
+            }
+        }
+    }
+
+    private fun showFilterChipCoachmark() {
+        val coachMarks = ArrayList<CoachMark2Item>()
+        val sortFilterItems: LinearLayout =
+            telcoClientNumberWidget.findViewById(R.id.common_topup_bills_filter_items)
+        val firstChip = sortFilterItems.getChildAt(0)
+
+        if (firstChip != null) {
+            coachMarks.add(
+                CoachMark2Item(sortFilterItems.getChildAt(0),
+                    getString(R.string.digital_client_filter_chip_coachmark_title),
+                    getString(R.string.digital_client_filter_chip_coachmark_desc)
+                )
+            )
+        }
+
+        val coachMark = CoachMark2(requireContext())
+        coachMark.showCoachMark(coachMarks)
     }
 
     private fun generateCheckoutPassData(
@@ -786,7 +820,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
         const val PREFERENCES_NAME = "telco_prepaid_preferences"
-        const val TELCO_COACH_MARK_HAS_SHOWN = "telco_show_coach_mark"
+        const val TELCO_PDP_COACH_MARK_HAS_SHOWN = "telco_show_pdp_coach_mark"
+        const val TELCO_CHIPS_COACH_MARK_HAS_SHOWN = "telco_show_chips_coach_mark"
         const val ID_PRODUCT_EMPTY = "-1"
 
         private const val DEFAULT_SPACE_HEIGHT = 81
