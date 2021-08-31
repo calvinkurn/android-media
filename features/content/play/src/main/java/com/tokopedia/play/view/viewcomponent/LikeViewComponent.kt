@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -31,6 +32,7 @@ class LikeViewComponent(
 
     private var isMultipleLike: Boolean = false
     private var timer: CountDownTimer? = null
+    private var currentLikeStatus = false
 
     private val likeAnimatorListener = object : Animator.AnimatorListener {
 
@@ -76,9 +78,26 @@ class LikeViewComponent(
     fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
-            if (animate) animationLike.playAnimation()
+            if (animate) {
+                playAnimation(
+                    if(isMultipleLike) AnimationType.Spam
+                    else AnimationType.Default
+                )
+            }
             else animationLike.progress = END_ANIMATED_PROGRESS
         }
+        currentLikeStatus = shouldLike
+    }
+
+    private fun playAnimation(animationType: AnimationType) {
+        animationLike.setAnimation(
+            when(animationType) {
+                AnimationType.Default -> R.raw.anim_play_like
+                AnimationType.Spam -> R.raw.anim_spam_like
+                AnimationType.Reminder -> R.raw.anim_reminder_like
+            }
+        )
+        animationLike.playAnimation()
     }
 
     fun setIsMultipleLike(isMultipleLike: Boolean) {
@@ -92,10 +111,8 @@ class LikeViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        /**
-         * Add validation if timer only working when there is no like
-         */
-        setReminderLike(INITIAL_REMINDER_DURATION)
+        if(allowReminderLike())
+            setReminderLike(INITIAL_REMINDER_DURATION)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -113,13 +130,15 @@ class LikeViewComponent(
             override fun onTick(p0: Long) {}
 
             override fun onFinish() {
-                animationLike.setAnimation(R.raw.anim_shaking_thumb)
-                animationLike.playAnimation()
-
-                setReminderLike(REMINDER_DURATION)
+                if(allowReminderLike()) {
+                    playAnimation(AnimationType.Reminder)
+                    setReminderLike(REMINDER_DURATION)
+                }
             }
         }.start()
     }
+
+    private fun allowReminderLike(): Boolean = isMultipleLike && !currentLikeStatus
 
     private companion object {
 
@@ -129,6 +148,12 @@ class LikeViewComponent(
         const val COUNTDOWN_INTERVAL = 1000L
         const val INITIAL_REMINDER_DURATION = 60000L
         const val REMINDER_DURATION = 300000L
+    }
+
+    sealed class AnimationType {
+        object Default: AnimationType()
+        object Spam: AnimationType()
+        object Reminder: AnimationType()
     }
 
     interface Listener {
