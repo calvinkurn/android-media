@@ -14,6 +14,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
@@ -114,8 +115,16 @@ class ShopPageHomeModule {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          connectionUtil: PlayWidgetConnectionUtil,
+    ): PlayWidgetTools {
+        return PlayWidgetTools(
+            playWidgetUseCase,
+            playWidgetReminderUseCase,
+            playWidgetUpdateChannelUseCase,
+            mapperProviders,
+            connectionUtil
+        )
     }
 
 
