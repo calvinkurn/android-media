@@ -15,7 +15,7 @@ class ShopScorePrefManager(@ApplicationContext private val context: Context) {
         context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    private fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
+    private fun getBoolean(key: String, defaultValue: Boolean = true): Boolean {
         return sharedPref.getBoolean(key, defaultValue)
     }
 

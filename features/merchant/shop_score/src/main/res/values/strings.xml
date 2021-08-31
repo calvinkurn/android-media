@@ -258,12 +258,6 @@
     <string name="score_parameter_shop_score_3">Max. -15</string>
 
     <!-- this is only for Existing & New Sellers -->
-    <string name="title_changes_shop_score_during_transition">Perubahan apa saja yang akan terjadi di toko saya pada masa transisi?</string>
-    <string name="desc_changes_shop_score_during_transition">Pada periode 90 hari masa transisi, beberapa perubahan sudah berlaku efektif. Namun Tokopedia juga menerapkan waktu penyesuaian untuk memastikan bahwa Seller terbiasa dengan skema yang baru terlebih dahulu, sebagai contohnya:
-        &lt;br /&gt;- Tidak adanya penurunan Power Merchant ke penonaktifan PM
-        &lt;br /&gt;- Tidak adanya penurunan grade Power Merchant
-        &lt;br /&gt;- Seller mendapatkan grade Power Merchant dari Reputasi
-    </string>
 
     <string name="title_calculate_shop_performance_if_parameter_value_missing">Bagaimana Tokopedia menghitung nilai skor Performa Toko jika nilai parameter saya tidak ada? (Misalnya: tidak ada chat masuk)</string>
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
@@ -275,7 +269,7 @@
 
     <string name="title_shop_performance_become_existing_seller">Performa Tokomu akan efektif berlaku setelah 90 hari bergabung, di %s</string>
 
-    <string name="shop_performance_learn">Pelajari Performa Toko</string>
+    <string name="shop_performance_learn">Pelajari Sekarang</string>
     <string name="title_tv_watch">Tonton Video</string>
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
     <string name="item_detail_performance_value">%1s %2s</string>

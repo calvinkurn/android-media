@@ -21,8 +21,11 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
 
     fun updateArrowItemFaq(position: Int) {
         itemFaqList.mapIndexed { index, itemFaqUiModel ->
-            if (index == position) {
-                itemFaqUiModel.isShow = !itemFaqUiModel.isShow
+            if (itemFaqUiModel.isShow) {
+                itemFaqUiModel.isShow = false
+                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
+            } else if (index == position) {
+                itemFaqUiModel.isShow = true
                 notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
             }
         }

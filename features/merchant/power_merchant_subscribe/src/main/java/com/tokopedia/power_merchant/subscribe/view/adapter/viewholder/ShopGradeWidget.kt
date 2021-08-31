@@ -129,6 +129,7 @@ class ShopGradeWidget(
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmProIdle = isPmPro && element.pmStatus == PMStatusConst.IDLE
         val labelStringId = if (element.isNewSeller) {
             R.string.pm_shop_performance_sum_new_seller
         } else {
@@ -158,7 +159,11 @@ class ShopGradeWidget(
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
-            RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
+            if (isPmProIdle) {
+                RouteManager.route(context, Constant.Url.PM_PRO_IDLE)
+            } else {
+                RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
+            }
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
         }
         wrapperPmShopScore.setOnClickListener {

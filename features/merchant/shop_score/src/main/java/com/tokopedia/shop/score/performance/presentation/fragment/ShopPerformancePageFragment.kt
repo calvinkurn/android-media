@@ -291,8 +291,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     /**
      * ItemTimerNewSellerListener
      */
-    override fun onBtnShopPerformanceToFaqClicked() {
-        goToFaqSection()
+    override fun onBtnLearnNowClicked(sellerEduUrl: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                sellerEduUrl
+            )
+        }
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
@@ -813,8 +819,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun showPopupEndTenureNewSeller(
         headerShopPerformanceUiModel: HeaderShopPerformanceUiModel
     ) {
-        val isShowPopupEndTenure = shopScoreCoachMarkPrefs?.getIsShowPopupEndTenure()
-        if (isShowPopupEndTenure == true) return
+        val isShowPopupEndTenure = headerShopPerformanceUiModel.isShowPopupEndTenure
+        if (!isShowPopupEndTenure) return
 
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val popupEndTenureUiModel = PopupEndTenureUiModel(
@@ -826,11 +832,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             BottomSheetPopupEndTenure.newInstance(cacheManager?.id.orEmpty())
 
         bottomSheetPopupEndTenure.setOnDismissListener {
-            if (isShowPopupEndTenure == false) {
-                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(true)
+            if (isShowPopupEndTenure) {
+                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(false)
             }
         }
-        if (isShowPopupEndTenure == false) {
+        if (isShowPopupEndTenure) {
             cacheManager?.put(
                 BottomSheetPopupEndTenure.KEY_ITEM_END_TENURE_POP_UP,
                 popupEndTenureUiModel

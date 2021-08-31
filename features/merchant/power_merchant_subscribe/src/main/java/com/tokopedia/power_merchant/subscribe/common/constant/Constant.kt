@@ -28,6 +28,7 @@ object Constant {
         const val POWER_MERCHANT_TERMS_AND_CONDITION =
             "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
+        const val PM_PRO_IDLE = "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
     }
 
     object Image {

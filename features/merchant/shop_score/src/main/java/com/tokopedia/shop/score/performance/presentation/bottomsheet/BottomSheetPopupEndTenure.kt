@@ -123,10 +123,10 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     private fun setupLevelBarNewSeller(shopLevel: String) {
         ivLevelBarNewSeller?.apply {
             when (shopLevel.getNumberFormat(ShopScoreConstant.NULL_NUMBER)) {
-                ShopScoreConstant.SHOP_SCORE_LEVEL_ONE -> loadImage(R.drawable.ic_one_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_TWO -> loadImage(R.drawable.ic_two_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_THREE -> loadImage(R.drawable.ic_three_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> loadImage(R.drawable.ic_four_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_ONE -> setImageResource(R.drawable.ic_one_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_TWO -> setImageResource(R.drawable.ic_two_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_THREE -> setImageResource(R.drawable.ic_three_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> setImageResource(R.drawable.ic_four_level_green)
             }
         }
     }
