@@ -25,7 +25,9 @@
         app:layout_constraintStart_toEndOf="@+id/iv_hotel_nearby_place"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        tools:text="Stasiun MRT Benhil" />
+        tools:text="Stasiun MRT Benhil"
+        android:ellipsize="end"
+        android:maxLines="1"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_nearby_place_distance"
