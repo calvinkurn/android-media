@@ -45,5 +45,11 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_score.png"
         const val IC_PM_PRO_NEW_SELLER_TRANSACTION =
             "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_new_seller_transaction.png"
+        const val BG_BENEFIT_PACKAGE_PM_PRO_ULTIMATE =
+            "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_ultimate.png"
+        const val BG_BENEFIT_PACKAGE_PM_PRO_ADVANCED =
+            "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_advanced.png"
+        const val BG_BENEFIT_PACKAGE_PM_PRO_EXPERT=
+            "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_expert.png"
     }
 }

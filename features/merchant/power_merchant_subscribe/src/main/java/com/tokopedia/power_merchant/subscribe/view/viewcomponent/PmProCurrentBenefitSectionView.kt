@@ -51,7 +51,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         tvNextUpdatePmProStatus.setTextMakeHyperlink(
             context.getString(
                 R.string.pm_next_update_benefit_package_status, data.nextMonthlyRefreshDate,
-                data.currentShopLevel, data.grade
+                data.nextShopLevel, data.grade
             )
         ) {
             updateInfoCtaClickListener?.invoke()
@@ -73,11 +73,11 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
             }
             PMShopGrade.ULTIMATE.equals(grade, true) -> {
                 labelPmProStatus?.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400))
-                imgPmGradeBg?.loadImage(R.drawable.bg_pm_benefit_package_ultimate)
+                bgBenefitPackageStatus?.setImageResource(R.drawable.bg_pm_benefit_package_ultimate)
             }
             else -> { //PMShopGrade.ADVANCED
                 labelPmProStatus?.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
-                imgPmGradeBg?.loadImage(R.drawable.bg_pm_benefit_package_advanced)
+                bgBenefitPackageStatus?.setImageResource(R.drawable.bg_pm_benefit_package_advanced)
             }
         }
     }

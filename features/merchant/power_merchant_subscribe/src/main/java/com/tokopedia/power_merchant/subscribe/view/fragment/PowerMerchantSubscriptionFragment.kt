@@ -644,7 +644,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
                 grade = grade,
                 nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
                 nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
-                currentShopLevel = data.currentPMGrade?.shopLevel.orEmpty(),
+                nextShopLevel = data.nextPMGrade?.shopLevel?.toString().orEmpty(),
                 pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 isAutoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orFalse(),
