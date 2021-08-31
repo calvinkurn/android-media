@@ -14,9 +14,6 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
@@ -56,9 +53,11 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketClosedReason
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -97,8 +96,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-    val observableSocketInfo: LiveData<PlaySocketInfo>
-        get() = _observableSocketInfo
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
@@ -287,7 +284,6 @@ class PlayViewModel @Inject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
@@ -347,8 +343,6 @@ class PlayViewModel @Inject constructor(
     private val amountStringStepArray = arrayOf("k", "m")
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
     //endregion
-
-    private var channelInfoJob: Job? = null
 
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
@@ -674,7 +668,6 @@ class PlayViewModel @Inject constructor(
     fun defocusPage(shouldPauseVideo: Boolean) {
         isActive.compareAndSet(true, false)
 
-        stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
 
@@ -784,7 +777,8 @@ class PlayViewModel @Inject constructor(
     fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
-        viewModelScope.launch {
+        socketJob?.cancel()
+        socketJob = viewModelScope.launch {
             val socketCredential = try {
                 withContext(dispatchers.io) {
                     return@withContext getSocketCredentialUseCase.executeOnBackground()
@@ -793,17 +787,16 @@ class PlayViewModel @Inject constructor(
                 SocketCredential()
             }
 
-            socketJob = launch {
-                playChannelWebSocket.listenAsFlow()
-                        .collect {
-                            handleWebSocketResponse(it, channelId, socketCredential)
-                        }
-            }
-
+            if (!isActive) return@launch
             connectWebSocket(
                     channelId = channelId,
                     socketCredential = socketCredential
             )
+
+            playChannelWebSocket.listenAsFlow()
+                    .collect {
+                        handleWebSocketResponse(it, channelId, socketCredential)
+                    }
         }
     }
 
@@ -812,16 +805,12 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopWebSocket() {
+        socketJob?.cancel()
         playChannelWebSocket.close()
     }
 
     private fun stopInteractive() {
         _interactive.value = PlayInteractiveUiState.NoInteractive
-    }
-
-    private fun stopJob() {
-        channelInfoJob?.cancel()
-        socketJob?.cancel()
     }
 
     /**

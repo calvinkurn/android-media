@@ -33,6 +33,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
@@ -49,7 +50,6 @@ import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -295,10 +295,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 if (!isFirstSendOtp) {
                     when (otpData.otpType) {
                         OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackFailedClickResendRegisterPhoneOtpButton(message)
+                            analytics.trackFailedClickResendRegisterPhoneOtpButton(message.removeErrorCode())
                         }
                         OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackFailedClickResendRegisterEmailOtpButton(message)
+                            analytics.trackFailedClickResendRegisterEmailOtpButton(message.removeErrorCode())
                         }
                     }
                 }
@@ -375,14 +375,14 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
             when (otpData.otpType) {
                 OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                    analytics.trackFailedClickVerificationRegisterPhoneButton(message)
+                    analytics.trackFailedClickVerificationRegisterPhoneButton(message.removeErrorCode())
                 }
                 OtpConstant.OtpType.REGISTER_EMAIL -> {
-                    analytics.trackFailedClickVerificationRegisterEmailButton(message)
+                    analytics.trackFailedClickVerificationRegisterEmailButton(message.removeErrorCode())
                 }
             }
             // tracker auto submit failed
-            analytics.trackAutoSubmitVerification(otpData, modeListData, false, message)
+            analytics.trackAutoSubmitVerification(otpData, modeListData, false, message.removeErrorCode())
             viewBound.pin?.isError = true
             showKeyboard()
         }

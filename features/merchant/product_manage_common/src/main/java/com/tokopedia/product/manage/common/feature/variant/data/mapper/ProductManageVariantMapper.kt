@@ -1,8 +1,10 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
@@ -12,6 +14,7 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.param.Vari
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSelectionInput
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSizeChartInput
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 
 object ProductManageVariantMapper {
 
@@ -36,7 +39,8 @@ object ProductManageVariantMapper {
                 it.stock,
                 it.pictures,
                 isAllStockEmpty,
-                access
+                access,
+                it.campaignTypeList
             )
         }
 
@@ -78,7 +82,7 @@ object ProductManageVariantMapper {
                     it.status,
                     it.combination,
                     it.isPrimary,
-                    it.price,
+                    it.price.toInt().orZero(),
                     it.sku,
                     it.stock,
                     it.pictures
@@ -113,6 +117,15 @@ object ProductManageVariantMapper {
         val sizeCharts = result.sizeCharts
 
         return EditVariantResult(productId, productName, variants, selections, sizeCharts)
+    }
+
+    fun mapVariantCampaignTypeToProduct(campaignList: List<CampaignType>?): List<ProductCampaignType>? {
+        return campaignList?.map {
+            ProductCampaignType(
+                iconUrl = it.iconUrl,
+                name = it.name
+            )
+        }
     }
 
     private fun getVariantName(optionIndexList: List<Int>, selections: List<Selection>): String {

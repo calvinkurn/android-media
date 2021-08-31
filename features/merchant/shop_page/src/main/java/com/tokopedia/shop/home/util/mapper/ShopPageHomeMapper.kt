@@ -20,6 +20,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
+    private const val PRODUCT_RATING_DIVIDER = 20
 
     fun mapToShopPageHomeLayoutUiModel(
             response: ShopLayoutWidget,
@@ -51,7 +52,7 @@ object ShopPageHomeMapper {
                     it.imageUrl = primaryImage.original
                     it.imageUrl300 = primaryImage.resize300
                     it.totalReview = stats.reviewCount.toString()
-                    it.rating = stats.rating.toDouble() / 20
+                    it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
                     if (cashback.cashbackPercent > 0) {
                         it.cashback = cashback.cashbackPercent.toDouble()
                     }
@@ -453,7 +454,7 @@ object ShopPageHomeMapper {
                 imageUrl = response.imageUrl
                 imageUrl300 = ""
                 totalReview = response.totalReview
-                rating = (response.rating.toDoubleOrZero() / 20)
+                rating = (response.rating.toDoubleOrZero() / PRODUCT_RATING_DIVIDER)
                 isPo = response.isPO
                 isWishList = false
                 productUrl = response.productUrl
