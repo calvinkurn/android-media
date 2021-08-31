@@ -26,10 +26,10 @@ object InventoryErrorMapper {
             isBundleAvailable -> {
                 InventoryError(type = InventoryErrorType.NO_ERROR)
             }
-            isOtherVariantAvailable && isOtherVariantAvailable-> {
+            isOtherBundleAvailable && isOtherVariantAvailable -> {
                 InventoryError(type = InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE, emptyVariantProductIds)
             }
-            isOtherVariantAvailable -> {
+            isOtherVariantAvailable && emptyVariantProductIds.isNotEmpty() -> {
                 InventoryError(type = InventoryErrorType.OTHER_VARIANT_AVAILABLE, emptyVariantProductIds)
             }
             isOtherBundleAvailable -> {

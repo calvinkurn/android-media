@@ -56,10 +56,12 @@ class SingleProductBundleViewModel @Inject constructor(
         context: Context,
         bundleInfo: List<BundleInfo>,
         selectedBundleId: String,
-        selectedProductId: Long
+        selectedProductId: Long,
+        emptyVariantProductIds: List<String>
     ) {
         val bundleModel = BundleInfoToSingleProductBundleMapper
-            .mapToSingleProductBundle(context, bundleInfo, selectedBundleId, selectedProductId)
+            .mapToSingleProductBundle(context, bundleInfo, selectedBundleId, selectedProductId,
+                emptyVariantProductIds)
 
         if (bundleModel.items.isEmpty()) {
             mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY

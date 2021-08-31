@@ -43,9 +43,10 @@ import javax.inject.Inject
 
 class SingleProductBundleFragment(
     private val parentProductID: Long = 0L,
-    private var bundleInfo: List<BundleInfo> = emptyList(),
-    private var selectedBundleId: String = "",
-    private var selectedProductId: Long = 0L
+    private val bundleInfo: List<BundleInfo> = emptyList(),
+    private val selectedBundleId: String = "",
+    private val selectedProductId: Long = 0L,
+    private val emptyVariantProductIds: List<String> = emptyList()
 ) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
@@ -59,7 +60,8 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId)
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
+            emptyVariantProductIds)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -239,7 +241,7 @@ class SingleProductBundleFragment(
             errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
             errorAction.text = getString(R.string.action_back_to_pdp)
             errorAction.setOnClickListener {
-                refreshPage()
+                activity?.finish()
             }
         }
     }
@@ -264,8 +266,13 @@ class SingleProductBundleFragment(
 
     companion object {
         @JvmStatic
-        fun newInstance(parentProductID: Long, bundleInfo: List<BundleInfo>,
-                        selectedBundleId: String = "", selectedProductId: Long = 0L) =
-            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId, selectedProductId)
+        fun newInstance(
+            parentProductID: Long,
+            bundleInfo: List<BundleInfo>,
+            selectedBundleId: String = "",
+            selectedProductId: Long = 0L,
+            emptyVariantProductIds: List<String>
+        ) =
+            SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId, selectedProductId, emptyVariantProductIds)
     }
 }

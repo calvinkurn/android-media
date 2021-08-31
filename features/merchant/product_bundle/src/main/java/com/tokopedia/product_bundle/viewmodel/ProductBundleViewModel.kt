@@ -49,16 +49,11 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     var parentProductID: Long = 0L
-    var selectedBundleId: Long = 0L
-    var selectedProductIds: List<Long> = listOf(0)
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
-    val inventoryError = Transformations.map(getBundleInfoResultLiveData) { result ->
-        InventoryErrorMapper.mapToInventoryError(result, selectedBundleId, selectedProductIds)
-    }
 
     private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
     val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData
