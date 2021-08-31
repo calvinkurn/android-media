@@ -17,9 +17,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
@@ -83,7 +81,7 @@ fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
                     HomeLayoutItemState.LOADING
             ),
             HomeLayoutItemUiModel(
-                    HomeChooseAddressWidgetUiModel(
+                    TokoNowChooseAddressWidgetUiModel(
                             id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
                     ),
                     HomeLayoutItemState.NOT_LOADED
@@ -128,8 +126,8 @@ fun createLoadingState(): HomeLayoutListUiModel {
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
     val mutableList = mutableListOf<HomeLayoutItemUiModel>()
-    val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = HomeEmptyStateUiModel(id = id)
+    val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id)
     mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
     mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
