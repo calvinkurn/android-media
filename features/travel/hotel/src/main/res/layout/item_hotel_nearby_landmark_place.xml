@@ -21,13 +21,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:lineSpacingExtra="4sp"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@+id/tv_hotel_nearby_place_distance"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_hotel_nearby_place"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        tools:text="Stasiun MRT Benhil"
-        android:ellipsize="end"
-        android:maxLines="1"/>
+        tools:text="Stasiun MRT Benhil" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_nearby_place_distance"
