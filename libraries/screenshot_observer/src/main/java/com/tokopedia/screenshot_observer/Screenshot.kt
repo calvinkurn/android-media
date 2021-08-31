@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import com.example.screenshot_observer.R
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
@@ -42,11 +41,14 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
     }
 
     fun register() {
-        mContentResolver.registerContentObserver(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                true,
-                mContentObserver
-        )
+        currentActivity?.let {
+            if (allPermissionsGranted(it))
+                mContentResolver.registerContentObserver(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    true,
+                    mContentObserver
+                )
+        }
     }
 
     private fun allPermissionsGranted(activity: Activity): Boolean {
