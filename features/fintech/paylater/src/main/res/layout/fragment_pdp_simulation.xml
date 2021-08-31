@@ -1,103 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_scroll_view"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/sp_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/unify_space_0">
 
-        <include
-            android:id="@+id/productDetail"
-            layout="@layout/product_detail"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll">
+
+            <include
+                android:id="@+id/productDetail"
+                layout="@layout/product_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.ContentSwitcherUnify
+                android:id="@+id/modeSwitcher"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_32"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:textOff="@string/pay_later_content_switcher_heading"
+                android:textOn="@string/pay_later_credit_content_switcher_heading" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/payLaterBorder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_16" />
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/paylaterTabLayout"
+                style="?tabTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_goneMarginTop="@dimen/unify_space_16"
+                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabTextColor="@color/Unify_N700_68" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTitleSimulation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:text="@string/pay_later_simulation_header_title"
+                android:textSize="@dimen/unify_font_16"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
 
 
-        <com.tokopedia.unifycomponents.ContentSwitcherUnify
-            android:id="@+id/modeSwitcher"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/unify_space_32"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:textOff="@string/pay_later_content_switcher_heading"
-            android:textOn="@string/pay_later_credit_content_switcher_heading"
-            app:layout_constraintHorizontal_bias="0.718"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productDetail" />
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/sortFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:sort_filter_relationship="OR"
+                app:sort_filter_type="quick" />
 
-        <include
-            android:id="@+id/paylaterDaftarWidget"
-            layout="@layout/paylater_daftar_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/pay_later_margin_dp_10"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/pay_later_margin_dp_10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/modeSwitcher" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/payLaterBorder"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_8"
-            android:layout_marginTop="@dimen/unify_space_16"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvAvailablePaylater"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="Available Pay Later for this product"
+                android:textSize="@dimen/unify_font_16"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/daftarGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="paylaterDaftarWidget,payLaterBorder" />
 
-        <com.tokopedia.unifycomponents.TabsUnify
-            android:id="@+id/paylaterTabLayout"
-            style="?tabTheme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
-            app:layout_goneMarginTop="@dimen/unify_space_16"
-            app:tabIndicatorColor="@color/Unify_G500"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/Unify_G500"
-            app:tabTextColor="@color/Unify_N700_68" />
+        </LinearLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/payLaterViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_500"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/paylaterTabLayout" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/parentDataGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="paylaterTabLayout, payLaterViewPager" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/payLaterParentGlobalError"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_48"
-            android:gravity="center"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/payLaterViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
