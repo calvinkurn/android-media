@@ -4,12 +4,13 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.play.widget.util.PlayWidgetDateFormatter
 import javax.inject.Inject
 
 /**
  * Created by jegul on 07/10/20
  */
+
 class PlayWidgetSmallUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
         private val promoLabelMapper: PlayWidgetPromoLabelMapper,
@@ -46,7 +47,7 @@ class PlayWidgetSmallUiMapper @Inject constructor(
             channelType = PlayWidgetChannelType.getByValue(item.widgetType),
             appLink = item.appLink,
             webLink = item.webLink,
-            startTime = item.startTime,
+            startTime = PlayWidgetDateFormatter.formatDate(item.startTime),
             totalView = item.stats.view.formatted,
             totalViewVisible = item.video.isShowTotalView,
             promoType = promoLabelMapper.mapWidgetPromoType(item.config.promoLabels),

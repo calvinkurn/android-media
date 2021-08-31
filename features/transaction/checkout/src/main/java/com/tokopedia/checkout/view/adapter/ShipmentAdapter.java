@@ -831,7 +831,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .getSelectedCourier().getAdditionalPrice();
                     }
                 }
-                if (shipmentSingleAddressItem.getIsLeasingProduct()) {
+                if (shipmentSingleAddressItem.isLeasingProduct()) {
                     totalBookingFee += shipmentSingleAddressItem.getBookingFee();
                 }
             }
