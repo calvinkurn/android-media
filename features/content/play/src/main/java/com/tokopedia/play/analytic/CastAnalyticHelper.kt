@@ -22,9 +22,13 @@ class CastAnalyticHelper(
 
     fun stopRecording() {
         if(isRecording) {
-            val duration = Calendar.getInstance().timeInMillis - startTime
+            val duration = (Calendar.getInstance().timeInMillis - startTime) / SECOND_DIVIDER
             startTime = 0
             analytic.recordCastDuration(duration)
         }
+    }
+
+    private companion object {
+        const val SECOND_DIVIDER = 1000L
     }
 }
