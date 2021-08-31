@@ -900,7 +900,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
         if (chatRoom.hasAttachment() && msgId != 0L) {
             chatAttachmentUseCase.getAttachments(
-                msgId, chatRoom.attachmentIds, userLocationInfo,
+                msgId, chatRoom.replyIDs, userLocationInfo,
                 ::onSuccessGetAttachments, ::onErrorGetAttachments
             )
         }

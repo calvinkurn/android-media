@@ -438,13 +438,13 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on success loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
             put("test_attachment", Attachment())
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds,
+                exMessageId.toLongOrZero(), roomModel.replyIDs,
                 any(), captureLambda(), any()
             )
         } answers {
@@ -466,14 +466,14 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on error loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
             put("test_error_attachment", Attachment())
         }
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds, any(),
+                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
                 any(), captureLambda()
             )
         } answers {

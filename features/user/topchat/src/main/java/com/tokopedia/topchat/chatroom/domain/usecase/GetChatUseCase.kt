@@ -222,7 +222,7 @@ open class GetChatUseCase @Inject constructor(
                   fraudStatus
                   replyTime
                   status
-                  attachmentID
+                  replyIDs
                   isOpposite
                   isHighlight
                   isRead
