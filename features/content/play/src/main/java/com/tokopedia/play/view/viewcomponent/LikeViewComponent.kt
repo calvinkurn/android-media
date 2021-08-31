@@ -32,6 +32,7 @@ class LikeViewComponent(
     private var isMultipleLike: Boolean = false
     private var timer: CountDownTimer? = null
     private var currentLikeStatus = false
+    private var currentAnimation: AnimationType = AnimationType.Unknown
 
     private val likeAnimatorListener = object : Animator.AnimatorListener {
 
@@ -89,14 +90,19 @@ class LikeViewComponent(
     }
 
     private fun playAnimation(animationType: AnimationType) {
-        animationLike.setAnimation(
-            when(animationType) {
-                AnimationType.Default -> R.raw.anim_play_like
-                AnimationType.Spam -> R.raw.anim_spam_like
-                AnimationType.Reminder -> R.raw.anim_shaking_thumb
-            }
-        )
+        if(animationType != currentAnimation) {
+            animationLike.setAnimation(
+                when(animationType) {
+                    AnimationType.Default -> R.raw.anim_play_like
+                    AnimationType.Spam -> R.raw.anim_spam_like
+                    AnimationType.Reminder -> R.raw.anim_shaking_thumb
+                    AnimationType.Unknown -> R.raw.anim_play_like
+                }
+            )
+        }
         animationLike.playAnimation()
+
+        currentAnimation = animationType
     }
 
     fun setIsMultipleLike(isMultipleLike: Boolean) {
@@ -140,15 +146,16 @@ class LikeViewComponent(
         const val END_ANIMATED_PROGRESS = 1f
 
         const val COUNTDOWN_INTERVAL = 1000L
-        const val INITIAL_REMINDER_DURATION = 300000L
-        const val REMINDER_DURATION = 60000L
+//        const val INITIAL_REMINDER_DURATION = 300000L
+//        const val REMINDER_DURATION = 60000L
 
         // Mock
-//        const val INITIAL_REMINDER_DURATION = 3000L
-//        const val REMINDER_DURATION = 5000L
+        const val INITIAL_REMINDER_DURATION = 3000L
+        const val REMINDER_DURATION = 5000L
     }
 
     sealed class AnimationType {
+        object Unknown: AnimationType()
         object Default: AnimationType()
         object Spam: AnimationType()
         object Reminder: AnimationType()
