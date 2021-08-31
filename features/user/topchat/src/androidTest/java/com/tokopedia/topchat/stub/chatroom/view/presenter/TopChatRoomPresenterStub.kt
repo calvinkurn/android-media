@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.stub.chatroom.view.presenter
 
 import android.content.SharedPreferences
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -110,15 +111,9 @@ open class TopChatRoomPresenterStub @Inject constructor(
         return true
     }
 
-    override fun addDummyToService(image: ImageUploadViewModel) {
-        view?.addDummyMessage(image)
-        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-        UploadImageChatService.dummyMap.add(uploadImageDummy)
-    }
-
     override fun startUploadImageWithService(image: ImageUploadViewModel) {
         UploadImageChatServiceStub.enqueueWork(
-            view.context,
+            InstrumentationRegistry.getInstrumentation().context,
             ImageUploadMapper.mapToImageUploadServer(image),
             thisMessageId
         )
