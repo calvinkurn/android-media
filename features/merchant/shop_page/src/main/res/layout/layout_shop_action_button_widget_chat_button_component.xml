@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     tools:text="Chat"
     app:layout_flexGrow="1"
-    app:unifyButtonSize="micro"
+    app:unifyButtonSize="@integer/header_button_height"
     app:unifyButtonType="alternate"
     app:unifyButtonVariant="ghost"
     tools:visibility="visible" />

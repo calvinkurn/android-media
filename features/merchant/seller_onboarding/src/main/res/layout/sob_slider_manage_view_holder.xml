@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/partial_view_holder_observer" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSobSliderManageTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sob_title_top_margin"
+        android:gravity="center"
+        android:text="@string/sob_slider_title_manage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobManageBg"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sob_circle_bg_start_end_margin"
+        android:layout_marginEnd="@dimen/sob_circle_bg_start_end_margin"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSobSliderManageTitle"
+        tools:src="@drawable/bg_sob_circle" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobManage1"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/sob_dimen_28"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/sob_dimen_72"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:scaleType="fitStart"
+        app:layout_constraintBottom_toTopOf="@+id/imgSobManage2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSobSliderManageTitle"
+        tools:src="@drawable/img_sob_manage_stock" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobManage2"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/sob_dimen_88"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/sob_dimen_28"
+        android:scaleType="fitEnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSobManage1"
+        tools:src="@drawable/img_sob_som_card" />
+</androidx.constraintlayout.widget.ConstraintLayout>

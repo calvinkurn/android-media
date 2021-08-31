@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -42,19 +41,12 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                 }
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                         ProductRecommendationTracking.getClickProductTracking(
-                                recommendationItems = listOf(
-                                        comparisonModel.recommendationItem
-                                ),
+                                recommendationItem = comparisonModel.recommendationItem,
                                 androidPageName = recommendationTrackingModel.androidPageName,
                                 headerTitle = recommendationTrackingModel.headerTitle,
                                 chipsTitle = comparisonModel.productCardModel.productName,
-                                recomPageName = comparisonModel.recommendationItem.pageName,
-                                isTopads = comparisonModel.recommendationItem.isTopAds,
-                                widgetType = comparisonModel.recommendationItem.type,
-                                productId = comparisonModel.recommendationItem.productId.toString(),
-                                position = (adapterPosition+1),
+                                position = adapterPosition,
                                 isLoggedIn = userSession.isLoggedIn,
-                                recommendationType = comparisonModel.recommendationItem.recommendationType,
                                 anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                         )
                 )
@@ -74,18 +66,11 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
             }
             trackingQueue?.putEETracking(
                     ProductRecommendationTracking.getImpressionProductTracking(
-                            recommendationItems = listOf(
-                                    comparisonModel.recommendationItem
-                            ),
+                            recommendationItem = comparisonModel.recommendationItem,
                             androidPageName = recommendationTrackingModel.androidPageName,
                             headerTitle = recommendationTrackingModel.headerTitle,
-                            recomPageName = comparisonModel.recommendationItem.pageName,
-                            isTopads = comparisonModel.recommendationItem.isTopAds,
-                            widgetType = comparisonModel.recommendationItem.type,
-                            productId = comparisonModel.recommendationItem.productId.toString(),
-                            position = (adapterPosition+1),
+                            position = adapterPosition,
                             isLoggedIn = userSession.isLoggedIn,
-                            recommendationType = comparisonModel.recommendationItem.recommendationType,
                             anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                     )
             )

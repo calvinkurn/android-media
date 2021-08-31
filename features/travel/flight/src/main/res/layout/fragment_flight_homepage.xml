@@ -61,7 +61,6 @@
             android:layout_marginTop="@dimen/flight_dp_20"
             android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/flight_dp_20"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -78,12 +77,22 @@
                 app:typographyType="heading_3"
                 tools:text="Promo tiket pesawat" />
 
-            <com.tokopedia.banner.Banner
+            <com.tokopedia.carousel.CarouselUnify
                 android:id="@+id/flightHomepageBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/flightHomepageAllPromo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/flight_show_all_promo_text"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_3" />
         </LinearLayout>
 
         <!-- Video Banner disini -->

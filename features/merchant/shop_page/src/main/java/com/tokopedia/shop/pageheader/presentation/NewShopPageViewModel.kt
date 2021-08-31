@@ -26,6 +26,7 @@ import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_BRANCH_LINK
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CORE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CREATE_INFO
@@ -396,7 +397,8 @@ class NewShopPageViewModel @Inject constructor(
                         FIELD_IS_OPEN,
                         FIELD_CLOSED_INFO,
                         FIELD_CREATE_INFO,
-                        FIELD_SHOP_SNIPPET
+                        FIELD_SHOP_SNIPPET,
+                        FIELD_BRANCH_LINK
                 )
         )
         return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()

@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -18,6 +19,7 @@ import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
@@ -29,7 +31,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -98,10 +99,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
+    protected fun isCheckoutPassDataInitialized() = ::checkoutPassData.isInitialized
+
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> navigateToCart()
+                is Success -> navigateToCart(it.data)
                 is Fail -> showErrorMessage(it.throwable)
             }
             onLoadingAtc(false)
@@ -146,6 +149,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 when (it) {
                     is Success -> processFavoriteNumbers(it.data)
                     is Fail -> onFavoriteNumbersError(it.throwable)
+                }
+            }
+        })
+
+        topupBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processSeamlessFavoriteNumbers(it.data)
+                    is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
                 }
             }
         })
@@ -238,9 +250,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
+                    data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
                         view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                            val errMsg = ErrorHandler.getErrorMessage(context, throwable as Throwable)
+                            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -395,6 +408,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
+    fun getSeamlessFavoriteNumbers(categoryIds: List<String>) {
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+        )
+    }
+
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
         topupBillsViewModel.checkVoucher(promoCode,
@@ -445,11 +465,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
+    abstract fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber)
+
     abstract fun onEnquiryError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 
     abstract fun onFavoriteNumbersError(error: Throwable)
+
+    abstract fun onSeamlessFavoriteNumbersError(error: Throwable)
 
     abstract fun onCheckVoucherError(error: Throwable)
 
@@ -482,10 +506,11 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToCart() {
+    private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
-                val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+                checkoutPassData.categoryId = categoryId
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
             }

@@ -34,6 +34,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -173,7 +174,7 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        if (errorMessage == forbiddenMessage) {
+                        if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
                             onErrorRegister(errorMessage)
@@ -555,8 +556,8 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {
-        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage ?: "")
-        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
+        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
 
     val isAutoVerify: Int
@@ -572,13 +573,6 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
 
         private const val ALREADY_REGISTERED = "sudah terdaftar"
-        private const val GO_TO_REGISTER = 0
-        private const val GO_TO_ACTIVATION_PAGE = 1
-        private const val GO_TO_LOGIN = 2
-        private const val GO_TO_RESET_PASSWORD = 3
-        private const val STATUS_ACTIVE = 1
-        private const val STATUS_PENDING = -1
-        private const val STATUS_INACTIVE = 0
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {
             val fragment = RegisterEmailFragment()
             fragment.arguments = bundle

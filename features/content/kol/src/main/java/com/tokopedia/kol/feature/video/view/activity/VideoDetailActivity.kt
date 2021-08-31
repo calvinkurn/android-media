@@ -45,6 +45,8 @@ class VideoDetailActivity : BaseSimpleActivity() {
         extras.putString(PARAM_CALL_SOURCE, intent.getStringExtra(PARAM_CALL_SOURCE))
         extras.putString(PARAM_IS_POST_FOLLOWED, intent.getStringExtra(PARAM_IS_POST_FOLLOWED))
         extras.putString(PARAM_POST_TYPE, intent.getStringExtra(PARAM_POST_TYPE))
+        extras.putString(PARAM_VIDEO_AUTHOR_TYPE, intent.getStringExtra(PARAM_VIDEO_AUTHOR_TYPE))
+
 
         return VideoDetailFragment.getInstance(extras)
     }

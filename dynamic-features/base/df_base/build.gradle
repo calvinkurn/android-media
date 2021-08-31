@@ -78,8 +78,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
     implementation projectOrAar(rootProject.ext.features.smartBills)
-    implementation projectOrAar(rootProject.ext.features.recharge_slice)
-    implementation projectOrAar(rootProject.ext.features.travel_slice)
     implementation projectOrAar(rootProject.ext.features.digitalCheckout)
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
 
@@ -112,7 +110,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
-    implementation projectOrAar(rootProject.ext.features.review)
     implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     //Operational
@@ -142,7 +139,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.otp)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.inbox)
     implementation projectOrAar(rootProject.ext.features.loginfingerprint)

@@ -24,9 +24,9 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.data.*
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
@@ -35,9 +35,9 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_review_detail.*
-import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
@@ -66,6 +66,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: ReviewDetailViewModel
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
+    private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -125,6 +126,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
+        bindViews()
         initHeader()
         initErrorPage()
         observeReviewDetails()
@@ -175,7 +177,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     override fun onReviewScoreClicked(score: Int): Boolean {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
-            viewModel.submitReputation(it.data.reputation.reputationId.toLongOrZero(), score)
+            viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
         return false
     }
@@ -363,6 +365,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun bindViews() {
+        reviewConnectionErrorRetryButton = view?.findViewById(com.tokopedia.review.inbox.R.id.reviewConnectionErrorRetryButton)
+    }
+
     private fun initHeader() {
         reviewDetailHeader.apply {
             title = getString(R.string.review_history_details_toolbar)
@@ -373,17 +379,15 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun initErrorPage() {
-        reviewDetailConnectionError.apply {
-            reviewConnectionErrorRetryButton.setOnClickListener {
-                retry()
-            }
+        reviewConnectionErrorRetryButton?.setOnClickListener {
+            retry()
         }
     }
 
     private fun addHeaderIcons(editable: Boolean) {
         reviewDetailHeader.apply {
             clearIcons()
-            addRightIcon(R.drawable.ic_share)
+            addRightIcon(R.drawable.ic_history_details_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
                 (viewModel.reviewDetails.value as? Success)?.let {
                     ReviewDetailTracking.eventClickShare(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())

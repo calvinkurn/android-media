@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
@@ -64,6 +65,8 @@ import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -86,6 +89,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.network.exception.ResponseErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
@@ -98,6 +103,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.constant.LoggerConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
@@ -129,6 +135,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1268,7 +1275,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false, null, getDeviceId(), getCheckoutLeasingId()
                     );
                 }
-                if(data!= null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)){
+                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)) {
                     showToastError(getString(R.string.checkout_label_payment_try_again));
                 }
                 break;
@@ -1502,12 +1509,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString) {
-        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+        ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         boolean stillHasPromo = false;
-        if (validateUsePromoRequest != null) {
-            if (validateUsePromoRequest.getCodes().size() > 0) stillHasPromo = true;
-            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                if (ordersItem.getCodes().size() > 0) {
+        if (validateUsePromoRevampUiModel != null) {
+            PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
+            if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
+                stillHasPromo = true;
+            }
+            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode()) && !voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     stillHasPromo = true;
                     break;
                 }
@@ -2044,7 +2054,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierShipmentRecpmmendationCloseClicked() {
+    public void onCourierShipmentRecommendationCloseClicked() {
         sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
     }
 
@@ -2094,10 +2104,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
                 ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
-                shippingDurationBottomsheet.show(activity, getFragmentManager(), this,
+                shippingDurationBottomsheet.show(activity, getParentFragmentManager(), this,
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
-                        shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
+                        shipmentCartItemModel.isLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));
@@ -2241,9 +2251,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void navigateToProtectionMore(String url) {
-        mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
+    public void navigateToProtectionMore(CartItemModel cartItemModel) {
+        mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
+                cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
+                cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(),
+                cartItemModel.getProtectionLinkUrl(), getString(R.string.title_activity_checkout_webview));
     }
 
     @Override
@@ -3165,4 +3178,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void logOnErrorLoadCheckoutPage(Throwable throwable) {
+        CheckoutLogger.INSTANCE.logOnErrorLoadCheckoutPage(throwable, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+    }
+
+    @Override
+    public void logOnErrorLoadCourier(Throwable throwable, int itemPosition) {
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+        if (shipmentCartItemModel != null) {
+            CheckoutLogger.INSTANCE.logOnErrorLoadCourier(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+        }
+    }
+
+    @Override
+    public void logOnErrorCheckout(Throwable throwable, String request) {
+        CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
+    }
 }

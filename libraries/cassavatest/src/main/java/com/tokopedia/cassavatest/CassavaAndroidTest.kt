@@ -37,7 +37,7 @@ fun deleteCassavaDb(context: Context) =
  *
  * @return the list of Validator
  */
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryId: String,
                           isFromNetwork: Boolean,
@@ -53,7 +53,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
     return validationResult
 }
 
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           queryFileName: String): List<Validator> {
@@ -65,7 +65,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
             .first()
 }
 
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
@@ -101,7 +101,7 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
                             ValidationResultData(
                                     dataLayerId = it.id,
                                     result = it.status == Status.SUCCESS,
-                                    errorMessage = ""
+                                    errorMessage = it.errors
                             )
                         }.toList()
                 )

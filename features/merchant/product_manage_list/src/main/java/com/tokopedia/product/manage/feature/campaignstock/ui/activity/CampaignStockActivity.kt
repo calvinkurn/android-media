@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -57,7 +56,7 @@ class CampaignStockActivity : BaseSimpleActivity() {
     private fun setupStatusBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent))
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)
             }

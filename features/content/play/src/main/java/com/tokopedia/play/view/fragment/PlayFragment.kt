@@ -13,10 +13,12 @@ import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -24,12 +26,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
@@ -43,19 +44,21 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -143,7 +146,7 @@ class PlayFragment @Inject constructor(
         onPageFocused()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
-        }, 200)
+        }, KEYBOARD_REGISTER_DELAY)
     }
 
     override fun onPause() {
@@ -226,12 +229,14 @@ class PlayFragment @Inject constructor(
 
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
-        if (playViewModel.videoPlayer.isYouTube) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
-        } else {
-            fragmentVideoView.safeInit()
-            fragmentVideoView.show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (playViewModel.videoPlayer.isYouTube) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            } else {
+                fragmentVideoView.safeInit()
+                fragmentVideoView.show()
+            }
         }
     }
 
@@ -279,8 +284,9 @@ class PlayFragment @Inject constructor(
     //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
     private fun onPageFocused() {
         try {
-            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
-            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
+            val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
+            playViewModel.focusPage(channelData)
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -355,31 +361,20 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeSocketInfo()
         observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
         observePinned()
         observePiPEvent()
+
+        observeUiState()
     }
 
     //region observe
     /**
      * Observe
      */
-
-    private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
-            when(it) {
-                is PlaySocketInfo.Reconnect ->
-                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
-                is PlaySocketInfo.Error ->
-                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
-            }
-        })
-    }
-
     private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
@@ -420,8 +415,18 @@ class PlayFragment @Inject constructor(
             buttonCloseViewOnStateChanged(bottomInsets = it)
             fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
 
-            if (it.isAnyShown) playNavigation.requestDisableNavigation()
-            else playNavigation.requestEnableNavigation()
+            /**
+             * We have to change the translationZ for now, because in some cases, the interaction view
+             * cover part of the video and prevents the click on the video
+             */
+            if (it.isAnyShown) {
+                playNavigation.requestDisableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = -1f
+            }
+            else {
+                playNavigation.requestEnableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = 0f
+            }
         })
     }
 
@@ -435,6 +440,15 @@ class PlayFragment @Inject constructor(
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
             if (it is PiPState.Requesting) onEnterPiPState(it)
         })
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                if (cachedState.isValueChanged(PlayViewerNewUiState::showWinnerBadge) && state.showWinnerBadge) fragmentBottomSheetView.safeInit()
+            }
+        }
     }
     //endregion
 
@@ -574,15 +588,17 @@ class PlayFragment @Inject constructor(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (isFreezeOrBanned) {
-            fragmentYouTubeView.safeRelease()
-            fragmentYouTubeView.hide()
-            return
-        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (isFreezeOrBanned) {
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                return@launchWhenResumed
+            }
 
-        if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            }
         }
     }
     //endregion
@@ -590,5 +606,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val KEYBOARD_REGISTER_DELAY = 200L
     }
 }

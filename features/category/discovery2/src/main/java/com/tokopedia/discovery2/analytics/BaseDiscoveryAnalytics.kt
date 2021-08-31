@@ -21,10 +21,10 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
         return TrackApp.getInstance().gtm
     }
 
-    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {}
+    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {}
     open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID : String) {}
-    open fun trackBannerClick(banner: DataItem, bannerPosition: Int) {}
+    open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackPlayWidgetImpression(componentsItem : ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetClick(componentsItem : ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
@@ -41,7 +41,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackShareClick() {}
     open fun trackSearchClick() {}
     open fun trackGlobalNavBarClick(buttonName : String, userID : String?) {}
-    open fun trackLihatSemuaClick(headerName: String?) {}
+    open fun trackLihatSemuaClick(dataItem: DataItem?) {}
     open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
     open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}
     open fun trackClickSeeAllBanner() {}
@@ -90,4 +90,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {}
     open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
     open fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
+    open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {}
+    open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
 }

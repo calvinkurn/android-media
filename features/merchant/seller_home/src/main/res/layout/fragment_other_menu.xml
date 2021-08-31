@@ -2,11 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shopStatusHeader"
+        android:id="@+id/iv_sah_other_status_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_header_height_extra"
         android:focusable="true"
@@ -17,18 +16,17 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shopStatusHeaderIcon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintWidth_percent="0.117"
-        app:layout_constraintHorizontal_bias="0.867"
-        app:layout_constraintBottom_toBottomOf="@id/shopStatusHeader"
-        app:layout_constraintStart_toStartOf="@id/shopStatusHeader"
-        app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"
-        tools:src="@drawable/ic_pm_icon_header"/>
+        android:id="@+id/iv_sah_other_status_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:translationY="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/otherMenuScrollView"
+        android:id="@+id/sv_sah_other_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -48,15 +46,15 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <include
-                android:id="@+id/shopInfoLayout"
-                layout="@layout/setting_partial_shop_info_success"
+                android:id="@+id/view_sah_other_shop_info"
+                layout="@layout/view_sah_other_header"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
+                app:layout_constraintTop_toBottomOf="@id/view_sah_other_shop_info"/>
 
             <View
                 android:layout_width="match_parent"
