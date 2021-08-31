@@ -19,6 +19,9 @@ data class NewAttachProductItemUiModel(
     val shopName: String,
     val originalPrice: String,
     val discountPercentage: String,
+    val isFreeOngkirActive: Boolean,
+    val imgUrlFreeOngkir: String,
+    val stock: Int
 )
     : Visitable<NewAttachProductListAdapterTypeFactory>, Parcelable {
 

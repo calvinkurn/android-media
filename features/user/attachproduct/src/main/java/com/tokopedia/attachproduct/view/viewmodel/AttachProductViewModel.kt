@@ -81,7 +81,10 @@ class AttachProductViewModel @Inject constructor
                 product.productPrice,
                 product.productName,
                 product.originalPrice,
-                product.discountPercentage
+                product.discountPercentage,
+                product.isFreeOngkirActive,
+                product.imgUrlFreeOngkir,
+                product.stock
             )
         }
         val resultProduct = arrayListOf<ResultProduct>()
