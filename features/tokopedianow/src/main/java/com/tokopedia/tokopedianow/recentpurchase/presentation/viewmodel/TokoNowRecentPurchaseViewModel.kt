@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -10,6 +11,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -21,13 +23,24 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.constant.ConstantValue
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLayoutList
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductGrid
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
+import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
 class TokoNowRecentPurchaseViewModel @Inject constructor(
+    private val getRepurchaseProductListUseCase: GetRepurchaseProductListUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
@@ -38,6 +51,12 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io) {
 
+    companion object {
+        private const val INITIAL_PAGE = 1
+    }
+
+    val getLayout: LiveData<Result<RepurchaseLayoutUiModel>>
+        get() = _getLayout
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
@@ -51,6 +70,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
 
+    private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
@@ -59,6 +79,74 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+    private var layoutList: MutableList<Visitable<*>> = mutableListOf()
+
+    fun showLoading() {
+        layoutList.clear()
+        layoutList.addLoading()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.LOADING
+        )
+
+        _getLayout.postValue(Success(layout))
+    }
+
+    fun getLayoutList() {
+        layoutList.removeLoading()
+        layoutList.addLayoutList()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.SHOW
+        )
+
+        _getLayout.postValue(Success(layout))
+    }
+
+    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int) {
+        launchCatchError(block = {
+            layoutList.filter { it.isNotStaticLayout() }.forEach {
+                when (it) {
+                    is RepurchaseProductGridUiModel -> {
+                        getProductListAsync(warehouseID, queryParam, totalScan, page).await()
+                    }
+                }
+
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    nextPage = INITIAL_PAGE,
+                    state = TokoNowLayoutState.LOADED
+                )
+
+                _getLayout.postValue(Success(layout))
+            }
+        }) {
+
+        }
+    }
+
+    private fun getProductListAsync(
+        warehouseID: Int,
+        queryParam: String,
+        totalScan: Int,
+        page: Int
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
+                queryParam,
+                totalScan,
+                page
+            ).productList
+
+            layoutList.addProductGrid(getProductListResponse)
+        }) {
+
+        }
+    }
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
@@ -104,6 +192,13 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 // get recommendation data
             }
         }) { /* nothing to do */ }
+    }
+
+    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        launchCatchError(block = {
+            setMiniCartAndProductQuantity(miniCart)
+            _productAddToCartQuantity.postValue(Success(miniCart))
+        }) {}
     }
 
     fun onCartItemUpdated(productId: String, quantity: Int, shopId: String) {
@@ -166,13 +261,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         })
     }
 
-    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
-        launchCatchError(block = {
-            setMiniCartAndProductQuantity(miniCart)
-            _productAddToCartQuantity.postValue(Success(miniCart))
-        }) {}
-    }
-
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
         updateProductQuantity(miniCart)
@@ -184,5 +272,9 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         //TO-DO: Update product quantity here
+    }
+
+    private fun Visitable<*>.isNotStaticLayout(): Boolean {
+        return this::class.java != TokoNowChooseAddressWidgetUiModel::class.java
     }
 }

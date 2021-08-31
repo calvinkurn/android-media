@@ -6,6 +6,7 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -43,7 +44,7 @@ object RecentPurchaseMapper {
         }
     }
     
-    private fun createProductCardModel(data: Product): ProductCardModel {
+    private fun createProductCardModel(data: RepurchaseProduct): ProductCardModel {
         return if(data.isVariant()) {
             ProductCardModel(
                 productImageUrl = data.imageUrl,
@@ -71,13 +72,13 @@ object RecentPurchaseMapper {
         }
     }
     
-    private fun mapLabelGroup(response: Product): List<LabelGroup> {
+    private fun mapLabelGroup(response: RepurchaseProduct): List<LabelGroup> {
         return response.labelGroup.map {
             LabelGroup(it.position, it.title, it.type, it.url)
         }
     }
 
-    private fun mapLabelGroupVariant(response: Product): List<LabelGroupVariant> {
+    private fun mapLabelGroupVariant(response: RepurchaseProduct): List<LabelGroupVariant> {
         return response.labelGroupVariant.map {
             LabelGroupVariant(it.typeVariant, it.title, it.type, it.hexColor)
         }

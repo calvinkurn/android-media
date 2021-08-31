@@ -8,11 +8,17 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
+import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseLoadingViewHolder
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseProductGridViewHolder
 
 class RecentPurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
-    private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null
+    private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
+    private val productCardListener: RepurchaseProductCardListener
 ) : BaseAdapterTypeFactory(), RecentPurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -23,6 +29,11 @@ class RecentPurchaseAdapterTypeFactory(
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
     // endregion
 
+    // region Repurchase Component
+    override fun type(uiModel: RepurchaseProductGridUiModel): Int = RepurchaseProductGridViewHolder.LAYOUT
+    override fun type(uiModel: RepurchaseLoadingUiModel): Int = RepurchaseLoadingViewHolder.LAYOUT
+    // endregion
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Common TokoNow Component
@@ -30,6 +41,11 @@ class RecentPurchaseAdapterTypeFactory(
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, null)
+            // endregion
+
+            // region Repurchase Component
+            RepurchaseProductGridViewHolder.LAYOUT -> RepurchaseProductGridViewHolder(view, productCardListener)
+            RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             // endregion
             else -> super.createViewHolder(view, type)
         }

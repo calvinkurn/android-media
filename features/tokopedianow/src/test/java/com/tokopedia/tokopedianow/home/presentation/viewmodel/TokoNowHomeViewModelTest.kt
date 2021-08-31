@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -695,7 +696,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, stock = "5", minOrder = "3"))
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -766,7 +767,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, stock = "5", minOrder = "3"))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -842,7 +843,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
-            products = listOf(Product(id = productId, stock = "5", minOrder = "3"))
+            products = listOf(RepurchaseProduct(id = productId, stock = "5", minOrder = "3"))
         )
         val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -884,7 +885,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
             stock = "5",
             minOrder = "3"
@@ -1040,7 +1041,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
             stock = "5",
             minOrder = "3"
@@ -1174,7 +1175,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 )
             )
         )
-        val recentPurchaseProduct = Product(
+        val recentPurchaseProduct = RepurchaseProduct(
             id = productId,
             stock = "5",
             minOrder = "3"
@@ -1567,12 +1568,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
             products = listOf(
-                Product(
+                RepurchaseProduct(
                     id = "1",
                     stock = "5",
                     minOrder = "3"
                 ),
-                Product(
+                RepurchaseProduct(
                     id = "2",
                     stock = "3",
                     minOrder = "1"
@@ -1631,12 +1632,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recentPurchaseResponse = RecentPurchaseData(
             title = "Kamu pernah beli",
             products = listOf(
-                Product(
+                RepurchaseProduct(
                     id = "1",
                     stock = "5",
                     minOrder = "3"
                 ),
-                Product(
+                RepurchaseProduct(
                     id = "2",
                     stock = "3",
                     minOrder = "1"
