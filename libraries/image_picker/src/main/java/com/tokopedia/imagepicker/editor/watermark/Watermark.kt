@@ -59,13 +59,9 @@ data class Watermark(
     private fun createScalableWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
         if (watermark == null) return
 
-        // threesHold of empty bitmap as container of watermark
-        val squareBitmapSize = 2000
-
         val resizedBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
 
         val logoBitmap = resizedBitmap
-
 
         val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
@@ -257,7 +253,6 @@ data class Watermark(
                     Shader.TileMode.REPEAT,
                     Shader.TileMode.REPEAT
                 )
-
             })
         }
 

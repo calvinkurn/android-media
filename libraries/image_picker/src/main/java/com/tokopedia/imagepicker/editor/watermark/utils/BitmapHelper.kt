@@ -40,16 +40,16 @@ object BitmapHelper {
             }
 
             // text shadow properties
-//            if (properties.textShadowBlurRadius != 0f
-//                    || properties.textShadowXOffset != 0f
-//                    || properties.textShadowYOffset != 0f) {
-//                setShadowLayer(
-//                    properties.textShadowBlurRadius,
-//                    properties.textShadowXOffset,
-//                    properties.textShadowYOffset,
-//                    properties.textShadowColor
-//                )
-//            }
+            if (properties.textShadowBlurRadius != 0f
+                    || properties.textShadowXOffset != 0f
+                    || properties.textShadowYOffset != 0f) {
+                setShadowLayer(
+                    properties.textShadowBlurRadius,
+                    properties.textShadowXOffset,
+                    properties.textShadowYOffset,
+                    properties.textShadowColor
+                )
+            }
 
             // font properties
             if (properties.fontName.isNotEmpty()) {
@@ -117,7 +117,6 @@ object BitmapHelper {
 
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
-//        canvas.drawColor(properties.backgroundColor)
         staticLayout.draw(canvas)
 
         return bitmapResult
@@ -275,8 +274,6 @@ object BitmapHelper {
         val dstBitmap = Bitmap.createBitmap(width, height, this.config)
         for (row in 0 until height) {
             for (col in 0 until width) {
-//
-//                // If it area to be painted set only value of original image
                 val pixel = this.getPixel(col, row)
                 Color.colorToHSV(pixel, srcHSV)
                 Color.colorToHSV(dstColor, dstHSV)
@@ -351,12 +348,6 @@ object BitmapHelper {
             1.0f
         } else {
             2.0f
-        }
-
-        var thresholdMaxWidth = if (type == Constant.TYPE_WATERMARK_TOPED) {
-            1.0f
-        } else {
-            0.7f
         }
 
         val inWidth = this.width
