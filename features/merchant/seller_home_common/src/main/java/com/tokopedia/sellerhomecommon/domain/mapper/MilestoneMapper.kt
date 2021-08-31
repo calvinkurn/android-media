@@ -33,9 +33,9 @@ class MilestoneMapper @Inject constructor(
                 showNumber = it.showNumber.orFalse(),
                 isShowMission = sellerHomeCommonPreferenceManager.getIsShowMilestoneWidget(),
                 isError = it.error.orFalse(),
-                milestoneProgressbar = mapGetMilestoneProgressbar(it.progressBar),
-                milestoneMissionUiModel = missionMilestone,
-                milestoneCtaUiModel = mapGetMilestoneCta(it.cta)
+                milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
+                milestoneMissions = missionMilestone,
+                milestoneCta = mapGetMilestoneCta(it.cta)
             )
         }
     }

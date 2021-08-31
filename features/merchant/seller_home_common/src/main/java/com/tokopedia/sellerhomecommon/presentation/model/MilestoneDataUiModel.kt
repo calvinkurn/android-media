@@ -12,9 +12,9 @@ data class MilestoneDataUiModel(
     val showNumber: Boolean = false,
     val isError: Boolean = false,
     val isShowMission: Boolean = true,
-    val milestoneProgressbar: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
-    val milestoneMissionUiModel: List<BaseMilestoneMissionUiModel> = emptyList(),
-    val milestoneCtaUiModel: MilestoneCtaUiModel = MilestoneCtaUiModel()
+    val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
+    val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
+    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel()
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {

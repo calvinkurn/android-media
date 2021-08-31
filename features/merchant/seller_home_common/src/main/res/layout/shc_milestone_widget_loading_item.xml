@@ -16,7 +16,7 @@
             android:layout_height="@dimen/shc_dimen_40dp"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            app:corners="5"
+            app:corners="16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,17 +25,17 @@
             android:layout_width="@dimen/shc_dimen_144dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:corners="5"
+            app:corners="8"
             app:layout_constraintStart_toEndOf="@id/imgMilestoneLoading"
             app:layout_constraintTop_toTopOf="@id/imgMilestoneLoading" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tvShcMilestoneLoadingItem2"
-            android:layout_width="@dimen/shc_dimen_208dp"
+            android:layout_width="@dimen/shc_dimen_190dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:corners="5"
+            app:corners="8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem1"
             app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem1" />
@@ -45,7 +45,7 @@
             android:layout_width="@dimen/shc_dimen_80dp"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:corners="5"
+            app:corners="8"
             app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem2"
             app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem2" />
 
@@ -53,9 +53,9 @@
             android:id="@+id/tvShcMilestoneLoadingItem4"
             android:layout_width="@dimen/shc_dimen_80dp"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            app:corners="5"
+            app:corners="8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvShcMilestoneLoadingItem3"
             app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneLoadingItem3" />
