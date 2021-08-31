@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 
 interface SearchCategoryRecommendationCarouselListener {
 
@@ -11,12 +11,12 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onGetCarouselScrollPosition(adapterPosition: Int): Int
 
     fun onBindRecommendationCarousel(
-            element: RecommendationCarouselDataView,
+            element: TokoNowRecommendationCarouselUiModel,
             adapterPosition: Int,
     )
 
     fun onImpressedRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -24,7 +24,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onClickRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -32,7 +32,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onATCNonVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             recommendationCarouselPosition: Int,
@@ -40,7 +40,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
     )

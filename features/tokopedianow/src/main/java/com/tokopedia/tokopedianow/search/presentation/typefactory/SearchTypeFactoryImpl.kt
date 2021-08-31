@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -40,7 +41,7 @@ class SearchTypeFactoryImpl(
         outOfCoverageListener: OutOfCoverageListener,
         private val categoryJumperListener: CategoryJumperListener,
         private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-        recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
+        recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
         private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,

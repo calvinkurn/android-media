@@ -1,26 +1,26 @@
-package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 
-class RecommendationCarouselViewHolder(
+class TokoNowRecommendationCarouselViewHolder(
         itemView: View,
-        private val recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
-): AbstractViewHolder<RecommendationCarouselDataView>(itemView),
+        private val recommendationCarouselListener: TokoNowRecommendationCarouselListener? = null,
+): AbstractViewHolder<TokoNowRecommendationCarouselUiModel>(itemView),
         RecommendationCarouselWidgetListener {
 
     companion object {
         @LayoutRes
         @JvmStatic
-        val LAYOUT = R.layout.item_tokopedianow_search_category_recom_carousel
+        val LAYOUT = R.layout.item_tokopedianow_recom_carousel
     }
 
     private val recommendationCarouselWidgetView =
@@ -28,21 +28,21 @@ class RecommendationCarouselViewHolder(
                     R.id.tokoNowSearchCategoryRecomCarousel
             )
 
-    private var recommendationCarouselDataView: RecommendationCarouselDataView? = null
+    private var uiModel: TokoNowRecommendationCarouselUiModel? = null
 
-    override fun bind(element: RecommendationCarouselDataView?) {
-        recommendationCarouselDataView = element ?: return
+    override fun bind(element: TokoNowRecommendationCarouselUiModel?) {
+        uiModel = element ?: return
         val recomWidget = recommendationCarouselWidgetView ?: return
         val scrollToPosition =
-                recommendationCarouselListener.onGetCarouselScrollPosition(adapterPosition)
+            recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
 
         recomWidget.bind(
-                carouselData = element.carouselData,
-                adapterPosition = adapterPosition,
-                widgetListener = this,
-                scrollToPosition = scrollToPosition,
+            carouselData = element.carouselData,
+            adapterPosition = adapterPosition,
+            widgetListener = this,
+            scrollToPosition = scrollToPosition.orZero(),
         )
-        recommendationCarouselListener.onBindRecommendationCarousel(element, adapterPosition)
+        recommendationCarouselListener?.onBindRecommendationCarousel(element, adapterPosition)
     }
 
     override fun onRecomProductCardImpressed(
@@ -51,8 +51,8 @@ class RecommendationCarouselViewHolder(
             itemPosition: Int,
             adapterPosition: Int,
     ) {
-        recommendationCarouselListener.onImpressedRecommendationCarouselItem(
-                recommendationCarouselDataView = recommendationCarouselDataView,
+        recommendationCarouselListener?.onImpressedRecommendationCarouselItem(
+                model = uiModel,
                 data = data,
                 recomItem = recomItem,
                 itemPosition = itemPosition,
@@ -67,8 +67,8 @@ class RecommendationCarouselViewHolder(
             itemPosition: Int,
             adapterPosition: Int,
     ) {
-        recommendationCarouselListener.onClickRecommendationCarouselItem(
-                recommendationCarouselDataView = recommendationCarouselDataView,
+        recommendationCarouselListener?.onClickRecommendationCarouselItem(
+                model = uiModel,
                 data = data,
                 recomItem = recomItem,
                 itemPosition = itemPosition,
@@ -86,8 +86,8 @@ class RecommendationCarouselViewHolder(
 
         val recommendationCarouselPosition = this.adapterPosition
 
-        recommendationCarouselListener.onATCNonVariantRecommendationCarouselItem(
-                recommendationCarouselDataView = recommendationCarouselDataView,
+        recommendationCarouselListener?.onATCNonVariantRecommendationCarouselItem(
+                model = uiModel,
                 data = data,
                 recomItem = recomItem,
                 recommendationCarouselPosition = recommendationCarouselPosition,
@@ -100,7 +100,7 @@ class RecommendationCarouselViewHolder(
         val carouselScrollPosition =
                 recommendationCarouselWidgetView?.getCurrentPosition() ?: 0
 
-        recommendationCarouselListener.onSaveCarouselScrollPosition(
+        recommendationCarouselListener?.onSaveCarouselScrollPosition(
                 adapterPosition = adapterPosition,
                 scrollPosition = carouselScrollPosition,
         )
@@ -113,8 +113,8 @@ class RecommendationCarouselViewHolder(
     ) {
         saveCarouselScrollPosition()
 
-        recommendationCarouselListener.onAddVariantRecommendationCarouselItem(
-                recommendationCarouselDataView = recommendationCarouselDataView,
+        recommendationCarouselListener?.onAddVariantRecommendationCarouselItem(
+                model = uiModel,
                 data = data,
                 recomItem = recomItem,
         )
@@ -147,5 +147,47 @@ class RecommendationCarouselViewHolder(
     override fun onViewRecycled() {
         saveCarouselScrollPosition()
         super.onViewRecycled()
+    }
+
+    interface TokoNowRecommendationCarouselListener {
+
+        fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
+
+        fun onGetCarouselScrollPosition(adapterPosition: Int): Int
+
+        fun onBindRecommendationCarousel(
+            model: TokoNowRecommendationCarouselUiModel,
+            adapterPosition: Int,
+        )
+
+        fun onImpressedRecommendationCarouselItem(
+            model: TokoNowRecommendationCarouselUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int,
+        )
+
+        fun onClickRecommendationCarouselItem(
+            model: TokoNowRecommendationCarouselUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
+        )
+
+        fun onATCNonVariantRecommendationCarouselItem(
+            model: TokoNowRecommendationCarouselUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
+        )
+
+        fun onAddVariantRecommendationCarouselItem(
+            model: TokoNowRecommendationCarouselUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+        )
     }
 }

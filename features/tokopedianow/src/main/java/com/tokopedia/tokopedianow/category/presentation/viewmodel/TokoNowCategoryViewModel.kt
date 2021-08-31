@@ -26,11 +26,11 @@ import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
@@ -163,7 +163,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList() = listOf(
             createAisleDataView(),
-            RecommendationCarouselDataView(TOKONOW_CLP),
+            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP),
     )
 
     private fun createAisleDataView() = CategoryAisleDataView(
@@ -297,7 +297,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun getRecomCategoryId(
-            recommendationCarouselDataView: RecommendationCarouselDataView
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
     ): List<String> {
         if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
 

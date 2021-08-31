@@ -25,7 +25,7 @@ class CategoryTypeFactoryImpl(
     emptyProductListener: EmptyProductListener,
     private val categoryAisleListener: CategoryAisleListener,
     outOfCoverageListener: OutOfCoverageListener,
-    recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
+    recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
@@ -37,17 +37,9 @@ class CategoryTypeFactoryImpl(
         emptyProductListener,
         outOfCoverageListener,
         recommendationCarouselListener
-), CategoryTypeFactory, TokoNowTypeFactory {
+), CategoryTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT
-
-    override fun type(uiModel: TokoNowCategoryGridUiModel) = TokoNowCategoryGridViewHolder.LAYOUT
-
-    override fun type(uiModel: TokoNowRecentPurchaseUiModel) = TokoNowRecentPurchaseViewHolder.LAYOUT
-
-    override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
-
-    override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
