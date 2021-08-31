@@ -9,17 +9,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.widget.TopupBillsSortFilter
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -40,6 +35,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val btnContactPicker: ImageView
     protected val layoutInputNumber: ConstraintLayout
     protected val sortFilterChip: TopupBillsSortFilter
+    protected val sortFilterChipShimmer: LoaderTextView
 
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
@@ -56,6 +52,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         btnContactPicker = view.findViewById(R.id.telco_contact_picker_btn)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
         sortFilterChip = view.findViewById(R.id.telco_filter_chip)
+        sortFilterChipShimmer = view.findViewById(R.id.telco_filter_chip_shimmer)
 
         layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
         imgOperatorResult = view.findViewById(R.id.telco_img_operator_result)
@@ -199,6 +196,16 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         } else {
             layoutInputNumber.show()
             layoutResult.hide()
+        }
+    }
+
+    fun setFilterChipShimmer(show: Boolean) {
+        if (show) {
+            sortFilterChip.hide()
+            sortFilterChipShimmer.show()
+        } else {
+            sortFilterChip.show()
+            sortFilterChipShimmer.hide()
         }
     }
 

@@ -60,7 +60,7 @@ class TopupBillsSortFilter: LinearLayout {
 
                     chip.setOnClickListener {
                         indexedChipItem.listener()
-                        activeListener(i, isLastIdxStatic)
+                        highlightActiveChip(i, isLastIdxStatic)
                     }
 
                     indexedChipItem.updateTitle = {
@@ -96,7 +96,7 @@ class TopupBillsSortFilter: LinearLayout {
         }
     }
 
-    private fun activeListener(activeIndex: Int, excludeLastIdx: Boolean) {
+    private fun highlightActiveChip(activeIndex: Int, excludeLastIdx: Boolean) {
         chipItems?.size?.let {
             val chipItemsSize = if (excludeLastIdx) it-1 else it
             for (i in 0 until chipItemsSize) {

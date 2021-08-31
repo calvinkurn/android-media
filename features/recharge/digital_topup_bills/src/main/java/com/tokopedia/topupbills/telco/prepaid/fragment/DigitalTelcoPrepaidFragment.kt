@@ -292,6 +292,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         onLoadingMenuDetail(true)
+        telcoClientNumberWidget.setFilterChipShimmer(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
         getFavoriteNumber(
             categoryIds = listOf(
@@ -631,6 +632,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
+        telcoClientNumberWidget.setFilterChipShimmer(false)
         val favNumbers = data.favoriteNumbers
         seamlessFavNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {

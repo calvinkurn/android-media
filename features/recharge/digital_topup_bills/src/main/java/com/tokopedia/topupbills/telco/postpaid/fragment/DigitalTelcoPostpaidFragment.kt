@@ -239,6 +239,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
+        postpaidClientNumberWidget.setFilterChipShimmer(true)
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
         getFavoriteNumber(
             categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
@@ -530,6 +531,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
+        postpaidClientNumberWidget.setFilterChipShimmer(false)
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
     }
 

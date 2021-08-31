@@ -95,21 +95,17 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
     private fun initListener() {
         binding?.run {
             commonTopupBillsSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
-                switchSavedNumberTab(isChecked)
+                if (isChecked) {
+                    binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
+                        POSITION_FAVORITE_NUMBER, true)
+                } else {
+                    binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
+                        POSITION_CONTACT_LIST, true)
+                }
             }
             commonTopupBillsSavedNumSearchbar.searchBarTextField.addTextChangedListener(
                 getSearchTextWatcher
             )
-        }
-    }
-
-    fun switchSavedNumberTab(isChecked: Boolean) {
-        if (isChecked) {
-            binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
-                POSITION_FAVORITE_NUMBER, true)
-        } else {
-            binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
-                POSITION_CONTACT_LIST, true)
         }
     }
 
