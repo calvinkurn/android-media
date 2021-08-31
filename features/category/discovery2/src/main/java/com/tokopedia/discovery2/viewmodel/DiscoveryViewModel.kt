@@ -40,6 +40,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -79,6 +80,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
 
+    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
@@ -114,7 +117,28 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    private fun addItemToCart(
+
+    fun getMiniCartItem(productId: String): MiniCartItem? {
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.firstOrNull { it.productId == productId }
+    }
+
+    fun addProductToCart(
+        productId: String,
+        quantity: Int,
+        shopId: String
+    ) {
+        val miniCartItem = getMiniCartItem(productId)
+
+        when {
+            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+            quantity.isZero() -> removeItemCart(miniCartItem)
+            else -> updateItemCart(miniCartItem, quantity)
+        }
+    }
+
+
+    fun addItemToCart(
         productId: String,
         shopId: String,
         quantity: Int) {
@@ -131,7 +155,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    private fun updateItemCart(
+    fun updateItemCart(
         miniCartItem: MiniCartItem,
         quantity: Int) {
         miniCartItem.quantity = quantity
@@ -156,6 +180,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
+                    miniCartSimplifiedData = it
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -166,7 +191,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem) {
+    fun removeItemCart(miniCartItem: MiniCartItem) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )

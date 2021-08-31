@@ -1163,10 +1163,16 @@ class DiscoveryFragment :
         }
     }
 
-    private fun getMiniCart() {
+    fun getMiniCart() {
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
         discoveryViewModel.getMiniCart(shopId, warehouseId)
+    }
+
+    fun addOrUpdateItemCart(productId: String,
+                  shopId: String,
+                  quantity: Int) {
+        discoveryViewModel.addProductToCart(productId, quantity, shopId)
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
