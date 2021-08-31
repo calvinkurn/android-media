@@ -139,7 +139,7 @@ object AtcVariantHelper {
     }
 
     fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String,
-                                      customCartType: String = ProductDetailCommonConstant.KEY_SAVE_BUTTON): Map<String, CartTypeData>? {
+                                      customCartType: String = ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON): Map<String, CartTypeData>? {
         if (!productVariant.hasChildren) return null
         val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
         productVariant.children.forEach {

@@ -199,7 +199,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
                     .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
             shouldSetActivityResult = when (cartRedirCartType) {
-                ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
                 ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
                 else -> true
             }
@@ -610,11 +610,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         when (cartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUTTON -> {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+                ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
+                        ?: "", pageSource, cartType)
                 onSaveButtonClicked()
             }
             ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> {
+                ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
+                        ?: "", pageSource, cartType)
                 viewModel.updateActivityResult(requestCode = REQUEST_CODE_TRADEIN_PDP)
                 onSaveButtonClicked()
             }
