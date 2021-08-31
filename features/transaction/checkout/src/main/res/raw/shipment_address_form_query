@@ -112,6 +112,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             city_id
             city_name
             shop_alert_message
+            is_tokonow
             is_gold
             is_official
             shop_type_info {

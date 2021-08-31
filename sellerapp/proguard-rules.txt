@@ -277,3 +277,6 @@
     public static *** bind(android.view.View);
     public static *** inflate(...);
 }
+
+# Window
+-keep class androidx.window.** { *; }

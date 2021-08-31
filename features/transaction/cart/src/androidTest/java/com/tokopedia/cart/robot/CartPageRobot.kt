@@ -117,7 +117,7 @@ class CartPageRobot {
                         ?: "", view.findViewById<Typography>(R.id.tv_shop_name).text)
                 Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
                         ?: "", view.findViewById<Typography>(R.id.tv_fulfill_district).text)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.img_shop_badge).visibility)
+                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility)
                 Assert.assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
