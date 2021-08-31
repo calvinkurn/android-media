@@ -2,15 +2,18 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.views.MvcView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
-class ProductMerchantVoucherSummaryViewHolder(val view: View): AbstractViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
+class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:DynamicProductDetailListener): AbstractViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_merchant_voucher_summary
@@ -26,7 +29,11 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View): AbstractViewHolde
         view.layoutParams.height = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
         initMerchantVoucher()
         element.let {
-            setMerchantVoucher(it.title, it.subTitle, it.imageURL, it.shopId)
+            setMerchantVoucher(it.animatedInfos, it.shopId)
+        }
+
+        merchantVoucher?.addOnImpressionListener(ImpressHolder()){
+            merchantVoucher?.sendImpressionTrackerForPdp()
         }
     }
 
@@ -34,9 +41,10 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View): AbstractViewHolde
         merchantVoucher = view.findViewById(R.id.productDetailMerchantVoucherWidget)
     }
 
-    private fun setMerchantVoucher(title: String, subtitle: String, imageUrl: String, shopId: String) {
-        merchantVoucher?.setData(MvcData(title, subtitle, imageUrl), shopId,false, MvcSource.PDP)
+    private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String) {
+        merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP) {
+            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP)
+        }
         merchantVoucher?.show()
     }
-
 }

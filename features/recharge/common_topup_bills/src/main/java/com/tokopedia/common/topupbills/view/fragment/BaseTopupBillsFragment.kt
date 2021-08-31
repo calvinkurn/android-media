@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -30,7 +31,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -250,9 +250,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
+                    data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
                         view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                            val errMsg = ErrorHandler.getErrorMessage(context, throwable as Throwable)
+                            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -508,7 +509,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
-                val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
                 checkoutPassData.categoryId = categoryId
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)

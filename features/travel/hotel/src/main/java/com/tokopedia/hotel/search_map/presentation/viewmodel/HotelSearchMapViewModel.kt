@@ -42,6 +42,7 @@ class HotelSearchMapViewModel @Inject constructor(
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
     var defaultSort = ""
+    var sortBy = ""
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
@@ -70,25 +71,17 @@ class HotelSearchMapViewModel @Inject constructor(
         with(searchParam) {
             location = ParamLocation()
 
-            when (hotelSearchModel.type) {
-                // temp: to support the popular search and recent search in suggestion page
-                HotelTypeEnum.CITY.value -> {
-                    location.cityID = hotelSearchModel.id
-                }
-                HotelTypeEnum.DISTRICT.value -> {
-                    location.districtID = hotelSearchModel.id
-                }
-                HotelTypeEnum.REGION.value -> {
-                    location.regionID = hotelSearchModel.id
-                }
-            }
-
             // when user search by coordinate
             if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
                 location.latitude = hotelSearchModel.lat
                 location.longitude = hotelSearchModel.long
                 location.radius = hotelSearchModel.radius
+                sort.distance = true
+                sortBy = HotelSortEnum.DISTANCE.value
             }else {
+                //Default param
+                sort.popularity = true
+                sortBy = HotelSortEnum.POPULARITY.value
                 location.radius = DEFAULT_RADIUS
             }
 
@@ -99,9 +92,7 @@ class HotelSearchMapViewModel @Inject constructor(
             location.searchType = hotelSearchModel.searchType
             location.searchId = hotelSearchModel.searchId
 
-            //Default param
-            sort.popularity = true
-            addSort(Sort(DEFAULT_SORT))
+            addSort(Sort(sortBy))
         }
     }
 
@@ -127,6 +118,7 @@ class HotelSearchMapViewModel @Inject constructor(
             HotelSortEnum.RANKING.value -> ParamSort(ranking = true, sortDir = HotelSortEnum.RANKING.order)
             HotelSortEnum.STAR.value -> ParamSort(star = true, sortDir = HotelSortEnum.STAR.order)
             HotelSortEnum.REVIEWSCORE.value -> ParamSort(reviewScore = true, sortDir = HotelSortEnum.REVIEWSCORE.order)
+            HotelSortEnum.DISTANCE.value -> ParamSort(distance = true, sortDir = HotelSortEnum.DISTANCE.order)
             else -> ParamSort()
         }
     }
@@ -224,7 +216,6 @@ class HotelSearchMapViewModel @Inject constructor(
 
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
-        private const val DEFAULT_SORT = "popularity"
         private const val DEFAULT_RADIUS = 10000.0
     }
 }
