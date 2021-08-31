@@ -1,16 +1,12 @@
 package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
-import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.constant.PMShopGrade
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
 import kotlinx.android.synthetic.main.item_benefit_package_status_pm_pro.view.*
@@ -48,20 +44,40 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     }
 
     private fun setupUpdateInfo(data: WidgetExpandableUiModel) {
-        tvNextUpdatePmProStatus.setTextMakeHyperlink(
-            context.getString(
-                R.string.pm_next_update_benefit_package_status, data.nextMonthlyRefreshDate,
-                data.nextShopLevel, data.grade
-            )
-        ) {
-            updateInfoCtaClickListener?.invoke()
-        }
+        setupDescUpdateDate(data)
         iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
+    }
 
-        tvPmUpdateDate.text = context.getString(
-            R.string.pm_label_next_three_months_pm_grade_update,
-            data.nextMonthlyRefreshDate
-        )
+    private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
+        if (data.isDowngradePeriod()) {
+            tvPmUpdateDate.setTextMakeHyperlink(
+                context.getString(
+                    R.string.pm_next_update_benefit_package_downgrade_status,
+                    data.nextMonthlyRefreshDate,
+                    data.grade?.shopLevel,
+                    data.grade?.gradeName?.asCamelCase()
+                )
+            ) {
+                updateInfoCtaClickListener?.invoke()
+            }
+        } else {
+            if (data.nextShopLevel == data.grade?.shopLevel) {
+                tvPmUpdateDate.text = context.getString(
+                    R.string.pm_next_update_benefit_package_upgrade_max_status
+                )
+            } else {
+                tvPmUpdateDate.setTextMakeHyperlink(
+                    context.getString(
+                        R.string.pm_next_update_benefit_package_upgrade_status,
+                        data.nextMonthlyRefreshDate,
+                        data.nextShopLevel,
+                        data.nextGradeName.asCamelCase()
+                    )
+                ) {
+                    updateInfoCtaClickListener?.invoke()
+                }
+            }
+        }
     }
 
     private fun showPmGrade(grade: String) {

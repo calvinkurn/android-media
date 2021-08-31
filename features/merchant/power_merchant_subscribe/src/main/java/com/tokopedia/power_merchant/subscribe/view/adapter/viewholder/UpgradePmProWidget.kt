@@ -14,6 +14,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProBenefitAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
@@ -72,6 +73,11 @@ class UpgradePmProWidget(
                             R.string.pm_title_new_seller_before_30_days,
                             getDaysDate(shopInfo.shopAge)
                         )
+                    tvSetMembershipStatus?.setTextMakeHyperlink(
+                        getString(R.string.pm_set_membership_status)
+                    ) {
+                        listener.onMembershipStatusClickListener()
+                    }
                     viewPmUpgradeTermSection?.tvTermStatus?.hide()
                     hidePmProUpgradeSection()
                 }

@@ -27,12 +27,9 @@ data class PMShopInfoUiModel(
         const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD = 70
         const val DEFAULT_ORDER_THRESHOLD = 3L
         const val DEFAULT_NIV_THRESHOLD = 350000L
-        const val KYC_STATUS_APPROVED = 4
     }
 
     fun isEligibleShopScore() = shopScore >= shopScoreThreshold
 
     fun isEligibleShopScorePmPro() = shopScore >= shopScorePmProThreshold
-
-    fun isKycVerified() = kycStatusId == KYC_STATUS_APPROVED
 }

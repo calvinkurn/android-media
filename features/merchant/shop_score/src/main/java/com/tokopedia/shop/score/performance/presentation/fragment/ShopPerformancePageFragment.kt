@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -569,51 +570,29 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToItemHeaderCoachMark() {
-        val positionItemHeader =
-            shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
-        context?.let {
-            if (positionItemHeader != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller =
-                    object : LinearSmoothScroller(it) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_START
-                        }
-                    }
-                smoothScroller.targetPosition = positionItemHeader
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
-            }
-        }
+        scrollTo<HeaderShopPerformanceUiModel>()
     }
 
     private fun scrollToItemDetailCoachMark() {
-        val positionItemDetail =
-            shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-        context?.let {
-            if (positionItemDetail != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller =
-                    object : LinearSmoothScroller(it) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_END
-                        }
-                    }
-                smoothScroller.targetPosition = positionItemDetail
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
-            }
-        }
+        scrollTo<PeriodDetailPerformanceUiModel>()
     }
 
     private fun scrollToItemParameterDetailCoachMark() {
-        val positionItemDetail =
-            shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
+        scrollTo<ItemDetailPerformanceUiModel>()
+    }
+
+    private inline fun <reified T : Visitable<*>> scrollTo() {
+        val positionItem =
+            shopPerformanceAdapter.list.indexOfLast { it is T }
         context?.let {
-            if (positionItemDetail != RecyclerView.NO_POSITION) {
+            if (positionItem != RecyclerView.NO_POSITION) {
                 val smoothScroller: RecyclerView.SmoothScroller =
                     object : LinearSmoothScroller(it) {
                         override fun getVerticalSnapPreference(): Int {
                             return SNAP_TO_END
                         }
                     }
-                smoothScroller.targetPosition = positionItemDetail
+                smoothScroller.targetPosition = positionItem
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
@@ -671,25 +650,21 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    private inline fun <reified T : Visitable<*>> getViewHolder(): View? {
+        val position = shopPerformanceAdapter.list.indexOfFirst { it is T }.takeIf {
+            it != RecyclerView.NO_POSITION
+        }
+        val view = position?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
+        val widgetShopGradeWidget = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+        return widgetShopGradeWidget?.itemView
+    }
+
     private fun getHeaderPerformanceView(): View? {
-        val itemHeaderPosition =
-            shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
-                it != RecyclerView.NO_POSITION
-            }
-        val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
-        return headerViewHolder?.itemView
+        return getViewHolder<HeaderShopPerformanceUiModel>()
     }
 
     private fun getPeriodDetailPerformanceView(): View? {
-        val itemPeriodPosition =
-            shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-                .takeIf {
-                    it != RecyclerView.NO_POSITION
-                }
-        val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
-        return periodViewHolder?.itemView
+        return getViewHolder<PeriodDetailPerformanceUiModel>()
     }
 
     private fun goToPenaltyPage() {

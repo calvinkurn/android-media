@@ -14,6 +14,8 @@ data class GMShopInfoResponse(
 data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_new_seller")
         val isNewSeller: Boolean? = true,
+        @SerializedName("is_30_days_first_monday")
+        val is30DaysFirstMonday: Boolean? = false,
         @SerializedName("shop_age")
         val shopAge: Long? = 0L,
         @SerializedName("is_kyc")
