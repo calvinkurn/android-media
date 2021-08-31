@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PayLaterSimulationBaseResponse(
-    @SerializedName("data") val data: PayLaterSimulationData?
+    @SerializedName("data") val data: PayLaterSimulationData
 ) : Parcelable
 
 
