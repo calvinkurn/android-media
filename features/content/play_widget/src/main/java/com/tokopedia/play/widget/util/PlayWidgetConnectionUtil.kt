@@ -16,6 +16,6 @@ class PlayWidgetConnectionUtil @Inject constructor(
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     fun isEligibleForHeavyDataUsage(): Boolean {
-        return connectivityManager.isActiveNetworkMetered
+        return !connectivityManager.isActiveNetworkMetered
     }
 }

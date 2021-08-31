@@ -47,13 +47,14 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             ${'$'}$PARAM_WIDGET_TYPE: String!, 
             ${'$'}$PARAM_AUTHOR_ID: String, 
             ${'$'}$PARAM_AUTHOR_TYPE: String,
-            ${'$'}$PARAM_IS_WIFI: Boolean,
+            ${'$'}$PARAM_IS_WIFI: Boolean
         ){
           playGetWidgetV2(
             req: {
-              widgetType:${'$'}widgetType,
-              authorID: ${'$'}authorId,
-              authorType: ${'$'}authorType
+              $PARAM_WIDGET_TYPE:${'$'}$PARAM_WIDGET_TYPE,
+              $PARAM_AUTHOR_ID: ${'$'}$PARAM_AUTHOR_ID,
+              $PARAM_AUTHOR_TYPE: ${'$'}$PARAM_AUTHOR_TYPE,
+              $PARAM_IS_WIFI: ${'$'}$PARAM_IS_WIFI
             })
           {
             data {
