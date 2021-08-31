@@ -107,7 +107,9 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {
-            TopChatWebSocketParam.generateParamSendMessage(any(), any(), any(), any(), any())
+            TopChatWebSocketParam.generateParamSendMessage(
+                any(), any(), any(), any(), any(), any()
+            )
         } returns paramSendMessage
 
         // When

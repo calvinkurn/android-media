@@ -213,7 +213,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     var chatBoxPadding: View? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
