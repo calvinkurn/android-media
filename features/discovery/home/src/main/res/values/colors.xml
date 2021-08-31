@@ -35,8 +35,8 @@
     <color name="sticky_bg_color">@color/Unify_G100_96</color>
     <color name="grey_hint_full">@color/Unify_N100</color>
 
-    <color name="home_beauty_fest_light">#FF70A6</color>
-    <color name="home_beauty_fest_dark">#D74B83</color>
+    <color name="home_beauty_fest_light_dms">#FF70A6</color>
+    <color name="home_beauty_fest_dark_dms">#D74B83</color>
     <color name="home_hpb_indicator_active">@color/Unify_N0</color>
     <color name="home_hpb_indicator_inactive">@color/Unify_N0</color>
 

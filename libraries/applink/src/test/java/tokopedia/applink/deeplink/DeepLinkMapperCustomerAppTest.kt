@@ -1847,6 +1847,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(ApplinkConst.BROWSER + queryParam, expectedDeepLink)
     }
 
+    @Test
+    fun `check peduli lindungi scan qr applink then should return tokopedia internal qr in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalMarketplace.QR_SCANNEER}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        val appLink = "${ApplinkConst.QRSCAN}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
     private fun setRemoteConfig(isEnabled: Boolean) {
         every {
             FirebaseRemoteConfigInstance.get(mockk(relaxed = true)).getBoolean(any())
