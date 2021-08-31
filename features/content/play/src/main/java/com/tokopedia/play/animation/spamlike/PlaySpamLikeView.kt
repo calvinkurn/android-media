@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
+import com.tokopedia.play.view.viewcomponent.SpamLikeViewComponent
 import kotlinx.coroutines.*
 
 /**
@@ -137,6 +138,33 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
 
     fun getMaxShot(): Int = maxShot
 
+    fun shotWithDelay(likeAmount: Int, shotPerBatch: Int, delay: Long, reduceOpacity: Boolean) {
+        CoroutineScope(Dispatchers.IO + job).launch {
+            for(i in 1..likeAmount) {
+                delay(delay)
+                for(j in 1..shotPerBatch) {
+                    delay(DEFAULT_DELAY)
+                    withContext(Dispatchers.Main) {
+                        shot(reduceOpacity)
+                    }
+                }
+            }
+        }
+    }
+
+    fun shotAll(likeAmount: Int, shotPerBatch: Int, reduceOpacity: Boolean) {
+        CoroutineScope(Dispatchers.IO + job).launch {
+            for(i in 1..likeAmount) {
+                for(j in 1..shotPerBatch) {
+                    delay(DEFAULT_DELAY)
+                    withContext(Dispatchers.Main) {
+                        shot(reduceOpacity)
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Step shot()
      * 1. Randomize config
@@ -148,7 +176,7 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
      * 7. Set Coroutine for Popping Image from Queue
      * 8. Check Whether Additional Shot is Required Or Not
      */
-    fun shot(reduceOpacity: Boolean) {
+    private fun shot(reduceOpacity: Boolean) {
         if(loveList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
 
         if(shot < maxShot) {
@@ -374,17 +402,18 @@ class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): Constraint
         imageList.clear()
     }
 
-    companion object {
-        private const val INCREASE_SHOT = 1
-        private const val DECREASE_SHOT = -1
+    private companion object {
+        const val INCREASE_SHOT = 1
+        const val DECREASE_SHOT = -1
 
-        private const val SHOT_DISTANCE = 500
-        private const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
-        private const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
-        private const val LOWER_BOUNCING_MULTIPLIER_X = 3
-        private const val UPPER_BOUNCING_MULTIPLIER_X = 8
-        private const val UPPER_LIMIT_RANDOM_X_POSITION = 50
-        private const val FADE_OUT_MULTIPLIER = 0.05F
-        private const val SCALING_UP_MULTIPLIER = 0.1F
+        const val DEFAULT_DELAY = 50L
+        const val SHOT_DISTANCE = 500
+        const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
+        const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
+        const val LOWER_BOUNCING_MULTIPLIER_X = 3
+        const val UPPER_BOUNCING_MULTIPLIER_X = 8
+        const val UPPER_LIMIT_RANDOM_X_POSITION = 50
+        const val FADE_OUT_MULTIPLIER = 0.05F
+        const val SCALING_UP_MULTIPLIER = 0.1F
     }
 }

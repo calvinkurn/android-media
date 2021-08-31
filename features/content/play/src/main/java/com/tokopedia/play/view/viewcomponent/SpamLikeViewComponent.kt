@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
@@ -29,14 +28,8 @@ class SpamLikeViewComponent(
         get() = spamLike.getMaxShot().toLong()
 
     fun shot(amount: Int = 1, reduceOpacity: Boolean = false) {
-        CoroutineScope(Dispatchers.IO + job).launch {
-            for(i in 1..amount * LIKE_ICON_MULTIPLIER) {
-                delay(SPAMMING_LIKE_DELAY)
-                withContext(Dispatchers.Main) {
-                    spamLike.shot(reduceOpacity)
-                }
-            }
-        }
+        if(amount == spamLike.getMaxShot()) spamLike.shotAll(amount, SHOT_PER_BATCH, reduceOpacity)
+        else spamLike.shotWithDelay(amount, SHOT_PER_BATCH, SPAMMING_LIKE_DELAY, reduceOpacity)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -51,8 +44,8 @@ class SpamLikeViewComponent(
         spamLike.clear(false)
     }
 
-    companion object {
-        private const val LIKE_ICON_MULTIPLIER = 3
-        private const val SPAMMING_LIKE_DELAY = 100L
+    private companion object {
+        const val SHOT_PER_BATCH = 3
+        const val SPAMMING_LIKE_DELAY = 200L
     }
 }
