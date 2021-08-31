@@ -13,7 +13,6 @@ class UploadImageChatServiceStub : UploadImageChatService() {
     }
 
     companion object {
-        var dummyMap = UploadImageChatService.dummyMap
         fun enqueueWork(context: Context, image: ImageUploadServiceModel, messageId: String) {
             val intent = Intent(context, UploadImageChatServiceStub::class.java)
             intent.putExtra(IMAGE, image)

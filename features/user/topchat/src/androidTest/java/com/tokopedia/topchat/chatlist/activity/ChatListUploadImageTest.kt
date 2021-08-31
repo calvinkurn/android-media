@@ -16,8 +16,8 @@ import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.matchers.withIndex
-import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import org.junit.After
 import org.junit.Test
 
@@ -153,7 +153,7 @@ class ChatListUploadImageTest : ChatListTest() {
 
     @After
     fun deleteDummies() {
-        UploadImageChatServiceStub.dummyMap.clear()
+        UploadImageChatService.dummyMap.clear()
         isFailedUpload = false
     }
 
