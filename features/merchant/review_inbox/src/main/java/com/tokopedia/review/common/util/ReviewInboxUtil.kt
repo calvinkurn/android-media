@@ -1,0 +1,49 @@
+package com.tokopedia.review.common.util
+
+import android.content.Context
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.util.*
+
+object ReviewInboxUtil {
+
+    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
+        val newMap = HashMap<String, String>()
+        for ((key, value) in map) {
+            newMap[key] = value.toString()
+        }
+        return newMap
+    }
+
+    fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {
+        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        bottomSheet?.dismiss()
+        return RouteManager.route(context, webviewUrl)
+    }
+}
+
+fun getReviewStar(ratingCount: Int): Int {
+    return when (ratingCount) {
+        ReviewInboxConstants.RATING_1 -> {
+            R.drawable.review_ic_rating_star_one
+        }
+        ReviewInboxConstants.RATING_2 -> {
+            R.drawable.review_ic_rating_star_two
+        }
+        ReviewInboxConstants.RATING_3 -> {
+            R.drawable.review_ic_rating_star_three
+        }
+        ReviewInboxConstants.RATING_4 -> {
+            R.drawable.review_ic_rating_star_four
+        }
+        ReviewInboxConstants.RATING_5 -> {
+            R.drawable.review_ic_rating_star_five
+        }
+        else -> {
+            R.drawable.review_ic_rating_star_zero
+        }
+    }
+}

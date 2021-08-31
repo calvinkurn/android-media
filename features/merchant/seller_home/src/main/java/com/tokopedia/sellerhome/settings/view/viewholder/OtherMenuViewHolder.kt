@@ -606,9 +606,16 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType?) {
-        shopType?.let {
-            shopStatusHeader?.setImageResource(it.shopTypeHeaderRes)
-            shopStatusHeaderIcon?.loadImageWithoutPlaceholder(it.shopTypeHeaderIconUrl)
+        shopType?.let { shopStatusHeader?.setImageResource(it.shopTypeHeaderRes) }
+        shopStatusHeaderIcon?.run {
+            if (shopType !is RegularMerchant) {
+                visibility = View.VISIBLE
+                shopType?.shopTypeHeaderIconRes?.let { iconRes ->
+                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
+                }
+            } else {
+                visibility = View.GONE
+            }
         }
     }
 

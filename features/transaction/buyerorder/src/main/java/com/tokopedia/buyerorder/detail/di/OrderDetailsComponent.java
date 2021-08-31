@@ -10,13 +10,12 @@ import com.tokopedia.buyerorder.detail.view.fragment.BuyerRequestCancelFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.OrderListDetailFragment;
-import com.tokopedia.buyerorder.list.di.OrderListModuleScope;
 
 import dagger.Component;
 
 
-@OrderListModuleScope
-@Component(dependencies = {BaseAppComponent.class}, modules = {OrderListDetailModule.class,
+@OrderDetailScope
+@Component(dependencies = {BaseAppComponent.class}, modules = {OrderDetailModule.class,
         GetCancellationReasonModule.class, GetCancellationReasonViewModelModule.class})
 public interface OrderDetailsComponent {
     void inject(OrderListDetailFragment orderListDetailFragment);
