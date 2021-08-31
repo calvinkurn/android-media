@@ -51,6 +51,7 @@ object ProductDetailCommonConstant {
     const val VALUE_GOLD_MERCHANT = "gold_merchant"
     const val VALUE_REGULER = "reguler"
 
+    const val VALUE_PRODUCT_BUNDLING = "product bundling"
 
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
@@ -59,7 +60,7 @@ object ProductDetailCommonConstant {
     const val KEY_NORMAL_BUTTON = "normal"
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
-    const val KEY_SAVE_BUTTON = "save"
+    const val KEY_SAVE_BUNDLING_BUTTON = "save_bundling"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_REMIND_ME = "remind_me"
