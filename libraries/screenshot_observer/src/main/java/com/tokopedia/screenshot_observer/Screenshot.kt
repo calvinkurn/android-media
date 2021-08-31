@@ -42,12 +42,13 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
 
     fun register() {
         currentActivity?.let {
-            if (allPermissionsGranted(it))
+            if (allPermissionsGranted(it)) {
                 mContentResolver.registerContentObserver(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     true,
                     mContentObserver
                 )
+            }
         }
     }
 
@@ -117,9 +118,9 @@ open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver
     }
 
     override fun onActivityResumed(activity: Activity) {
-        register()
         currentActivity = activity
         className = activity.localClassName
+        register()
     }
 
     override fun onScreenShotTaken(uri: Uri) {
