@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
+import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
@@ -29,6 +30,7 @@ class LikeViewComponent(
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
     private var isMultipleLike: Boolean = false
+    private var timer: CountDownTimer? = null
 
     private val likeAnimatorListener = object : Animator.AnimatorListener {
 
@@ -88,9 +90,35 @@ class LikeViewComponent(
         )
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        /**
+         * Add validation if timer only working when there is no like
+         */
+        setReminderLike(INITIAL_REMINDER_DURATION)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        timer?.cancel()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         animationLike.removeAnimatorListener(likeAnimatorListener)
+    }
+
+    private fun setReminderLike(duration: Long) {
+        timer = object: CountDownTimer(duration, COUNTDOWN_INTERVAL) {
+            override fun onTick(p0: Long) {}
+
+            override fun onFinish() {
+                animationLike.setAnimation(R.raw.anim_shaking_thumb)
+                animationLike.playAnimation()
+
+                setReminderLike(REMINDER_DURATION)
+            }
+        }.start()
     }
 
     private companion object {
@@ -98,6 +126,9 @@ class LikeViewComponent(
         const val START_ANIMATED_PROGRESS = 0f
         const val END_ANIMATED_PROGRESS = 1f
 
+        const val COUNTDOWN_INTERVAL = 1000L
+        const val INITIAL_REMINDER_DURATION = 60000L
+        const val REMINDER_DURATION = 300000L
     }
 
     interface Listener {
