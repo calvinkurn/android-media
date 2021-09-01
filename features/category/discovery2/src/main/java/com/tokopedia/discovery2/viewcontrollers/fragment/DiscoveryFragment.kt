@@ -82,6 +82,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -152,6 +153,7 @@ class DiscoveryFragment :
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
 
@@ -205,6 +207,9 @@ class DiscoveryFragment :
         initToolbar(view)
         initChooseAddressWidget(view)
         initView(view)
+        context?.let {
+            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this, addFragmentLifecycleObserver = true)
+        }
     }
 
     private fun initChooseAddressWidget(view: View) {
@@ -607,7 +612,7 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment)
+            universalShareBottomSheet?.show(fragmentManager, this@DiscoveryFragment, screenshotDetector)
             shareType = UniversalShareBottomSheet.getShareBottomSheetType()
             getDiscoveryAnalytics().trackUnifyShare(
                 VIEW_DISCOVERY_IRIS,
@@ -966,7 +971,6 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -986,7 +990,6 @@ class DiscoveryFragment :
         }
         getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
-        UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
