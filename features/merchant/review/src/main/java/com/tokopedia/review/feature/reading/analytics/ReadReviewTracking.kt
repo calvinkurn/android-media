@@ -42,6 +42,7 @@ object ReadReviewTracking {
                     countRating,
                     countReview
                 ),
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
                 ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
                 ReadReviewTrackingConstants.KEY_USER_ID to userId,
                 ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
@@ -57,8 +58,7 @@ object ReadReviewTracking {
                                     characterCount,
                                     imageCount
                                 ),
-                                ReadReviewTrackingConstants.KEY_POSITION to position.toString(),
-                                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
+                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
                             )
                         )
                     )
