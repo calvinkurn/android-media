@@ -11,8 +11,6 @@ class FundsAndInvestmentTitleDelegate :
     TypedAdapterDelegate<TitleUiModel, Any, TitleViewHolder>(TitleViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: TitleUiModel, holder: TitleViewHolder) {
-        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = true
         holder.bind(item)
     }
 

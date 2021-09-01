@@ -1,12 +1,18 @@
 package com.tokopedia.home_account.view.fragment
 
+import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.home_account.AccountConstants
@@ -14,12 +20,21 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.SpanningLinearLayoutManager
+import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFundsAndInvestmentAdapter
 import com.tokopedia.home_account.view.adapter.uimodel.SubtitleUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.TitleUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
+import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
 import javax.inject.Inject
 
 class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
@@ -33,10 +48,17 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private val binding by viewBinding(FundsAndInvestmentFragmentBinding::bind)
     private var adapter: HomeAccountFundsAndInvestmentAdapter? = null
 
+    var appBarCollapseListener: onAppBarCollapseListener? = null
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is HomeAccountUserActivity) appBarCollapseListener = context
     }
 
     override fun onCreateView(
@@ -52,17 +74,120 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     override fun onClickWallet(type: String) {
         when (type) {
-            AccountConstants.WALLET.OVO -> {}
-            AccountConstants.WALLET.GOPAY -> {}
+            AccountConstants.WALLET.OVO -> {
+            }
+            AccountConstants.WALLET.GOPAY -> {
+            }
         }
     }
 
     private fun initView() {
-        adapter = HomeAccountFundsAndInvestmentAdapter(this)
-        binding?.fundsAndInvestmentRv?.layoutManager = LinearLayoutManager(context)
-        binding?.fundsAndInvestmentRv?.adapter = adapter
+//        setupStatusBar()
+//        setupToolbarTransition()
+        setupAdapter()
+        setupSwipeRefresh()
+
+        hideLoading()
         addTitleView()
+        addWalletView(listOf(WalletUiModel("Saldo Tokopedia", "Rp.200.000.000", AccountConstants.Url.SALDO_ICON, false, "", AccountConstants.WALLET.SALDO, false)))
         addSubtitleView()
+        addWalletView(listOf(WalletUiModel("Saldo Tokopedia", "Gagal memuat", AccountConstants.Url.SALDO_ICON, true, "", AccountConstants.WALLET.SALDO, true)))
+    }
+
+//    private fun setupStatusBar() {
+//        activity?.let {
+//            binding?.statusBarBg?.background = ColorDrawable(
+//                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+//            )
+//        }
+//        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            binding?.statusBarBg?.visibility = View.INVISIBLE
+//        } else {
+//            binding?.statusBarBg?.visibility = View.VISIBLE
+//        }
+//        setStatusBarAlpha(0f)
+//    }
+//
+//    private fun setStatusBarAlpha(alpha: Float) {
+//        val drawable = binding?.statusBarBg?.background
+//        drawable?.alpha = alpha.toInt()
+//        binding?.statusBarBg?.background = drawable
+//    }
+
+    private fun setupAdapter() {
+        context?.let { context ->
+            adapter = HomeAccountFundsAndInvestmentAdapter(this)
+            binding?.fundsAndInvestmentRv?.adapter = adapter
+            val layoutManager = SpanningLinearLayoutManager(
+                binding?.fundsAndInvestmentRv?.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            val verticalDivider =
+                ContextCompat.getDrawable(context, R.drawable.vertical_divider)
+            if (context.isDarkMode()) {
+                verticalDivider?.mutate()?.setColorFilter(
+                    ContextCompat.getColor(context, R.color.vertical_divider_dms_dark),
+                    PorterDuff.Mode.SRC_IN
+                )
+            } else {
+                verticalDivider?.mutate()?.setColorFilter(
+                    ContextCompat.getColor(context, R.color.vertical_divider_dms_light),
+                    PorterDuff.Mode.SRC_IN
+                )
+            }
+            val dividerItemDecoration = DividerItemDecoration(
+                context,
+                layoutManager.orientation
+            )
+
+            verticalDivider?.run {
+                dividerItemDecoration.setDrawable(this)
+            }
+
+            binding?.fundsAndInvestmentRv?.itemDecorationCount?.let {
+                if (it < 1) {
+                    binding?.fundsAndInvestmentRv?.addItemDecoration(dividerItemDecoration)
+                }
+            }
+            binding?.fundsAndInvestmentRv?.layoutManager = layoutManager
+        }
+    }
+
+//    private fun setupToolbarTransition() {
+//        binding?.homeAccountUserToolbar?.let {
+//            NavRecyclerViewScrollListener(
+//                navToolbar = it,
+//                startTransitionPixel = 200,
+//                toolbarTransitionRangePixel = 50,
+//                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+//                    override fun onAlphaChanged(offsetAlpha: Float) {
+//                        setStatusBarAlpha(offsetAlpha)
+//                    }
+//
+//                    override fun onSwitchToDarkToolbar() {
+//                        binding?.homeAccountUserToolbar?.switchToLightToolbar()
+//                    }
+//
+//                    override fun onSwitchToLightToolbar() {
+//                    }
+//
+//                    override fun onYposChanged(yOffset: Int) {
+//                    }
+//                }
+//            )
+//        }?.let {
+//            binding?.fundsAndInvestmentRv?.addOnScrollListener(it)
+//        }
+//    }
+
+    private fun setupSwipeRefresh() {
+        binding?.fundsAndInvestmentRv?.swipeLayout = binding?.homeAccountUserFragmentSwipeRefresh
+        binding?.homeAccountUserFragmentSwipeRefresh?.setOnRefreshListener {
+            onRefresh()
+            binding?.homeAccountUserFragmentSwipeRefresh?.isRefreshing = false
+        }
     }
 
     private fun addTitleView() {
@@ -75,6 +200,21 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun addWalletView(walletUiModel: List<WalletUiModel>) {
         adapter?.addItemsAndAnimateChanges(walletUiModel)
+    }
+
+    private fun onRefresh() {
+        showLoading()
+        adapter?.clearAllItems()
+    }
+
+    private fun showLoading() {
+        binding?.fundsAndInvestmentShimmer?.root?.show()
+        binding?.fundsAndInvestmentRv?.hide()
+    }
+
+    private fun hideLoading() {
+        binding?.fundsAndInvestmentShimmer?.root?.hide()
+        binding?.fundsAndInvestmentRv?.show()
     }
 
     companion object {

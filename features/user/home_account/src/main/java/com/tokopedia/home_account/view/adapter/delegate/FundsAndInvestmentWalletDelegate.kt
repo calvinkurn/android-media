@@ -14,8 +14,6 @@ class FundsAndInvestmentWalletDelegate(private val walletListener: WalletListene
     ) {
 
     override fun onBindViewHolder(item: WalletUiModel, holder: FundsAndInvestmentViewHolder) {
-        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = true
         holder.bind(item)
     }
 

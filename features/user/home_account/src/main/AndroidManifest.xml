@@ -24,8 +24,9 @@
 
         <activity
             android:name=".view.activity.FundsAndInvestmentActivity"
+            android:label="@string/home_account_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" >
+            android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -1,12 +1,10 @@
 package com.tokopedia.home_account.domain.query
 
-object GetBalanceAndPointQuery {
-
-    private const val partnerCode = "\$partnerCode"
+object GetTokopointsBalanceAndPointQuery {
 
     val query: String = """
-        query wallet_app_get_account_balance($partnerCode: String!){
-          walletappGetAccountBalance(partnerCode:$partnerCode){
+        {
+          tokopointsAccountPage{
             id
             icon
             title

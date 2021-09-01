@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.Utils
-import com.tokopedia.home_account.data.model.BalanceDataModel
+import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
@@ -19,29 +19,29 @@ import javax.inject.Inject
 class HomeAccountSaldoBalanceUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
-) : GraphqlUseCase<BalanceDataModel>(graphqlRepository) {
+) : GraphqlUseCase<SaldoBalanceDataModel>(graphqlRepository) {
 
-    override suspend fun executeOnBackground(): BalanceDataModel {
+    override suspend fun executeOnBackground(): SaldoBalanceDataModel {
         val query = rawQueries[AccountConstants.Query.QUERY_GET_BALANCE]
         val gqlRequest = GraphqlRequest(
                 query,
-                BalanceDataModel::class.java,
+                SaldoBalanceDataModel::class.java,
                 mapOf<String, Any>()
         )
         val gqlStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), gqlStrategy)
-        val errors = gqlResponse.getError(BalanceDataModel::class.java)
+        val errors = gqlResponse.getError(SaldoBalanceDataModel::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            var data: BalanceDataModel? = gqlResponse.getData(BalanceDataModel::class.java)
-            if (data == null) {
+            var dataSaldo: SaldoBalanceDataModel? = gqlResponse.getData(SaldoBalanceDataModel::class.java)
+            if (dataSaldo == null) {
                 val mapResponse = Utils.convertResponseToJson(gqlResponse)
-                data = BalanceDataModel()
+                dataSaldo = SaldoBalanceDataModel()
                 AccountErrorHandler.logDataNull("Account_GetBalance",
                         Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
             }
-            return data
+            return dataSaldo
         }
     }
 }

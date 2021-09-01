@@ -10,21 +10,22 @@ import javax.inject.Inject
 open class GetCentralizedUserAssetConfigUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, CentralizedUserAssetDataModel>(dispatcher.io) {
-
-    fun getParams(
-        entryPoint: String
-    ): Map<String, Any> = mapOf(
-        PARAM_ENTRY_POINT to entryPoint
-    )
+) : CoroutineUseCase<String, CentralizedUserAssetDataModel>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
         return GetCentralizedUserAssetConfigQuery.query
     }
 
-    override suspend fun execute(params: Map<String, Any>): CentralizedUserAssetDataModel {
-        return request(repository, params)
+    override suspend fun execute(params: String): CentralizedUserAssetDataModel {
+        val mapParams = getParams(params)
+        return request(repository, mapParams)
     }
+
+    private fun getParams(
+        entryPoint: String
+    ): Map<String, Any> = mapOf(
+        PARAM_ENTRY_POINT to entryPoint
+    )
 
     companion object {
         private const val PARAM_ENTRY_POINT = "entryPoint"

@@ -83,10 +83,21 @@ object AccountConstants {
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
+            const val ACTION_CLICK_ON_GOPAY = "click on gopay"
+            const val ACTION_CLICK_ON_TOKOPOINTS = "click on tokopoints"
+            const val ACTION_CLICK_ON_OVO = "click on ovo"
+            const val ACTION_CLICK_ON_KONTEN_GAGAL = "click on konten gagal ditampilkan coba lagi"
+            const val ACTION_CLICK_ON_TOKOPEDIA_PAY_LIHAT_SEMUA = "click on tokopedia pay - lihat semua"
+            const val ACTION_CLICK_ON_GOPAYLATER = "click on gopaylater"
+            const val ACTION_CLICK_ON_TOKOPEDIA_CARD = "click on tokopedia card"
+            const val ACTION_CLICK_ON_PAYLATER = "click on paylater"
+            const val ACTION_CLICK_ON_EMAS = "click on emas"
+            const val ACTION_CLICK_ON_REKSADANA = "click on reksadana"
         }
 
         object Label {
             const val LABEL_EMPTY = ""
+            const val LABEL_CLICK = "click"
             const val LABEL_MEMBER = "Member"
             const val LABEL_MEMBER_STORE = "TokoMember"
             const val LABEL_TOP_QUEST = "TopQuest"
@@ -113,6 +124,9 @@ object AccountConstants {
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
             const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+            const val LABEL_COBA_LAGI = "coba lagi"
+            const val LABEL_SAMBUNGKAN = "sambungkan"
+            const val LABEL_AKTIVASI = "aktivasi"
         }
 
         object BusinessUnit {

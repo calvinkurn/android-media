@@ -216,7 +216,8 @@ class ProfileViewHolder(
     private fun isShowViewMoreWallet(): Boolean {
         return if(itemView.context != null){
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-            firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
+//            firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
+            true
         } else {
             false
         }

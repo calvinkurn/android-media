@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Ade Fulki on 22/02/21.
  */
 
-data class BalanceDataModel(
+data class SaldoBalanceDataModel(
         @SerializedName("balance") @Expose
         val data: Balance = Balance()
 )

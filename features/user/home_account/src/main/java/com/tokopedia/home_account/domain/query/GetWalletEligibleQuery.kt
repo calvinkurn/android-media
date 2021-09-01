@@ -7,7 +7,7 @@ object GetWalletEligibleQuery {
 
 
     val query: String = """
-        query get_wallet_eligible($partnerCode: String!){
+        query get_wallet_eligible($partnerCode: String!, $walletCode: String!){
           walletappGetWalletEligible(partnerCode: $partnerCode, walletCode: [$walletCode]) {
             code 
             message

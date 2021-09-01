@@ -2,8 +2,11 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.FileUtil
+import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.getOrAwaitValue
@@ -11,6 +14,7 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,6 +30,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.IllegalArgumentException
 import kotlin.test.assertEquals
 
 /**
@@ -40,24 +45,38 @@ class HomeAccountUserViewModelTest {
 
     private val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
     private val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
-    private val homeAccountWalletBalanceUseCase = mockk<HomeAccountWalletBalanceUseCase>(relaxed = true)
-    private val homeAccountSafeSettingProfileUseCase = mockk<SafeSettingProfileUseCase>(relaxed = true)
+    private val homeAccountWalletBalanceUseCase =
+        mockk<HomeAccountWalletBalanceUseCase>(relaxed = true)
+    private val homeAccountSafeSettingProfileUseCase =
+        mockk<SafeSettingProfileUseCase>(relaxed = true)
     private val homeAccountRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     private val userPageAssetConfigUseCase = mockk<GetUserPageAssetConfigUseCase>(relaxed = true)
-    private val homeAccountSaldoBalanceUseCase = mockk<HomeAccountSaldoBalanceUseCase>(relaxed = true)
+    private val homeAccountSaldoBalanceUseCase =
+        mockk<HomeAccountSaldoBalanceUseCase>(relaxed = true)
     private val homeAccountTokopointsUseCase = mockk<HomeAccountTokopointsUseCase>(relaxed = true)
+    private val centralizedUserAssetConfigUseCase =
+        mockk<GetCentralizedUserAssetConfigUseCase>(relaxed = true)
+    private val balanceAndPointUseCase = mockk<GetBalanceAndPointUseCase>(relaxed = true)
+    private val tokopointsBalanceAndPointUseCase =
+        mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
+    private val walletEligibleUseCase = mockk<GetWalletEligibleUseCase>(relaxed = true)
 
-    private val userPageAssetConfigObserver = mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
+    private val userPageAssetConfigObserver =
+        mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
     private val saldoBalanceObserver = mockk<Observer<Result<Balance>>>(relaxed = true)
-    private val tokopointsDrawerListObserver = mockk<Observer<Result<TokopointsDrawerList>>>(relaxed = true)
+    private val tokopointsDrawerListObserver =
+        mockk<Observer<Result<TokopointsDrawerList>>>(relaxed = true)
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val ovoBalanceResponse = mockk<Observer<Result<WalletModel>>>(relaxed = true)
+    private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
+    private val walletEligibleObserver = mockk<Observer<Result<WalletappWalletEligibility>>>(relaxed = true)
+    private val balanceAndPointOvserver = mockk<Observer<ResultBalanceAndPoint<WalletappGetAccountBalance>>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val walletPref = mockk<WalletPref>(relaxed = true)
     private val accountPref = mockk<AccountPreference>(relaxed = true)
 
-    private val dispatcher = TestCoroutineDispatcher()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: HomeAccountUserViewModel
 
     private val throwable = Fail(Throwable(message = "Error"))
@@ -72,18 +91,22 @@ class HomeAccountUserViewModelTest {
     @Before
     fun setUp() {
         viewModel = HomeAccountUserViewModel(
-                userSession,
-                accountPref,
-                homeAccountUserUsecase,
-                homeAccountShortcutUseCase,
-                homeAccountWalletBalanceUseCase,
-                homeAccountSafeSettingProfileUseCase,
-                homeAccountRecommendationUseCase,
-                userPageAssetConfigUseCase,
-                homeAccountSaldoBalanceUseCase,
-                homeAccountTokopointsUseCase,
-                walletPref,
-                dispatcher
+            userSession,
+            accountPref,
+            homeAccountUserUsecase,
+            homeAccountShortcutUseCase,
+            homeAccountWalletBalanceUseCase,
+            homeAccountSafeSettingProfileUseCase,
+            homeAccountRecommendationUseCase,
+            userPageAssetConfigUseCase,
+            homeAccountSaldoBalanceUseCase,
+            homeAccountTokopointsUseCase,
+            centralizedUserAssetConfigUseCase,
+            balanceAndPointUseCase,
+            tokopointsBalanceAndPointUseCase,
+            walletEligibleUseCase,
+            walletPref,
+            dispatcher
         )
 
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
@@ -95,21 +118,28 @@ class HomeAccountUserViewModelTest {
     fun `Execute getBuyerData Success`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
-        every { homeAccountWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single() } returns wallet
+        every {
+            homeAccountWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking()
+                .single()
+        } returns wallet
         coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
 
         viewModel.getBuyerData()
         verify {
             viewModel.saveLocallyAttributes(responseResult)
         }
-        Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(Success(responseResult))
+        Assertions.assertThat(viewModel.buyerAccountDataData.value)
+            .isEqualTo(Success(responseResult))
     }
 
     @Test
     fun `Execute getBuyerData Failed`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        every { homeAccountWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single() } returns wallet
+        every {
+            homeAccountWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking()
+                .single()
+        } returns wallet
         coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
 
         viewModel.getBuyerData()
@@ -126,10 +156,10 @@ class HomeAccountUserViewModelTest {
 
         /* When */
         val response = UserAccountDataModel(
-                wallet = WalletModel().apply { isLinked = true },
-                profile = ProfileModel().apply { isPhoneVerified = true },
-                isAffiliate = true,
-                debitInstant = debitInstantModel
+            wallet = WalletModel().apply { isLinked = true },
+            profile = ProfileModel().apply { isPhoneVerified = true },
+            isAffiliate = true,
+            debitInstant = debitInstantModel
         )
 
         viewModel.saveLocallyAttributes(response)
@@ -294,7 +324,13 @@ class HomeAccountUserViewModelTest {
 
         val isActive = true
         /* When */
-        every { homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(any(), any(), any()) } answers {
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
         }
 
@@ -358,18 +394,214 @@ class HomeAccountUserViewModelTest {
         }
     }
 
+    @Test
+    fun `Success get centralized user asset config`() {
+        viewModel.centralizedUserAssetConfig.observeForever(centralizedUserAssetConfigObserver)
+        coEvery { centralizedUserAssetConfigUseCase(any()) } returns successGetCentralizedUserAssetConfigResponse
+
+        viewModel.getCentralizedUserAssetConfig("")
+
+        verify { centralizedUserAssetConfigObserver.onChanged(any<Success<CentralizedUserAssetConfig>>()) }
+        assert(viewModel.centralizedUserAssetConfig.value is Success)
+
+        val result = viewModel.centralizedUserAssetConfig.value as Success<CentralizedUserAssetConfig>
+        assert(result.data == successGetCentralizedUserAssetConfigResponse.data)
+    }
+
+    @Test
+    fun `Failed get centralized user asset config`() {
+        viewModel.centralizedUserAssetConfig.observeForever(centralizedUserAssetConfigObserver)
+        coEvery { centralizedUserAssetConfigUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getCentralizedUserAssetConfig("")
+
+        verify { centralizedUserAssetConfigObserver.onChanged(any<Fail>()) }
+        assert(viewModel.centralizedUserAssetConfig.value is Fail)
+
+        val result = viewModel.centralizedUserAssetConfig.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get gopay balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get gopay balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get gopaylater balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get gopaylater balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get ovo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get ovo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { balanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.OVO)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Success get tokopoint balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { tokopointsBalanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get tokopoint balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { tokopointsBalanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Failed get balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+
+        viewModel.getBalanceAndPoint("")
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assert(result.throwable is IllegalArgumentException)
+    }
+
+
+    @Test
+    fun `Success get wallet eligible`() {
+        viewModel.walletEligible.observeForever(walletEligibleObserver)
+        coEvery { walletEligibleUseCase(any()) } returns successGetWalletEligibleResponse
+
+        viewModel.getWalletEligible("", "")
+
+        verify { walletEligibleObserver.onChanged(any<Success<WalletappWalletEligibility>>()) }
+        assert(viewModel.walletEligible.value is Success)
+
+        val result = viewModel.walletEligible.value as Success<WalletappWalletEligibility>
+        assert(result.data == successGetWalletEligibleResponse.data)
+    }
+
+    @Test
+    fun `Failed get wallet eligible`() {
+        viewModel.walletEligible.observeForever(walletEligibleObserver)
+        coEvery { walletEligibleUseCase(any()) } coAnswers { throw throwableResponse }
+
+        viewModel.getWalletEligible("", "")
+
+        verify { walletEligibleObserver.onChanged(any()) }
+        assert(viewModel.walletEligible.value is Fail)
+
+        val result = viewModel.walletEligible.value as Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
     companion object {
-        private val successGetUserPageAssetConfigResponse: UserPageAssetConfigDataModel = FileUtil.parse(
+        private val successGetUserPageAssetConfigResponse: UserPageAssetConfigDataModel =
+            FileUtil.parse(
                 "/success_get_user_page_asset_config.json",
                 UserPageAssetConfigDataModel::class.java
-        )
-        private val successGetSaldoBalanceResponse: BalanceDataModel = FileUtil.parse(
+            )
+        private val successGetSaldoBalanceResponse: SaldoBalanceDataModel =
+            FileUtil.parse(
                 "/success_get_saldo_balance.json",
-                BalanceDataModel::class.java
-        )
+                SaldoBalanceDataModel::class.java
+            )
         private val successGetTokopointsResponse: TokopointsDataModel = FileUtil.parse(
-                "/success_get_tokopoints.json",
-                TokopointsDataModel::class.java
+            "/success_get_tokopoints.json",
+            TokopointsDataModel::class.java
+        )
+        private val successGetCentralizedUserAssetConfigResponse: CentralizedUserAssetDataModel = FileUtil.parse(
+            "/success_get_centralized_user_asset_config.json",
+            CentralizedUserAssetDataModel::class.java
+        )
+        private val successGetBalanceAndPointResponse: BalanceAndPointDataModel = FileUtil.parse(
+            "/success_get_balance_and_point.json",
+            BalanceAndPointDataModel::class.java
+        )
+        private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
+            "/success_get_wallet_eligible.json",
+            WalletEligibleDataModel::class.java
         )
         private val throwableResponse = Throwable()
     }

@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -40,6 +41,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
         private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
         private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
+        private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
         private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
         private val walletPref: WalletPref,
         private val dispatcher: CoroutineDispatchers
@@ -219,8 +221,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getCentralizedUserAssetConfig(entryPoint: String) {
         launchCatchError(block = {
-            val params = getCentralizedUserAssetConfigUseCase.getParams(entryPoint)
-            val result = getCentralizedUserAssetConfigUseCase(params)
+            val result = getCentralizedUserAssetConfigUseCase(entryPoint)
 
             withContext(dispatcher.main) {
                 _centralizedUserAssetConfig.value = Success(result.data)
@@ -232,25 +233,30 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBalanceAndPoint(walletId: String) {
         launchCatchError(block = {
-            getBalanceAndPointUseCase.setQuery(walletId)
-            val params = when (walletId) {
+            val result = when (walletId) {
                 AccountConstants.WALLET.GOPAY -> {
-                    getBalanceAndPointUseCase.getParams(GOPAY_PARTNER_CODE)
+                    getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
                 }
                 AccountConstants.WALLET.GOPAYLATER -> {
-                    getBalanceAndPointUseCase.getParams(GOPAYLATER_PARTNER_CODE)
+                    getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
                 }
                 AccountConstants.WALLET.OVO -> {
-                    getBalanceAndPointUseCase.getParams(OVO_PARTNER_CODE)
+                    getBalanceAndPointUseCase(OVO_PARTNER_CODE)
+                }
+                AccountConstants.WALLET.TOKOPOINT -> {
+                    getTokopointsBalanceAndPointUseCase(Unit)
                 }
                 else -> {
-                    mapOf()
+                    BalanceAndPointDataModel()
                 }
             }
-            val result = getBalanceAndPointUseCase(params)
 
             withContext(dispatcher.main) {
-                _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
+                if (result.data.id.isNotEmpty()) {
+                    _balanceAndPoint.value = ResultBalanceAndPoint.Success(result.data, walletId)
+                } else {
+                    _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
+                }
             }
         }, onError = {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)

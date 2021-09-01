@@ -19,27 +19,6 @@
             android:descendantFocusability="beforeDescendants"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <com.tokopedia.searchbar.navigation_component.NavToolbar
-            android:id="@+id/home_account_user_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?actionBarSize"
-            android:gravity="top"
-            app:contentInsetLeft="@dimen/unify_space_0"
-            app:contentInsetStart="@dimen/unify_space_0"
-            app:toolbarAlwaysShowShadow="false"
-            app:toolbarBackButton="back"
-            app:toolbarContentType="typeTitle"
-            app:toolbarTitle="@string/home_account_title" />
-
-        <View
-            android:id="@+id/status_bar_bg"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_25"
-            android:layout_gravity="top"
-            android:background="@color/Unify_G600_96"
-            android:visibility="invisible" />
-
         <include
             android:visibility="gone"
             android:id="@+id/funds_and_investment_shimmer"

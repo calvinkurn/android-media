@@ -15,7 +15,6 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-private const val PARAM_SAFE_MODE = "safeMode"
 class SafeSettingProfileUseCase @Inject constructor(@ApplicationContext var context: Context?,
                                                         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<SetUserProfileSettingResponse>(graphqlRepository) {
@@ -39,4 +38,7 @@ class SafeSettingProfileUseCase @Inject constructor(@ApplicationContext var cont
         }, onError)
     }
 
+    companion object {
+        private const val PARAM_SAFE_MODE = "safeMode"
+    }
 }
