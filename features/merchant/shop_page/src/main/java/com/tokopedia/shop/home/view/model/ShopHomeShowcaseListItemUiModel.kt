@@ -7,5 +7,6 @@ data class ShopHomeShowcaseListItemUiModel(
         var imageUrl: String = "",
         var appLink: String = "",
         var name: String = "",
-        var viewType: String = ""
+        var viewType: String = "",
+        var isShowEtalaseName: Boolean = true
 ): ImpressHolder()

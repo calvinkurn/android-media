@@ -59,6 +59,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     ratio
                     isATC
                     etalaseID
+                    isShowEtalaseName
                   }
                   data {
                     ... on DisplayWidget {

@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
@@ -43,7 +45,13 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
             }
         } catch (e: Throwable) {
         }
-        showcaseItemName?.text = element.name
+
+        if (element.isShowEtalaseName) {
+            showcaseItemName?.visible()
+            showcaseItemName?.text = element.name
+        } else {
+            showcaseItemName?.gone()
+        }
 
         itemView.addOnImpressionListener(element) {
             itemWidgetListener.onShowcaseListWidgetItemImpression(element, (adapterPosition+1))

@@ -39,4 +39,5 @@ object WidgetName {
     const val SHOWCASE_GRID_SMALL = "etalase_banner_3_x_2"
     const val SHOWCASE_GRID_MEDIUM = "etalase_banner_besar_2x2"
     const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2x1"
+    const val IS_SHOW_ETALASE_NAME = 1
 }

@@ -55,7 +55,9 @@ data class ShopLayoutWidget(
                 @SerializedName("isATC")
                 val isAtc: Int = 0,
                 @SerializedName("etalaseID")
-                val etalaseId: String = ""
+                val etalaseId: String = "",
+                @SerializedName("isShowEtalaseName")
+                val isShowEtalaseName: Int = 1
         )
 
         data class Data(
