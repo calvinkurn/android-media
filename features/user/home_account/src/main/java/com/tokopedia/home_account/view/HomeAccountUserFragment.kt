@@ -169,8 +169,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun enableLinkingAccountRollout(): Boolean =
-        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+    private fun enableLinkingAccountRollout(): Boolean = true
+//        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
 
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {

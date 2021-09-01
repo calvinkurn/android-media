@@ -166,7 +166,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onViewAccountClicked() {
         homeAccountAnalytics.trackClickViewStatusLinkAccountPage()
-        goToLinkPage(activity)
+        gotoSuccessPage(activity)
     }
 
     private fun LinkStatus.toUserAccountDataView(): UserAccountDataView {
@@ -214,9 +214,18 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 
+        fun getSuccessPage(): String = "${BASE_URL}?page=success"
+
         fun goToLinkPage(activity: FragmentActivity?) {
             activity?.run {
                 val i = LinkAccountWebViewActivity.newInstance(this, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
+                startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
+            }
+        }
+
+        fun gotoSuccessPage(activity: FragmentActivity?) {
+            activity?.run {
+                val i = LinkAccountWebViewActivity.newInstance(this, getSuccessPage())
                 startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
             }
         }

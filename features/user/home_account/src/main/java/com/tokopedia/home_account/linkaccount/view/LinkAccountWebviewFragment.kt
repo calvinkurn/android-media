@@ -2,6 +2,7 @@ package com.tokopedia.home_account.linkaccount.view
 
 import android.os.Bundle
 import android.webkit.WebView
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 /**
@@ -14,12 +15,14 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
         when {
             url.contains(GOJEK_PAGE) -> {
                 // Check gojek accounts page, show toolbar
+                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
                 (activity as LinkAccountWebViewActivity).showToolbar()
             }
             url.contains(GOPAY_PAGE) -> {
                 // Check gopay input pin page, and hide back btn
                 (activity as LinkAccountWebViewActivity).showToolbar()
                 (activity as LinkAccountWebViewActivity).hideToolbarBackBtn()
+                (activity as LinkAccountWebViewActivity).showSkipBtnToolbar()
             }
             url.contains(BACK_BTN_APPLINK) -> {
                 // Finish activity from webview
@@ -27,10 +30,27 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
             }
             else -> {
                 // Default is hidden
+                (activity as LinkAccountWebViewActivity).hideSkipBtnToolbar()
                 (activity as LinkAccountWebViewActivity).hideToolbar()
             }
         }
         return super.shouldOverrideUrlLoading(webview, url)
+    }
+
+    fun showSkipDialog() {
+        if(activity!=null){
+            DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Aktifin GoPay lain kali?")
+                setDescription("Tenang aja, akun Tokopedia & Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.")
+                setPrimaryCTAText("Iya, Nanti Aja")
+                setSecondaryCTAText("Kembali")
+                setPrimaryCTAClickListener {
+                    webView?.loadUrl(LinkAccountFragment.getSuccessPage())
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
     }
 
     companion object {
