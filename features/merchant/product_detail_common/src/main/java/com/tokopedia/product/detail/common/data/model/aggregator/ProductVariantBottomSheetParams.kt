@@ -28,5 +28,6 @@ data class ProductVariantBottomSheetParams(
         var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,
         var trackerAttribution: String = "",
         var trackerListNamePdp: String = "",
-        var isShopOwner: Boolean = false
+        var isShopOwner: Boolean = false,
+        var cacheId: String = ""
 )

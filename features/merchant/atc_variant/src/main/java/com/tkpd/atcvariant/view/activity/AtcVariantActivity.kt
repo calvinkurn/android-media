@@ -13,7 +13,6 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
-import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import timber.log.Timber
@@ -55,23 +54,15 @@ class AtcVariantActivity : BaseSimpleActivity() {
             ""
         }
 
-        var paramsData = ProductVariantBottomSheetParams()
+        val paramsData = ProductVariantBottomSheetParams()
 
         if (bundle != null) {
-            val cacheId = bundle.getString(ATC_VARIANT_CACHE_ID)
-
-            val cacheManager = SaveInstanceCacheManager(this, cacheId)
-            val data: ProductVariantBottomSheetParams? = cacheManager.get(PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
-
-            if (data == null) {
-                paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
-                paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
-                paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
-                paramsData.productId = productId
-                paramsData.shopId = shopId
-            } else {
-                paramsData = data
-            }
+            paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
+            paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
+            paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
+            paramsData.productId = productId
+            paramsData.shopId = shopId
+            paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
         }
 
         super.onCreate(savedInstanceState)
