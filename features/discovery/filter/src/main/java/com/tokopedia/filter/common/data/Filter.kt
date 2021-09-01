@@ -79,6 +79,9 @@ class Filter(@SerializedName("title")
                 || isSizeFilter || isBrandFilter || isLocationFilter
                 || isOtherFilter || options.size > 1)
 
+    val isKeywordFilter: Boolean
+        get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
+
     override fun toString(): String {
         return Gson().toJson(this)
     }
@@ -95,6 +98,6 @@ class Filter(@SerializedName("title")
         const val TEMPLATE_NAME_PRICE = "template_price"
         const val TEMPLATE_NAME_BRAND = "template_brand"
         const val TEMPLATE_NAME_OFFERING = "template_offer"
-
+        const val TEMPLATE_NEGATIVE_KEYWORD = "template_negative_keyword"
     }
 }

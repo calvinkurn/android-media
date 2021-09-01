@@ -7,6 +7,8 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
@@ -176,10 +178,11 @@ internal class SortFilterBottomSheetViewModel {
         val filterList = dynamicFilterModelData.filter
 
         filterList.forEach { filter ->
-            if (filter.isPriceFilter)
-                sortFilterList.add(createPriceFilterViewModel(filter))
-            else
-                sortFilterList.add(createFilterViewModel(filter))
+            when {
+                filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
+                filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
+                else -> sortFilterList.add(createFilterViewModel(filter))
+            }
         }
     }
 
@@ -219,6 +222,15 @@ internal class SortFilterBottomSheetViewModel {
             it.isSelected = option.valMin == getMinPriceFilterValue() && option.valMax == getMaxPriceFilterValue()
         }
     }
+
+    private fun createKeywordFilterDataView(filter: Filter) =
+        KeywordFilterDataView(
+            filter = filter,
+            itemList = filter.options.map(::createKeywordFilterItemDataView),
+        )
+
+    private fun createKeywordFilterItemDataView(option: Option) =
+        KeywordFilterItemDataView(option = option)
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()

@@ -11689,6 +11689,31 @@
             "child": []
           }
         ]
+      },
+      {
+        "title": "Sembunyikan barang",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "template_negative_keyword",
+        "options": [
+          {
+            "name": "tv",
+            "key": "",
+            "icon": "",
+            "Description": "",
+            "value": "",
+            "inputType": "selectbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": false,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          }
+        ]
       }
     ],
     "sort": [

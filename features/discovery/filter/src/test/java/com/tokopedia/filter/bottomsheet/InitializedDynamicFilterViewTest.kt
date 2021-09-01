@@ -5,6 +5,8 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheetViewModel.Companion.MAX_OPTION_SIZE
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
@@ -119,10 +121,13 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
     }
 
     private fun Visitable<*>.assertFilterItem(expectedFilter: Filter) {
-        if (expectedFilter.isPriceFilter) {
-            this.assertAsPriceFilterViewModel(expectedFilter)
-        } else {
-            this.assertAsFilterViewModel(expectedFilter)
+        when {
+            expectedFilter.isPriceFilter ->
+                this.assertAsPriceFilterViewModel(expectedFilter)
+            expectedFilter.isKeywordFilter ->
+                this.assertAsKeywordFilterDataView(expectedFilter)
+            else ->
+                this.assertAsFilterViewModel(expectedFilter)
         }
     }
 
@@ -181,6 +186,30 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
 
         assert(position == expectedPosition) {
             "Price Option View Model Position is $position, expected is ${expectedPosition}."
+        }
+    }
+
+    private fun Visitable<*>.assertAsKeywordFilterDataView(expectedFilter: Filter) {
+        val keywordFilterDataView = this as KeywordFilterDataView
+        val actualKeywordFilter = keywordFilterDataView.filter
+        assert(actualKeywordFilter == expectedFilter) {
+            "Keyword filter is $actualKeywordFilter.\nExpected $expectedFilter"
+        }
+
+        val keywordFilterItemList = keywordFilterDataView.itemList
+        assert(keywordFilterItemList.size == expectedFilter.options.size) {
+            "Keyword filter item size is ${keywordFilterItemList.size}, expected is ${expectedFilter.options.size}"
+        }
+
+        keywordFilterItemList.forEachIndexed { index, keywordFilterItem ->
+            keywordFilterItem.assertKeywordFilterItem(expectedFilter.options[index])
+        }
+    }
+
+    private fun KeywordFilterItemDataView.assertKeywordFilterItem(expectedOption: Option) {
+        val actualOption = this.option
+        assert(actualOption == expectedOption) {
+            "Option data is ${actualOption.uniqueId}.\nExpected ${expectedOption.uniqueId}"
         }
     }
 

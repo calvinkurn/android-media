@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.filter.bottomsheet.filter.FilterViewHolder
 import com.tokopedia.filter.bottomsheet.filter.FilterViewListener
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
@@ -33,6 +35,9 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun type(priceFilterViewModel: PriceFilterViewModel): Int {
         return PriceFilterViewHolder.LAYOUT
     }
+
+    override fun type(keywordFilterDataView: KeywordFilterDataView) =
+        KeywordFilterViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
