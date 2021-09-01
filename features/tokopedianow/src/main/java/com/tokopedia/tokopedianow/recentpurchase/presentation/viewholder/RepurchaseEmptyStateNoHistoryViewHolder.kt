@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import kotlinx.android.synthetic.main.item_tokopedianow_repurchase_empty_state_no_history.view.*
@@ -18,11 +19,7 @@ class RepurchaseEmptyStateNoHistoryViewHolder (
     }
 
     override fun bind(element: RepurchaseEmptyStateNoHistoryUiModel?) {
-        if (element?.isSearching == true) {
-            itemView.tp_desc.text = getString(R.string.tokopedianow_repurchase_empty_state_no_history_desc_search)
-        } else {
-            itemView.tp_desc.text = getString(R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter)
-        }
+        itemView.tp_desc.text = getString(element?.description.orZero())
         itemView.btn_open_tokopedianow.setOnClickListener {
             listener?.onClickEmptyStateNoHistoryBtn()
         }
