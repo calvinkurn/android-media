@@ -21,6 +21,7 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
+import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
@@ -162,7 +163,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
-        // TODO here
+        binding?.eta?.text = formatEta(model.detail.eta)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -354,6 +355,17 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun formatTitleHtml(desc: String, urlText: String, url: String): String {
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
+    }
+
+    private fun formatEta(eta: EtaModel) : String {
+        if (eta.etaMin.isNotEmpty() && eta.etaMax.isNotEmpty()) {
+            return "${dateUtil.getFormattedDateTime(eta.etaMin, "dd")} - ${dateUtil.getFormattedDateTime(eta.etaMax)}"
+        } else if (eta.etaMax.isEmpty()) {
+            return dateUtil.getFormattedDateTime(eta.etaMin)
+        } else if (eta.etaMin.isEmpty()) {
+            return dateUtil.getFormattedDateTime(eta.etaMax)
+        }
+        return ""
     }
 
     companion object {

@@ -39,6 +39,7 @@ class TrackingPageMapperNew @Inject constructor() {
             receiverName = detail.receiverName
             serviceCode = detail.serviceCode
             trackingUrl = detail.trackingUrl
+            eta = mapEta(detail.eta)
         }
     }
 
@@ -78,6 +79,13 @@ class TrackingPageMapperNew @Inject constructor() {
 
     private fun switchInteger(value: Int): Boolean {
         return value == 1
+    }
+
+    private fun mapEta(eta: Eta) : EtaModel {
+        return EtaModel().apply {
+            etaMin = eta.etaMin
+            etaMax = eta.etaMax
+        }
     }
 }
 

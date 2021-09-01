@@ -60,7 +60,9 @@ data class Detail(
         @SerializedName("service_code")
         val serviceCode: String = "",
         @SerializedName("tracking_url")
-        val trackingUrl: String = ""
+        val trackingUrl: String = "",
+        @SerializedName("eta")
+        val eta: Eta = Eta()
 
 )
 
@@ -98,4 +100,11 @@ data class AdditionalInfo(
         val urlDetail: String = "",
         @SerializedName("url_text")
         val urlText: String = ""
+)
+
+data class Eta(
+        @SerializedName("eta_min")
+        val etaMin: String = "",
+        @SerializedName("eta_max")
+        val etaMax: String = ""
 )
