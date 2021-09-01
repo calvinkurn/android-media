@@ -95,7 +95,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            emptyProductListener = this,
+            tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
             outOfCoverageListener = this,
             recommendationCarouselListener = this,

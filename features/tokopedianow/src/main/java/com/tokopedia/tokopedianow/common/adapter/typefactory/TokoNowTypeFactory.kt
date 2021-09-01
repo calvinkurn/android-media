@@ -8,4 +8,5 @@ interface TokoNowTypeFactory {
     fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int
     fun type(uiModel: TokoNowEmptyStateOocUiModel): Int
     fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int
+    fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int
 }

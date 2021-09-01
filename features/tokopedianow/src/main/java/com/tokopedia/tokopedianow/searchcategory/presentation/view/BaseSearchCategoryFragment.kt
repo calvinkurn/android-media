@@ -59,6 +59,7 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -67,7 +68,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.Pro
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
@@ -94,7 +94,7 @@ abstract class BaseSearchCategoryFragment:
         CategoryChooserBottomSheet.Callback,
         MiniCartWidgetListener,
         ProductItemListener,
-        EmptyProductListener,
+        TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
         ChooseAddressBottomSheetListener,
         OutOfCoverageListener,
         TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {

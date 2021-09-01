@@ -75,7 +75,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataVi
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
@@ -413,7 +413,7 @@ abstract class BaseSearchCategoryViewModel(
         val activeFilterList = filterController.getActiveFilterOptionList()
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(EmptyProductDataView(activeFilterList))
+        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
         visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_NO_RESULT))
     }
 

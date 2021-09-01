@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.graphics.Rect
 import android.view.LayoutInflater
@@ -13,16 +13,15 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFil
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class EmptyProductViewHolder(
+class TokoNowEmptyStateNoResultViewHolder(
         itemView: View,
-        private val emptyProductListener: EmptyProductListener,
-): AbstractViewHolder<EmptyProductDataView>(itemView) {
+        private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener? = null,
+): AbstractViewHolder<TokoNowEmptyStateNoResultUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -51,41 +50,59 @@ class EmptyProductViewHolder(
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .build()
 
-    override fun bind(element: EmptyProductDataView?) {
+    override fun bind(element: TokoNowEmptyStateNoResultUiModel?) {
         element ?: return
 
-        val hasActiveFilter = element.activeFilterList.isNotEmpty()
+        val hasActiveFilter = !element.activeFilterList.isNullOrEmpty()
 
-        bindTitle(hasActiveFilter)
-        bindDescription(hasActiveFilter)
+        bindTitle(hasActiveFilter, element.defaultTitle)
+        bindDescription(hasActiveFilter, element.defaultDescription)
         bindFilterList(hasActiveFilter, element)
         bindGoToGlobalSearchButton(hasActiveFilter)
         bindChangeKeywordButton(hasActiveFilter)
     }
 
-    private fun bindTitle(hasActiveFilter: Boolean) {
-        val title = if (hasActiveFilter) getString(R.string.tokopedianow_empty_product_filter_title)
-        else getString(R.string.tokopedianow_empty_product_title)
+    private fun bindTitle(hasActiveFilter: Boolean, defaultTitle: String) {
+        val title = when {
+            defaultTitle.isNotEmpty() -> {
+                defaultTitle
+            }
+            hasActiveFilter -> {
+                getString(R.string.tokopedianow_empty_product_filter_title)
+            }
+            else -> {
+                getString(R.string.tokopedianow_empty_product_title)
+            }
+        }
 
         titleTextView?.text = title
     }
 
-    private fun bindDescription(hasActiveFilter: Boolean) {
-        val description = if (hasActiveFilter) getString(R.string.tokopedianow_empty_product_filter_description)
-        else getString(R.string.tokopedianow_empty_product_description)
+    private fun bindDescription(hasActiveFilter: Boolean, defaultDescription: String) {
+        val description = when {
+            defaultDescription.isNotEmpty() -> {
+                defaultDescription
+            }
+            hasActiveFilter -> {
+                getString(R.string.tokopedianow_empty_product_filter_description)
+            }
+            else -> {
+                getString(R.string.tokopedianow_empty_product_description)
+            }
+        }
 
         descriptionTextView?.text = description
     }
 
-    private fun bindFilterList(hasActiveFilter: Boolean, element: EmptyProductDataView) {
+    private fun bindFilterList(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
         val filterList = filterList ?: return
 
         filterList.shouldShowWithAction(hasActiveFilter) {
             val optionList = combinePriceFilterIfExists(
-                    element.activeFilterList,
+                    element.activeFilterList.orEmpty(),
                     getString(R.string.tokopedianow_empty_product_filter_price_name)
             )
-            filterList.adapter = Adapter(optionList, emptyProductListener)
+            filterList.adapter = Adapter(optionList, tokoNowEmptyStateNoResultListener)
             filterList.layoutManager = layoutManager
 
             val chipSpacing = itemView.context.resources.getDimensionPixelSize(
@@ -99,27 +116,27 @@ class EmptyProductViewHolder(
     private fun bindGoToGlobalSearchButton(hasActiveFilter: Boolean) {
         globalSearchButton?.showWithCondition(!hasActiveFilter)
         globalSearchButton?.setOnClickListener {
-            emptyProductListener.onFindInTokopediaClick()
+            tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
         }
     }
 
     private fun bindChangeKeywordButton(hasActiveFilter: Boolean) {
         exploreTokopediaNowButton?.showWithCondition(!hasActiveFilter)
         exploreTokopediaNowButton?.setOnClickListener {
-            emptyProductListener.goToTokopediaNowHome()
+            tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
         }
     }
 
     private class Adapter(
             private val optionList: List<Option>,
-            private val listener: EmptyProductListener,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.Adapter<ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater
                     .from(parent.context)
                     .inflate(ViewHolder.LAYOUT, parent, false)
 
-            return ViewHolder(view, listener)
+            return ViewHolder(view, tokoNowEmptyStateNoResultListener)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -133,7 +150,7 @@ class EmptyProductViewHolder(
 
     private class ViewHolder(
             itemView: View,
-            private val emptyProductListener: EmptyProductListener,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.ViewHolder(itemView) {
 
         companion object {
@@ -148,7 +165,7 @@ class EmptyProductViewHolder(
             chip?.chipType = ChipsUnify.TYPE_SELECTED
             chip?.chipSize = ChipsUnify.SIZE_SMALL
             chip?.setOnClickListener {
-                emptyProductListener.onRemoveFilterClick(option)
+                tokoNowEmptyStateNoResultListener?.onRemoveFilterClick(option)
             }
         }
     }
@@ -162,5 +179,14 @@ class EmptyProductViewHolder(
             outRect.right = this.horizontalSpacing
             outRect.bottom = this.verticalSpacing
         }
+    }
+
+    interface TokoNowEmptyStateNoResultListener {
+
+        fun onFindInTokopediaClick()
+
+        fun goToTokopediaNowHome()
+
+        fun onRemoveFilterClick(option: Option)
     }
 }
