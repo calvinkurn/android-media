@@ -189,7 +189,7 @@ class CalendarPicker : BottomSheetUnify() {
         if (cpv.selectedDates.isNotEmpty()) {
             val selected: Date = cpv.selectedDates.first()
             if (cpv.selectedDates.size == Const.DAY_1) {
-                updateMaxDate(cpv, selected)
+                updateMaxDateSameMonth(cpv, selected)
                 selectDate(cpv, selected)
 
                 val isMaxDate = getMaxDateStatus(selected)
@@ -220,7 +220,7 @@ class CalendarPicker : BottomSheetUnify() {
         return isMaxMonth || maxDateStr == selectedStr
     }
 
-    private fun updateMaxDate(cpv: CalendarPickerView, selected: Date) {
+    private fun updateMaxDateSameMonth(cpv: CalendarPickerView, selected: Date) {
         val cal = Calendar.getInstance(Locale.getDefault())
         cal.time = selected
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -237,6 +237,19 @@ class CalendarPicker : BottomSheetUnify() {
         if (isDateRangeSelected) {
             this.selectedDates = cpv.selectedDates
             dismiss()
+        } else {
+            if (cpv.selectedDates.isNotEmpty()) {
+                val newMaxDateMillis = TimeUnit.DAYS.toMillis(Const.DAYS_90.toLong())
+                val selectedDate = cpv.selectedDates.first()
+                val tmpNewMaxDate = selectedDate.time.plus(newMaxDateMillis)
+                val newMaxDate = if (tmpNewMaxDate > maxDate.time) {
+                    maxDate
+                } else {
+                    Date(tmpNewMaxDate)
+                }
+                cpv.init(selectedDate, newMaxDate, emptyList()).inMode(mode)
+                selectDate(cpv, selectedDate)
+            }
         }
     }
 
