@@ -15,7 +15,7 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="@dimen/unify_space_96"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/unify_space_24"
             android:elevation="@dimen/dp_1"
             android:src="@drawable/recommendation_lable" />
 
