@@ -138,7 +138,7 @@ object DeviceInfo {
         }
     }
 
-    suspend fun getlatestAdId(context: Context, timeOutInMillis: Long = 3000L): String {
+    suspend fun getlatestAdId(context: Context, timeOutInMillis: Long = 10000L): String {
         return withContext(Dispatchers.IO) {
             try {
                 val appContext = context.applicationContext
