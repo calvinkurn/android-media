@@ -62,6 +62,9 @@ class GetBenefitPackageUseCase @Inject constructor(
                         image_url
                       }
                 }
+                current_pm_grade {
+                    grade_name
+                }
               }     
             }
         """.trimIndent()

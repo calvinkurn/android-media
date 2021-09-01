@@ -36,5 +36,5 @@ class ShopScorePrefManager(@ApplicationContext private val context: Context) {
 
     fun getIsShowPopupEndTenure() = getBoolean(IS_SHOW_POP_UP_END_TENURE)
 
-    fun getFinishCoachMark() = getBoolean(HAS_FINISH_COACH_MARK)
+    fun getFinishCoachMark() = getBoolean(HAS_FINISH_COACH_MARK, false)
 }

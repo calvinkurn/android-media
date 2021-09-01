@@ -1,5 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageDataUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
+
 interface BenefitPackageAdapterFactory {
-    fun type(): Int
+    fun type(benefitPackageHeaderUiModel: BenefitPackageHeaderUiModel): Int
+    fun type(benefitPackageDataUiModel: BenefitPackageDataUiModel): Int
 }

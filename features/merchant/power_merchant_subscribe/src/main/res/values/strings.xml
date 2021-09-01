@@ -187,11 +187,9 @@
     <string name="pm_pro_status_info_description"><![CDATA[Pertahankan skor <b>min. %1$s</b>, %2$s pesanan selesai, dan pendapatan min. Rp%3$s di 30 hari terakhir agar tokomu tidak turun dari PM PRO jadi Power Merchant.]]></string>
     <string name="pm_see_more">Selengkapnya</string>
     <string name="pm_title_benefit_package_section">Untuk dapat paket keuntungan %s,</string>
-    <string name="pm_desc_benefit_package_section">Raih Level 3 dengan pendapatan mulai dari Rp10 juta dan 50 produk terjual, dinilai dari 90 hari terakhir. </string>
-
-    <string name="pm_desc_benefit_package_section_2"><![CDATA[Pertahankan <b>Level 2</b> dengan pendapatan mulai dari <b>Rp350 ribu</b> dan <b>3 produk terjual</b>, dinilai dari 90 hari terakhir.]]></string>
-    <string name="pm_desc_benefit_package_section_3"><![CDATA[Pertahankan <b>Level 3</b> dengan pendapatan mulai dari <b>Rp10 juta</b> dan <b>50 produk terjual</b>, dinilai dari 90 hari terakhir.]]></string>
-    <string name="pm_desc_benefit_package_section_4"><![CDATA[Pertahankan <b>Level 4</b> dengan pendapatan mulai dari <b>Rp300 juta</b> dan <b>1.500 produk terjual</b>, dinilai dari 90 hari terakhir.]]>></string>
+    <string name="pm_desc_level_2_benefit_package_section"><![CDATA[%1s <b>Level 2</b> dengan pendapatan mulai dari <b>Rp350 ribu</b> dan <b>3 produk terjual</b>, dinilai dari 90 hari terakhir.]]></string>
+    <string name="pm_desc_level_3_benefit_package_section"><![CDATA[%1s <b>Level 3</b> dengan pendapatan mulai dari <b>Rp10 juta</b> dan <b>50 produk terjual</b>, dinilai dari 90 hari terakhir.]]></string>
+    <string name="pm_desc_level_4_benefit_package_section"><![CDATA[%1s <b>Level 4</b> dengan pendapatan mulai dari <b>Rp300 juta</b> dan <b>1500 produk terjual</b>, dinilai dari 90 hari terakhir.]]></string>
 
     <string name="pm_additional_info_benefit_package_section">• Level toko akan diperbarui setiap bulan di hari Senin pertama.
          &lt;br /&gt;• Kenaikan paket keuntungan dilakukan tiap bulan &amp; penurunan setiap kuartal.

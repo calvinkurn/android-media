@@ -87,9 +87,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
 
-    private val coachMark: CoachMark2? by lazy {
-        context?.let { CoachMark2(it) }
-    }
+    private val coachMark by getInstanceCoachMark()
 
     private val penaltyDotBadge: PenaltyDotBadge? by lazy {
         context?.let { PenaltyDotBadge(it) }
@@ -493,35 +491,38 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun showCoachMark() {
-        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                when (currentIndex) {
-                    COACHMARK_HEADER_POSITION -> {
-                        scrollToItemHeaderCoachMark()
-                    }
-                    COACHMARK_ITEM_DETAIL_POSITION -> {
-                        scrollToItemDetailCoachMark()
-                    }
-                    COACHMARK_LAST_POSITION_PM_RM -> {
-                        scrollToLastItemCoachMark()
-                    }
-                    else -> {
+    private fun getInstanceCoachMark(): Lazy<CoachMark2?> {
+        return lazy {
+            val coachMark = context?.let { CoachMark2(it) }
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    when (currentIndex) {
+                        COACHMARK_HEADER_POSITION -> {
+                            scrollToItemHeaderCoachMark()
+                        }
+                        COACHMARK_ITEM_DETAIL_POSITION -> {
+                            scrollToItemDetailCoachMark()
+                        }
+                        COACHMARK_LAST_POSITION_PM_RM -> {
+                            scrollToLastItemCoachMark()
+                        }
+                        else -> { }
                     }
                 }
+            })
+            coachMark?.onFinishListener = {
+                shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
             }
-        })
+            coachMark
+        }
+    }
 
+    private fun showCoachMark() {
         coachMark?.isDismissed = false
-
         rvShopPerformance?.post {
             if (getCoachMarkItems().value.isNotEmpty()) {
                 coachMark?.showCoachMark(getCoachMarkItems().value)
             }
-        }
-
-        coachMark?.onFinishListener = {
-            shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
         }
     }
 
@@ -582,12 +583,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToItemParameterDetailCoachMark() {
-        scrollTo<ItemDetailPerformanceUiModel>()
+        scrollTo<ItemDetailPerformanceUiModel>(true)
     }
 
-    private inline fun <reified T : Visitable<*>> scrollTo() {
-        val positionItem =
+    private inline fun <reified T : Visitable<*>> scrollTo(isLastIndex: Boolean = false) {
+        val positionItem = if (isLastIndex) {
             shopPerformanceAdapter.list.indexOfLast { it is T }
+        } else {
+            shopPerformanceAdapter.list.indexOfFirst { it is T }
+        }
+
         context?.let {
             if (positionItem != RecyclerView.NO_POSITION) {
                 val smoothScroller: RecyclerView.SmoothScroller =
@@ -659,8 +664,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             it != RecyclerView.NO_POSITION
         }
         val view = position?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val widgetShopGradeWidget = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
-        return widgetShopGradeWidget?.itemView
+        val viewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+        return viewHolder?.itemView
     }
 
     private fun getHeaderPerformanceView(): View? {
