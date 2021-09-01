@@ -1,6 +1,8 @@
 package com.tokopedia.review.feature.gallery.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +57,7 @@ class ReviewGalleryFragment :
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
         const val KEY_REVIEW_GALLERY_ROUTING_DATA = "reviewGalleryData"
+        const val IMAGE_PREVIEW_ACTIVITY_CODE = 200
         fun createNewInstance(productId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
@@ -205,6 +208,15 @@ class ReviewGalleryFragment :
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         showFullPageLoading()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == IMAGE_PREVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            showFullPageLoading()
+            clearAllData()
+            loadInitialData()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun getProductIdFromArguments() {
@@ -387,7 +399,10 @@ class ReviewGalleryFragment :
                     viewModel.getShopId()
                 )
             )
-            startActivity(ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true))
+            startActivityForResult(
+                ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true),
+                IMAGE_PREVIEW_ACTIVITY_CODE
+            )
         }
     }
 

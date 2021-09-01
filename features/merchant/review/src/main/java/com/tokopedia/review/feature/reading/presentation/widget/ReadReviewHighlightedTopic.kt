@@ -38,6 +38,7 @@ class ReadReviewHighlightedTopic: BaseCustomView {
         topicTitle = findViewById(R.id.read_review_highlighted_topic_title)
         reviewCount = findViewById(R.id.read_review_highlighted_topic_review_count)
         topicRating?.background = ContextCompat.getDrawable(context, R.drawable.bg_highlighted_topic_rating)
+        background = ContextCompat.getDrawable(context, R.drawable.bg_review_highlighted_topic)
     }
 
     fun setHighlightedTopic(topic: ProductTopic) {

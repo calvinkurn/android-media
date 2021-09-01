@@ -264,7 +264,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             activity?.supportFragmentManager?.let {
                 if (isFromGallery) {
                     ReviewReportBottomSheet.newInstance(
-                        galleryRoutingData.getSelectedReview()?.feedbackId ?: "",
+                        galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.feedbackId ?: "",
                         galleryRoutingData.shopId,
                         this
                     ).show(it, ReviewReportBottomSheet.TAG)
@@ -454,7 +454,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         if (isProductReview) {
             ReviewImagePreviewTracking.trackOnSeeAllClicked(
                 if(isFromGallery) galleryRoutingData.getSelectedReview()?.feedbackId ?: "" else productReview.feedbackID,
-                productId,
+                galleryRoutingData.productId,
                 isFromGallery
             )
         } else {
