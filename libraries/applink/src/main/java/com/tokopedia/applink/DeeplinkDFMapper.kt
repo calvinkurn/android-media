@@ -6,6 +6,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
+import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER_PREVIOUS
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
@@ -554,6 +555,9 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
+
+            // Review Reminder
+            add(DFP({ it.startsWith(REVIEW_REMINDER_PREVIOUS) }, DF_BASE, R.string.title_review_reminder))
         }
     }
 
