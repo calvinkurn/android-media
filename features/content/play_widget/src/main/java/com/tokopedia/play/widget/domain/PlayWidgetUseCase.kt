@@ -36,7 +36,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
     companion object {
 
         private const val PARAM_WIDGET_TYPE = "widgetType"
-        private const val PARAM_AUTHOR_ID = "authorId"
+        private const val PARAM_AUTHOR_ID = "authorID"
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_IS_WIFI = "isWifi"
 
