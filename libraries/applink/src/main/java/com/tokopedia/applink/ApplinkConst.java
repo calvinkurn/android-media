@@ -74,8 +74,6 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
-    String REVIEW_REMINDER_HOST = "review-reminder";
-    String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW_HOST = "webview";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD_HOST = "webviewdownload";
@@ -485,6 +483,7 @@ public interface ApplinkConst {
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
+        String REVIEW_REMINDER = "sellerapp://review-reminder";
     }
 
     interface TokopediaNow {

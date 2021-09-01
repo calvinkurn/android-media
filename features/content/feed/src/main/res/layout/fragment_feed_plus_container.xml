@@ -18,14 +18,14 @@
             android:id="@+id/feed_background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="null"
+            android:contentDescription="@string/feed_background_image"
             android:background="@drawable/gradient_feed"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:contentDescription="null"
+            android:contentDescription="@string/feed_header_mask"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
     </FrameLayout>
@@ -74,10 +74,10 @@
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
-            app:tabSelectedTextColor="@color/Unify_G400"
+            app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextColor="@color/Unify_N700_32"
             app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/Unify_G400"
+            app:tabIndicatorColor="@color/Unify_GN500"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -125,12 +125,13 @@
             android:layout_height="@dimen/dp_60"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:visibility="gone"
-            app:backgroundTint="@color/Unify_G400"
+            app:backgroundTint="@color/Unify_GN500"
             app:srcCompat="@drawable/ic_feed_post_plus"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            tools:ignore="UnifyComponentUsage" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_feed_byme"
@@ -142,10 +143,10 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:visibility="invisible"
             app:backgroundTint="@color/Unify_N0"
-            app:srcCompat="@drawable/ic_feed_post_byme"/>
+            app:srcCompat="@drawable/ic_feed_post_byme"
+            tools:ignore="UnifyComponentUsage" />
 
-
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_fab_byme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -170,9 +171,11 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:visibility="invisible"
             app:backgroundTint="@color/Unify_N0"
-            app:srcCompat="@drawable/ic_feed_post_shop"/>
+            app:srcCompat="@drawable/ic_feed_post_shop"
+            tools:ignore="UnifyComponentUsage"
+            android:contentDescription="@string/feed_fab_shop" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_fab_shop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -185,7 +188,8 @@
             android:textColor="@color/Unify_N0"
             android:layout_marginRight="@dimen/dp_12"
             android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            />
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
