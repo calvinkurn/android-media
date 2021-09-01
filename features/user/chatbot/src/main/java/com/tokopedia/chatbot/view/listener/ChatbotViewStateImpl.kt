@@ -97,12 +97,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
         updateHeader(chatroomViewModel) {}
-        showReplyBox(chatroomViewModel.replyable)
         checkShowQuickReply(chatroomViewModel)
     }
 
-    override fun onConnectWebSocket() {
-        showReplyBox(true)
+    override fun handleReplyBox(isEnable: Boolean) {
+       showReplyBox(isEnable)
     }
 
     override fun loadAvatar(avatarUrl: String) {

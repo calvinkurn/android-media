@@ -340,15 +340,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun startNewSession() {
         presenter.connectWebSocket(messageId)
-        getViewState().onConnectWebSocket()
     }
 
     override fun blockTyping() {
-        reply_box.hide()
+        getViewState().handleReplyBox(false)
     }
 
     override fun enableTyping() {
-        reply_box.show()
+        getViewState().handleReplyBox(true)
         swipeToRefresh.setMargin(0, 0, 0, 0)
     }
 
