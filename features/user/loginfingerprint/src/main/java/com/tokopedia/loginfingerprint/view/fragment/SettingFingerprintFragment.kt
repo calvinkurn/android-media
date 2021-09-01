@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
@@ -157,10 +156,7 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION) {
             if(resultCode == Activity.RESULT_OK && data != null) {
-                val uniqueId = if(fingerprintPreference.isUniqueIdEmpty())
-                                    DeviceInfo.getUUID(requireContext())
-                                else fingerprintPreference.getUniqueId()
-                viewModel.registerFingerprint(uniqueId)
+                viewModel.registerFingerprint()
             } else if(resultCode == Activity.RESULT_CANCELED) {
                 enableSwitch = true
                 onErrorRegisterFingerprint(Throwable(getString(R.string.error_failed_register_fingerprint)))

@@ -3,6 +3,7 @@ package com.tokopedia.sessioncommon.data.fingerprint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.tokopedia.device.info.DeviceInfo
 import javax.inject.Inject
 
 class FingerprintPreferenceManager @Inject constructor(val context: Context): FingerprintPreference {
@@ -24,7 +25,11 @@ class FingerprintPreferenceManager @Inject constructor(val context: Context): Fi
     }
 
     override fun getUniqueId(): String {
-        return preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+        val cacheUniqueId = preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+        if(cacheUniqueId.isEmpty()) {
+            return DeviceInfo.getUUID(context)
+        }
+        return cacheUniqueId
     }
 
     override fun isUniqueIdEmpty(): Boolean {

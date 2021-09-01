@@ -55,16 +55,16 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
         })
     }
 
-    fun registerFingerprint(uniqueId: String){
-        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+    fun registerFingerprint(){
+        val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
         signature?.run {
             if(cryptographyUtils?.getPublicKey()?.isNotEmpty() == true && signature.signature.isNotEmpty()){
                 registerFingerprintUseCase.registerFingerprint(
-                    uniqueId,
+                    fingerprintPreference.getUniqueId(),
                     this,
                     cryptographyUtils.getPublicKey(),
                     {
-                        fingerprintPreference.saveUniqueIdIfEmpty(uniqueId)
+                        fingerprintPreference.saveUniqueIdIfEmpty(fingerprintPreference.getUniqueId())
                         onSuccessRegisterFP(it)
                     },
                     onErrorRegisterFP()
