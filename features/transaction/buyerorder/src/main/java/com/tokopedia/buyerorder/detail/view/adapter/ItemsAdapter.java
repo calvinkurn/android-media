@@ -3,7 +3,6 @@ package com.tokopedia.buyerorder.detail.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -39,7 +38,8 @@ import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
 
@@ -507,7 +507,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if(size==0) setETiket(totalTicketCount);
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getActionButtons().get(i);
-                        TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                        Typography tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
                             RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails);
                             tapActionLayoutEvents.addView(redeemVoucherView);
@@ -593,8 +593,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return false;
         }
 
-        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-            TextView tapActionTextView = new TextView(context);
+        private Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
+            Typography tapActionTextView = new Typography(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
             tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
@@ -795,7 +795,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         int size = item.getTapActions().size();
                         for (int i = 0; i < size; i++) {
                             ActionButton actionButton = item.getTapActions().get(i);
-                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                            Typography tapActionTextView = renderActionButtons(i, actionButton, item);
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
                                 presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
@@ -817,7 +817,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getActionButtons().get(i);
 
-                        TextView actionTextView = renderActionButtons(i, actionButton, item);
+                        Typography actionTextView = renderActionButtons(i, actionButton, item);
                         if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             if (item.isActionButtonLoaded()) {
                                 setActionButtonClick(null, actionButton);
@@ -852,8 +852,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         }
 
-        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-            TextView tapActionTextView = new TextView(context);
+        private Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
+            Typography tapActionTextView = new Typography(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
             tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));

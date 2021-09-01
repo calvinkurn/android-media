@@ -335,7 +335,7 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwBubbleExpandCollapse(position: Int) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tp_srw_container_partial
             )
         ).perform(click())
@@ -420,7 +420,7 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.rv_srw_content_container
             )
         ).check(matches(visibilityMatcher))
@@ -456,7 +456,7 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.ll_srw_partial
             )
         ).check(matches(visibilityMatcher))
@@ -478,7 +478,7 @@ abstract class TopchatRoomTest {
         visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.lu_srw_partial
             )
         ).check(matches(visibilityMatcher))
@@ -496,7 +496,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertSrwBubbleDoesNotExist() {
-        onView(withId(R.id.recycler_view)).check(matches(not(hasSrwBubble())))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(not(hasSrwBubble())))
     }
 
     protected fun assertSrwBubbleContentIsVisibleAt(
@@ -532,7 +532,7 @@ abstract class TopchatRoomTest {
         position: Int, visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tvRole
             )
         ).check(matches(visibilityMatcher))
@@ -540,7 +540,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.tvRole
             )
         ).check(matches(withText(msg)))
@@ -550,7 +550,7 @@ abstract class TopchatRoomTest {
         position: Int, visibilityMatcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.img_sr_blue_dot
             )
         ).check(matches(visibilityMatcher))
@@ -701,7 +701,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun scrollChatToPosition(position: Int) {
-        onView(withId(R.id.recycler_view)).perform(
+        onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }

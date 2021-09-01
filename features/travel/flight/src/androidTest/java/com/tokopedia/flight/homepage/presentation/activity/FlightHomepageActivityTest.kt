@@ -16,7 +16,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.banner.BannerViewPagerAdapter
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
@@ -114,15 +114,14 @@ class FlightHomepageActivityTest {
     private fun validateFlightHomepageBannerDisplayedAndScrollable() {
         Thread.sleep(2000)
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+            onView(withId(R.id.flightHomepageBanner)).check(matches(isDisplayed()))
             Thread.sleep(1000)
             if (getBannerItemCount() > 1)
-                onView(withId(R.id.banner_recyclerview))
-                        .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(
-                                getBannerItemCount() - 1))
+                onView(withId(R.id.flightHomepageBanner)).perform(swipeLeft())
+                onView(withId(R.id.flightHomepageBanner)).perform(click())
         } else {
             Thread.sleep(1000)
-            onView(withId(R.id.banner_recyclerview)).check(matches(Matchers.not(isDisplayed())))
+            onView(withId(R.id.flightHomepageBanner)).check(matches(Matchers.not(isDisplayed())))
         }
     }
 
@@ -130,14 +129,14 @@ class FlightHomepageActivityTest {
         Thread.sleep(2000)
 
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+            onView(withId(R.id.flightHomepageBanner)).perform(swipeRight())
+            onView(withId(R.id.flightHomepageBanner)).perform(click())
         }
     }
 
     private fun getBannerItemCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.banner_recyclerview) as RecyclerView
-        return recyclerView.adapter?.itemCount ?: 0
+        val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
+        return carousel.indicatorCount.toInt()
     }
 
     @Test

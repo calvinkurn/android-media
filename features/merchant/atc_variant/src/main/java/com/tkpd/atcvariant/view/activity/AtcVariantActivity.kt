@@ -2,6 +2,8 @@ package com.tkpd.atcvariant.view.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -73,7 +75,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
         }
 
         super.onCreate(savedInstanceState)
-
+        adjustOrientation()
         try {
             window.setDimAmount(0f)
         } catch (th: Throwable) {
@@ -96,5 +98,11 @@ class AtcVariantActivity : BaseSimpleActivity() {
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         })
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 }

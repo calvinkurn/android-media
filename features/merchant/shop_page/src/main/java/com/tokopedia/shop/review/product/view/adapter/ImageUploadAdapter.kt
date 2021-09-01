@@ -96,7 +96,7 @@ class ImageUploadAdapter(var context: Context) : RecyclerView.Adapter<ImageUploa
     }
 
     override fun getItemCount(): Int {
-        return if (list.size < 5) {
+        return if (list.size < SIZE_IMAGE_UPLOAD_THRESHOLD) {
             list.size + canUpload
         } else {
             list.size
@@ -151,6 +151,7 @@ class ImageUploadAdapter(var context: Context) : RecyclerView.Adapter<ImageUploa
         private const val VIEW_UPLOAD_BUTTON = 100
         private const val VIEW_REVIEW_IMAGE = 97
         private const val MAX_IMAGE = 5
+        private const val SIZE_IMAGE_UPLOAD_THRESHOLD = 5
         const val RADIUS_CORNER = 4
         fun createAdapter(context: Context): ImageUploadAdapter {
             return ImageUploadAdapter(context)

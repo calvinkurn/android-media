@@ -2,9 +2,9 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.domain.model.Place
-import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.network.exception.MessageErrorException
@@ -19,7 +19,7 @@ class AutoCompleteUseCase
 
     fun execute(query: String): Observable<Place> {
         val param = mapOf("param" to query)
-        val gqlRequest = GraphqlRequest(AutoCompleteQuery.keroAutoCompleteGeocode, AutoCompleteResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(KeroLogisticQuery.autoComplete, AutoCompleteResponse::class.java, param)
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
