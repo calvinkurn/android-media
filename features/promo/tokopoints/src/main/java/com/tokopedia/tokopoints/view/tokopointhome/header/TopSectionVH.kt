@@ -142,7 +142,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 0)
                     }
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_topquest)?.setOnClickListener {
                     dataList[1]?.cta?.let {
                         hideNotification(1, dataList[1])
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 1)

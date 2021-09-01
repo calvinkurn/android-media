@@ -258,7 +258,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/holder_coupon"
+            android:id="@+id/holder_topquest"
             android:layout_width="204dp"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
@@ -279,7 +279,7 @@
                 android:layout_gravity="center">
 
                 <ImageView
-                    android:id="@+id/image_voucher"
+                    android:id="@+id/image_topquest"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
                     android:layout_gravity="center"
@@ -289,12 +289,12 @@
                     tools:layout_editor_absoluteX="45dp" />
 
                 <com.tokopedia.unifycomponents.NotificationUnify
-                    android:id="@+id/notif_voucher"
+                    android:id="@+id/notif_topquest"
                     android:layout_width="@dimen/dp_8"
                     android:layout_height="@dimen/dp_8"
-                    android:layout_alignTop="@id/image_voucher"
-                    android:layout_alignEnd="@id/image_voucher"
-                    android:layout_alignRight="@id/image_voucher"
+                    android:layout_alignTop="@id/image_topquest"
+                    android:layout_alignEnd="@id/image_topquest"
+                    android:layout_alignRight="@id/image_topquest"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_2"
                     android:gravity="center"
@@ -310,7 +310,7 @@
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_voucher"
+                    android:id="@+id/label_topquest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
@@ -323,7 +323,7 @@
                     tools:text="Voucher" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_voucher2"
+                    android:id="@+id/label_topquest2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"

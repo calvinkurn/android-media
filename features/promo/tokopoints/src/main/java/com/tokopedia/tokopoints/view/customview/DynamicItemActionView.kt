@@ -19,23 +19,22 @@ class DynamicItemActionView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    lateinit var holderFirstLayout: LinearLayout
+    lateinit var holderTLLayout: LinearLayout
+    lateinit var tvTLLabel: TextView
+    lateinit var ivTLLayout: ImageView
+    lateinit var tvTLLayout: TextView
+    lateinit var notifTLLayout: NotificationUnify
+
     lateinit var holderCenterLayout: LinearLayout
     lateinit var holderRightLayout: LinearLayout
-    lateinit var ivFirstLayout: ImageView
     lateinit var ivCenterLayout: ImageView
     lateinit var ivRightLayout: ImageView
-    lateinit var tvFirstLayout: TextView
     lateinit var tvCenterLayout: TextView
     lateinit var tvRightLayout: TextView
-    lateinit var tvFirstLabel: TextView
     lateinit var tvCenterLabel: TextView
     lateinit var tvRightLabel: TextView
-    lateinit var notifFirstLayout: NotificationUnify
     lateinit var notifCenterLayout: NotificationUnify
     lateinit var notifRightLayout: NotificationUnify
-    lateinit var dividerOne: View
-    lateinit var dividerTwo: View
 
     init {
         setUpUI()
@@ -43,27 +42,28 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     private fun setUpUI() {
         val view = View.inflate(context, R.layout.tp_home_dynamic_action, null)
-        holderFirstLayout = view.findViewById(R.id.holder_tokopoint)
-        holderCenterLayout = view.findViewById(R.id.holder_coupon)
-        holderRightLayout = view.findViewById(R.id.holder_tokomember)
-        ivFirstLayout = view.findViewById(R.id.image_tokopoint)
-        ivCenterLayout = view.findViewById(R.id.image_voucher)
-        ivRightLayout = view.findViewById(R.id.image_tokomember)
-        tvFirstLayout = view.findViewById(R.id.label_tokopoint1)
-        tvCenterLayout = view.findViewById(R.id.label_voucher)
-        tvRightLayout = view.findViewById(R.id.label_tokomember)
-        tvFirstLabel = view.findViewById(R.id.label_tokopoint2)
-        tvCenterLabel = view.findViewById(R.id.label_voucher2)
-        tvRightLabel = view.findViewById(R.id.label_tokomember2)
-        notifFirstLayout = view.findViewById(R.id.notif_tokopoint)
-        notifCenterLayout = view.findViewById(R.id.notif_voucher)
-        notifRightLayout = view.findViewById(R.id.notif_tokomember)
+        holderTLLayout = view.findViewById(R.id.holder_tokomember)
+        ivTLLayout = view.findViewById(R.id.image_tokomember)
+        tvTLLayout = view.findViewById(R.id.label_tokomember)
+        tvTLLabel = view.findViewById(R.id.label_tokomember2)
+        notifTLLayout = view.findViewById(R.id.notif_tokomember)
+
+        holderRightLayout = view.findViewById(R.id.holder_topquest)
+        ivRightLayout = view.findViewById(R.id.image_topquest)
+        tvRightLayout = view.findViewById(R.id.label_topquest)
+        tvRightLabel = view.findViewById(R.id.label_topquest2)
+        notifRightLayout = view.findViewById(R.id.notif_topquest)
+        holderCenterLayout = view.findViewById(R.id.holder_tokopoint)
+        ivCenterLayout = view.findViewById(R.id.image_tokopoint)
+        tvCenterLayout = view.findViewById(R.id.label_tokopoint1)
+        tvCenterLabel = view.findViewById(R.id.label_tokopoint2)
+        notifCenterLayout = view.findViewById(R.id.notif_tokopoint)
         addView(view)
     }
 
     fun setLayoutText(title: String, position: Int) {
         when (position) {
-            FIRST_TAB -> tvFirstLayout.text = title
+            FIRST_TAB -> tvTLLayout.text = title
             SECOND_TAB -> tvCenterLayout.text = title
             else -> tvRightLayout.text = title
         }
@@ -72,8 +72,8 @@ class DynamicItemActionView @JvmOverloads constructor(
     fun setLayoutLabel(label: String, position: Int) {
         when (position) {
             FIRST_TAB -> {
-                tvFirstLabel.show()
-                tvFirstLabel.text = label
+                tvTLLabel.show()
+                tvTLLabel.text = label
             }
             SECOND_TAB -> {
                 tvCenterLabel.show()
@@ -88,7 +88,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setLayoutIcon(imgUrl: String, position: Int) {
         when (position) {
-            FIRST_TAB -> ivFirstLayout.loadImage(imgUrl)
+            FIRST_TAB -> ivTLLayout.loadImage(imgUrl)
             SECOND_TAB -> ivCenterLayout.loadImage(imgUrl)
             else -> ivRightLayout.loadImage(imgUrl)
         }
@@ -96,7 +96,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setLayoutVisibility(visibility: Int, position: Int) {
         when (position) {
-            FIRST_TAB -> holderFirstLayout.visibility = visibility
+            FIRST_TAB -> holderTLLayout.visibility = visibility
             SECOND_TAB -> holderCenterLayout.visibility = visibility
             else -> holderRightLayout.visibility = visibility
         }
@@ -105,8 +105,8 @@ class DynamicItemActionView @JvmOverloads constructor(
     fun setLayoutNotification(notif: String, position: Int) {
         when (position) {
             FIRST_TAB -> {
-                notifFirstLayout.show()
-                notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifTLLayout.show()
+                notifTLLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             SECOND_TAB -> {
                 notifCenterLayout.show()
@@ -121,7 +121,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun hideNotification(position: Int) {
         when (position) {
-            FIRST_TAB -> notifFirstLayout.hide()
+            FIRST_TAB -> notifTLLayout.hide()
             SECOND_TAB -> notifCenterLayout.hide()
             else -> notifRightLayout.hide()
         }
@@ -129,7 +129,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
         when (position) {
-            FIRST_TAB -> notifFirstLayout.hide()
+            FIRST_TAB -> notifTLLayout.hide()
             SECOND_TAB -> notifCenterLayout.hide()
             else ->
                 notifRightLayout.hide()
