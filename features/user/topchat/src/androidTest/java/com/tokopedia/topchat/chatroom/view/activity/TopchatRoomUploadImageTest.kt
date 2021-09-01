@@ -5,18 +5,20 @@ import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
+import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matchers.greaterThan
 import org.junit.After
 import org.junit.Test
@@ -30,7 +32,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         // When
         openImagePicker()
         // Then
-        onView(withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        assertImageContainerAtPosition(0)
     }
 
     @Test
@@ -44,6 +46,8 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         //send second image
         openImagePicker()
         // Then
+        assertImageContainerAtPosition(0)
+        assertImageContainerAtPosition(1)
         onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(greaterThan(count)))
     }
 
@@ -58,7 +62,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // Then
-        onView(withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        assertImageContainerAtPosition(0)
     }
 
     @Test
@@ -99,6 +103,15 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         )
     }
 
+    private fun assertImageContainerAtPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).check(
+            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
+        )
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(position, R.id.fl_image_container))
+            .check(matches(isDisplayed()))
+    }
+
     private fun clickImageUploadErrorHandler() {
         onView(withId(R.id.left_action)).perform(click())
     }
@@ -123,7 +136,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         replyChatGQLUseCase.delayResponse = replyChatGqlDelay
         replyChatGQLUseCase.response = uploadImageReplyResponse
         launchChatRoomActivity()
-        intending(hasData("tokopedia-android-internal://global/image-picker"))
+        intending(hasData(ApplinkConstInternalGlobal.IMAGE_PICKER))
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
     }
 
