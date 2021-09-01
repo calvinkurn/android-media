@@ -52,7 +52,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toTopOf="@id/btn_reject_shop_closed"
                 app:layout_constraintTop_toBottomOf="@id/tf_shop_closed_notes"
-                app:layout_constraintVertical_bias="0"
+                app:layout_constraintVertical_bias="1"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifycomponents.UnifyButton
