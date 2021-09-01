@@ -274,8 +274,12 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun renderProductActionSection(data: CartItemHolderData) {
-        if (data.isBundlingItem && (data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-            binding.containerProductAction.gone()
+        if (data.isBundlingItem) {
+            if (data.isMultipleBundleProduct && (data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
+                binding.containerProductAction.gone()
+            } else {
+                binding.containerProductAction.show()
+            }
             binding.holderItemCartDivider.gone()
         } else {
             binding.containerProductAction.show()

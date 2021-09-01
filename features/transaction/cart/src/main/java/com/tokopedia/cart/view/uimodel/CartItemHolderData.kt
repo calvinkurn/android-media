@@ -40,6 +40,7 @@ data class CartItemHolderData(
         var notes: String = "",
         var maxNotesLength: Int = 0,
         var isBundlingItem: Boolean = false,
+        var isMultipleBundleProduct: Boolean = false,
         var bundlingItemPosition: Int = 0,
         var bundleId: String = "",
         var bundleGroupId: String = "",

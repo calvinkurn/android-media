@@ -321,6 +321,7 @@ object CartUiModelMapper {
             maxNotesLength = cartData.maxCharNote
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {
+                isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = cartDetail.bundleDetail.bundleMaxOrder
                 quantity = product.productQuantity
