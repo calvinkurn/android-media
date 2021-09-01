@@ -47,11 +47,11 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         rvShipping.adapter = ShippingDurationOccAdapter(mutableList, this)
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
+    override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        var selectedShippingCourierUiModel = shippingCourierViewModelList[0]
-        for (shippingCourierUiModel in shippingCourierViewModelList) {
+        var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
+        for (shippingCourierUiModel in shippingCourierUiModelList) {
             val recommend = shippingCourierUiModel.productData.isRecommend
             if (recommend) {
                 selectedShippingCourierUiModel = shippingCourierUiModel

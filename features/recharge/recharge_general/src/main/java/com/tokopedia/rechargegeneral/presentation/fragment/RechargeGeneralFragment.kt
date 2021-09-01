@@ -227,7 +227,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     }
 
                     view?.let { v ->
-                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                         Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }

@@ -16,8 +16,6 @@ object ApplinkConsInternalDigital {
 
     //new cart checkout applink
     const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
-    //old cart checkout applink
-    const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
 
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"

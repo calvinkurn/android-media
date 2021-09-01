@@ -66,13 +66,13 @@ import javax.inject.Inject
  */
 
 class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapterFactory>(),
-        BaseCheckableViewHolder.CheckableInteractionListener,
-        BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
-        SmartBillsViewHolder.DetailListener,
-        TopupBillsCheckoutWidget.ActionListener,
-        SmartBillsActivity.SbmActivityListener,
-        SmartBillsToolTipBottomSheet.Listener,
-        SmartBillsAccordionViewHolder.SBMAccordionListener,
+    BaseCheckableViewHolder.CheckableInteractionListener,
+    BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
+    SmartBillsViewHolder.DetailListener,
+    TopupBillsCheckoutWidget.ActionListener,
+    SmartBillsActivity.SbmActivityListener,
+    SmartBillsToolTipBottomSheet.Listener,
+    SmartBillsAccordionViewHolder.SBMAccordionListener,
         SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
         SmartBillsCatalogBottomSheet.CatalogCallback
 {
@@ -136,12 +136,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     ongoingMonth?.let {
                         viewModel.getStatementBills(
-                                viewModel.createStatementBillsParams(
-                                        it.month,
-                                        it.year,
-                                        SOURCE
-                                ),
-                                swipeToRefresh?.isRefreshing ?: false
+                            viewModel.createStatementBillsParams(
+                                it.month,
+                                it.year,
+                                SOURCE
+                            ),
+                            swipeToRefresh?.isRefreshing ?: false
                         )
                     }
                     if (ongoingMonth == null) {
@@ -232,8 +232,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
                         checkout_loading_view.hide()
                         view?.let { v ->
-                            Toaster.build(v, getString(R.string.smart_bills_checkout_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                            val throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
+                            Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
 
                         for (errorItem in it.data.attributes.errors) {
@@ -259,8 +261,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
                     view?.let { v ->
-                        Toaster.build(v, getErrorHandling(throwable)
-                                ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        Toaster.build(v, ErrorHandler.getErrorMessage(context,throwable)
+                                , Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -356,8 +358,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 applyEditor()
             }
             startActivityForResult(Intent(context,
-                    SmartBillsOnboardingActivity::class.java),
-                    REQUEST_CODE_SMART_BILLS_ONBOARDING
+                SmartBillsOnboardingActivity::class.java),
+                REQUEST_CODE_SMART_BILLS_ONBOARDING
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
@@ -437,8 +439,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         // Reset to initial state
         resetInitialState()
         viewModel.getStatementMonths(
-                viewModel.createStatementMonthsParams(1),
-                swipeToRefresh?.isRefreshing ?: false
+            viewModel.createStatementMonthsParams(1),
+            swipeToRefresh?.isRefreshing ?: false
         )
     }
 
@@ -543,27 +545,27 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     val billItemView = (rv_smart_bills_items?.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
                     val coachMarks = ArrayList<CoachMark2Item>()
                     coachMarks.add(
-                            CoachMark2Item(
-                                    view_smart_bills_select_all_checkbox_container,
-                                    getString(R.string.smart_bills_onboarding_title_1),
-                                    getString(R.string.smart_bills_onboarding_description_1)
-                            )
+                        CoachMark2Item(
+                            view_smart_bills_select_all_checkbox_container,
+                            getString(R.string.smart_bills_onboarding_title_1),
+                            getString(R.string.smart_bills_onboarding_description_1)
+                        )
                     )
                     billItemView?.run {
                         coachMarks.add(
-                                CoachMark2Item(
-                                        this,
-                                        getString(R.string.smart_bills_onboarding_title_2),
-                                        getString(R.string.smart_bills_onboarding_description_2)
-                                )
+                            CoachMark2Item(
+                                this,
+                                getString(R.string.smart_bills_onboarding_title_2),
+                                getString(R.string.smart_bills_onboarding_description_2)
+                            )
                         )
                     }
                     coachMarks.add(
-                            CoachMark2Item(
-                                    smart_bills_checkout_view.getCheckoutButton(),
-                                    getString(R.string.smart_bills_onboarding_title_3),
-                                    getString(R.string.smart_bills_onboarding_description_3)
-                            )
+                        CoachMark2Item(
+                            smart_bills_checkout_view.getCheckoutButton(),
+                            getString(R.string.smart_bills_onboarding_title_3),
+                            getString(R.string.smart_bills_onboarding_description_3)
+                        )
                     )
 
                     val coachMark = CoachMark2(this)
@@ -653,7 +655,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
             checkout_loading_view.show()
             viewModel.runMultiCheckout(
-                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession), userSession.userId
+                viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession), userSession.userId
             )
         }
     }
@@ -695,13 +697,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickRefreshAccordion(titleAccordion)
         ongoingMonth?.let {
             viewModel.getSBMWithAction(
-                    viewModel.createRefreshActionParams(
-                            getUUIDAction(listAccordion),
-                            it.month,
-                            it.year,
-                            SOURCE
-                    ),
-                    rechargeStatement
+                viewModel.createRefreshActionParams(
+                    getUUIDAction(listAccordion),
+                    it.month,
+                    it.year,
+                    SOURCE
+                ),
+                rechargeStatement
             )
         }
     }
@@ -733,7 +735,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smart_bills_checkout_view.setVisibilityLayout(false)
         sbm_global_error.apply {
             show()
-            errorTitle.text = getErrorHandling(throwable)
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                context, throwable, ErrorHandler.Builder().build())
+            errorTitle.text = errMsg
+            errorDescription.text = "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} " +
+                    "Kode Error: ($errCode)"
             sbm_loader_unify.hide()
             setActionClickListener {
                 this.gone()
@@ -748,10 +754,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 startActivityForResult(intent, REQUEST_CODE_SETTING)
             }
         }
-    }
-
-    private fun getErrorHandling(throwable: Throwable): String{
-        return ErrorHandler.getErrorMessage(context, throwable)
     }
 
     private fun getRemoteConfigAddBillsEnabler(): Boolean {

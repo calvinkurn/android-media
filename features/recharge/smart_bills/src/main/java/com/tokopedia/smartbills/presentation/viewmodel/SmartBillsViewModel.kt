@@ -84,14 +84,25 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.io) {
+            val response = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeListSmartBills.Response>()
+            }
 
-            if (data.response != null) {
+            val error = response.getError(RechargeListSmartBills.Response::class.java)
+            if(error.isNullOrEmpty()){
+                val data = response.getSuccessData<RechargeListSmartBills.Response>()
+                if (data.response != null) {
                 mutableStatementBills.postValue(Success(data.response))
+                } else {
+                    throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+                }
             } else {
-                throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+                val firstError = error.firstOrNull()
+                if (firstError?.extensions?.developerMessage?.contains(HARD_CODE_EMPTY_RESPONSE) ?: false){
+                    mutableStatementBills.postValue(Success(RechargeListSmartBills()))
+                } else {
+                    throw(MessageErrorException(firstError?.message))
+                }
             }
         }) {
             mutableStatementBills.postValue(Fail(it))
@@ -245,5 +256,7 @@ class SmartBillsViewModel @Inject constructor(
         const val DEFAULT_OS_TYPE = "1"
         const val IDEMPOTENCY_KEY = "Idempotency-Key"
         const val CONTENT_TYPE = "Content-Type"
+
+        const val HARD_CODE_EMPTY_RESPONSE = "error get base data: [favorite] empty favorite data"
     }
 }

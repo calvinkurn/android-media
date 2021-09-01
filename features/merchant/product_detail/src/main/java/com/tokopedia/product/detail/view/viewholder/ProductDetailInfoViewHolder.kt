@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -21,7 +21,6 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_detail_info
-        private const val DESCRIPTION_LIMIT = 300
     }
 
     private var adapter = ProductDetailInfoAdapter(listener)
@@ -47,9 +46,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         if (descFormatted.isNotEmpty()) {
             (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
-            val textDesc = if (descFormatted.length > DESCRIPTION_LIMIT) {
-                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), " "))
-            } else descFormatted
+            val textDesc = descFormatted.parseAsHtml().toString().replace("(\r\n|\n)".toRegex(), " ")
 
             product_detail_info_description.text = textDesc
             product_detail_info_description?.show()

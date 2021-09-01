@@ -82,6 +82,9 @@ data class RechargeBills(
         @SerializedName("sections")
         @Expose
         var section: Section = Section(),
+        @SerializedName("promo")
+        @Expose
+        var promo: Promo = Promo(),
 
         ): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {

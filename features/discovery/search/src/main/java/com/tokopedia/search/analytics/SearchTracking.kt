@@ -61,7 +61,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>) {
+    fun eventAppsFlyerViewListingSearch(productsId: JSONArray, keyword: String, prodIds: ArrayList<String?>, allProdIds: ArrayList<String?>?) {
         val listViewEvent: MutableMap<String, Any> = HashMap()
         listViewEvent["af_content_id"] = prodIds
         listViewEvent["af_currency"] = "IDR"
@@ -75,12 +75,14 @@ object SearchTracking {
         TrackApp.getInstance().appsFlyer.sendTrackEvent("af_search", listViewEvent)
 
         //add branch search event
-        LinkerManager.getInstance().sendEvent(
-            LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_SEARCH,
-                prodIds
+        allProdIds?.let {
+            LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(
+                    LinkerConstants.EVENT_SEARCH,
+                    it
+                )
             )
-        )
+        }
     }
 
     @JvmStatic

@@ -1,6 +1,7 @@
 package com.tokopedia.smartbills.presentation.adapter.viewholder
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
@@ -34,6 +35,7 @@ class SmartBillsViewHolder(val view: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_smart_bills_item
+        const val ZERO_PERCENT = 0
     }
 
     override fun bind(element: RechargeBills) {
@@ -52,6 +54,8 @@ class SmartBillsViewHolder(val view: View,
                 tv_smart_bills_item_description_bill_name.disableView()
                 tv_smart_bills_item_description_number.disableView()
                 tv_smart_bills_item_price.disableView()
+                tv_smart_bills_percentage_label.disableView()
+                tv_smart_bills_percentage_amount.disableView()
                 tv_due_message.disableView()
                 tv_due_date_label.disableView()
                 tv_smart_bills_item_detail.disableView()
@@ -106,8 +110,11 @@ class SmartBillsViewHolder(val view: View,
                 } else this.gone()
             }
 
-            tv_smart_bills_item_price.text = if(accordionType != ACTION_TYPE)
-                element.amountText else getString(R.string.smart_bills_clustering_price)
+            if(!element.amountText.isNullOrEmpty()) {
+                tv_smart_bills_item_price.show()
+                tv_smart_bills_item_price.text = if (accordionType != ACTION_TYPE)
+                    element.amountText else getString(R.string.smart_bills_clustering_price)
+            } else tv_smart_bills_item_price.gone()
 
             ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
 
@@ -176,13 +183,19 @@ class SmartBillsViewHolder(val view: View,
                 iv_urgency_icon.gone()
             }
 
-
-            if(element.newBillLabel.isNewLabel){
-                icon_menu_sbm_delete.apply {
+            if(element.promo.percentage == ZERO_PERCENT){
+                tv_smart_bills_percentage_label.gone()
+                tv_smart_bills_percentage_amount.gone()
+            } else {
+                tv_smart_bills_percentage_label.apply {
                     show()
-                    setOnClickListener {
-                        detailListener.onDeleteClicked(element)
-                    }
+                    text = String.format("%s%%", element.promo.percentage.toString())
+                }
+
+                tv_smart_bills_percentage_amount.apply {
+                    show()
+                    text = element.promo.slashAmountText
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
             }
         }

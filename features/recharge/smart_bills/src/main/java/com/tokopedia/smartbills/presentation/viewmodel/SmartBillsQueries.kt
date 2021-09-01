@@ -201,6 +201,11 @@ object SmartBillsQueries {
                      Type
                      Text
                   }
+                  promo: Promo{
+                    percentage: Percentage,
+                    slashAmout: SlashAmount,
+                    slashAmountText: SlashAmountText
+                  }
             }
         }
     }

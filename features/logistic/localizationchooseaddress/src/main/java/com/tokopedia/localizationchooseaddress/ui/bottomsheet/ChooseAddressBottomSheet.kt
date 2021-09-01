@@ -34,6 +34,7 @@ import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
@@ -104,6 +105,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var isAddressListFlow: Boolean = false
     //flag variable to support warehous location, ex: for tokonow
     private var isSupportWarehouseLoc: Boolean = true
+    //flag variable to differentiate state from tokonow or not
+    private var isTokonow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +137,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         if (userSession.isLoggedIn) {
             initData()
         } else {
-            setViewState(false)
+            setViewState(userSession.isLoggedIn)
         }
     }
 
@@ -162,17 +165,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             REQUEST_CODE_ADD_ADDRESS -> {
                 val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
                 if (saveAddressDataModel != null) {
-                    viewModel.setStateChosenAddress(
-                        status = 2,
-                        addressId = saveAddressDataModel.id.toString(),
-                        receiverName = saveAddressDataModel.receiverName,
-                        addressName = saveAddressDataModel.addressName,
-                        latitude = saveAddressDataModel.latitude,
-                        longitude = saveAddressDataModel.longitude,
-                        districtId = saveAddressDataModel.districtId.toString(),
-                        postalCode = saveAddressDataModel.postalCode,
-                        isTokonow = isSupportWarehouseLoc
+                    val param = StateChooseAddressParam(
+                        ADDRESS_STATUS_FROM_ANA, saveAddressDataModel.id, saveAddressDataModel.receiverName,
+                        saveAddressDataModel.addressName, saveAddressDataModel.latitude, saveAddressDataModel.longitude,
+                        saveAddressDataModel.districtId, saveAddressDataModel.postalCode, isSupportWarehouseLoc
                     )
+                    viewModel.setStateChosenAddress(param)
                     isSnippetAddressFlow = false
                     isAddressListFlow = false
                 }
@@ -182,17 +180,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val latitude = data?.getDoubleExtra(LATITUDE, 0.0)
                 val longitude = data?.getDoubleExtra(LONGITUDE, 0.0)
                 if (discomModel != null) {
-                    viewModel.setStateChosenAddress(
-                        status = 4,
-                        addressId = null,
-                        addressName = "",
-                        receiverName = "",
-                        districtId = discomModel.districtId.toString(),
-                        latitude = latitude.toString(),
-                        longitude = longitude.toString(),
-                        postalCode = "",
-                        isTokonow = isSupportWarehouseLoc
+                    val param = StateChooseAddressParam(
+                        ADDRESS_STATUS_FROM_DISCOM, null, "", "",
+                        latitude.toString(), longitude.toString(), discomModel.districtId, "",
+                        isSupportWarehouseLoc
                     )
+                    viewModel.setStateChosenAddress(param)
                     isSnippetAddressFlow = true
                     isAddressListFlow = false
                 }
@@ -201,17 +194,13 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val recipientAddress = data?.getParcelableExtra<RecipientAddressModel>(EXTRA_SELECTED_ADDRESS_DATA)
                 val isFromANA = data?.getBooleanExtra(EXTRA_IS_FROM_ANA, false)
                 if (recipientAddress != null && isFromANA == false) {
-                    viewModel.setStateChosenAddress(
-                        status = recipientAddress.addressStatus,
-                        addressId = recipientAddress.id.toString(),
-                        receiverName = recipientAddress.recipientName,
-                        addressName = recipientAddress.addressName,
-                        latitude = recipientAddress.latitude,
-                        longitude = recipientAddress.longitude,
-                        districtId = recipientAddress.destinationDistrictId.toString(),
-                        postalCode = recipientAddress.postalCode,
-                        isTokonow = isSupportWarehouseLoc
+                    val param = StateChooseAddressParam(
+                        recipientAddress.addressStatus, recipientAddress.id.toInt(), recipientAddress.recipientName,
+                        recipientAddress.addressName, recipientAddress.latitude, recipientAddress.longitude,
+                        recipientAddress.destinationDistrictId.toInt(), recipientAddress.postalCode,
+                        isSupportWarehouseLoc
                     )
+                    viewModel.setStateChosenAddress(param)
                     isSnippetAddressFlow = false
                     isAddressListFlow = true
                 } else if (isFromANA == true) {
@@ -277,7 +266,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        viewModel.getChosenAddressList(source)
+        isTokonow = source.contains(TOKONOW, ignoreCase = true)
+        viewModel.getChosenAddressList(source, isTokonow)
     }
 
     private fun initObserver() {
@@ -285,7 +275,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             when (it) {
                 is Success -> {
                     adapter.updateData(it.data)
-                    setViewState(true)
+                    setViewState(userSession.isLoggedIn)
                 }
 
                 is Fail -> {
@@ -519,10 +509,13 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val IS_LOCALIZATION = "is_localization"
         const val IS_SUCCESS = "success"
         const val IS_NOT_SUCCESS = "not success"
+        const val TOKONOW = "tokonow"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+        const val ADDRESS_STATUS_FROM_ANA = 2
+        const val ADDRESS_STATUS_FROM_DISCOM = 4
 
         const val SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER = "/user/address/create/chooseaddressnew"
 
@@ -536,17 +529,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onItemClicked(address: ChosenAddressList) {
         isCardAddressClicked = true
-        viewModel.setStateChosenAddress(
-            status = address.status,
-            addressId = address.addressId,
-            receiverName =  address.receiverName,
-            addressName = address.addressname,
-            latitude = address.latitude,
-            longitude = address.longitude,
-            districtId = address.districtId,
-            postalCode = address.postalCode,
-            isTokonow = isSupportWarehouseLoc
+        val param = StateChooseAddressParam(
+            address.status, address.addressId.toInt(), address.receiverName, address.addressname,
+            address.latitude, address.longitude, address.districtId.toInt(), address.postalCode,
+            isSupportWarehouseLoc
         )
+        viewModel.setStateChosenAddress(param)
     }
 
     override fun onOtherAddressClicked() {

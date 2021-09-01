@@ -16,7 +16,6 @@ data class OrderPayment(
     val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
     val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
     val errorTickerMessage: String = "",
-    val isEnableNextButton: Boolean = false,
     val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
     val isOvoOnlyCampaign: Boolean = false,
@@ -36,11 +35,6 @@ data class OrderPayment(
 
     fun getRealFee(): Double {
         return creditCard.selectedTerm?.fee ?: fee
-    }
-
-    fun hasCreditCardOption(): Boolean {
-        if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards > 0) return true
-        return false
     }
 }
 
@@ -146,9 +140,6 @@ data class OrderPaymentWalletAdditionalData(
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
-
-    val isTopUpRequired: Boolean
-        get() = topUp.isRequired
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired
