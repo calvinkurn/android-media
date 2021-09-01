@@ -82,9 +82,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         affiliatePromoViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    affiliate_progress_bar?.show()
+                    promo_affiliate_progress_bar?.show()
                 else
-                    affiliate_progress_bar?.gone()
+                    promo_affiliate_progress_bar?.gone()
             }
         })
 

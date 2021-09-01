@@ -76,7 +76,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/affiliate_progress_bar"
+        android:id="@+id/promo_affiliate_progress_bar"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:visibility="invisible"
