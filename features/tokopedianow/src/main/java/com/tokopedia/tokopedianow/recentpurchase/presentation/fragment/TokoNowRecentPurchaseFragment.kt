@@ -27,6 +27,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
@@ -34,6 +35,8 @@ import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurcha
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapter
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.differ.RecentPurchaseListDiffer
+import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel.TokoNowRecentPurchaseViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +64,9 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
-            RecentPurchaseAdapterTypeFactory(),
+            RecentPurchaseAdapterTypeFactory(
+                productCardListener = RepurchaseProductCardListener(requireContext())
+            ),
             RecentPurchaseListDiffer()
         )
     }
@@ -79,6 +84,7 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initView()
         setupStatusBar()
         setupNavToolbar()
@@ -86,6 +92,8 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
+
+        viewModel.showLoading()
     }
 
     override fun onAttach(context: Context) {
@@ -107,7 +115,7 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
             .build()
             .inject(this)
     }
-    
+
     private fun initView() {
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         rvRecentPurchase = view?.findViewById(R.id.rv_recent_purchase)
@@ -219,6 +227,12 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
     }
 
     private fun observeLiveData() {
+        observe(viewModel.getLayout) {
+            if(it is Success) {
+                onSuccessGetLayout(it.data)
+            }
+        }
+
         observe(viewModel.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
@@ -299,6 +313,19 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
                 }
             }
         }
+    }
+
+    private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {
+        submitList(data)
+
+        when(data.state) {
+            TokoNowLayoutState.LOADING -> viewModel.getLayoutList()
+            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
+        }
+    }
+
+    private fun submitList(data: RepurchaseLayoutUiModel) {
+        adapter.submitList(data.layoutList)
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
