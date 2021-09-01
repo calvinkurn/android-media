@@ -82,6 +82,9 @@ class ReadReviewHeader : BaseCustomView {
                 configPaddingForVisibleSortFilterPrefix()
             }
         }
+        seeAll = findViewById(R.id.read_review_see_all)
+        topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
+        topicRight = findViewById(R.id.read_review_highlighted_topic_right)
     }
 
     private fun configPaddingForVisibleSortFilterPrefix() {
@@ -94,15 +97,6 @@ class ReadReviewHeader : BaseCustomView {
         val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         sortFilter?.setPadding(0, 0, 0, 0)
         sortFilter?.sortFilterItems?.setPadding(paddingTop, 0, 0, 0)
-        sortFilter?.sortFilterItems?.setPadding(
-                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                0,
-                0,
-                0
-        )
-        seeAll = findViewById(R.id.read_review_see_all)
-        topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
-        topicRight = findViewById(R.id.read_review_highlighted_topic_right)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
