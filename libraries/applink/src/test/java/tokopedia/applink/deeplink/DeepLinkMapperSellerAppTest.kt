@@ -228,7 +228,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     @Test
     fun `check review reminder previous then should return tokopedia internal review reminder`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.REVIEW_REMINDER_PREVIOUS , expectedDeepLink)
+        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER_PREVIOUS , expectedDeepLink)
     }
 
     @Test
