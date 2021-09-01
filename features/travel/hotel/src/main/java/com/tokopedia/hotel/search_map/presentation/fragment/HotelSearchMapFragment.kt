@@ -179,11 +179,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     showCollapsingHeader()
-                    buildFilter(it.data)
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
                         changeMarkerState(cardListPosition)
-                    }  else {
+                    } else if(currentPage != defaultInitialPage){
+                        buildFilter(it.data)
+                    } else {
                         hideLoader()
                         hideLoadingCardListMap()
                         hideLoading()
@@ -259,6 +260,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (notifyUi) {
                 hideFindNearHereView()
                 setupQuickFilterBaseOnSelectedFilter(data)
+                showQuickFilterShimmering(true)
                 loadInitialData()
             }
         })
@@ -333,7 +335,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hideErrorNoResult()
         showHotelResultList()
         showLoader()
-        showQuickFilterShimmering(true)
         super.loadInitialData()
     }
 
