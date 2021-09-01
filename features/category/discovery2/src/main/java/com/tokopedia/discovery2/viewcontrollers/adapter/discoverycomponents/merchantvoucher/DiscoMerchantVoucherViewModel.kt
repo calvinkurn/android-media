@@ -42,8 +42,9 @@ class DiscoMerchantVoucherViewModel(
                 val response =
                     mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(getShopID()))
                 response.data?.let {
+                    _errorState.value = it.isShown?.not()?:true
+                    if(it.isShown == true)
                     _mvcData.value = MvcData(it.animatedInfoList)
-                    _errorState.value = it.isShown?.not()
                 }
             }else{
                 _errorState.value = true
@@ -60,8 +61,9 @@ class DiscoMerchantVoucherViewModel(
 
     fun updateData(shopID: Any, isShown: Boolean, listInfo: ArrayList<AnimatedInfos>?) {
         if(shopID == getShopID()){
-            _mvcData.value = MvcData(listInfo)
             _errorState.value = !isShown
+            if(isShown)
+            _mvcData.value = MvcData(listInfo)
         }
     }
 
