@@ -23,20 +23,21 @@ class FollowViewHolder (itemView: View,
 
         mvcFollowContainer.oneActionView.ll_btn.setOnClickListener {
             mvcDetailViewContract.handleFollowButtonClick()
-            mvcDetailViewContract.getMvcTracker()?.clickFollowButton(followWidget.type?:FollowWidgetType.DEFAULT,shopId,UserSession(itemView.context).userId,mvcSource)
+            mvcDetailViewContract.getMvcTracker()?.clickFollowButton(followWidget.type?:FollowWidgetType.DEFAULT,shopId,UserSession(itemView.context).userId,mvcSource,
+                mvcFollowContainer.oneActionView.tvBtn.text?.toString())
         }
 
         when (followWidget.type) {
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 mvcFollowContainer.twoActionView.btnSecond.setOnClickListener {
                     mvcDetailViewContract.handleJadiMemberButtonClick()
-                    mvcDetailViewContract.getMvcTracker()?.clickJadiMemberButton(FollowWidgetType.MEMBERSHIP_OPEN,shopId,UserSession(itemView.context).userId,mvcSource)
+                    mvcDetailViewContract.getMvcTracker()?.clickJadiMemberButton(FollowWidgetType.MEMBERSHIP_OPEN,shopId,UserSession(itemView.context).userId,mvcSource,mvcFollowContainer.twoActionView.btnSecond.text?.toString())
                 }
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
                 mvcFollowContainer.twoActionView.btnSecond.setOnClickListener {
                     RouteManager.route(itemView.context, ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,shopId)
-                    mvcDetailViewContract.getMvcTracker()?.clickMulaiBelanjaButton(FollowWidgetType.MEMBERSHIP_CLOSE,shopId,UserSession(itemView.context).userId,mvcSource)
+                    mvcDetailViewContract.getMvcTracker()?.clickMulaiBelanjaButton(FollowWidgetType.MEMBERSHIP_CLOSE,shopId,UserSession(itemView.context).userId,mvcSource,mvcFollowContainer.twoActionView.btnSecond.text?.toString())
                 }
             }
         }

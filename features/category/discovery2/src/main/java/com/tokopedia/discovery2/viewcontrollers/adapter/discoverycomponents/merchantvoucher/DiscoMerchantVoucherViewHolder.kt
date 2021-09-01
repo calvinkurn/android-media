@@ -26,21 +26,23 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         discoMerchantVoucherViewModel = discoveryBaseViewModel as DiscoMerchantVoucherViewModel
         getSubComponent().inject(discoMerchantVoucherViewModel)
-        shimmer.show()
-        discoveryBaseViewModel.fetchDataForCoupons()
+        if(UserSession(fragment.context).isLoggedIn) {
+            shimmer.show()
+            discoveryBaseViewModel.fetchDataForCoupons()
+        }else{
+            shimmer.hide()
+            mvcView.hide()
+        }
     }
 
     private fun sendImpressionTracking(data: MvcData) {
-        data.animatedInfoList?.forEach { animatedInfo ->
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackSingleMerchantVoucherImpression(
                     discoMerchantVoucherViewModel.components,
                     discoMerchantVoucherViewModel.getShopID(),
                     UserSession(fragment.context).userId,
                     discoMerchantVoucherViewModel.position,
-                    animatedInfo?.title
-                )
-        }
+                    data.animatedInfoList?.firstOrNull()?.title?:"")
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

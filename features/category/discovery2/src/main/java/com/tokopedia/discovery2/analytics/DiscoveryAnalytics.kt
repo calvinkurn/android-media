@@ -1267,11 +1267,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackMerchantCouponDetailImpression(components: ComponentsItem, shopId: String, shopType:String, userID: String?, positionInPage:Int,couponName: String?){
         val list = ArrayList<Map<String, Any>>()
-//        TODO::  shop_type in creative and shopType in event label
         list.add(mapOf(
             KEY_ID to "${components.id}_$shopId",
             KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $MV_DETAIL_COMPONENT",
-            KEY_CREATIVE to (couponName ?: EMPTY_STRING),
+            KEY_CREATIVE to "${couponName ?: EMPTY_STRING} - $shopType",
             KEY_POSITION to 1
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -1288,7 +1287,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackMerchantCouponVisitShopCTA(shopId: String, shopType:String){
-        //        TODO:: confirm about shoptype
         val map: MutableMap<String, Any> = mutableMapOf(
             KEY_EVENT to EVENT_CLICK_DISCOVERY,
             KEY_EVENT_ACTION to CLICK_MV_VISIT_SHOP,
@@ -1302,7 +1300,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackMerchantCouponCTASection(shopId: String, shopType:String, buttonDetail:String){
-        //        TODO:: confirm about shopType,buttonDetailName
         val map: MutableMap<String, Any> = mutableMapOf(
             KEY_EVENT to EVENT_CLICK_DISCOVERY,
             KEY_EVENT_ACTION to CLICK_MV_CTA_SECTION,
@@ -1315,7 +1312,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
     override fun trackMerchantCouponCloseBottomSheet(shopId: String, shopType:String){
-        //        TODO:: confirm about shopType
         val map: MutableMap<String, Any> = mutableMapOf(
             KEY_EVENT to EVENT_CLICK_DISCOVERY,
             KEY_EVENT_ACTION to CLICK_MV_CLOSE_BOTTOMSHEET,

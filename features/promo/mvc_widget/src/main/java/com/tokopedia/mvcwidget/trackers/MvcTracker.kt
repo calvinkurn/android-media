@@ -13,8 +13,8 @@ class MvcTracker{
     }
 
     //3, 18
-    fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickFollowButton(widgetType,shopId,userId,source)
+    fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
+        trackerImpl.clickFollowButton(widgetType,shopId,userId,source,buttonTitle)
     }
 
     //4,10,19, 25
@@ -33,8 +33,8 @@ class MvcTracker{
     }
 
     //7, 22
-    fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickJadiMemberButton(widgetType,shopId,userId, source)
+    fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
+        trackerImpl.clickJadiMemberButton(widgetType,shopId,userId, source, buttonTitle)
     }
 
     //8,11,23,26
@@ -43,12 +43,12 @@ class MvcTracker{
     }
 
     //12, 27
-    fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
-        trackerImpl.clickCekInfoButton(widgetType,shopId,userId, source)
+    fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
+        trackerImpl.clickCekInfoButton(widgetType,shopId,userId, source,buttonTitle)
     }
 
-    fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int){
-        trackerImpl.clickCekInfoButtonClose(widgetType,shopId,userId, source)
+    fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int, buttonTitle:String?){
+        trackerImpl.clickCekInfoButtonClose(widgetType,shopId,userId, source,buttonTitle)
     }
 
     //13,28
@@ -75,8 +75,8 @@ class MvcTracker{
         trackerImpl.clickLihatExpand(shopId,userId, source)
     }
 
-    fun  clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int){
-        trackerImpl.clickMulaiBelanjaButton(widgetType,shopId,userId, source)
+    fun  clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?){
+        trackerImpl.clickMulaiBelanjaButton(widgetType,shopId,userId, source,buttonTitle)
     }
 
     //Reward GTM for Bottomsheet CTA

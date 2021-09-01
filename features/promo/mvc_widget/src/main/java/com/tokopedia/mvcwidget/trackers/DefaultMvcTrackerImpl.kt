@@ -40,7 +40,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //3, 18
-    override fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -151,7 +151,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //7, 22
-    override fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -200,7 +200,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     }
 
     //12, 27
-    override fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+    override fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -221,7 +221,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int){
+    override fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int, buttonTitle:String?){
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_MV
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
@@ -315,7 +315,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int){
+    override fun clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?){
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_MV
         map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER_CLOSE

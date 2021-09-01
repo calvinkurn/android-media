@@ -96,10 +96,21 @@ class TransParentActivity : BaseActivity() {
 
         if (!appLink.isNullOrEmpty()) {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
-            childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
-                bottomSheet.dismiss()
-                shopName?.let { it1 -> mvcTracker.userClickBottomSheetCTA(childView?.widgetType?:FollowWidgetType.DEFAULT,it1, userSession.userId) }
-                RouteManager.route(this,appLink)
+            childView?.findViewById<UnifyButton>(R.id.btn_continue)?.let { button ->
+                if (mvcSource == MvcSource.DISCO) {
+                    button.text = getString(R.string.mvc_kunjungi_toko)
+                }
+                button.setOnClickListener {
+                    bottomSheet.dismiss()
+                    shopName?.let { it1 ->
+                        mvcTracker.userClickBottomSheetCTA(
+                            childView?.widgetType ?: FollowWidgetType.DEFAULT,
+                            it1,
+                            userSession.userId
+                        )
+                    }
+                    RouteManager.route(this, appLink)
+                }
             }
         }
         bottomSheet.setChild(childView)

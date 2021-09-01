@@ -39,13 +39,14 @@ class DiscoMerchantVoucherViewModel(
     fun getDataFromUseCase() {
         launchCatchError(block = {
             if (getShopID().isNotEmpty()) {
-//                Find a better way to handle shopid empty case
                 val response =
                     mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(getShopID()))
                 response.data?.let {
                     _mvcData.value = MvcData(it.animatedInfoList)
                     _errorState.value = it.isShown?.not()
                 }
+            }else{
+                _errorState.value = true
             }
         },
             onError = {

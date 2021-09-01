@@ -9,7 +9,7 @@ interface MvcTrackerImpl {
     fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean)
 
     //3, 18
-    fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int)
+    fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
 
     //4,10,19, 25
     fun viewFollowButtonToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean)
@@ -21,15 +21,15 @@ interface MvcTrackerImpl {
     fun viewWidgetImpression(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int)
 
     //7, 22
-    fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int)
+    fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
 
     //8,11,23,26
     fun viewJadiMemberToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean)
 
     //12, 27
-    fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int)
+    fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
 
-    fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int)
+    fun clickCekInfoButtonClose(@FollowWidgetType widgetType: String, shopId: String,userId: String?,@MvcSource source: Int, buttonTitle:String?)
 
     //13,28
     fun viewTokomemberBottomSheet(shopId: String, userId: String?, @MvcSource source: Int)
@@ -47,7 +47,7 @@ interface MvcTrackerImpl {
     //MVC close memberhsip GTM
     fun clickLihatExpand(shopId: String, userId: String?, @MvcSource source: Int)
 
-    fun  clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int)
+    fun  clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
 
     //Reward GTM for Bottomsheet CTA
     fun userClickBottomSheetCTA(@FollowWidgetType widgetType: String, label: String, userId: String)
