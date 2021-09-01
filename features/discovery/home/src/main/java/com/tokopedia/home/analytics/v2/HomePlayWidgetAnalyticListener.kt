@@ -89,13 +89,14 @@ class HomePlayWidgetAnalyticListener(
     }
 
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+        val finalChannelPositionInList = channelPositionInList + 1
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = "homepage-cmp",
                 eventAction = "impression on play sgc channel",
                 eventLabel = "${item.partner.id} - " +
                         "${item.channelId} - " +
-                        "$channelPositionInList - " +
+                        "$finalChannelPositionInList - " +
                         "$mBusinessWidgetPosition - " +
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
@@ -103,9 +104,9 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
+                                name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
-                                position = channelPositionInList.toString()
+                                position = finalChannelPositionInList.toString()
                         )
                 )
         )
@@ -119,6 +120,7 @@ class HomePlayWidgetAnalyticListener(
     }
 
     override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+        val finalChannelPositionInList = channelPositionInList + 1
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
@@ -126,7 +128,7 @@ class HomePlayWidgetAnalyticListener(
                 eventLabel = "click channel - " +
                         "${item.partner.id} - " +
                         "${item.channelId} - " +
-                        "$channelPositionInList - " +
+                        "$finalChannelPositionInList - " +
                         "$mBusinessWidgetPosition - " +
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
@@ -134,9 +136,9 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
+                                name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
-                                position = channelPositionInList.toString()
+                                position = finalChannelPositionInList.toString()
                         )
                 )
         )
@@ -150,13 +152,14 @@ class HomePlayWidgetAnalyticListener(
     }
 
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) {
+        val finalChannelPositionInList = channelPositionInList + 1
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
                         Label.KEY to "${item.channelId} - " +
-                                "$channelPositionInList - " +
+                                "$finalChannelPositionInList - " +
                                 "${item.poolType} - " +
                                 if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo",
                         UserId.KEY to userId,
