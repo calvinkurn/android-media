@@ -120,7 +120,7 @@ ext {
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.3'
     unifyExplorePromoVersion = '1.0.2'
-    unifyImageGalleryVersion = '1.0.1-beta-2'
+    unifyImageGalleryVersion = '1.0.1-beta-4'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
