@@ -9,11 +9,6 @@ public class DetailsData {
 
     private OrderDetails orderDetails;
 
-    @Override
-    public String toString() {
-        return "[DetailsData:{" + orderDetails + "}]";
-    }
-
     public OrderDetails  orderDetails() {
         return orderDetails;
     }
