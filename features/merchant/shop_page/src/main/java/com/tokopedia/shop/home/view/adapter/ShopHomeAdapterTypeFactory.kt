@@ -39,7 +39,8 @@ class ShopHomeAdapterTypeFactory(
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
-        private val playWidgetCoordinator: PlayWidgetCoordinator
+        private val playWidgetCoordinator: PlayWidgetCoordinator,
+        private val isShowTripleDot: Boolean
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -117,7 +118,7 @@ class ShopHomeAdapterTypeFactory(
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
-                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductItemBigGridViewHolder.LAYOUT -> {
                 ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener)

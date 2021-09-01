@@ -237,7 +237,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
+        ShopHomeAdapterTypeFactory(
+                listener =  this,
+                onMerchantVoucherListWidgetListener = this,
+                shopHomeEndlessProductListener= this,
+                shopHomeCarouselProductListener= this,
+                shopProductEtalaseListViewHolderListener= this,
+                shopHomeCampaignNplWidgetListener= this,
+                shopProductChangeGridSectionListener= this,
+                playWidgetCoordinator = playWidgetCoordinator,
+                isShowTripleDot = !isOwner
+        )
     }
 
     private val widgetDeleteDialogContainer by lazy {
