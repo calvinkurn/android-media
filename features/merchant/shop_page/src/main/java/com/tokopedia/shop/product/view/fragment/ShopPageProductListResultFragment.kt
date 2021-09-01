@@ -185,20 +185,21 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
-                null,
-                this,
-                this,
-                null,
-                this,
-                this,
-                null,
-                null,
-                this,
-                this,
-                this,
-                true,
-                0,
-                ShopTrackProductTypeDef.PRODUCT
+                membershipStampAdapterListener = null,
+                shopProductClickedListener = this,
+                shopProductImpressionListener = this,
+                shopCarouselSeeAllClickedListener = null,
+                emptyProductOnClickListener = this,
+                shopProductEtalaseListViewHolderListener = this,
+                shopProductAddViewHolderListener = null,
+                shopProductsEmptyViewHolderListener = null,
+                shopProductEmptySearchListener = this,
+                shopProductChangeGridSectionListener = this,
+                shopShowcaseEmptySearchListener = this,
+                isGridSquareLayout = true,
+                deviceWidth = 0,
+                shopTrackType = ShopTrackProductTypeDef.PRODUCT,
+                isShowTripleDot = !isMyShop
         )
     }
 

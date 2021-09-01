@@ -808,7 +808,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isGridSquareLayout = true,
                 deviceWidth = deviceWidth,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-                isShowTripleDot = isOwner
+                isShowTripleDot = !isOwner
         )
     }
 
