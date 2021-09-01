@@ -85,6 +85,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return EtaModel().apply {
             etaMin = eta.etaMin
             etaMax = eta.etaMax
+            isChanged = eta.isChanged
         }
     }
 }

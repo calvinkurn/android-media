@@ -106,5 +106,7 @@ data class Eta(
         @SerializedName("eta_min")
         val etaMin: String = "",
         @SerializedName("eta_max")
-        val etaMax: String = ""
+        val etaMax: String = "",
+        @SerializedName("is_changed")
+        val isChanged: Boolean = false
 )

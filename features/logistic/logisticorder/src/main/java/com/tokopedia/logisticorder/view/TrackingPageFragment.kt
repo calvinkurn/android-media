@@ -163,7 +163,14 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
+        // TODO from here is dynamic eta
         binding?.eta?.text = formatEta(model.detail.eta)
+        if (model.detail.eta.isChanged) {
+            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
+            binding?.eta?.setOnClickListener {
+                // open bottom sheet
+            }
+        }
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
