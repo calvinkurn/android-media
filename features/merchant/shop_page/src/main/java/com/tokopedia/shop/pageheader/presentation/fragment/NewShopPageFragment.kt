@@ -1541,13 +1541,14 @@ class NewShopPageFragment :
             }
         }
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                shopId,
-                shopPageHeaderDataModel?.shopName.orEmpty(),
-                shopPageHeaderDataModel?.isOfficial ?: false,
-                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                shopAttribution,
-                shopRef
+                shopId = shopId,
+                shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
+                isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
+                isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution = shopAttribution,
+                shopRef = shopRef
+//                isMyShop = isMyShop
         )
         shopViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)

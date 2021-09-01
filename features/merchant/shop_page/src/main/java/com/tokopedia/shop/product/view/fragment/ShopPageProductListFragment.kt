@@ -136,6 +136,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        private const val IS_MYSHOP = "isMyShop"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         const val SAVED_SHOP_ID = "saved_shop_id"
@@ -163,6 +164,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopHomeType: String,
                 shopAttribution: String?,
                 shopRef: String
+//                isMyShop: Boolean
         ): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
@@ -171,6 +173,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             bundle.putString(KEY_SHOP_HOME_TYPE, shopHomeType)
             bundle.putBoolean(KEY_IS_OFFICIAL, isOfficial)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
+//            bundle.putBoolean(IS_MYSHOP, isMyShop)
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
             fragment.arguments = bundle
             fragment.shopRef = shopRef
@@ -179,9 +182,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override val isOwner: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isMyShop(shopId)
-        } else false
+        get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
 
     private val isLogin: Boolean
         get() = if (::viewModel.isInitialized) {
@@ -793,6 +794,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
+//        var isMyShop = false
+//        arguments?.let {
+//            isMyShop = it.getBoolean(IS_MYSHOP, false)
+//        }
         return ShopProductAdapterTypeFactory(
                 membershipStampAdapterListener = this,
                 shopProductClickedListener = this,

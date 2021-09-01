@@ -168,9 +168,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
     private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            shopId?.let { viewModel.isMyShop(it) } ?: false
-        } else false
+        get() = shopId?.let {
+            ShopUtil.isMyShop(it, viewModel?.userSessionShopId ?: "")
+        } ?: false
 
     private val isLogin: Boolean
         get() = if (::viewModel.isInitialized) {
