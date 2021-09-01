@@ -64,6 +64,9 @@ data class DynamicHomeChannel(
             @SerializedName("campaignCode")
             val campaignCode: String = "",
             @Expose
+            @SerializedName("viewAllCard")
+            val viewAllCard: ViewAllCard = ViewAllCard(),
+            @Expose
             @SerializedName("header")
             val header: Header = Header(),
             @Expose
@@ -522,6 +525,27 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("textColor")
             val textColor: String = ""
+    )
+
+    data class ViewAllCard(
+        @Expose
+        @SerializedName("id")
+        val id: String = "",
+        @Expose
+        @SerializedName("contentType")
+        val contentType: String = "",
+        @Expose
+        @SerializedName("title")
+        val title: String = "",
+        @Expose
+        @SerializedName("description")
+        val description: String = "",
+        @Expose
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("gradientColor")
+        val gradientColor: ArrayList<String> = arrayListOf()
     )
 
     data class Banner(
