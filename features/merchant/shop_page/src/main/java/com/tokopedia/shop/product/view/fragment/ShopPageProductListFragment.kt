@@ -96,9 +96,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
@@ -796,20 +794,21 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
         return ShopProductAdapterTypeFactory(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                null,
-                this,
-                null,
-                true,
-                deviceWidth,
-                ShopTrackProductTypeDef.PRODUCT
+                membershipStampAdapterListener = this,
+                shopProductClickedListener = this,
+                shopProductImpressionListener = this,
+                shopCarouselSeeAllClickedListener = this,
+                emptyProductOnClickListener = this,
+                shopProductEtalaseListViewHolderListener = this,
+                shopProductAddViewHolderListener = this,
+                shopProductsEmptyViewHolderListener = this,
+                shopProductEmptySearchListener = null,
+                shopProductChangeGridSectionListener = this,
+                shopShowcaseEmptySearchListener = null,
+                isGridSquareLayout = true,
+                deviceWidth = deviceWidth,
+                shopTrackType = ShopTrackProductTypeDef.PRODUCT,
+                isShowTripleDot = isOwner
         )
     }
 
