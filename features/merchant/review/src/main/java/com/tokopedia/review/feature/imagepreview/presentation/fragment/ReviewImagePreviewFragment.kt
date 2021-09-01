@@ -38,6 +38,7 @@ import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImag
 import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.listener.*
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
@@ -58,6 +59,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
         private const val DEFAULT_VALUE_INDEX = 0
         private const val POSITION_INDEX_COUNTER = 1
+        const val KEY_CACHE_ID = "cacheId"
+        const val KEY_FINAL_LIKE_COUNT = "final like count"
         fun newInstance(
             cacheManagerId: String,
             isFromGallery: Boolean
@@ -414,6 +417,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun updateLikeCount(totalLike: Int) {
+        productReview.likeDislike = productReview.likeDislike.copy(totalLike = totalLike)
         reviewImagePreviewDetail?.setLikeCount(totalLike.toString())
     }
 
@@ -509,9 +513,21 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun finishActivity() {
         activity?.apply {
-            if (isLikeValueChange) setResult(Activity.RESULT_OK)
+            if (isLikeValueChange) setActivityResult()
             finish()
         }
+    }
+
+    private fun setActivityResult() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            with(productReview.likeDislike) {
+                cacheManager?.put(KEY_FINAL_LIKE_COUNT, ReviewImagePreviewFinalLikeCount(
+                    totalLike, likeStatus
+                ))
+            }
+            putExtra(KEY_CACHE_ID, cacheManager?.id)
+        })
     }
 
     private fun showErrorToaster(

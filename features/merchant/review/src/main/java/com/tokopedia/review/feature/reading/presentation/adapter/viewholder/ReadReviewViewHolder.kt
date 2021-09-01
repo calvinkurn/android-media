@@ -285,7 +285,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             return
         }
         attachedImages?.apply {
-            setImages(imageAttachments, attachedImagesClickListener, productReview, shopId)
+            setImages(imageAttachments, attachedImagesClickListener, productReview, shopId, adapterPosition)
             show()
         }
     }
