@@ -1877,7 +1877,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString(),
                     list = list
