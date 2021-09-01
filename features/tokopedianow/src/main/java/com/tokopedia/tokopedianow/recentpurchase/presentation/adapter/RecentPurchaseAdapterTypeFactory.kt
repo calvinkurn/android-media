@@ -9,8 +9,10 @@ import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseLoadingViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseProductGridViewHolder
 
@@ -18,7 +20,8 @@ class RecentPurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
-    private val productCardListener: RepurchaseProductCardListener
+    private val productCardListener: RepurchaseProductCardListener,
+    private val emptyStateNoHistorylistener: RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener? = null
 ) : BaseAdapterTypeFactory(), RecentPurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -33,6 +36,7 @@ class RecentPurchaseAdapterTypeFactory(
     // region Repurchase Component
     override fun type(uiModel: RepurchaseProductGridUiModel): Int = RepurchaseProductGridViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseLoadingUiModel): Int = RepurchaseLoadingViewHolder.LAYOUT
+    override fun type(uiModel: RepurchaseEmptyStateNoHistoryUiModel): Int = RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT
     // endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -48,6 +52,7 @@ class RecentPurchaseAdapterTypeFactory(
             // region Repurchase Component
             RepurchaseProductGridViewHolder.LAYOUT -> RepurchaseProductGridViewHolder(view, productCardListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
+            RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
             // endregion
             else -> super.createViewHolder(view, type)
         }
