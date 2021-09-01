@@ -141,9 +141,9 @@ class BroadcastViewHolder constructor(
             ImageAnnouncementViewHolderBinder.bindBannerClick(
                 banner, bannerView, imageAnnouncementListener
             )
-            bindBroadcastLabel(banner)
             bindBannerMargin(element)
         }
+        bindBroadcastLabel(banner)
     }
 
     private fun bindBroadcastLabel(banner: ImageAnnouncementViewModel) {
