@@ -163,14 +163,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
-        // TODO from here is dynamic eta
-        binding?.eta?.text = formatEta(model.detail.eta)
-        if (model.detail.eta.isChanged) {
-            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
-            binding?.eta?.setOnClickListener {
-                // open bottom sheet
-            }
-        }
+        setEtaDetail(model.detail.eta)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -219,6 +212,24 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             } else {
                 binding?.tvRetryStatus?.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setEtaDetail(model: EtaModel) {
+        val formattedEta = formatEta(model)
+        binding?.eta?.text = formattedEta
+        if (model.isChanged) {
+            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
+            binding?.eta?.setOnClickListener {
+                showEtaBottomSheet(formattedEta)
+            }
+        }
+    }
+
+    private fun showEtaBottomSheet(formattedEta: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(formattedEta)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
         }
     }
 

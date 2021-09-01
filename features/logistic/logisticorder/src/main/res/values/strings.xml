@@ -33,6 +33,9 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="confirm_shipping_confirm_description">Biaya pergantian kurir sepenuhnya ditanggung Penjual</string>
     <string name="confirm_shipping_confirm_button">Konfirmasi</string>
     <string name="tracking_label_eta">Estimasi tiba</string>
+    <string name="delayed_eta_bottomsheet_title">Perubahan estimasi tiba pesananmu</string>
+    <string name="delayed_eta_bottomsheet_description"><![CDATA[Hai Toppers, saat ini pesananmu sudah dalam perjalanan. Tetapi, ada keterlambatan sehingga pesananmu baru akan tiba %1$s. Kami meminta maaf & tetap berusaha agar barangmu bisa tiba secepatnya.]]></string>
+    <string name="delayed_eta_bottomsheet_button_title">Mengerti</string>
 
     <!--CONTENT DESC-->
 </resources>
