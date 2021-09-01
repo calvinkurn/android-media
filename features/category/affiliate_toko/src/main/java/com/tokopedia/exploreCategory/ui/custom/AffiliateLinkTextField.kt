@@ -23,8 +23,11 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
                 editingState(true)
         }
         editText.setOnClickListener {
-            if(editText.hasFocus())
-                editingState(true)
+            editingState(true)
+        }
+        editText.setOnLongClickListener {
+            editingState(true)
+            false
         }
         editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
     }
@@ -70,10 +73,11 @@ class AffiliateLinkTextField(context: Context, attrs: AttributeSet) : TextFieldU
     }
 
     override fun dispatchKeyEventPreIme(event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        if (editState && event?.keyCode == KeyEvent.KEYCODE_BACK) {
             editingState(false)
             return true
+        }else {
+            return super.dispatchKeyEventPreIme(event)
         }
-        return super.dispatchKeyEventPreIme(event)
     }
 }
