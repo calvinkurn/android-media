@@ -7,6 +7,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.analytics.SearchTracking.ACTION_FIELD
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.safeCastRupiahToInt
 import com.tokopedia.utils.text.currency.StringUtils
@@ -59,6 +61,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
+    var topadsTag: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -72,7 +75,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "brand", "none / other",
                 "category", categoryBreadcrumb,
                 "variant", "none / other",
-                "list", actionFieldString,
+                "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag),
                 "position", position.toString(),
                 "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
                 "dimension79", shopID,
@@ -109,9 +112,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     val hasLabelGroupFulfillment: Boolean
         get() = labelGroupList?.any { it.position == ProductCardLabel.LABEL_FULFILLMENT } == true
 
-    private val actionFieldString: String
-        get() = String.format(ACTION_FIELD, if (isOrganicAds) ORGANIC_ADS else ORGANIC)
-
     fun getProductAsATCObjectDataLayer(cartId: String): Any = DataLayer.mapOf(
             "name", productName,
             "id", productID,
@@ -129,7 +129,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
 
     fun getProductAsShopPageObjectDataLayer(): Any = DataLayer.mapOf(
             "id", shopID,
-            "name", String.format(ACTION_FIELD, if (isAds) ORGANIC_ADS else ORGANIC),
+            "name", SearchTracking.getActionFieldString(isAds, topadsTag),
             "creative", shopName,
             "creative_url", shopUrl,
             "position", position.toString(),
@@ -210,7 +210,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     }
 
     companion object {
-        private const val ACTION_FIELD = "/searchproduct - %s"
         private const val ORGANIC = "organic"
         private const val ORGANIC_ADS = "organic ads"
 

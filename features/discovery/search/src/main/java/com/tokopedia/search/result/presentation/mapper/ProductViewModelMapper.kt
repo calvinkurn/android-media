@@ -203,6 +203,7 @@ class ProductViewModelMapper {
         productItem.topadsImpressionUrl = productModel.ads.productViewUrl
         productItem.topadsClickUrl = productModel.ads.productClickUrl
         productItem.topadsWishlistUrl = productModel.ads.productWishlistUrl
+        productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
         productItem.pageTitle = pageTitle

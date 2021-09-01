@@ -840,6 +840,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
+                item.topadsTag,
                 eventLabel,
                 filterSortParams,
                 userId,

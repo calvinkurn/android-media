@@ -142,11 +142,13 @@ internal open class ProductListPresenterTestFixtures {
             productItem.topadsClickUrl shouldBe organicProduct.ads.productClickUrl
             productItem.topadsImpressionUrl shouldBe organicProduct.ads.productViewUrl
             productItem.topadsWishlistUrl shouldBe organicProduct.ads.productWishlistUrl
+            productItem.topadsTag shouldBe organicProduct.ads.tag
         }
         else {
             productItem.topadsClickUrl shouldBe ""
             productItem.topadsImpressionUrl shouldBe ""
             productItem.topadsWishlistUrl shouldBe ""
+            productItem.topadsTag shouldBe ""
         }
 
         productItem.productID shouldBe organicProduct.id

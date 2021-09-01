@@ -120,6 +120,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         productClickUrl
                         productWishlistUrl
                         productViewUrl
+                        tag
                     }
                     shop {
                         id
