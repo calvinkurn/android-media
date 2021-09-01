@@ -856,7 +856,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.variantData?.let {
                     goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
                             productVariant = it,
-                            buttonText = context?.getString(R.string.pdp_save_btn) ?: "",
+                            buttonText = context?.getString(R.string.pdp_choose_variant) ?: "",
                             customCartType = ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON)
                     )
                 }
