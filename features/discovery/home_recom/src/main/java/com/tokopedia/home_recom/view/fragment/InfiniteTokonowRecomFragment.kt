@@ -81,11 +81,11 @@ class InfiniteTokonowRecomFragment : BaseListFragment<HomeRecommendationDataMode
     }
 
     override fun loadData(page: Int) {
-        if (page == 1) {
-            viewModel.getRecommendationFirstPage(pageName, productId, requireContext())
-        } else {
-            viewModel.getRecommendationNextPage(pageName, productId, page)
-        }
+//        if (page == 1) {
+//            viewModel.getRecommendationFirstPage(pageName, productId, requireContext())
+//        } else {
+//            viewModel.getRecommendationNextPage(pageName, productId, page)
+//        }
     }
 
     override fun getAdapterTypeFactory(): InfiniteRecomTypeFactory {

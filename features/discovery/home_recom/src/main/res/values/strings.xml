@@ -26,4 +26,6 @@
     <string name="recom_empty_filter_title">Oops, barangnya nggak ketemu</string>
     <string name="recom_empty_filter_desc">Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!</string>
     <string name="recom_empty_filter_button" tools:ignore="ExtraTranslation">Reset Filter</string>
+
+    <string name="tag_home_nav_toolbar_recom_infinite">recom_infinite_navigation_toolbar</string>
 </resources>
