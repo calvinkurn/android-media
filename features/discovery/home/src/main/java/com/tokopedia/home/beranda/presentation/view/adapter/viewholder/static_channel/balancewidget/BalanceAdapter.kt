@@ -14,6 +14,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
@@ -49,14 +51,22 @@ import kotlin.coroutines.CoroutineContext
  * Created by yfsx on 3/1/21.
  */
 
-class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
+class BalanceAdapter(
+    val listener: HomeCategoryListener?,
+    diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
+): ListAdapter<BalanceDrawerItemModel, BalanceAdapter.Holder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
-        notifyDataSetChanged()
+
+        val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
+        itemMap.balanceDrawerItemModels.mapValues {
+            balanceModelList.add(it.key, it.value)
+        }
+        submitList(balanceModelList.toMutableList())
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -84,6 +94,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v), CoroutineScope {
+        private var alternateDrawerItem: List<BalanceDrawerItemModel>? = null
+        private var element: BalanceDrawerItemModel? = null
         override val coroutineContext: CoroutineContext
             get() = Dispatchers.Main
 
@@ -336,33 +348,37 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
 
             //interpolator
             element?.alternateBalanceDrawerItem?.let {
-                setDrawerItemWithAnimation(alternateDrawerItem = it, element = element)
+                this.element = element
+                this.alternateDrawerItem = it
+                setDrawerItemWithAnimation()
             }
         }
 
-        private fun setDrawerItemWithAnimation(
-            alternateDrawerItem: List<BalanceDrawerItemModel>,
-            element: BalanceDrawerItemModel?
-        ) {
-            animationJob?.cancel()
-            if (animationJob == null || animationJob?.isActive == false) {
-                animationJob = launch {
-                    alternateDrawerItem.forEach { alternateItem ->
+        fun setDrawerItemWithAnimation() {
+            if (listener?.needToRotateTokopoints() == true) {
+                animationJob?.cancel()
+                if (animationJob == null || animationJob?.isActive == false) {
+                    animationJob = launch {
+                        alternateDrawerItem?.forEach { alternateItem ->
+                            delay(1000)
+                            renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
+                            delay(1000)
+                        }
                         delay(1000)
-                        renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
-                        delay(1000)
-                    }
-                    delay(1000)
-                    element?.let {
-                        renderItemAnimation(element, slideDirection = DIRECTION_DOWN)
+                        element?.let {
+                            element?.let { renderItemAnimation(it, slideDirection = DIRECTION_DOWN) }
+                        }
                     }
                 }
+                listener?.setRotateTokopointsDone(true)
             }
         }
 
         private suspend fun renderItemAnimation(item: BalanceDrawerItemModel, slideDirection: Int = DIRECTION_DOWN) {
-            var title: BalanceTextAttribute?
-            var subtitle: BalanceTextAttribute?
+            var title: BalanceTextAttribute? = null
+            var subtitle: BalanceTextAttribute? = null
+            var titleTag: BalanceTagAttribute? = null
+            var subtitleTag: BalanceTagAttribute? = null
             val slideIn =
                 if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_down_in) else
                     AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_up_in)
@@ -376,22 +392,50 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 override fun onAnimationEnd(animation: Animation?) {
                     title = item.balanceTitleTextAttribute
                     subtitle = item.balanceSubTitleTextAttribute
-                    renderBalanceText(
-                        textAttr = title,
-                        textView = itemView.home_tv_balance,
-                        tagAttr = null
-                    )
-                    renderBalanceText(
-                        textAttr = subtitle,
-                        textView = itemView.home_tv_btn_action_balance,
-                        tagAttr = null
-                    )
+                    titleTag = item.balanceTitleTagAttribute
+                    subtitleTag = item.balanceSubTitleTagAttribute
+                    setItemText(title, titleTag, subtitle, subtitleTag)
                     itemView.home_container_action_balance?.startAnimation(slideIn)
                 }
 
                 override fun onAnimationStart(animation: Animation?) {}
             })
             itemView.home_container_action_balance?.startAnimation(slideOut)
+
+            itemView.home_container_action_balance?.addOnAttachStateChangeListener(object:
+                View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    animationJob?.cancel()
+                    title = element?.balanceTitleTextAttribute
+                    subtitle = element?.balanceSubTitleTextAttribute
+                    titleTag = element?.balanceTitleTagAttribute
+                    subtitleTag = element?.balanceSubTitleTagAttribute
+                    setItemText(title, titleTag, subtitle, subtitleTag)
+                    itemView.home_container_action_balance?.removeOnAttachStateChangeListener(this)
+                }
+            })
+        }
+
+        private fun setItemText(
+            title: BalanceTextAttribute?,
+            titleTag: BalanceTagAttribute?,
+            subtitle: BalanceTextAttribute?,
+            subtitleTag: BalanceTagAttribute?
+        ) {
+            renderBalanceText(
+                textAttr = title,
+                textView = itemView.home_tv_balance,
+                tagAttr = titleTag
+            )
+            renderBalanceText(
+                textAttr = subtitle,
+                textView = itemView.home_tv_btn_action_balance,
+                tagAttr = subtitleTag
+            )
         }
 
         private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {

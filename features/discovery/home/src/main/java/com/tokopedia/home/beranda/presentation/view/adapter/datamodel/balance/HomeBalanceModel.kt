@@ -400,7 +400,6 @@ data class HomeBalanceModel(
                 )
             }
             TYPE_STATE_2 -> {
-                isGopayEligible = true
                 if (isGopayEligible) {
                     itemTypeCondition(
                         itemType,

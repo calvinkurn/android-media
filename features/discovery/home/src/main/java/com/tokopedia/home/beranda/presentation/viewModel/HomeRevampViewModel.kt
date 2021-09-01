@@ -136,6 +136,7 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
+    private var isGopayEligible: Boolean = false
     val beautyFestLiveData: LiveData<Int>
         get() = _beautyFestLiveData
     private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
@@ -1245,14 +1246,15 @@ open class HomeRevampViewModel @Inject constructor(
             )
         }
     }
-
-    fun getGopayEligibility() {
-        _gopayEligibilityLiveData.value = Event(true)
-        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = true })
-        getBalanceWidgetData()
+    fun forceGopayEligible() {
+        this.isGopayEligible = true
+        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = this@HomeRevampViewModel.isGopayEligible })
     }
 
     private fun getBalanceWidgetData() {
+//        _gopayEligibilityLiveData.postValue(Event(true))
+//        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = true })
+
         if (homeDataModel.homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
@@ -1318,6 +1320,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
 
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel)
+            _gopayEligibilityLiveData.postValue(Event(isGopayEligible))
         }) {
 
         }

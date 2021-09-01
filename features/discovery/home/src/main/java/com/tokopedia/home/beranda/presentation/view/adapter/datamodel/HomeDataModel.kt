@@ -179,8 +179,13 @@ data class HomeDataModel(
         copyWidget(homeDataModel = homeDataModel, validation = { it is HomeLoadingMoreModel })
         copyWidget(homeDataModel = homeDataModel, validation = { it is HomeHeaderOvoDataModel })
 
+        setAndEvaluateHomeBalanceWidget(homeDataModel.homeBalanceModel)
         setAndEvaluateHomeChooseAddressData(homeDataModel.homeChooseAddressData)
         this.list = _list.toList()
+    }
+
+    fun setAndEvaluateHomeBalanceWidget(homeBalanceModel: HomeBalanceModel) {
+        this.homeBalanceModel.isGopayEligible = homeBalanceModel.isGopayEligible
     }
 
     fun evaluateRecommendationSection(onNeedTabLoad: () -> Unit) {

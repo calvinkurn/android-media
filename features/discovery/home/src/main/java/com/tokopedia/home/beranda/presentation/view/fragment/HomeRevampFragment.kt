@@ -261,6 +261,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val ONBOARDING_NAVIGATION_TAG = "onboarding navigation"
         private const val COACHMARK_FIRST_INDEX = 0
         private const val HOME_HEADER_POSITION = 0
+        private const val TOKOPOINTS_ITEM_POSITION = 1
         private const val VIEW_DEFAULT_HEIGHT = 0f
         private const val SEARCHBAR_DEFAULT_OFFSET = 0
         private const val STATUS_BAR_DEFAULT_ALPHA = 0f
@@ -298,6 +299,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var isNeedToRotateTokopoints: Boolean = true
     private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
@@ -1019,11 +1021,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getBalanceWidgetView(): View? {
+    private fun getBalanceWidgetView(): BalanceWidgetView? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            if (balanceWidgetView.isShown && balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
+            if (balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
                 return balanceWidgetView
             }
         }
@@ -1221,6 +1223,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        startTokopointRotation()
+        isNeedToRotateTokopoints = true
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         if(eligibleBeautyFest != isEligibleForBeautyFest()) {
@@ -1242,6 +1246,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = { oldToolbar?.startHintAnimation() }
         )
+    }
+
+    private fun startTokopointRotation() {
+        isNeedToRotateTokopoints = true
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val balanceWidgetView = getBalanceWidgetView()
+            balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
+        }
     }
 
     private fun conditionalViewModelRefresh() {
@@ -1463,6 +1476,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeGopayEligibility() {
         getHomeViewModel().gopayEligibilityLiveData.observe(viewLifecycleOwner, Observer { isEligibleGopay ->
             this.isEligibleGopay = isEligibleGopay.getContentIfNotHandled()?:false
+            renderTopBackground()
         })
     }
 
@@ -1655,16 +1669,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 BACKGROUND_LIGHT_1
             }
 
-            val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
-            if (isChooseAddressShow) {
-                val layoutParams = backgroundViewImage.layoutParams
-                layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
-                backgroundViewImage.layoutParams = layoutParams
-            } else {
-                val layoutParams = backgroundViewImage.layoutParams
-                layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
-                backgroundViewImage.layoutParams = layoutParams
-            }
+            adjustHomeBackgroundHeight(currentContext)
 
             Glide.with(currentContext)
                 .load(backgroundUrl)
@@ -1676,27 +1681,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun renderTopBackgroundBeautyFest(isLoading: Boolean, isBeautyFest: Boolean) {
         context?.let { currentContext ->
-            val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
-            val isGopayEligible = true
-            if (isChooseAddressShow && isGopayEligible) {
-                val layoutParams = backgroundViewImage.layoutParams
-                layoutParams.height =
-                    resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-                backgroundViewImage.layoutParams = layoutParams
-                loaderHeaderImage.layoutParams = layoutParams
-            } else if (isChooseAddressShow && !isGopayEligible){
-                val layoutParams = backgroundViewImage.layoutParams
-                layoutParams.height =
-                    resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
-                backgroundViewImage.layoutParams = layoutParams
-                loaderHeaderImage.layoutParams = layoutParams
-            } else {
-                val layoutParams = backgroundViewImage.layoutParams
-                layoutParams.height =
-                    resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
-                backgroundViewImage.layoutParams = layoutParams
-                loaderHeaderImage.layoutParams = layoutParams
-            }
+            adjustHomeBackgroundHeight(currentContext)
 
             if (isLoading) {
                 //displaying shimmer and hide header
@@ -1739,6 +1724,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 loaderHeaderImage.gone()
                 backgroundViewImage.visible()
             }
+        }
+    }
+
+    private fun adjustHomeBackgroundHeight(currentContext: Context) {
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+        if (isChooseAddressShow && isEligibleForNewGopay()) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height =
+                resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+            loaderHeaderImage.layoutParams = layoutParams
+        } else if (isChooseAddressShow && !isEligibleForNewGopay()) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height =
+                resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+            loaderHeaderImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height =
+                resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+            loaderHeaderImage.layoutParams = layoutParams
         }
     }
 
@@ -2190,7 +2198,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh() {
-        getHomeViewModel().getGopayEligibility()
+        getHomeViewModel().forceGopayEligible()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
@@ -2235,6 +2243,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onChooseAddressServerDown() {
         getHomeViewModel().removeChooseAddressWidget()
+    }
+
+    override fun needToRotateTokopoints(): Boolean {
+        return isNeedToRotateTokopoints
+    }
+
+    override fun setRotateTokopointsDone(boolean: Boolean) {
+        this.isNeedToRotateTokopoints = false
     }
 
     private fun onNetworkRetry(forceRefresh: Boolean = false) {

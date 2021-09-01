@@ -136,4 +136,8 @@ interface HomeCategoryListener {
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
+
+    fun needToRotateTokopoints(): Boolean
+
+    fun setRotateTokopointsDone(boolean: Boolean)
 }
