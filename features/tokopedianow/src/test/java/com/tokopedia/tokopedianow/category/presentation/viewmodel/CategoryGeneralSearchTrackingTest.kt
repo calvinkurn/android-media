@@ -58,7 +58,8 @@ class CategoryGeneralSearchTrackingTest: CategoryTestFixtures() {
             "|$TOKOPEDIA_NOW" +
             "|$totalData"
         val relatedKeyword = "$expectedPreviousKeyword - ${searchProduct.getAlternativeKeyword()}"
-        val pageSource = "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$expectedCategoryId"
+        val warehouseId = tokoNowCategoryViewModel.warehouseId
+        val pageSource = "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
         val generalSearch = tokoNowCategoryViewModel.generalSearchEventLiveData.value!!
 
@@ -92,41 +93,6 @@ class CategoryGeneralSearchTrackingTest: CategoryTestFixtures() {
             searchProduct = categoryModel.searchProduct,
             expectedPreviousKeyword = previousKeyword,
             expectedCategoryId = defaultCategoryL1
-        )
-    }
-
-    @Test
-    fun `test general search tracking with category L2`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
-        val categoryL2 = "1333"
-        `Given category view model`(defaultCategoryL1, categoryL2, mapOf())
-        `Given get category first page use case will be successful`(categoryModel)
-
-        `When view created`()
-
-        `Then assert general search tracking`(
-            searchProduct = categoryModel.searchProduct,
-            expectedCategoryId = categoryL2,
-        )
-    }
-
-    @Test
-    fun `test general search tracking with category L3`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
-        val categoryL2 = "1333"
-        val categoryL3 = "1323"
-        `Given category view model`(
-            defaultCategoryL1,
-            categoryL2,
-            mapOf(SearchApiConst.SC to categoryL3),
-        )
-        `Given get category first page use case will be successful`(categoryModel)
-
-        `When view created`()
-
-        `Then assert general search tracking`(
-            searchProduct = categoryModel.searchProduct,
-            expectedCategoryId = categoryL3,
         )
     }
 }
