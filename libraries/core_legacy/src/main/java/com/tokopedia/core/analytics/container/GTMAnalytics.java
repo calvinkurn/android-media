@@ -955,7 +955,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void logEventForVerification(String eventName, Map<String, Object> values){
         if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
-            if(!TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+            if(values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                    values.get(AppEventTracking.GTM.UTM_SOURCE) != null &&
+                    !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("type", "event_verification");
                 messageMap.put("name", eventName);
