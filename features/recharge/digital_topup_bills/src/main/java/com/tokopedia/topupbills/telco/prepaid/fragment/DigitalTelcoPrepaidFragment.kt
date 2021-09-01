@@ -406,9 +406,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 renderProductViewPager()
                 getProductListData()
             }
-        } catch (exception: Exception) {
+        } catch (exception: NoSuchElementException) {
             telcoClientNumberWidget.setErrorInputNumber(
-                getString(R.string.telco_number_error_not_found)
+                getString(R.string.telco_number_error_prefix_not_found),
+                true
             )
         }
     }

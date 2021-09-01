@@ -447,7 +447,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
-                getString(R.string.telco_number_error_not_found)
+                getString(R.string.telco_number_error_prefix_not_found)
             )
         }
     }

@@ -10,10 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -24,9 +26,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     : FrameLayout(context, attrs, defStyleAttr) {
 
     protected val imgOperator: ImageView
-    protected val btnClear: ImageView
-    protected val inputNumberField: TextFieldUnify
-    protected val btnContactPicker: ImageView
+    protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
 
     private val inputNumberResult: TextView
@@ -39,8 +39,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     init {
         view = View.inflate(context, getLayout(), this)
         imgOperator = view.findViewById(R.id.telco_img_operator)
-        btnClear = view.findViewById(R.id.telco_clear_input_number_btn)
-        btnContactPicker = view.findViewById(R.id.telco_contact_picker_btn)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
 
         layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
@@ -48,14 +46,23 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
         inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
-        btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
-        btnClear.setOnClickListener {
-            inputNumberField.textFieldInput.setText("")
-            inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
+//        btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
+//        btnClear.setOnClickListener {
+//            inputNumberField.editText.setText("")
+//            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
+//            hideErrorInputNumber()
+//        }
+        inputNumberField.icon1.run {
+            setOnClickListener { listener.onNavigateToContact() }
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
+            show()
+        }
+        inputNumberField.clearIconView.setOnClickListener {
+            inputNumberField.editText.setText("")
+            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
         }
-
-        inputNumberField.textFieldInput.run {
+        inputNumberField.editText.run {
             isClickable = true
             isFocusable = false
             clearFocus()
@@ -72,9 +79,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     if (count == 0) {
                         listener.onClearAutoComplete()
                         imgOperator.visibility = View.GONE
-                        btnClear.visibility = View.GONE
+//                        btnClear.visibility = View.GONE
                     } else {
-                        btnClear.visibility = View.VISIBLE
+//                        btnClear.visibility = View.VISIBLE
                     }
                     listener.onRenderOperator()
                 }
@@ -82,14 +89,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
             setOnClickListener {
                 it?.run {
-                    listener.onClientNumberHasFocus(inputNumberField.textFieldInput.text.toString())
+                    listener.onClientNumberHasFocus(inputNumberField.editText.text.toString())
                 }
             }
         }
     }
 
     fun clearFocusAutoComplete() {
-        inputNumberField.textFieldInput.clearFocus()
+        inputNumberField.editText.clearFocus()
     }
 
     open fun getLayout(): Int {
@@ -100,31 +107,35 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         this.listener = listener
     }
 
-    fun setErrorInputNumber(errorMessage: String) {
+    fun setErrorInputNumber(errorMessage: String, resetProvider: Boolean = false) {
         inputNumberField.run {
             setMessage(errorMessage)
-            setError(true)
+            isInputError = true
+
+            if (resetProvider) {
+                imgOperator.visibility = View.GONE
+            }
         }
     }
 
     private fun hideErrorInputNumber() {
         inputNumberField.run {
             setMessage("")
-            setError(false)
+            isInputError = false
         }
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.textFieldInput.setText(formatPrefixClientNumber(inputNumber))
+        inputNumberField.editText.setText(formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(inputNumberField.textFieldInput.text.toString())
+        return formatPrefixClientNumber(inputNumberField.editText.text.toString())
     }
 
     fun setContactName(contactName: String) {
         val validatedLabel = validateContactName(contactName)
-        inputNumberField.textFieldWrapper.hint = validatedLabel
+        inputNumberField.textInputLayout.hint = validatedLabel
     }
 
     fun setIconOperator(url: String) {
