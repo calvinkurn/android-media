@@ -158,8 +158,8 @@ class ChatbotPresenter @Inject constructor(
                 networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
-                    sendReadEventWebSocket(messageId)
                 }
+                sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
 
             }

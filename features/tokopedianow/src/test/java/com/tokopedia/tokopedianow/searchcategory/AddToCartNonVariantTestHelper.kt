@@ -56,7 +56,7 @@ class AddToCartNonVariantTestHelper(
 
     private val addToCartRequestParamsSlot = slot<AddToCartRequestParams>()
     private val addToCartRequestParams by lazy { addToCartRequestParamsSlot.captured }
-    private val responseErrorException = ResponseErrorException(
+    val responseErrorException = ResponseErrorException(
             "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
     )
 
@@ -82,11 +82,11 @@ class AddToCartNonVariantTestHelper(
         `Then assert route to login page event is null`()
     }
 
-    private fun `Given view already created`() {
+    fun `Given view already created`() {
         baseViewModel.onViewCreated()
     }
 
-    private fun `Given add to cart API will success`(addToCartSuccessModel: AddToCartDataModel) {
+    fun `Given add to cart API will success`(addToCartSuccessModel: AddToCartDataModel) {
         every {
             addToCartUseCase.execute(any(), any())
         } answers {
@@ -103,7 +103,7 @@ class AddToCartNonVariantTestHelper(
         baseViewModel.onViewATCProductNonVariant(productItemToATC, addToCartQty)
     }
 
-    private fun `Then assert add to cart request params`(
+    fun `Then assert add to cart request params`(
             productId: String,
             shopId: String,
             addToCartQty: Int,
@@ -117,7 +117,7 @@ class AddToCartNonVariantTestHelper(
         assertThat(addToCartRequestParams.quantity, shouldBe(addToCartQty))
     }
 
-    private fun `Then assert cart message event`(
+    fun `Then assert cart message event`(
             expectedSuccessMessage: String = "",
             expectedErrorMessage: String = "",
     ) {
@@ -137,7 +137,7 @@ class AddToCartNonVariantTestHelper(
         assertThat(actualQuantity, shouldBe(expectedQuantity))
     }
 
-    private fun `Then verify mini cart is refreshed`(exactly: Int = 1) {
+    fun `Then verify mini cart is refreshed`(exactly: Int = 1) {
         verify(exactly = exactly) {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         }
@@ -156,7 +156,7 @@ class AddToCartNonVariantTestHelper(
         assertThat(actualProductItem, shouldBe(productItem))
     }
 
-    private fun `Then assert route to login page event is null`() {
+    fun `Then assert route to login page event is null`() {
         assertThat(baseViewModel.routeApplinkLiveData.value, nullValue())
     }
 
@@ -180,7 +180,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert route to login page event is null`()
     }
 
-    private fun `Given add to cart API will fail`(throwable: Throwable) {
+    fun `Given add to cart API will fail`(throwable: Throwable) {
         every {
             addToCartUseCase.execute(any(), any())
         } answers {
@@ -201,7 +201,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert route to login page event is null`()
     }
 
-    private fun `Given get mini cart simplified use case will be successful`(
+    fun `Given get mini cart simplified use case will be successful`(
             miniCartSimplifiedData: MiniCartSimplifiedData
     ) {
         every {
@@ -211,7 +211,7 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    private fun `Given view resumed to update mini cart`() {
+    fun `Given view resumed to update mini cart`() {
         baseViewModel.onViewResumed()
     }
 
@@ -226,7 +226,7 @@ class AddToCartNonVariantTestHelper(
         return Pair(productCurrentQuantity, productInVisitable)
     }
 
-    private fun `Then assert add to cart use case is not called`() {
+    fun `Then assert add to cart use case is not called`() {
         verify(exactly = 0) {
             addToCartUseCase.execute(any(), any())
         }
@@ -267,7 +267,7 @@ class AddToCartNonVariantTestHelper(
         `Given get mini cart simplified use case will be successful`(updatedMiniCartData)
     }
 
-    private fun updateMiniCartData(
+    fun updateMiniCartData(
             updatedMiniCartData: MiniCartSimplifiedData,
             productId: String,
             updatedQuantity: Int
@@ -278,7 +278,7 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    private fun `Given update cart use case will be successful`(
+    fun `Given update cart use case will be successful`(
             successUpdateCartResponse: UpdateCartV2Data
     ) {
         every {
@@ -304,7 +304,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert route to login page event is null`()
     }
 
-    private fun `Then assert update cart params`(
+    fun `Then assert update cart params`(
             productUpdatedQuantity: Int,
             cartId: String,
     ) {
@@ -387,7 +387,7 @@ class AddToCartNonVariantTestHelper(
         )
     }
 
-    private fun `Given update cart use case will fail`() {
+    fun `Given update cart use case will fail`() {
         every {
             updateCartUseCase.execute(any(), any())
         } answers {
@@ -412,15 +412,15 @@ class AddToCartNonVariantTestHelper(
         `Then assert visitable list is updated to revert add to cart button`(visitableIndex)
     }
 
-    private fun `Given user not logged in`() {
+    fun `Given user not logged in`() {
         every { userSession.isLoggedIn } returns false
     }
 
-    private fun `Then assert route to login page event`() {
+    fun `Then assert route to login page event`() {
         assertThat(baseViewModel.routeApplinkLiveData.value, shouldBe(ApplinkConst.LOGIN))
     }
 
-    private fun `Then assert cart use cases are not called`() {
+    fun `Then assert cart use cases are not called`() {
         verify(exactly = 0) {
             addToCartUseCase.execute(any(), any())
             updateCartUseCase.execute(any(), any())
@@ -428,7 +428,7 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    private fun `Then assert visitable list is updated to revert add to cart button`(
+    fun `Then assert visitable list is updated to revert add to cart button`(
             visitableIndex: Int
     ) {
         assertThat(
@@ -456,7 +456,7 @@ class AddToCartNonVariantTestHelper(
         `Then verify delete cart tracking is called`(productId)
     }
 
-    private fun `Given view setup to delete`(productIdToDelete: String) {
+    fun `Given view setup to delete`(productIdToDelete: String) {
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
@@ -467,7 +467,7 @@ class AddToCartNonVariantTestHelper(
         `Given get mini cart simplified use case will be successful`(updatedMiniCartData)
     }
 
-    private fun `Given delete cart use case will be successful`(
+    fun `Given delete cart use case will be successful`(
         successUpdateCartResponse: RemoveFromCartData
     ) {
         every {
@@ -494,7 +494,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert route to login page event is null`()
     }
 
-    private fun `Then assert delete cart params`(
+    fun `Then assert delete cart params`(
             cartIdParam: String,
     ) {
         val deleteCartIdParamSlot = slot<List<String>>()
@@ -509,13 +509,13 @@ class AddToCartNonVariantTestHelper(
         assertThat(deleteCartId, shouldBe(cartIdParam))
     }
 
-    private fun `Then assert update cart use case is not called`() {
+    fun `Then assert update cart use case is not called`() {
         verify(exactly = 0) {
             updateCartUseCase.execute(any(), any())
         }
     }
 
-    private fun `Then verify delete cart tracking is called`(productId: String) {
+    fun `Then verify delete cart tracking is called`(productId: String) {
         val increaseQtyTracking = baseViewModel.deleteCartTrackingLiveData.value!!
         assertThat(increaseQtyTracking, shouldBe(productId))
     }
@@ -542,7 +542,7 @@ class AddToCartNonVariantTestHelper(
         )
     }
 
-    private fun `Given delete cart use case will fail`() {
+    fun `Given delete cart use case will fail`() {
         every {
             deleteCartUseCase.execute(any(), any())
         } answers {
@@ -927,7 +927,7 @@ class AddToCartNonVariantTestHelper(
     }
 
     companion object {
-        private const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
+        const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
 
         object AddToCartTestObject {
             val addToCartQty get() = 10

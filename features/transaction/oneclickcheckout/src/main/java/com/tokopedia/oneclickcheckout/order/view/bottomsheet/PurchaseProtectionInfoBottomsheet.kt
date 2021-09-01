@@ -1,26 +1,22 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.view.View
+import android.view.LayoutInflater
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetPurchaseProtectionInfoWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.webview.TkpdWebView
 
 class PurchaseProtectionInfoBottomsheet(private val url: String) {
 
-    private var webView: TkpdWebView? = null
-    private var progressBar: LoaderUnify? = null
+    private var binding: BottomSheetPurchaseProtectionInfoWebViewBinding? = null
 
     fun show(fragment: OrderSummaryPageFragment) {
-        fragment.fragmentManager?.let {
+        fragment.parentFragmentManager.let {
             BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
@@ -29,22 +25,23 @@ class PurchaseProtectionInfoBottomsheet(private val url: String) {
                 clearContentPadding = true
                 showKnob = true
 
-                val child = View.inflate(fragment.context, R.layout.bottom_sheet_purchase_protection_info_web_view, null)
-                setupChild(child)
+                binding = BottomSheetPurchaseProtectionInfoWebViewBinding.inflate(LayoutInflater.from(fragment.context))
+                setupChild()
 
                 customPeekHeight = (getScreenHeight() / 2).toDp()
 
-                setChild(child)
+                setChild(binding?.root)
+                setOnDismissListener {
+                    binding = null
+                }
                 show(it, null)
             }
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupChild(child: View) {
-        progressBar = child.findViewById(R.id.progress_bar)
-        webView = child.findViewById(R.id.web_view)
-        val webSettings = webView?.settings
+    private fun setupChild() {
+        val webSettings = binding?.webView?.settings
         webSettings?.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -52,18 +49,16 @@ class PurchaseProtectionInfoBottomsheet(private val url: String) {
             displayZoomControls = true
             setAppCacheEnabled(true)
         }
-        webView?.webViewClient = PurchaseProtectionInfoWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings?.mediaPlaybackRequiresUserGesture = false
-        }
+        binding?.webView?.webViewClient = PurchaseProtectionInfoWebViewClient()
+        webSettings?.mediaPlaybackRequiresUserGesture = false
 
-        webView?.loadUrl(url)
+        binding?.webView?.loadUrl(url)
     }
 
     inner class PurchaseProtectionInfoWebViewClient : WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
     }
 

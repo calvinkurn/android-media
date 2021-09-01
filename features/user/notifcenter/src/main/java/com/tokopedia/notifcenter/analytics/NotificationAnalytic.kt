@@ -10,7 +10,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.entity.orderlist.Card
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.track.TrackApp
@@ -372,7 +372,7 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
-    fun trackClickOrderListItem(role: Int?, order: Card) {
+    fun trackClickOrderListItem(role: Int?, order: OrderWidgetUiModel) {
         if (role == null) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 InboxAnalyticCommon.createGeneralEvent(
@@ -474,7 +474,7 @@ class NotificationAnalytic @Inject constructor(
         return "$templateKey - $notificationId"
     }
 
-    private fun getEventLabelNotifOrderListItem(role: Int, order: Card): String {
+    private fun getEventLabelNotifOrderListItem(role: Int, order: OrderWidgetUiModel): String {
         val roleStr = getRoleString(role)
         return "$roleStr - ${order.text} - ${order.counter}"
     }
