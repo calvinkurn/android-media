@@ -179,10 +179,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             when (it) {
                 is Success -> {
                     showCollapsingHeader()
+                    buildFilter(it.data)
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
                         changeMarkerState(cardListPosition)
-                    } else {
+                    }  else {
                         hideLoader()
                         hideLoadingCardListMap()
                         hideLoading()
@@ -257,7 +258,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer { (data, notifyUi) ->
             if (notifyUi) {
                 hideFindNearHereView()
-                showQuickFilterShimmering(true)
                 setupQuickFilterBaseOnSelectedFilter(data)
                 loadInitialData()
             }
@@ -333,6 +333,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hideErrorNoResult()
         showHotelResultList()
         showLoader()
+        showQuickFilterShimmering(true)
         super.loadInitialData()
     }
 
@@ -1069,8 +1070,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         hideLoader()
-        showQuickFilterShimmering(false)
-
         val searchProperties = data.properties
         if (searchProperties.isNotEmpty()) {
             showCardListView()
@@ -1101,16 +1100,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             hideSearchWithMap()
             hideHotelResultList()
             showErrorNoResult()
-        }
-
-        initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
-
-        binding?.quickFilterSortHotelSearchMap?.let {
-                quickFilter -> quickFilter.chipItems?.filter {
-                    it.type == ChipsUnify.TYPE_SELECTED
-                }?.forEach { _ ->
-                    quickFilter.indicatorCounter -= 1
-                }
         }
         showCoachMark()
     }
@@ -1544,6 +1533,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             allMarker.forEach {
                 it.zIndex = 0.0f
             }
+        }
+    }
+
+    private fun buildFilter(data: PropertySearch){
+        showQuickFilterShimmering(false)
+
+        initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
+
+        binding?.quickFilterSortHotelSearchMap?.let {
+                quickFilter -> quickFilter.chipItems?.filter {
+            it.type == ChipsUnify.TYPE_SELECTED
+        }?.forEach { _ ->
+            quickFilter.indicatorCounter -= 1
+        }
         }
     }
 
