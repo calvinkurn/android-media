@@ -20,7 +20,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataVi
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
@@ -28,7 +28,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataVie
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.EmptyProductViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
@@ -64,9 +64,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
 
-    override fun type(emptyProductDataView: EmptyProductDataView) = EmptyProductViewHolder.LAYOUT
-
     override fun type(outOfCoverageDataView: OutOfCoverageDataView) = OutOfCoverageViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowEmptyStateNoResultUiModel) = TokoNowEmptyStateNoResultViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
 
@@ -87,8 +87,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view, quickFilterListener)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
-            EmptyProductViewHolder.LAYOUT -> EmptyProductViewHolder(view, emptyProductListener)
             OutOfCoverageViewHolder.LAYOUT -> OutOfCoverageViewHolder(view, outOfCoverageListener)
+            TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(view, emptyProductListener)
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, recommendationCarouselListener)
             else -> super.createViewHolder(view, type)
         }
