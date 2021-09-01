@@ -7,11 +7,13 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 class NotifierViewHolderInstant(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+    private val tickerNotifier: Ticker = itemView.findViewById(R.id.ticker_notifier)
+
     companion object {
         @JvmStatic val LAYOUT = R.layout.item_notifier_instant
     }
 
     fun bindData() {
-        itemView.findViewById<Ticker>(R.id.ticker_notifier).setTextDescription(itemView.context.getString(R.string.label_hardcoded_courier_ticker_instant))
+        tickerNotifier.setTextDescription(itemView.context.getString(R.string.label_hardcoded_courier_ticker_instant))
     }
 }
