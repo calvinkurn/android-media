@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.convertToString
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import java.util.*
 import javax.inject.Inject
@@ -152,77 +153,99 @@ class ShipmentMapper @Inject constructor() {
                             shopTypeInfoData: ShopTypeInfoData): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = -1
-        groupShop.products.forEachIndexed { index, it ->
-            val productResult = Product().apply {
-                analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
-                        it,
-                        groupAddress.userAddress,
-                        groupShop,
-                        shipmentAddressFormDataResponse.cod,
-                        shipmentAddressFormDataResponse.promoSAFResponse,
-                        shopTypeInfoData
-                )
-                if (it.tradeInInfo.isValidTradeIn) {
-                    productPrice = it.tradeInInfo.newDevicePrice.toLong()
-                }
-                isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
-                if (isError) {
-                    if (firstErrorIndex == -1) {
-                        firstErrorIndex = index
+        groupShop.cartDetails.forEachIndexed { index, cartDetail ->
+            cartDetail.products.forEach { product ->
+                val productResult = Product().apply {
+                    analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
+                            product,
+                            groupAddress.userAddress,
+                            groupShop,
+                            shipmentAddressFormDataResponse.cod,
+                            shipmentAddressFormDataResponse.promoSAFResponse,
+                            shopTypeInfoData
+                    )
+                    if (product.tradeInInfo.isValidTradeIn) {
+                        productPrice = product.tradeInInfo.newDevicePrice.toLong()
+                    }
+                    isError = !product.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.isNotEmpty()) product.errors[0] else ""
+                    errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
+                    if (isError) {
+                        if (firstErrorIndex == -1) {
+                            firstErrorIndex = index
+                        }
+                    }
+                    productId = product.productId
+                    cartId = product.cartId
+                    productName = product.productName
+                    productPriceFmt = product.productPriceFmt
+                    productPrice = product.productPrice
+                    productOriginalPrice = product.productOriginalPrice
+                    productWholesalePrice = product.productWholesalePrice
+                    productWholesalePriceFmt = product.productWholesalePriceFmt
+                    productWeightFmt = product.productWeightFmt
+                    productWeight = product.productWeight
+                    productWeightActual = product.productWeightActual
+                    productCondition = product.productCondition
+                    productUrl = product.productUrl
+                    isProductReturnable = product.productReturnable == 1
+                    isProductIsFreeReturns = product.productIsFreeReturns == 1
+                    isProductIsPreorder = product.productIsPreorder == 1
+                    preOrderDurationDay = product.productPreorder.durationDay
+                    if (product.productPreorder.durationText.isNotEmpty()) {
+                        productPreOrderInfo = "PO " + product.productPreorder.durationText
+                    }
+                    productCashback = product.productCashback
+                    productMinOrder = product.productMinOrder
+                    productInvenageValue = product.productInvenageValue
+                    productSwitchInvenage = product.productSwitchInvenage
+                    productPriceCurrency = product.productPriceCurrency
+                    productImageSrc200Square = product.productImageSrc200Square
+                    productNotes = product.productNotes
+                    productQuantity = product.productQuantity
+                    isProductFinsurance = product.productFinsurance == 1
+                    isProductFcancelPartial = product.productFcancelPartial == 1
+                    productCatId = product.productCatId
+                    isShowTicker = product.productTicker.isShowTicker
+                    tickerMessage = product.productTicker.message
+                    if (product.freeShippingExtra.eligible) {
+                        isFreeShippingExtra = true
+                    }
+                    if (product.freeShipping.eligible) {
+                        isFreeShipping = true
+                    }
+                    if (product.tradeInInfo.isValidTradeIn) {
+                        tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
+                    }
+                    if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
+                        purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
+                    }
+                    variant = product.variantDescriptionDetail.variantDescription
+                    productAlertMessage = product.productAlertMessage
+                    productInformation = product.productInformation
+                    if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero()) {
+                        isBundlingItem = true
+                        bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
+                            BUNDLING_ITEM_HEADER
+                        } else if (cartDetail.products.lastOrNull()?.productId == productId) {
+                            BUNDLING_ITEM_FOOTER
+                        } else {
+                            BUNDLING_ITEM_DEFAULT
+                        }
+                        bundleId = cartDetail.bundleDetail.bundleId
+                        bundleGroupId = cartDetail.bundleDetail.bundleGroupId
+                        bundleTitle = cartDetail.bundleDetail.bundleName
+                        bundlePrice = cartDetail.bundleDetail.bundlePrice
+                        bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel
+                        bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
+                        bundleQuantity = cartDetail.bundleDetail.bundleQty
+                    } else {
+                        isBundlingItem = false
+                        bundleId = "0"
                     }
                 }
-                productId = it.productId
-                cartId = it.cartId
-                productName = it.productName
-                productPriceFmt = it.productPriceFmt
-                productPrice = it.productPrice
-                productOriginalPrice = it.productOriginalPrice
-                productWholesalePrice = it.productWholesalePrice
-                productWholesalePriceFmt = it.productWholesalePriceFmt
-                productWeightFmt = it.productWeightFmt
-                productWeight = it.productWeight
-                productWeightActual = it.productWeightActual
-                productCondition = it.productCondition
-                productUrl = it.productUrl
-                isProductReturnable = it.productReturnable == 1
-                isProductIsFreeReturns = it.productIsFreeReturns == 1
-                isProductIsPreorder = it.productIsPreorder == 1
-                preOrderDurationDay = it.productPreorder.durationDay
-                if (it.productPreorder.durationText.isNotEmpty()) {
-                    productPreOrderInfo = "PO " + it.productPreorder.durationText
-                }
-                productCashback = it.productCashback
-                productMinOrder = it.productMinOrder
-                productInvenageValue = it.productInvenageValue
-                productSwitchInvenage = it.productSwitchInvenage
-                productPriceCurrency = it.productPriceCurrency
-                productImageSrc200Square = it.productImageSrc200Square
-                productNotes = it.productNotes
-                productQuantity = it.productQuantity
-                isProductFinsurance = it.productFinsurance == 1
-                isProductFcancelPartial = it.productFcancelPartial == 1
-                productCatId = it.productCatId
-                isShowTicker = it.productTicker.isShowTicker
-                tickerMessage = it.productTicker.message
-                if (it.freeShippingExtra.eligible) {
-                    isFreeShippingExtra = true
-                }
-                if (it.freeShipping.eligible) {
-                    isFreeShipping = true
-                }
-                if (it.tradeInInfo.isValidTradeIn) {
-                    tradeInInfoData = mapTradeInInfoData(it.tradeInInfo)
-                }
-                if (!isDisablePPP && it.purchaseProtectionPlanDataResponse.protectionAvailable) {
-                    purchaseProtectionPlanData = mapPurchaseProtectionData(it.purchaseProtectionPlanDataResponse)
-                }
-                variant = it.variantDescriptionDetail.variantDescription
-                productAlertMessage = it.productAlertMessage
-                productInformation = it.productInformation
+                productListResult.add(productResult)
             }
-            productListResult.add(productResult)
         }
         return productListResult to firstErrorIndex
     }
@@ -765,5 +788,9 @@ class ShipmentMapper @Inject constructor() {
         const val DISABLED_EGOLD = "egold"
         const val DISABLED_PURCHASE_PROTECTION = "ppp"
         const val DISABLED_DONATION = "donation"
+
+        const val BUNDLING_ITEM_DEFAULT = 0
+        const val BUNDLING_ITEM_HEADER = 1
+        const val BUNDLING_ITEM_FOOTER = 2
     }
 }
