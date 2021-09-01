@@ -45,6 +45,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
 
 
@@ -69,7 +70,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
     private var timerTextView: Typography? = null
     private var statusMatchingTimer: TimerUnifySingle? = null
     private var parentStatusMatching : ConstraintLayout ? =null
-    private var arrowIcon : AppCompatImageView?=null
+    private var ivStatusBackground: AppCompatImageView? = null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -91,7 +92,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         confettiAnim = itemView.findViewById(R.id.confetti_lottie)
         timerTextView = itemView.findViewById(R.id.timer_text_view)
         statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
-        arrowIcon = itemView.findViewById(R.id.ic_arrow_icon_status)
+        ivStatusBackground = itemView.findViewById(R.id.iv_gojek)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -100,6 +101,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         }
         model.rewardTickerResponse?.let {
             if (!it.rewardsTickerList?.tickerList.isNullOrEmpty()) {
+                containerStatusMatching?.show()
                 cardStatusMatching?.show()
                 renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
@@ -298,7 +300,6 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
     }
 
     private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
-
         AnalyticsTrackerUtil.sendEvent(
             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -306,6 +307,11 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
             AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
         )
+        if (itemView.context.isDarkMode()) {
+            ivStatusBackground?.setImageResource(R.drawable.bg_statusmatching_dark)
+        } else {
+            ivStatusBackground?.setImageResource(R.drawable.bg_statusmatching_light)
+        }
         containerStatusMatching?.setOnClickListener {
             rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
                 if (url.isNotEmpty()) {
@@ -327,6 +333,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         }
         playAnimation()
         val metadata = rewardTickerResponse?.get(0)?.metadata?.get(0)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             timerTextView?.text = Html.fromHtml(metadata?.text?.content, Html.FROM_HTML_MODE_LEGACY)
         } else {
@@ -370,11 +377,6 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
         val layoutParamsTextView = timerTextView?.layoutParams as ViewGroup.MarginLayoutParams
         layoutParamsTextView.topMargin = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
         timerTextView?.layoutParams = layoutParamsTextView
-
-     /*   val layoutParamsIcon = arrowIcon?.layoutParams
-        layoutParamsIcon?.height = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-        layoutParamsIcon?.width = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-        arrowIcon?.layoutParams = layoutParamsIcon*/
 
         val layoutParams = cardStatusMatching?.layoutParams
         layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT

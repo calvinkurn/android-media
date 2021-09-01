@@ -15,18 +15,17 @@
         android:id="@+id/container_statusmatching"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/tp_bg_statusmatching"
         android:clipChildren="true"
         android:clipToPadding="true">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_gojek"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:src="@drawable/ic_gojek_icon"
-            android:translationX="@dimen/dp_10"
+            app:srcCompat="@drawable/bg_statusmatching_light"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,11 +43,10 @@
             android:id="@+id/ic_arrow_icon_status"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:translationX="@dimen/dp_10"
-            app:layout_constraintBottom_toBottomOf="@id/iv_gojek"
-            app:layout_constraintEnd_toEndOf="@id/iv_gojek"
-            app:layout_constraintStart_toStartOf="@id/iv_gojek"
-            app:layout_constraintTop_toTopOf="@id/iv_gojek"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/dp_16"
             app:srcCompat="@drawable/ic_right_arrow_white" />
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -73,17 +71,14 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_8"
             android:textColor="@color/Unify_R100"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/iv_gojek"
-            app:layout_constraintRight_toLeftOf="@id/iv_gojek"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ic_arrow_icon_status"
+            android:layout_marginEnd="@dimen/dp_16"
             app:typographyType="body_3"
-            tools:text=" vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
-vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
-vjnvndjvnjdnvjdnvjdnvjnnvjdnvjnvndjvnjdnvjdnvjdnvjn
-           " />
+            tools:text="Akun Tokopedia  Gojek kesambung, tapi diskon ekstramu gagal diproses. Cek di sini"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

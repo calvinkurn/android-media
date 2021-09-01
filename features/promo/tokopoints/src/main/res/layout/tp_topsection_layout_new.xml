@@ -93,8 +93,7 @@
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_targetText"
@@ -132,7 +131,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_8"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <include
         layout="@layout/tp_layout_usersaving"
