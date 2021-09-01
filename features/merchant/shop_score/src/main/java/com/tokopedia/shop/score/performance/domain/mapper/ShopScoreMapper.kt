@@ -200,11 +200,9 @@ class ShopScoreMapper @Inject constructor(
                         //RM Section logic
                         powerMerchantResponse.status == PMStatusConst.INACTIVE -> {
                             if (isNewSeller) {
-                                if (isEligiblePM == true) {
-                                    add(
-                                        mapToItemCurrentStatusRMUiModel(isNewSeller)
-                                    )
-                                }
+                                add(
+                                    mapToItemCurrentStatusRMUiModel(isNewSeller)
+                                )
                                 return@apply
                             } else {
                                 when {
@@ -270,13 +268,7 @@ class ShopScoreMapper @Inject constructor(
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0)
                         ?: ""
                 }
-                shopAge in THREE_NUMBER..SHOP_AGE_FIFTY_NINE -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                        ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                        ?: ""
-                }
-                shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
+                shopAge in THREE_NUMBER..SHOP_SCORE_EIGHTY_NINE -> {
                     when {
                         shopScore < SHOP_SCORE_SIXTY -> {
                             titleHeaderShopService =
@@ -480,8 +472,7 @@ class ShopScoreMapper @Inject constructor(
             this.scorePenalty =
                 shopScoreLevelResponse?.shopScoreDetail?.find {
                     it.identifier == PENALTY_IDENTIFIER
-                }?.rawValue?.roundToLong()
-                    .orZero()
+                }?.rawValue?.roundToLong().orZero()
 
             this.shopType = shopType
             this.isShowPopupEndTenure = getIsShowPopupEndTenure(shopAge)
@@ -913,8 +904,9 @@ class ShopScoreMapper @Inject constructor(
         return try {
             val date = Calendar.getInstance(getLocale())
             val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
-            val targetDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays)
-            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
+            val firstMondayDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays)
+            val totalTargetDays = diffDays + firstMondayDays
+            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + totalTargetDays)
             format(date.timeInMillis, PATTERN_DATE_TEXT)
         } catch (e: ParseException) {
             e.printStackTrace()

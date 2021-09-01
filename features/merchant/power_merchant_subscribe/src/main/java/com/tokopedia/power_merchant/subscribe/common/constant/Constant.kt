@@ -28,7 +28,8 @@ object Constant {
         const val POWER_MERCHANT_TERMS_AND_CONDITION =
             "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
-        const val PM_PRO_IDLE = "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
+        const val PM_PRO_IDLE =
+            "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
     }
 
     object Image {
@@ -50,7 +51,11 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_ultimate.png"
         const val BG_BENEFIT_PACKAGE_PM_PRO_ADVANCED =
             "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_advanced.png"
-        const val BG_BENEFIT_PACKAGE_PM_PRO_EXPERT=
+        const val BG_BENEFIT_PACKAGE_PM_PRO_EXPERT =
             "https://images.tokopedia.net/img/android/power_merchant/bg_benefit_package_pm_pro_expert.png"
+        const val IC_PM_PRO_DOWNGRADE_WARNING =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_downgrade_warning@2x.png"
+        const val IC_PM_PRO_UPGRADE_LEVEL =
+            "https://images.tokopedia.net/img/android/power_merchant/ic_pm_pro_upgrade_level@2x.png"
     }
 }

@@ -4,10 +4,7 @@ import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.asUpperCase
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
@@ -49,7 +46,7 @@ class ItemDetailPerformanceViewHolder(
                     }
                 }
             setOnClickListener {
-                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+                if (element?.shopScore.isLessThanZero()) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -59,7 +56,7 @@ class ItemDetailPerformanceViewHolder(
                 }
             }
             ic_item_performance_right?.setOnClickListener {
-                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+                if (element?.shopScore.isLessThanZero()) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(

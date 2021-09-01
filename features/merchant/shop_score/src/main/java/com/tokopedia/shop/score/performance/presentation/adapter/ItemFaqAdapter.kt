@@ -23,10 +23,10 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         itemFaqList.mapIndexed { index, itemFaqUiModel ->
             if (itemFaqUiModel.isShow) {
                 itemFaqUiModel.isShow = false
-                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
             } else if (index == position) {
                 itemFaqUiModel.isShow = true
-                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
             }
         }
     }

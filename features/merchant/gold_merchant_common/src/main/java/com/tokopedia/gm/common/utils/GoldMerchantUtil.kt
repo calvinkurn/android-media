@@ -38,6 +38,10 @@ object GoldMerchantUtil {
         return sdf.format(timeMillis)
     }
 
+    //shop age = 7
+    //target = 59
+    //diff = 69 - 7 = 52
+    //now + diff + H+ (Monday)
     fun getNNextDaysBasedOnFirstMonday(totalRemainderDays: Int): Int {
         val calendar = Calendar.getInstance(getLocale())
         calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)

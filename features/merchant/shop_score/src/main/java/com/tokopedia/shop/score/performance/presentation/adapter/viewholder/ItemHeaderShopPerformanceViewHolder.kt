@@ -120,7 +120,9 @@ class ItemHeaderShopPerformanceViewHolder(
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
 
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+            val shopScore = shopScoreFormatted(element?.shopScore)
+
+            if (shopScore.isLessThanZero()) {
                 ic_shop_score_performance?.hide()
             } else {
                 ic_shop_score_performance?.show()

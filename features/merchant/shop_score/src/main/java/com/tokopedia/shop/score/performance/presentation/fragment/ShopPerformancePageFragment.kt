@@ -81,6 +81,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             shopPerformanceAdapterTypeFactory
         )
     }
+
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
@@ -292,7 +293,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     /**
      * ItemTimerNewSellerListener
      */
-    override fun onBtnLearnNowClicked(sellerEduUrl: String) {
+    override fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String) {
         context?.let {
             RouteManager.route(
                 it,
@@ -300,6 +301,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 sellerEduUrl
             )
         }
+    }
+
+    override fun onBtnLearnNowToFaqClicked() {
+        goToFaqSection()
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
@@ -357,7 +362,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             )
         }
     }
-
 
     override fun onProtectedParameterChevronClicked(protectedParameterDate: String) {
         val bottomSheetProtectedParameter = BottomSheetProtectedParameter.createInstance(

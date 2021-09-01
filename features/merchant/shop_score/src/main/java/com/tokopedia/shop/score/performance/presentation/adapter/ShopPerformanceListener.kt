@@ -62,7 +62,8 @@ interface ProtectedParameterListener {
 }
 
 interface ItemTimerNewSellerListener {
-    fun onBtnLearnNowClicked(sellerEduUrl: String)
+    fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String)
+    fun onBtnLearnNowToFaqClicked()
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
     fun onWatchVideoClicked(videoId: String)
     fun onImpressBtnLearnPerformance()
