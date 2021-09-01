@@ -13,14 +13,13 @@
         android:layout_height="wrap_content"
         android:gravity="top"
         android:minHeight="?actionBarSize"
-        android:visibility="gone"
+        android:visibility="visible"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:toolbarContentType="typeTitle"
-        app:toolbarBackButton="none"
+        app:toolbarBackButton="back"
         app:toolbarAlwaysShowShadow="true"
         app:toolbarPageName="/"
-        app:toolbarInitialFillColor="transparent"
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light" />
 

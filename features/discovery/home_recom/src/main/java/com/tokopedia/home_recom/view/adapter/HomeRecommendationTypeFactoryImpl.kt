@@ -16,9 +16,9 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
  */
 class HomeRecommendationTypeFactoryImpl(
         private val recommendationListener: RecommendationListener,
-        private val titleListener: TitleListener,
+        private val titleListener: TitleListener?,
         private val recommendationErrorListener: RecommendationErrorListener,
-        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener
+        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener?
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     /**
      * This override function from [HomeRecommendationTypeFactory]

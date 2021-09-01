@@ -22,11 +22,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
+import javax.inject.Inject
 
 /**
  * Created by yfsx on 30/08/21.
  */
-class InfiniteRecomViewModel(
+class InfiniteRecomViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
         private val addWishListUseCase: Lazy<AddWishListUseCase>,
@@ -42,77 +43,95 @@ class InfiniteRecomViewModel(
     val recommendationFirstLiveData: LiveData<List<RecommendationItemDataModel>> get() = _recommendationFirstLiveData
     private val _recommendationFirstLiveData = MutableLiveData<List<RecommendationItemDataModel>>()
 
+    val recommendationNextLiveData: LiveData<List<RecommendationItemDataModel>> get() = _recommendationNextLiveData
+    private val _recommendationNextLiveData = MutableLiveData<List<RecommendationItemDataModel>>()
+
+    val recommendationWidgetData: LiveData<RecommendationWidget> get() = _recommendationWidgetData
+    private val _recommendationWidgetData = MutableLiveData<RecommendationWidget>()
+
     val miniCartData: LiveData<MutableMap<String, MiniCartItem>> get() = _miniCartData
     private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
 
+    val loadMoreData: LiveData<Boolean> get() = _loadMoreData
+    private val _loadMoreData = MutableLiveData<Boolean>()
 
-    fun getRecommendationFirstPage(pageName: String, productId: String, context: Context) {
-        val localAddress = ChooseAddressUtils.getLocalizingAddressData(context)
-        getMiniCart(localAddress?.shop_id ?: "")
+
+    fun getRecommendationFirstPage(pageName: String, productId: String, queryParam: String) {
         launchCatchError(dispatcher.getIODispatcher(), {
-            val params = GetRecommendationRequestParam(
-                    pageNumber = 1,
-                    productIds = listOf(productId),
-                    pageName = pageName,
-                    isTokonow = true
-            )
-            val result = getRecommendationUseCase.get().getData(params)
+            val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
 
             } else {
-                _recommendationFirstLiveData.postValue(mappingMiniCartDataToRecommendation(result))
+                _recommendationWidgetData.postValue(result[0])
+                _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
 
         }
     }
 
-    fun getRecommendationNextPage(pageName: String, productId: String, pageNumber: Int) {
+    fun getRecommendationNextPage(pageName: String, productId: String, pageNumber: Int, queryParam: String) {
         launchCatchError(dispatcher.getIODispatcher(), {
-            val params = GetRecommendationRequestParam(
-                    pageNumber = pageNumber,
-                    productIds = listOf(productId),
-                    pageName = pageName,
-                    isTokonow = true
-            )
-            val result = getRecommendationUseCase.get().getData(params)
+            val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, pageNumber = pageNumber, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
 
             } else {
-                val dataList = mutableListOf<RecommendationItemDataModel>()
-                //need to get minicart data, then append qty to recom data
-                result[0].recommendationItemList.forEach {
-                    dataList.add(RecommendationItemDataModel(it))
-                }
+                _recommendationNextLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
 
         }
     }
 
-    private fun mappingMiniCartDataToRecommendation(recomData: List<RecommendationWidget>): List<RecommendationItemDataModel> {
+    private fun getBasicRecomParams(pageName: String = "", productId: String = "", pageNumber: Int = 1, queryParam: String = ""): GetRecommendationRequestParam {
+        return GetRecommendationRequestParam(
+                isTokonow = true,
+                pageNumber = pageNumber,
+                productIds = listOf(productId),
+                pageName = "recom_1",
+                xSource = "recom_widget",
+                queryParam = queryParam)
+    }
+
+    private fun mappingRecomDataModel(recomData: List<RecommendationWidget>): List<RecommendationItemDataModel> {
         val recomItemList = mutableListOf<RecommendationItemDataModel>()
         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
             val recomWidget = recomData.first().copy()
-            if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                recomWidget.recommendationItemList.forEach { item ->
-                    miniCartData.value?.let {
-                        if (item.isProductHasParentID()) {
-                            var variantTotalItems = 0
-                            it.values.forEach { miniCartItem ->
-                                if (miniCartItem.productParentId == item.parentID.toString()) {
-                                    variantTotalItems += miniCartItem.quantity
-                                }
-                            }
-                            item.updateItemCurrentStock(variantTotalItems)
-                        } else {
-                            item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
-                                    ?: 0)
+            if (recomWidget.isTokonow) {
+                recomItemList.addAll(mappingMiniCartDataToRecommendation(recomWidget))
+            } else {
+                recomItemList.addAll(mappingDataRecomToModel(recomWidget))
+            }
+        }
+        return recomItemList
+    }
+
+    private fun mappingDataRecomToModel(recomWidget: RecommendationWidget): List<RecommendationItemDataModel> {
+        val recomItemList = mutableListOf<RecommendationItemDataModel>()
+        recomWidget.recommendationItemList.forEach { item ->
+            recomItemList.add(RecommendationItemDataModel(item))
+        }
+        return recomItemList
+    }
+
+    private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget): List<RecommendationItemDataModel> {
+        val recomItemList = mutableListOf<RecommendationItemDataModel>()
+        recomWidget.recommendationItemList.forEach { item ->
+            miniCartData.value?.let {
+                if (item.isProductHasParentID()) {
+                    var variantTotalItems = 0
+                    it.values.forEach { miniCartItem ->
+                        if (miniCartItem.productParentId == item.parentID.toString()) {
+                            variantTotalItems += miniCartItem.quantity
                         }
                     }
-                    recomItemList.add(RecommendationItemDataModel(item))
+                    item.updateItemCurrentStock(variantTotalItems)
+                } else {
+                    item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                            ?: 0)
                 }
             }
+            recomItemList.add(RecommendationItemDataModel(item))
         }
         return recomItemList
     }

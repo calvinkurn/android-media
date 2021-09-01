@@ -19,6 +19,7 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+import com.tokopedia.kotlin.extensions.view.gone
 
 /**
  * Created by lukas on 21/05/2019
@@ -63,6 +64,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             intent.data != null -> {
                 when {
                     isTokonowProductList(intent?.data?.toString() ?: "") -> {
+                        toolbar.gone()
                         InfiniteTokonowRecomFragment.newInstance(
                                 getTokonowRecomProductId(),
                                 getRef(),

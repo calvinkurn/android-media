@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
@@ -12,13 +13,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param title the title of widget recommendation carousel
  * @param products the list of recommendation item, it hold data for carousel
  */
-class RecommendationCarouselDataModel(
+data class RecommendationCarouselDataModel(
         val title: String,
         val appLinkSeeMore: String,
         val products: List<RecommendationCarouselItemDataModel>
 ) : HomeRecommendationDataModel {
 
-    companion object{
+    companion object {
         val LAYOUT = R.layout.fragment_recommendation_carousell
     }
 
@@ -27,4 +28,24 @@ class RecommendationCarouselDataModel(
     fun contains(item: RecommendationItem) = products.any { it.productItem.productId == item.productId }
 
     fun contains(id: Int) = products.any { it.productItem.productId == id }
+
+    override fun name(): String = title
+
+    override fun equalsWith(newData: HomeRecommendationDataModel): Boolean {
+        return if (newData is RecommendationCarouselDataModel) {
+            title == newData.title &&
+                    products.size == newData.products.size &&
+                    products.hashCode() == newData.products.hashCode()
+
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): HomeRecommendationDataModel {
+        return RecommendationCarouselDataModel(
+                title, appLinkSeeMore, products.toMutableList())
+    }
+
+    override fun getChangePayload(newData: HomeRecommendationDataModel): Bundle? = null
 }
