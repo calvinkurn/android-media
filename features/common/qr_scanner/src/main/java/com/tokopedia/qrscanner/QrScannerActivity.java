@@ -294,6 +294,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
+    public boolean getRemoteConfigPeduliLindungi() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PEDULI_LINDUNGI_SCANQR, true);
+    }
+
+
+    @Override
     public String getCallbackUrlFromPeduliLindungi() {
         Uri uri = getIntent().getData();
        if(uri != null && uri.getQueryParameter("redirect") != null){
