@@ -54,9 +54,18 @@ data class AffiliateSearchData(
             }
 
             data class Footer (
+                    @SerializedName("footerType") val footerType : Int?,
                     @SerializedName("footerIcon") val footerIcon : String?,
                     @SerializedName("footerText") val footerText : String?
-            )
+            ){
+                override fun equals(other: Any?): Boolean {
+                    return other is Footer && footerType == other.footerType
+                }
+
+                override fun hashCode(): Int {
+                    return footerType ?: super.hashCode()
+                }
+            }
 
             data class Status (
                     @SerializedName("isLinkGenerationAllowed") val isLinkGenerationAllowed : Boolean?

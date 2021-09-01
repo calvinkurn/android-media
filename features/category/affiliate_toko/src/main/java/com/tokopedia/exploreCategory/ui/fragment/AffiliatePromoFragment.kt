@@ -12,7 +12,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
-import com.tokopedia.exploreCategory.ui.custom.toAffiliateProductModel
+import com.tokopedia.exploreCategory.ui.custom.AffiliatePromotionProductCard
 import com.tokopedia.exploreCategory.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +51,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         }
         promo_global_error.run {
             show()
+            errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_never_bought_product)
             errorDescription.text = getString(R.string.affiliate_still_buy_products)
             setButtonFull(true)
@@ -89,9 +90,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
             affiliateSearchData.cards?.items?.firstOrNull()?.let {
-                promo_global_error.hide()
+                error_group.hide()
                 promotion_product_card.show()
-                affiliate_product_card.setProductModel(toAffiliateProductModel(it))
+                affiliate_product_card.setProductModel(AffiliatePromotionProductCard.toAffiliateProductModel(it))
             }
         })
 

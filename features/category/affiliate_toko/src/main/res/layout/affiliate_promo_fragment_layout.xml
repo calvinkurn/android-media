@@ -45,6 +45,26 @@
         app:unify_text_field_label_static="true"
         />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/error_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="promo_global_error,affiliate_no_product_bought_iv"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/affiliate_no_product_bought_iv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_40"
+        android:visibility="gone"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintTop_toBottomOf="@id/product_link_et"
+        tools:visibility="visible" />
+
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/promo_global_error"
         android:layout_width="match_parent"
@@ -52,8 +72,7 @@
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_link_et"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_bought_iv"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
