@@ -513,7 +513,7 @@ object DynamicProductDetailTracking {
                     recomSeeAllAction,
                     String.format(ProductTrackingConstant.Action.EVENT_ACTION_CLICK_SEE_ALL_RECOM, recomWidget.title, recomWidget.pageName, recomWidget.layoutType)
             )
-            mapEvent.put(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP)
+            mapEvent.put(ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE)
             mapEvent.put(ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE)
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, recomSeeAllAction)
         }
