@@ -692,6 +692,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         viewModel.setFilterFromHighlightedTopic(topicName, isProductReview)
     }
 
+    override fun onHighlightedTopicImpressed(topicName: String, topicPosition: Int) {
+        ReadReviewTracking.trackOnImpressHighlightedTopic(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }

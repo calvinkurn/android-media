@@ -40,6 +40,7 @@ object ReadReviewTrackingConstants {
     const val EVENT_ACTION_PRODUCT_CLICK = "click - product link on the review card"
     const val EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS = "click - 3 dots beside the product link on the review card"
     const val EVENT_ACTION_CLICK_TOPIC_RATING = "click - topic rating"
+    const val EVENT_ACTION_IMPRESS_TOPIC_RATING = "impression - topic rating"
 
     const val EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE = "positive_review:%s;rating:%d;ulasan:%d;"
     const val EVENT_LABEL_CLICK_FILTER = "filter_name:%s;is_active:%s;"

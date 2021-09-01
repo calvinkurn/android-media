@@ -245,6 +245,57 @@ object ReadReviewTracking {
         )
     }
 
+    fun trackOnImpressHighlightedTopic(
+        topic: String,
+        topicPosition: Int,
+        userId: String,
+        productId: String
+    ) {
+        val trackingBundle = Bundle()
+        trackingBundle.apply {
+            putString(
+                ReviewTrackingConstant.EVENT_ACTION,
+                ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_TOPIC_RATING
+            )
+            putString(
+                ReviewTrackingConstant.EVENT_CATEGORY,
+                ReadReviewTrackingConstants.EVENT_CATEGORY
+            )
+            putString(ReviewTrackingConstant.EVENT_LABEL, "")
+            putString(ReadReviewTrackingConstants.KEY_USER_ID, userId)
+            putString(
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT,
+                ReadReviewTrackingConstants.BUSINESS_UNIT
+            )
+            putString(
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE,
+                ReadReviewTrackingConstants.CURRENT_SITE
+            )
+            putString(ReadReviewTrackingConstants.KEY_PRODUCT_ID, productId)
+            val bundleEcommerce = Bundle()
+            bundleEcommerce.apply {
+                val bundlePromo = Bundle().apply {
+                    putString(ReadReviewTrackingConstants.KEY_CREATIVE, "")
+                    putString(ReadReviewTrackingConstants.KEY_ID, topic)
+                    putString(ReadReviewTrackingConstants.KEY_NAME, "")
+                    putInt(ReadReviewTrackingConstants.KEY_POSITION, topicPosition)
+                }
+                val bundlePromoClick = Bundle().apply {
+                    putParcelableArrayList(
+                        ReadReviewTrackingConstants.KEY_PROMOTIONS,
+                        mutableListOf(bundlePromo) as ArrayList<Bundle>
+                    )
+                }
+                putBundle(ReadReviewTrackingConstants.KEY_PROMO_CLICK, bundlePromoClick)
+            }
+            putBundle(ReadReviewTrackingConstants.KEY_ECOMMERCE, bundleEcommerce)
+        }
+        tracker.sendEnhanceEcommerceEvent(
+            ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+            trackingBundle
+        )
+    }
+
     private fun getPercentPositiveReview(percentPositiveFormatted: String): String {
         return percentPositiveFormatted.substringBefore("%")
     }

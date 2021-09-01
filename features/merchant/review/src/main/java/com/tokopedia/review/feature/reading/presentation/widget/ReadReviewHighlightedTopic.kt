@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
@@ -27,6 +29,7 @@ class ReadReviewHighlightedTopic: BaseCustomView {
     private var topicRating: Typography? = null
     private var topicTitle: Typography? = null
     private var reviewCount: Typography? = null
+    private var impressHolder: ImpressHolder = ImpressHolder()
 
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_highlighted_topic, this)
@@ -50,6 +53,9 @@ class ReadReviewHighlightedTopic: BaseCustomView {
     fun setListener(listener: ReadReviewHighlightedTopicListener, topicPosition: Int) {
         setOnClickListener {
             listener.onHighlightedTopicClicked(topicTitle?.text.toString(), topicPosition)
+        }
+        addOnImpressionListener(impressHolder) {
+            listener.onHighlightedTopicImpressed(topicTitle?.text.toString(), topicPosition)
         }
     }
 }
