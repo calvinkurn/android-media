@@ -55,12 +55,12 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         notifyDataSetChanged()
     }
 
-    fun getActivateSpIds(): List<String> {
-        val activatedListIds = mutableListOf<String>()
+    fun getActivateSpIds(): List<Int> {
+        val activatedListIds = mutableListOf<Int>()
         cplItem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toString())
+                    activatedListIds.add(product.shipperProductId)
                 }
             }
         }

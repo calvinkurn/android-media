@@ -1,5 +1,7 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +15,12 @@ import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.databinding.FragmentCustomProductLogisticBinding
 import com.tokopedia.editshipping.di.customproductlogistic.DaggerCustomProductLogisticComponent
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_PRODUCT_ID
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOP_ID
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
@@ -36,7 +41,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private var shopId: Long = 0
     private var productId: String = ""
-    private var shipperProduct: String = ""
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -74,8 +78,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-//        viewModel.getCPLList(2649340, "1685435966")
-        viewModel.getCPLList(shopId, productId)
+        viewModel.getCPLList(2649340, "1685435966")
+//        viewModel.getCPLList(shopId, productId)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -105,11 +109,14 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun populateView(data: CustomProductLogisticModel) {
+        updateShipperData(data)
         binding.swipeRefresh.isRefreshing = false
         binding.shippingEditorLayout.visible()
         binding.btnSaveShipper.visible()
         binding.globalError.gone()
-        updateShipperData(data)
+        if (cplItemOnDemandAdapter.cplItem.isEmpty()) {
+            //set empty here
+        }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
@@ -130,15 +137,24 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             ).show()
             binding.btnSaveShipper.isEnabled = false
         } else {
-            /*save here*/
+            finishActivity(activatedSpIds)
         }
     }
 
-    private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {
-        val activatedListShipperIds = mutableListOf<String>()
+    private fun getListActivatedSpIds(onDemandList: List<Int>, conventionalList: List<Int>): List<Int> {
+        val activatedListShipperIds = mutableListOf<Int>()
         activatedListShipperIds.addAll(onDemandList)
         activatedListShipperIds.addAll(conventionalList)
-        return activatedListShipperIds.joinToString(separator = ",")
+        return activatedListShipperIds
+    }
+
+    private fun finishActivity(shipperServices: List<Int>) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, ArrayList(shipperServices))
+            })
+            finish()
+        }
     }
 
     companion object {

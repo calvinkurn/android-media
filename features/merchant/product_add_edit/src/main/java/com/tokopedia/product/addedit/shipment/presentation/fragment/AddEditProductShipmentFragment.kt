@@ -102,7 +102,8 @@ class AddEditProductShipmentFragment:
     private var radioOptionalInsurance: RadioButtonUnify? = null
     private var tickerInsurance: Ticker? = null
 
-    private var layoutCustomShipment: ConstraintLayout? = null
+    private var layoutCustomShipmentOnDemand: ConstraintLayout? = null
+    private var layoutCustomShipmentConventional: ConstraintLayout? = null
     private var radiosShipment: RadioGroup? = null
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
@@ -290,7 +291,8 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
         tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
 
-        layoutCustomShipment = requireView().findViewById(R.id.layout_custom_shipment)
+        layoutCustomShipmentOnDemand = requireView().findViewById(R.id.layout_custom_ondemand)
+        layoutCustomShipmentConventional = requireView().findViewById(R.id.layout_custom_conventional)
         radiosShipment = requireView().findViewById(R.id.radios_cpl)
         radioStandarShipment = requireView().findViewById(R.id.radio_standard_shipment)
         radioCustomShipment = requireView().findViewById(R.id.radio_custom_shipment)
@@ -307,7 +309,8 @@ class AddEditProductShipmentFragment:
     }
 
     private fun initShipmentData() {
-        shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
+        shipmentViewModel.getCPLList(2649340, "1685435966")
+//        shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
     }
 
     private fun initObserver() {
@@ -315,6 +318,7 @@ class AddEditProductShipmentFragment:
             when (it) {
                 is Success -> {
                     updateShipmentData(it.data)
+                    updateLayoutShipment()
                 }
             }
         })
@@ -322,7 +326,23 @@ class AddEditProductShipmentFragment:
 
     private fun updateShipmentData(data: CustomProductLogisticModel) {
         shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+        shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
         shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
+        shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+    }
+
+    private fun updateLayoutShipment() {
+        if (shipmentOnDemandAdapter.checkActivatedSpIds().isEmpty()) {
+            layoutCustomShipmentOnDemand?.gone()
+        } else {
+            layoutCustomShipmentOnDemand?.visible()
+        }
+
+        if (shipmentConventionalAdapter.checkActivatedSpIds().isEmpty()) {
+            layoutCustomShipmentConventional?.gone()
+        } else {
+            layoutCustomShipmentConventional?.visible()
+        }
     }
 
     private fun setupWeightInput() {
@@ -395,9 +415,11 @@ class AddEditProductShipmentFragment:
         radiosShipment?.setOnCheckedChangeListener { _, checkedId ->
             val isStandardShipment = checkedId == R.id.radio_standard_shipment
             if (isStandardShipment)  {
-                layoutCustomShipment?.gone()
+                layoutCustomShipmentOnDemand?.gone()
+                layoutCustomShipmentConventional?.gone()
             } else {
-                layoutCustomShipment?.visible()
+                layoutCustomShipmentOnDemand?.visible()
+                layoutCustomShipmentConventional?.visible()
             }
         }
     }
@@ -471,6 +493,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition
+            // shipmentServices =
         }
     }
 
