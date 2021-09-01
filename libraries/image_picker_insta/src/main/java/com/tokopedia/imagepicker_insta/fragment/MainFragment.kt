@@ -4,11 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -18,13 +16,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.MainActivity
+import com.tokopedia.imagepicker_insta.activity.MainActivity.Companion.MAX_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.menu.MenuManager
@@ -39,12 +37,12 @@ import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), MainFragmentContract {
 
     val EDITOR_REQUEST_CODE = 221
 
@@ -54,6 +52,7 @@ class MainFragment : Fragment() {
     lateinit var selectedImage: AssetImageView
     lateinit var recentSection: LinearLayout
     lateinit var tvSelectedFolder: AppCompatTextView
+    lateinit var imageFitCenter: AppCompatImageView
 
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
@@ -73,13 +72,13 @@ class MainFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity,menu)
+        MenuManager.addCustomMenu(activity, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            MenuManager.MENU_ITEM_ID-> {
+        when (item.itemId) {
+            MenuManager.MENU_ITEM_ID -> {
                 proceedNextStep()
                 return true
             }
@@ -141,6 +140,8 @@ class MainFragment : Fragment() {
         selectedImage = v.findViewById(R.id.selected_image_view)
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
+        imageFitCenter = v.findViewById(R.id.image_fit_center)
+
         val toolbar: Toolbar = v.findViewById(R.id.toolbar)
         val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
         val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
@@ -155,7 +156,7 @@ class MainFragment : Fragment() {
         setupRv()
     }
 
-    fun setClicks() {
+    private fun setClicks() {
         recentSection.setOnClickListener {
             if (folders.isEmpty()) return@setOnClickListener
 
@@ -169,9 +170,19 @@ class MainFragment : Fragment() {
                 bottomSheet.dismiss()
             }
         }
+
+        imageFitCenter.setOnClickListener {
+            if (selectedImage.drawable != null) {
+                if (selectedImage.scaleType == ImageView.ScaleType.CENTER_CROP) {
+                    selectedImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                } else {
+                    selectedImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                }
+            }
+        }
     }
 
-    fun refreshImages(folderName: String?) {
+    private fun refreshImages(folderName: String?) {
         viewModel.getImagesByFolderName(folderName)
     }
 
@@ -181,21 +192,32 @@ class MainFragment : Fragment() {
         rv.layoutManager = GridLayoutManager(context, columnCount)
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
         val contentHeight = width / columnCount
-        imageAdapter = ImageAdapter(imageDataList, contentHeight, this::handleOnCameraIconTap)
+
+        var maxMultiSelect: Int = MAX_MULTI_SELECT_LIMIT
+        if ((activity as? MainActivity)?.maxMultiSelectAllowed != null) {
+            maxMultiSelect = (activity as MainActivity).maxMultiSelectAllowed
+        }
+
+        imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect)
         rv.adapter = imageAdapter
         val itemPadding = 4.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
     }
-
 
     private fun openCamera() {
         cameraCaptureFilePath = null
         cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this))
     }
 
-    private fun handleOnCameraIconTap() {
+    override fun handleOnCameraIconTap() {
         if (activity is MainActivity) {
             PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
+        }
+    }
+
+    override fun showToast(message: String, toasterType: Int) {
+        view?.let {
+            Toaster.build(it, message, toasterType).show()
         }
     }
 

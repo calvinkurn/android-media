@@ -2,27 +2,33 @@ package com.tokopedia.imagepicker_insta
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepicker_insta.models.Asset
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
+import com.tokopedia.unifycomponents.Toaster
 
-class ImageAdapter(val dataList: List<ImageAdapterData>,
-                   val contentHeight: Int, var onCameraIconClick: Function0<Unit>) :
+class ImageAdapter(
+    val dataList: List<ImageAdapterData>,
+    val contentHeight: Int,
+    val mainFragmentContract: MainFragmentContract,
+    val maxMultiSelectLimit: Int
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var itemSelectCallback: Function2<ImageAdapterData, Boolean, Unit>? = null
     val selectedPositions = mutableSetOf<Int>()
 
-    fun isSelectedPositionsEmpty():Boolean{
+    fun isSelectedPositionsEmpty(): Boolean {
         return selectedPositions.isEmpty()
     }
 
-    fun addSelectedItem(position: Int){
+    fun addSelectedItem(position: Int) {
         selectedPositions.add(position)
     }
 
-    fun clearSelectedItems(){
+    fun clearSelectedItems() {
         selectedPositions.clear()
     }
 
@@ -31,7 +37,9 @@ class ImageAdapter(val dataList: List<ImageAdapterData>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == TYPE_CAMERA) {
-            return CameraViewHolder.getInstance(parent, contentHeight, onCameraIconClick)
+            return CameraViewHolder.getInstance(parent, contentHeight) {
+                mainFragmentContract.handleOnCameraIconTap()
+            }
         } else {
             return PhotosViewHolder.getInstance(parent, contentHeight)
         }
@@ -56,10 +64,14 @@ class ImageAdapter(val dataList: List<ImageAdapterData>,
                     holder.setChecked(false)
                     itemSelectCallback?.invoke(dataList[position], false)
                 } else {
-                    //select
-                    selectedPositions.add(position)
-                    holder.setChecked(true)
-                    itemSelectCallback?.invoke(dataList[position], true)
+                    if (selectedPositions.size != maxMultiSelectLimit) {
+                        //select
+                        selectedPositions.add(position)
+                        holder.setChecked(true)
+                        itemSelectCallback?.invoke(dataList[position], true)
+                    }else{
+                        mainFragmentContract.showToast("Max selection limit reached")
+                    }
                 }
 
             }

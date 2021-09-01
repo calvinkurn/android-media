@@ -31,4 +31,5 @@ object BundleData {
     val SUB_TITLE = "subtitle"
     val ICON_RES = "icon_res"
     val MENU_TITLE = "menu_title"
+    val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
 }

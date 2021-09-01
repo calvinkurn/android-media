@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.BundleData
@@ -16,15 +17,25 @@ class MainActivity : AppCompatActivity() {
     var toolbarSubTitle = ""
     var menuTitle = ""
     var toolbarIconRes = 0
+    var maxMultiSelectAllowed = 0
 
     companion object {
 
-        fun getIntent(context: Context, title: String? = null, subtitle: String? = null, toolbarIconRes: Int? = null, menuTitle: String? = null): Intent {
+        const val MAX_MULTI_SELECT_LIMIT = 5
+
+        fun getIntent(context: Context, title: String? = null,
+                      subtitle: String? = null,
+                      toolbarIconRes: Int? = null,
+                      menuTitle: String? = null,
+                      @IntRange(from = 0L,to = MAX_MULTI_SELECT_LIMIT.toLong())
+                      maxMultiSelectAllowed: Int = 5
+        ): Intent {
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra(BundleData.TITLE, title)
             intent.putExtra(BundleData.SUB_TITLE, subtitle)
             intent.putExtra(BundleData.ICON_RES, toolbarIconRes)
             intent.putExtra(BundleData.MENU_TITLE, menuTitle)
+            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, Math.min(maxMultiSelectAllowed,MAX_MULTI_SELECT_LIMIT))
             return intent
         }
     }
@@ -67,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
         toolbarIconRes = intent.extras?.getInt(BundleData.ICON_RES) ?: R.drawable.imagepicker_insta_back_icon
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
+        maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: MAX_MULTI_SELECT_LIMIT
 
     }
 }

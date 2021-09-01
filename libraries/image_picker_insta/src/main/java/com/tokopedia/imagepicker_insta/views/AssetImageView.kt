@@ -14,6 +14,7 @@ class AssetImageView @JvmOverloads constructor(
     fun loadAsset(asset: Asset){
         Glide.with(this)
             .load(asset.contentUri)
+            .fitCenter()
             .into(this)
     }
 

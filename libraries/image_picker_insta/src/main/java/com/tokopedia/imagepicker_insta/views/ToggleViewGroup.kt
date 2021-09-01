@@ -17,8 +17,8 @@ class ToggleViewGroup @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     lateinit var maskImageView:ToggleImageView
-    lateinit var toggleImageView:ToggleImageView
     lateinit var assetImageView: AssetImageView
+    lateinit var toggleCountView: ToggleCountLayout
 
     var clipPath = Path()
     var clipRectF = RectF()
@@ -47,7 +47,7 @@ class ToggleViewGroup @JvmOverloads constructor(
 
     fun initViews(){
         maskImageView = findViewById(R.id.image_mask)
-        toggleImageView = findViewById(R.id.image_toggle_tick)
+        toggleCountView = findViewById(R.id.toggle_count_layout)
         assetImageView = findViewById(R.id.src_image)
 
         maskImageView.scaleType = ImageView.ScaleType.FIT_XY
@@ -62,7 +62,8 @@ class ToggleViewGroup @JvmOverloads constructor(
     }
 
     fun setChecked(isChecked:Boolean){
-        toggleImageView.toggle(isChecked)
+//        toggleCountView.toggle(isChecked)
+//        toggleImageView.toggle(isChecked)
         maskImageView.toggle(isChecked)
     }
 
