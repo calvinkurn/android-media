@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_promotion_product_card.*
 import javax.inject.Inject
