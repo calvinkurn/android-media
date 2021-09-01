@@ -607,13 +607,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         viewModel.deleteProductInCart(productId)
     }
 
-    override fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute?) {
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY || variantOptions == null) return
-
-        onVariantClicked(variantOptions)
-    }
-
-    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
                 variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)

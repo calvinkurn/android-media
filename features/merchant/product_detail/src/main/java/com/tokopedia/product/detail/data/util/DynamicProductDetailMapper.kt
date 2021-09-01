@@ -312,21 +312,11 @@ object DynamicProductDetailMapper {
         return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
-        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
         val isParent = selectedChild == null
-        val selectedOptionIds = when {
+        return when {
             isParent -> {
-                if (shouldAutoSelect.isNotEmpty()) {
-                    //if product parent and able to auto select, do auto select
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-                } else {
-                    //if product parent, dont update selected variant
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                }
-            }
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
             }
             else -> {
                 if (selectedChild == null) {
@@ -336,7 +326,5 @@ object DynamicProductDetailMapper {
                 }
             }
         }
-
-        return shouldAutoSelect.isNotEmpty() to selectedOptionIds
     }
 }
