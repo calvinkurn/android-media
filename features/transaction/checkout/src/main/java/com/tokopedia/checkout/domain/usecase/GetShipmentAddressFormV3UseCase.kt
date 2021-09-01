@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
@@ -64,8 +65,8 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         }
 
         val request = GraphqlRequest(getQueryShipmentAddressFormV3(), ShipmentAddressFormGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
-//        val response = Gson().fromJson(getJsonFromResource("saf_dummy.json"), ShipmentAddressFormGqlResponse::class.java)
+//        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
+        val response = Gson().fromJson(getJsonFromResource("saf_dummy.json"), ShipmentAddressFormGqlResponse::class.java)
 
         if (response.shipmentAddressFormResponse.status == "OK") {
             return shipmentMapper.convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)

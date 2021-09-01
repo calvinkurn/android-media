@@ -110,9 +110,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8">
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rl_product_info"
@@ -130,7 +130,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_height="200dp"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -197,7 +196,6 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_toEndOf="@+id/tv_product_original_price"
                 android:gravity="center_vertical"
-                android:paddingStart="@dimen/dp_4"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="@+id/tv_product_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_item_count_and_weight"
@@ -260,11 +258,13 @@
             android:id="@+id/product_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
             app:closeButtonVisibility="gone"
             app:tickerShapeType="loose"
             app:tickerType="warning" />
 
         <RelativeLayout
+            android:layout_marginBottom="@dimen/dp_8"
             android:id="@+id/rlayout_purchase_protection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

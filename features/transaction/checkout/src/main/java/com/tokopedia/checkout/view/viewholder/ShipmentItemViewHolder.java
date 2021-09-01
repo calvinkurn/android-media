@@ -31,6 +31,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
@@ -111,6 +112,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography customTickerDescription;
     private Typography customTickerAction;
 
+    private ConstraintLayout productBundlingInfo;
+    private Typography textBundleTitle;
+    private Typography textBundlePrice;
+    private Label labelBundleSlashPricePercentage;
+    private Typography textBundleSlashPrice;
+    private LinearLayout llFrameItemProductContainer;
+    private ConstraintLayout rlProductInfo;
     private View vBundlingProductSeparator;
     private ImageView ivProductImage;
     private TextView tvProductName;
@@ -248,6 +256,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
         customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
         customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
+        productBundlingInfo = itemView.findViewById(R.id.product_bundling_info);
+        textBundleTitle = itemView.findViewById(R.id.text_bundle_title);
+        textBundlePrice = itemView.findViewById(R.id.text_bundle_price);
+        labelBundleSlashPricePercentage = itemView.findViewById(R.id.label_bundle_slash_price_percentage);
+        textBundleSlashPrice = itemView.findViewById(R.id.text_bundle_slash_price);
+        llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
+        rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         vBundlingProductSeparator = itemView.findViewById(R.id.v_bundling_product_separator);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
@@ -514,7 +529,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (cartItemModelList.size() > 0) {
             renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
         }
-        if (shipmentCartItemModel.getCartItemModels() != null && shipmentCartItemModel.getCartItemModels().size() > 1) {
+        if (shipmentCartItemModel.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
             renderOtherCartItems(shipmentCartItemModel, cartItemModelList);
             vSeparatorBelowProduct.setVisibility(View.VISIBLE);
@@ -618,15 +633,41 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderPurchaseProtection(cartItemModel);
         renderProductTicker(cartItemModel);
         renderProductProperties(cartItemModel);
+        renderBundlingInfo(cartItemModel);
+    }
 
+    private void renderBundlingInfo(CartItemModel cartItemModel) {
         ViewGroup.MarginLayoutParams ivProductImageLayoutParams = (ViewGroup.MarginLayoutParams) ivProductImage.getLayoutParams();
         ViewGroup.MarginLayoutParams tvOptionalNoteToSellerLayoutParams = (ViewGroup.MarginLayoutParams) tvOptionalNoteToSeller.getLayoutParams();
+        ViewGroup.MarginLayoutParams productContainerLayoutParams = (ViewGroup.MarginLayoutParams) llFrameItemProductContainer.getLayoutParams();
+        ViewGroup.MarginLayoutParams productInfoLayoutParams = (ViewGroup.MarginLayoutParams) rlProductInfo.getLayoutParams();
+        int bottomMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_8);
+
         if (cartItemModel.isBundlingItem()) {
             ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
             tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
+            vBundlingProductSeparator.setVisibility(View.VISIBLE);
+            if (cartItemModel.getBundlingItemPosition() == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                productBundlingInfo.setVisibility(View.VISIBLE);
+                vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            } else {
+                productBundlingInfo.setVisibility(View.GONE);
+                vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
+            }
+            textBundleTitle.setText(cartItemModel.getBundleTitle());
+            textBundlePrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundlePrice(), false)));
+            labelBundleSlashPricePercentage.setText(cartItemModel.getBundleSlashPriceLabel());
+            textBundleSlashPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundleOriginalPrice(), false)));
+            productContainerLayoutParams.bottomMargin = 0;
+            productInfoLayoutParams.bottomMargin = 0;
         } else {
             ivProductImageLayoutParams.leftMargin = 0;
             tvOptionalNoteToSellerLayoutParams.leftMargin = 0;
+            vBundlingProductSeparator.setVisibility(View.GONE);
+            productBundlingInfo.setVisibility(View.GONE);
+            vSeparatorMultipleProductSameStore.setVisibility(View.VISIBLE);
+            productContainerLayoutParams.bottomMargin = bottomMargin;
+            productInfoLayoutParams.bottomMargin = bottomMargin;
         }
     }
 
@@ -658,14 +699,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
         int dp10 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItemModel.getOriginalPrice() > 0) {
-            tvProductPrice.setPadding(dp4, dp4, 0, 0);
+            tvProductPrice.setPadding(0, dp4, 0, 0);
             tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             )));
             tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             tvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
-            tvProductPrice.setPadding(dp10, dp4, 0, 0);
+            tvProductPrice.setPadding(0, dp4, 0, 0);
             tvProductOriginalPrice.setVisibility(View.GONE);
         }
     }

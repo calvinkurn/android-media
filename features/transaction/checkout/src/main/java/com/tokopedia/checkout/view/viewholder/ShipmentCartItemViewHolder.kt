@@ -3,29 +3,41 @@ package com.tokopedia.checkout.view.viewholder
 import android.graphics.Paint
 import android.text.TextUtils
 import android.view.View
-import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var shipmentItemListener: ShipmentItemListener? = null
+    private val productBundlingInfo: ConstraintLayout = itemView.findViewById(R.id.product_bundling_info)
+    private val textBundleTitle: Typography = itemView.findViewById(R.id.text_bundle_title)
+    private val textBundlePrice: Typography = itemView.findViewById(R.id.text_bundle_price)
+    private val labelBundleSlashPricePercentage: Label = itemView.findViewById(R.id.label_bundle_slash_price_percentage)
+    private val textBundleSlashPrice: Typography = itemView.findViewById(R.id.text_bundle_slash_price)
+    private val vBundlingProductSeparator: View = itemView.findViewById(R.id.v_bundling_product_separator)
+    private val llFrameItemProductContainer: LinearLayout = itemView.findViewById(R.id.ll_frame_item_product_container)
+    private val rlProductInfo: ConstraintLayout = itemView.findViewById(R.id.rl_product_info)
     private val mIvProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
     private val mTvProductName: Typography = itemView.findViewById(R.id.tv_product_name)
     private val mTvProductPrice: Typography = itemView.findViewById(R.id.tv_product_price)
@@ -51,7 +63,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         } else {
             hideShipmentWarning()
         }
-        mSeparatorMultipleProductSameStore.visibility = View.VISIBLE
         ImageHandler.LoadImage(mIvProductImage, cartItem.imageUrl)
         mTvProductName.text = cartItem.name
         mTvProductCountAndWeight.text = String.format(mTvProductCountAndWeight.context
@@ -68,6 +79,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         renderPurchaseProtection(cartItem)
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
+        renderBundlingInfo(cartItem)
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -95,12 +107,12 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val dp4 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_4)
         val dp10 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_10)
         if (cartItem.originalPrice > 0) {
-            mTvProductPrice.setPadding(dp4, dp4, 0, 0)
+            mTvProductPrice.setPadding(0, dp4, 0, 0)
             mTvProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false).removeDecimalSuffix()
             mTvProductOriginalPrice.paintFlags = mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             mTvProductOriginalPrice.visibility = View.VISIBLE
         } else {
-            mTvProductPrice.setPadding(dp10, dp4, 0, 0)
+            mTvProductPrice.setPadding(0, dp4, 0, 0)
             mTvProductOriginalPrice.visibility = View.GONE
         }
     }
@@ -137,7 +149,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun renderProductTicker(cartItemModel: CartItemModel) {
         if (cartItemModel.isShowTicker && !TextUtils.isEmpty(cartItemModel.tickerMessage)) {
             productTicker.visibility = View.VISIBLE
-            productTicker.setTextDescription(cartItemModel.tickerMessage ?: "")
+            productTicker.setTextDescription(cartItemModel.tickerMessage)
         } else productTicker.visibility = View.GONE
     }
 
@@ -178,6 +190,48 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun setImageFilterGrayScale() {
         mIvProductImage.imageAlpha = IMAGE_ALPHA_DISABLED
     }
+
+    private fun renderBundlingInfo(cartItemModel: CartItemModel) {
+        val ivProductImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
+        val tvOptionalNoteToSellerLayoutParams = mTvOptionalNoteToSeller.layoutParams as MarginLayoutParams
+        val productContainerLayoutParams = llFrameItemProductContainer.layoutParams as MarginLayoutParams
+        val productInfoLayoutParams = rlProductInfo.layoutParams as MarginLayoutParams
+        val bottomMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_8)
+        if (cartItemModel.isBundlingItem) {
+            ivProductImageLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
+            tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
+            vBundlingProductSeparator.visibility = View.VISIBLE
+            val productImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
+            val productNameLayoutParams = mTvProductName.layoutParams as MarginLayoutParams
+            val productMarginTop = itemView.resources.getDimensionPixelSize(R.dimen.dp_12)
+            if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                productBundlingInfo.visibility = View.VISIBLE
+                productImageLayoutParams.topMargin = 0
+                productNameLayoutParams.topMargin = 0
+                mSeparatorMultipleProductSameStore.show()
+            } else {
+                productBundlingInfo.visibility = View.GONE
+                productImageLayoutParams.topMargin = productMarginTop
+                productNameLayoutParams.topMargin = productMarginTop
+                mSeparatorMultipleProductSameStore.gone()
+            }
+            textBundleTitle.text = cartItemModel.bundleTitle
+            textBundlePrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false))
+            labelBundleSlashPricePercentage.text = cartItemModel.bundleSlashPriceLabel
+            textBundleSlashPrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false))
+            productContainerLayoutParams.bottomMargin = 0
+            productInfoLayoutParams.bottomMargin = 0
+        } else {
+            ivProductImageLayoutParams.leftMargin = 0
+            tvOptionalNoteToSellerLayoutParams.leftMargin = 0
+            vBundlingProductSeparator.visibility = View.GONE
+            productBundlingInfo.visibility = View.GONE
+            mSeparatorMultipleProductSameStore.show()
+            productContainerLayoutParams.bottomMargin = bottomMargin
+            productInfoLayoutParams.bottomMargin = bottomMargin
+        }
+    }
+
 
     private fun enableItemView() {
         mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))

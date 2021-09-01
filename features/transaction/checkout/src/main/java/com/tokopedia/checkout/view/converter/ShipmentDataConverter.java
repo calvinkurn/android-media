@@ -347,6 +347,16 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
 
+        cartItemModel.setBundlingItem(product.isBundlingItem());
+        cartItemModel.setBundlingItemPosition(product.getBundlingItemPosition());
+        cartItemModel.setBundleId(product.getBundleId());
+        cartItemModel.setBundleGroupId(product.getBundleGroupId());
+        cartItemModel.setBundleTitle(product.getBundleTitle());
+        cartItemModel.setBundlePrice(product.getBundlePrice());
+        cartItemModel.setBundleSlashPriceLabel(product.getBundleSlashPriceLabel());
+        cartItemModel.setBundleOriginalPrice(product.getBundleOriginalPrice());
+        cartItemModel.setBundleQuantity(product.getBundleQuantity());
+
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;
     }
