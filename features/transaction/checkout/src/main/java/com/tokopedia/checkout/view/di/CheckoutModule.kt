@@ -10,7 +10,6 @@ import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase.Companion.SHIPMENT_ADDRESS_FORM_QUERY
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase.Companion.SAVE_SHIPMENT_STATE_MUTATION
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.ShipmentContract
@@ -40,10 +39,6 @@ import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Named
-
-/**
- * Created by Irfan Khoirul on 2019-08-26.
- */
 
 @Module(includes = [
     PeopleAddressNetworkModule::class,
@@ -90,7 +85,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideShipmentPresenter(compositeSubscription: CompositeSubscription,
                                  checkoutGqlUseCase: CheckoutGqlUseCase,
-                                 getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase,
+                                 getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
                                  saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
@@ -109,7 +104,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
-                checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
+                checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
@@ -130,13 +125,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
         return shipmentFragment
-    }
-
-    @Provides
-    @CheckoutScope
-    @Named(SHIPMENT_ADDRESS_FORM_QUERY)
-    fun provideGetShipmentAddressFormQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shipment_address_form_query)
     }
 
     @Provides

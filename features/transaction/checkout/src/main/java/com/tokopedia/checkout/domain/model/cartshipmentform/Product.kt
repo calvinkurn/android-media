@@ -48,5 +48,14 @@ data class Product(
         var variant: String = "",
         var productAlertMessage: String = "",
         var productInformation: List<String> = emptyList(),
-        var analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData()
+        var analyticsProductCheckoutData: AnalyticsProductCheckoutData = AnalyticsProductCheckoutData(),
+        var isBundlingItem: Boolean = false,
+        var bundlingItemPosition: Int = 0,
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
+        var bundleTitle: String = "",
+        var bundlePrice: Long = 0L,
+        var bundleSlashPriceLabel: String = "",
+        var bundleOriginalPrice: Long = 0L,
+        var bundleQuantity: Int = 0
 ) : Parcelable

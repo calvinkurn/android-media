@@ -8,6 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestGqlData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -29,7 +32,6 @@ import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil;
@@ -40,7 +42,6 @@ import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
-import com.tokopedia.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
@@ -122,6 +123,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
@@ -137,7 +140,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
     private final CheckoutGqlUseCase checkoutGqlUseCase;
     private final CompositeSubscription compositeSubscription;
-    private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
+    private final GetShipmentAddressFormV3UseCase getShipmentAddressFormV3UseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase;
     private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
@@ -184,7 +187,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
-                             GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
+                             GetShipmentAddressFormV3UseCase getShipmentAddressFormV3UseCase,
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase,
                              SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase,
@@ -205,7 +208,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ExecutorSchedulers executorSchedulers) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
-        this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
+        this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.changeShippingAddressGqlUseCase = changeShippingAddressGqlUseCase;
         this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
@@ -504,51 +507,95 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showInitialLoading();
         }
 
-        Map<String, Object> params = generateShipmentAddressFormParams(
+        getShipmentAddressFormV3UseCase.setParams(
                 isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId
         );
+        getShipmentAddressFormV3UseCase.execute(
+                cartShipmentAddressFormData -> {
+                    if (getView() != null) {
+                        if (isReloadData) {
+                            getView().setHasRunningApiCall(false);
+                            getView().resetPromoBenefit();
+                            getView().clearTotalBenefitPromoStacking();
+                            getView().hideLoading();
+                        } else {
+                            getView().hideInitialLoading();
+                        }
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(params);
-        compositeSubscription.add(
-                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment))
+                        validateShipmentAddressFormData(cartShipmentAddressFormData, isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
+                        getView().stopTrace();
+                    }
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        if (isReloadData) {
+                            getView().setHasRunningApiCall(false);
+                            getView().hideLoading();
+                        } else {
+                            getView().hideInitialLoading();
+                        }
+                        String errorMessage = throwable.getMessage();
+                        if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
+                        }
+                        getView().showToastError(errorMessage);
+                        getView().stopTrace();
+                        getView().logOnErrorLoadCheckoutPage(throwable);
+                    }
+                    return Unit.INSTANCE;
+                }
         );
     }
 
-    @NotNull
-    public Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
-                                                                 boolean isTradeIn,
-                                                                 boolean isSkipUpdateOnboardingState,
-                                                                 @Nullable String cornerId,
-                                                                 @Nullable String deviceId,
-                                                                 @Nullable String leasingId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
-        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
-        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE, isSkipUpdateOnboardingState ? 1 : 0);
-        if (cornerId != null) {
-            try {
-                int tmpCornerId = Integer.parseInt(cornerId);
-                params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID, tmpCornerId);
-            } catch (NumberFormatException e) {
-                Timber.d(e);
+    private void validateShipmentAddressFormData(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                 boolean isReloadData,
+                                                 boolean isReloadAfterPriceChangeHigher,
+                                                 boolean isOneClickShipment) {
+        if (cartShipmentAddressFormData == null) {
+            getView().onShipmentAddressFormEmpty();
+        } else {
+            if (cartShipmentAddressFormData.isError()) {
+                if (cartShipmentAddressFormData.isOpenPrerequisiteSite()) {
+                    getView().onCacheExpired(cartShipmentAddressFormData.getErrorMessage());
+                } else {
+                    getView().showToastError(cartShipmentAddressFormData.getErrorMessage());
+                    getView().logOnErrorLoadCheckoutPage(new MessageErrorException(cartShipmentAddressFormData.getErrorMessage()));
+                }
+            } else {
+                List<GroupAddress> groupAddressList = cartShipmentAddressFormData.getGroupAddress();
+                if (groupAddressList.size() > 0) {
+                    UserAddress userAddress = groupAddressList.get(0).getUserAddress();
+                    validateRenderCheckoutPage(cartShipmentAddressFormData, userAddress, isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
+                } else {
+                    validateRenderCheckoutPage(cartShipmentAddressFormData, null, isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
+                }
             }
         }
-        if (leasingId != null && !leasingId.isEmpty()) {
-            try {
-                int tmpLeasingId = Integer.parseInt(leasingId);
-                params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID, tmpLeasingId);
-            } catch (NumberFormatException e) {
-                Timber.d(e);
+    }
+
+    private void validateRenderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                            @Nullable UserAddress userAddress,
+                                            boolean isReloadData,
+                                            boolean isReloadAfterPriceChangeHigher,
+                                            boolean isOneClickShipment) {
+        if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
+            getView().renderCheckoutPageNoAddress(cartShipmentAddressFormData);
+        } else if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
+            getView().renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress != null ? userAddress.getState() : 0);
+        } else if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.NO_ERROR) {
+            if (userAddress == null) {
+                getView().onShipmentAddressFormEmpty();
+            } else {
+                getView().updateLocalCacheAddressData(userAddress);
+                initializePresenterData(cartShipmentAddressFormData);
+                getView().renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHigher, isOneClickShipment);
+                if (cartShipmentAddressFormData.getPopUpMessage().length() > 0) {
+                    getView().showToastNormal(cartShipmentAddressFormData.getPopUpMessage());
+                }
             }
+
         }
-        if (isTradeIn) {
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, true);
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId != null ? deviceId : "");
-        }
-        return params;
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
