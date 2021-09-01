@@ -111,6 +111,12 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
                     )
                 )
             }
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_N200
+                )
+            )
             setOnClickListener(secondaryActionButtonClickListener)
         }
     }
