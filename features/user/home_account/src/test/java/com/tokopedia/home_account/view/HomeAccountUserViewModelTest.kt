@@ -49,7 +49,7 @@ class HomeAccountUserViewModelTest {
 
     private val userPageAssetConfigObserver = mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
     private val saldoBalanceObserver = mockk<Observer<Result<Balance>>>(relaxed = true)
-    private val tokopointsDrawerListObserver = mockk<Observer<Result<TokopointsDrawerList>>>(relaxed = true)
+    private val tokopointsObserver = mockk<Observer<Result<PointDataModel>>>(relaxed = true)
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val ovoBalanceResponse = mockk<Observer<Result<WalletModel>>>(relaxed = true)
 
@@ -261,29 +261,29 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Success get tokopoints`() {
-        viewModel.tokopointsDrawerList.observeForever(tokopointsDrawerListObserver)
-        coEvery { homeAccountTokopointsUseCase.executeOnBackground() } returns successGetTokopointsResponse
+        viewModel.tokopoints.observeForever(tokopointsObserver)
+        coEvery { homeAccountTokopointsUseCase(Unit) } returns successGetTokopointsResponse
 
         viewModel.getTokopoints()
 
-        verify { tokopointsDrawerListObserver.onChanged(any<Success<TokopointsDrawerList>>()) }
-        assert(viewModel.tokopointsDrawerList.value is Success)
+        verify { tokopointsObserver.onChanged(any<Success<PointDataModel>>()) }
+        assert(viewModel.tokopoints.value is Success)
 
-        val result = viewModel.tokopointsDrawerList.value as Success<TokopointsDrawerList>
-        assert(result.data == successGetTokopointsResponse.data)
+        val result = viewModel.tokopoints.value as Success<PointDataModel>
+        assert(result.data == successGetTokopointsResponse.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
     }
 
     @Test
     fun `Failed get tokopoints`() {
-        viewModel.tokopointsDrawerList.observeForever(tokopointsDrawerListObserver)
-        coEvery { homeAccountTokopointsUseCase.executeOnBackground() } coAnswers { throw throwableResponse }
+        viewModel.tokopoints.observeForever(tokopointsObserver)
+        coEvery { homeAccountTokopointsUseCase(Unit) } coAnswers { throw throwableResponse }
 
         viewModel.getTokopoints()
 
-        verify { tokopointsDrawerListObserver.onChanged(any<Fail>()) }
-        assert(viewModel.tokopointsDrawerList.value is Fail)
+        verify { tokopointsObserver.onChanged(any<Fail>()) }
+        assert(viewModel.tokopoints.value is Fail)
 
-        val result = viewModel.tokopointsDrawerList.value as Fail
+        val result = viewModel.tokopoints.value as Fail
         assertEquals(throwableResponse, result.throwable)
     }
 

@@ -80,9 +80,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val saldoBalance: LiveData<Result<Balance>>
         get() = _saldoBalance
 
-    private val _tokopointsDrawerList = MutableLiveData<Result<TokopointsDrawerList>>()
-    val tokopointsDrawerList: LiveData<Result<TokopointsDrawerList>>
-        get() = _tokopointsDrawerList
+    private val _tokopoints = MutableLiveData<Result<PointDataModel>>()
+    val tokopoints: LiveData<Result<PointDataModel>>
+        get() = _tokopoints
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -180,12 +180,17 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getTokopoints() {
         launchCatchError(block = {
-            val response = getHomeAccountTokopointsUseCase.executeOnBackground()
+            val response = getHomeAccountTokopointsUseCase(Unit)
+
             withContext(dispatcher) {
-                _tokopointsDrawerList.value = Success(response.data)
+                if (response.tokopointsStatusFilteredDataModel.resultStatus.code == "200" && response.tokopointsStatusFilteredDataModel.resultStatus.status == "OK") {
+                    _tokopoints.value = Success(response.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
+                } else {
+                    _tokopoints.postValue(Fail(Throwable(response.tokopointsStatusFilteredDataModel.resultStatus.message[0])))
+                }
             }
         }, onError = {
-            _tokopointsDrawerList.postValue(Fail(it))
+            _tokopoints.postValue(Fail(it))
         })
     }
 

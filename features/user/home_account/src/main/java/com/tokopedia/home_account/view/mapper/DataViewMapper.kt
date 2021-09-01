@@ -12,6 +12,7 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -113,21 +114,20 @@ class DataViewMapper @Inject constructor(
         )
     }
 
-    fun mapTokopoints(tokopointsDrawerList: TokopointsDrawerList): CommonDataView {
-        val tokopoint: DrawerList? = tokopointsDrawerList.drawerList.find { it.type == TOKOPOINTS }
-        val title = tokopoint?.sectionContent?.get(0)
-        val body = tokopoint?.sectionContent?.get(1)
+    fun mapTokopoints(pointDataModel: PointDataModel?): CommonDataView {
+        val title = pointDataModel?.pointsSection?.sectionContent?.get(0)
+        val body = pointDataModel?.pointsSection?.sectionContent?.get(1)
         return CommonDataView(
                 id = AccountConstants.SettingCode.SETTING_TOKOPOINTS,
-                title = title?.textAttributes?.text ?: "",
-                body = body?.textAttributes?.text ?: "",
+                title = title?.textAttributes?.text.orEmpty(),
+                body = body?.textAttributes?.text.orEmpty(),
                 type = FinancialItemViewHolder.TYPE_OVO_TOKOPOINTS,
-                urlIcon = tokopoint?.iconImageURL.orEmpty(),
-                applink = tokopoint?.redirectAppLink ?: "",
-                isTitleBold = title?.textAttributes?.isBold ?: false,
-                isBodyBold = body?.textAttributes?.isBold ?: false,
-                titleColor = title?.textAttributes?.color ?: "",
-                bodyColor = body?.textAttributes?.color ?: ""
+                urlIcon = pointDataModel?.iconImageURL.orEmpty(),
+                applink = pointDataModel?.pointsSection?.redirectAppLink.orEmpty(),
+                isTitleBold = title?.textAttributes?.isBold.orFalse(),
+                isBodyBold = body?.textAttributes?.isBold.orFalse(),
+                titleColor = title?.textAttributes?.color.orEmpty(),
+                bodyColor = body?.textAttributes?.color.orEmpty()
         )
     }
 
