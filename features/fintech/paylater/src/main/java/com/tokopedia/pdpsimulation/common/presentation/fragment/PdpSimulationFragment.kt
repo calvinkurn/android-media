@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.onTabSelected
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -29,6 +31,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationSt
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -99,13 +102,31 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         setUpModeSwitcher()
         renderTabAndViewPager()
         initListeners()
+        val filterData = ArrayList<SortFilterItem>()
+        filterData.add(SortFilterItem(
+            "abc"
+        ) { })
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+
+        sortFilter.addItem(filterData)
     }
 
     override fun getSimulationProductInfo() {
-        parentDataGroup.visible()
+        payLaterViewPager.visible()
         when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterProductData()
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
+            is PayLater -> {
+                payLaterViewModel.getPayLaterProductData()
+            }
+            is CreditCard -> {
+                creditCardViewModel.getCreditCardSimulationData(productPrice)
+            }
         }
     }
 
@@ -141,9 +162,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun initListeners() {
-        paylaterDaftarWidget.setOnClickListener {
-            onRegisterWidgetClicked()
-        }
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
             if (paymentMode == PayLater)
                 sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(tab.getCustomText()))
@@ -196,13 +214,17 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun handleRegisterWidgetVisibility(position: Int) {
         if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive)
             showRegisterWidget()
-        else daftarGroup.gone()
+        else {
+            payLaterBorder.gone()
+        }
     }
 
     override fun showRegisterWidget() {
-        if (isPayLaterSimulationPage())
-            daftarGroup.visible()
-        else daftarGroup.gone()
+        if (isPayLaterSimulationPage()) {
+            payLaterBorder.visible()
+        } else {
+            payLaterBorder.gone()
+        }
     }
 
     override fun onRegisterWidgetClicked() {
@@ -229,18 +251,19 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun showNoNetworkView() {
         hideDataGroup()
-        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
-        payLaterParentGlobalError.show()
-        payLaterParentGlobalError.setActionClickListener {
-            payLaterParentGlobalError.gone()
-            getSimulationProductInfo()
-        }
+//        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
+//        payLaterParentGlobalError.show()
+//        payLaterParentGlobalError.setActionClickListener {
+//            payLaterParentGlobalError.gone()
+//            getSimulationProductInfo()
+//        }
     }
 
     private fun hideDataGroup() {
-        parentDataGroup.gone()
+        paylaterTabLayout.gone()
+        payLaterViewPager.gone()
         modeSwitcher.gone()
-        daftarGroup.gone()
+        payLaterBorder.gone()
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {

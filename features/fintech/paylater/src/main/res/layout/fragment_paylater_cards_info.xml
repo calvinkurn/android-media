@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
         android:layout_marginEnd="@dimen/pay_later_payment_cl_margin_dp_14"
         android:orientation="vertical">
@@ -70,6 +74,7 @@
             android:layout_height="wrap_content"
             app:barrierAllowsGoneWidgets="false"
             app:barrierDirection="bottom"
+            app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartner"
             app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner" />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -85,9 +90,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPaymentDesciption"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:clipToPadding="false"
             app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             app:layout_constraintEnd_toEndOf="parent"
@@ -126,4 +132,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 </com.tokopedia.unifycomponents.CardUnify>

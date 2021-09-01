@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="@dimen/unify_space_8">
 
@@ -15,65 +15,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitlePenawaran"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:text="How Long do you want to repay?"
-        android:textSize="@dimen/unify_font_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.sortfilter.SortFilter
-        android:id="@+id/sortFilter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitlePenawaran"
-        app:sort_filter_relationship="OR"
-        app:sort_filter_type="quick" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvAvailablePaylater"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Available Pay Later for this product"
-        android:textSize="@dimen/unify_font_16"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sortFilter"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold" />
-
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/titleShimmer"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/unify_space_24"
-        app:layout_constraintBottom_toBottomOf="@id/tvTitlePenawaran"
-        app:layout_constraintLeft_toLeftOf="@id/tvTitlePenawaran"
-        app:layout_constraintRight_toRightOf="@id/tvTitlePenawaran"
-        app:layout_constraintTop_toTopOf="@id/tvTitlePenawaran"
-        app:loader_type="rect" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/availableShimmerShimmer"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/unify_space_32"
-        android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintLeft_toLeftOf="@id/tvAvailablePaylater"
-        app:layout_constraintRight_toRightOf="@id/tvAvailablePaylater"
-        app:layout_constraintTop_toBottomOf="@id/titleShimmer"
-        app:loader_type="rect" />
-
 
     <LinearLayout
         android:id="@+id/llShimmerLayout"
@@ -85,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/availableShimmerShimmer"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginTop="@dimen/unify_space_12">
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -110,14 +51,14 @@
         android:id="@+id/payLaterOffersShimmerGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:constraint_referenced_ids="titleShimmer, llShimmerLayout, availableShimmerShimmer" />
+        app:constraint_referenced_ids=" llShimmerLayout" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/payLaterDataGroup"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvTitlePenawaran, paymentOptionViewPager" />
+        app:constraint_referenced_ids=" paymentOptionViewPager" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/paymentOptionViewPager"
@@ -132,6 +73,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAvailablePaylater" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
