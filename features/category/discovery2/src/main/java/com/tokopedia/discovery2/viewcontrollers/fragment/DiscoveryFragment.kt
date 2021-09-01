@@ -848,7 +848,6 @@ class DiscoveryFragment :
     }
 
     fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
-//        TODO:: find a better way to send applink
         this.componentPosition =componentPosition
         context?.let {
             startActivityForResult(
