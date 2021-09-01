@@ -48,6 +48,37 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     }
 
     @Test
+    fun upload_image_and_leave_chatroom_then_comeback() {
+        // Given
+        openChatRoom()
+
+        // When
+        openImagePicker()
+        finishActivity()
+        openChatRoom()
+
+        // Then
+        onView(withId(R.id.fl_image_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    @Test
+    fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom() {
+        // Given
+        uploadImageUseCase.isError = true
+        openChatRoom()
+
+        // When
+        openImagePicker()
+        finishActivity()
+        openChatRoom()
+
+        // Then
+        assertChatRoomList(
+            hasTotalItemOf(1, TopchatImageUploadViewHolder::class.java)
+        )
+    }
+
+    @Test
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom_after_retry_upload_image() {
         // Given
         uploadImageUseCase.isError = true
