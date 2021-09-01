@@ -43,7 +43,6 @@ data class CartItemHolderData(
         var bundlingItemPosition: Int = 0,
         var bundleId: String = "",
         var bundleGroupId: String = "",
-        var bundleImageUrl: String = "",
         var bundleTitle: String = "",
         var bundlePrice: Long = 0L,
         var bundleSlashPriceLabel: String = "",

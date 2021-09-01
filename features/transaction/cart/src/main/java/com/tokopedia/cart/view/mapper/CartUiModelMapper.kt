@@ -339,7 +339,6 @@ object CartUiModelMapper {
                 } else {
                     CartItemHolderData.BUNDLING_ITEM_DEFAULT
                 }
-//            bundleImageUrl;
             } else {
                 bundleId = "0"
                 minOrder = product.productMinOrder
