@@ -7,7 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -123,9 +123,8 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         replyChatGQLUseCase.delayResponse = replyChatGqlDelay
         replyChatGQLUseCase.response = uploadImageReplyResponse
         launchChatRoomActivity()
-        intending(anyIntent()).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
-        )
+        intending(hasData("tokopedia-android-internal://global/image-picker"))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
     }
 
     @After

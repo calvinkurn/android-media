@@ -23,7 +23,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import javax.inject.Inject
 
-open class TopChatRoomPresenterStub @Inject constructor(
+class TopChatRoomPresenterStub @Inject constructor(
     tkpdAuthInterceptor: TkpdAuthInterceptor,
     fingerprintInterceptor: FingerprintInterceptor,
     userSession: UserSessionInterface,

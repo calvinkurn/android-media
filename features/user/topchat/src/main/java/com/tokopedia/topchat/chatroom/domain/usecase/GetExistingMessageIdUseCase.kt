@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
  * @author by nisie on 09/01/19.
  */
 
-open class GetExistingMessageIdUseCase @Inject constructor(
+class GetExistingMessageIdUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingMessageIdPojo>,
         private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {

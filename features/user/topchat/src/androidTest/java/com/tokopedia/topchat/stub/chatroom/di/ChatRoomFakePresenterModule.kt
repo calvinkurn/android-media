@@ -16,7 +16,6 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
-import com.tokopedia.topchat.stub.chatlist.presenter.TopChatRoomPresenterForChatListStub
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -26,7 +25,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ChatRoomFakePresenterModule(private val isFromChatRoomTest: Boolean = true) {
+class ChatRoomFakePresenterModule {
 
     @ChatScope
     @Provides
@@ -67,8 +66,7 @@ class ChatRoomFakePresenterModule(private val isFromChatRoomTest: Boolean = true
             dispatchers: CoroutineDispatchers,
             remoteConfig: RemoteConfig
     ): TopChatRoomPresenter {
-        return if(isFromChatRoomTest) {
-                TopChatRoomPresenterStub(
+        return TopChatRoomPresenterStub(
                         tkpdAuthInterceptor,
                         fingerprintInterceptor,
                         userSession,
@@ -99,40 +97,6 @@ class ChatRoomFakePresenterModule(private val isFromChatRoomTest: Boolean = true
                         dispatchers,
                         remoteConfig
                 )
-        } else {
-                TopChatRoomPresenterForChatListStub(
-                        tkpdAuthInterceptor,
-                        fingerprintInterceptor,
-                        userSession,
-                        webSocketUtil,
-                        getChatUseCase,
-                        topChatRoomWebSocketMessageMapper,
-                        getTemplateChatRoomUseCase,
-                        replyChatUseCase,
-                        getExistingMessageIdUseCase,
-                        getShopFollowingUseCase,
-                        toggleFavouriteShopUseCase,
-                        addToCartUseCase,
-                        compressImageUseCase,
-                        seamlessLoginUsecase,
-                        getChatRoomSettingUseCase,
-                        addWishListUseCase,
-                        removeWishListUseCase,
-                        uploadImageUseCase,
-                        orderProgressUseCase,
-                        groupStickerUseCase,
-                        chatAttachmentUseCase,
-                        chatToggleBlockChat,
-                        chatBackgroundUseCase,
-                        chatSrwUseCase,
-                        tokoNowWHUsecase,
-                        moveChatToTrashUseCase,
-                        sharedPref,
-                        dispatchers,
-                        remoteConfig
-                )
-        }
-
     }
 
 }

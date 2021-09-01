@@ -5,7 +5,6 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.ChatRoomViewModelModule
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.stub.chatlist.activity.TopChatRoomActivityForChatListStub
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import com.tokopedia.topchat.stub.common.di.FakeBaseAppComponent
 import dagger.Component
@@ -24,5 +23,4 @@ import dagger.Component
 interface ChatComponentStub : ChatComponent {
     fun inject(topchatRoomTest: TopchatRoomTest)
     fun inject(service: UploadImageChatServiceStub)
-    fun inject(topchatRoomActivityStub: TopChatRoomActivityForChatListStub)
 }
