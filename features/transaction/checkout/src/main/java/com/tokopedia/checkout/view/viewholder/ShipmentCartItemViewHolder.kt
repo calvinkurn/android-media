@@ -217,8 +217,14 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             }
             textBundleTitle.text = cartItemModel.bundleTitle
             textBundlePrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false))
-            labelBundleSlashPricePercentage.text = cartItemModel.bundleSlashPriceLabel
+            if (cartItemModel.bundleSlashPriceLabel.isNotBlank()) {
+                labelBundleSlashPricePercentage.text = cartItemModel.bundleSlashPriceLabel
+                labelBundleSlashPricePercentage.show()
+            } else {
+                labelBundleSlashPricePercentage.gone()
+            }
             textBundleSlashPrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false))
+            textBundleSlashPrice.paintFlags = textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             productContainerLayoutParams.bottomMargin = 0
             productInfoLayoutParams.bottomMargin = 0
         } else {

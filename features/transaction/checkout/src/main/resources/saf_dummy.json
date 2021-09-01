@@ -387,7 +387,8 @@
                     "bundle_max_order": 4,
                     "bundle_quota": 10,
                     "edit_bundle_applink": "",
-                    "bundle_qty": 1
+                    "bundle_qty": 1,
+                    "slash_price_label": "10%"
                   },
                   "products": [
                     {
@@ -732,7 +733,8 @@
                     "bundle_max_order": 4,
                     "bundle_quota": 10,
                     "edit_bundle_applink": "",
-                    "bundle_qty": 1
+                    "bundle_qty": 1,
+                    "slash_price_label": "10%"
                   },
                   "products": [
                     {

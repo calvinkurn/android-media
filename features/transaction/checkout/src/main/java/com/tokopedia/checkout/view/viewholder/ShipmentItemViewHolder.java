@@ -656,8 +656,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             textBundleTitle.setText(cartItemModel.getBundleTitle());
             textBundlePrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundlePrice(), false)));
-            labelBundleSlashPricePercentage.setText(cartItemModel.getBundleSlashPriceLabel());
+            if (cartItemModel.getBundleSlashPriceLabel().length() > 0) {
+                labelBundleSlashPricePercentage.setText(cartItemModel.getBundleSlashPriceLabel());
+                labelBundleSlashPricePercentage.setVisibility(View.VISIBLE);
+            } else {
+                labelBundleSlashPricePercentage.setVisibility(View.GONE);
+            }
             textBundleSlashPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(cartItemModel.getBundleOriginalPrice(), false)));
+            textBundleSlashPrice.setPaintFlags(textBundleSlashPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             productContainerLayoutParams.bottomMargin = 0;
             productInfoLayoutParams.bottomMargin = 0;
         } else {
