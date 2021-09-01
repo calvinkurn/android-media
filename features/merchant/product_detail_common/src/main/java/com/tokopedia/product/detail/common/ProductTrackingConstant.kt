@@ -207,6 +207,7 @@ object ProductTrackingConstant {
 
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
+        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
     }
 
 
@@ -282,8 +283,6 @@ object ProductTrackingConstant {
         const val EVENT_LAYOUT_IMPRESSION_BANNER = "layout:%s;catName:%s;catId:%s;"
         const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
         const val CREATIVE_NAME = "impulsive widget"
-        const val EVENT_CLICK_SEE_ALL_RECOM = "click view all on %s widget banner"
-        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
     }
 
     object RecomTokonow {
