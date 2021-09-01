@@ -58,7 +58,7 @@ object ReadReviewTracking {
                                     characterCount,
                                     imageCount
                                 ),
-                                ReadReviewTrackingConstants.KEY_POSITION to position.toString(),
+                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
                             )
                         )
                     )
