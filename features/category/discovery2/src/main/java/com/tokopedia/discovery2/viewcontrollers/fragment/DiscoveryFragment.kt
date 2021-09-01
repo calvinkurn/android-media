@@ -856,7 +856,7 @@ class DiscoveryFragment :
                     it,
                     shopId,
                     MvcSource.DISCO,
-                    "tokopedia://shop/$shopId",
+                    ApplinkConst.SHOP.replace("{shop_id}", shopId),
                     hashCode = hashCodeForMVC
                 ),
                 MvcView.REQUEST_CODE
