@@ -47,11 +47,13 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     companion object {
         private const val PRODUCT_BUNDLE_INFO = "PRODUCT_BUNDLE_INFO"
+        private const val EMPTY_VARIANT_PRODUCT_IDS = "EMPTY_VARIANT_PRODUCT_IDS"
         @JvmStatic
-        fun newInstance(productBundleInfo: List<BundleInfo>) =
+        fun newInstance(productBundleInfo: List<BundleInfo>, emptyVariantProductIds: List<String>) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
+                    putStringArrayList(EMPTY_VARIANT_PRODUCT_IDS, ArrayList(emptyVariantProductIds))
                 }
             }
     }
@@ -93,14 +95,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
         // get product bundle info from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
+        var emptyVariantProductIds: List<String> = emptyList()
         if (arguments != null) {
             productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
+            emptyVariantProductIds = arguments?.getStringArrayList(EMPTY_VARIANT_PRODUCT_IDS).orEmpty()
         }
 
         // setup multiple product bundle views
         processDayView = view.findViewById(R.id.tv_po_process_day)
         setupProductBundleMasterView(view)
-        setupProductBundleDetailView(view)
+        setupProductBundleDetailView(view, emptyVariantProductIds)
         setupProductBundleOverView(view)
 
         // render product bundle info
@@ -163,9 +167,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupProductBundleDetailView(view: View) {
+    private fun setupProductBundleDetailView(view: View, emptyVariantProductIds: List<String>) {
         productBundleDetailView = view.findViewById(R.id.rv_product_bundle_detail)
-        productBundleDetailAdapter = ProductBundleDetailAdapter(this)
+        productBundleDetailAdapter = ProductBundleDetailAdapter(this, emptyVariantProductIds)
         productBundleDetailView?.let {
             it.adapter = productBundleDetailAdapter
             it.layoutManager = LinearLayoutManager(requireContext())
