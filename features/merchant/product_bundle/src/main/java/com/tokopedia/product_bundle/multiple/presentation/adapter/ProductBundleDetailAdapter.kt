@@ -8,7 +8,10 @@ import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleDetailViewHolder
 
-class ProductBundleDetailAdapter(private val clickListener: ProductBundleDetailItemClickListener)
+class ProductBundleDetailAdapter(
+    private val clickListener: ProductBundleDetailItemClickListener,
+    private val emptyVariantProductIds: List<String>
+)
     : RecyclerView.Adapter<ProductBundleDetailViewHolder>() {
 
     interface ProductBundleDetailItemClickListener {
@@ -28,7 +31,8 @@ class ProductBundleDetailAdapter(private val clickListener: ProductBundleDetailI
 
     override fun onBindViewHolder(holder: ProductBundleDetailViewHolder, position: Int) {
         val bundleDetail = productBundleDetails[position]
-        holder.bindData(bundleDetail)
+        val isVariantStockEmpty = emptyVariantProductIds.any { it == bundleDetail.productId.toString() }
+        holder.bindData(bundleDetail, isVariantStockEmpty)
     }
 
     fun setProductBundleDetails(productBundleDetails: List<ProductBundleDetail>) {

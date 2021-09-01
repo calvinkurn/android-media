@@ -3,19 +3,18 @@ package com.tokopedia.product_bundle.multiple.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
-import com.tokopedia.product_bundle.common.util.Utility
 import com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlin.math.roundToInt
 
 class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundleDetailItemClickListener)
     : RecyclerView.ViewHolder(itemView) {
@@ -24,10 +23,12 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
     private var productNameView: Typography? = null
     private var productVariantsView: SpinnerView? = null
     private var productPriceView: DiscountPriceView? = null
+    private var tvVariantEmpty: View? = null
 
     init {
         this.productImageView = itemView.findViewById(R.id.riv_product_image)
         this.productNameView = itemView.findViewById(R.id.tv_product_name)
+        this.tvVariantEmpty = itemView.findViewById(R.id.tv_variant_empty)
         this.productPriceView = itemView.findViewById(R.id.dpv_product_price)
         this.productVariantsView = itemView.findViewById(R.id.sv_product_variants)
         this.productVariantsView?.setOnClickListener {
@@ -39,7 +40,7 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
         }
     }
 
-    fun bindData(bundleDetail: ProductBundleDetail) {
+    fun bindData(bundleDetail: ProductBundleDetail, isVariantStockEmpty: Boolean) {
         productImageView?.loadImage(bundleDetail.productImageUrl)
         productNameView?.text = bundleDetail.productName
         // tag product variant to productVariantsView
@@ -57,5 +58,7 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
                 discountAmount = String.format(this.getString(R.string.text_discount_in_percentage), bundleDetail.discountAmount)
             }
         }
+        // show variant empty label if stock is empty
+        tvVariantEmpty?.isVisible = isVariantStockEmpty
     }
 }
