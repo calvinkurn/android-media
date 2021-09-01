@@ -138,7 +138,7 @@ class TokoNowSearchFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            emptyProductListener = this,
+            tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
             outOfCoverageListener = this,
             categoryJumperListener = this,

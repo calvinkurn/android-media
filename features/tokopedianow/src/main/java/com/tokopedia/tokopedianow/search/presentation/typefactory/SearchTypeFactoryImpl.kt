@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -20,7 +21,6 @@ import com.tokopedia.tokopedianow.search.presentation.viewholder.SuggestionViewH
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
@@ -35,7 +35,7 @@ class SearchTypeFactoryImpl(
         quickFilterListener: QuickFilterListener,
         categoryFilterListener: CategoryFilterListener,
         productItemListener: ProductItemListener,
-        emptyProductListener: EmptyProductListener,
+        tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
         private val suggestionListener: SuggestionListener,
         outOfCoverageListener: OutOfCoverageListener,
         private val categoryJumperListener: CategoryJumperListener,
@@ -49,7 +49,7 @@ class SearchTypeFactoryImpl(
         quickFilterListener,
         categoryFilterListener,
         productItemListener,
-        emptyProductListener,
+        tokoNowEmptyStateNoResultListener,
         outOfCoverageListener,
         recommendationCarouselListener,
 ), SearchTypeFactory {

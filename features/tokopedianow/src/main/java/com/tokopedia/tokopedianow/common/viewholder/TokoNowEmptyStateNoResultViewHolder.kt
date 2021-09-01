@@ -13,7 +13,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFil
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -21,7 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowEmptyStateNoResultViewHolder(
         itemView: View,
-        private val emptyProductListener: EmptyProductListener? = null,
+        private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultListener? = null,
 ): AbstractViewHolder<TokoNowEmptyStateNoResultUiModel>(itemView) {
 
     companion object {
@@ -103,7 +102,7 @@ class TokoNowEmptyStateNoResultViewHolder(
                     element.activeFilterList.orEmpty(),
                     getString(R.string.tokopedianow_empty_product_filter_price_name)
             )
-            filterList.adapter = Adapter(optionList, emptyProductListener)
+            filterList.adapter = Adapter(optionList, tokoNowEmptyStateNoResultListener)
             filterList.layoutManager = layoutManager
 
             val chipSpacing = itemView.context.resources.getDimensionPixelSize(
@@ -117,27 +116,27 @@ class TokoNowEmptyStateNoResultViewHolder(
     private fun bindGoToGlobalSearchButton(hasActiveFilter: Boolean) {
         globalSearchButton?.showWithCondition(!hasActiveFilter)
         globalSearchButton?.setOnClickListener {
-            emptyProductListener?.onFindInTokopediaClick()
+            tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
         }
     }
 
     private fun bindChangeKeywordButton(hasActiveFilter: Boolean) {
         exploreTokopediaNowButton?.showWithCondition(!hasActiveFilter)
         exploreTokopediaNowButton?.setOnClickListener {
-            emptyProductListener?.goToTokopediaNowHome()
+            tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
         }
     }
 
     private class Adapter(
             private val optionList: List<Option>,
-            private val listener: EmptyProductListener?,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.Adapter<ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater
                     .from(parent.context)
                     .inflate(ViewHolder.LAYOUT, parent, false)
 
-            return ViewHolder(view, listener)
+            return ViewHolder(view, tokoNowEmptyStateNoResultListener)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -151,7 +150,7 @@ class TokoNowEmptyStateNoResultViewHolder(
 
     private class ViewHolder(
             itemView: View,
-            private val emptyProductListener: EmptyProductListener?,
+            private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener?,
     ): RecyclerView.ViewHolder(itemView) {
 
         companion object {
@@ -166,7 +165,7 @@ class TokoNowEmptyStateNoResultViewHolder(
             chip?.chipType = ChipsUnify.TYPE_SELECTED
             chip?.chipSize = ChipsUnify.SIZE_SMALL
             chip?.setOnClickListener {
-                emptyProductListener?.onRemoveFilterClick(option)
+                tokoNowEmptyStateNoResultListener?.onRemoveFilterClick(option)
             }
         }
     }
@@ -180,5 +179,14 @@ class TokoNowEmptyStateNoResultViewHolder(
             outRect.right = this.horizontalSpacing
             outRect.bottom = this.verticalSpacing
         }
+    }
+
+    interface TokoNowEmptyStateNoResultListener {
+
+        fun onFindInTokopediaClick()
+
+        fun goToTokopediaNowHome()
+
+        fun onRemoveFilterClick(option: Option)
     }
 }

@@ -7,8 +7,6 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryAisleViewHolder
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChooseAddressViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
-import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.*
@@ -22,7 +20,7 @@ class CategoryTypeFactoryImpl(
     quickFilterListener: QuickFilterListener,
     categoryFilterListener: CategoryFilterListener,
     productItemListener: ProductItemListener,
-    emptyProductListener: EmptyProductListener,
+    tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val categoryAisleListener: CategoryAisleListener,
     outOfCoverageListener: OutOfCoverageListener,
     recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
@@ -34,7 +32,7 @@ class CategoryTypeFactoryImpl(
         quickFilterListener,
         categoryFilterListener,
         productItemListener,
-        emptyProductListener,
+        tokoNowEmptyStateNoResultListener,
         outOfCoverageListener,
         recommendationCarouselListener
 ), CategoryTypeFactory {
