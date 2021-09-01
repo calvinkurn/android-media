@@ -121,10 +121,10 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductItemBigGridViewHolder.LAYOUT -> {
-                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductItemListViewHolder.LAYOUT -> {
-                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)
