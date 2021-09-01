@@ -283,7 +283,7 @@ object ProductTrackingConstant {
         const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
         const val CREATIVE_NAME = "impulsive widget"
         const val EVENT_CLICK_SEE_ALL_RECOM = "click view all on %s widget banner"
-        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s %s %s" //recoom title, page name, widget type
+        const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
     }
 
     object RecomTokonow {
