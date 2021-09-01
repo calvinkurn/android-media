@@ -9,4 +9,5 @@ data class PlayChannelDetailUiModel(
         val shareInfo: PlayShareInfoUiModel = PlayShareInfoUiModel(),
         val channelInfo: PlayChannelInfoUiModel = PlayChannelInfoUiModel(),
         val rtnConfigInfo: PlayRealTimeNotificationConfig = PlayRealTimeNotificationConfig(),
+        val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
 )

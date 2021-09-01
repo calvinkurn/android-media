@@ -187,7 +187,11 @@ class PlayViewModel @Inject constructor(
                         } else PlayCartCount.Hide
                 ),
                 rtn = PlayRtnUiState(
-                        shouldShow = channelType.isLive && !bottomInsets.isAnyShown,
+                        shouldShow = channelType.isLive &&
+                                !bottomInsets.isAnyShown &&
+                                status.isActive &&
+                                !channelDetail.videoInfo.orientation.isHorizontal &&
+                                !videoPlayer.isYouTube,
                         lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
                 )
         )

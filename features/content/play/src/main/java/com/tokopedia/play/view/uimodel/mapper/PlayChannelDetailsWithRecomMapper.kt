@@ -31,9 +31,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             PlayChannelData(
                     id = it.id,
                     channelDetail = PlayChannelDetailUiModel(
-                            channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title),
-                            shareInfo = mapShareInfo(it.share),
-                            rtnConfigInfo = mapRealTimeNotificationConfig(it.config.welcomeFormat, it.config.realTimeNotif),
+                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title),
+                        shareInfo = mapShareInfo(it.share),
+                        rtnConfigInfo = mapRealTimeNotificationConfig(
+                            it.config.welcomeFormat,
+                            it.config.realTimeNotif
+                        ),
+                        videoInfo = mapVideoInfo(it.video),
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
@@ -101,6 +105,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             lifespan = if (config.lifespan <= 0) DEFAULT_LIFESPAN_IN_MS else config.lifespan,
 //                welcomeNotification = RealTimeNotificationUiModel("", "eggy & 10 penonton lainnya follow toko ini", "#50BA47"),
 //                lifespan = 1000L,
+    )
+
+    private fun mapVideoInfo(
+        videoResponse: ChannelDetailsWithRecomResponse.Video
+    ) = PlayVideoConfigUiModel(
+        id = videoResponse.id,
+        orientation = VideoOrientation.getByValue(videoResponse.orientation),
     )
 
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
