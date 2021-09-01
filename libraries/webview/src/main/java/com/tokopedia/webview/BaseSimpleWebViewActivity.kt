@@ -252,9 +252,16 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun redirectToNativeBrowser() {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(browserIntent)
-        finish()
+        try {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+            finish()
+        }catch (th:Throwable){
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "webview"
+            messageMap["url"] = url
+            ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
+        }
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
