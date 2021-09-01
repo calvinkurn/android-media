@@ -95,6 +95,10 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
     override fun createAdapterInstance(): RecomPageAdapter = adapter
 
     override fun loadInitData(forceRefresh: Boolean) {
+        if (forceRefresh) {
+            enableLoadMore()
+            resetLoadMore()
+        }
         viewModel.getRecommendationFirstPage(pageName, productId, queryParam)
     }
 

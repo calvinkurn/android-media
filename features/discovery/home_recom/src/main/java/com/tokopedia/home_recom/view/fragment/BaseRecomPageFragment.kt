@@ -146,13 +146,18 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(getEndlessLayoutManagerListener())
         }
         endlessRecyclerViewScrollListener?.let {
-            recyclerView!!.addOnScrollListener(it)
+            recyclerView?.addOnScrollListener(it)
         }
     }
 
+    fun resetLoadMore() {
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
     fun disableLoadMore() {
-        if (endlessRecyclerViewScrollListener != null) {
-            recyclerView!!.removeOnScrollListener(endlessRecyclerViewScrollListener!!)
+        endlessRecyclerViewScrollListener?.let {
+            it.setHasNextPage(false)
+            recyclerView?.removeOnScrollListener(it)
         }
     }
 
