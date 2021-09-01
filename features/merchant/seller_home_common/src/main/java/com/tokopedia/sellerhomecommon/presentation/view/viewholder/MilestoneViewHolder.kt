@@ -5,16 +5,17 @@ import android.view.ViewStub
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
-import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.shc_milestone_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_milestone_widget_loading.view.*
@@ -58,27 +59,68 @@ class MilestoneViewHolder(
             val milestoneValueFmt = data.milestoneProgress.percentageFormatted.parseAsHtml()
             tvProgressValueMilestoneWidget.text = milestoneValueFmt
 
+            iconShcToggleMission.setOnClickListener {
+                if (rvShcMissionMilestone.isVisible) {
+                    rvShcMissionMilestone.gone()
+                    iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
+                } else {
+                    rvShcMissionMilestone.visible()
+                    iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
+                }
+            }
+
             setupMilestoneProgress(data.milestoneProgress)
-            setupMilestoneList(data)
+            setupMilestoneList(element)
             setupTooltip(tvTitleMilestoneWidget, element)
+            setupSeeMoreCta(element)
         }
     }
 
-    private fun setupMilestoneList(data: MilestoneDataUiModel) {
+    private fun setupSeeMoreCta(element: MilestoneWidgetUiModel) {
         with(onSuccessView) {
-            rvMissionMilestone.layoutManager = object : LinearLayoutManager(
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+            tvShcMilestoneCta.isVisible = isCtaVisible
+
+            if (isCtaVisible) {
+                tvShcMilestoneCta.text = element.ctaText
+                tvShcMilestoneCta.setOnClickListener {
+                    openApplink(element)
+                }
+                val iconColor = context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                val iconWidth = context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                tvShcMilestoneCta.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
+            }
+        }
+    }
+
+    private fun openApplink(element: MilestoneWidgetUiModel) {
+        RouteManager.route(itemView.context, element.appLink)
+    }
+
+    private fun setupMilestoneList(element: MilestoneWidgetUiModel) {
+        with(onSuccessView) {
+            val mission = element.data ?: return
+            rvShcMissionMilestone.layoutManager = object : LinearLayoutManager(
                 context, HORIZONTAL, false
             ) {
                 override fun canScrollVertically(): Boolean = false
             }
 
-            rvMissionMilestone.adapter = getMilestoneAdapter(data)
-        }
-    }
-
-    private fun getMilestoneAdapter(mission: MilestoneDataUiModel): MilestoneMissionAdapter {
-        return MilestoneMissionAdapter(mission) {
-
+            rvShcMissionMilestone.adapter = MilestoneMissionAdapter(mission) {
+                listener.onMilestoneMissionActionClickedListener(element, it)
+            }
         }
     }
 
@@ -132,5 +174,10 @@ class MilestoneViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun reloadMilestoneWidget(model: MilestoneWidgetUiModel) {}
+        fun onMilestoneMissionActionClickedListener(
+            element: MilestoneWidgetUiModel,
+            mission: BaseMilestoneMissionUiModel
+        ) {
+        }
     }
 }

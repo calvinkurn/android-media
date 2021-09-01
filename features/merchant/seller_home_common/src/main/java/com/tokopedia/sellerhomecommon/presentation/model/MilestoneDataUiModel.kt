@@ -42,23 +42,23 @@ interface BaseMilestoneMissionUiModel {
     companion object {
         const val MISSION_KEY = "mission"
         const val FINISH_MISSION_KEY = "finishMission"
+    }
 
-        const val REDIRECT_URL_TYPE = 1
-        const val SHARE_URL_TYPE = 2
-        const val FINISH_URL_TYPE = 3
+    enum class UrlType {
+        REDIRECT, SHARE
+    }
 
-        const val HIDDEN_BUTTON_STATUS = 0
-        const val ENABLED_BUTTON_STATUS = 1
-        const val DISABLED_BUTTON_STATUS = 2
+    enum class ButtonStatus {
+        HIDDEN, ENABLED, DISABLED
     }
 }
 
 data class MissionButtonUiModel(
     val title: String = "",
-    val urlType: Int = BaseMilestoneMissionUiModel.REDIRECT_URL_TYPE,
+    val urlType: BaseMilestoneMissionUiModel.UrlType = BaseMilestoneMissionUiModel.UrlType.REDIRECT,
     val url: String = "",
     val appLink: String = "",
-    val buttonStatus: Int = BaseMilestoneMissionUiModel.ENABLED_BUTTON_STATUS
+    val buttonStatus: BaseMilestoneMissionUiModel.ButtonStatus = BaseMilestoneMissionUiModel.ButtonStatus.ENABLED
 )
 
 data class MilestoneMissionUiModel(

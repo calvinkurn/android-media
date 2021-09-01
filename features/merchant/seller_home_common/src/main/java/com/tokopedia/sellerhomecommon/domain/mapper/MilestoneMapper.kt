@@ -13,6 +13,15 @@ class MilestoneMapper @Inject constructor(
     private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager
 ) {
 
+    companion object {
+        private const val REDIRECT_URL_TYPE = 1
+        private const val SHARE_URL_TYPE = 2
+
+        private const val HIDDEN_BUTTON_STATUS = 0
+        private const val ENABLED_BUTTON_STATUS = 1
+        private const val DISABLED_BUTTON_STATUS = 2
+    }
+
     fun mapMilestoneResponseToUiModel(
         data: List<MilestoneData>,
         isFromCache: Boolean
@@ -52,11 +61,9 @@ class MilestoneMapper @Inject constructor(
                 buttonMissionButton = MissionButtonUiModel(
                     title = buttonMissionData?.title.orEmpty(),
                     url = buttonMissionData?.url.orEmpty(),
-                    urlType = buttonMissionData?.urlType
-                        ?: BaseMilestoneMissionUiModel.REDIRECT_URL_TYPE,
+                    urlType = getUrlType(buttonMissionData?.urlType),
                     appLink = buttonMissionData?.applink.orEmpty(),
-                    buttonStatus = buttonMissionData?.buttonStatus
-                        ?: BaseMilestoneMissionUiModel.DISABLED_BUTTON_STATUS
+                    buttonStatus = getButtonStatus(buttonMissionData?.buttonStatus)
                 )
             )
         }
@@ -76,12 +83,28 @@ class MilestoneMapper @Inject constructor(
             buttonMissionButton = MissionButtonUiModel(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,
-                urlType = buttonFinishData.urlType,
+                urlType = getUrlType(buttonFinishData.urlType),
                 appLink = buttonFinishData.applink,
-                buttonStatus = buttonFinishData.buttonStatus
+                buttonStatus = getButtonStatus(buttonFinishData.buttonStatus)
             )
         )
         return listOf(finishedMission)
+    }
+
+    private fun getUrlType(urlType: Int?): BaseMilestoneMissionUiModel.UrlType {
+        return if (urlType == SHARE_URL_TYPE) {
+            BaseMilestoneMissionUiModel.UrlType.SHARE
+        } else {
+            BaseMilestoneMissionUiModel.UrlType.REDIRECT
+        }
+    }
+
+    private fun getButtonStatus(buttonStatus: Int?): BaseMilestoneMissionUiModel.ButtonStatus {
+        return when (buttonStatus) {
+            HIDDEN_BUTTON_STATUS -> BaseMilestoneMissionUiModel.ButtonStatus.HIDDEN
+            DISABLED_BUTTON_STATUS -> BaseMilestoneMissionUiModel.ButtonStatus.DISABLED
+            else -> BaseMilestoneMissionUiModel.ButtonStatus.ENABLED
+        }
     }
 
     private fun mapGetMilestoneCta(ctaData: MilestoneData.Cta): MilestoneCtaUiModel {

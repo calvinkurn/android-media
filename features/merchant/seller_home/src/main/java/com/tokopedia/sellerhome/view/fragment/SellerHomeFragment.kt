@@ -98,6 +98,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
+        const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
@@ -808,6 +809,30 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
             SellerHomeTracking.sendTableFilterClickEvent(element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+    }
+
+    override fun onMilestoneMissionActionClickedListener(
+        element: MilestoneWidgetUiModel,
+        mission: BaseMilestoneMissionUiModel
+    ) {
+        when(mission) {
+            is MilestoneMissionUiModel -> {
+                when (mission.buttonMissionButton.urlType) {
+                    BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
+                        activity?.let {
+                            val intent = RouteManager.getIntent(it, mission.buttonMissionButton.appLink)
+                            it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
+                        }
+                    }
+                    BaseMilestoneMissionUiModel.UrlType.SHARE -> {
+
+                    }
+                }
+            }
+            is MilestoneFinishMissionUiModel -> {
+
+            }
+        }
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

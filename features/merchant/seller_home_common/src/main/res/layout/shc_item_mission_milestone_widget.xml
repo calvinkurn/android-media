@@ -77,5 +77,4 @@
             tools:text="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.tokopedia.unifycomponents.CardUnify>

@@ -3,9 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -17,7 +15,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionU
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.shc_item_mission_milestone_widget.view.*
-import com.tokopedia.iconunify.R.drawable as iconR
 
 /**
  * Created By @ilhamsuaib on 31/08/21
@@ -87,30 +84,25 @@ class MilestoneMissionAdapter(
 
         private fun setupMissionButton(mission: MilestoneMissionUiModel) {
             with(itemView) {
-                val getDrawable = context.getResDrawable(R.drawable.ic_action_back)
-                btnShcMissionCta.setDrawable(getDrawable, UnifyButton.DrawablePosition.LEFT)
                 if (mission.missionCompletionStatus) {
                     btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
                     btnShcMissionCta.isEnabled = false
-                    val unifyCheckIcon = AppCompatResources.getDrawable(
-                        context, iconR.iconunify_check
-                    )
                 } else {
                     btnShcMissionCta.buttonType = UnifyButton.Type.MAIN
                     btnShcMissionCta.isEnabled = true
 
                     when (mission.buttonMissionButton.buttonStatus) {
-                        BaseMilestoneMissionUiModel.ENABLED_BUTTON_STATUS -> {
+                        BaseMilestoneMissionUiModel.ButtonStatus.ENABLED -> {
                             btnShcMissionCta.buttonType = UnifyButton.Type.MAIN
                             btnShcMissionCta.isEnabled = true
                             btnShcMissionCta.visible()
                         }
-                        BaseMilestoneMissionUiModel.DISABLED_BUTTON_STATUS -> {
+                        BaseMilestoneMissionUiModel.ButtonStatus.DISABLED -> {
                             btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
                             btnShcMissionCta.isEnabled = false
                             btnShcMissionCta.visible()
                         }
-                        BaseMilestoneMissionUiModel.HIDDEN_BUTTON_STATUS -> {
+                        BaseMilestoneMissionUiModel.ButtonStatus.HIDDEN -> {
                             btnShcMissionCta.gone()
                         }
                     }

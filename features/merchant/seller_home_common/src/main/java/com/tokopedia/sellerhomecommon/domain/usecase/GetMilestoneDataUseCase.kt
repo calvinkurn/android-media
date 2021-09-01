@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,19 +16,20 @@ class GetMilestoneDataUseCase(
 ) : BaseGqlUseCase<List<MilestoneDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
+
+        val response = Gson().fromJson(DUMMY, GetMilestoneDataResponse::class.java)
+
+        val data = mapper.mapMilestoneResponseToUiModel(
+            response.fetchMilestoneWidgetData?.data.orEmpty(),
+            false
+        )
+        return data
         val gqlRequest = GraphqlRequest(
             QUERY, GetMilestoneDataResponse::class.java,
             params.parameters
         )
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
-        /*val response = Gson().fromJson(DUMMY, GetMilestoneDataResponse::class.java)
-
-        val data = mapper.mapMilestoneResponseToUiModel(
-            response.fetchMilestoneWidgetData?.data.orEmpty(),
-            false
-        )
-        return data*/
         val gqlErrors = gqlResponse.getError(GetMilestoneDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val response: GetMilestoneDataResponse? = gqlResponse.getData<GetMilestoneDataResponse>(
@@ -116,89 +118,152 @@ class GetMilestoneDataUseCase(
 
         private val DUMMY = """
             {
-              "fetchMilestoneWidgetData": {
-                "data": [
-                  {
-                    "dataKey": "shopQuest",
-                    "showWidget": true,
-                    "title": "Misi berjualan tokopedia",
-                    "subtitle": "Sebelum mulai berjualan, selesaikan misi berikut agar tokomu jadi lebih tepercaya!",
-                    "backgroundColor": "#000000",
-                    "backgroundImageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
-                    "showNumber": false,
-                    "progressBar": {
-                      "description": "Kemajuan",
-                      "percentage": 100,
-                      "percentageFormatted": "0 dari 4 (0%)",
-                      "taskCompleted": 1,
-                      "totalTask": 1
-                    },
-                    "mission": [
-                      {
-                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
-                        "title": "Tambah lebih banyak produk",
-                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
-                        "missionCompletionStatus": false,
+                "fetchMilestoneWidgetData": {
+                  "data": [
+                    {
+                      "dataKey": "shopQuest",
+                      "title": "Yuk, jadikan tokomu pilihan pembeli 👍",
+                      "subtitle": "Ikuti langkah-langkah mudah berikut agar pembeli senang berbelanja di tokomu!",
+                      "backgroundColor": "",
+                      "backgroundImageUrl": "",
+                      "showNumber": false,
+                      "progressBar": {
+                        "description": "Kemajuan",
+                        "percentage": 0,
+                        "percentageFormatted": "0 dari 8 <b> (0 %) </b>",
+                        "taskCompleted": 2,
+                        "totalTask": 8
+                      },
+                      "mission": [
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/Illustration@2x.png",
+                          "title": "Tokomu butuh produk pertama, nih",
+                          "subtitle": "Tambahkan produk pertama supaya tokomu bisa mulai berjualan",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Tambah",
+                            "urlType": 1,
+                            "url": "https://seller-staging.tokopedia.com/add-product",
+                            "applink": "sellerapp://gold-merchant-statistic-dashboard",
+                            "buttonStatus": 1
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/toko2x.png",
+                          "title": "Pentingnya Verifikasi akun",
+                          "subtitle": "Segera verifikasi akun tokomu agar pembeli semakin nyaman berbelanja di tokomu, ya.",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Verifikasi",
+                            "urlType": 1,
+                            "url": "https://seller.tokopedia.com/edu/verifikasi-toko/",
+                            "applink": "http://any.link",
+                            "buttonStatus": 1
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/toko2x.png",
+                          "title": "Tambah menarik dengan Voucher Toko",
+                          "subtitle": "Bikin voucher cashback atau gratis ongkir sebagai magnet untuk menarik banyak pembeli.",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Buat Voucher",
+                            "urlType": 1,
+                            "url": "https://seller-staging.tokopedia.com/promo",
+                            "applink": "sellerapp://create-voucher",
+                            "buttonStatus": 1
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/Illustration@2x.png",
+                          "title": "Yuk, tambah lebih banyak produk",
+                          "subtitle": "Maksimalkan pengalaman berbelanja pembeli di tokomu dengan tambah 4 produk lagi.",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Tambah",
+                            "urlType": 1,
+                            "url": "https://seller-staging.tokopedia.com/add-product",
+                            "applink": "http://any.link",
+                            "buttonStatus": 0
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/toko2x.png",
+                          "title": "Promosikan tokomu di media sosial",
+                          "subtitle": "Sebarkan kabar kalau tokomu sudah buka dan siap untuk berjualan.",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Share",
+                            "urlType": 3,
+                            "url": "sharing",
+                            "applink": "",
+                            "buttonStatus": 2
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/icons/toko2x.png",
+                          "title": "Upgrade ke Power Merchant",
+                          "subtitle": "Akses fitur khusus agar tokomu jadi lebih tepercaya dan tingkatkan penjualan.",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Upgrade",
+                            "urlType": 1,
+                            "url": "https://seller-staging.tokopedia.com/settings/power-merchant",
+                            "applink": "http://any.link",
+                            "buttonStatus": 1
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/palugada.png",
+                          "title": "Cek Performa Toko",
+                          "subtitle": "Pelajari Performa Toko untuk memberikan kualitas layanan terbaik ke pembelimu!",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Cek Performa Toko",
+                            "urlType": 1,
+                            "url": "https://api-staging.tokopedia.com/shopquest/mission/palugada?mission_id=34",
+                            "applink": "https://seller.tokopedia.com/shop-score-page",
+                            "buttonStatus": 1
+                          }
+                        },
+                        {
+                          "imageUrl": "https://images.tokopedia.net/img/feature-onboarding/palugada.png",
+                          "title": "Pelajari tentang HKI, yuk!",
+                          "subtitle": "Hindari jualan produk palsu/melanggar Hak Kekayaan Intelektual agar produk tidak dihapus",
+                          "missionCompletionStatus": false,
+                          "button": {
+                            "title": "Baca Sekarang",
+                            "urlType": 1,
+                            "url": "https://api-staging.tokopedia.com/shopquest/mission/palugada?mission_id=39",
+                            "applink": "",
+                            "buttonStatus": 1
+                          }
+                        }
+                      ],
+                      "finishMission": {
+                        "imageUrl": "",
+                        "title": "",
+                        "subtitle": "",
                         "button": {
-                          "title": "Tambah Produk",
-                          "urlType": 1,
-                          "url": "www.tokopedia.com",
-                          "applink": "www.tokopedia.com",
-                          "buttonStatus": 1
+                          "title": "",
+                          "urlType": 0,
+                          "url": "",
+                          "applink": "",
+                          "buttonStatus": 0
                         }
                       },
-                      {
-                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
-                        "title": "Tambah lebih banyak produk",
-                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
-                        "missionCompletionStatus": false,
-                        "button": {
-                          "title": "Tambah Produk",
-                          "urlType": 1,
-                          "url": "www.tokopedia.com",
-                          "applink": "www.tokopedia.com",
-                          "buttonStatus": 1
-                        }
+                      "cta": {
+                        "text": "",
+                        "url": "",
+                        "applink": ""
                       },
-                      {
-                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
-                        "title": "Tambah lebih banyak produk",
-                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
-                        "missionCompletionStatus": false,
-                        "button": {
-                          "title": "Tambah Produk",
-                          "urlType": 1,
-                          "url": "www.tokopedia.com",
-                          "applink": "www.tokopedia.com",
-                          "buttonStatus": 1
-                        }
-                      },
-                      {
-                        "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/sample.png",
-                        "title": "Tambah lebih banyak produk",
-                        "subtitle": "Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!",
-                        "missionCompletionStatus": false,
-                        "button": {
-                          "title": "Tambah Produk",
-                          "urlType": 1,
-                          "url": "www.tokopedia.com",
-                          "applink": "www.tokopedia.com",
-                          "buttonStatus": 1
-                        }
-                      }
-                    ],
-                    "finishMission": {},
-                    "cta": {
-                      "text": "Selengkapnya",
-                      "url": "www.tokopedia.com",
-                      "applink": "www.tokopedia.com"
-                    },
-                    "error": false,
-                    "errorMsg": ""
-                  }
-                ]
+                      "error": false,
+                      "errorMsg": "",
+                      "showWidget": true
+                    }
+                  ]
+                }
               }
-            }
         """.trimIndent()
     }
 }
