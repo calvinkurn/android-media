@@ -5,7 +5,7 @@
         <activity android:name="com.tokopedia.exploreCategory.ui.activity.AffiliateActivity"
             android:label="@string/label_affiliate"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/AffiliateTransparentStatus"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

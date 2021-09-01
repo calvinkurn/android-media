@@ -1,12 +1,9 @@
 package com.tokopedia.exploreCategory.ui.fragment
 
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,12 +13,13 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
+import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.exploreCategory.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
-import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.global_error
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.affiliate_progress_bar
 import javax.inject.Inject
@@ -54,7 +52,13 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             setRelatedView(dim_layer)
             setDoneAction { affiliatePromoViewModel.getSearch() }
         }
-        global_error.run {
+        promo_navToolbar.setIcon(
+                IconBuilder()
+                        .addIcon(IconList.ID_INFORMATION) {
+                            AffiliateHowToPromoteBottomSheet.newInstance().show(childFragmentManager, "")
+                        }
+                )
+        promo_global_error.run {
             show()
             errorTitle.text = getString(R.string.affiliate_never_bought_product)
             errorDescription.text = getString(R.string.affiliate_still_buy_products)
@@ -83,7 +87,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
 
         affiliatePromoViewModel.getErrorMessage().observe(this, { error ->
-            global_error.run {
+            promo_global_error.run {
                 show()
                 errorTitle.text = error
                 setActionClickListener {

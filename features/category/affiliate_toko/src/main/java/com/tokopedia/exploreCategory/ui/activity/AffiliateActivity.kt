@@ -15,6 +15,11 @@ import com.tokopedia.exploreCategory.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.exploreCategory.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.exploreCategory.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.exploreCategory.viewmodel.AffiliateViewModel
+import android.view.WindowManager
+
+import android.os.Build
+import android.view.Window
+
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener{
 
@@ -24,7 +29,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val w: Window = window
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         initBottomNavigationView()
     }
 

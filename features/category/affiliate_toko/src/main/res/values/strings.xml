@@ -22,4 +22,10 @@
     <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
     <string name="affiliate_active">Aktif</string>
     <string name="affiliate_inactive">Tidak Aktif</string>
+    <string name="affiliate_how_to_promote">Gimana cara promosikannya?</string>
+    <string name="affiliate_how_to_get_link">Kamu bisa dapatkan link affiliate dengan cara berikut ini:\n</string>
+    <string name="affiliate_how_to_get_link_1">1. Salin link produk yang kamu ingin promosikan di aplikasi Tokopedia (Pastikan produknya termasuk dari kategori yang bisa dipromosikan. Lihat Kategori)</string>
+    <string name="affiliate_how_to_get_link_2">2. Tempel link produk di kolom yang disediakan pada halaman Promosikan</string>
+    <string name="affiliate_how_to_get_link_3">3. Produk akan ditemukan jika link benar</string>
+    <string name="affiliate_how_to_get_link_4">4. Dapatkan link affiliate dengan klik tombol Promosikan</string>
 </resources>
