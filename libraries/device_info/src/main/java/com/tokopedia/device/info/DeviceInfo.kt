@@ -134,7 +134,7 @@ object DeviceInfo {
         return if (adsIdCache.isNotBlank()) {
             adsIdCache
         } else {
-            runBlocking { getlatestAdId(context, 1000L) }
+            runBlocking { getlatestAdId(context, 3000L) }
         }
     }
 
