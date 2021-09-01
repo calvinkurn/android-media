@@ -46,12 +46,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
         inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
-//        btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
-//        btnClear.setOnClickListener {
-//            inputNumberField.editText.setText("")
-//            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
-//            hideErrorInputNumber()
-//        }
         inputNumberField.icon1.run {
             setOnClickListener { listener.onNavigateToContact() }
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
@@ -79,9 +73,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     if (count == 0) {
                         listener.onClearAutoComplete()
                         imgOperator.visibility = View.GONE
-//                        btnClear.visibility = View.GONE
-                    } else {
-//                        btnClear.visibility = View.VISIBLE
                     }
                     listener.onRenderOperator()
                 }
