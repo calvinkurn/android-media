@@ -29,7 +29,6 @@ class ItemVariantChipViewHolder(val view: View,
     private val promoChipVariant = view.findViewById<NotificationUnify>(R.id.promo_chip_variant)
     private val containerChipVariant = view.findViewById<LinearLayout>(R.id.container_chip_variant)
 
-
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
     }
@@ -42,7 +41,7 @@ class ItemVariantChipViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         view.setOnClickListener {
-            listener.onVariantClicked(element)
+            listener.onVariantClicked(element, element.currentState)
         }
         val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
 
@@ -58,9 +57,6 @@ class ItemVariantChipViewHolder(val view: View,
             VariantConstant.STATE_EMPTY -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_disabled)
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked(element.currentState, element)
-                }
             }
             VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
                 if (context.isDarkMode()) {
@@ -69,9 +65,6 @@ class ItemVariantChipViewHolder(val view: View,
                     containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_light)
                 }
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked(element.currentState)
-                }
             }
             VariantConstant.STATE_UNSELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_unselected)

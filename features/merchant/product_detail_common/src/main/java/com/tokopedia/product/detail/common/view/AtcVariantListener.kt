@@ -8,14 +8,13 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  * Created by Yehezkiel on 06/05/21
  */
 interface AtcVariantListener {
-    fun onVariantClicked(variantOptions: VariantOptionWithAttribute)
+    fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state:Int = STATE_SELECTED)
     fun getStockWording(): String = ""
 
     fun onVariantGuideLineClicked(url: String) {}
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
     fun onVariantImageClicked(url: String) {}
-    fun onVariantEmptyAndSelectedClicked(state: Int = STATE_SELECTED, variantOptions: VariantOptionWithAttribute? = null) {}
 
     fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {}
     fun onDeleteQuantityClicked(productId: String) {}

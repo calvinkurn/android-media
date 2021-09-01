@@ -118,18 +118,10 @@ object AtcCommonMapper {
      * auto select will run if there is only 1 child left buyable
      */
     fun determineSelectedOptionIds(variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
-        val shouldAutoSelect = variantData?.autoSelectedOptionIds() ?: listOf()
-        return when {
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-            }
-            else -> {
-                if (selectedChild == null) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
+        return if (selectedChild == null) {
+            AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+        } else {
+            AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
         }
     }
 
