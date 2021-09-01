@@ -302,6 +302,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                             Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
+                        swipeToRefresh?.isRefreshing = true
                         showLoading()
                         loadInitialData()
                     }

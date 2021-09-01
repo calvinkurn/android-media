@@ -198,6 +198,15 @@ class SmartBillsViewHolder(val view: View,
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
             }
+
+            if(element.newBillLabel.isNewLabel){
+                icon_menu_sbm_delete.apply {
+                    show()
+                    setOnClickListener {
+                        detailListener.onDeleteClicked(element)
+                    }
+                }
+            }
         }
     }
 
