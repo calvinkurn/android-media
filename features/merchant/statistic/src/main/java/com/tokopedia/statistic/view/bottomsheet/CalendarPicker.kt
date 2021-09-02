@@ -187,6 +187,7 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun selectCustomDateRangeSameMonth(cpv: CalendarPickerView) {
         if (cpv.selectedDates.isNotEmpty()) {
+            childView?.tickerStcCalendarPicker?.visible()
             val selected: Date = cpv.selectedDates.first()
             if (cpv.selectedDates.size == Const.DAY_1) {
                 updateMaxDateSameMonth(cpv, selected)
