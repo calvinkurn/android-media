@@ -7,15 +7,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ReviewImagePreviewTracking {
 
-    private val tracker = TrackApp.getInstance().gtm
-
     fun trackOnLikeReviewClicked(
         feedbackId: String,
         isLiked: Boolean,
         productId: String,
         isFromGallery: Boolean
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 if (isFromGallery) ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW_FROM_IMAGE_GALLERY else ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
                 String.format(
@@ -30,7 +28,7 @@ object ReviewImagePreviewTracking {
     }
 
     fun trackOnShopReviewLikeReviewClicked(feedbackId: String, isLiked: Boolean, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
                 String.format(
@@ -44,7 +42,7 @@ object ReviewImagePreviewTracking {
     }
 
     fun trackOnSeeAllClicked(feedbackId: String, productId: String, isFromGallery: Boolean) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 if (isFromGallery) ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL_FROM_IMAGE_GALLERY else ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
                 String.format(
@@ -58,7 +56,7 @@ object ReviewImagePreviewTracking {
     }
 
     fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
                 String.format(
@@ -77,7 +75,7 @@ object ReviewImagePreviewTracking {
         totalImages: Int,
         productId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SWIPE,
                 String.format(
@@ -100,7 +98,7 @@ object ReviewImagePreviewTracking {
         totalImages: Int,
         shopId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_SWIPE,
                 String.format(

@@ -6,14 +6,12 @@ import com.tokopedia.track.TrackApp
 
 object ReviewGalleryTracking {
 
-    private val tracker = TrackApp.getInstance().gtm
-
     fun trackOpenScreen(productId: String) {
-        tracker.sendScreenAuthenticated(ReviewGalleryTrackingConstants.SCREEN_NAME, getOpenScreenCustomDimensMap(productId))
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(ReviewGalleryTrackingConstants.SCREEN_NAME, getOpenScreenCustomDimensMap(productId))
     }
 
     fun trackClickImage(attachmentId: String, feedbackId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_IMAGE,
                 String.format(
@@ -35,7 +33,7 @@ object ReviewGalleryTracking {
         val satisfactionRateInt = percentPositiveReview.filter {
             it.isDigit()
         }
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SATISFACTION_SCORE,
                 String.format(
@@ -52,7 +50,7 @@ object ReviewGalleryTracking {
     fun trackClickSeeAll(
         productId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
                 String.format(

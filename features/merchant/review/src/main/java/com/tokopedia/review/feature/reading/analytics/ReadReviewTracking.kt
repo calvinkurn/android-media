@@ -8,10 +8,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ReadReviewTracking {
 
-    private val tracker = TrackApp.getInstance().gtm
-
     fun trackOpenScreen(screenName: String, productId: String) {
-        tracker.sendScreenAuthenticated(screenName, getOpenScreenCustomDimensMap(productId))
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getOpenScreenCustomDimensMap(productId))
     }
 
     fun trackOnClickPositiveReviewPercentage(
@@ -20,7 +18,7 @@ object ReadReviewTracking {
         review: Long,
         productId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE,
@@ -81,7 +79,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnFilterClicked(filterName: String, isActive: Boolean, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_FILTER,
@@ -96,7 +94,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnApplyFilterClicked(filterName: String, filterValue: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
@@ -111,7 +109,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnApplySortClicked(sortValue: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_SORT,
@@ -122,7 +120,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnSeeFullReviewClicked(feedbackId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
@@ -133,7 +131,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnLikeClicked(feedbackId: String, isLiked: Boolean, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
@@ -148,7 +146,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnSeeReplyClicked(feedbackId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_SEE_REPLY,
@@ -159,7 +157,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnImageClicked(feedbackId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_IMAGE,
@@ -170,7 +168,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnReportClicked(feedbackId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_REPORT_REVIEW,
@@ -184,7 +182,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnClearFilter(productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_CLEAR_FILTER,
@@ -239,7 +237,7 @@ object ReadReviewTracking {
             }
             putBundle(ReadReviewTrackingConstants.KEY_ECOMMERCE, bundleEcommerce)
         }
-        tracker.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ReadReviewTrackingConstants.KEY_PROMO_CLICK,
             trackingBundle
         )
@@ -290,7 +288,7 @@ object ReadReviewTracking {
             }
             putBundle(ReadReviewTrackingConstants.KEY_ECOMMERCE, bundleEcommerce)
         }
-        tracker.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
             trackingBundle
         )
@@ -337,7 +335,7 @@ object ReadReviewTracking {
                 ReadReviewTrackingConstants.CURRENT_SITE
             )
         }
-        tracker.sendScreenAuthenticated(screenName, shopReviewCustomDimension)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, shopReviewCustomDimension)
     }
 
     private fun getShopReviewCustomDimension(shopId: String): Map<String, String> {
@@ -348,7 +346,7 @@ object ReadReviewTracking {
 
 
     fun trackOnShopReviewLikeClicked(feedbackId: String, isLiked: Boolean, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
@@ -363,7 +361,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewSeeReplyClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_SEE_REPLY,
@@ -379,7 +377,7 @@ object ReadReviewTracking {
         review: Long,
         shopId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE,
@@ -396,7 +394,7 @@ object ReadReviewTracking {
 
 
     fun trackOnShopReviewImageClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_IMAGE,
@@ -407,7 +405,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewReportClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_REPORT_REVIEW,
@@ -421,7 +419,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewClearFilter(shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_CLEAR_FILTER,
@@ -449,7 +447,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnFilterShopReviewClicked(filterName: String, isActive: Boolean, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_FILTER,
@@ -469,7 +467,7 @@ object ReadReviewTracking {
         shopId: String
     ) {
         val isFilterActive = filterValue.isNotEmpty()
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
@@ -485,7 +483,7 @@ object ReadReviewTracking {
 
     fun trackOnShopReviewApplyTopicFilter(filterName: String, filterValue: String, shopId: String) {
         val isFilterActive = filterValue.isNotEmpty()
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
@@ -501,7 +499,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewApplySortClicked(sortValue: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_SORT,
@@ -557,7 +555,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewSeeFullReviewClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
@@ -612,7 +610,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnClickProductInfoThreeDots(reviewId: String, shopId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS,
