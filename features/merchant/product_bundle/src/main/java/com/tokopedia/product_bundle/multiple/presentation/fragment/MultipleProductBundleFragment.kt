@@ -47,11 +47,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     companion object {
         private const val PRODUCT_BUNDLE_INFO = "PRODUCT_BUNDLE_INFO"
+        private const val SELECTED_BUNDLE_ID = "SELECTED_BUNDLE_ID"
+        private const val SELECTED_PRODUCT_IDS = "SELECTED_PRODUCT_IDS"
         @JvmStatic
-        fun newInstance(productBundleInfo: List<BundleInfo>) =
+        fun newInstance(productBundleInfo: List<BundleInfo>, selectedBundleId: String, selectedProductIds: String) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
+                    putString(SELECTED_BUNDLE_ID, selectedBundleId)
+                    putString(SELECTED_PRODUCT_IDS, selectedProductIds)
                 }
             }
     }
@@ -68,6 +72,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private var processDayView: Typography? = null
+    private var productBundleOverView: TotalAmount? = null
 
     // product bundle master components
     private var productBundleMasterView: RecyclerView? = null
@@ -77,9 +82,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
-    private var productBundleOverView: TotalAmount? = null
-    private var errorToaster: Snackbar? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -88,13 +90,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity.setBackgroundToWhite()
-        processDayView = view.findViewById(R.id.tv_po_process_day)
 
-        // get product bundle info from activity
+        activity.setBackgroundToWhite()
+
+        // get data from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
+        var selectedBundleId: Long? = null
+        var selectedVariantIds: List<String>? = null
         if (arguments != null) {
             productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
+            selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+            val selectedProductIdsStr = arguments?.getString(SELECTED_PRODUCT_IDS)
+            selectedVariantIds = viewModel.getSelectedProductIds(selectedProductIdsStr ?: "")
         }
 
         // setup multiple product bundle views
@@ -107,29 +114,31 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleInfo?.run {
             if (this.isNotEmpty()) {
                 productBundleInfo.forEach { bundleInfo ->
-                    // map product bundle info to master and details
+                    // skip the bundle if not available
+                    if (!viewModel.isProductBundleAvailable(bundleInfo)) return@forEach
+                    // map product bundle info to product bundle master and details
                     val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
-                    val bundleDetail = viewModel.mapBundleItemsToBundleDetail(bundleInfo.bundleItems)
+                    val bundleDetail = viewModel.mapBundleItemsToBundleDetails(bundleInfo.bundleItems)
                     // update product bundle map
                     viewModel.updateProductBundleMap(bundleMaster, bundleDetail)
                 }
                 // get product bundle master from the map - single source of truth
                 val productBundleMasters = viewModel.getProductBundleMasters()
-                // render product bundle master chips
-                productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters)
-                // set initial product bundle selection
-                val defaultSelection = viewModel.getDefaultProductBundleSelection(productBundleMasters)
-                defaultSelection?.run {
+                // get selected product bundle master - return the first bundle master if no selection exist
+                val selectedProductBundleMaster = viewModel.getSelectedBundle(selectedBundleId, productBundleMasters)
+                selectedProductBundleMaster?.run {
+                    // render product bundle master chips
+                    productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters, this.bundleId)
+                    // set selected product variants to bundle details
+                    selectedVariantIds?.let { viewModel.setSelectedVariants(it,this) }
+                    // set selected bundle master to live data to render details
                     viewModel.setSelectedProductBundleMaster(this)
                     // update the process day
                     renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
                 }
             }
         }
-
         observeLiveData()
-
-//        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
     }
 
     override fun getScreenName(): String {
@@ -150,6 +159,17 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productBundleDetailAdapter?.setProductBundleDetails(this)
                 // render product bundle overview section
                 updateProductBundleOverView(productBundleOverView = productBundleOverView, productBundleDetails = productBundleDetails)
+            }
+        })
+        viewModel.addToCartResult.observe(viewLifecycleOwner, { addToCartBundleDataModel ->
+            addToCartBundleDataModel.data
+            requireActivity().finish()
+        })
+        viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+            errorMessage?.run {
+                // show error message
+                Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.action_oke)).show()
             }
         })
     }
@@ -180,7 +200,25 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             TotalAmount.Order.SUBTITLE
         )
         productBundleOverView?.amountCtaView?.setOnClickListener {
-            viewModel.addProductBundleToCart()
+            // get the selected product bundle
+            val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
+            val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+            // validate add to cart input - result = pair<isValid,errorMessage>
+            val isAddToCartInputValid = viewModel.validateAddToCartInput(selectedProductBundleMaster, selectedBundleDetails)
+            if (isAddToCartInputValid) {
+                // map product bundle details to product details
+                val userId = viewModel.getUserId()
+                val shopId = selectedProductBundleMaster.shopId
+                val productDetails = viewModel.mapBundleDetailsToProductDetails(userId, shopId, selectedBundleDetails)
+                // add product bundle to cart
+                val bundleId = selectedProductBundleMaster.bundleId
+                viewModel.addProductBundleToCart(
+                    parentProductId = viewModel.parentProductID,
+                    bundleId = bundleId,
+                    shopId = shopId.toLong(),
+                    productDetails  = productDetails
+                )
+            }
         }
     }
 
@@ -234,10 +272,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             mapOfSelectedVariantOption?.run {
                 if (this.isNotEmpty()) {
                     // update product bundle map with variant selections
+                    val selectedBundleMaster = viewModel.getSelectedProductBundleMaster()
                     val updatedBundleDetail = viewModel.updateProductBundleDetail(
-                        selectedProductId = selectedProductId.toLongOrZero(),
+                        selectedBundleMaster = selectedBundleMaster,
                         parentProductId = parentProductId.toLongOrZero(),
-                        mapOfSelectedVariantOption = this
+                        selectedVariantId = selectedProductId.toLongOrZero()
                     )
                     // update product bundle detail variant selection
                     updatedBundleDetail?.let { productBundleDetailAdapter?.setVariantSelection(parentProductId.toLongOrZero(), it) }

@@ -50,4 +50,7 @@
     <string name="dialog_error_action_empty_variant">Ganti Varian.</string>
     <string name="dialog_error_action_empty_bundle">Lihat Paket Lain</string>
 
+    <!-- error messages -->
+    <string name="error_bundle_is_empty_long">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
+    <string name="error_bundle_variant_not_selected">Oops, pilih varian dulu, ya.</string>
 </resources>
