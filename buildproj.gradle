@@ -114,9 +114,12 @@ subprojects {
                 rootProject.tasks.runUnitTest.dependsOn(task)
             }
         }
+        try {
+            if (isLibrary) {
+                project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
+            }
+        }catch(Exception ignored) {
 
-        if (isLibrary) {
-            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
     }
 }
