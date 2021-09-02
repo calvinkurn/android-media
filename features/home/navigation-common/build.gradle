@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -22,6 +22,9 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
 }
 
 project.ext {

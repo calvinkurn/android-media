@@ -62,6 +62,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -121,7 +122,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<CoroutineDispatchers>,
         private val playWidgetTools: Lazy<PlayWidgetTools>,
-        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>
+        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -1254,15 +1256,8 @@ open class HomeRevampViewModel @Inject constructor(
             )
         }
     }
-    fun forceGopayEligible() {
-        this.isGopayEligible = true
-        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = this@HomeRevampViewModel.isGopayEligible })
-    }
 
     private fun getBalanceWidgetData() {
-//        _gopayEligibilityLiveData.postValue(Event(true))
-//        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { isGopayEligible = true })
-
         if (getHeaderDataJob == null || getHeaderDataJob?.isActive == false) {
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
 
@@ -1271,6 +1266,23 @@ open class HomeRevampViewModel @Inject constructor(
                 var tokopointContent: TokopointsDrawerListHomeData? = null
                 var pendingCashback: PendingCashback? = null
                 var walletAppBalance: Balances? = null
+
+                if (!isGopayEligible) {
+                    try {
+                        isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply {
+                            isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                            initBalanceModelByType()
+                        })
+                        _homeCoachmarkData.postValue(Event(
+                            HomeCoachmarkModel(
+                                isGopayActive = walletAppBalance?.isLinked?:false,
+                                isGopayEligible = isGopayEligible
+                            )))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 
                 launchCatchError(coroutineContext, block = {
                     walletAppAbTestCondition(
@@ -1330,12 +1342,6 @@ open class HomeRevampViewModel @Inject constructor(
                         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy())
                     }
                 }) {}
-
-                _homeCoachmarkData.postValue(Event(
-                    HomeCoachmarkModel(
-                        isGopayActive = walletAppBalance?.isLinked?:false,
-                        isGopayEligible = isGopayEligible
-                    )))
             }) {
 
             }

@@ -2220,7 +2220,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh() {
-        getHomeViewModel().forceGopayEligible()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
