@@ -219,6 +219,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val formattedEta = formatEta(model)
         binding?.eta?.text = formattedEta
         if (model.isChanged) {
+            showEtaBottomSheet(formattedEta)
             binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
             binding?.eta?.setOnClickListener {
                 showEtaBottomSheet(formattedEta)
