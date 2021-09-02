@@ -50,9 +50,6 @@ class InfiniteRecomViewModel @Inject constructor(
     val miniCartData: LiveData<MutableMap<String, MiniCartItem>> get() = _miniCartData
     private val _miniCartData = MutableLiveData<MutableMap<String, MiniCartItem>>()
 
-    val loadMoreData: LiveData<Boolean> get() = _loadMoreData
-    private val _loadMoreData = MutableLiveData<Boolean>()
-
     val errorGetRecomData: LiveData<RecomErrorResponse> get() = _errorGetRecomData
     private val _errorGetRecomData = MutableLiveData<RecomErrorResponse>()
 
@@ -60,14 +57,12 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
-                _loadMoreData.postValue(false)
                 _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
             } else {
                 _recommendationWidgetData.postValue(result[0])
                 _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
-            _loadMoreData.postValue(false)
             _errorGetRecomData.postValue(RecomErrorResponse(pageNumber = 1, errorThrowable = it, isErrorFirstPage = true))
         }
     }
@@ -76,12 +71,10 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, pageNumber = pageNumber, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
-                _loadMoreData.postValue(false)
             } else {
                 _recommendationNextLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
-            _loadMoreData.postValue(false)
             _errorGetRecomData.postValue(RecomErrorResponse(pageNumber, it))
         }
     }
