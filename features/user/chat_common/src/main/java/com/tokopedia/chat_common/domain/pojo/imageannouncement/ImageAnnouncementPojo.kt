@@ -1,6 +1,5 @@
 package com.tokopedia.chat_common.domain.pojo.imageannouncement
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -15,14 +14,15 @@ class ImageAnnouncementPojo {
     var url: String = ""
     @SerializedName("is_hide_banner")
     var isHideBanner: Boolean = false
+    // Optional data below
     @SerializedName("wording_end_state")
-    var endStateWording: String = ""
+    var endStateWording: String? = ""
     @SerializedName("is_campaign")
-    var isCampaign: Boolean = false
+    var isCampaign: Boolean? = false
     @SerializedName("status_campaign")
-    var statusCampaign: Int = 1
+    var statusCampaign: Int? = 1
     @SerializedName("start_date")
-    var startDate: String = ""
+    var startDate: String? = ""
     @SerializedName("end_date")
-    var endDate: String = ""
+    var endDate: String? = ""
 }

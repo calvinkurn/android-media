@@ -88,11 +88,21 @@ constructor(
     }
 
     private fun assignCampaignData(attributes: ImageAnnouncementPojo) {
-        this.finishedDescription = attributes.endStateWording
-        this.isCampaign = attributes.isCampaign
-        this.statusCampaign = attributes.statusCampaign
-        this.startDate = attributes.startDate
-        this.endDate = attributes.endDate
+        attributes.endStateWording?.let {
+            this.finishedDescription = it
+        }
+        attributes.isCampaign?.let {
+            this.isCampaign = it
+        }
+        attributes.statusCampaign?.let {
+            this.statusCampaign = it
+        }
+        attributes.startDate?.let {
+            this.startDate = it
+        }
+        attributes.endDate?.let {
+            this.endDate = it
+        }
     }
 
     override fun syncError() {
