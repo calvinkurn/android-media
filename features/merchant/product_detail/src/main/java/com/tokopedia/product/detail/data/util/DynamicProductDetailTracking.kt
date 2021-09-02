@@ -2037,6 +2037,7 @@ object DynamicProductDetailTracking {
     object ProductBundling {
 
         fun eventImpressionProductBundling(
+            userId: String,
             bundleId: String,
             bundleType: String,
             productInfo: DynamicProductInfoP1?,
@@ -2066,6 +2067,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:$comp;temp:$temp;elem:${action};cpos:$cpos;"
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
 
             val ecommerce = DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(

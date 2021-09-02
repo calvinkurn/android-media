@@ -3642,7 +3642,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         DynamicProductDetailTracking.ProductBundling.eventImpressionProductBundling(
-            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
+            viewModel.userId, bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
         )
     }
 
