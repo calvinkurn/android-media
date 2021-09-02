@@ -128,6 +128,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun setCartListData(cartListData: CartData) {
         this.cartListData = cartListData
+        this.promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
     override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
@@ -453,6 +454,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
+        promoSummaryUiModel?.details?.clear()
         promoSummaryUiModel?.details?.addAll(
                 lastApplyUiModel.additionalInfo.usageSummaries.map {
                     PromoSummaryDetailData(
