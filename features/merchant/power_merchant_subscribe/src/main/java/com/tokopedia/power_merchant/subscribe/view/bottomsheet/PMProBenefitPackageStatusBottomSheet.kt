@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
@@ -27,7 +29,13 @@ class PMProBenefitPackageStatusBottomSheet : BaseBottomSheet() {
         tvDescBenefitPackagePmProStatus?.setTextMakeHyperlink(
             getString(R.string.pm_desc_benefit_package_pm_pro_status)
         ) {
-
+            context?.let {
+                RouteManager.route(
+                    it,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    Constant.Url.PM_PRO_BENEFIT_PACKAGE_EDU
+                )
+            }
         }
         setupPMProStatusStepper()
     }
