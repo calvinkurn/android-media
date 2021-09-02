@@ -23,4 +23,5 @@
 
     <string name="content_desc_featured_brand_icon">featured brand icon</string>
     <string name="content_desc_featured_brand_image">featured brand image</string>
+    <string name="content_desc_view_all_image">featured view all image</string>
 </resources>

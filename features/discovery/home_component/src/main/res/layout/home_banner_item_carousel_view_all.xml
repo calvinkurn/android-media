@@ -21,6 +21,15 @@
         android:layout_height="match_parent"
         >
 
+        <ImageView
+            android:contentDescription="@string/content_desc_view_all_image"
+            android:id="@+id/iv_heading_view_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_graphic_element_green"
+            android:scaleType="fitXY"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_dc_mix_view_all"
             android:layout_gravity="bottom"
@@ -49,47 +58,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_banner_mix_more"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/background_banner_mix_more"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title_view_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_3"
+            tools:text="1000+"
+            app:layout_constraintTop_toBottomOf="@id/iv_heading_view_all"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_dc_mix_see_more"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_description_view_all"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/discovery_home_see_more_dc_mix"
-            android:textColor="@color/Unify_G500"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/banner_mix_arrow"
-            app:layout_constraintStart_toStartOf="@+id/banner_mix_arrow"
-            app:layout_constraintTop_toBottomOf="@+id/banner_mix_arrow"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="heading_6" />
-
-        <ImageView
-            android:id="@+id/banner_mix_arrow"
-            android:layout_width="@dimen/home_banner_mix_arrow_icon_size"
-            android:layout_height="@dimen/home_banner_mix_arrow_icon_size"
-            app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
-            app:layout_constraintBottom_toTopOf="@+id/tv_dc_mix_see_more"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            tools:text="Description here is mandatory"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_view_all"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_2"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
