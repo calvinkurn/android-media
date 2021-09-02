@@ -1,32 +1,16 @@
 package com.tokopedia.universal_sharing.view.activity
 
 import android.Manifest
-import android.content.ContentResolver
-import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 
 /**
  * Created by Yoris on 26/08/21.
@@ -52,6 +36,7 @@ class GlobalSharingActivity: BaseActivity() {
                     showAndroidChooserSharing(this)
                 }
                 SHARE_TYPE_UNIVERSAL_DIALOG -> {
+                    // TO BE ADDED: Universal Sharing Bottom Sheet
                     showAndroidChooserSharing(this)
                 }
                 SHARE_TYPE_IG_STORY -> {
@@ -76,7 +61,6 @@ class GlobalSharingActivity: BaseActivity() {
         if(image?.isNotEmpty() == true) {
             SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
                 val imgFile = getFileProvider(File(it))
-                println("Image path $imgFile")
                 share.putExtra(Intent.EXTRA_STREAM, imgFile)
             }
         }
@@ -87,7 +71,6 @@ class GlobalSharingActivity: BaseActivity() {
         val image = bundle.getString(KEY_IMAGE_URL) ?: ""
         SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
             val imgFile = getFileProvider(File(it))
-            println("Image path $imgFile")
             openInstagramStory(imgFile)
         }
     }
@@ -131,75 +114,6 @@ class GlobalSharingActivity: BaseActivity() {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
-    }
-
-    private fun downloadImage(imageURL: String, onSuccess: (Uri) -> Unit) {
-        Glide.with(this)
-            .load(imageURL)
-            .into(object : CustomTarget<Drawable?>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable?>?
-                ) {
-                    val img = saveImage(this@GlobalSharingActivity, resource.toBitmap())
-                    if(img != null) {
-                        onSuccess(img)
-                    }
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onLoadFailed(errorDrawable: Drawable?) { super.onLoadFailed(errorDrawable) }
-            })
-    }
-
-    private fun saveImage(
-        context: Context,
-        bitmap: Bitmap): Uri? {
-        var fos: OutputStream? = null
-        var imageFile: File? = null
-        var imageUri: Uri? = null
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val resolver: ContentResolver = context.contentResolver
-                val contentValues = ContentValues()
-                contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, "tkpd-shared-image")
-                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                contentValues.put(
-                    MediaStore.MediaColumns.RELATIVE_PATH,
-                    Environment.DIRECTORY_DOWNLOADS
-                )
-                imageUri =
-                    resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
-                if (imageUri == null) throw IOException("Failed to create new MediaStore record.")
-                fos = resolver.openOutputStream(imageUri)
-            } else {
-                val imagesDir = File(
-                    Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES
-                    ).toString()
-                )
-                if (!imagesDir.exists()) imagesDir.mkdir()
-                imageFile = File(imagesDir, "tkpd-test-image.png")
-                fos = FileOutputStream(imageFile)
-            }
-            if (!bitmap.compress(
-                    Bitmap.CompressFormat.PNG,
-                    100,
-                    fos
-                )
-            ) throw IOException("Failed to save bitmap.")
-            fos?.flush()
-        } finally {
-            fos?.close()
-        }
-        if (imageFile != null) {
-            MediaScannerConnection.scanFile(context, arrayOf(imageFile.toString()), null, null)
-            imageUri = FileProvider.getUriForFile(
-                this,
-                "$packageName.provider",
-                imageFile
-            )
-        }
-        return imageUri
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
