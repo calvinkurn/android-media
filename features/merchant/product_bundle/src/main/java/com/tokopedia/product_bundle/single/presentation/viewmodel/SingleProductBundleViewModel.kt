@@ -64,7 +64,6 @@ class SingleProductBundleViewModel @Inject constructor(
                 emptyVariantProductIds)
 
         if (bundleModel.items.isEmpty()) {
-            mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
             mPageError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
         } else {
             mSingleProductBundleUiModel.value = bundleModel
