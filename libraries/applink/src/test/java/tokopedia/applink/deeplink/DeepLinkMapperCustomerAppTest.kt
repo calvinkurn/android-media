@@ -1762,19 +1762,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check marketplace order detail appLink then should return revamped tokopedia internal marketplace order detail in customerapp`() {
         val orderId = "123456789"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-detail?order_id=$orderId"
-        every {
-            DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
-        } returns true
-        assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
-    }
-
-    @Test
-    fun `check marketplace order detail appLink then should return old tokopedia internal marketplace order detail in customerapp`() {
-        val orderId = "123456789"
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/order?order_id=$orderId"
-        every {
-            DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
-        } returns false
         assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
     }
 
@@ -1845,6 +1832,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val queryParam = "?ext=true&titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/browser" + queryParam
         assertEqualsDeepLinkMapper(ApplinkConst.BROWSER + queryParam, expectedDeepLink)
+    }
+
+    @Test
+    fun `check peduli lindungi scan qr applink then should return tokopedia internal qr in customerapp`() {
+        val expectedDeepLink = "${ApplinkConstInternalMarketplace.QR_SCANNEER}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        val appLink = "${ApplinkConst.QRSCAN}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     private fun setRemoteConfig(isEnabled: Boolean) {
