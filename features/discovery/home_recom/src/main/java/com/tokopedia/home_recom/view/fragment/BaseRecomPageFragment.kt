@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,12 +22,14 @@ import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
 import com.tokopedia.home_recom.util.RecomPageUiUpdater
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Created by yfsx on 30/08/21.
@@ -38,6 +42,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     var chooseAddressWidget: ChooseAddressWidget? = null
 
     private var recyclerView: RecyclerView? = null
+    private lateinit var root: ConstraintLayout
     private var swipeToRefresh: SwipeRefreshLayout? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
@@ -46,6 +51,8 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     private val ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
     private val ROLLANCE_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
     private val ROLLANCE_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
+
+    private var errorToaster: Snackbar? = null
 
     protected abstract fun createAdapterInstance(): RecomPageAdapter
 
@@ -58,6 +65,10 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     protected abstract fun onCreateExtended(savedInstanceState: Bundle?)
 
     protected abstract fun onChooseAddressImplemented(): ChooseAddressWidget.ChooseAddressWidgetListener
+
+    companion object {
+        private const val ERROR_COBA_LAGI = "Coba Lagi"
+    }
 
     open fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
@@ -76,6 +87,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_base_recom_page, container, false)
         navToolbar = view.findViewById(R.id.navToolbar)
+        root = view.findViewById(R.id.root)
         chooseAddressWidget = view.findViewById(R.id.widget_choose_address)
         initNavBar()
         initChooseAddress()
@@ -225,5 +237,17 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         } catch (e: java.lang.Exception) {
             this.isNewNavigation = false
         }
+    }
+
+    protected fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
+        if (errorToaster == null || errorToaster?.isShown == false) {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+            errorToaster = Toaster.build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+            errorToaster?.show()
+        }
+    }
+
+    protected fun showErrorWithAction(throwable: Throwable, clickListener: View.OnClickListener) {
+        showToasterWithAction(ErrorHandler.getErrorMessage(requireContext(), throwable), Toaster.TYPE_ERROR, ERROR_COBA_LAGI, clickListener)
     }
 }

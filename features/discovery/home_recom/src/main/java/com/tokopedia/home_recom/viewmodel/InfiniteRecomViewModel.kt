@@ -1,21 +1,19 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.home_recom.model.datamodel.RecomErrorResponse
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,18 +53,22 @@ class InfiniteRecomViewModel @Inject constructor(
     val loadMoreData: LiveData<Boolean> get() = _loadMoreData
     private val _loadMoreData = MutableLiveData<Boolean>()
 
+    val errorGetRecomData: LiveData<RecomErrorResponse> get() = _errorGetRecomData
+    private val _errorGetRecomData = MutableLiveData<RecomErrorResponse>()
 
     fun getRecommendationFirstPage(pageName: String, productId: String, queryParam: String) {
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
-
+                _loadMoreData.postValue(false)
+                _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
             } else {
                 _recommendationWidgetData.postValue(result[0])
                 _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
-
+            _loadMoreData.postValue(false)
+            _errorGetRecomData.postValue(RecomErrorResponse(pageNumber = 1, errorThrowable = it, isErrorFirstPage = true))
         }
     }
 
@@ -74,12 +76,13 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, pageNumber = pageNumber, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
-
+                _loadMoreData.postValue(false)
             } else {
                 _recommendationNextLiveData.postValue(mappingRecomDataModel(result))
             }
         }) {
-
+            _loadMoreData.postValue(false)
+            _errorGetRecomData.postValue(RecomErrorResponse(pageNumber, it))
         }
     }
 

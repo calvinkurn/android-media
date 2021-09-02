@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.view.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,9 +23,11 @@ import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -106,6 +109,11 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
         viewModel.getRecommendationNextPage(pageName, productId, pageNumber, queryParam)
     }
 
+    override fun onResume() {
+        super.onResume()
+        getMiniCartData()
+    }
+
     override fun observeData() {
         observeLiveData()
     }
@@ -142,6 +150,7 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
         viewModel.recommendationFirstLiveData.removeObservers(this)
         viewModel.miniCartData.removeObservers(this)
         viewModel.recommendationNextLiveData.removeObservers(this)
+        viewModel.errorGetRecomData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -160,8 +169,8 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
         })
         viewModel.miniCartData.observe(viewLifecycleOwner, Observer {
             it?.let {
-//                val newList = RecomPageTokonowDataUpdater.updateRecomWithMinicartData(it, adapter.data)
-//                adapter.
+                recomPageUiUpdater.updateRecomWithMinicartData(it)
+                submitList(recomPageUiUpdater.dataList.toMutableList())
             }
         })
         viewModel.recommendationNextLiveData.observe(viewLifecycleOwner, Observer {
@@ -170,14 +179,40 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
                 submitList(recomPageUiUpdater.dataList.toMutableList())
             }
         })
-        viewModel.loadMoreData.observe(viewLifecycleOwner, Observer {
-            disableLoadMore()
+        viewModel.errorGetRecomData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                disableLoadMore()
+                when {
+                    it.isEmptyFirstPage -> {
+                        showEmptyPage()
+                    }
+                    it.isErrorFirstPage -> {
+                        showErrorFullPage(it.errorThrowable)
+                    }
+                    else -> {
+                        showErrorSnackbarWithRetryLoad(it.pageNumber, it.errorThrowable)
+                    }
+                }
+            }
         })
-
     }
 
     private fun getMiniCartData() {
         val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         viewModel.getMiniCart(localAddress?.shop_id ?: "")
+    }
+
+    private fun showEmptyPage() {
+        showEmptyPage()
+    }
+
+    private fun showErrorFullPage(throwable: Throwable) {
+        showErrorFullPage(throwable)
+    }
+
+    private fun showErrorSnackbarWithRetryLoad(pageNumber: Int, throwable: Throwable) {
+        showErrorWithAction(throwable, View.OnClickListener {
+            loadMoreData(pageNumber)
+        })
     }
 }
