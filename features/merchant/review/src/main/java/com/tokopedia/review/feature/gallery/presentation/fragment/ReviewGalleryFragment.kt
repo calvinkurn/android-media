@@ -211,7 +211,7 @@ class ReviewGalleryFragment :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == IMAGE_PREVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == IMAGE_PREVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
             showFullPageLoading()
             clearAllData()
             loadInitialData()
@@ -274,7 +274,7 @@ class ReviewGalleryFragment :
     private fun onFailGetReviewImages(throwable: Throwable) {
         if (isFirstPage()) showFullPageError()
         showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
-             if (isFirstPage())loadInitialData() else {
+            if (isFirstPage()) loadInitialData() else {
                 loadData(currentPage)
             }
         }
@@ -294,18 +294,14 @@ class ReviewGalleryFragment :
     }
 
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
-        val reviewImages = mutableListOf<ReviewGalleryUiModel>()
-        productrevGetReviewImage.reviewImages.forEachIndexed { index, reviewImage ->
-            reviewImages.add(
+        return productrevGetReviewImage.reviewImages.map {
                 getReviewGalleryUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
-                    reviewImage.feedbackId,
-                    reviewImage.imageId,
-                    reviewImage.imageNumber
+                    it.feedbackId,
+                    it.imageId,
+                    it.imageNumber
                 )
-            )
         }
-        return reviewImages
     }
 
     private fun getReviewGalleryUiModelBasedOnDetail(

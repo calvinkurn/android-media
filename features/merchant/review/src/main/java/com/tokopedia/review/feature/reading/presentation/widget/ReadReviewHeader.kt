@@ -263,7 +263,7 @@ class ReadReviewHeader : BaseCustomView {
     fun setHighlightedTopics(topics: List<ProductTopic>, listener: ReadReviewHighlightedTopicListener) {
         val highlightedTopic = listOf(topicLeft, topicRight)
         topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
-            highlightedTopic[index]?.apply {
+            highlightedTopic.getOrNull(index)?.apply {
                 setHighlightedTopic(productTopic)
                 this.setListener(listener, index)
                 show()

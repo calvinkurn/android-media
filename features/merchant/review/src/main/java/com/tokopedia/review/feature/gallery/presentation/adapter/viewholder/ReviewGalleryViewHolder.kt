@@ -20,8 +20,11 @@ class ReviewGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryUiMod
     private var rating: ImageUnify? = null
     private var variantName: Typography? = null
 
-    override fun bind(element: ReviewGalleryUiModel) {
+    init {
         bindViews()
+    }
+
+    override fun bind(element: ReviewGalleryUiModel) {
         with(element) {
             setReviewImage(imageUrl)
             setRating(rating)

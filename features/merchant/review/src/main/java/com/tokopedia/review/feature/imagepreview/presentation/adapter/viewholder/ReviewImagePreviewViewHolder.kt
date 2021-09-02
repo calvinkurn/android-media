@@ -24,37 +24,61 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         image = view.findViewById(R.id.review_gallery_image_preview)
     }
 
-    fun bind(imagePreviewUiModel: ReviewImagePreviewUiModel, imagePreviewListener: ReviewImagePreviewListener) {
+    fun bind(
+        imagePreviewUiModel: ReviewImagePreviewUiModel,
+        imagePreviewListener: ReviewImagePreviewListener
+    ) {
         image?.apply {
             mLoaderView.hide()
-            mImageView.apply {
-                image?.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifycomponents.R.color.Unify_N75
-                    )
+            setLoadingBehavior(imagePreviewUiModel, imagePreviewListener)
+            setOnClickListener(imagePreviewListener)
+            setDoubleClickListener()
+            addOnImpressionListener(imagePreviewUiModel.impressHolder) {
+                imagePreviewListener.onImageImpressed()
+            }
+            setZoomListener(imagePreviewListener)
+        }
+    }
+
+    private fun setLoadingBehavior(
+        imagePreviewUiModel: ReviewImagePreviewUiModel,
+        imagePreviewListener: ReviewImagePreviewListener
+    ) {
+        image?.mImageView?.apply {
+            image?.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_N75
                 )
-                loadImage(imagePreviewUiModel.imageUrl) {
-                    listener(
-                        onSuccess = { _, _ ->
-                            mLoaderView.hide()
-                            image?.setBackgroundColor(
-                                ContextCompat.getColor(
-                                    context,
-                                    android.R.color.transparent
-                                )
+            )
+            loadImage(imagePreviewUiModel.imageUrl) {
+                listener(
+                    onSuccess = { _, _ ->
+                        image?.mLoaderView?.hide()
+                        image?.setBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                android.R.color.transparent
                             )
-                        },
-                        onError = {
-                            mLoaderView.hide()
-                            imagePreviewListener.onImageLoadFailed(adapterPosition)
-                        }
-                    )
-                }
+                        )
+                    },
+                    onError = {
+                        image?.mLoaderView?.hide()
+                        imagePreviewListener.onImageLoadFailed(adapterPosition)
+                    }
+                )
             }
-            onImageClickListener = {
-                imagePreviewListener.onImageClicked()
-            }
+        }
+    }
+
+    private fun setOnClickListener(imagePreviewListener: ReviewImagePreviewListener) {
+        image?.onImageClickListener = {
+            imagePreviewListener.onImageClicked()
+        }
+    }
+
+    private fun setDoubleClickListener() {
+        image?.apply {
             onImageDoubleClickListener = {
                 if (mScaleFactor == UNZOOM_SCALE_FACTOR) {
                     setScaleFactor(ZOOM_SCALE_FACTOR)
@@ -62,25 +86,25 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                     setScaleFactor(UNZOOM_SCALE_FACTOR)
                 }
             }
-            imagePreviewUnifyListener = object : ImagePreview.ImagePreviewUnifyListener {
-                override fun onZoomStart(scaleFactor: Float) {
-                    imagePreviewListener.disableScroll()
-                }
+        }
+    }
 
-                override fun onZoom(scaleFactor: Float) {
-
-                }
-
-                override fun onZoomEnd(scaleFactor: Float) {
-                    if (scaleFactor > UNZOOM_SCALE_FACTOR) {
-                        imagePreviewListener.disableScroll()
-                    } else {
-                        imagePreviewListener.enableScroll()
-                    }
-                }
+    private fun setZoomListener(imagePreviewListener: ReviewImagePreviewListener) {
+        image?.imagePreviewUnifyListener = object : ImagePreview.ImagePreviewUnifyListener {
+            override fun onZoomStart(scaleFactor: Float) {
+                imagePreviewListener.disableScroll()
             }
-            addOnImpressionListener(imagePreviewUiModel.impressHolder) {
-                imagePreviewListener.onImageImpressed()
+
+            override fun onZoom(scaleFactor: Float) {
+
+            }
+
+            override fun onZoomEnd(scaleFactor: Float) {
+                if (scaleFactor > UNZOOM_SCALE_FACTOR) {
+                    imagePreviewListener.disableScroll()
+                } else {
+                    imagePreviewListener.enableScroll()
+                }
             }
         }
     }
