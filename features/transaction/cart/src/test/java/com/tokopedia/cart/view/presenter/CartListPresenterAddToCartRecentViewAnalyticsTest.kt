@@ -10,6 +10,7 @@ import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
@@ -29,13 +30,9 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
-/**
- * Created by Irfan Khoirul on 2020-01-31.
- */
-
 object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
@@ -63,7 +60,7 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,

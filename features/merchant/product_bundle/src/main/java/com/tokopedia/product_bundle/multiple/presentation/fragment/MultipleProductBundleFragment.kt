@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -49,13 +48,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         private const val PRODUCT_BUNDLE_INFO = "PRODUCT_BUNDLE_INFO"
         private const val SELECTED_BUNDLE_ID = "SELECTED_BUNDLE_ID"
         private const val SELECTED_PRODUCT_IDS = "SELECTED_PRODUCT_IDS"
+        private const val EMPTY_VARIANT_PRODUCT_IDS = "EMPTY_VARIANT_PRODUCT_IDS"
         @JvmStatic
-        fun newInstance(productBundleInfo: List<BundleInfo>, selectedBundleId: String, selectedProductIds: String) =
+        fun newInstance(productBundleInfo: List<BundleInfo>,
+                        emptyVariantProductIds: List<String>,
+                        selectedBundleId: String,
+                        selectedProductIds: List<String>) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
+                    putStringArrayList(EMPTY_VARIANT_PRODUCT_IDS, ArrayList(emptyVariantProductIds))
                     putString(SELECTED_BUNDLE_ID, selectedBundleId)
-                    putString(SELECTED_PRODUCT_IDS, selectedProductIds)
+                    putStringArrayList(SELECTED_PRODUCT_IDS, ArrayList(selectedProductIds))
                 }
             }
     }
@@ -97,17 +101,19 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         var productBundleInfo: ArrayList<BundleInfo>? = null
         var selectedBundleId: Long? = null
         var selectedVariantIds: List<String>? = null
+        var emptyVariantProductIds: List<String> = emptyList()
         if (arguments != null) {
             productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
             selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
             val selectedProductIdsStr = arguments?.getString(SELECTED_PRODUCT_IDS)
             selectedVariantIds = viewModel.getSelectedProductIds(selectedProductIdsStr ?: "")
+            emptyVariantProductIds = arguments?.getStringArrayList(EMPTY_VARIANT_PRODUCT_IDS).orEmpty()
         }
 
         // setup multiple product bundle views
         processDayView = view.findViewById(R.id.tv_po_process_day)
         setupProductBundleMasterView(view)
-        setupProductBundleDetailView(view)
+        setupProductBundleDetailView(view, emptyVariantProductIds)
         setupProductBundleOverView(view)
 
         // render product bundle info
@@ -183,9 +189,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setupProductBundleDetailView(view: View) {
+    private fun setupProductBundleDetailView(view: View, emptyVariantProductIds: List<String>) {
         productBundleDetailView = view.findViewById(R.id.rv_product_bundle_detail)
-        productBundleDetailAdapter = ProductBundleDetailAdapter(this)
+        productBundleDetailAdapter = ProductBundleDetailAdapter(this, emptyVariantProductIds)
         productBundleDetailView?.let {
             it.adapter = productBundleDetailAdapter
             it.layoutManager = LinearLayoutManager(requireContext())

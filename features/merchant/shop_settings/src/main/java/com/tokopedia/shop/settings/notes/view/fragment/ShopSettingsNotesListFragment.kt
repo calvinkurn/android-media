@@ -179,14 +179,14 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     private fun goToAddNote(isTerms: Boolean) {
         if (isTerms) { // can only has 1 term
-            if (shopNoteModels != null && shopNoteModels!!.size > 0 && shopNoteModels!![0].terms) {
+            if (shopNoteModels != null && shopNoteModels!!.size > DEFAULT_NUMBER_OF_NOTES && shopNoteModels!![0].terms) {
                 view?.let {
                     Toaster.make(it, getString(R.string.can_only_have_one_term), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
                 return
             }
         } else { // can only has 3 notes maks
-            if (shopNoteModels != null && getNonTermsCount(shopNoteModels!!) >= 3) {
+            if (shopNoteModels != null && getNonTermsCount(shopNoteModels!!) >= MAXIMUM_NUMBER_OF_NOTES) {
                 view?.let {
                     Toaster.make(it, getString(R.string.can_only_have_three_note), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -325,9 +325,11 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     companion object {
 
-        private val REQUEST_CODE_ADD_NOTE = 818
-        private val REQUEST_CODE_EDIT_NOTE = 819
-        val MIN_DATA_TO_REORDER = 2
+        private const val REQUEST_CODE_ADD_NOTE = 818
+        private const val REQUEST_CODE_EDIT_NOTE = 819
+        private const val MAXIMUM_NUMBER_OF_NOTES = 3
+        private const val DEFAULT_NUMBER_OF_NOTES = 0
+        const val MIN_DATA_TO_REORDER = 2
 
         @JvmStatic
         fun newInstance(): ShopSettingsNotesListFragment {

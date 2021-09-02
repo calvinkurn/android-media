@@ -22,7 +22,8 @@ object BundleInfoToSingleProductBundleMapper {
     fun mapToSingleProductBundle (
         context: Context, bundleInfo: List<BundleInfo>,
         selectedBundleId: String,
-        selectedProductId: Long
+        selectedProductId: Long,
+        emptyVariantProductIds: List<String>
     ): SingleProductBundleUiModel {
         val filteredBundleInfo = bundleInfo.filter {
             val bundleItem = it.bundleItems.firstOrNull()
@@ -34,7 +35,8 @@ object BundleInfoToSingleProductBundleMapper {
         }
         return SingleProductBundleUiModel(
             items = mapToBundleItem(context, filteredBundleInfo),
-            selectedItems = mapToSelectedItem(filteredBundleInfo, selectedBundleId, selectedProductId)
+            selectedItems = mapToSelectedItem(filteredBundleInfo, selectedBundleId,
+                selectedProductId, emptyVariantProductIds)
         )
     }
 
@@ -73,7 +75,8 @@ object BundleInfoToSingleProductBundleMapper {
     private fun mapToSelectedItem(
         BundleInfos: List<BundleInfo>,
         selectedBundleId: String,
-        selectedProductId: Long
+        selectedProductId: Long,
+        emptyVariantProductIds: List<String>
     ) = BundleInfos.map { bundleInfo ->
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
@@ -91,12 +94,14 @@ object BundleInfoToSingleProductBundleMapper {
             bundleId = bundleInfo.bundleID.toString(),
             shopId = bundleInfo.shopID.toString(),
             quantity = bundleItem.minOrder,
-            isSelected = bundleInfo.bundleID.toString() == selectedBundleId
-        )
+            isSelected = bundleInfo.bundleID.toString() == selectedBundleId,
+        ).apply {
+            if (isSelected) isVariantEmpty = emptyVariantProductIds.isNotEmpty()
+        }
     }.apply {
         // autoselect first item, if there is no selected item
         if (!this.any { it.isSelected }) {
-            this.firstOrNull()?.isSelected = true
+            firstOrNull()?.isSelected = true
         }
     }
 

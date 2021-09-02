@@ -13,6 +13,20 @@ import com.tokopedia.track.TrackAppUtils
  */
 object ProductTrackingCommon {
 
+    fun eventClickPilihVariant(productId: String, pageSource: String, cartType: String) {
+        val source = when (cartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> ProductDetailCommonConstant.VALUE_PRODUCT_BUNDLING
+            else -> ""
+        }
+
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Action.ACTION_CLICK_VARIANT,
+                String.format(ProductTrackingConstant.Label.EVENT_LABEL_FLOW_CHOOSE_VARIANT, source))
+        addAdditionalParams(productId, mapEvent, pageSource)
+    }
+
     fun eventActivationOvo(productId: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -145,7 +159,7 @@ object ProductTrackingCommon {
             productName: String, productPrice: Double, quantity: Int,
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
-            categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, pageSource: String = "",
+            categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
             cdListName: String = ""
     ) {
         val generateButtonActionString = when (buttonAction) {
@@ -189,7 +203,7 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_40, cdListName, //cd listname --> /tokonow - searchproduct - {organic/organic ads/topads productlist}
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_54, multiOrigin,
-                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirType,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_38, pageSource
                 ))))))
     }

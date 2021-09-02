@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
@@ -30,7 +31,8 @@ class GoToCheckoutTest {
     private lateinit var viewModel: MiniCartViewModel
     private var dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
-    private var uiModelMapper: MiniCartListUiModelMapper = spyk()
+    private var miniCartListUiModelMapper: MiniCartListUiModelMapper = spyk()
+    private var miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper = spyk()
     private var getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase = mockk()
     private val getMiniCartListUseCase: GetMiniCartListUseCase = mockk()
     private val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -43,15 +45,18 @@ class GoToCheckoutTest {
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, addToCartOccMultiUseCase, uiModelMapper)
+        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, addToCartOccMultiUseCase, miniCartListUiModelMapper, miniCartChatListUiModelMapper)
     }
 
     @Test
     fun `WHEN go to checkout by atc from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(true)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = true,
+                buttonBuyWording = "Beli Langsung"
+        )
 
         coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
         coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
@@ -70,9 +75,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(true)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = true,
+                buttonBuyWording = "Beli Langsung"
+        )
 
         coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
         coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
@@ -91,9 +99,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet error THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(true)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = true,
+                buttonBuyWording = "Beli Langsung"
+        )
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
@@ -114,9 +125,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by atc from mini cart bottom sheet failed with data THEN atc data should not be empty`() {
         //given
-        viewModel.setOccFlow(true)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = true,
+                buttonBuyWording = "Beli Langsung"
+        )
 
         coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
         coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
@@ -137,9 +151,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(false)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = false,
+                buttonBuyWording = "Beli"
+        )
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
         coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
@@ -159,9 +176,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(false)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = false,
+                buttonBuyWording = "Beli"
+        )
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
         coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
@@ -181,9 +201,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet error THEN global event state should be updated accordingly`() {
         //given
-        viewModel.setOccFlow(false)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = false,
+                buttonBuyWording = "Beli"
+        )
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
@@ -204,9 +227,12 @@ class GoToCheckoutTest {
     @Test
     fun `WHEN go to checkout by update cart from mini cart bottom sheet failed with data THEN update cart data should not be empty`() {
         //given
-        viewModel.setOccFlow(false)
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.setMiniCartABTestData(
+                isOCCFlow = false,
+                buttonBuyWording = "Beli"
+        )
 
         val mockResponse = DataProvider.provideUpdateCartFailed()
         coEvery { updateCartUseCase.setParams(any(), any()) } just Runs

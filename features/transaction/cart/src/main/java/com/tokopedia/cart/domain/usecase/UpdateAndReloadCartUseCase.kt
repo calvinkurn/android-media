@@ -7,12 +7,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-/**
- * Created by Irfan Khoirul on 2019-12-26.
- */
-
-class UpdateAndReloadCartUseCase @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
-                                                     private val updateCartUseCase: UpdateCartUseCase,
+class UpdateAndReloadCartUseCase @Inject constructor(private val updateCartUseCase: UpdateCartUseCase,
                                                      private val schedulers: ExecutorSchedulers) : UseCase<UpdateAndReloadCartListData>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<UpdateAndReloadCartListData> {
@@ -22,13 +17,10 @@ class UpdateAndReloadCartUseCase @Inject constructor(private val getCartListSimp
                     updateCartUseCase.createObservable(requestParams)
                             .map { updateCartData ->
                                 updateAndRefreshCartListData.updateCartData = updateCartData
-                                updateAndRefreshCartListData
-                            }
-                }
-                .flatMap { updateAndRefreshCartListData ->
-                    getCartListSimplifiedUseCase.createObservable(requestParams)
-                            .map { cartListData ->
-                                updateAndRefreshCartListData.cartListData = cartListData
+                                updateAndRefreshCartListData.cartId = requestParams?.getString(GetCartRevampV3UseCase.PARAM_KEY_SELECTED_CART_ID, "")
+                                        ?: ""
+                                updateAndRefreshCartListData.getCartState = requestParams?.getInt(GetCartRevampV3UseCase.PARAM_KEY_STATE, 0)
+                                        ?: 0
                                 updateAndRefreshCartListData
                             }
                 }

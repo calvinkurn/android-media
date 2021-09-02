@@ -38,5 +38,6 @@ data class SingleProductBundleSelectedItem (
         var productId: String = "",
         val shopId: String = "",
         val quantity: Int = 0,
-        var isSelected: Boolean = false
+        var isSelected: Boolean = false,
+        var isVariantEmpty: Boolean = false
 )

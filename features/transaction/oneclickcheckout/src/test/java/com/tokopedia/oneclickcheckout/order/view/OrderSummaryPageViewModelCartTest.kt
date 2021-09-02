@@ -238,7 +238,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
-            shippingDurationViewModels = listOf(
+            shippingDurationUiModels = listOf(
                     ShippingDurationUiModel().apply {
                         serviceData = ServiceData().apply {
                             serviceId = 1
@@ -270,7 +270,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(profile, orderSummaryPageViewModel.orderProfile.value)
         assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
                 shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
-                insurance = OrderInsurance(shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance)),
+                insurance = OrderInsurance(shippingRecommendationData.shippingDurationUiModels[0].shippingCourierViewModelList[0].productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
@@ -797,6 +797,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
@@ -843,7 +844,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
-            shippingDurationViewModels = listOf(
+            shippingDurationUiModels = listOf(
                     ShippingDurationUiModel().apply {
                         serviceData = ServiceData().apply {
                             serviceId = 1
@@ -887,7 +888,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
-            shippingDurationViewModels = listOf(
+            shippingDurationUiModels = listOf(
                     ShippingDurationUiModel().apply {
                         serviceData = ServiceData().apply {
                             serviceId = 1

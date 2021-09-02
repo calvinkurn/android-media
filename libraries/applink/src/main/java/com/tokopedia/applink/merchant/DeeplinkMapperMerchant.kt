@@ -38,6 +38,8 @@ object DeeplinkMapperMerchant {
     private const val SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE = 2
     private const val PARAM_SELLER_TAB = "tab"
     private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
+    private const val SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE = 3
+    private const val SHOP_PAGE_RESULT_ETALASE_INTERNAL_PATH_SEGMENT_SIZE = 3
 
     private const val PARAM_URL = "url"
 
@@ -75,13 +77,6 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
-    fun getRegisteredNavigationReviewReminder(deeplink: String): String {
-        if (deeplink.startsWith(ApplinkConst.REVIEW_REMINDER)) {
-            return ApplinkConstInternalMarketplace.REVIEW_REMINDER
-        }
-        return deeplink
-    }
-
     fun isShopPage(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SHOP) && uri.pathSegments.size == SHOP_PAGE_SEGMENT_SIZE
@@ -104,7 +99,19 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopReview(shopId: String?): String {
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
+        return if (isUsingNewShopReviewPage()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW, shopId)
+        } else {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
+        }
+    }
+
+    fun isUsingNewShopReviewPage(): Boolean {
+        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                RollenceKey.AB_TEST_SHOP_REVIEW,
+                RollenceKey.OLD_REVIEW_SHOP
+        )
+        return shopReviewAbTestKey.equals(RollenceKey.NEW_REVIEW_SHOP, true)
     }
 
     fun getRegisteredNavigationProductReview(uri: Uri): String {
@@ -133,26 +140,6 @@ object DeeplinkMapperMerchant {
         }
         return Uri.parse(newUri)
                 .buildUpon()
-                .build()
-                .toString()
-    }
-
-    fun getRegisteredNavigationProductBundle(uri: Uri): String {
-        // TODO: Need to handle the default value in activity level
-        val segments = uri.pathSegments
-        val bundleId = uri.getQueryParameter(PARAM_BUNDLE_ID) ?: "0"
-        val selectedProductIds = uri.getQueryParameter(PARAM_SELECTED_PRODUCT_IDS) ?: "0"
-        val source = uri.getQueryParameter(PARAM_SOURCE) ?: ""
-        val cartIds = uri.getQueryParameter(PARAM_CART_IDS) ?: "0"
-
-        val productId = segments.last()
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
-        return Uri.parse(newUri)
-                .buildUpon()
-                .appendQueryParameter(PARAM_BUNDLE_ID, bundleId)
-                .appendQueryParameter(PARAM_SELECTED_PRODUCT_IDS, selectedProductIds)
-                .appendQueryParameter(PARAM_SOURCE, source)
-                .appendQueryParameter(PARAM_CART_IDS, cartIds)
                 .build()
                 .toString()
     }
@@ -217,7 +204,7 @@ object DeeplinkMapperMerchant {
             val pathSegment = uri.pathSegments ?: return false
             val prefixShopPageHomeAppLink = "tokopedia://shop/"
             val pathEtalase = "etalase"
-            return if (pathSegment.size == 3)
+            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_PATH_SEGMENT_SIZE)
                 it.toString().startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathEtalase)
             else false
         } ?: false
@@ -247,7 +234,7 @@ object DeeplinkMapperMerchant {
     fun getShopPageResultEtalaseInternalAppLink(uri: Uri?): String {
         return uri?.let {
             val pathSegment = uri.pathSegments ?: return it.toString()
-            return if (pathSegment.size == 3) {
+            return if (pathSegment.size == SHOP_PAGE_RESULT_ETALASE_INTERNAL_PATH_SEGMENT_SIZE) {
                 val shopId = pathSegment[0]
                 val etalaseId = pathSegment[2]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, shopId, etalaseId)

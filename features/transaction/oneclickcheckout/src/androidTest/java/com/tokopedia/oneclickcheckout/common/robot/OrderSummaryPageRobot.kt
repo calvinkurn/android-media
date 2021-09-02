@@ -650,6 +650,26 @@ class OrderSummaryPageRobot {
         }))
     }
 
+    fun assertProfileEnable(isEnable: Boolean) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert profile enable"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(if (isEnable) 1.0f else 0.5f, view.alpha)
+            }
+        }))
+    }
+
     fun assertAddressRevamp(addressName: String, addressDetail: String, isMainAddress: Boolean = false) {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
@@ -785,6 +805,31 @@ class OrderSummaryPageRobot {
                 val tvError = view.findViewById<Typography>(R.id.tv_shipping_error_message)
                 assertEquals(View.VISIBLE, tvError.visibility)
                 assertEquals(errorMessage, tvError.text.toString())
+            }
+        }))
+    }
+
+    fun assertShipmentDisabled(title: String, description: String) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shipment disable"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tvErrorTitle = view.findViewById<Typography>(R.id.tv_shipping_courier)
+                assertEquals(View.VISIBLE, tvErrorTitle.visibility)
+                assertEquals(title, tvErrorTitle.text.toString())
+                val tvErrorDescription = view.findViewById<Typography>(R.id.tv_shipping_price)
+                assertEquals(View.VISIBLE, tvErrorDescription.visibility)
+                assertEquals(description, tvErrorDescription.text.toString())
             }
         }))
     }

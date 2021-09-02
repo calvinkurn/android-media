@@ -10,6 +10,7 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -30,7 +31,7 @@ import rx.subscriptions.CompositeSubscription
 
 object CartListPresenterUpdateCartForPromoTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
@@ -58,7 +59,7 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    getCartRevampV3UseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,

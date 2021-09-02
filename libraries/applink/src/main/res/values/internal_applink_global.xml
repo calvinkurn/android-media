@@ -31,6 +31,7 @@
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
@@ -49,7 +50,10 @@
     <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
+    <string name="path_webview_download" translatable="false">/webviewdownload</string>
+    <string name="path_webview_back_home" translatable="false">/webviewbackhome</string>
     <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
+    <string name="path_browser" translatable="false">/browser</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>

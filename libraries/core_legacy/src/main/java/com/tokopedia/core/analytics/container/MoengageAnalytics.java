@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -125,17 +124,6 @@ public class MoengageAnalytics extends ContextAnalytics {
         return true;
     }
 
-    /**
-     * will be eliminate soon
-     * refer to setUserProfile(String... customerWrapper)
-     *
-     * @param customerWrapper
-     */
-    @Deprecated
-    public void setUserProfile(CustomerWrapper customerWrapper) {
-        setMoengageUserProfile(customerWrapper.getCustomerId(), customerWrapper.getFullName(), customerWrapper.getEmailAddress());
-    }
-
     @SuppressWarnings("RestrictedApi")
     public void setMoengageUserProfile(String... customerWrapper) {
         moengageInteractor.setMoengageUserProfile(customerWrapper);
@@ -182,15 +170,6 @@ public class MoengageAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         sendTrackEvent(eventValue, eventName);
-    }
-
-    private boolean checkNull(Object o) {
-        if (o instanceof String)
-            return !TextUtils.isEmpty((String) o);
-        else if (o instanceof Boolean)
-            return o != null;
-        else
-            return o != null;
     }
 
     public void logoutEvent() {

@@ -23,7 +23,9 @@ data class MiniCartWidgetData(
         var totalProductPrice: Long = 0,
         var totalProductError: Int = 0,
         var containsOnlyUnavailableItems: Boolean = false,
-        var unavailableItemsCount: Int = 0
+        var unavailableItemsCount: Int = 0,
+        var isOCCFlow: Boolean = false,
+        var buttonBuyWording: String = ""
 )
 
 data class MiniCartItem(

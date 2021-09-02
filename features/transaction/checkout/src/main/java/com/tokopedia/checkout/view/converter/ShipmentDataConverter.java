@@ -173,7 +173,7 @@ public class ShipmentDataConverter {
             ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
+            shipmentCartItemModel.setBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
@@ -197,6 +197,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setHasGeolocation(!TextUtils.isEmpty(userAddress.getLongitude()) && !TextUtils.isEmpty(userAddress.getLatitude()));
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
             shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
+            shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -256,7 +257,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
-        shipmentCartItemModel.setIsLeasingProduct(groupShop.isLeasingProduct());
+        shipmentCartItemModel.setLeasingProduct(groupShop.isLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
         shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
@@ -345,6 +346,16 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
             cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
+
+        cartItemModel.setBundlingItem(product.isBundlingItem());
+        cartItemModel.setBundlingItemPosition(product.getBundlingItemPosition());
+        cartItemModel.setBundleId(product.getBundleId());
+        cartItemModel.setBundleGroupId(product.getBundleGroupId());
+        cartItemModel.setBundleTitle(product.getBundleTitle());
+        cartItemModel.setBundlePrice(product.getBundlePrice());
+        cartItemModel.setBundleSlashPriceLabel(product.getBundleSlashPriceLabel());
+        cartItemModel.setBundleOriginalPrice(product.getBundleOriginalPrice());
+        cartItemModel.setBundleQuantity(product.getBundleQuantity());
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;

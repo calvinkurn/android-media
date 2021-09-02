@@ -1,13 +1,13 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.CartLogger
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import rx.Subscriber
 
 /**
@@ -16,7 +16,7 @@ import rx.Subscriber
 
 class UpdateCartSubscriber(private val view: ICartListView?,
                            private val presenter: ICartListPresenter?,
-                           private val cartItemDataList: List<CartItemData>) : Subscriber<UpdateCartData>() {
+                           private val cartItemDataList: List<CartItemHolderData>) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
 
@@ -58,7 +58,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         val cartShopHolderDataList = view?.getAllShopDataList()
 
         if (cartShopHolderDataList?.size ?: 0 == 1) {
-            cartShopHolderDataList?.get(0)?.shopGroupAvailableData?.cartItemDataList?.let {
+            cartShopHolderDataList?.get(0)?.productUiModelList?.let {
                 for (cartShopHolderData in it) {
                     if (!cartShopHolderData.isSelected) {
                         checklistCondition = CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM
@@ -75,7 +75,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                         allSelectedItemShopCount++
                     } else {
                         var selectedItem = 0
-                        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let { cartItemHolderDataList ->
+                        cartShopHolderData.productUiModelList?.let { cartItemHolderDataList ->
                             for (cartItemHolderData in cartItemHolderDataList) {
                                 if (!cartItemHolderData.isSelected) {
                                     selectedItem++
@@ -101,12 +101,12 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         return checklistCondition
     }
 
-    private fun isCheckoutProductEligibleForCashOnDelivery(cartItemDataList: List<CartItemData>): Boolean {
+    private fun isCheckoutProductEligibleForCashOnDelivery(cartItemDataList: List<CartItemHolderData>): Boolean {
         var totalAmount = 0.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData.pricePlan.times(cartItemData.updatedData.quantity)
+            val itemPriceAmount = cartItemData.productPrice * cartItemData.quantity
             totalAmount += itemPriceAmount
-            if (!cartItemData.originData.isCod) return false
+            if (!cartItemData.isCod) return false
         }
         return totalAmount <= MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
     }

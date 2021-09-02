@@ -1,7 +1,6 @@
 package com.tokopedia.product_bundle.activity
 
-import android.content.Context
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -9,44 +8,34 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.common.data.mapper.InventoryError
+import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
+import com.tokopedia.product_bundle.common.extension.showUnifyDialog
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ProductBundleActivity : BaseSimpleActivity() {
-    private var selectedBundleId: String = "0"  // TODO: Please handle this default case
-    private var selectedProductIds: String = "0"  // TODO: Please handle this default case
-    private var source: String = "0"  // TODO: Please handle this default case
-    private var cartIds: String = "0"  // TODO: Please handle this default case
+
+    private var bundleId: Long = 0
+    private var selectedProductIds: List<String> = emptyList()
+    private var source: String = ""
 
     companion object {
         private const val BUNDLE_ID = "bundleId"
         private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
         private const val SOURCE = "source"
-        private const val CART_IDS = "cartIds"
-        const val EXTRA_PRODUCT_ID: String = "product_id"
-
-        // TODO("remove if unused")
-        fun createInstance(context: Context?, product_id: String? = null): Intent {
-            val intent = Intent(context, ProductBundleActivity::class.java)
-            product_id?.let {
-                intent.putExtra(EXTRA_PRODUCT_ID, product_id)
-            }
-            return intent
-        }
     }
 
     @Inject
@@ -73,27 +62,20 @@ class ProductBundleActivity : BaseSimpleActivity() {
             val pathSegments = it.pathSegments.orEmpty()
             val parentProductId = viewModel.getProductIdFromUri(it, pathSegments)
             viewModel.setParentProductId(parentProductId.toLongOrZero())
-            selectedBundleId = if (it.getQueryParameter(BUNDLE_ID) == null) "" else it.getQueryParameter(BUNDLE_ID)!!
-            selectedProductIds = if (data?.getQueryParameter(SELECTED_PRODUCT_IDS) == null) "" else it.getQueryParameter(SELECTED_PRODUCT_IDS)!!
-            source = if (data?.getQueryParameter(SOURCE) == null) "" else it.getQueryParameter(SOURCE)!!
-            cartIds = if (data?.getQueryParameter(CART_IDS) == null) "" else it.getQueryParameter(CART_IDS)!!
+            getBundleIdFromUri(it)
+            getSelectedProductIdsFromUri(it)
+            getPageSourceFromUri(it)
         }
-        viewModel.getBundleInfo(viewModel.parentProductID)
+        val parentProductId = viewModel.parentProductID
+        viewModel.getBundleInfo(parentProductId)
+        entryPointFragment.setProductId(parentProductId.toString())
+        entryPointFragment.setPageSource(source)
 
         setupToolbarActions()
 
         observePageState()
         observeGetBundleInfoResult()
-        observeInventoryError()
     }
-
-//    private fun getProductIdFromUri(it: Uri?, pathSegments: List<String>) {
-//        productId = if (pathSegments.size >= 2) {
-//            it?.pathSegments?.getOrNull(1).orEmpty()
-//        } else {
-//            "0" // TODO: Please handle this default case if productId is 0
-//        }
-//    }
 
     override fun getLayoutRes() = R.layout.activity_product_bundle
 
@@ -108,13 +90,34 @@ class ProductBundleActivity : BaseSimpleActivity() {
             .inject(this)
     }
 
+    private fun getBundleIdFromUri(uri: Uri) {
+        try {
+            bundleId = if (uri.getQueryParameter(BUNDLE_ID) == null) 0
+            else uri.getQueryParameter(BUNDLE_ID).toLongOrZero()
+        } catch (e: Exception) { }
+    }
+
+    private fun getSelectedProductIdsFromUri(uri: Uri) {
+        try {
+            uri.getQueryParameter(SELECTED_PRODUCT_IDS)?.let {
+                if (it.isNotEmpty())
+                    selectedProductIds = it.split(",").orEmpty()
+            }
+        } catch (e: Exception) { }
+    }
+
+    private fun getPageSourceFromUri(uri: Uri) {
+        if (uri.getQueryParameter(SOURCE) != null) {
+            source = uri.getQueryParameter(SOURCE).orEmpty()
+        }
+    }
+
     private fun observePageState() {
         viewModel.pageState.observe(this) { state ->
             when (state) {
                 ProductBundleState.LOADING -> entryPointFragment.showShimmering()
-                ProductBundleState.SUCCESS -> entryPointFragment.showSuccess()
                 ProductBundleState.ERROR -> entryPointFragment.showError()
-                else -> entryPointFragment.showSuccess()
+                else -> {}
             }
         }
     }
@@ -125,18 +128,35 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 is Success -> {
                     val productBundleData = result.data
                     val bundleInfo = productBundleData.getBundleInfo.bundleInfo
+                    val longSelectedProductIds = selectedProductIds.map { it.toLong() }
+                    val inventoryError = InventoryErrorMapper.mapToInventoryError(result, bundleId, longSelectedProductIds)
+                    val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
                     if (bundleInfo.isNotEmpty()) {
-                        var productBundleFragment: Fragment? = null
-                        productBundleFragment = if (viewModel.isSingleProductBundle(bundleInfo)) {
-                            val parentProductID = viewModel.parentProductID
-                            SingleProductBundleFragment.newInstance(parentProductID, bundleInfo)
-                        } else {
-                            MultipleProductBundleFragment.newInstance(bundleInfo, selectedBundleId, selectedProductIds)
+                        val productBundleFragment = when {
+                            inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
+                                entryPointFragment.showEmpty()
+                                entryPointFragment
+                            }
+                            viewModel.isSingleProductBundle(bundleInfo) -> {
+                                val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
+                                SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo,
+                                    bundleId.toString(), selectedProductId, emptyVariantProductIds,
+                                    source)
+                            }
+                            else -> {
+                                MultipleProductBundleFragment.newInstance(
+                                    productBundleInfo = bundleInfo,
+                                    emptyVariantProductIds = emptyVariantProductIds,
+                                    selectedBundleId = bundleId.toString(),
+                                    selectedProductIds = selectedProductIds
+                                )
+                            }
                         }
                         supportFragmentManager.beginTransaction()
                             .replace(parentViewResourceID, productBundleFragment, tagFragment)
                             .commit()
                     }
+                    showInventoryErrorDialog(inventoryError)
                 }
                 is Fail -> {
                     // TODO: log error
@@ -145,24 +165,31 @@ class ProductBundleActivity : BaseSimpleActivity() {
         })
     }
 
-    private fun observeInventoryError() {
-        viewModel.inventoryError.observe(this, { errorResult ->
-            if (errorResult.type != InventoryErrorType.NO_ERROR) {
-                showDialog(errorResult.type.toString())
+    private fun showInventoryErrorDialog(errorResult: InventoryError) {
+        val title: String
+        val message: String
+        val buttonText: String
+        when (errorResult.type) {
+            InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE -> {
+                title = getString(R.string.dialog_error_title_empty)
+                message = getString(R.string.dialog_error_message_other_bundle_and_variant_available)
+                buttonText = getString(R.string.dialog_error_action_change_variant)
+                showUnifyDialog(title, message, buttonText)
             }
-        })
-    }
-
-    private fun showDialog(message: String) {
-        DialogUnify(this, HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.dialog_error_title_empty))
-            setDescription(message)
-            setPrimaryCTAText(getString(R.string.dialog_error_action_empty_variant))
-            setSecondaryCTAText(getString(R.string.action_back))
-            dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-            setSecondaryCTAClickListener { finish() }
-            setPrimaryCTAClickListener { dismiss() }
-        }.show()
+            InventoryErrorType.OTHER_BUNDLE_AVAILABLE -> {
+                title = getString(R.string.dialog_error_title_empty_bundle)
+                message = getString(R.string.dialog_error_message_other_bundle_available)
+                buttonText = getString(R.string.dialog_error_action_change_bundle)
+                showUnifyDialog(title, message, buttonText)
+            }
+            InventoryErrorType.OTHER_VARIANT_AVAILABLE -> {
+                title = getString(R.string.dialog_error_title_empty)
+                message = getString(R.string.dialog_error_message_other_variant_available)
+                buttonText = getString(R.string.dialog_error_action_change_variant)
+                showUnifyDialog(title, message, buttonText)
+            }
+            else -> { /* no-op */ }
+        }
     }
 
     private fun setupToolbarActions() {

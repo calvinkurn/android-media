@@ -96,7 +96,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 tvQtyLeft.gone()
             }
 
-            val alpha = if (product.isError) 0.5f else 1.0f
+            val alpha = if (product.isError) DISABLE_ALPHA else ENABLE_ALPHA
             ivProductImage.alpha = alpha
             tvProductName.alpha = alpha
             flexboxOrderProductNames.alpha = alpha
@@ -142,7 +142,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 lblProductSlashPricePercentage.gone()
             }
 
-            flexboxOrderProductPrices.alpha = if (product.isError) 0.5f else 1.0f
+            flexboxOrderProductPrices.alpha = if (product.isError) DISABLE_ALPHA else ENABLE_ALPHA
         }
     }
 
@@ -334,7 +334,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 btnProtectionInfo.setOnClickListener {
                     val url = product.purchaseProtectionPlanData.protectionLinkUrl
                     if (url.isNotBlank()) {
-                        listener.onPurchaseProtectionInfoClicked(url, product.categoryId, product.purchaseProtectionPlanData.protectionTitle)
+                        listener.onPurchaseProtectionInfoClicked(url, product.categoryId, product.purchaseProtectionPlanData.protectionPricePerProduct, product.purchaseProtectionPlanData.protectionTitle)
                     }
                 }
                 cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
@@ -370,7 +370,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun forceUpdateCart()
 
-        fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String)
+        fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String)
 
         fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
 
@@ -380,6 +380,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     companion object {
         const val VIEW_TYPE = 3
         const val MAX_NOTES_LENGTH = 144
+
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
 
         private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
     }

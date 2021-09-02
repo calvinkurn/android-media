@@ -8,10 +8,13 @@
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error"
-        tools:visibility="gone" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16" />
 
     <RelativeLayout
         android:id="@+id/rl_shop_header"
@@ -28,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:paddingStart="@dimen/dp_0"
+            tools:visibility="gone"
             android:paddingEnd="@dimen/dp_10" />
 
         <LinearLayout
@@ -167,10 +171,10 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/img_free_shipping"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_20"
                 android:gravity="center_vertical"
-                app:unify_image_type="rect"
+                android:scaleType="fitStart"
                 tools:src="@color/Unify_G500" />
 
         </com.google.android.flexbox.FlexboxLayout>

@@ -24,8 +24,12 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     var title: Typography = itemView.findViewById(R.id.tv_item_title)
     var spinnerItemVariant: SpinnerView = itemView.findViewById(R.id.spinner_item_variant)
     var discountViewItem: DiscountPriceView = itemView.findViewById(R.id.discountview_item)
+    var tvVariantEmpty: View = itemView.findViewById(R.id.tv_variant_empty)
 
-    fun bindData(item: SingleProductBundleItem, selectedItem: SingleProductBundleSelectedItem) {
+    fun bindData(
+        item: SingleProductBundleItem,
+        selectedItem: SingleProductBundleSelectedItem
+    ) {
         title.text = item.productName
         ivItemImage.urlSrc = item.imageUrl
         bundleName.text = item.bundleName
@@ -36,5 +40,6 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
         spinnerItemVariant.text = item.selectedVariantText
 
         radioItem.isChecked = selectedItem.isSelected
+        tvVariantEmpty.isVisible = selectedItem.isVariantEmpty
     }
 }

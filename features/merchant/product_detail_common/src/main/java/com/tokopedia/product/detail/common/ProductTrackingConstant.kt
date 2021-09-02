@@ -49,6 +49,7 @@ object ProductTrackingConstant {
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_PRICE = "productPrice"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -136,10 +137,6 @@ object ProductTrackingConstant {
         const val ADD_WISHLIST_NON_LOGIN = "add wishlist - non logged in"
         const val CLICK_CHECK_WISHLIST = "click - check wishlist kamu"
         const val CLICK_SHOP_PAGE = "click - shop page link"
-        const val CLICK_SEE_ALL_MERCHANT_VOUCHER = "click - merchant voucher - see all"
-        const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
-        const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
-        const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
         const val CLICK_TOASTER_LIHAT_SUCCESS_ATC = "click - lihat on add to cart success toaster"
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
@@ -164,6 +161,9 @@ object ProductTrackingConstant {
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
+        const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
+
+        const val ACTION_CLICK_VARIANT = "click - pilih variant"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
@@ -209,6 +209,10 @@ object ProductTrackingConstant {
 
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
+
+        const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
+        const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
+        const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
     }
 
 
@@ -232,6 +236,10 @@ object ProductTrackingConstant {
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
         const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
+        const val EVENT_LABEL_CLICK_PRODUCT_BUNDLING_MULTIPLE = "product_id:%s; bundling_id:%s; bundling_type:multiple;"
+        const val EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val VIEW_LABEL_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val EVENT_LABEL_FLOW_CHOOSE_VARIANT = "flow:%s;"
     }
 
     object Report {

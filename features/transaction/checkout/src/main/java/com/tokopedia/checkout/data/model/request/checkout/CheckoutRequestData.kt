@@ -32,11 +32,11 @@ data class CheckoutRequestGqlData(
         @SuppressLint("Invalid Data Type")
         var leasingId: Int = 0,
         @SerializedName("feature_type")
-        val featureType: Int = FEATURE_TYPE_TOKONOW
+        var featureType: Int = 0
 ) {
-
     companion object {
-        const val FEATURE_TYPE_TOKONOW = 11
+        const val FEATURE_TYPE_REGULAR_PRODUCT = 3
+        const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
     }
 }
 
@@ -166,7 +166,7 @@ object CheckoutRequestGqlDataMapper {
             tokopediaCornerData = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
-
+            featureType = checkoutRequest.featureType
         }
     }
 

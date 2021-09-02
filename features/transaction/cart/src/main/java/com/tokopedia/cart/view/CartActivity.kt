@@ -5,10 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 class CartActivity : BaseCheckoutActivity() {
 
     lateinit var fragment: CartFragment

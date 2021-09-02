@@ -20,8 +20,11 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -38,11 +41,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
                                             private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
-                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
+                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
+                                            private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
     companion object {
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
+        const val DEFAULT_PERCENTAGE = 100.0
+        const val DEFAULT_WEIGHT = 1000.0f
     }
 
     // Global Data
@@ -54,9 +60,9 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     val currentPage: LiveData<MiniCartAnalytics.Page>
         get() = _currentPage
 
-    private val _isOCCFlow = MutableLiveData<Boolean>()
-    val isOCCFlow: LiveData<Boolean>
-        get() = _isOCCFlow
+    private val _miniCartABTestData = MutableLiveData<MiniCartABTestData>()
+    val miniCartABTestData: LiveData<MiniCartABTestData>
+        get() = _miniCartABTestData
 
     // Widget DATA
     private val _globalEvent = MutableLiveData<GlobalEvent>()
@@ -71,6 +77,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _miniCartListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
     val miniCartListBottomSheetUiModel: LiveData<MiniCartListUiModel>
         get() = _miniCartListBottomSheetUiModel
+
+    // Bottom Sheet Chat Data
+    private val _miniCartChatListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
+    val miniCartChatListBottomSheetUiModel: LiveData<MiniCartListUiModel>
+        get() = _miniCartChatListBottomSheetUiModel
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
@@ -139,6 +150,18 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
+    fun updateChatVisitables(visitables: MutableList<Visitable<*>>) {
+        miniCartChatListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
+    }
+
+    fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
+        _miniCartABTestData.value = MiniCartABTestData(
+                isOCCFlow = isOCCFlow,
+                buttonBuyWording = buttonBuyWording
+        )
+    }
+
     // API Call & Callback
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
@@ -151,8 +174,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {
-                    // Todo : setOccFlow value from mini cart response
-                    _isOCCFlow.value = true
+                    setMiniCartABTestData(
+                            isOCCFlow = it.miniCartWidgetData.isOCCFlow,
+                            buttonBuyWording = it.miniCartWidgetData.buttonBuyWording
+                    )
                     _miniCartSimplifiedData.value = it
                 },
                 onError = {
@@ -169,8 +194,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    // Todo : setOccFlow value from mini cart response
-                    _isOCCFlow.value = true
+                    setMiniCartABTestData(
+                            isOCCFlow = it.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC,
+                            buttonBuyWording = it.data.beliButtonConfig.buttonWording
+                    )
                     onSuccessGetCartList(it, isFirstLoad)
                 },
                 onError = {
@@ -187,9 +214,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             )
         } else {
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
+            val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
+
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+            tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartListUiModel.needToCalculateAfterLoad = true
+
             _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+            _miniCartChatListBottomSheetUiModel.value = tmpMiniCartChatListUiModel
         }
     }
 
@@ -339,7 +371,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun goToCheckout(observer: Int) {
-        if (isOCCFlow.value == true) {
+        if (miniCartABTestData.value?.isOCCFlow == true) {
             addToCartForCheckout(observer)
         } else {
             updateCartForCheckout(observer)
@@ -646,7 +678,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                             else -> visitable.productPrice
                         }
                 totalPrice += visitable.productQty * price
-                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / 100.0 * price).toLong()
+                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
                 val originalPrice =
                         when {
                             visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice
@@ -744,7 +776,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
             val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
                     ?: ""
-            val overWeight = (totalWeight - maxWeight) / 1000.0f
+            val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
             if (tickerWarning == null) {
                 tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
                 tickerWarning.let {

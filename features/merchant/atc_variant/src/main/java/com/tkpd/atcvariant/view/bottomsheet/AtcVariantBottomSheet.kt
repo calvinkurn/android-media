@@ -194,7 +194,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
-            shouldSetActivityResult = it.pageSource != AtcVariantHelper.BUNDLING_PAGESOURCE
+            val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
+                    .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
+            shouldSetActivityResult = when (cartRedirCartType) {
+                ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> false
+                else -> true
+            }
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
@@ -381,7 +386,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             viewModel.getSelectedQuantity(productId)
         }
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
-
+        val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
+                ?: ""
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -394,13 +400,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 quantity = selectedQuantity,
                 variantName = viewModel.titleVariantName.value ?: "",
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
-                shopType = variantAggregatorData?.shopType ?: "",
+                shopType = shopType,
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
-                        ?: "",
-                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
-                        ?: "",
-                isFreeOngkir = variantAggregatorData?.getIsFreeOngkirByBoType(productId) ?: false,
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
+                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
+                bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "")
     }
@@ -504,12 +508,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        if (cartType == ProductDetailCommonConstant.KEY_SAVE_BUTTON) {
-            onSaveButtonClicked()
-        } else {
-            this.buttonText = buttonText
-            val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-            doAtc(atcKey)
+        when (cartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                ProductTrackingCommon.eventClickPilihVariant(adapter?.getHeaderDataModel()?.productId
+                        ?: "", pageSource, cartType)
+                onSaveButtonClicked()
+            }
+            else -> {
+                this.buttonText = buttonText
+                val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+                doAtc(atcKey)
+            }
         }
     }
 
@@ -622,7 +632,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun goToHomePage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         activity?.finish()
     }

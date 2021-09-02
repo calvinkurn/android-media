@@ -47,7 +47,7 @@ class OrderSummaryPageActivityTokonowTest {
     }
 
     @Test
-    fun happyFlow_AllInfo_DirectCheckout() {
+    fun tokonow_logistics() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_RP0_RESPONSE_PATH
 
@@ -173,6 +173,120 @@ class OrderSummaryPageActivityTokonowTest {
                         insurancePrice = "Rp300",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp421.300"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun tokonow_overweight() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_RP0_RESPONSE_PATH
+        promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_TOKONOW_RP0_APPLIED_RESPONSE
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertProductCard(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Now! 2 jam tiba (Rp0)",
+                    shippingPrice = null,
+                    shippingEta = "Tiba dalam 2 jam"
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp201.300", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        isBbo = true,
+                        insurancePrice = "Rp300",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp201.300"
+                )
+                closeBottomSheet()
+            }
+
+            clickAddProductQuantity(0, 1)
+
+            assertShopTicker("Belanjaan Tokopedia NOW! kamu terlalu berat 10 kg untuk 1x pengiriman. Atur ulang pesananmu.")
+            assertProfileEnable(false)
+            assertShipmentDisabled("Pengiriman tidak tersedia.", "Berat belanjaanmu melebihi batas untuk satu kali pengiriman.")
+            assertPaymentButtonEnable(false)
+
+            clickMinusProductQuantity(0, 1)
+
+            assertShopTicker(null)
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Now! 2 jam tiba (Rp0)",
+                    shippingPrice = null,
+                    shippingEta = "Tiba dalam 2 jam"
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp201.300", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        isBbo = true,
+                        insurancePrice = "Rp300",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp201.300"
                 )
                 closeBottomSheet()
             }

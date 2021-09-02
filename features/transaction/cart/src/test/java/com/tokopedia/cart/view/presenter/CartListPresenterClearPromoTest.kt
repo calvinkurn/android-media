@@ -27,7 +27,7 @@ import rx.subscriptions.CompositeSubscription
 
 object CartListPresenterClearPromoTest : Spek({
 
-    val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
+    val getCartListSimplifiedUseCase: GetCartRevamp = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
     val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
