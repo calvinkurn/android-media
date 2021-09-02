@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -19,6 +24,8 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -31,9 +38,13 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurchaseComponent
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapter
@@ -52,7 +63,11 @@ class TokoNowRecentPurchaseFragment:
     Fragment(),
     MiniCartWidgetListener,
     TokoNowView,
-    TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener {
+    TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener,
+    TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
+    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener
+{
 
     companion object {
         const val SOURCE = "tokonow"
@@ -72,13 +87,17 @@ class TokoNowRecentPurchaseFragment:
     private var statusBarBg: View? = null
     private var miniCartWidget: MiniCartWidget? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private val carouselScrollPosition = SparseIntArray()
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
                 productCardListener = RepurchaseProductCardListener(requireContext()),
                 tokoNowChooseAddressWidgetListener = this,
-                tokoNowListener = this
+                tokoNowListener = this,
+                tokoNowCategoryGridListener = this,
+                tokoNowEmptyStateNoResultListener = this,
+                tokoNowRecommendationCarouselListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -139,6 +158,81 @@ class TokoNowRecentPurchaseFragment:
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = refreshLayout()
+
+    override fun onCategoryRetried() {
+        // TO-DO : retry to get category
+    }
+
+    override fun onAllCategoryClicked() {
+        // TO-DO : analytics
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        // TO-DO : analytics
+    }
+
+    override fun onFindInTokopediaClick() {
+        RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    override fun goToTokopediaNowHome() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onRemoveFilterClick(option: Option) { /* noting to do */ }
+
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
+    }
+
+    override fun onBindRecommendationCarousel(
+        model: TokoNowRecommendationCarouselUiModel,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onImpressedRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onClickRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onATCNonVariantRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onAddVariantRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem
+    ) {
+        // TO-DO :
+    }
 
     private fun initInjector() {
         DaggerRecentPurchaseComponent.builder()
@@ -252,7 +346,7 @@ class TokoNowRecentPurchaseFragment:
             val toolbarHeight = NavToolbarExt.getFullToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
-                // TO-DO: implement refresh here
+                refreshLayout()
             }
         }
     }
@@ -478,6 +572,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun refreshLayout() {
+        carouselScrollPosition.clear()
         viewModel.showLoading()
     }
 }
