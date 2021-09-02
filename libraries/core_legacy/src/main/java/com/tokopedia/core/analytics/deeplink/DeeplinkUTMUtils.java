@@ -67,7 +67,7 @@ public class DeeplinkUTMUtils {
 
     public static Map<String, String> splitQuery(Uri url) {
         Map<String, String> queryPairs = new LinkedHashMap<>();
-        String query = url.getQuery();
+        String query = (url != null) ? url.getQuery() : "";
         if (!TextUtils.isEmpty(query)) {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
@@ -100,7 +100,7 @@ public class DeeplinkUTMUtils {
 
         Uri referrerUri = getReferrer(activity);
 
-        boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
+        boolean isAmpUri = "true".equalsIgnoreCase(maps.get(KEY_AMP));
 
         if (isOriginalUrlAmp) {
             campaign = createAmpOrganicCampaign(maps);

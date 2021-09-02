@@ -53,12 +53,12 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         )
 
         // When
-        performClickOnProductCard(R.id.recycler_view)
-        performClickAtcButton(R.id.recycler_view)
-        performClickBuyButton(R.id.recycler_view)
+        performClickOnProductCard(R.id.recycler_view_chatroom)
+        performClickAtcButton(R.id.recycler_view_chatroom)
+        performClickBuyButton(R.id.recycler_view_chatroom)
 
         // Then
-        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        verifyRecyclerViewDisplayed(R.id.recycler_view_chatroom)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaProduct),
                 hasAllSuccess()
@@ -101,12 +101,12 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         )
 
         // When
-        performClickOnProductCard(R.id.recycler_view)
-        performClickAtcButton(R.id.recycler_view)
-        performClickBuyButton(R.id.recycler_view)
+        performClickOnProductCard(R.id.recycler_view_chatroom)
+        performClickAtcButton(R.id.recycler_view_chatroom)
+        performClickBuyButton(R.id.recycler_view_chatroom)
 
         // Then
-        verifyRecyclerViewDisplayed(R.id.recycler_view)
+        verifyRecyclerViewDisplayed(R.id.recycler_view_chatroom)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDbSource, context, cassavaSearchProduct),
                 hasAllSuccess()

@@ -1286,4 +1286,41 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
         sendGeneralEvent(gtmData);
     }
+
+    public void eventClickCollapsedProductImage(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickLihatSelengkapnyaOnNowProduct(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickLihatOnPlusLainnyaOnNowProduct(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
 }

@@ -15,25 +15,9 @@ data class BuyerGetCancellationReasonData(
 			val getCancellationReason: GetCancellationReason = GetCancellationReason()) {
 
 		data class GetCancellationReason(
-				@SerializedName("cancellation_notes")
-				@Expose
-				val cancellationNotes: String = "",
-
 				@SerializedName("reasons")
 				@Expose
 				val reasons: List<ReasonsItem> = emptyList(),
-
-				@SerializedName("cancellation_min_time")
-				@Expose
-				val cancellationMinTime: String = "",
-
-				@SerializedName("is_requested_cancel")
-				@Expose
-				val isRequestedCancel: Boolean = false,
-
-				@SerializedName("is_requested_cancel_available")
-				@Expose
-				val isRequestedCancelAvailable: Boolean = false,
 
 				@SerializedName("is_eligible_instant_cancel")
 				@Expose
@@ -45,7 +29,11 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("ticker_info")
 				@Expose
-				val tickerInfo: TickerInfo = TickerInfo()) {
+				val tickerInfo: TickerInfo = TickerInfo(),
+
+				@SerializedName("order_details")
+				@Expose
+				val orderDetails: List<OrderDetailsCancellation> = emptyList()) {
 
 			data class TickerInfo (
 					@SerializedName("text")
@@ -60,20 +48,12 @@ data class BuyerGetCancellationReasonData(
 					@Expose
 					val actionText: String = "",
 
-					@SerializedName("action_key")
-					@Expose
-					val actionKey: String = "",
-
 					@SerializedName("action_url")
 					@Expose
 					val actionUrl: String = ""
 			)
 
 			data class ReasonsItem(
-					@SerializedName("question")
-					@Expose
-					val question: String = "",
-
 					@SerializedName("sub_reasons")
 					@Expose
 					val subReasons: List<SubReasonsItem> = emptyList(),
@@ -92,6 +72,32 @@ data class BuyerGetCancellationReasonData(
 						val reason: String = ""
 				)
 			}
+
+			data class OrderDetailsCancellation(
+				@SerializedName("product_id")
+				@Expose
+				val productId: String = "",
+
+				@SerializedName("product_name")
+				@Expose
+				val productName: String = "",
+
+				@SerializedName("product_price")
+				@Expose
+				val productPrice: String = "",
+
+				@SerializedName("picture")
+				@Expose
+				val picture: String = "",
+
+				@SerializedName("bundle_id")
+				@Expose
+				val bundleId: String = "",
+
+				@SerializedName("bundle_variant_id")
+				@Expose
+				val bundleVariantId: String = ""
+			)
 		}
 	}
 }

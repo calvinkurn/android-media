@@ -6,6 +6,8 @@ query dynamicHomeChannel($type: String, $location: String) {
             layout
             type
             campaignID
+            widgetParam
+            contextualInfo
             campaignCode
             header {
                 id

@@ -30,7 +30,7 @@
             {
               "code": "EKSCEPAT",
               "success": true,
-              "unique_id": "480176-0-2034-4690461",
+              "unique_id": "480176-0-2034-4678943",
               "cart_id": 0,
               "order_id": 0,
               "shop_id": 480176,
@@ -53,7 +53,7 @@
                   "code": "EKSCEPAT",
                   "type": "",
                   "order_id": 1,
-                  "unique_id": "480176-0-2034-4690461",
+                  "unique_id": "480176-0-2034-4678943",
                   "discount_amount": 10000,
                   "discount_details": [
                     {
@@ -91,7 +91,7 @@
               {
                 "description": "Total diskon: ",
                 "type": "discount",
-                "amount_str": "Rp16.000",
+                "amount_str": "Rp10.000",
                 "amount": 10000,
                 "section_name": "Discount",
                 "section_description": "",
@@ -130,7 +130,7 @@
             }
           },
           "ticker_info": {
-            "unique_id": "480176-0-2034-4690461",
+            "unique_id": "480176-0-2034-4678943",
             "status_code": 700001,
             "message": "Success"
           },
