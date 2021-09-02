@@ -164,7 +164,8 @@ class ShopScoreMapper @Inject constructor(
             )
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
-                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
+                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge,
+                    shopScore))
             }
 
             if (isShowProtectedParameter(shopAge.toInt())) {
@@ -488,7 +489,8 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
-        shopAge: Long
+        shopAge: Long,
+        shopScore: Long
     ): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
@@ -610,7 +612,8 @@ class ShopScoreMapper @Inject constructor(
                         else index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
                         parameterValueDetailPerformance = parameterItemDetailPerformance,
-                        shopAge = shopAge
+                        shopAge = shopAge,
+                        shopScore = shopScore
                     )
                 )
             }

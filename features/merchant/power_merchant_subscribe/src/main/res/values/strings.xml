@@ -63,7 +63,7 @@
     <string name="pm_potential_benefit_03"><![CDATA[Meningkatkan penghasilan hingga <br><b>5,5 kali lipat</b>]]></string>
     <string name="pm_already_have_one_active_product">Memiliki 1 Produk Aktif</string>
     <string name="pm_have_not_one_active_product_yet">Belum Memiliki 1 Produk Aktif</string>
-    <string name="pm_label_already_have_one_active_product">Kamu sudah memiliki minimal 1 produk aktif.</string>
+    <string name="pm_label_already_have_one_active_product">Min. 1 produk aktif</string>
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_label_have_not_one_active_product_yet_new_seller"><![CDATA[Min. 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_term_shop_score"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$s</font>]]></string>
@@ -105,7 +105,7 @@
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
 
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active"><![CDATA[Pertahankan skor <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu tetap aktif, ya.]]></string>
-    <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru</b>Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 90 hari (%1$s).]]></string>
+    <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru</b> Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 90 hari (%1$s).]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu kembali aktif!]]></string>
     <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
     <string name="pm_next_update_pm_pro_info"><![CDATA[Pengecekan status PM PRO akan dilakukan setiap 30 hari. Toko dengan skor <b>di bawah %1$d</b> berpotensi diturunkan menjadi PM.]]></string>

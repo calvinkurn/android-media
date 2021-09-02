@@ -11,7 +11,7 @@ data class ItemDetailPerformanceUiModel(
     var identifierDetailPerformance: String = "",
     var parameterValueDetailPerformance: String = "",
     var shopAge: Long = 0,
-    var shopScore: Int = -1
+    var shopScore: Long = -1
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

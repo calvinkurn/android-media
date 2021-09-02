@@ -48,8 +48,6 @@ class ItemTimerNewSellerViewHolder(
             btn_shop_performance_learn?.let { btn ->
                 itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
-                    //udah dapat angka, dapat article
-                    //belum dapat angka, ke faq
                     if (element?.shopScore.isLessThanZero()) {
                         itemTimerNewSellerListener.onBtnLearnNowToFaqClicked()
                     } else {

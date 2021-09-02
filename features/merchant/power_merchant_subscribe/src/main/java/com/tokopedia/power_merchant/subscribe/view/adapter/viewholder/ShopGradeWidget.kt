@@ -54,37 +54,6 @@ class ShopGradeWidget(
                         Triple(
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_PM_ACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_PM_INACTIVE
-                        )
-                    }
-                }
-            } else {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
                             PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
                         )
                     }
@@ -108,6 +77,37 @@ class ShopGradeWidget(
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
                             com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
                             PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
+                        )
+                    }
+                }
+            } else {
+                when {
+                    isPmPro && isPmActive -> {
+                        Triple(
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                            PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+                        )
+                    }
+                    isPmPro && !isPmActive -> {
+                        Triple(
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
+                            PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
+                        )
+                    }
+                    !isPmPro && isPmActive -> {
+                        Triple(
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                            PMConstant.Images.IMG_TOPED_PM_ACTIVE
+                        )
+                    }
+                    else -> {
+                        Triple(
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
+                            PMConstant.Images.IMG_TOPED_PM_INACTIVE
                         )
                     }
                 }

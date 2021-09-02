@@ -10,7 +10,6 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
 import kotlinx.android.synthetic.main.item_benefit_package_status_pm_pro.view.*
-import kotlinx.android.synthetic.main.view_pm_pro_current_benefit_section.view.*
 
 /**
  * Created By @ilhamsuaib on 07/05/21
@@ -50,7 +49,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
 
     private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
         if (data.isDowngradePeriod()) {
-            tvPmUpdateDate.setTextMakeHyperlink(
+            tvNextUpdatePmProStatus.setTextMakeHyperlink(
                 context.getString(
                     R.string.pm_next_update_benefit_package_downgrade_status,
                     data.nextMonthlyRefreshDate,
@@ -62,11 +61,11 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
             }
         } else {
             if (data.nextShopLevel == data.grade?.shopLevel) {
-                tvPmUpdateDate.text = context.getString(
+                tvNextUpdatePmProStatus.text = context.getString(
                     R.string.pm_next_update_benefit_package_upgrade_max_status
                 )
             } else {
-                tvPmUpdateDate.setTextMakeHyperlink(
+                tvNextUpdatePmProStatus.setTextMakeHyperlink(
                     context.getString(
                         R.string.pm_next_update_benefit_package_upgrade_status,
                         data.nextMonthlyRefreshDate,

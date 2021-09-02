@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
@@ -43,6 +44,10 @@ class RegistrationFooterView : ConstraintLayout {
         btnPmRegister.setOnClickListener {
             action(cbPmRegistrationTnC.isChecked)
         }
+    }
+
+    fun hideCtaButton() {
+        btnPmRegister.hide()
     }
 
     fun setCtaText(ctaText: String) {

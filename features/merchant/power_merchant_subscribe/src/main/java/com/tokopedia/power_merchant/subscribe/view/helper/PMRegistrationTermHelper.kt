@@ -21,23 +21,25 @@ object PMRegistrationTermHelper {
 
     fun getPmRegistrationTerms(
         context: Context,
-        shopInfo: PMShopInfoUiModel
+        shopInfo: PMShopInfoUiModel,
+        isPmProSelected: Boolean
     ): List<RegistrationTermUiModel> {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)
         } else {
-            getShopScoreTerm(context, shopInfo, false)
+            getShopScoreTerm(context, shopInfo, isPmProSelected)
         }
-        return listOf(firstTerm, getKycTerm(context, shopInfo, false))
+        return listOf(firstTerm, getKycTerm(context, shopInfo, isPmProSelected))
     }
 
     fun getPmProRegistrationTerms(
         context: Context,
-        shopInfo: PMShopInfoUiModel
+        shopInfo: PMShopInfoUiModel,
+        isPmProSelected: Boolean
     ): List<RegistrationTermUiModel> {
         return listOf(
-            getShopScoreTerm(context, shopInfo, true), getTotalOrderTerm(context, shopInfo),
-            getNetItemValueTerm(context, shopInfo), getKycTerm(context, shopInfo, true)
+            getShopScoreTerm(context, shopInfo, isPmProSelected), getTotalOrderTerm(context, shopInfo),
+            getNetItemValueTerm(context, shopInfo), getKycTerm(context, shopInfo, isPmProSelected)
         )
     }
 
@@ -49,15 +51,7 @@ object PMRegistrationTermHelper {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isNewSeller = shopInfo.isNewSeller
 
-        val resDrawableIcon = if (isNewSeller) {
-            if (!isFirstMondayNewSeller) {
-                R.drawable.ic_not_completed_new_seller
-            } else {
-                getTermIcon(isEligibleOrder)
-            }
-        } else {
-            getTermIcon(isEligibleOrder)
-        }
+        val resDrawableIcon: Int = getResDrawableIcon(shopInfo, isEligibleOrder)
 
         val title: String
         val description: String
@@ -143,11 +137,7 @@ object PMRegistrationTermHelper {
     ): RegistrationTermUiModel.NetItemValue {
         val isEligible = shopInfo.netItemValueOneMonth >= shopInfo.netItemValuePmProThreshold
 
-        val resDrawableIcon = if (isEligible) {
-            R.drawable.ic_pm_checked
-        } else {
-            R.drawable.ic_pm_not_checked
-        }
+        val resDrawableIcon: Int = getResDrawableIcon(shopInfo, isEligible)
 
         val title: String
         val description: String
@@ -231,15 +221,7 @@ object PMRegistrationTermHelper {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isEligibleShopScore =
             (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore()) && !shopInfo.isNewSeller
-        val shopScoreResIcon: Int = if (isNewSeller) {
-            if (!isFirstMondayNewSeller) {
-                R.drawable.ic_not_completed_new_seller
-            } else {
-                getTermIcon(isEligibleShopScore)
-            }
-        } else {
-            getTermIcon(isEligibleShopScore)
-        }
+        val shopScoreResIcon: Int = getResDrawableIcon(shopInfo, isEligibleShopScore)
 
         val title: String
         val description: String
@@ -305,11 +287,26 @@ object PMRegistrationTermHelper {
         )
     }
 
+
     private fun getTermIcon(isEligible: Boolean): Int {
         return if (isEligible) {
             R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_not_checked
+        }
+    }
+
+    private fun getResDrawableIcon(shopInfo: PMShopInfoUiModel, isEligible: Boolean): Int {
+        val isNewSeller = shopInfo.isNewSeller
+        val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
+        return if (isNewSeller) {
+            if (!isFirstMondayNewSeller) {
+                R.drawable.ic_not_completed_new_seller
+            } else {
+                getTermIcon(isEligible)
+            }
+        } else {
+            getTermIcon(isEligible)
         }
     }
 
@@ -425,7 +422,7 @@ object PMRegistrationTermHelper {
                 shopKycResIcon = R.drawable.ic_pm_failed
             }
         }
-        if (shopInfo.isNewSeller) {
+        if (shopInfo.isNewSeller && isPmPro) {
             if (!shopInfo.is30DaysFirstMonday) {
                 description = title
                 title = context.getString(R.string.pm_kyc_verify_ktp)

@@ -80,7 +80,7 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:typographyType="body_3"
-            tools:text="@string/pm_next_update_benefit_package_status"
+            tools:text="@string/pm_next_update_benefit_package_upgrade_status"
             app:layout_constraintTop_toBottomOf="@id/bgBenefitPackageStatus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iconPmProDowngradeStatus"

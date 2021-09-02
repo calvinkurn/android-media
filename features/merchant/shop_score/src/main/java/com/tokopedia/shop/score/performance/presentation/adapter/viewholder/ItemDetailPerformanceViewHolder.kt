@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
-import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NULL
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -34,7 +34,7 @@ class ItemDetailPerformanceViewHolder(
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
             setupItemDetailPerformance(element)
-
+            val shopScore = element?.shopScore ?: SHOP_SCORE_NULL
             val titleBottomSheet =
                 if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
                     getString(R.string.desc_calculation_open_seller_app)
@@ -46,7 +46,7 @@ class ItemDetailPerformanceViewHolder(
                     }
                 }
             setOnClickListener {
-                if (element?.shopScore.isLessThanZero()) {
+                if (shopScore < SHOP_SCORE_NULL) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -56,7 +56,7 @@ class ItemDetailPerformanceViewHolder(
                 }
             }
             ic_item_performance_right?.setOnClickListener {
-                if (element?.shopScore.isLessThanZero()) {
+                if (shopScore < SHOP_SCORE_NULL) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(

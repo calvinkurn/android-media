@@ -604,6 +604,8 @@ open class PowerMerchantSubscriptionFragment :
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
         val tickerList = pmBasicInfo?.tickers
+        val isNewSellerBefore30FirstMonday = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() &&
+                pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
         }
@@ -628,7 +630,7 @@ open class PowerMerchantSubscriptionFragment :
             widgets.add(WidgetDividerUiModel)
             widgets.add(getNextShopGradeWidgetData(data))
         }
-        if (pmBasicInfo?.shopInfo?.isNewSeller.orFalse()) {
+        if (isNewSellerBefore30FirstMonday) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(
                 WidgetSingleCtaUiModel(
@@ -637,7 +639,7 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
-        if (isAutoExtendEnabled) {
+        if (isAutoExtendEnabled && isNewSellerBefore30FirstMonday) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
         }
@@ -763,7 +765,8 @@ open class PowerMerchantSubscriptionFragment :
                     shopInfo = it,
                     registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(
                         requireContext(),
-                        it
+                        it,
+                        true
                     ),
                     generalBenefits = PMRegistrationTermHelper.getBenefitList(context)
                 )

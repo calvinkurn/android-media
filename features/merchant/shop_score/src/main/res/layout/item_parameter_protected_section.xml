@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         app:card_type="clear"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/layout_lvl0"
         app:card_background_color="@color/Unify_N50"

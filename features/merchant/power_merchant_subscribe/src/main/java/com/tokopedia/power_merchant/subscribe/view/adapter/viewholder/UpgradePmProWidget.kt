@@ -69,10 +69,11 @@ class UpgradePmProWidget(
                     }
                 } else {
                     tvPmUpgradePmProTitle?.text =
-                        getString(
-                            R.string.pm_title_new_seller_before_30_days,
-                            getDaysDate(shopInfo.shopAge)
-                        )
+                        getString(R.string.pm_title_new_seller_before_30_days)
+                    tvPmUpgradePmProDesc?.text = getString(
+                        R.string.pm_desc_new_seller_before_30_days,
+                        getDaysDate(shopInfo.shopAge)
+                    )
                     tvSetMembershipStatus?.setTextMakeHyperlink(
                         getString(R.string.pm_set_membership_status)
                     ) {
@@ -100,9 +101,11 @@ class UpgradePmProWidget(
         }
     }
 
-    private fun View.hidePmProUpgradeSection() {
-        tvPmProTncDescription?.hide()
-        btnPmProUpgrade?.hide()
+    private fun hidePmProUpgradeSection() {
+        with(itemView) {
+            tvPmProTncDescription?.hide()
+            btnPmProUpgrade?.hide()
+        }
     }
 
     private fun setupUpgradeCta(element: WidgetUpgradePmProUiModel) = with(itemView) {
