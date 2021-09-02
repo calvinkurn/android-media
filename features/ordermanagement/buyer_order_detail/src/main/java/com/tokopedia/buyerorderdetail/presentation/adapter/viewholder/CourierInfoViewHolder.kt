@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiModel.CourierInfoUiModel>(itemView) {
+class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoViewHolderListener) : AbstractViewHolder<ShipmentInfoUiModel.CourierInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_shipment_info_courier
@@ -26,7 +26,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
         element?.let {
             setupCourierNameAndProductName(it.courierNameAndProductName)
             setupFreeShippingBadge(it.isFreeShipping, it.boBadgeUrl)
-            setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping)
+            setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping, it.etaChanged)
         }
     }
 
@@ -43,7 +43,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
                         setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
                     if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
-                        setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping)
+                        setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged)
                     }
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
@@ -64,13 +64,23 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
         }
     }
 
-    private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean) {
+    private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean, etaChanged: Boolean) {
         tvBuyerOrderDetailArrivalEstimationValue?.text = arrivalEstimation
         tvBuyerOrderDetailArrivalEstimationValue?.setPadding(0, getArrivalEstimationTopMargin(freeShipping), 0, 0)
         tvBuyerOrderDetailArrivalEstimationValue?.showWithCondition(arrivalEstimation.isNotBlank())
+        if (etaChanged) {
+            tvBuyerOrderDetailArrivalEstimationValue?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
+            tvBuyerOrderDetailArrivalEstimationValue?.setOnClickListener {
+                listener.onEtaChangedClicked(arrivalEstimation)
+            }
+        }
     }
 
     private fun getArrivalEstimationTopMargin(freeShipping: Boolean): Int {
         return if (freeShipping) 0 else itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
+    }
+
+    interface CourierInfoViewHolderListener {
+        fun onEtaChangedClicked(changedArrivalEstimation: String)
     }
 }

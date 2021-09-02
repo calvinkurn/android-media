@@ -25,11 +25,13 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapt
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.DelayedEtaBottomSheetFragment
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -61,7 +63,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductViewHolder.ProductViewListener,
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
-        DigitalRecommendationViewHolder.ActionListener {
+        DigitalRecommendationViewHolder.ActionListener,
+    CourierInfoViewHolder.CourierInfoViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -104,7 +107,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -542,5 +545,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 viewModel.getShopType().toString(),
                 viewModel.getUserId()
         )
+    }
+
+    override fun onEtaChangedClicked(changedArrivalEstimation: String) {
+        showEtaBottomSheet(changedArrivalEstimation)
+    }
+
+    private fun showEtaBottomSheet(formattedEta: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(formattedEta)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
+        }
     }
 }
