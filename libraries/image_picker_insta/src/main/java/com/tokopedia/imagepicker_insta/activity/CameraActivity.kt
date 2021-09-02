@@ -8,6 +8,7 @@ import android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.Toolbar
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
@@ -48,7 +49,18 @@ class CameraActivity : BaseActivity() {
 
         cameraView.flash = Flash.OFF
 
+        setToolbar()
         setListeners()
+    }
+
+    fun setToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val toolbarNavIcon: AppCompatImageView = findViewById(R.id.toolbar_nav_icon)
+        toolbarNavIcon.setOnClickListener {
+            finish()
+        }
+
     }
 
     fun setListeners() {

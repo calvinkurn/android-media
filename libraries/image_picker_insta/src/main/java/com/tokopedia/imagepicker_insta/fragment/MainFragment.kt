@@ -143,15 +143,24 @@ class MainFragment : Fragment(), MainFragmentContract {
         imageFitCenter = v.findViewById(R.id.image_fit_center)
         imageMultiSelect = v.findViewById(R.id.multi_select_toggle)
 
-        val toolbar: Toolbar = v.findViewById(R.id.toolbar)
-        val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
-        val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
-        val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
+        setupToolbar(v)
 
         imageMultiSelect.onDrawableId = R.drawable.imagepicker_insta_ic_select_multiple_on
         imageMultiSelect.offDrawableId = R.drawable.imagepicker_insta_ic_select_multiple_off
 
         imageMultiSelect.toggle(false)
+        setupRv()
+    }
+
+    fun setupToolbar(v:View){
+        val toolbar: Toolbar = v.findViewById(R.id.toolbar)
+        val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
+        val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
+        val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
+        val toolbarNavIcon: AppCompatImageView = v.findViewById(R.id.toolbar_nav_icon)
+        toolbarNavIcon.setOnClickListener {
+            activity?.finish()
+        }
 
         (activity as MainActivity).run {
             setSupportActionBar(toolbar)
@@ -159,7 +168,6 @@ class MainFragment : Fragment(), MainFragmentContract {
             toolbarTitle.text = this.toolbarTitle
             toolbarSubtitle.text = this.toolbarSubTitle
         }
-        setupRv()
     }
 
     private fun setClicks() {

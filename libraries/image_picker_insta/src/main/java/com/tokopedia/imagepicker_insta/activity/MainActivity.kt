@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     var toolbarTitle = ""
     var toolbarSubTitle = ""
     var menuTitle = ""
-    var toolbarIconRes = 0
+    var toolbarIconRes = R.drawable.imagepicker_insta_toolbar_icon
     var maxMultiSelectAllowed = 0
 
     companion object {
@@ -76,7 +76,10 @@ class MainActivity : AppCompatActivity() {
     private fun processIntentData() {
         toolbarTitle = intent.extras?.getString(BundleData.TITLE, "") ?: ""
         toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
-        toolbarIconRes = intent.extras?.getInt(BundleData.ICON_RES) ?: R.drawable.imagepicker_insta_back_icon
+        toolbarIconRes = intent.extras?.getInt(BundleData.ICON_RES) ?: R.drawable.imagepicker_insta_toolbar_icon
+        if(toolbarIconRes == 0){
+            toolbarIconRes = R.drawable.imagepicker_insta_toolbar_icon
+        }
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
         maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: MAX_MULTI_SELECT_LIMIT
 

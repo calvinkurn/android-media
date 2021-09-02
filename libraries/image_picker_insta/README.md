@@ -9,4 +9,5 @@
   
 - Pending
   - Progress bar with round corner is
+  - Check whether we can turn on selfie camera in Asus Zenfone 6 
  
