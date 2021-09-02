@@ -20,6 +20,7 @@
                 android:thickness="6dp"
                 android:innerRadiusRatio="2.5"
                 android:useLevel="true">
+                <corners android:radius="2dp"/>
                 <solid android:color="#7FFF4A" />
             </shape>
         </rotate>

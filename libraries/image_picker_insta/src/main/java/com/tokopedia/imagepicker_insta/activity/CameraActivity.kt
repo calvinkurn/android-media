@@ -41,13 +41,13 @@ class CameraActivity : BaseActivity() {
         cameraView.pictureFormat = PictureFormat.JPEG
         cameraView.mode = Mode.VIDEO
 
-        cameraButton.setOnClickListener {
-            if(cameraView.isTakingVideo){
-                stopVideo()
-            }else{
-                startVideo()
-            }
-        }
+//        cameraButton.setOnClickListener {
+//            if(cameraView.isTakingVideo){
+//                stopVideo()
+//            }else{
+//                startVideo()
+//            }
+//        }
 
         imageSelfieCamera.setOnClickListener {
             cameraView.toggleFacing()
@@ -69,7 +69,10 @@ class CameraActivity : BaseActivity() {
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
+            }
 
+            override fun onVideoRecordingStart() {
+                super.onVideoRecordingStart()
             }
         })
     }
