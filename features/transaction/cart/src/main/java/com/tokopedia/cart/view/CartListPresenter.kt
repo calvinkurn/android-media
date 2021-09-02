@@ -617,7 +617,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
                     else cartItemHolderData.quantity
             totalItemQty += itemQty
-            if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
+            if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
                 for (cartItemHolderDataTmp in allCartItemDataList) {
                     if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
