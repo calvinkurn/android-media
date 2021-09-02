@@ -36,6 +36,12 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
         return BenefitPackageDataUiModel(
             benefitPackageData = benefitPackageResponse.data?.nextBenefitPackageList?.map {
                 val isUpgrade = it.pmGradeName == benefitPackageResponse.currentPMGrade?.gradeName
+                val pmStatusText =
+                    if (it.pmGradeName == benefitPackageResponse.currentPMGrade?.gradeName) {
+                        context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
+                    } else {
+                        context?.getString(R.string.pm_benefit_package_downgrade).orEmpty()
+                    }
                 BenefitPackageGradeUiModel(
                     gradeName = it.pmGradeName,
                     iconBenefitUrl = if (isUpgrade) {
@@ -45,16 +51,22 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                     },
                     descBenefit = when (it.pmGradeName.asCamelCase()) {
                         Constant.PM_PRO_ADVANCED -> {
-                            context?.getString(R.string.pm_desc_level_2_benefit_package_section)
-                                .orEmpty()
+                            context?.getString(
+                                R.string.pm_desc_level_2_benefit_package_section,
+                                pmStatusText
+                            ).orEmpty()
                         }
                         Constant.PM_PRO_EXPERT -> {
-                            context?.getString(R.string.pm_desc_level_3_benefit_package_section)
-                                .orEmpty()
+                            context?.getString(
+                                R.string.pm_desc_level_3_benefit_package_section,
+                                pmStatusText
+                            ).orEmpty()
                         }
                         Constant.PM_PRO_ULTIMATE -> {
-                            context?.getString(R.string.pm_desc_level_4_benefit_package_section)
-                                .orEmpty()
+                            context?.getString(
+                                R.string.pm_desc_level_4_benefit_package_section,
+                                pmStatusText
+                            ).orEmpty()
                         }
                         else -> ""
                     },
