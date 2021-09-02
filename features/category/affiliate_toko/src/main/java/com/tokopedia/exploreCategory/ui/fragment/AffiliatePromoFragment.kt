@@ -6,19 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.exploreCategory.adapter.AffiliateAdapter
+import com.tokopedia.exploreCategory.adapter.AffiliateAdapterFactory
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
-import com.tokopedia.exploreCategory.ui.custom.AffiliatePromotionProductCard
+import com.tokopedia.exploreCategory.model.AffiliateProductCommissionData
+import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliatePromotionCardVHViewModel
+import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliatePromotionErrorCardVHViewModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
-import kotlinx.android.synthetic.main.affiliate_promotion_product_card.*
+import java.util.*
 import javax.inject.Inject
 
 class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() {
@@ -26,6 +31,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
 
     companion object {
         fun getFragmentInstance(): Fragment {
@@ -45,6 +51,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
     }
 
     private fun afterViewCreated() {
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter.setVisitables(ArrayList())
+        promotion_recycler_view.layoutManager = layoutManager
+        promotion_recycler_view.adapter = adapter
         product_link_et.run {
             setRelatedView(dim_layer)
             setDoneAction { affiliatePromoViewModel.getSearch() }
@@ -90,9 +100,11 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
             affiliateSearchData.cards?.items?.firstOrNull()?.let {
-                error_group.hide()
-                promotion_product_card.show()
-                affiliate_product_card.setProductModel(AffiliatePromotionProductCard.toAffiliateProductModel(it))
+                showData()
+                affiliateSearchData.cards.items.forEach {
+                    adapter.addElement(AffiliatePromotionCardVHViewModel(it))
+                    adapter.addElement(AffiliatePromotionErrorCardVHViewModel(AffiliateProductCommissionData.Error("")))
+                }
             }
         })
 
@@ -101,8 +113,14 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
     }
 
-    private fun showErrorScreen(){
+    private fun showError(){
 
+    }
+
+    private fun showData(){
+        error_group.hide()
+        promotion_card_title.show()
+        promotion_recycler_view.show()
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {

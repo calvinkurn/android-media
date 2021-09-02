@@ -4,12 +4,8 @@ import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.exploreCategory.ui.viewholder.AffiliateProductShimmerCardItemVH
-import com.tokopedia.exploreCategory.ui.viewholder.AffiliateShareItemViewHolder
-import com.tokopedia.exploreCategory.ui.viewholder.AffiliateVerticalProductCardItemVH
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateShareVHViewModel
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateShimmerVHViewModel
+import com.tokopedia.exploreCategory.ui.viewholder.*
+import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.*
 
 class AffiliateAdapterFactory()
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
@@ -19,6 +15,8 @@ class AffiliateAdapterFactory()
             AffiliateVerticalProductCardItemVH.LAYOUT -> AffiliateVerticalProductCardItemVH(parent)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent)
+            AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent)
+            AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -33,5 +31,13 @@ class AffiliateAdapterFactory()
 
     override fun type(viewModel: AffiliateShareVHViewModel): Int {
         return AffiliateShareItemViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliatePromotionCardVHViewModel): Int {
+        return AffiliatePromotionCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliatePromotionErrorCardVHViewModel): Int {
+        return AffiliatePromotionErrorCardItemVH.LAYOUT
     }
 }

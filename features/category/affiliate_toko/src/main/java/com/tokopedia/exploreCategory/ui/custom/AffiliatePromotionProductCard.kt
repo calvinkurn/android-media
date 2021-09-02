@@ -28,10 +28,9 @@ class AffiliatePromotionProductCard  {
             return ProductCardModel(
                     productImageUrl = item.image?.android ?: item.image?.ios ?: "",
                     productName = item.title ?: "",
-                    discountPercentage = getAdditionalDataFromType(item, DISCOUNT_PERCENTAGE_TYPE),
+                    discountPercentage = getAdditionalDataFromType(item, 1),
                     slashedPrice = getAdditionalDataFromType(item, SLASHED_PRICE_TYPE),
                     priceRange = getAdditionalDataFromType(item, FINAL_PRICE_TYPE),
-                    formattedPrice = getAdditionalDataFromType(item, FINAL_PRICE_TYPE),
                     labelGroupList = arrayListOf(ProductCardModel.LabelGroup("category",
                             getAdditionalDataFromType(item, COMMISSION_AMOUNT_TYPE),"textGreen"),
                             ProductCardModel.LabelGroup("status","Toko Tidak Aktif",
