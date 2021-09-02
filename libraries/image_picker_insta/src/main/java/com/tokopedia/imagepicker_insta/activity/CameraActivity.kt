@@ -15,7 +15,9 @@ import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.views.CameraButton
+import com.tokopedia.imagepicker_insta.views.CameraButtonListener
 import timber.log.Timber
 
 
@@ -45,7 +47,7 @@ class CameraActivity : BaseActivity() {
         imageSelfieCamera.visibility = View.GONE
 
         cameraView.pictureFormat = PictureFormat.JPEG
-        cameraView.mode = Mode.VIDEO
+        cameraView.mode = Mode.PICTURE
 
         cameraView.flash = Flash.OFF
 
@@ -63,15 +65,32 @@ class CameraActivity : BaseActivity() {
 
     }
 
-    fun setListeners() {
+    private fun setListeners() {
 
-//        cameraButton.setOnClickListener {
-//            if(cameraView.isTakingVideo){
-//                stopVideo()
-//            }else{
-//                startVideo()
-//            }
-//        }
+        cameraButton.cameraButtonListener = object : CameraButtonListener {
+            override fun onClick() {
+                cameraView.mode = Mode.PICTURE
+
+                capturePhoto()
+            }
+
+            override fun onLongClickStart() {
+                cameraView.mode = Mode.VIDEO
+
+                if (cameraView.isTakingVideo) {
+                    startRecordingVideo()
+                }
+            }
+
+            override fun onLongClickEnd() {
+                cameraView.mode = Mode.PICTURE
+
+                if (cameraView.isTakingVideo) {
+                    stopRecordingVideo()
+                }
+            }
+
+        }
 
         imageSelfieCamera.setOnClickListener {
             cameraView.toggleFacing()
@@ -98,10 +117,20 @@ class CameraActivity : BaseActivity() {
 
             override fun onPictureTaken(result: PictureResult) {
                 super.onPictureTaken(result)
+                val file = CameraUtil.createMediaFile(this@CameraActivity)
+                result.toFile(file) {
+                    Timber.d("${CameraUtil.LOG_TAG} picture taken: ${it?.path}")
+                }
             }
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
+                Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
+            }
+
+            override fun onCameraError(exception: CameraException) {
+                super.onCameraError(exception)
+                Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
             }
 
             override fun onVideoRecordingStart() {
@@ -143,11 +172,17 @@ class CameraActivity : BaseActivity() {
         }
     }
 
-    fun startVideo() {
-        cameraView.takeVideo(filesDir)
+    fun startRecordingVideo() {
+        try {
+            val file = CameraUtil.createMediaFile(this, false)
+            cameraView.takeVideo(file)
+        } catch (th: Throwable) {
+            Timber.e(th)
+        }
+
     }
 
-    fun stopVideo() {
+    fun stopRecordingVideo() {
         cameraView.stopVideo()
     }
 

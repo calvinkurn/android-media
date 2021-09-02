@@ -24,6 +24,10 @@ class CameraButton @JvmOverloads constructor(
     val longPressHandler = android.os.Handler()
     var longTime = 0L
     val ANIMATION_DURATION = 300L
+    var cameraButtonListener: CameraButtonListener?=null
+    var imageCaptureAction = MotionEvent.ACTION_CANCEL
+    val ON_CLICK_TIME = 500L
+
 
     /**
     * These are the values of progress bar sizes taken from design
@@ -42,20 +46,23 @@ class CameraButton @JvmOverloads constructor(
         progressBar = findViewById(R.id.progress_bar_timer)
         imageCapture = findViewById(R.id.image_capture)
 
-
         imageCapture.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    imageCaptureAction = event.action
                     longTime = System.currentTimeMillis() / 1000
                     longPressHandler.postDelayed({
-                        onLongPressStart()
-                    }, 1000)
+                        if (imageCaptureAction == MotionEvent.ACTION_DOWN){
+                            onLongPressStart()
+                        }
+                    }, ON_CLICK_TIME)
 
                     return@setOnTouchListener true
                 }
                 MotionEvent.ACTION_UP -> {
+                    imageCaptureAction = event.action
                     val currentTime = System.currentTimeMillis() / 1000
-                    if (currentTime - longTime < 1) {
+                    if (currentTime - longTime < ON_CLICK_TIME) {
                         onClick()
                     } else {
                         onLongPressEnd()
@@ -80,6 +87,8 @@ class CameraButton @JvmOverloads constructor(
             .start()
 
         startCountDown()
+
+        cameraButtonListener?.onLongClickStart()
     }
 
     private fun onLongPressEnd() {
@@ -95,6 +104,7 @@ class CameraButton @JvmOverloads constructor(
 
         stopCountDown()
         resetProgressBar()
+        cameraButtonListener?.onLongClickEnd()
     }
 
     private fun progressBarAnimation(initialValue: Int, finalValue: Int) {
@@ -147,7 +157,13 @@ class CameraButton @JvmOverloads constructor(
         updateProgressBar(0)
     }
 
-    fun onClick() {
-
+    private fun onClick() {
+        cameraButtonListener?.onClick()
     }
+}
+
+interface CameraButtonListener {
+    fun onClick()
+    fun onLongClickStart()
+    fun onLongClickEnd()
 }

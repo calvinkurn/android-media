@@ -16,8 +16,10 @@ import java.util.*
 
 object CameraUtil {
 
+    const val LOG_TAG = "INSTA_CAM"
+
     val REQUEST_IMAGE_CAPTURE = 200
-    fun openCamera(weakFragment: WeakReference<Fragment?>?):String?{
+    fun openCamera(weakFragment: WeakReference<Fragment?>?): String? {
 //        return dispatchTakePictureIntent(weakFragment)
         weakFragment?.get()?.let {
             it.startActivity(CameraActivity.getIntent(it.requireContext()))
@@ -27,45 +29,55 @@ object CameraUtil {
     }
 
     @Throws(IOException::class)
-    private fun createImageFile(context: Context): File {
+    fun createMediaFile(context: Context, isImage: Boolean = true): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        var storageDir : File? = null
+        var storageDir: File? = null
 
-        when(StorageUtil.WRITE_LOCATION){
-            WriteStorageLocation.INTERNAL->{
-                storageDir =  getInternalDir(context)
+        when (StorageUtil.WRITE_LOCATION) {
+            WriteStorageLocation.INTERNAL -> {
+                storageDir = getInternalDir(context)
             }
-            WriteStorageLocation.EXTERNAL->{
-                storageDir =  getExternalDir(context)
+            WriteStorageLocation.EXTERNAL -> {
+                storageDir = getExternalDir(context, isImage)
             }
         }
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        )
+        if (isImage) {
+            return File.createTempFile(
+                "IMG_${timeStamp}_", /* prefix */
+                ".jpg", /* suffix */
+                storageDir /* directory */
+            )
+        } else {
+            return File.createTempFile(
+                "VID_${timeStamp}_", /* prefix */
+                ".mp4", /* suffix */
+                storageDir /* directory */
+            )
+        }
     }
 
-    private fun getExternalDir(context: Context):File?{
-        return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    private fun getExternalDir(context: Context, isImage: Boolean = true): File? {
+        if(isImage)
+            return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
     }
 
-    private fun getInternalDir(context: Context):File{
-        val file =  File(context.filesDir,StorageUtil.INTERNAL_FOLDER_NAME)
+    private fun getInternalDir(context: Context): File {
+        val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         file.mkdirs()
         return file
     }
 
-    private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?):String? {
-        var filePath:String? = null
+    private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?): String? {
+        var filePath: String? = null
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
-            weakFragment?.get()?.context?.let {context->
+            weakFragment?.get()?.context?.let { context ->
                 takePictureIntent.resolveActivity(context.packageManager)?.also {
                     // Create the File where the photo should go
                     val photoFile: File? = try {
-                        createImageFile(context)
+                        createMediaFile(context)
                     } catch (ex: IOException) {
                         ex.printStackTrace()
                         null

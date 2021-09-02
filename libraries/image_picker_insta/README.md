@@ -10,4 +10,7 @@
 - Pending
   - Progress bar with round corner is
   - Check whether we can turn on selfie camera in Asus Zenfone 6 
+  - After clicking new picture it must reflect in image picker section
+  - Logic of recent folder - there is no such recent folder
+  - Show video thumbnails and timer on video thumbnail
  

@@ -9,6 +9,7 @@
 
     <application>
         <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="rahul" />
@@ -22,7 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.CameraActivity"/>
+        <activity android:name=".activity.CameraActivity"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".activity.CameraXActivity"/>
 
         <provider
