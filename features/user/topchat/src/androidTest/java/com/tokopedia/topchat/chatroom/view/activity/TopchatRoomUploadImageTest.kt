@@ -40,7 +40,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         //send second image
         openImagePicker()
         // Then
-        onView(withId(R.id.recycler_view)).check(withItemCount(greaterThan(count)))
+        onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(greaterThan(count)))
     }
 
     private fun openImagePicker() {
@@ -49,7 +49,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     }
 
     private fun getCurrentItemCount(): Int {
-        val recyclerView = activityTestRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = activityTestRule.activity.findViewById<RecyclerView>(R.id.recycler_view_chatroom)
         return recyclerView.adapter?.itemCount ?: 0
     }
 
