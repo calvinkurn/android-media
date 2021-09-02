@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
@@ -390,43 +391,79 @@ class AddEditProductShipmentFragment:
         }
 
         btnChangeOnDemandShipment?.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC).apply {
-                putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
-            }, 1234)
+            startActivityForResult(
+                RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
+                ).apply {
+                    putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+                }, 1234
+            )
         }
 
         btnChangeConventionalShipment?.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC).apply {
-                putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
-            }, 1234)
+            startActivityForResult(
+                RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
+                ).apply {
+                    putExtra(EXTRA_SHOP_ID, shopId.toLong())
+                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+                }, 1234
+            )
         }
 
         btnIconOnDemand?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(childFragmentManager, ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE)
+            ShipmentInfoBottomSheet().show(
+                childFragmentManager,
+                ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE
+            )
         }
 
         btnIconConventional?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(childFragmentManager, ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE)
+            ShipmentInfoBottomSheet().show(
+                childFragmentManager,
+                ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE
+            )
         }
     }
 
     private fun setupShipmentRadios() {
-        radiosShipment?.setOnCheckedChangeListener { _, checkedId ->
-            val isStandardShipment = checkedId == R.id.radio_standard_shipment
-            shipmentRadioValue(isStandardShipment)
+        radioStandarShipment?.setOnClickListener {
+            showDialogStandardShipment()
+        }
+
+        radioCustomShipment?.setOnClickListener {
+            shipmentRadioValue(false)
         }
     }
 
     private fun shipmentRadioValue(isStandardShipment: Boolean) {
-        if (isStandardShipment)  {
-                layoutCustomShipmentOnDemand?.gone()
-                layoutCustomShipmentConventional?.gone()
-            } else {
-                layoutCustomShipmentOnDemand?.visible()
-                layoutCustomShipmentConventional?.visible()
+        if (isStandardShipment) {
+            layoutCustomShipmentOnDemand?.gone()
+            layoutCustomShipmentConventional?.gone()
+        } else {
+            updateLayoutShipment()
+        }
+    }
+
+    private fun showDialogStandardShipment() {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.title_standard_shipment))
+            setDescription(getString(R.string.description_standard_shipment))
+            setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
+            setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
+            setPrimaryCTAClickListener {
+                shipmentRadioValue(true)
+                dismiss()
             }
+            setSecondaryCTAClickListener {
+                radioStandarShipment?.isChecked = false
+                radioCustomShipment?.isChecked = true
+                dismiss()
+            }
+        }.show()
     }
 
     private fun setupSubmitButton() {
