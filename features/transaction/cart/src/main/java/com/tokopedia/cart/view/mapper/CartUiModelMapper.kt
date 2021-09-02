@@ -129,6 +129,7 @@ object CartUiModelMapper {
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
+                shopTypeInfo = availableGroup.shop.shopTypeInfo
             }
             cartShopHolderDataList.add(shopUiModel)
         }
