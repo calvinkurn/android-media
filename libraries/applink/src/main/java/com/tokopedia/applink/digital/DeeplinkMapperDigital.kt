@@ -16,6 +16,8 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 
@@ -27,6 +29,8 @@ object DeeplinkMapperDigital {
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
+
+    const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -50,7 +54,17 @@ object DeeplinkMapperDigital {
                             getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
-                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
+                else {
+                    ServerLogger.log(
+                            Priority.P2,
+                            SCALYR_OLD_APPLINK_TAGS,
+                            mapOf(
+                                    "type" to "old applink",
+                                    "data" to deeplink
+                            )
+                    )
+                    UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
+                }
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
                 ApplinkConsInternalDigital.CHECKOUT_DIGITAL
