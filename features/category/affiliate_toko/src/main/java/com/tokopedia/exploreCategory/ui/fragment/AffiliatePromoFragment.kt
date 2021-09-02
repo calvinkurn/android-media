@@ -16,12 +16,15 @@ import com.tokopedia.exploreCategory.adapter.AffiliateAdapterFactory
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
 import com.tokopedia.exploreCategory.model.AffiliateProductCommissionData
+import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliatePromotionCardVHViewModel
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliatePromotionErrorCardVHViewModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
@@ -59,6 +62,12 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             setRelatedView(dim_layer)
             setDoneAction { affiliatePromoViewModel.getSearch() }
         }
+        promo_navToolbar.setIcon(
+                IconBuilder()
+                        .addIcon(IconList.ID_INFORMATION) {
+                            AffiliateHowToPromoteBottomSheet.newInstance().show(childFragmentManager, "")
+                        }
+                )
         promo_global_error.run {
             show()
             errorIllustration.hide()
@@ -82,9 +91,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         affiliatePromoViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    affiliate_progress_bar?.show()
+                    promo_affiliate_progress_bar?.show()
                 else
-                    affiliate_progress_bar?.gone()
+                    promo_affiliate_progress_bar?.gone()
             }
         })
 

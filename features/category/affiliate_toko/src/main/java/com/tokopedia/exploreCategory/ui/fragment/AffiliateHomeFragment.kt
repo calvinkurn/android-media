@@ -21,12 +21,15 @@ import com.tokopedia.exploreCategory.adapter.AffiliateAdapter
 import com.tokopedia.exploreCategory.adapter.AffiliateAdapterFactory
 import com.tokopedia.exploreCategory.di.AffiliateComponent
 import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
+import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.exploreCategory.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
 import com.tokopedia.exploreCategory.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
 import java.util.ArrayList
 import javax.inject.Inject
@@ -67,12 +70,18 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
         products_rv.layoutManager = layoutManager
         products_rv.adapter = adapter
         user_name.text = affiliateHomeViewModel.getUserName()
+        home_navToolbar.setIcon(
+                IconBuilder()
+                        .addIcon(IconList.ID_INFORMATION) {
+                            AffiliateHowToPromoteBottomSheet.newInstance().show(childFragmentManager, "")
+                        }
+        )
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
     }
 
     private fun showNoAffiliate() {
         affiliate_no_product_iv.show()
-        global_error.run {
+        home_global_error.run {
             show()
             errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_choose_product)
@@ -111,7 +120,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             }
         })
         affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
-            global_error.run {
+            home_global_error.run {
                 show()
                 errorTitle.text = error
                 setActionClickListener {
