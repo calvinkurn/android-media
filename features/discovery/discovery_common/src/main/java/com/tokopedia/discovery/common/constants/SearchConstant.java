@@ -96,8 +96,8 @@ public interface SearchConstant {
     interface HeadlineAds {
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE_FIRST_PAGE = "2";
-        String HEADLINE_ITEM_VALUE_LOAD_MORE = "1";
+        int HEADLINE_ITEM_VALUE_FIRST_PAGE = 2;
+        int HEADLINE_ITEM_VALUE_LOAD_MORE = 1;
         int HEADLINE_PRODUCT_COUNT = 3;
         String INFINITESEARCH = "infinitesearch";
     }

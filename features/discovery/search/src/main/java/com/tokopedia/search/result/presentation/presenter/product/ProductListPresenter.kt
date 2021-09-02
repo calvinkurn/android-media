@@ -7,6 +7,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_LOAD_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
@@ -146,8 +148,6 @@ class ProductListPresenter @Inject constructor(
                 SearchApiConst.SRP_PAGE_TITLE,
         )
         private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
-        private const val HEADLINE_ADS_COUNT_FIRST_PAGE = 2
-        private const val HEADLINE_ADS_COUNT_LOAD_MORE = 1
     }
 
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
@@ -602,7 +602,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel, HEADLINE_ADS_COUNT_LOAD_MORE) { _, cpmDataView ->
+        processHeadlineAds(searchProductModel, HEADLINE_ITEM_VALUE_LOAD_MORE) { _, cpmDataView ->
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
@@ -1119,7 +1119,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel, HEADLINE_ADS_COUNT_FIRST_PAGE) { index, cpmDataView ->
+        processHeadlineAds(searchProductModel, HEADLINE_ITEM_VALUE_FIRST_PAGE) { index, cpmDataView ->
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else

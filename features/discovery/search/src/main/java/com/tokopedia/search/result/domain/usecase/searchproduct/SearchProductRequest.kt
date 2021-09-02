@@ -50,7 +50,7 @@ internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
 
 internal fun createHeadlineParams(
     parameters: Map<String?, Any?>,
-    itemCount: String,
+    itemCount: Int,
 ): String {
     val headlineParams = HashMap(parameters)
 
