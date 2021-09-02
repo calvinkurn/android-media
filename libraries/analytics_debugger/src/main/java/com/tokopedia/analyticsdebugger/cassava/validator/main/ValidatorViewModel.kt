@@ -1,11 +1,13 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.main
 
 import androidx.lifecycle.*
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.domain.JourneyListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
+import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +50,7 @@ class ValidatorViewModel @Inject constructor(
     private val _cassavaSource = MutableLiveData<CassavaSource>()
 
     val listFiles = _cassavaSource.switchMap {
-        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+        liveData<List<Pair<String, String>>>(viewModelScope.coroutineContext + Dispatchers.IO) {
             runCatching { emit(journeyListUseCase.execute(it)) }
                     .onFailure { _snackBarMessage.postValue(it.message ?: "") }
         }
