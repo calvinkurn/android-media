@@ -323,7 +323,8 @@ class ProductBundleViewModel @Inject constructor(
 
     private fun isProductVariantSelectionComplete(productBundleDetails: List<ProductBundleDetail>): Boolean {
         val invalidInput = productBundleDetails.find { productBundleDetail ->
-            productBundleDetail.productVariant.hasVariant && productBundleDetail.selectedVariantId == null
+            val hasVariant = productBundleDetail.productVariant?.hasVariant?: false
+            hasVariant && productBundleDetail.selectedVariantId == null
         }
         return invalidInput == null
     }
