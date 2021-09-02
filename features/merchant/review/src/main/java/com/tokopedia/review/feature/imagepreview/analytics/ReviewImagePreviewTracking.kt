@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.imagepreview.analytics
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ReviewImagePreviewTracking {
 
@@ -110,6 +111,43 @@ object ReviewImagePreviewTracking {
                     totalImages
                 ),
                 shopId
+            )
+        )
+    }
+
+    fun trackImpressImage(
+        imageCount: Long,
+        productId: String,
+        attachmentId: String,
+        position: Int,
+        userId: String,
+        trackingQueue: TrackingQueue
+    ) {
+        trackingQueue.putEETracking(
+            hashMapOf(
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+                ReviewTrackingConstant.EVENT_ACTION to ReviewImagePreviewTrackingConstants.EVENT_ACTION_IMPRESS_IMAGE,
+                ReviewTrackingConstant.EVENT_LABEL to String.format(
+                    ReviewImagePreviewTrackingConstants.EVENT_LABEL_IMPRESS_IMAGE,
+                    imageCount
+                ),
+                ReviewTrackingConstant.EVENT_CATEGORY to ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY,
+                ReadReviewTrackingConstants.KEY_USER_ID to userId,
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                    ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
+                            mapOf(
+                                ReadReviewTrackingConstants.KEY_ID to attachmentId,
+                                ReadReviewTrackingConstants.KEY_CREATIVE to "",
+                                ReadReviewTrackingConstants.KEY_NAME to "",
+                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
+                            )
+                        )
+                    )
+                )
             )
         )
     }

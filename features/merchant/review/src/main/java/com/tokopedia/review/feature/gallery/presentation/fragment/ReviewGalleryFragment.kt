@@ -219,6 +219,11 @@ class ReviewGalleryFragment :
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun loadInitialData() {
+        getProductIdFromArguments()
+        super.loadInitialData()
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -267,11 +272,11 @@ class ReviewGalleryFragment :
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
-        if (currentPage + 1 == defaultInitialPage) {
-            showFullPageError()
-        }
+        if (isFirstPage()) showFullPageError()
         showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
-            loadData(currentPage)
+             if (isFirstPage())loadInitialData() else {
+                loadData(currentPage)
+            }
         }
         logToCrashlytics(throwable)
     }
@@ -410,4 +415,7 @@ class ReviewGalleryFragment :
         return (viewModel.reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
     }
 
+    private fun isFirstPage(): Boolean {
+        return currentPage + 1 == defaultInitialPage
+    }
 }

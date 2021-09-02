@@ -93,7 +93,7 @@ data class ReviewDetail(
     val isLiked: Boolean = false,
     @SerializedName("totalLike")
     @Expose
-    val totalLike: Long = 0L,
+    val totalLike: Int = 0,
 )
 
 data class ReviewGalleryImage(

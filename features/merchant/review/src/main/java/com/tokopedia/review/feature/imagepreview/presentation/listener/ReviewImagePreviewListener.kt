@@ -5,4 +5,5 @@ interface ReviewImagePreviewListener {
     fun disableScroll()
     fun enableScroll()
     fun onImageLoadFailed(index: Int)
+    fun onImageImpressed()
 }

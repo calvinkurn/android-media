@@ -14,11 +14,13 @@ import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReviewImagePreviewViewModel @Inject constructor(
     private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
     private val getReviewImagesUseCase: GetReviewImagesUseCase,
+    private val userSession: UserSessionInterface,
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
 
@@ -45,6 +47,10 @@ class ReviewImagePreviewViewModel @Inject constructor(
 
     fun setPage(page: Int) {
         this.page.value = page
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
     }
 
     fun toggleLikeReview(reviewId: String, shopId: String, productId: String, likeStatus: Int) {

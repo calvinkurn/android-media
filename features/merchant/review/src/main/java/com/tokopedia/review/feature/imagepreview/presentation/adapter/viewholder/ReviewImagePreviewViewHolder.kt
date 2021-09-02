@@ -1,14 +1,15 @@
 package com.tokopedia.review.feature.imagepreview.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.image_gallery.ImagePreview
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewListener
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 
 class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -18,13 +19,12 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private var image: ImagePreview? = null
-    private var background: ConstraintLayout? = null
 
     init {
         image = view.findViewById(R.id.review_gallery_image_preview)
     }
 
-    fun bind(imageUrl: String, imagePreviewListener: ReviewImagePreviewListener) {
+    fun bind(imagePreviewUiModel: ReviewImagePreviewUiModel, imagePreviewListener: ReviewImagePreviewListener) {
         image?.apply {
             mLoaderView.hide()
             mImageView.apply {
@@ -34,7 +34,7 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                         com.tokopedia.unifycomponents.R.color.Unify_N75
                     )
                 )
-                loadImage(imageUrl) {
+                loadImage(imagePreviewUiModel.imageUrl) {
                     listener(
                         onSuccess = { _, _ ->
                             mLoaderView.hide()
@@ -78,6 +78,9 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                         imagePreviewListener.enableScroll()
                     }
                 }
+            }
+            addOnImpressionListener(imagePreviewUiModel.impressHolder) {
+                imagePreviewListener.onImageImpressed()
             }
         }
     }

@@ -39,12 +39,14 @@ import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewIma
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.listener.*
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -76,6 +78,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     @Inject
     lateinit var viewModel: ReviewImagePreviewViewModel
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private var closeButton: IconUnify? = null
     private var menuButton: IconUnify? = null
@@ -196,8 +201,30 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         }
     }
 
+    override fun onImageImpressed() {
+        if (isFromGallery) {
+            galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
+                ReviewImagePreviewTracking.trackImpressImage(
+                    galleryRoutingData.totalImageCount,
+                    galleryRoutingData.productId,
+                    it.attachmentId,
+                    it.imageNumber - POSITION_INDEX_COUNTER,
+                    viewModel.getUserId(),
+                    trackingQueue
+                )
+            }
+        }
+    }
+
     override fun onBackPressed() {
         finishActivity()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -267,7 +294,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             activity?.supportFragmentManager?.let {
                 if (isFromGallery) {
                     ReviewReportBottomSheet.newInstance(
-                        galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.feedbackId ?: "",
+                        galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.feedbackId
+                            ?: "",
                         galleryRoutingData.shopId,
                         this
                     ).show(it, ReviewReportBottomSheet.TAG)
@@ -291,12 +319,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setAdapterDataFromReading() {
-        adapter.addData(productReview.imageAttachments.map { it.imageUrl })
+        adapter.addData(productReview.imageAttachments.map { ReviewImagePreviewUiModel(it.imageUrl) })
         setRecyclerViewCurrentItem()
     }
 
     private fun setAdapterDataFromGallery() {
-        adapter.addData(galleryRoutingData.loadedReviews.map { it.fullImageUrl })
+        adapter.addData(galleryRoutingData.loadedReviews.map { ReviewImagePreviewUiModel(it.fullImageUrl) })
         setRecyclerViewCurrentItem(galleryRoutingData.currentPosition)
     }
 
@@ -382,7 +410,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
         with(toggleLikeReviewResponse) {
-            updateLikeCount(totalLike)
+            updateLikeCount(reviewId, totalLike)
             updateLikeButton(isLiked())
             updateLikeStatus(reviewId, likeStatus)
             isLikeValueChange = true
@@ -396,8 +424,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
         adapter.addData(
             productrevGetReviewImage.reviewImages.map { reviewImage ->
-                productrevGetReviewImage.detail.reviewGalleryImages.firstOrNull { it.attachmentId == reviewImage.imageId }?.fullsizeURL
-                    ?: ""
+                ReviewImagePreviewUiModel(
+                    productrevGetReviewImage.detail.reviewGalleryImages.firstOrNull { it.attachmentId == reviewImage.imageId }?.fullsizeURL
+                        ?: ""
+                )
             }
         )
         galleryRoutingData.loadedReviews.addAll(mapToUiModel(productrevGetReviewImage))
@@ -416,9 +446,14 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         reviewImagePreviewDetail?.setLikeButtonImage(isLiked)
     }
 
-    private fun updateLikeCount(totalLike: Int) {
-        productReview.likeDislike = productReview.likeDislike.copy(totalLike = totalLike)
+    private fun updateLikeCount(reviewId: String, totalLike: Int) {
         reviewImagePreviewDetail?.setLikeCount(totalLike.toString())
+        if (isFromGallery) {
+            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.totalLiked =
+                totalLike
+            return
+        }
+        productReview.likeDislike = productReview.likeDislike.copy(totalLike = totalLike)
     }
 
     private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
@@ -457,7 +492,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun openExpandedReviewBottomSheet() {
         if (isProductReview) {
             ReviewImagePreviewTracking.trackOnSeeAllClicked(
-                if(isFromGallery) galleryRoutingData.getSelectedReview()?.feedbackId ?: "" else productReview.feedbackID,
+                if (isFromGallery) galleryRoutingData.getSelectedReview()?.feedbackId
+                    ?: "" else productReview.feedbackID,
                 galleryRoutingData.productId,
                 isFromGallery
             )
@@ -522,9 +558,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             with(productReview.likeDislike) {
-                cacheManager?.put(KEY_FINAL_LIKE_COUNT, ReviewImagePreviewFinalLikeCount(
-                    totalLike, likeStatus
-                ))
+                cacheManager?.put(
+                    KEY_FINAL_LIKE_COUNT, ReviewImagePreviewFinalLikeCount(
+                        totalLike, likeStatus
+                    )
+                )
             }
             putExtra(KEY_CACHE_ID, cacheManager?.id)
         })
