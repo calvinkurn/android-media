@@ -31,7 +31,8 @@ object BundleInfoToSingleProductBundleMapper {
                     (it.status == BUNDLE_INFO_ACTIVE || it.status == BUNDLE_INFO_UPCOMING) &&
                     bundleItem.status == BUNDLE_ITEM_SHOW &&
                     bundleItem.productStatus == BUNDLE_ITEM_ACTIVE &&
-                    it.isStockAvailable()
+                    it.isStockAvailable() &&
+                    it.isMinOrderValid()
         }
         return SingleProductBundleUiModel(
             items = mapToBundleItem(context, filteredBundleInfo),
@@ -111,5 +112,13 @@ object BundleInfoToSingleProductBundleMapper {
 
     private fun List<Child>.isStockAvailable() = any {
         it.stock > 0
+    }
+
+    private fun BundleInfo.isMinOrderValid() = bundleItems.any {
+        it.minOrder > 0 || it.children.isMinOrderValid()
+    }
+
+    private fun List<Child>.isMinOrderValid() = any {
+        it.minOrder > 0
     }
 }
