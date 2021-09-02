@@ -18,7 +18,8 @@ data class CuratedCampaignDataView(
         val productId: String = "",
         val type: String = "",
         val featureId: String = "",
-        val header: String = ""
+        val header: String = "",
+        val campaignCode: String = ""
 ): Visitable<InitialStateTypeFactory>{
 
     override fun type(typeFactory: InitialStateTypeFactory): Int {

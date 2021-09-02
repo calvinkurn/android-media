@@ -12,6 +12,7 @@ fun InitialStateItem.convertToCuratedCampaignDataView(featureId: String): Curate
             subtitle = subtitle,
             productId = itemId,
             type = type,
-            featureId = featureId
+            featureId = featureId,
+            campaignCode = campaignCode
     )
 }
