@@ -796,9 +796,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
         val userSession = UserSession(context)
-        val _isMyShop = ShopUtil.isMyShop(shopId = shopId, userSessionShopId = userSession.shopId.orEmpty())
+        val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
         return ShopProductAdapterTypeFactory(
-                membershipStampAdapterListener = this,
+                membershipStampAdapterListener = this, //9768231
                 shopProductClickedListener = this,
                 shopProductImpressionListener = this,
                 shopCarouselSeeAllClickedListener = this,

@@ -186,8 +186,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         val userSession = UserSession(context)
-        val _isMyShop = shopId?.let {
-            ShopUtil.isMyShop(shopId = it, userSessionShopId = userSession.shopId.orEmpty()) } ?: false
+        val _shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
 
         return ShopProductAdapterTypeFactory(
                 membershipStampAdapterListener = null,
