@@ -169,13 +169,7 @@ object StatisticPageHelper {
             )
 
             if (remoteConfig.isCustomDateFilterEnabled()) {
-                filters.add(
-                    getDateFilterCustom(
-                        context,
-                        Const.DAYS_365,
-                        DateFilterItem.TYPE_CUSTOM
-                    )
-                )
+                filters.add(getDateFilterCustom(context, Const.DAYS_90, DateFilterItem.TYPE_CUSTOM))
             }
 
             filters.add(DateFilterItem.ApplyButton)
@@ -228,7 +222,7 @@ object StatisticPageHelper {
                 filters.add(
                     getDateFilterCustom(
                         context,
-                        Const.DAYS_365,
+                        Const.DAYS_31,
                         DateFilterItem.TYPE_CUSTOM_SAME_MONTH
                     )
                 )
