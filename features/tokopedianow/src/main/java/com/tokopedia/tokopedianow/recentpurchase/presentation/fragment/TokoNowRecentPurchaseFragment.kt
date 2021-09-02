@@ -351,7 +351,7 @@ class TokoNowRecentPurchaseFragment:
 
         when(data.state) {
             TokoNowLayoutState.LOADING -> onLoadingLayout()
-            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
+            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4, context)
         }
     }
 
@@ -438,13 +438,10 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun showEmptyState(id: String) {
-        context?.let {
-            viewModel.getEmptyState(
-                id = id,
-                warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-                context = it
-            )
-        }
+        viewModel.getEmptyState(
+            id = id,
+            warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        )
         miniCartWidget?.hide()
         setupPadding(false)
     }

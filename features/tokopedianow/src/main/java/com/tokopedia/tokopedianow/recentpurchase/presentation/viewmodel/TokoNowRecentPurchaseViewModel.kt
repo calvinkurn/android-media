@@ -31,6 +31,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
@@ -124,12 +125,12 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int) {
+    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int, context: Context?) {
         launchCatchError(block = {
             layoutList.filter { it.isNotStaticLayout() }.forEach {
                 when (it) {
                     is RepurchaseProductGridUiModel -> {
-                        getProductListAsync(warehouseID, queryParam, totalScan, page).await()
+                        getProductListAsync(warehouseID, queryParam, totalScan, page, context).await()
                     }
                 }
 
@@ -150,7 +151,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         warehouseID: Int,
         queryParam: String,
         totalScan: Int,
-        page: Int
+        page: Int,
+        context: Context?
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
@@ -159,7 +161,15 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 page
             ).productList
 
-            layoutList.addProductGrid(getProductListResponse)
+            if (getProductListResponse.isNullOrEmpty()) {
+                getEmptyState(
+                    id = EMPTY_STATE_NO_RESULT,
+                    warehouseId = warehouseID.toString(),
+                    context = context
+                )
+            } else {
+                layoutList.addProductGrid(getProductListResponse)
+            }
         }) {
 
         }
@@ -220,16 +230,24 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    private fun getCategoryGrid(warehouseId: String, context: Context) {
+    private fun getCategoryGrid(warehouseId: String, context: Context?) {
         launchCatchError(block = {
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
             layoutList.addCategoryGrid(response, context)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _getLayout.postValue(Success(layout))
         }) {
             /* nothing to do */
         }
     }
 
-    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "", context: Context) {
+    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "", context: Context? = null) {
         layoutList.removeLoading()
         when(id) {
             EMPTY_STATE_NO_HISTORY -> {
