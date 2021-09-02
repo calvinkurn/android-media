@@ -396,7 +396,6 @@ private const val HEADLINE_ADS_QUERY = """
                     description
                     uri
                     layout
-                    position
                 }
                 applinks
             }
