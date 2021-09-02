@@ -70,6 +70,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk

@@ -2,9 +2,11 @@ package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactPermissionDataView
+import com.tokopedia.common.topupbills.view.typefactory.ContactListTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,7 +31,8 @@ import javax.inject.Inject
 
 class TopupBillsContactListFragment:
     BaseDaggerFragment(),
-    TopupBillsContactListAdapter.OnContactNumberClickListener
+    TopupBillsContactListAdapter.ContactNumberClickListener,
+    TopupBillsContactListAdapter.ContactPermissionListener
 {
     private var contacts: MutableList<Contact> = mutableListOf()
     private val contactsProjection: Array<out String> = arrayOf(
@@ -67,44 +73,23 @@ class TopupBillsContactListFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        loadData()
+        if (permissionCheckerHelper.hasPermission(
+                requireContext(),
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT))) {
+            loadContacts()
+        } else {
+            contactListAdapter.setPermissionState()
+        }
 
         savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
     }
 
     private fun initRecyclerView() {
-        contactListAdapter = TopupBillsContactListAdapter(listOf(), this)
+        val typeFactory = ContactListTypeFactoryImpl(this, this)
+        contactListAdapter = TopupBillsContactListAdapter(listOf(), typeFactory)
         binding?.commonTopupBillsContactsRv?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = contactListAdapter
-        }
-    }
-
-    private fun loadData() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermission(
-                this,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        context?.let {
-                            permissionCheckerHelper.onPermissionDenied(
-                                it,
-                                permissionText
-                            )
-                        }
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {
-                        context?.let { permissionCheckerHelper.onNeverAskAgain(it, permissionText) }
-                    }
-
-                    override fun onPermissionGranted() {
-                        loadContacts()
-                    }
-                })
-        } else {
-            loadContacts()
         }
     }
 
@@ -142,14 +127,13 @@ class TopupBillsContactListFragment:
         }
         cursor?.close()
         this.contacts = contacts
-        contactListAdapter.setContacts(this.contacts)
-
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (this@TopupBillsContactListFragment.contacts.isEmpty()){
-                hide()
-            } else {
-                show()
-            }
+        if (this.contacts.isEmpty()) {
+            contactListAdapter.setEmptyState()
+            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+        } else {
+            contactListAdapter.setContacts(
+                CommonTopupBillsDataMapper.mapContactToDataView(this.contacts))
+            binding?.commonTopupbillsFavoriteNumberClue?.show()
         }
     }
 
@@ -200,6 +184,20 @@ class TopupBillsContactListFragment:
         }
     }
 
+    override fun onSettingButtonClick() {
+        goToApplicationDetailActivity()
+    }
+
+    private fun goToApplicationDetailActivity() {
+        activity?.let {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", it.packageName, null)
+            intent.data = uri
+            it.startActivity(intent)
+        }
+    }
+
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<Contact>()
 
@@ -207,7 +205,8 @@ class TopupBillsContactListFragment:
             it.name.contains(query, true) || it.phoneNumber.contains(query, true)
         })
 
-        contactListAdapter.setContacts(searchClientNumbers)
+        contactListAdapter.setContacts(
+            CommonTopupBillsDataMapper.mapContactToDataView(searchClientNumbers))
         binding?.commonTopupbillsFavoriteNumberClue?.run {
             if (searchClientNumbers.isEmpty()) hide() else show()
         }

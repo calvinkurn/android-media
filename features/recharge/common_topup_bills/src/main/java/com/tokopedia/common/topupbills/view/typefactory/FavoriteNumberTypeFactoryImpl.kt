@@ -12,11 +12,11 @@ import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberE
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberShimmerBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberEmptyViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener

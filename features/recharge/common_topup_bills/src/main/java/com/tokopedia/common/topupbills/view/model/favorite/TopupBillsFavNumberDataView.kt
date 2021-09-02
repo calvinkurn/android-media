@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills.view.model
+package com.tokopedia.common.topupbills.view.model.favorite
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
