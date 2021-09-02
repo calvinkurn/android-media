@@ -141,6 +141,7 @@ class AtcVariantQuantityViewHolder constructor(
                 })
                 .debounce {
                     if (it < quantityEditor.minValue) {
+                        // Use longer debounce when reset qty, to support automation
                         Observable.just(it).delay(TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
                     } else {
                         Observable.just(it).delay(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
