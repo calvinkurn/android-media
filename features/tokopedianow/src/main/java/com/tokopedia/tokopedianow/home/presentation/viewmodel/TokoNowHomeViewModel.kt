@@ -26,7 +26,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -147,7 +147,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val recommendationWidgets = getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
-                    pageName = PAGE_NAME_RECOMMENDATION_PARAM,
+                    pageName = PAGE_NAME_RECOMMENDATION_OOC_PARAM,
                     xSource = X_SOURCE_RECOMMENDATION_PARAM,
                     xDevice = X_DEVICE_RECOMMENDATION_PARAM
                 )

@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -28,6 +28,7 @@ class HomeProductRecomViewHolder(
     }
 
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
+    private val divider: View by lazy { itemView.findViewById(R.id.divider) }
 
     private var channelId = ""
     private var isOoc = false
@@ -43,6 +44,12 @@ class HomeProductRecomViewHolder(
             widgetListener = this,
             scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
         )
+        if (isOoc) {
+            divider.show()
+            val spaceZero = itemView.getDimens(R.dimen.unify_space_0)
+            val spaceSixTeen = itemView.getDimens(R.dimen.unify_space_16)
+            productRecom.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+        }
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) { /* nothing to do */ }
