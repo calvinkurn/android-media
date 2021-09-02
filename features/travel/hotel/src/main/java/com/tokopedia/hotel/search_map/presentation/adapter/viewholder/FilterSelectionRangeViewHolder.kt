@@ -44,13 +44,12 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                         FilterRatingEnum.ABOVE_8.value,
                         FilterRatingEnum.ABOVE_9.value)
             }
-
-            hotel_filter_selection_range_seekbar.updateEndValue(filter.options.size - 1)
+            hotel_filter_selection_range_seekbar.updateEndValue(filter.options.lastIndex)
 
             filter.options.forEachIndexed { index, item ->
                 if (item == selectedValue) {
-                    hotel_filter_selection_range_seekbar.setInitialValue(filter.options.size - index - 1)
-                    hotel_filter_selection_range_seekbar.updateValue(filter.options.size - index - 1)
+                    hotel_filter_selection_range_seekbar.setInitialValue(index)
+                    hotel_filter_selection_range_seekbar.updateValue(index)
                 }
 
                 val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
@@ -76,10 +75,10 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
             hotel_filter_selection_range_seekbar.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener{
                 override fun onSliderMove(p0: Pair<Int, Int>) {
                     if (filter.options.getOrNull(p0.first) != null) {
-                        if (p0.first == filter.options.lastIndex) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
+                        if (p0.first == 0) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
                         else {
                             onSelectedFilterChangedListener.onSelectedFilterChanged(filterName,
-                                mutableListOf(filter.options[filter.options.size - p0.first - 1]))
+                                mutableListOf(filter.options[p0.first]))
                         }
                     }
                 }
