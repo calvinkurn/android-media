@@ -687,12 +687,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, R.color._dms_secondary_button_stroke_color))
             }
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifycomponents.R.color.Unify_N200
+                    R.color._dms_secondary_button_icon_color
                 )
             )
         }
