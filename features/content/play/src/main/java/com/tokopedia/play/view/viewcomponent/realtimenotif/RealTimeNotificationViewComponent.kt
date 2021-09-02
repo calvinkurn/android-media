@@ -104,6 +104,10 @@ class RealTimeNotificationViewComponent(
         return hideAnimation.isRunning
     }
 
+    fun isAnimating(): Boolean {
+        return animatorSet.isRunning
+    }
+
     private suspend fun setRealTimeNotification(rtn: RealTimeNotificationUiModel) {
         setNotification(rtn)
         rtnBubbleView.awaitPreDraw()
