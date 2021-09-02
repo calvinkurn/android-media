@@ -175,8 +175,6 @@ object ApplinkConstInternalOrder {
 
     const val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
 
-    const val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
-
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_DETAIL"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
@@ -188,7 +186,6 @@ object ApplinkConstInternalOrder {
     const val MP_INTERNAL_SHIPPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=13"
 
     const val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
-
 
     // order snapshot
     const val PATH_SNAPSHOT = "snapshot"
