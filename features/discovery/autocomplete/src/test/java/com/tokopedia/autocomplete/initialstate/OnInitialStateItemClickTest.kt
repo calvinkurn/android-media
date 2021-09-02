@@ -184,10 +184,10 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     }
 
     private fun InitialStateContract.View.onClickCuratedCampaignCard(item: CuratedCampaignDataView) {
-        val expectedLabel = "${item.title} - ${item.applink} - ${item.campaignCode}"
+        val expectedLabel = "${item.title} - ${item.applink}"
 
         verifyOrder {
-            trackEventClickCuratedCampaignCard(any(), expectedLabel, item.type)
+            trackEventClickCuratedCampaignCard(any(), expectedLabel, item.type, item.campaignCode)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

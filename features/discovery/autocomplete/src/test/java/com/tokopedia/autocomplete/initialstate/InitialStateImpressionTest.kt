@@ -93,7 +93,8 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
             initialStateView.onCuratedCampaignCardImpressed(
                 "0",
                 capture(slotCuratedCampaignLabel),
-                capture(slotCuratedCampaignType)
+                capture(slotCuratedCampaignType),
+                capture(slotCuratedCampaignCode)
             )
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
@@ -110,6 +111,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
         val curatedCampaignLabel = slotCuratedCampaignLabel.captured
         val curatedCampaignType = slotCuratedCampaignType.captured
+        val curatedCampaignCode = slotCuratedCampaignCode.captured
 
         val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
         val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
@@ -122,14 +124,15 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
 
         val curatedCampaignItem = initialStateData[0].items[0]
-        val expectedCuratedCampaignLabel = "${curatedCampaignItem.title} - " +
-            "${curatedCampaignItem.applink} - " +
-            curatedCampaignItem.campaignCode
+        val expectedCuratedCampaignLabel = "${curatedCampaignItem.title} - ${curatedCampaignItem.applink}"
         assert(curatedCampaignLabel == expectedCuratedCampaignLabel) {
             "curated campaign label is \"$curatedCampaignLabel\", expected is \"$expectedCuratedCampaignLabel\""
         }
         assert(curatedCampaignType == curatedCampaignItem.type) {
             "curated campaign type is \"$curatedCampaignType\", expected is \"${curatedCampaignItem.type}\""
+        }
+        assert(curatedCampaignCode == curatedCampaignItem.campaignCode) {
+            "curated campaign code is \"$curatedCampaignCode\", expected is \"${curatedCampaignItem.campaignCode}\""
         }
     }
 

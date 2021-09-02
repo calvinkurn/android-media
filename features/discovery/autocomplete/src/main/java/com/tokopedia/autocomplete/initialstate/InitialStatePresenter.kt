@@ -231,13 +231,16 @@ class InitialStatePresenter @Inject constructor(
 
     private fun onImpressCuratedCampaignCard(curatedCampaignDataView: CuratedCampaignDataView) {
         val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
-        view?.onCuratedCampaignCardImpressed(getUserId(), label, curatedCampaignDataView.type)
+        view?.onCuratedCampaignCardImpressed(
+            getUserId(),
+            label,
+            curatedCampaignDataView.type,
+            curatedCampaignDataView.campaignCode
+        )
     }
 
     private fun getCuratedCampaignEventLabel(curatedCampaignDataView: CuratedCampaignDataView) =
-        "${curatedCampaignDataView.title} - " +
-            "${curatedCampaignDataView.applink} - " +
-            curatedCampaignDataView.campaignCode
+        "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
 
     private fun addRecentSearchData(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
@@ -585,7 +588,12 @@ class InitialStatePresenter @Inject constructor(
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
         val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
-        view?.trackEventClickCuratedCampaignCard(getUserId(), label, curatedCampaignDataView.type)
+        view?.trackEventClickCuratedCampaignCard(
+            getUserId(),
+            label,
+            curatedCampaignDataView.type,
+            curatedCampaignDataView.campaignCode
+        )
 
         view?.route(curatedCampaignDataView.applink, searchParameter)
         view?.finish()
