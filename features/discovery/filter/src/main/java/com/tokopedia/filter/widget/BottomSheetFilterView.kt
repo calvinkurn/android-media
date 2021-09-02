@@ -339,8 +339,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun handleResultFromDetailPage(data: Intent) {
-        val optionListTemp: ArrayList<Option>? = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)
-        val optionList: List<Option> = optionListTemp?.toList() ?: emptyList()
+        val optionList: List<Option> = data.getParcelableArrayListExtra<Option>(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)?.toList() ?: emptyList()
 
         filterController.setFilter(optionList)
         applyFilterFromDetailPage()

@@ -178,8 +178,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
     }
 
     private fun handleResultFromDetailPage(data: Intent) {
-        val optionListTemp: ArrayList<Option>? = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)
-        val optionList: List<Option>? = optionListTemp?.toList()
+        val optionList: List<Option>? = data.getParcelableArrayListExtra<Option>(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)?.toList()
         filterController.setFilter(optionList)
     }
 
