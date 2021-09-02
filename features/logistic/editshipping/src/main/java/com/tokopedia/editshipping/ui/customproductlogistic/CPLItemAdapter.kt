@@ -67,4 +67,16 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         return activatedListIds
     }
 
+    fun getShownShippers(): List<Int> {
+        val listShipperShown = mutableListOf<Int>()
+        cplItem.forEach { courier ->
+            courier.shipperProduct.forEach { product ->
+                if (product.uiHidden) {
+                    listShipperShown.add(product.shipperProductId)
+                }
+            }
+        }
+        return listShipperShown
+    }
+
 }
