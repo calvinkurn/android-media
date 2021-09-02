@@ -91,6 +91,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -168,9 +169,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
     private val isMyShop: Boolean
-        get() = shopId?.let {
-            ShopUtil.isMyShop(it, viewModel?.userSessionShopId ?: "")
-        } ?: false
+        get() = if (::viewModel.isInitialized) {
+            shopId?.let { viewModel.isMyShop(it) } ?: false
+        } else false
 
     private val isLogin: Boolean
         get() = if (::viewModel.isInitialized) {
@@ -184,6 +185,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
+        val userSession = UserSession(context)
+        val _isMyShop = shopId?.let {
+            ShopUtil.isMyShop(shopId = it, userSessionShopId = userSession.shopId.orEmpty()) } ?: false
+
         return ShopProductAdapterTypeFactory(
                 membershipStampAdapterListener = null,
                 shopProductClickedListener = this,
@@ -199,7 +204,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 isGridSquareLayout = true,
                 deviceWidth = 0,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-                isShowTripleDot = !isMyShop
+                isShowTripleDot = !_isMyShop
         )
     }
 

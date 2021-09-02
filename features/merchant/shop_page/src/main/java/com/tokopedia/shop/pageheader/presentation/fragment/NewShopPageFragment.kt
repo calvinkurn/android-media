@@ -1547,8 +1547,7 @@ class NewShopPageFragment :
                 isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
                 shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
                 shopAttribution = shopAttribution,
-                shopRef = shopRef,
-                isMyShop = isMyShop
+                shopRef = shopRef
         )
         shopViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)

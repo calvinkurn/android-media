@@ -106,6 +106,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
@@ -163,8 +164,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isGoldMerchant: Boolean,
                 shopHomeType: String,
                 shopAttribution: String?,
-                shopRef: String,
-                isMyShop: Boolean
+                shopRef: String
         ): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
@@ -173,7 +173,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             bundle.putString(KEY_SHOP_HOME_TYPE, shopHomeType)
             bundle.putBoolean(KEY_IS_OFFICIAL, isOfficial)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
-            bundle.putBoolean(IS_MYSHOP, isMyShop)
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
             fragment.arguments = bundle
             fragment.shopRef = shopRef
@@ -796,10 +795,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        var _isMyShop = false
-        arguments?.let {
-            _isMyShop = it.getBoolean(IS_MYSHOP, false)
-        }
+        val userSession = UserSession(context)
+        val _isMyShop = ShopUtil.isMyShop(shopId = shopId, userSessionShopId = userSession.shopId.orEmpty())
         return ShopProductAdapterTypeFactory(
                 membershipStampAdapterListener = this,
                 shopProductClickedListener = this,
