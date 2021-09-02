@@ -11,9 +11,45 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_width="@dimen/home_banner_mix_carousel_width"
+    android:layout_width="@dimen/product_card_flashsale_width"
     android:layout_height="match_parent"
     tools:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_banner_view_all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_dc_mix_view_all"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:fontFamily="sf"
+            android:text="@string/lihat_semua"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_chevron_down_view_all"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="@id/tv_dc_mix_view_all"
+            app:layout_constraintTop_toTopOf="@id/tv_dc_mix_view_all"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_banner_mix_more"
