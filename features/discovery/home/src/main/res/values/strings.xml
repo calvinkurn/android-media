@@ -129,6 +129,12 @@
     <string name="home_gopay2_coachmark_title">Info lainnya ada di halaman Akun Saya</string>
     <string name="home_gopay2_coachmark_description">Mau cek Saldo Tokopedia, OVO Cash, atau info lainnya? Buka halaman Akun Saya aja!</string>
 
+    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay &amp; GoPayPoints</string>
+    <string name="home_gopay_new_coachmark_description">Points-mu aman, kok. Sambungin akun Gojek &amp; Tokopedia untuk pakai GoPay &amp; points-mu!</string>
+
+    <string name="home_gopay_new_activate_coachmark_title">TokoPoints kini jadi GoPayPoints ✨</string>
+    <string name="home_gopay_new_activate_coachmark_description">Cek saldomu di sini! Kalau kamu punya TokoPoints, semuanya udah dikonversi ke GoPay Coins.</string>
+
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
 

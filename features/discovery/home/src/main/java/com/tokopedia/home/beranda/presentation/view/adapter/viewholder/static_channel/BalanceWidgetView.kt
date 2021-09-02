@@ -53,6 +53,7 @@ class BalanceWidgetView: FrameLayout {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         containerWidget = view.findViewById(R.id.container_balance_widget)
+        rvBalance?.itemAnimator?.changeDuration = 0
         this.itemView = view
         this.itemContext = view.context
     }

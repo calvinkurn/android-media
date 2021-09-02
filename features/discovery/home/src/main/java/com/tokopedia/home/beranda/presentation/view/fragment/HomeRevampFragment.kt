@@ -81,6 +81,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
@@ -299,6 +300,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var isGopayActivated: Boolean = false
     private var isNeedToRotateTokopoints: Boolean = true
     private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
@@ -810,15 +812,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
         context?.let { currentContext ->
-            val activate = true
-            if (activate) {
+            if (!isGopayActivated) {
                 val gopayWidget = getGopayNewActivateBalanceWidgetView()
                 gopayWidget?.let {
                     this.add(
                         CoachMark2Item(
                             gopayWidget,
-                            "GOPAY!",
-                            "Aktifkan!"
+                            getString(R.string.home_gopay_new_activate_coachmark_title),
+                            getString(R.string.home_gopay_new_activate_coachmark_description)
                         )
                     )
                 }
@@ -828,8 +829,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     this.add(
                         CoachMark2Item(
                             gopayWidget,
-                            "Ini gopay icon",
-                            "Subtitle nya ya"
+                            getString(R.string.home_gopay_new_coachmark_title),
+                            getString(R.string.home_gopay_new_coachmark_description)
                         )
                     )
                 }
@@ -837,15 +838,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark() {
+    private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark) {
         context?.let { currentContext ->
             val tokopointWidget = getTokopointsNewBalanceWidgetView()
             tokopointWidget?.let {
                 this.add(
                     CoachMark2Item(
                         tokopointWidget,
-                        "Tokopoint",
-                        "dwadwandusbaiyiyae"
+                        tokopointsBalanceCoachmark.title,
+                        tokopointsBalanceCoachmark.description
                     )
                 )
             }
@@ -853,7 +854,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showCoachMark(skipBalanceWidget: Boolean = false) {
+    private fun showCoachMark(
+        skipBalanceWidget: Boolean = false,
+        containsNewGopayAndTokopoints: Boolean = false,
+        tokopointsBalanceCoachmark: BalanceCoachmark? = null
+    ) {
         if (!bottomSheetIsShowing) {
             context?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -866,7 +871,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                     })
                     it.setOnDismissListener {
-                        showGopayEligibleCoachmark()
+                        showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
                     }
                     //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
                     //will be removed along the coachmark removal in the future
@@ -876,7 +881,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                             coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
                         } else if (coachMarkItem.isEmpty()) {
-                            showGopayEligibleCoachmark()
+                            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -888,9 +893,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showGopayEligibleCoachmark() {
+    private fun showGopayEligibleCoachmark(
+        containsNewGopayAndTokopoints: Boolean,
+        tokopointsBalanceCoachmark: BalanceCoachmark? = null
+    ) {
         //if eligible
-        if (!isEligibleForNewGopay()) return
+        if (!isEligibleForNewGopay() || !containsNewGopayAndTokopoints) return
 
         context?.let {
             val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -900,7 +908,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.setOnDismissListener {
-                            showTokopointsEligibleCoachmark()
+                            showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                         gopayCoachmarkIsShowing = true
@@ -916,21 +924,23 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showTokopointsEligibleCoachmark() {
+    private fun showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
         context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            coachmarkTokopoint = CoachMark2(it)
-            coachMarkItem.buildTokopointNewCoachmark()
-            coachmarkTokopoint?.let { tokopointCoachmark ->
-                try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
-                        tokopointCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
-                        tokopointsCoachmarkIsShowing = true
+            tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                coachmarkTokopoint = CoachMark2(it)
+                coachMarkItem.buildTokopointNewCoachmark(tokopointsBalanceCoachmark)
+                coachmarkTokopoint?.let { tokopointCoachmark ->
+                    try {
+                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
+                            tokopointCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                            tokopointsCoachmarkIsShowing = true
 //                    coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
+                        }
+                    } catch (e: Exception) {
+                        tokopointsCoachmarkIsShowing = false
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    tokopointsCoachmarkIsShowing = false
-                    e.printStackTrace()
                 }
             }
         }
@@ -1286,7 +1296,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
                 getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
-                getHomeViewModel().refresh(isFirstInstall = isFirstInstall(), forceRefresh = true)
+                getHomeViewModel().refreshHomeData()
             }
 
             return isAddressChanged
@@ -1474,9 +1484,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeGopayEligibility() {
-        getHomeViewModel().gopayEligibilityLiveData.observe(viewLifecycleOwner, Observer { isEligibleGopay ->
-            this.isEligibleGopay = isEligibleGopay.getContentIfNotHandled()?:false
-            renderTopBackground()
+        getHomeViewModel().homeCoachmarkData.observe(viewLifecycleOwner, Observer { homeCoachmarkData ->
+            val homeCoachmarkDataValue = homeCoachmarkData.getContentIfNotHandled()
+            val newEligibleStatus = homeCoachmarkDataValue?.isGopayEligible?:false
+            if (isEligibleGopay != newEligibleStatus) {
+                renderTopBackground()
+            }
+            this.isEligibleGopay = newEligibleStatus
+            this.isGopayActivated = homeCoachmarkDataValue?.isGopayActive?:false
         })
     }
 
@@ -1804,9 +1819,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val isTokopointsOrOvoFailed =
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
-                    showCoachMark()
+                    showCoachMark(
+                        containsNewGopayAndTokopoints = it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints()?:false,
+                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
+                    )
                 } else {
-                    showCoachMark(skipBalanceWidget = true)
+                    showCoachMark(
+                        skipBalanceWidget = true,
+                        containsNewGopayAndTokopoints = it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints()?:false,
+                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
+                    )
                 }
             }
         }
@@ -2223,7 +2245,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
-            getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
         }
     }
 
@@ -2258,7 +2279,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refresh(isFirstInstall(), forceRefresh)
+            getHomeViewModel().refreshHomeData(isFirstInstall())
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()

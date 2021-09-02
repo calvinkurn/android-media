@@ -122,9 +122,13 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = getDefaultCouponsRewardsErrorState()
+                if (isGopayEligible) {
+                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
+                } else {
+                    balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
+                    balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultTokopointsErrorState()
+                    balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = getDefaultCouponsRewardsErrorState()
+                }
             }
             TYPE_STATE_3 -> {
                 balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultTokopointsErrorState()
@@ -224,10 +228,33 @@ data class HomeBalanceModel(
         return this
     }
 
+    fun containsNewGopayAndTokopoints(): Boolean {
+        val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
+        val isContainsNewTokopoint = balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.drawerItemType == TYPE_TOKOPOINT &&
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.state == STATE_SUCCESS
+        return isContainsNewGopay && isContainsNewTokopoint
+    }
+
+    fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
+        val balanceItem = balanceDrawerItemModels[BALANCE_POSITION_SECOND]
+        val isContainsNewTokopoint = balanceItem?.drawerItemType == TYPE_TOKOPOINT &&
+                balanceItem.state == STATE_SUCCESS
+        if (isContainsNewTokopoint) {
+            return balanceItem?.balanceCoachmark
+        }
+        return null
+    }
+
     private fun setBalanceState(type: Int, state: Int): HomeBalanceModel {
         flagStateCondition(
             itemType = type,
-            action = { balanceDrawerItemModels[it]?.state = state }
+            action = {
+                balanceDrawerItemModels[it] = balanceDrawerItemModels[it]?.copy(
+                    state = state
+                )?: BalanceDrawerItemModel(state = state)
+            }
         )
         return this
     }
@@ -339,11 +366,11 @@ data class HomeBalanceModel(
                     }
                 )
             }
-            balanceDrawerItemModels.forEach {
-                if (it.value.state == STATE_LOADING) {
-                    balanceDrawerItemModels[it.key] = it.value.copy(state = STATE_ERROR)
-                }
-            }
+//            balanceDrawerItemModels.forEach {
+//                if (it.value.state == STATE_LOADING && ) {
+//                    balanceDrawerItemModels[it.key] = it.value.copy(state = STATE_ERROR)
+//                }
+//            }
         }
     }
 

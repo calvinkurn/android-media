@@ -120,8 +120,13 @@ class BalanceAdapter(
             itemView.home_progress_bar_balance_layout.gone()
             itemView.home_container_action_balance.gone()
             when (element?.state) {
-                BalanceDrawerItemModel.STATE_LOADING -> itemView.home_progress_bar_balance_layout.show()
+                BalanceDrawerItemModel.STATE_LOADING -> {
+                    itemView.home_iv_logo_balance.invisible()
+                    itemView.home_iv_logo_shimmering.show()
+                    itemView.home_progress_bar_balance_layout.show()
+                }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
+                    itemView.home_iv_logo_balance.show()
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
