@@ -303,6 +303,7 @@
 
     <!--Play-->
     <string name="title_play_df">Play</string>
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
