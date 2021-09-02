@@ -87,7 +87,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         with(view) {
             review_count.apply {
                 text = if (listener.shouldShowRatingAndReviewCount()) {
-                    context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
+                    if (formattedReviewCount == "0") {
+                        context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
+                    } else {
+                        context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
+                    }
                 } else {
                     context.getString(R.string.review_out_of_total_reviews, totalRating)
                 }
@@ -114,6 +118,10 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewStars(reviewData: Review) {
         view.rating_review_pdp.apply {
+            if (reviewData.productRating == 0) {
+                hide()
+                return
+            }
             setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(reviewData.productRating)))
             show()
         }
@@ -121,6 +129,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewAuthor(reviewData: Review) {
         view.txt_date_user_pdp.apply {
+            if (reviewData.user.fullName.isEmpty()) {
+                return
+            }
             text = HtmlLinkHelper(context, context.getString(R.string.review_author, reviewData.user.fullName)).spannedString
             show()
         }

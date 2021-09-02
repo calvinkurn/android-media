@@ -264,5 +264,6 @@
     <string name="pdp_total_stock_static">Jumlah Barang:</string>
 
     <string name="pdp_review_rating_and_review_count">%s rating • %s ulasan</string>
+    <string name="pdp_review_rating_only_count">%s rating (tanpa ulasan)</string>
 
 </resources>
