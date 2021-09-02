@@ -206,8 +206,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, source)
     }
 
-    private fun getProductRecom(pageName: String) {
-        launchCatchError(block = {
+    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
             withContext(dispatcher.io) {
                 val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
@@ -232,8 +232,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    private fun getCategoryGrid(warehouseId: String) {
-        launchCatchError(block = {
+    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
             withContext(dispatcher.io) {
                 val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
                 layoutList.addCategoryGrid(response, context)
@@ -252,37 +252,39 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     }
 
     fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "") {
-        layoutList.removeLoading()
-        when(id) {
-            EMPTY_STATE_NO_HISTORY -> {
-                val description = if (isSearching) {
-                    R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
-                } else {
-                    R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+        launchCatchError(block = {
+            layoutList.removeLoading()
+            when(id) {
+                EMPTY_STATE_NO_HISTORY -> {
+                    val description = if (isSearching) {
+                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
+                    } else {
+                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+                    }
+                    layoutList.addEmptyStateNoHistory(description)
                 }
-                layoutList.addEmptyStateNoHistory(description)
+                EMPTY_STATE_OOC -> {
+                    layoutList.clear()
+                    layoutList.addChooseAddress()
+                    layoutList.addEmptyStateOoc()
+                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+                }
+                else -> {
+                    layoutList.clear()
+                    layoutList.addChooseAddress()
+                    layoutList.addEmptyStateNoResult()
+                    getCategoryGridAsync(warehouseId).await()
+                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
+                }
             }
-            EMPTY_STATE_OOC -> {
-                layoutList.clear()
-                layoutList.addChooseAddress()
-                layoutList.addEmptyStateOoc()
-                getProductRecom(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
-            }
-            else -> {
-                layoutList.clear()
-                layoutList.addChooseAddress()
-                layoutList.addEmptyStateNoResult()
-                getCategoryGrid(warehouseId)
-                getProductRecom(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
-            }
-        }
-        val layout = RepurchaseLayoutUiModel(
-            layoutList = layoutList,
-            nextPage = INITIAL_PAGE,
-            state = TokoNowLayoutState.SHOW
-        )
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
 
-        _getLayout.postValue(Success(layout))
+            _getLayout.postValue(Success(layout))
+        }) { /* nothing to do */ }
     }
 
     fun removeChooseAddressWidget() {
