@@ -37,7 +37,7 @@ data class Watermark(
     init {
         canvasBitmap = backgroundImg
         outputImage = backgroundImg
-        watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
+        watermarkTextAndImage?.textShadowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N100)
 
         if (!isCombine) {
             createWatermarkImage(watermarkImg)
