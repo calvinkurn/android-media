@@ -28,7 +28,7 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
         with(itemView) {
             base_rating_step.removeAllViews()
             hotel_filter_selection_range_title.text = filter.displayName
-            hotel_filter_selection_range_seekbar.updateEndValue(1)
+
 
             hotel_filter_selection_range_seekbar.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
             hotel_filter_selection_range_seekbar.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
@@ -44,6 +44,8 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                         FilterRatingEnum.ABOVE_8.value,
                         FilterRatingEnum.ABOVE_9.value)
             }
+
+            hotel_filter_selection_range_seekbar.updateEndValue(filter.options.size - 1)
 
             filter.options.forEachIndexed { index, item ->
                 if (item == selectedValue) {
