@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     tools:orientation="horizontal"
     tools:parentTag="androidx.appcompat.widget.LinearLayoutCompat">
 
@@ -12,9 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Sedang berlangsung" />
+        tools:text="@tools:sample/lorem/random" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/tu_bc_countdown"
