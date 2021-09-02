@@ -182,9 +182,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
                         changeMarkerState(cardListPosition)
-                    } else if(currentPage != defaultInitialPage){
-                        buildFilter(it.data)
                     } else {
+                        buildFilter(it.data)
                         hideLoader()
                         hideLoadingCardListMap()
                         hideLoading()
