@@ -178,7 +178,7 @@ object SearchTracking {
     fun trackEventClickSearchResultProduct(
         item: Any?,
         isOrganicAds: Boolean,
-        topadsTag: String,
+        topadsTag: Int,
         eventLabel: String?,
         filterSortParams: String?,
         userId: String?
@@ -204,10 +204,10 @@ object SearchTracking {
 
     fun getActionFieldString(
         isOrganicAds: Boolean,
-        topadsTag: String,
+        topadsTag: Int,
     ): String {
         val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
-        return String.format(ACTION_FIELD, organicStatus, topadsTag)
+        return String.format(ACTION_FIELD, organicStatus, topadsTag.toString())
     }
 
     @JvmStatic
@@ -866,7 +866,7 @@ object SearchTracking {
                             CURRENCY_CODE, IDR,
                             SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
                                 SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
-                                    "list", getActionFieldString(isOrganicAds, "")
+                                    "list", getActionFieldString(isOrganicAds, 0)
                                 ),
                                 SearchEventTracking.ECommerce.PRODUCTS, DataLayer.listOf(productItem)
                             )

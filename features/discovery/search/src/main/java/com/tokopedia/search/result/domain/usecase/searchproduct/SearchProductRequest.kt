@@ -196,6 +196,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                 product_click_url
                 product_wishlist_url
                 shop_click_url
+                tag
                 product {
                     id
                     name

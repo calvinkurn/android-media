@@ -128,6 +128,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
         productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
+        productItem.topadsTag shouldBe topAdsProduct.tag
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
     }
@@ -148,7 +149,7 @@ internal open class ProductListPresenterTestFixtures {
             productItem.topadsClickUrl shouldBe ""
             productItem.topadsImpressionUrl shouldBe ""
             productItem.topadsWishlistUrl shouldBe ""
-            productItem.topadsTag shouldBe ""
+            productItem.topadsTag shouldBe 0
         }
 
         productItem.productID shouldBe organicProduct.id

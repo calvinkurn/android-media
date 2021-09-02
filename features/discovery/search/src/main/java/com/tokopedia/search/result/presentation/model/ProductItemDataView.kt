@@ -8,7 +8,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.analytics.SearchTracking.ACTION_FIELD
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.safeCastRupiahToInt
 import com.tokopedia.utils.text.currency.StringUtils
@@ -61,7 +60,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
-    var topadsTag: String = ""
+    var topadsTag: Int = 0
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
