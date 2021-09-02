@@ -20,8 +20,15 @@ class PhotosViewHolder(val photoView: View) : RecyclerView.ViewHolder(photoView)
     }
 
     val assetView = itemView.findViewById<ToggleViewGroup>(R.id.item_view_image_photo)
-    fun setChecked(isChecked:Boolean){
-        assetView.setChecked(isChecked)
+
+    fun setChecked(count:Int?, isInMultiSelect:Boolean){
+        if(count == null){
+            assetView.setChecked(false)
+        }else{
+            assetView.toggleCountView.setMultiCheckEnable(isInMultiSelect)
+            assetView.toggleCountView.setCount(count)
+            assetView.setChecked(true)
+        }
     }
     fun setData(asset: Asset) {
         assetView.loadAssetThumbnail(asset)

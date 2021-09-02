@@ -10,14 +10,29 @@ class ToggleImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    @DrawableRes
-    var mask:Int = R.drawable.imagepicker_insta_ic_check_circle
+    var isChecked = false
 
-    fun toggle(isChecked:Boolean){
-        if(isChecked){
-            setImageResource(mask)
-        }else{
-            setImageDrawable(null)
+    @DrawableRes
+    var onDrawableId: Int = R.drawable.imagepicker_insta_ic_check_circle
+
+    @DrawableRes
+    var offDrawableId: Int? = null
+
+    fun toggle(isChecked: Boolean) {
+        this.isChecked = isChecked
+
+        if (isChecked) {
+            setImageResource(onDrawableId)
+        } else {
+            if (offDrawableId != null) {
+                setImageResource(offDrawableId!!)
+            } else {
+                setImageDrawable(null)
+            }
         }
+    }
+
+    fun toggle() {
+        toggle(!isChecked)
     }
 }

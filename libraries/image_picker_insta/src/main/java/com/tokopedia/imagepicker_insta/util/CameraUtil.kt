@@ -7,6 +7,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -17,7 +18,12 @@ object CameraUtil {
 
     val REQUEST_IMAGE_CAPTURE = 200
     fun openCamera(weakFragment: WeakReference<Fragment?>?):String?{
-        return dispatchTakePictureIntent(weakFragment)
+//        return dispatchTakePictureIntent(weakFragment)
+        weakFragment?.get()?.let {
+            it.startActivity(CameraActivity.getIntent(it.requireContext()))
+        }
+        return null
+
     }
 
     @Throws(IOException::class)

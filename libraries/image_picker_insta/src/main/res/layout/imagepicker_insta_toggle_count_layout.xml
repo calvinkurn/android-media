@@ -11,7 +11,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_count"
-        android:layout_width="20dp"
-        android:layout_height="20dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
 </FrameLayout>

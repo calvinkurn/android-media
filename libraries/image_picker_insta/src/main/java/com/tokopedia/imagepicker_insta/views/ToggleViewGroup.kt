@@ -51,7 +51,7 @@ class ToggleViewGroup @JvmOverloads constructor(
         assetImageView = findViewById(R.id.src_image)
 
         maskImageView.scaleType = ImageView.ScaleType.FIT_XY
-        maskImageView.mask = R.drawable.imagepicker_insta_ic_grey_mask
+        maskImageView.onDrawableId = R.drawable.imagepicker_insta_ic_grey_mask
     }
 
     fun loadAsset(asset: Asset){
@@ -62,8 +62,7 @@ class ToggleViewGroup @JvmOverloads constructor(
     }
 
     fun setChecked(isChecked:Boolean){
-//        toggleCountView.toggle(isChecked)
-//        toggleImageView.toggle(isChecked)
+        toggleCountView.toggle(isChecked)
         maskImageView.toggle(isChecked)
     }
 

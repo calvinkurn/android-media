@@ -2,13 +2,11 @@ package com.tokopedia.imagepicker_insta
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
-import com.tokopedia.unifycomponents.Toaster
 
 class ImageAdapter(
     val dataList: List<ImageAdapterData>,
@@ -18,19 +16,27 @@ class ImageAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var itemSelectCallback: Function2<ImageAdapterData, Boolean, Unit>? = null
-    val selectedPositions = mutableSetOf<Int>()
+
+    /**
+     *Position and count
+     * */
+    val selectedPositionMap = mutableMapOf<Int, Int>()
+
+    val INVALID_KEY = -1
 
     fun isSelectedPositionsEmpty(): Boolean {
-        return selectedPositions.isEmpty()
+        return selectedPositionMap.isEmpty()
     }
 
     fun addSelectedItem(position: Int) {
-        selectedPositions.add(position)
+        selectedPositionMap[position] = selectedPositionMap.size + 1
     }
 
     fun clearSelectedItems() {
-        selectedPositions.clear()
+        selectedPositionMap.clear()
     }
+
+    var canMultiSelect = false
 
     private val TYPE_CAMERA = 0
     private val TYPE_ASSET = 1
@@ -55,26 +61,96 @@ class ImageAdapter(
             holder.setData()
         } else if (holder is PhotosViewHolder) {
             holder.setData(dataList[position].asset)
-            holder.setChecked(selectedPositions.contains(position))
+            holder.setChecked(selectedPositionMap[position], canMultiSelect)
 
             holder.itemView.setOnClickListener {
-                if (selectedPositions.contains(position)) {
-                    //un select
-                    selectedPositions.remove(position)
-                    holder.setChecked(false)
-                    itemSelectCallback?.invoke(dataList[position], false)
+                if (selectedPositionMap.contains(position)) {
+                    unSelectItem(position, holder)
                 } else {
-                    if (selectedPositions.size != maxMultiSelectLimit) {
-                        //select
-                        selectedPositions.add(position)
-                        holder.setChecked(true)
-                        itemSelectCallback?.invoke(dataList[position], true)
-                    }else{
-                        mainFragmentContract.showToast("Max selection limit reached")
-                    }
+                    selectItem(position, holder)
                 }
 
             }
+        }
+    }
+
+    private fun unSelectItem(position: Int, holder: PhotosViewHolder? = null) {
+        val circleCount = selectedPositionMap[position]
+
+        val isSelectedNextItem = selectNextItem(circleCount)
+
+        selectedPositionMap.remove(position)
+
+        for ((k, v) in selectedPositionMap) {
+            if (circleCount != null) {
+                if (v > circleCount) {
+                    selectedPositionMap[k] = v - 1
+                    notifyItemChanged(k)
+                }
+            }
+        }
+
+        holder?.setChecked(null, canMultiSelect)
+        if(!isSelectedNextItem) {
+            itemSelectCallback?.invoke(dataList[position], false)
+        }
+
+    }
+
+    private fun selectNextItem(circleCount: Int?):Boolean{
+        if (canMultiSelect && circleCount != null) {
+            val previousSelectedPos = findPreviousSelectedAdapterPosition(circleCount)
+            val nextSelectedPos = findNextSelectedAdapterPosition(circleCount)
+
+            if (nextSelectedPos != INVALID_KEY) {
+                itemSelectCallback?.invoke(dataList[nextSelectedPos], true)
+                return true
+            }else if (previousSelectedPos != INVALID_KEY){
+                itemSelectCallback?.invoke(dataList[previousSelectedPos], true)
+                return true
+            }
+        }
+        return false
+    }
+
+    fun findPreviousSelectedAdapterPosition(circleCount: Int): Int {
+        var tempLowCount = 0
+        var key = INVALID_KEY
+        for ((k, v) in selectedPositionMap) {
+            if (v < circleCount && v > tempLowCount) {
+                tempLowCount = v
+                key = k
+            }
+        }
+        return key
+    }
+
+    fun findNextSelectedAdapterPosition(circleCount: Int): Int {
+        var tempHighCount = selectedPositionMap.size + 1
+        var key = INVALID_KEY
+        for ((k, v) in selectedPositionMap) {
+            if (v > circleCount && v < tempHighCount) {
+                tempHighCount = v
+                key = k
+            }
+        }
+        return key
+    }
+
+    private fun selectItem(position: Int, holder: PhotosViewHolder) {
+        if (selectedPositionMap.size != maxMultiSelectLimit) {
+
+            if (!canMultiSelect && selectedPositionMap.isNotEmpty()) {
+                //Remove previously selected item
+                val previouslySelectedItemPosition = selectedPositionMap.keys.first()
+                unSelectItem(previouslySelectedItemPosition)
+                notifyItemChanged(previouslySelectedItemPosition)
+            }
+            addSelectedItem(position)
+            holder.setChecked(selectedPositionMap.size, canMultiSelect)
+            itemSelectCallback?.invoke(dataList[position], true)
+        } else {
+            mainFragmentContract.showToast("Max selection limit reached")
         }
     }
 

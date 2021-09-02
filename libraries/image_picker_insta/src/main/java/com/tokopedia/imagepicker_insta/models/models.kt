@@ -24,7 +24,11 @@ data class PhotosImporterData(val folders:ArrayList<FolderData>,
 
 data class FolderData(val folderTitle:String,val folderSubtitle:String, val thumbnailUri:Uri)
 
-data class ImageAdapterData(val asset:Asset, val isSelected:Boolean = false, val isInMultiSelectMode:Boolean = false)
+data class ImageAdapterData(val asset:Asset,
+                            var isSelected:Boolean = false,
+                            var isInMultiSelectMode:Boolean = false,
+                            var checkedPosition:Int = 0
+)
 
 object BundleData {
     val TITLE = "title"

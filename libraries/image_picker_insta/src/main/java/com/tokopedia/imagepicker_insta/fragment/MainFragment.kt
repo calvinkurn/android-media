@@ -36,6 +36,7 @@ import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
+import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -53,6 +54,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     lateinit var recentSection: LinearLayout
     lateinit var tvSelectedFolder: AppCompatTextView
     lateinit var imageFitCenter: AppCompatImageView
+    lateinit var imageMultiSelect: ToggleImageView
 
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
@@ -65,10 +67,6 @@ class MainFragment : Fragment(), MainFragmentContract {
         initDagger()
         handleCameraPermissionCallback()
         setHasOptionsMenu(true)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -89,10 +87,11 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun proceedNextStep() {
         if (imageAdapter.isSelectedPositionsEmpty()) {
-            val assets = imageAdapter.selectedPositions.map {
+
+            val assets = imageAdapter.selectedPositionMap.keys.map {
                 imageAdapter.dataList[it].asset.assetPath
             }
-            val assetList = ArrayList(assets)
+            val assetList = ArrayList<String>(assets)
             val intent = ImageEditorActivity.getIntent(
                 context,
                 ImageEditorBuilder(
@@ -141,11 +140,17 @@ class MainFragment : Fragment(), MainFragmentContract {
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
         imageFitCenter = v.findViewById(R.id.image_fit_center)
+        imageMultiSelect = v.findViewById(R.id.multi_select_toggle)
 
         val toolbar: Toolbar = v.findViewById(R.id.toolbar)
         val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
         val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
         val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
+
+        imageMultiSelect.onDrawableId = R.drawable.imagepicker_insta_ic_select_multiple_on
+        imageMultiSelect.offDrawableId = R.drawable.imagepicker_insta_ic_select_multiple_off
+
+        imageMultiSelect.toggle(false)
 
         (activity as MainActivity).run {
             setSupportActionBar(toolbar)
@@ -180,6 +185,23 @@ class MainFragment : Fragment(), MainFragmentContract {
                 }
             }
         }
+
+        imageMultiSelect.setOnClickListener {
+            imageMultiSelect.toggle()
+            imageAdapter.canMultiSelect = imageMultiSelect.isChecked
+            imageAdapter.selectedPositionMap.keys.map {
+                imageAdapter.dataList[it].isSelected = false
+            }
+            imageAdapter.dataList.forEach {
+                it.isInMultiSelectMode = imageAdapter.canMultiSelect
+            }
+            val hasSelectedItems = imageAdapter.selectedPositionMap.isNotEmpty()
+            imageAdapter.clearSelectedItems()
+            if (hasSelectedItems) {
+                imageAdapter.notifyDataSetChanged()
+            }
+            selectedImage.removeAsset()
+        }
     }
 
     private fun refreshImages(folderName: String?) {
@@ -202,6 +224,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         rv.adapter = imageAdapter
         val itemPadding = 4.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
+        rv.itemAnimator = null
     }
 
     private fun openCamera() {
