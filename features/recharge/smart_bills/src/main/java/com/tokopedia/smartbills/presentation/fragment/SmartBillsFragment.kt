@@ -30,7 +30,9 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.*
@@ -379,10 +381,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 })
 
-                tv_sbm_add_bills.setOnClickListener {
-                    smartBillsAnalytics.clickTambahTagihan()
-                    getCatalogData()
-                }
+                if(goToAddBills()) {
+                    tv_sbm_add_bills.apply {
+                        show()
+                        setOnClickListener {
+                            smartBillsAnalytics.clickTambahTagihan()
+                            getCatalogData()
+                        }
+                    }
+                } else tv_sbm_add_bills.hide()
 
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
@@ -509,7 +516,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun getCatalogData() {
-        if (getRemoteConfigAddBillsEnabler()) {
+        if (getRemoteConfigAddBillsEnabler() && goToAddBills()) {
             showProgressBar()
             viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
         } else {
@@ -767,6 +774,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun hideProgressBar(){
         sbm_progress_bar.hide()
+    }
+
+    protected fun goToAddBills(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    RollenceKey.SBM_ADD_BILLS_KEY, RollenceKey.SBM_ADD_BILLS_FALSE
+            ) == RollenceKey.SBM_ADD_BILLS_TRUE
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {

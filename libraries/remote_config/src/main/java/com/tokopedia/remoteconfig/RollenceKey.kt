@@ -70,4 +70,9 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
+
+    //Add Bills SBM
+    const val SBM_ADD_BILLS_KEY = "sbm_addbills"
+    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
+    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 }
