@@ -4,9 +4,11 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
+import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.MIN_DISPLAYED_QTY
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.unifycomponents.ImageUnify
@@ -32,7 +34,8 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     ) {
         title.text = item.productName
         ivItemImage.urlSrc = item.imageUrl
-        bundleName.text = item.bundleName
+        bundleName.text = itemView.context.getString(R.string.bundle_item_title_prefix, item.quantity)
+        bundleName.showWithCondition(item.quantity >= MIN_DISPLAYED_QTY)
         discountViewItem.price = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.discountedPrice, false)
         discountViewItem.discountAmount = "${item.discount}%"
         discountViewItem.slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.originalPrice, false)

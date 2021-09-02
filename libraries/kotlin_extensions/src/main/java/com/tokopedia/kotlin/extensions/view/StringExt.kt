@@ -50,6 +50,14 @@ fun String?.toZeroStringIfNullOrBlank(): String {
     }
 }
 
+fun String?.toIntSafely(): Int {
+    return try {
+        toIntOrZero()
+    } catch (e: Exception) {
+        0
+    }
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }

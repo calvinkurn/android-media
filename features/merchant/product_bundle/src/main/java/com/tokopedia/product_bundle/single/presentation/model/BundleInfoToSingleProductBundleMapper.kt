@@ -61,7 +61,6 @@ object BundleInfoToSingleProductBundleMapper {
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         SingleProductBundleItem(
             quantity = bundleItem.minOrder,
-            bundleName = context.getString(R.string.bundle_item_title_prefix, bundleItem.minOrder),
             productName = bundleItem.name,
             originalPrice = bundleItem.originalPrice,
             discountedPrice = bundleItem.bundlePrice,
