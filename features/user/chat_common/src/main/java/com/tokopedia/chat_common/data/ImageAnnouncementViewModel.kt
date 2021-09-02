@@ -34,7 +34,7 @@ constructor(
 ) : BaseChatViewModel(
         messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message, source
-), Visitable<BaseChatTypeFactory> {
+), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     var finishedDescription: String = ""
         private set
@@ -74,11 +74,35 @@ constructor(
         blastId = item.blastId,
         source = item.source
     ) {
+        assignCampaignData(attributes)
+    }
+
+    override var isLoading: Boolean = true
+    override var isError: Boolean = false
+    override val id: String get() = attachmentId
+
+    override fun updateData(attribute: Any?) {
+        if (attribute is ImageAnnouncementPojo) {
+            assignCampaignData(attribute)
+        }
+    }
+
+    private fun assignCampaignData(attributes: ImageAnnouncementPojo) {
         this.finishedDescription = attributes.endStateWording
         this.isCampaign = attributes.isCampaign
         this.statusCampaign = attributes.statusCampaign
         this.startDate = attributes.startDate
         this.endDate = attributes.endDate
+    }
+
+    override fun syncError() {
+        this.isLoading = false
+        this.isError = true
+    }
+
+    override fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

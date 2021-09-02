@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -98,6 +99,7 @@ class BroadcastViewHolder constructor(
             DeferredAttachment.PAYLOAD_DEFERRED -> {
                 bindProductCarousel(element)
                 bindSingleProduct(element)
+                bindBanner(element)
             }
             is SingleProductAttachmentContainer.PayloadUpdateStock -> {
                 updateProductStock(element, payload)
@@ -131,6 +133,7 @@ class BroadcastViewHolder constructor(
 
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
+        bindSyncBanner(banner)
         if (banner.isHideBanner) {
             bannerView?.hide()
             setPaddingTop(paddingWithoutBanner)
@@ -144,6 +147,17 @@ class BroadcastViewHolder constructor(
             bindBannerMargin(element)
         }
         bindBroadcastLabel(banner)
+    }
+
+    private fun bindSyncBanner(banner: ImageAnnouncementViewModel) {
+        if (!banner.isLoading) return
+        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
+        val attachment = chatAttachments[banner.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            banner.syncError()
+        } else {
+            banner.updateData(attachment.parsedAttributes)
+        }
     }
 
     private fun bindBroadcastLabel(banner: ImageAnnouncementViewModel) {
