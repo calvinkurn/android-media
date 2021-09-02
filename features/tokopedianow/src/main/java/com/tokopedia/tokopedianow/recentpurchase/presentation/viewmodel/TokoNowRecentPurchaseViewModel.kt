@@ -220,6 +220,14 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
                 if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
                     layoutList.addProductRecom(pageName, recommendationWidgets.first())
+
+                    val layout = RepurchaseLayoutUiModel(
+                        layoutList = layoutList,
+                        nextPage = INITIAL_PAGE,
+                        state = TokoNowLayoutState.SHOW
+                    )
+
+                    _getLayout.postValue(Success(layout))
                 }
             }
         }) { /* nothing to do */ }
@@ -230,6 +238,14 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             withContext(dispatcher.io) {
                 val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
                 layoutList.addCategoryGrid(response, context)
+
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    nextPage = INITIAL_PAGE,
+                    state = TokoNowLayoutState.SHOW
+                )
+
+                _getLayout.postValue(Success(layout))
             }
         }) {
             /* nothing to do */
@@ -261,7 +277,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 getProductRecom(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }
         }
-
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
             nextPage = INITIAL_PAGE,
