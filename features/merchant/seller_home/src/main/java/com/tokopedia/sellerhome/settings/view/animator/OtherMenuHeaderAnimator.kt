@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 
-class OtherMenuHeaderAnimator(private val scrollView: NestedScrollView?,
-                              private val otherMenuHeader: ConstraintLayout?,
-                              private val toolbarHeight: Int) {
+class OtherMenuHeaderAnimator(
+    private val scrollView: NestedScrollView?,
+    private val otherMenuHeader: ConstraintLayout?,
+    private val toolbarHeight: Int
+) {
 
     companion object {
         private const val TRANSLATE_START_OFFSET = 80

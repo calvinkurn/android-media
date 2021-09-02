@@ -4,17 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="@dimen/spacing_lvl4"
     tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_new_other_shop_status_success"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ic_sah_new_other_shop_status_pm_pro, tv_sah_new_other_shop_status_title,
-        ic_sah_new_other_shop_status_pm, ic_sah_new_other_shop_status_warning, tv_sah_new_other_shop_status_desc"
-        tools:visibility="gone"/>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_sah_new_other_shop_status_success_os"
@@ -27,13 +19,13 @@
         android:id="@+id/ic_sah_new_other_shop_status_pm_pro"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:icon_name="BADGE_PMPRO_FILLED"
-        android:visibility="gone"/>
+        app:icon_name="BADGE_PMPRO_FILLED"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_shop_status_title"
@@ -52,24 +44,28 @@
         android:id="@+id/ic_sah_new_other_shop_status_pm"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_shop_status_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:icon_name="BADGE_PM_FILLED"/>
+        app:icon_name="BADGE_PM_FILLED"
+        tools:visibility="visible"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_sah_new_other_shop_status_warning"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_desc"
         app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_desc"
         app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_desc"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:icon_name="WARNING"
-        app:icon_color_light_enable="@color/Unify_RN500"/>
+        app:icon_color_light_enable="@color/Unify_RN500"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_shop_status_desc"

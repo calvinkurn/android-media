@@ -3,8 +3,10 @@ package com.tokopedia.sellerhome.settings.view.animator
 import androidx.constraintlayout.motion.widget.MotionLayout
 import com.tokopedia.sellerhome.R
 
-class OtherMenuContentAnimator(private val motionLayout: MotionLayout?,
-                               private val listener: Listener) {
+class OtherMenuContentAnimator(
+    private val motionLayout: MotionLayout?,
+    private val listener: Listener
+) {
 
     companion object {
         private const val INITIAL_ANIM_DURATION = 600
@@ -29,7 +31,10 @@ class OtherMenuContentAnimator(private val motionLayout: MotionLayout?,
 
     fun animateInitialSlideIn() {
         motionLayout?.run {
-            setTransition(R.id.constraint_sah_new_other_initial_start, R.id.constraint_sah_new_other_initial_end)
+            setTransition(
+                R.id.constraint_sah_new_other_initial_start,
+                R.id.constraint_sah_new_other_initial_end
+            )
             setTransitionDuration(INITIAL_ANIM_DURATION)
             onAnimationCompleted = {
                 listener.onInitialAnimationCompleted()
@@ -40,7 +45,10 @@ class OtherMenuContentAnimator(private val motionLayout: MotionLayout?,
 
     fun animateShareButtonSlideIn() {
         motionLayout?.run {
-            setTransition(R.id.constraint_sah_new_other_share_start, R.id.constraint_sah_new_other_share_end)
+            setTransition(
+                R.id.constraint_sah_new_other_share_start,
+                R.id.constraint_sah_new_other_share_end
+            )
             setTransitionDuration(SHARE_ANIM_DURATION)
             onAnimationCompleted = {
                 listener.onShareButtonAnimationCompleted()

@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -27,6 +29,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.url.TokopediaUrl
@@ -34,11 +38,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 //TODO: Preserve name OtherMenuFragment and move the older one to different path
-class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuContentAnimator.Listener {
 
     companion object {
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
+
         @JvmStatic
         fun createInstance(): NewOtherMenuFragment = NewOtherMenuFragment()
     }
@@ -50,9 +55,17 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter as? OtherMenuAdapter
     }
 
+    private val secondaryInfoAdapter by lazy {
+        val adapterTypeFactory = ShopSecondaryInfoAdapterTypeFactory()
+        context?.let {
+            ShopSecondaryInfoAdapter(adapterTypeFactory, it)
+        }
+    }
+
     private var scrollView: NestedScrollView? = null
     private var otherMenuHeader: ConstraintLayout? = null
     private var contentMotionLayout: MotionLayout? = null
+    private var secondaryInfoRecyclerView: RecyclerView? = null
 
     private var motionLayoutAnimator: OtherMenuContentAnimator? = null
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
@@ -126,11 +139,13 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
             scrollView = findViewById(R.id.sv_sah_new_other)
             otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
+            secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
         }
     }
 
     private fun setupView() {
         setupRecyclerView()
+        setupSecondaryInfoAdapter()
         setupScrollHeaderAnimator()
         setupContentAnimator()
     }
@@ -143,16 +158,28 @@ class NewOtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupScrollHeaderAnimator() {
         val tv = TypedValue()
         if (activity?.theme?.resolveAttribute(android.R.attr.actionBarSize, tv, true) == true) {
-            val actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-            scrollHeaderAnimator = OtherMenuHeaderAnimator(scrollView, otherMenuHeader, actionBarHeight).also {
-                it.init()
-            }
+            val actionBarHeight =
+                TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            scrollHeaderAnimator =
+                OtherMenuHeaderAnimator(scrollView, otherMenuHeader, actionBarHeight).also {
+                    it.init()
+                }
         }
     }
 
     private fun setupContentAnimator() {
         motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
             it.animateInitialSlideIn()
+        }
+    }
+
+    private fun setupSecondaryInfoAdapter() {
+        context?.let {
+            secondaryInfoRecyclerView?.run {
+                layoutManager = LinearLayoutManager(it, RecyclerView.HORIZONTAL, false)
+                adapter = secondaryInfoAdapter
+            }
+            secondaryInfoAdapter?.showInitialInfo()
         }
     }
 }
