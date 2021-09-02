@@ -23,7 +23,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:src="@drawable/imagepicker_insta_circle_filled"
-        app:srcCompat="@color/green_200" />
+        app:srcCompat="@drawable/imagepicker_insta_circle_filled" />
 
 </FrameLayout>
