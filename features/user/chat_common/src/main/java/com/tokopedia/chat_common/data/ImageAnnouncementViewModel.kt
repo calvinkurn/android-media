@@ -1,6 +1,9 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.ENDED
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.ON_GOING
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.STARTED
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
@@ -136,9 +139,16 @@ constructor(
         statusCampaign = CampaignStatus.ENDED
     }
 
+    fun hasSupportedCampaignStatus(): Boolean {
+        return when (statusCampaign) {
+            STARTED, ON_GOING, ENDED -> true
+            else -> false
+        }
+    }
+
     object CampaignStatus {
-        const val STARTED = 1
-        const val ON_GOING = 2
-        const val ENDED = 3
+        const val STARTED = 2
+        const val ON_GOING = 3
+        const val ENDED = 4
     }
 }

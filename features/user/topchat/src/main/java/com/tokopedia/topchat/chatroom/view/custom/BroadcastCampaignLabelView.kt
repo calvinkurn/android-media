@@ -55,7 +55,7 @@ class BroadcastCampaignLabelView : LinearLayout {
     }
 
     fun renderState(banner: ImageAnnouncementViewModel) {
-        if (banner.isCampaign) {
+        if (banner.isCampaign && banner.hasSupportedCampaignStatus()) {
             show()
             bindDescText(banner)
             bindDescWeight(banner)
