@@ -23,7 +23,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelDescAt(1, isDisplayed())
         assertBroadcastCampaignLabelDescAt(
             1, withText(
-                R.string.desc_topchat_broadcast_campaign_started
+                "R.string.desc_topchat_broadcast_campaign_started"
             )
         )
         assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
@@ -42,7 +42,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
         assertBroadcastCampaignLabelDescAt(1, isDisplayed())
         assertBroadcastCampaignLabelDescAt(
             1, withText(
-                R.string.desc_topchat_broadcast_campaign_ongoing
+                "R.string.desc_topchat_broadcast_campaign_ongoing"
             )
         )
         assertBroadcastCampaignLabelCountdownAt(1, isDisplayed())

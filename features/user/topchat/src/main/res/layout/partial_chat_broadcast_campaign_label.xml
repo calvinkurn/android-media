@@ -12,6 +12,7 @@
         android:id="@+id/tp_broadcast_campaign_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_4"
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="2"

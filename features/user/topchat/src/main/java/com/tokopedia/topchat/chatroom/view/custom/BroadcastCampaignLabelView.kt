@@ -74,17 +74,7 @@ class BroadcastCampaignLabelView : LinearLayout {
     }
 
     private fun bindDescText(banner: ImageAnnouncementViewModel) {
-        val description = when (banner.statusCampaign) {
-            CampaignStatus.STARTED -> context.getString(
-                R.string.desc_topchat_broadcast_campaign_started
-            )
-            CampaignStatus.ON_GOING -> context.getString(
-                R.string.desc_topchat_broadcast_campaign_ongoing
-            )
-            CampaignStatus.ENDED -> banner.finishedDescription
-            else -> null
-        } ?: return
-        desc?.text = description
+        desc?.text = banner.campaignLabel
     }
 
     private fun bindDescWeight(banner: ImageAnnouncementViewModel) {

@@ -36,6 +36,8 @@ constructor(
         attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
+    var campaignLabel: String = ""
+        private set
     var finishedDescription: String = ""
         private set
     var isCampaign: Boolean = false
@@ -102,6 +104,9 @@ constructor(
         }
         attributes.endDate?.let {
             this.endDate = it
+        }
+        attributes.campaignLabel?.let {
+            this.campaignLabel = it
         }
     }
 
