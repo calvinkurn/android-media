@@ -26,7 +26,11 @@
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl0"
-        android:paddingRight="@dimen/layout_lvl0"/>
+        android:paddingRight="@dimen/layout_lvl0"
+        android:thumbOffset="@dimen/layout_lvl0"
+        app:step="0"
+        app:separator="true"
+        app:indicator="true" />
 
     <LinearLayout
         android:id="@+id/base_rating_step"

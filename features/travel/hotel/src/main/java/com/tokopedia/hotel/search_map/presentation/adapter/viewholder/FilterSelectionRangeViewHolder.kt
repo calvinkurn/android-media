@@ -64,8 +64,8 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                             ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                     separator.layoutParams = lp
                     base_rating_step.addView(separator)
-                }            }
-
+                }
+            }
 
             if (filter.optionSelected.isEmpty()){
                 val maxValue = hotel_filter_selection_range_seekbar.getValue().first
