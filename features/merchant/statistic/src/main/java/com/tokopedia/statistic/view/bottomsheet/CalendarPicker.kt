@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -28,6 +29,7 @@ class CalendarPicker : BottomSheetUnify() {
 
     companion object {
         private const val KEY_FILTER_ITEM = "key_filter_item"
+        private const val DEF_DATE_FORMAT = "dd/MM/yyyy"
 
         fun newInstance(filterItem: DateFilterItem.Pick?): CalendarPicker {
             return CalendarPicker().apply {
@@ -242,6 +244,13 @@ class CalendarPicker : BottomSheetUnify() {
             if (cpv.selectedDates.isNotEmpty()) {
                 val newMaxDateMillis = TimeUnit.DAYS.toMillis(Const.DAYS_90.toLong())
                 val selectedDate = cpv.selectedDates.first()
+                val areDatesSame = getAreDatesSame(selectedDate, maxDate)
+
+                if (areDatesSame) {
+                    this.selectedDates = listOf(selectedDate, selectedDate)
+                    dismiss()
+                }
+
                 val tmpNewMaxDate = selectedDate.time.plus(newMaxDateMillis)
                 val newMaxDate = if (tmpNewMaxDate > maxDate.time) {
                     maxDate
@@ -252,6 +261,12 @@ class CalendarPicker : BottomSheetUnify() {
                 selectDate(cpv, selectedDate)
             }
         }
+    }
+
+    private fun getAreDatesSame(date: Date, otherDate: Date): Boolean {
+        val dateFmt = DateFormatUtils.getFormattedDate(date.time, DEF_DATE_FORMAT)
+        val otherDateFmt = DateFormatUtils.getFormattedDate(otherDate.time, DEF_DATE_FORMAT)
+        return dateFmt == otherDateFmt
     }
 
     private fun selectPerWeekDateRange(cpv: CalendarPickerView) {
