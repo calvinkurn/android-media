@@ -21,7 +21,14 @@ data class PayLaterSimulationData(
 @Parcelize
 data class PaylaterGetSimulationV2(
 
-    @SerializedName("data") val data: List<PayLaterSimulationData>?
+    @SerializedName("data") val data: List<PayLaterAllData>?
+) : Parcelable
+
+@Parcelize
+data class PayLaterAllData(
+    @SerializedName("tenure") val tenure: Int?,
+    @SerializedName("text") val text: String?,
+    @SerializedName("detail") val detail: List<Detail>?
 ) : Parcelable
 
 @Parcelize
@@ -48,7 +55,7 @@ data class Cta(
 @Parcelize
 data class Detail(
 
-    @SerializedName("gateway_id") val gateway_id: String?,
+    @SerializedName("gateway_id") val gateway_id: Int?,
     @SerializedName("installment_per_month") val installment_per_month: Int?,
     @SerializedName("installment_per_month_ceil") val installment_per_month_ceil: Int?,
     @SerializedName("total_fee") val total_fee: Int?,
@@ -64,7 +71,7 @@ data class Detail(
     @SerializedName("account_status") val account_status: Int?,
     @SerializedName("is_disabled") val is_disabled: Boolean?,
     @SerializedName("cta") val cta: Cta?,
-    @SerializedName("gateway_detail") val GatewayDetail: GatewayDetail?
+    @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?
 ) : Parcelable
 
 @Parcelize
@@ -77,7 +84,7 @@ data class Faq(
 @Parcelize
 data class GatewayDetail(
 
-    @SerializedName("gateway_id") val gateway_id: String?,
+    @SerializedName("gateway_id") val gateway_id: Int?,
     @SerializedName("name") val name: String?,
     @SerializedName("product_code") val product_code: String?,
     @SerializedName("is_active") val is_active: Boolean?,
