@@ -53,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoNowRecentPurchaseViewModel @Inject constructor(
@@ -65,7 +66,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
-    dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io) {
 
     companion object {
@@ -208,16 +209,35 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     private fun getProductRecom(pageName: String) {
         launchCatchError(block = {
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = pageName,
-                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
+            withContext(dispatcher.io) {
+                val recommendationWidgets = getRecommendationUseCase.getData(
+                    GetRecommendationRequestParam(
+                        pageName = pageName,
+                        xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
+                        xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
+                    )
                 )
-            )
 
-            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
-                layoutList.addProductRecom(pageName, recommendationWidgets.first())
+                if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+                    layoutList.addProductRecom(pageName, recommendationWidgets.first())
+
+                    val layout = RepurchaseLayoutUiModel(
+                        layoutList = layoutList,
+                        nextPage = INITIAL_PAGE,
+                        state = TokoNowLayoutState.SHOW
+                    )
+
+                    _getLayout.postValue(Success(layout))
+                }
+            }
+        }) { /* nothing to do */ }
+    }
+
+    private fun getCategoryGrid(warehouseId: String, context: Context?) {
+        launchCatchError(block = {
+            withContext(dispatcher.io) {
+                val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+                layoutList.addCategoryGrid(response, context)
 
                 val layout = RepurchaseLayoutUiModel(
                     layoutList = layoutList,
@@ -227,21 +247,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
                 _getLayout.postValue(Success(layout))
             }
-        }) { /* nothing to do */ }
-    }
-
-    private fun getCategoryGrid(warehouseId: String, context: Context?) {
-        launchCatchError(block = {
-            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-            layoutList.addCategoryGrid(response, context)
-
-            val layout = RepurchaseLayoutUiModel(
-                layoutList = layoutList,
-                nextPage = INITIAL_PAGE,
-                state = TokoNowLayoutState.SHOW
-            )
-
-            _getLayout.postValue(Success(layout))
         }) {
             /* nothing to do */
         }
