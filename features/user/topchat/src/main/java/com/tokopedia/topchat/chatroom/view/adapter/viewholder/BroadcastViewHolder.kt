@@ -10,10 +10,7 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
@@ -162,6 +159,9 @@ class BroadcastViewHolder constructor(
 
     private fun bindBroadcastLabel(banner: ImageAnnouncementViewModel) {
         broadcastLabel?.renderState(banner)
+        if (broadcastLabel?.isVisible == true && bannerView?.isVisible == false) {
+            setPaddingTop(paddingWithBroadcastLabelOnly)
+        }
     }
 
     private fun setPaddingTop(topPadding: Float) {
@@ -279,5 +279,6 @@ class BroadcastViewHolder constructor(
 
         private val paddingWithBanner = 1f.toPx()
         private val paddingWithoutBanner = 6f.toPx()
+        private val paddingWithBroadcastLabelOnly = 0f
     }
 }

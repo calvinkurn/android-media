@@ -139,6 +139,10 @@ constructor(
         statusCampaign = CampaignStatus.ENDED
     }
 
+    fun eligibleToRenderCampaignLabel(): Boolean {
+        return isCampaign && hasSupportedCampaignStatus()
+    }
+
     fun hasSupportedCampaignStatus(): Boolean {
         return when (statusCampaign) {
             STARTED, ON_GOING, ENDED -> true
