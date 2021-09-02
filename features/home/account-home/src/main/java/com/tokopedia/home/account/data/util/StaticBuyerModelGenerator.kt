@@ -80,6 +80,15 @@ class StaticBuyerModelGenerator private constructor() {
                 title = context.getString(R.string.title_menu_favorites)
             })
 
+            viewItems.add(MenuListViewModel().apply {
+                menu = context.getString(R.string.title_menu_tokopedia_affiliates)
+                menuDescription = context.getString(R.string.label_menu_tokopedia_affiliates)
+                titleTrack = AccountConstants.Analytics.PEMBELI
+                sectionTrack = context.getString(R.string.title_menu_favorites)
+                applink = ApplinkConst.AFFILIATE_EXPLORE
+                isBeta = true
+            })
+
             if (remoteConfig.getBoolean("mainapp_enable_interest_pick", true)) {
                 viewItems.add(MenuListViewModel().apply {
                     menu = context.getString(R.string.title_menu_favorite_topic)

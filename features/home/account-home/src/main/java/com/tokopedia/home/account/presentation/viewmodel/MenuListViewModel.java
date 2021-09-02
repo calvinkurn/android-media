@@ -17,6 +17,7 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
     private String titleTrack;
     private String sectionTrack;
     private boolean isUseSeparator = true;
+    private boolean isBeta = false;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -71,6 +72,10 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         this.sectionTrack = sectionTrack;
     }
 
+    public boolean isBeta() { return isBeta; }
+
+    public void setBeta(boolean beta) { isBeta = beta; }
+
     public MenuListViewModel() {
     }
 
@@ -96,6 +101,7 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.titleTrack);
         dest.writeString(this.sectionTrack);
         dest.writeByte((byte) (isUseSeparator ? 1 : 0));
+        dest.writeByte((byte) (isBeta ? 1 : 0));
     }
 
     protected MenuListViewModel(Parcel in) {
@@ -106,6 +112,7 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
         this.titleTrack = in.readString();
         this.sectionTrack = in.readString();
         this.isUseSeparator = in.readByte() != 0;
+        this.isBeta = in.readByte() != 0;
     }
 
     public static final Creator<MenuListViewModel> CREATOR = new Creator<MenuListViewModel>() {
