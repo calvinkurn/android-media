@@ -2274,7 +2274,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         this.isNeedToRotateTokopoints = false
     }
 
-    private fun onNetworkRetry(forceRefresh: Boolean = false) {
+    private fun onNetworkRetry() {
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
@@ -3058,8 +3058,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun refreshHomeData(forceRefresh: Boolean) {
-        if (!forceRefresh) refreshLayout.isRefreshing = true
-        onNetworkRetry(forceRefresh)
+        onNetworkRetry()
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
@@ -3092,6 +3091,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
+        if (errorToaster != null || errorToaster?.isShown != true) {
+            errorToaster?.dismiss()
+            errorToaster = null
+        }
         if (errorToaster == null || errorToaster?.isShown == false) {
             Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
