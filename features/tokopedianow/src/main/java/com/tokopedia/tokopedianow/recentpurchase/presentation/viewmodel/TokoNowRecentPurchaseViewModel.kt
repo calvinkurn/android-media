@@ -66,7 +66,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val context: Context
 ): BaseViewModel(dispatcher.io) {
 
     companion object {
@@ -126,12 +127,12 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int, context: Context?) {
+    fun getLayoutData(warehouseID: Int, queryParam: String, totalScan: Int, page: Int) {
         launchCatchError(block = {
             layoutList.filter { it.isNotStaticLayout() }.forEach {
                 when (it) {
                     is RepurchaseProductGridUiModel -> {
-                        getProductListAsync(warehouseID, queryParam, totalScan, page, context).await()
+                        getProductListAsync(warehouseID, queryParam, totalScan, page).await()
                     }
                 }
 
@@ -152,8 +153,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         warehouseID: Int,
         queryParam: String,
         totalScan: Int,
-        page: Int,
-        context: Context?
+        page: Int
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val getProductListResponse = getRepurchaseProductListUseCase.execute(warehouseID,
@@ -165,8 +165,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             if (getProductListResponse.isNullOrEmpty()) {
                 getEmptyState(
                     id = EMPTY_STATE_NO_RESULT,
-                    warehouseId = warehouseID.toString(),
-                    context = context
+                    warehouseId = warehouseID.toString()
                 )
             } else {
                 layoutList.addProductGrid(getProductListResponse)
@@ -233,7 +232,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    private fun getCategoryGrid(warehouseId: String, context: Context?) {
+    private fun getCategoryGrid(warehouseId: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
@@ -252,7 +251,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "", context: Context? = null) {
+    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "") {
         layoutList.removeLoading()
         when(id) {
             EMPTY_STATE_NO_HISTORY -> {
@@ -273,7 +272,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 layoutList.clear()
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateNoResult()
-                getCategoryGrid(warehouseId, context)
+                getCategoryGrid(warehouseId)
                 getProductRecom(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }
         }

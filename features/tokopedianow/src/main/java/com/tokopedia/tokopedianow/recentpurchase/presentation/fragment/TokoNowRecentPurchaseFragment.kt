@@ -445,7 +445,7 @@ class TokoNowRecentPurchaseFragment:
 
         when(data.state) {
             TokoNowLayoutState.LOADING -> onLoadingLayout()
-            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4, context)
+            TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
         }
     }
 

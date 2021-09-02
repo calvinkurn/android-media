@@ -36,11 +36,11 @@ object RepurchaseLayoutMapper {
         add(RepurchaseEmptyStateNoHistoryUiModel(description))
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, context: Context?) {
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, context: Context) {
         val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response)
         add(TokoNowCategoryGridUiModel(
                 id = "",
-                title = context?.getString(R.string.tokopedianow_repurchase_category_grid_title).orEmpty(),
+                title = context.getString(R.string.tokopedianow_repurchase_category_grid_title),
                 categoryList = categoryList,
                 state = TokoNowLayoutState.SHOW
             )
