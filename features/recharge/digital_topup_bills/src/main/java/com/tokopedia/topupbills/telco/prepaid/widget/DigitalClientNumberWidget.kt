@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.text.Editable
 import android.text.InputType
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -63,7 +64,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.editText.setText("")
             inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
-            it.hide()
             imgOperator.hide()
             listener.onClearAutoComplete()
         }
