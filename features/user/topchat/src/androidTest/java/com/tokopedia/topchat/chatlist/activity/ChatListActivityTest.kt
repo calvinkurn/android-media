@@ -1,58 +1,16 @@
 package com.tokopedia.topchat.chatlist.activity
 
-
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
-import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
-import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
-import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
-import com.tokopedia.topchat.stub.common.UserSessionStub
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matchers.not
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
-class ChatListActivityTest {
-
-    @get:Rule
-    var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java)
-
-    private lateinit var chatListUseCase: GetChatListMessageUseCaseStub
-    private lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
-    private lateinit var userSession: UserSessionStub
-    private lateinit var activity: ChatListActivityStub
-
-    private val exEmptyChatListPojo = ChatListPojo()
-    private var exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
-            "success_get_chat_list.json",
-            ChatListPojo::class.java
-    )
-    private var exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
-            "success_get_chat_list_size_5.json",
-            ChatListPojo::class.java
-    )
-
-    @ExperimentalCoroutinesApi
-    @Before
-    fun setup() {
-        chatListUseCase = GetChatListMessageUseCaseStub()
-        chatNotificationUseCase = GetChatNotificationUseCaseStub()
-        userSession = mActivityTestRule.activity.userSessionInterface
-        activity = mActivityTestRule.activity
-    }
+class ChatListActivityTest: ChatListTest() {
 
     @Test
     fun empty_chat_list_buyer_only() {

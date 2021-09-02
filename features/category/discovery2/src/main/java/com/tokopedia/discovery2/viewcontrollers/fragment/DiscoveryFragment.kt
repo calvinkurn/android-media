@@ -154,6 +154,7 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shareType: Int = 1
 
+    private var isManualScroll = true
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -253,7 +254,7 @@ class DiscoveryFragment :
             val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
+                if (dy >= 0) {
                     ivToTop.hide()
                     calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
@@ -549,7 +550,7 @@ class DiscoveryFragment :
             discoDefaultShare(data)
         }
     }
-    
+
     private fun discoDefaultShare(data: PageInfo?) {
         data?.let {
             LinkerManager.getInstance().executeShareRequest(
@@ -766,6 +767,7 @@ class DiscoveryFragment :
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
                     recyclerView.smoothScrollToPosition(position)
+                    isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
@@ -984,7 +986,7 @@ class DiscoveryFragment :
         if(lastVisibleComponent == null){
             updateLastVisibleComponent()
         }
-        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent, isManualScroll)
         openScreenStatus = false
         UniversalShareBottomSheet.clearState()
     }
