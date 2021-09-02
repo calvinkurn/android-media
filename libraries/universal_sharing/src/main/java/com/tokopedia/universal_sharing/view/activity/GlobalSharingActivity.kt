@@ -22,7 +22,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -38,12 +38,11 @@ class GlobalSharingActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if(!hasStoragePermissions()) {
             askPermission()
+        } else {
+            checkSharingOptions()
         }
-
-        checkSharingOptions()
     }
 
     private fun checkSharingOptions() {
@@ -53,7 +52,7 @@ class GlobalSharingActivity: BaseActivity() {
                     showAndroidChooserSharing(this)
                 }
                 SHARE_TYPE_UNIVERSAL_DIALOG -> {
-                    showUniversalDialog(this)
+                    showAndroidChooserSharing(this)
                 }
                 SHARE_TYPE_IG_STORY -> {
                     shareToInstagram(this)
@@ -65,16 +64,6 @@ class GlobalSharingActivity: BaseActivity() {
         }
     }
 
-    private fun showUniversalDialog(bundle: Bundle) {
-        val image = bundle.getString(KEY_IMAGE_URL)
-        val text = bundle.getString(KEY_TEXT)
-
-        val universalDialog = UniversalShareBottomSheet.createInstance().apply {
-            setOgImageUrl(image ?: "")
-        }
-        universalDialog.showNow(supportFragmentManager, "")
-    }
-
     private fun showAndroidChooserSharing(bundle: Bundle) {
         val text = bundle.getString(KEY_TEXT)
         val image = bundle.getString(KEY_IMAGE_URL)
@@ -82,26 +71,28 @@ class GlobalSharingActivity: BaseActivity() {
         val share = Intent(Intent.ACTION_SEND)
         share.type = "text/plain"
         share.putExtra(Intent.EXTRA_TEXT, text)
+        share.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
         if(image?.isNotEmpty() == true) {
-            downloadImage(image) {
-                share.putExtra(Intent.EXTRA_STREAM, it)
+            SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
+                val imgFile = getFileProvider(File(it))
+                println("Image path $imgFile")
+                share.putExtra(Intent.EXTRA_STREAM, imgFile)
             }
         }
-        startActivityForResult(Intent.createChooser(share, "Share With"), REQUEST_CODE_CHOOSER)
+        startActivityForResult(Intent.createChooser(share, "Bagikan"), REQUEST_CODE_CHOOSER)
     }
 
     private fun shareToInstagram(bundle: Bundle) {
         val image = bundle.getString(KEY_IMAGE_URL) ?: ""
-        if(image.isNotEmpty()) {
-            downloadImage(image) {
-                openInstagramStory(it)
-            }
+        SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
+            val imgFile = getFileProvider(File(it))
+            println("Image path $imgFile")
+            openInstagramStory(imgFile)
         }
     }
 
     private fun openInstagramStory(assetPath: Uri) {
-        println("Image path $assetPath")
         val intent = Intent("com.instagram.share.ADD_TO_STORY")
         intent.setDataAndType(assetPath, "image/png")
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -118,6 +109,14 @@ class GlobalSharingActivity: BaseActivity() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
     }
 
+    private fun getFileProvider(imageFile: File): Uri {
+        return FileProvider.getUriForFile(
+            this,
+            "$packageName.provider",
+            imageFile
+        )
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -127,6 +126,7 @@ class GlobalSharingActivity: BaseActivity() {
             if ((grantResults.isNotEmpty() &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 isNeedPermission = false
+                checkSharingOptions()
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
