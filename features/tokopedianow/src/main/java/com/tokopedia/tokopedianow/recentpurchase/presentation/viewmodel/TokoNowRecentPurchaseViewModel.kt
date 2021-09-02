@@ -115,7 +115,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     fun getLayoutList() {
         layoutList.removeLoading()
-        layoutList.addChooseAddress()
         layoutList.addLayoutList()
 
         val layout = RepurchaseLayoutUiModel(

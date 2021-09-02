@@ -22,8 +22,8 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addLayoutList() {
         val sortFilterList = createSortFilterList()
-
         add(RepurchaseSortFilterUiModel(sortFilterList))
+        addChooseAddress()
         add(RepurchaseProductGridUiModel(emptyList()))
     }
 
