@@ -66,4 +66,8 @@
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
     <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
     <string name="common_topup_saved_number_searchbar_placeholder">Cari nama atau nomor HP</string>
+
+    <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
+    <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
+    <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>
 </resources>

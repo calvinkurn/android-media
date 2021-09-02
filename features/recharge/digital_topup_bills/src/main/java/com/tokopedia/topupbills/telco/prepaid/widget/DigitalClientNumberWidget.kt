@@ -2,14 +2,21 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
@@ -32,9 +39,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val inputNumberResult: TextView
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
-
     protected val view: View
+
     private lateinit var listener: ActionListener
+    private lateinit var autoCompleteAdapter: TopupBillsAutoCompleteAdapter
 
     init {
         view = View.inflate(context, getLayout(), this)
@@ -53,12 +61,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.textFieldInput.setText("")
             inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
+            it.hide()
+            imgOperator.hide()
+            listener.onClearAutoComplete()
         }
-
         inputNumberField.textFieldInput.run {
-            isClickable = true
-            isFocusable = false
-            clearFocus()
+            inputType = InputType.TYPE_CLASS_TEXT
+            threshold = AUTOCOMPLETE_THRESHOLD
+            dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
+
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
 
@@ -69,23 +80,36 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (count == 0) {
-                        listener.onClearAutoComplete()
-                        imgOperator.visibility = View.GONE
-                        btnClear.visibility = View.GONE
-                    } else {
+                    if (count != 0) {
                         btnClear.visibility = View.VISIBLE
                     }
                     listener.onRenderOperator()
                 }
             })
 
-            setOnClickListener {
-                it?.run {
-                    listener.onClientNumberHasFocus(inputNumberField.textFieldInput.text.toString())
+            setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    hideSoftKeyboard()
+                }
+            }
+
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    clearFocus()
+                    hideSoftKeyboard()
+                }
+                true
+            }
+
+            setOnItemClickListener { _, _, position, _ ->
+                val item = autoCompleteAdapter.getItem(position)
+                if (item is TopupBillsAutoCompleteContactDataView) {
+                    setContactName(item.name)
                 }
             }
         }
+
+        initClientNumberAutoComplete(context)
     }
 
     fun clearFocusAutoComplete() {
@@ -105,6 +129,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             setMessage(errorMessage)
             setError(true)
         }
+    }
+
+    fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
+        autoCompleteAdapter.updateItems(
+            CommonTopupBillsDataMapper
+                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
     }
 
     private fun hideErrorInputNumber() {
@@ -143,6 +173,21 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             layoutInputNumber.show()
             layoutResult.hide()
         }
+    }
+
+    private fun initClientNumberAutoComplete(context: Context) {
+        autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
+            context,
+            R.layout.item_topup_bills_autocomplete_number,
+            mutableListOf(),
+            object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return inputNumberField.textFieldInput.text.toString()
+                }
+            }
+        )
+
+        inputNumberField.textFieldInput.setAdapter(autoCompleteAdapter)
     }
 
     private fun validateContactName(contactName: String): String {
@@ -188,16 +233,23 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return ""
     }
 
+    fun hideSoftKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(this.windowToken, 0)
+    }
+
     interface ActionListener {
         fun onNavigateToContact()
         fun onRenderOperator()
         fun onClearAutoComplete()
-        fun onClientNumberHasFocus(clientNumber: String)
     }
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
+
+        private const val AUTOCOMPLETE_THRESHOLD = 1
+        private const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10
     }
 }
