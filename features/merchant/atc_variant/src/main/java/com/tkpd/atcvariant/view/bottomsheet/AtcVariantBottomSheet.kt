@@ -608,7 +608,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
-        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY || variantOptions == null) return
+        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
                 variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)

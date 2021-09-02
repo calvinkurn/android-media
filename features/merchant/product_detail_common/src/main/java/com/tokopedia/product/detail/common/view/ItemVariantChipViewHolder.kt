@@ -40,9 +40,7 @@ class ItemVariantChipViewHolder(val view: View,
     }
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
-        view.setOnClickListener {
-            listener.onVariantClicked(element, element.currentState)
-        }
+        setViewListener(element, VariantConstant.IGNORE_STATE)
         val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
 
         if (element.flashSale) {
@@ -65,11 +63,18 @@ class ItemVariantChipViewHolder(val view: View,
                     containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_light)
                 }
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setViewListener(element, element.currentState)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_unselected)
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
+        }
+    }
+
+    private fun setViewListener(element: VariantOptionWithAttribute, state: Int) {
+        view.setOnClickListener {
+            listener.onVariantClicked(element, state)
         }
     }
 }
