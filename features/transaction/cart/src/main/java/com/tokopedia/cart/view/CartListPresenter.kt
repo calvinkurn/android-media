@@ -552,7 +552,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice).toDouble()
             cartItemHolderData.wholesalePriceFormatted = null
             cartItemHolderData.wholesalePrice = 0
-            subtotalBeforeSlashedPrice = (itemQty * cartItemHolderData.productPrice).toDouble()
+            subtotalBeforeSlashedPrice =
+                    if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice).toDouble()
+                    else (itemQty * cartItemHolderData.productPrice).toDouble()
         }
 
         if (cartItemHolderData.productCashBack.isNotBlank()) {
@@ -626,7 +628,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
                             cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice) {
                         val tmpQty =
-                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.bundleQuantity
                                 else cartItemHolderData.quantity
                         itemQty += tmpQty
                     }
@@ -636,6 +638,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             if (cartItemHolderData.isBundlingItem) {
                 if (!calculatedBundlingId.contains(cartItemHolderData.bundleId)) {
                     subtotalPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundlePrice
+                    subtotalBeforeSlashedPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundleOriginalPrice
                     calculatedBundlingId.add(cartItemHolderData.bundleId)
                 }
             } else if (!cartItemHolderData.wholesalePriceData.isNullOrEmpty()) {
