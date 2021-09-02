@@ -38,8 +38,10 @@ object PMRegistrationTermHelper {
         isPmProSelected: Boolean
     ): List<RegistrationTermUiModel> {
         return listOf(
-            getShopScoreTerm(context, shopInfo, isPmProSelected), getTotalOrderTerm(context, shopInfo),
-            getNetItemValueTerm(context, shopInfo), getKycTerm(context, shopInfo, isPmProSelected)
+            getShopScoreTerm(context, shopInfo, isPmProSelected),
+            getTotalOrderTerm(context, shopInfo),
+            getNetItemValueTerm(context, shopInfo),
+            getKycTerm(context, shopInfo, isPmProSelected)
         )
     }
 
@@ -374,8 +376,16 @@ object PMRegistrationTermHelper {
             shopInfo.kycStatusId == KYCStatusId.NOT_VERIFIED || shopInfo.kycStatusId == KYCStatusId.BLACKLIST
         when {
             isKycVerified -> {
-                title = context.getString(R.string.pm_kyc_verified)
-                description = context.getString(R.string.pm_description_kyc_verified)
+                title = if (shopInfo.isNewSeller) {
+                    context.getString(R.string.pm_description_kyc_verified_new_seller)
+                } else {
+                    context.getString(R.string.pm_kyc_verified)
+                }
+                description = if (shopInfo.isNewSeller) {
+                    context.getString(R.string.pm_description_kyc_verified_new_seller)
+                } else {
+                    context.getString(R.string.pm_description_kyc_verified)
+                }
                 shopKycResIcon = R.drawable.ic_pm_checked
             }
             isKycNotVerified -> {
