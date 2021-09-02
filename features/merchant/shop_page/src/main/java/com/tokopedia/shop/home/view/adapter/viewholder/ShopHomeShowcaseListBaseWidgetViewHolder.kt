@@ -42,23 +42,17 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
                 showcaseListItemData: List<ShopHomeShowcaseListItemUiModel>
         ): List<ShopHomeShowcaseListItemUiModel> {
             val listSize = showcaseListItemData.size
-            val thresholds = ((listSize.toDouble() / 2).roundToInt())
-            val newList = MutableList(listSize) { ShopHomeShowcaseListItemUiModel() }
-            var pointer = 1
-            newList[0] = showcaseListItemData.first()
-            newList[listSize - 1] = showcaseListItemData.last()
-            showcaseListItemData.forEachIndexed { index, showcase ->
-                if (index.isMoreThanZero() && index < listSize) {
-                    if (index < thresholds) {
-                        newList[(index + pointer)] = showcase
-                        pointer++
-                    } else {
-                        pointer--
-                        newList[(index - pointer)] = showcase
+            val medianListSizeRounded = ((listSize.toDouble() / 2)).roundToInt()
+            return mutableListOf<ShopHomeShowcaseListItemUiModel>().apply {
+                for (cur in 0 until medianListSizeRounded) {
+                    showcaseListItemData.getOrNull(cur)?.let {
+                        add(it)
+                    }
+                    showcaseListItemData.getOrNull(cur + medianListSizeRounded)?.let {
+                        add(it)
                     }
                 }
             }
-            return newList
         }
     }
 
