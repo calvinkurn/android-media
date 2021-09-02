@@ -370,6 +370,7 @@
               ],
               "cart_details": [
                 {
+                  "errors" : ["Paket ini tidak tersedia karena periode paket sudah selesai"],
                   "bundle_detail": {
                     "bundle_id": 123,
                     "bundle_group_id": "123-911324892-508261332",
@@ -1566,7 +1567,7 @@
                       "product_image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/18/682ca0e7-d2be-452f-bb75-84cd6a31b15c.jpg",
                       "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/18/682ca0e7-d2be-452f-bb75-84cd6a31b15c.jpg",
                       "product_all_images": "[{\"file_name\":\"682ca0e7-d2be-452f-bb75-84cd6a31b15c.jpg\",\"file_path\":\"VqbcmM/2020/12/18\",\"status\":2}]",
-                      "product_notes": "test",
+                      "product_notes": "",
                       "product_quantity": 4,
                       "IsOutOfCoverage": false,
                       "product_menu_id": 0,
