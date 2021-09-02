@@ -14,44 +14,40 @@ class DiscoMerchantAnalytics(private val discoveryAnalytics: BaseDiscoveryAnalyt
     }
 
     override fun closeMainBottomSheet(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCloseBottomSheet(shopId,shopType)
+        discoveryAnalytics.trackMerchantCouponCloseBottomSheet(shopId,getShopType(widgetType))
     }
 
     override fun viewCoupons(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponDetailImpression(componentsItem,shopId,shopType,userId,positionInPage,couponName)
+        discoveryAnalytics.trackMerchantCouponDetailImpression(componentsItem,shopId,getShopType(widgetType),userId,positionInPage,couponName)
     }
 
     override fun userClickBottomSheetCTA(@FollowWidgetType widgetType: String, label: String, userId: String) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponVisitShopCTA(shopID,shopType)
+        discoveryAnalytics.trackMerchantCouponVisitShopCTA(shopID,getShopType(widgetType))
     }
 
     override fun clickJadiMemberButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int, buttonTitle:String?) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCTASection(shopId,shopType,buttonTitle?:"")
+        discoveryAnalytics.trackMerchantCouponCTASection(shopId,getShopType(widgetType),buttonTitle?:"")
     }
 
     override fun clickMulaiBelanjaButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int, buttonTitle:String?) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCTASection(shopId,shopType,buttonTitle?:"")
+        discoveryAnalytics.trackMerchantCouponCTASection(shopId,getShopType(widgetType),buttonTitle?:"")
     }
 
     override fun clickCekInfoButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int, buttonTitle:String?) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCTASection(shopId,shopType,buttonTitle?:"")
+        discoveryAnalytics.trackMerchantCouponCTASection(shopId,getShopType(widgetType),buttonTitle?:"")
     }
 
     override fun clickCekInfoButtonClose(widgetType: String, shopId: String, userId: String?, source: Int, buttonTitle:String?) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCTASection(shopId,shopType,buttonTitle?:"")
+        discoveryAnalytics.trackMerchantCouponCTASection(shopId,getShopType(widgetType),buttonTitle?:"")
     }
 
     override fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, source: Int, buttonTitle:String?) {
-        val shopType = if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
-        discoveryAnalytics.trackMerchantCouponCTASection(shopId,shopType,buttonTitle?:"")
+        discoveryAnalytics.trackMerchantCouponCTASection(shopId,getShopType(widgetType),buttonTitle?:"")
     }
 
+
+    fun getShopType(@FollowWidgetType widgetType: String):String{
+        return if(widgetType == FollowWidgetType.DEFAULT) "" else widgetType
+    }
 
 }

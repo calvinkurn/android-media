@@ -15,10 +15,11 @@ class MVCActivityCallbacks:Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity) {
-        if(activity is TransParentActivity && activity.mvcDataHashcode == hashCodeForMVC){
-            if(::mvcTrackerImpl.isInitialized){
+        if (activity is TransParentActivity) {
+            if (activity.mvcDataHashcode == hashCodeForMVC && ::mvcTrackerImpl.isInitialized) {
                 activity.mvcTracker.trackerImpl = mvcTrackerImpl
             }
+            (activity.applicationContext as Application).unregisterActivityLifecycleCallbacks(this)
         }
     }
 

@@ -60,7 +60,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            (context.applicationContext as Application).registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+            (context.applicationContext as Application).let {
+                it.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+                it.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+            }
             if (startActivityForResultFunction != null) {
                 startActivityForResultFunction?.invoke()
             } else {
