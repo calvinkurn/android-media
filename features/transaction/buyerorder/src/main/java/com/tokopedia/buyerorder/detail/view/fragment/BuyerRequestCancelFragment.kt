@@ -26,11 +26,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.constants.BuyerOrderIntentCode
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
-import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
@@ -55,7 +55,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -65,7 +64,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
-import java.io.Serializable
 import javax.inject.Inject
 
 /**
@@ -190,7 +188,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
+        activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
@@ -661,7 +659,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         val intent = Intent()
         intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
-        activity?.setResult(INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_INSTANT_CANCEL_BUYER, intent)
         activity?.finish()
     }
 
@@ -723,7 +721,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
             intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().productPrice)
-            intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
             startActivity(intent)
         }
     }
@@ -743,7 +741,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
                 activity?.finish()
         }
         dialog?.show()
