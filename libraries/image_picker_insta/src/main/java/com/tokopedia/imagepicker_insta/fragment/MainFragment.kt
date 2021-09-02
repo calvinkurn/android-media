@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
@@ -253,7 +254,13 @@ class MainFragment : Fragment(), MainFragmentContract {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     imageDataList.clear()
-                    imageDataList.add(ImageAdapterData(Camera(), false, false))
+
+                    context?.let { c ->
+                        if (c.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+                            imageDataList.add(ImageAdapterData(Camera()))
+                        }
+                    }
+
                     folders.clear()
 
                     if (!it.data?.imageAdapterDataList.isNullOrEmpty()) {

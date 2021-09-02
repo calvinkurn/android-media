@@ -6,3 +6,7 @@
   
 - Video Codec
   - https://www.youtube.com/watch?v=CrskWnKG8pk
+  
+- Pending
+  - Progress bar with round corner is
+ 
