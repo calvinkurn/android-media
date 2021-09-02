@@ -28,7 +28,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -306,20 +305,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
+            // TODO: [Misael] check ini, dan trackingnya
             override fun onClearAutoComplete() {
                 renderPromoAndRecommendation()
                 topupAnalytics.eventClearInputNumber()
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 buyWidget.setVisibilityLayout(false)
-            }
-
-            override fun onClientNumberHasFocus(clientNumber: String) {
-                postpaidClientNumberWidget.clearFocusAutoComplete()
-                navigateFavoriteNumberPage(
-                    clientNumber, favNumberList,
-                    arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId)
-                )
             }
         })
 
@@ -532,8 +524,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
+<<<<<<< HEAD
         postpaidClientNumberWidget.setFilterChipShimmer(false)
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
+=======
+        postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
+>>>>>>> 7bc5588492aebf16429abfc88528b2d5f0a2d6bf
     }
 
     private fun performanceMonitoringStopTrace() {

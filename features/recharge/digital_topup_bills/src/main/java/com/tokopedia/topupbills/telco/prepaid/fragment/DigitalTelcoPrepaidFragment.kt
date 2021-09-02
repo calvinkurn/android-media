@@ -154,6 +154,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 ) showDynamicSpacer() else hideDynamicSpacer()
             }
         })
+
+        sharedModelPrepaid.inputWidgetFocus.observe(viewLifecycleOwner, Observer { isFocus ->
+            if (!isFocus) {
+                telcoClientNumberWidget.clearFocus()
+            }
+        })
     }
 
     private fun showDynamicSpacer() {
@@ -396,13 +402,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
-                operatorId = selectedOperator.operator.id
-                telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
-                validatePhoneNumber(this.operatorData, telcoClientNumberWidget)
                 hitTrackingForInputNumber(selectedOperator)
-                renderProductViewPager()
-                getProductListData()
+                if (operatorId != selectedOperator.operator.id) {
+                    operatorId = selectedOperator.operator.id
+                    productId = 0
+                    sharedModelPrepaid.setVisibilityTotalPrice(false)
+                    telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    renderProductViewPager()
+                    getProductListData()
+                }
             }
         } catch (exception: Exception) {
             telcoClientNumberWidget.setErrorInputNumber(
@@ -477,25 +486,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             operatorId = ""
             sharedModelPrepaid.setVisibilityTotalPrice(false)
         }
-
-        override fun onClientNumberHasFocus(clientNumber: String) {
-            operatorId = ""
-            productId = 0
-            sharedModelPrepaid.setVisibilityTotalPrice(false)
-
-            telcoClientNumberWidget.clearFocusAutoComplete()
-
-            val dgCategoryIds = arrayListOf(
-                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                TelcoCategoryType.CATEGORY_ROAMING.toString()
-            )
-
-            navigateFavoriteNumberPage(
-                clientNumber, favNumberList,
-                dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
-            )
-        }
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
@@ -508,6 +498,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getProductListData() {
+        sharedModelPrepaid.setProductListShimmer(true)
+        validatePhoneNumber(operatorData, telcoClientNumberWidget)
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(
                 DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
@@ -635,6 +627,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             autoSelectTabProduct = true
             telcoClientNumberWidget.run {
+                setAutoCompleteList(favNumbers)
                 setInputNumber(favNumbers[0].clientNumber)
                 setContactName(favNumbers[0].clientName)
                 setFavoriteNumber(favNumbers)

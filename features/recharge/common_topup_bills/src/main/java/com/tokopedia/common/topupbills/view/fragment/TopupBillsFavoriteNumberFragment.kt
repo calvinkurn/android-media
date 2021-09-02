@@ -39,6 +39,11 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBott
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.model.*
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder.OnFavoriteNumberClickListener
@@ -226,7 +231,8 @@ class TopupBillsFavoriteNumberFragment:
         }
         binding?.commonTopupbillsFavoriteNumberClue?.run {
             if (numberListAdapter.visitables.isNotEmpty() &&
-                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
+            ) {
                 show()
             } else {
                 hide()

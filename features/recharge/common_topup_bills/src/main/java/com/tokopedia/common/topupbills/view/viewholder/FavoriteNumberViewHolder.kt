@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
