@@ -55,6 +55,10 @@
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
 
+    <string name="tokopedianow_repurchase_sort_chip_title">Paling sering dibeli</string>
+    <string name="tokopedianow_repurchase_category_filter_chip_title">Semua Kategori</string>
+    <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
+
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
 </resources>

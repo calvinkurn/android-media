@@ -9,12 +9,14 @@ import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseLoadingViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseProductGridViewHolder
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder
 
 class RecentPurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
@@ -39,6 +41,7 @@ class RecentPurchaseAdapterTypeFactory(
     override fun type(uiModel: RepurchaseProductGridUiModel): Int = RepurchaseProductGridViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseLoadingUiModel): Int = RepurchaseLoadingViewHolder.LAYOUT
     override fun type(uiModel: RepurchaseEmptyStateNoHistoryUiModel): Int = RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT
+    override fun type(uiModel: RepurchaseSortFilterUiModel): Int = RepurchaseSortFilterViewHolder.LAYOUT
     // endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -55,6 +58,7 @@ class RecentPurchaseAdapterTypeFactory(
             RepurchaseProductGridViewHolder.LAYOUT -> RepurchaseProductGridViewHolder(view, productCardListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
+            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view)
             // endregion
             else -> super.createViewHolder(view, type)
         }

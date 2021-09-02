@@ -12,13 +12,18 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.factory.RepurchaseSortFilterFactory.createSortFilterList
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
+import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
 object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addLayoutList() {
+        val sortFilterList = createSortFilterList()
+
+        add(RepurchaseSortFilterUiModel(sortFilterList))
         add(RepurchaseProductGridUiModel(emptyList()))
     }
 
