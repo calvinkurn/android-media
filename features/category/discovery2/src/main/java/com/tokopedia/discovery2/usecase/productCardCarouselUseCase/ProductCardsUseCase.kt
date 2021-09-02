@@ -48,7 +48,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.showVerticalLoader = productListData.isNotEmpty()
             it.setComponentsItem(productListData, component.tabName)
             it.noOfPagesLoaded = 1
-            component.nextPageKey = nextPage
+            it.nextPageKey = nextPage
             if (productListData.isEmpty()) return true
             it.pageLoadedCounter = 2
             it.verticalProductFailState = false
@@ -78,7 +78,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             component.userAddressData),
                     pageEndPoint,
                     component1.name)
-            component.nextPageKey = nextPage
+            component1.nextPageKey = nextPage
             if (productListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
