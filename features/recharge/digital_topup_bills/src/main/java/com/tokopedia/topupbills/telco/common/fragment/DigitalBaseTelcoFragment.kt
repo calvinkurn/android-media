@@ -604,12 +604,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
+        const val MINIMUM_OPERATOR_PREFIX = 4
+
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
-        const val REQUEST_CODE_CART_DIGITAL = 1090
 
+        const val REQUEST_CODE_CART_DIGITAL = 1090
         const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300

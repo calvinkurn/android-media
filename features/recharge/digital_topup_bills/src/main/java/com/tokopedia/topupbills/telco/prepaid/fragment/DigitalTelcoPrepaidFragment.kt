@@ -397,7 +397,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderProductFromCustomData() {
         try {
-            if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
+            if (telcoClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
                 showProducts = true
                 val selectedOperator =
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
