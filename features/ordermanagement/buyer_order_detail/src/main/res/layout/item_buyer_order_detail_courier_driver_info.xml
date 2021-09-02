@@ -32,6 +32,7 @@
         app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailCallCourierDriver"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailCourierDriverPhoto"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Smitty WerbenJagerManJensen LXXIII" />
