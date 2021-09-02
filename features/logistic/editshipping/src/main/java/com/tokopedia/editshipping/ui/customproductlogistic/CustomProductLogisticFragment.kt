@@ -78,8 +78,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(2649340, "1685435966")
-//        viewModel.getCPLList(shopId, productId)
+//        viewModel.getCPLList(2649340, "1685435966")
+        viewModel.getCPLList(shopId, productId)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }

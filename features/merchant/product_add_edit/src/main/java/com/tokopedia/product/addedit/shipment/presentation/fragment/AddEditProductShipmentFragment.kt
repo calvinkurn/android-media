@@ -309,16 +309,16 @@ class AddEditProductShipmentFragment:
     }
 
     private fun initShipmentData() {
-        shipmentViewModel.getCPLList(2649340, "1685435966")
-//        shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
+//        shipmentViewModel.getCPLList(2649340, "1685435966")
+        shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
     }
 
     private fun initObserver() {
         shipmentViewModel.cplList.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    applyShipmentValue(it.data)
                     updateShipmentData(it.data)
-                    updateLayoutShipment()
                 }
             }
         })
@@ -329,6 +329,7 @@ class AddEditProductShipmentFragment:
         shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
         shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
         shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
+        updateLayoutShipment()
     }
 
     private fun updateLayoutShipment() {
@@ -414,14 +415,18 @@ class AddEditProductShipmentFragment:
     private fun setupShipmentRadios() {
         radiosShipment?.setOnCheckedChangeListener { _, checkedId ->
             val isStandardShipment = checkedId == R.id.radio_standard_shipment
-            if (isStandardShipment)  {
+            shipmentRadioValue(isStandardShipment)
+        }
+    }
+
+    private fun shipmentRadioValue(isStandardShipment: Boolean) {
+        if (isStandardShipment)  {
                 layoutCustomShipmentOnDemand?.gone()
                 layoutCustomShipmentConventional?.gone()
             } else {
                 layoutCustomShipmentOnDemand?.visible()
                 layoutCustomShipmentConventional?.visible()
             }
-        }
     }
 
     private fun setupSubmitButton() {
@@ -507,7 +512,6 @@ class AddEditProductShipmentFragment:
         tfWeightAmount.setText(inputModel.weight.toString())
 
         applyInsuranceValue(inputModel.isMustInsurance)
-        applyShipmentValue(false)
 
         if (!(shipmentViewModel.isAddMode && shipmentViewModel.isFirstMoved)) {
             btnEnd?.visibility = View.GONE
@@ -524,9 +528,19 @@ class AddEditProductShipmentFragment:
         tickerInsurance?.isVisible = !mustInsurance
     }
 
-    private fun applyShipmentValue(isStandardService: Boolean) {
-        radioStandarShipment?.isChecked = isStandardService
-        radioCustomShipment?.isChecked = !isStandardService
+    private fun applyShipmentValue(data: CustomProductLogisticModel) {
+        val cplProduct = data.cplProduct
+        if (cplProduct.isEmpty() || cplProduct[0].cplStatus == 0) {
+            radioStandarShipment?.isChecked = true
+            radioCustomShipment?.isChecked = false
+            shipmentRadioValue(true)
+        } else {
+            radioStandarShipment?.isChecked = false
+            radioCustomShipment?.isChecked = true
+            shipmentRadioValue(false)
+        }
+
+
     }
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {
