@@ -72,4 +72,7 @@
     <string name="common_topup_contact_empty_title">Hmm, belum ada kontak di HP kamu</string>
     <string name="common_topup_contact_empty_desc">Cek lagi di sini kalau sudah ada kontak tersimpan di HP kamu, ya.</string>
     <string name="common_topup_contact_name_default">Nomor Telepon</string>
+    <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
+    <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
+    <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>
 </resources>

@@ -110,6 +110,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
                 clearFilterIfTabNotActive()
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
+                hideShimmering()
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList(it.throwable)
@@ -157,6 +158,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
 
     override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        sharedModelPrepaid.setInputWidgetFocus(false)
         telcoTelcoProductView.selectProductItem(position)
         if (::selectedOperatorName.isInitialized) {
             topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
@@ -167,6 +169,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
         topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, titleProduct)
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        sharedModelPrepaid.setInputWidgetFocus(false)
         telcoTelcoProductView.selectMccmProductItem(position)
     }
 
@@ -178,6 +181,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     telcoTelcoProductView.selectProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    sharedModelPrepaid.setInputWidgetFocus(false)
                     topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
                 }
             }
@@ -192,6 +196,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     telcoTelcoProductView.selectMccmProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    sharedModelPrepaid.setInputWidgetFocus(false)
                     topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId, TelcoComponentName.SPECIAL_PROMO_MCCM)
                 }
             }
