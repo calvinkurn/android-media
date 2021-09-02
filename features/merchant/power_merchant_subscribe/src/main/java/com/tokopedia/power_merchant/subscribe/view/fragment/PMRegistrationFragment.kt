@@ -341,12 +341,13 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
+        val currentPMRegistrationSelected = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT
         return WidgetRegistrationHeaderUiModel(
             shopInfo = shopInfo,
             registrationTerms = if (currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT) {
-                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo)
+                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo, currentPMRegistrationSelected)
             } else {
-                PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo)
+                PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo, currentPMRegistrationSelected)
             },
             selectedPmType = currentPmRegistrationTireType
         )
