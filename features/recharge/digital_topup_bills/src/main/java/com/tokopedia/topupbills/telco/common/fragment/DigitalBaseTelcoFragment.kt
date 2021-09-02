@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
@@ -54,6 +55,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
@@ -67,6 +69,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected lateinit var tickerView: Ticker
     protected lateinit var appBarLayout: AppBarLayout
     protected lateinit var bannerImage: ImageView
+    private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect =
@@ -102,6 +105,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
+            localCacheHandler = LocalCacheHandler(context, TELCO_BASE_PREFERENCE_NAME)
         }
     }
 
@@ -156,12 +160,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     ) {
         // TODO: [Misael] tolong cek ini bener atau ngga trackingnya
         topupAnalytics.eventClickOnContactPickerHomepage()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        val isDeniedOnce = localCacheHandler.getBoolean(TELCO_PERMISSION_CHECKER_IS_DENIED, false)
+        if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             permissionCheckerHelper.checkPermission(this,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        permissionCheckerHelper.onPermissionDenied(requireContext(), permissionText)
+                        navigateSavedNumber(
+                            clientNumber, favNumberList, dgCategoryIds, categoryName)
+                        localCacheHandler.run {
+                            putBoolean(TELCO_PERMISSION_CHECKER_IS_DENIED, true)
+                            applyEditor()
+                        }
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {
@@ -591,5 +601,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300
+
+        const val TELCO_BASE_PREFERENCE_NAME = "telco_base_preferences"
+        const val TELCO_PERMISSION_CHECKER_IS_DENIED = "telco_permission_checker_is_denied"
     }
 }
