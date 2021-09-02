@@ -137,7 +137,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
-        private const val IS_MYSHOP = "isMyShop"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         const val SAVED_SHOP_ID = "saved_shop_id"
@@ -799,7 +798,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
         val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
         return ShopProductAdapterTypeFactory(
-                membershipStampAdapterListener = this, //9768231
+                membershipStampAdapterListener = this,
                 shopProductClickedListener = this,
                 shopProductImpressionListener = this,
                 shopCarouselSeeAllClickedListener = this,
