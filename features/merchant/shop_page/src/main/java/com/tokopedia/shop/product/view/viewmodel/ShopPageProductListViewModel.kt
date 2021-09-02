@@ -85,8 +85,6 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
-    val userSessionShopId: String
-        get() = userSession.shopId ?: ""
     private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
     private var shopSortList = mutableListOf<ShopProductSortModel>()
 

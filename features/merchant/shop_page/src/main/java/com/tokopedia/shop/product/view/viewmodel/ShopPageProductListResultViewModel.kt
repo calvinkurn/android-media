@@ -66,9 +66,6 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val userId: String
         get() = userSession.userId
 
-    val userSessionShopId: String
-        get() = userSession.shopId ?: ""
-
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
     val productData = MutableLiveData<Result<GetShopProductUiModel>>()
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
