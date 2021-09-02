@@ -1275,7 +1275,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false, null, getDeviceId(), getCheckoutLeasingId()
                     );
                 }
-                if(data!= null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)){
+                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)) {
                     showToastError(getString(R.string.checkout_label_payment_try_again));
                 }
                 break;
@@ -1509,12 +1509,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString) {
-        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+        ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         boolean stillHasPromo = false;
-        if (validateUsePromoRequest != null) {
-            if (validateUsePromoRequest.getCodes().size() > 0) stillHasPromo = true;
-            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                if (ordersItem.getCodes().size() > 0) {
+        if (validateUsePromoRevampUiModel != null) {
+            PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
+            if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
+                stillHasPromo = true;
+            }
+            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode()) && !voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     stillHasPromo = true;
                     break;
                 }

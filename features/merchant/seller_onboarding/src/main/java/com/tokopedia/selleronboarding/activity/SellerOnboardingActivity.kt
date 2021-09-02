@@ -1,5 +1,6 @@
 package com.tokopedia.selleronboarding.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -19,8 +20,13 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
-import com.tokopedia.selleronboarding.model.*
-import com.tokopedia.selleronboarding.old.utils.StatusBarHelper
+import com.tokopedia.selleronboarding.model.BaseSliderUiModel
+import com.tokopedia.selleronboarding.model.SobSliderHomeUiModel
+import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
+import com.tokopedia.selleronboarding.model.SobSliderStatisticsUiModel
+import com.tokopedia.selleronboarding.model.SobSliderPromoUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingUtils
 import kotlinx.android.synthetic.main.activity_sob_onboarding.*
 import kotlin.math.abs
 
@@ -31,8 +37,8 @@ import kotlin.math.abs
 class SellerOnboardingActivity : BaseActivity() {
 
     companion object {
-        private const val VIEW_OBSERVER_DEF_SCALE_XY = 0.85f
-        private const val VIEW_OBSERVER_SCALE_XY_MULTIPLIER = 0.75f
+        private const val OBSERVER_DEF_SCALE_XY = 0.45f
+        private const val OBSERVER_SCALE_XY_MULTIPLIER = 0.55f
         private const val VIEW_OBSERVER_Y_TRANSLATION = -75f
         private const val VIEW_OBSERVER_ALPHA = 0.1f
         private const val TRANSFORMER_SCALE_MULTIPLIER = 1
@@ -40,15 +46,19 @@ class SellerOnboardingActivity : BaseActivity() {
         private const val TRANSFORMER_FULL_PAGE_POSITION = 1
         private const val SLIDER_FIRST_INDEX = 0
         private const val SLIDER_LAT_INDEX = 4
+        private const val OFF_SCREEN_PAGE_LIMIT = 2
+        private const val ADDITIONAL_INDEX = 1
     }
 
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
-        listOf(SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
-                SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
-                SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
-                SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
-                SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics))
+        listOf(
+            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
+            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
+            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
+            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
+            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +75,9 @@ class SellerOnboardingActivity : BaseActivity() {
         pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
     }
 
+    @SuppressLint("WrongConstant")
     private fun setupSlider() {
+        sobViewPager?.offscreenPageLimit = OFF_SCREEN_PAGE_LIMIT
         sobViewPager?.adapter = sobAdapter
         sobViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
@@ -95,11 +107,15 @@ class SellerOnboardingActivity : BaseActivity() {
             val viewObserver = page.findViewById<View>(R.id.viewObserver)
             val r = TRANSFORMER_SCALE_MULTIPLIER - abs(position)
             val absPos = abs(position)
-            viewObserver.scaleX = (VIEW_OBSERVER_DEF_SCALE_XY + r * VIEW_OBSERVER_SCALE_XY_MULTIPLIER)
-            viewObserver.scaleY = (VIEW_OBSERVER_DEF_SCALE_XY + r * VIEW_OBSERVER_SCALE_XY_MULTIPLIER)
+            viewObserver.scaleX = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
+            viewObserver.scaleY = OBSERVER_DEF_SCALE_XY + r * OBSERVER_SCALE_XY_MULTIPLIER
             viewObserver.translationY = (absPos * VIEW_OBSERVER_Y_TRANSLATION)
             when {
-                (position <= TRANSFORMER_FULL_PAGE_POSITION) -> viewObserver.alpha = VIEW_OBSERVER_ALPHA.coerceAtLeast(TRANSFORMER_ALPHA_MULTIPLIER - abs(position))
+                (position <= TRANSFORMER_FULL_PAGE_POSITION) -> {
+                    viewObserver.alpha = VIEW_OBSERVER_ALPHA.coerceAtLeast(
+                        TRANSFORMER_ALPHA_MULTIPLIER - abs(position)
+                    )
+                }
                 else -> viewObserver.alpha = VIEW_OBSERVER_ALPHA
             }
         }
@@ -186,15 +202,15 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun setupViewsTopMargin() {
-        val statusBarHeight = StatusBarHelper.getStatusBarHeight(this)
+        val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
         val btnSkipLp = tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
         btnSkipLp?.let { lp ->
             val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)
             lp.setMargins(
-                    lp.leftMargin,
-                    btnSkipTopMargin,
-                    lp.rightMargin,
-                    lp.bottomMargin
+                lp.leftMargin,
+                btnSkipTopMargin,
+                lp.rightMargin,
+                lp.bottomMargin
             )
         }
 
@@ -202,13 +218,13 @@ class SellerOnboardingActivity : BaseActivity() {
         viewPagerLp?.let { lp ->
             val viewPagerTopMargin = lp.topMargin.plus(statusBarHeight)
             lp.setMargins(
-                    lp.leftMargin,
-                    viewPagerTopMargin,
-                    lp.rightMargin,
-                    lp.bottomMargin
+                lp.leftMargin,
+                viewPagerTopMargin,
+                lp.rightMargin,
+                lp.bottomMargin
             )
         }
     }
 
-    private fun getPositionViewPager(): Int = sobViewPager?.currentItem.orZero() + 1
+    private fun getPositionViewPager(): Int = sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
 }

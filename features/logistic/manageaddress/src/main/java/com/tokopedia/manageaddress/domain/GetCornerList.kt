@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.request.AddressRequest
@@ -35,8 +36,7 @@ open class GetCornerList
                 showCorner = isCorner, whitelistChosenAddress = true, previousState = prevState,
                 localStateChosenAddressId = localChosenAddrId)
         val param = mapOf<String, Any>(PARAM_CORNER_USECASE to request)
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.logisticCommon.R.raw.address_corner)
-        val gqlRequest = GraphqlRequest(gqlQuery, GetPeopleAddressResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(KeroLogisticQuery.addressCorner, GetPeopleAddressResponse::class.java, param)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)

@@ -29,6 +29,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
@@ -91,7 +92,7 @@ import kotlin.coroutines.CoroutineContext
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener,
-    CoroutineScope {
+    CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
@@ -107,6 +108,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val TOAST_DURATION = 5000L
 
         private const val DEFAULT_HEIGHT_DP = 720f
+
+        private const val RV_TOP_POSITION = 0
     }
 
     @Inject
@@ -407,6 +410,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (coachMarkItems.isNotEmpty()) {
             pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
             coachMark?.showCoachMark(coachMarkItems)
+        }
+    }
+
+    override fun onScrollToTop() {
+        recyclerView?.post {
+            recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
