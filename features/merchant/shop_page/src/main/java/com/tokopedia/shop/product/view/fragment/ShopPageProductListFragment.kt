@@ -163,8 +163,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isGoldMerchant: Boolean,
                 shopHomeType: String,
                 shopAttribution: String?,
-                shopRef: String
-//                isMyShop: Boolean
+                shopRef: String,
+                isMyShop: Boolean
         ): ShopPageProductListFragment {
             val fragment = ShopPageProductListFragment()
             val bundle = Bundle()
@@ -173,7 +173,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             bundle.putString(KEY_SHOP_HOME_TYPE, shopHomeType)
             bundle.putBoolean(KEY_IS_OFFICIAL, isOfficial)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
-//            bundle.putBoolean(IS_MYSHOP, isMyShop)
+            bundle.putBoolean(IS_MYSHOP, isMyShop)
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
             fragment.arguments = bundle
             fragment.shopRef = shopRef
@@ -182,7 +182,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override val isOwner: Boolean
-        get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
+        get() = if (::viewModel.isInitialized) {
+            viewModel.isMyShop(shopId)
+        } else false
 
     private val isLogin: Boolean
         get() = if (::viewModel.isInitialized) {
@@ -794,10 +796,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-//        var isMyShop = false
-//        arguments?.let {
-//            isMyShop = it.getBoolean(IS_MYSHOP, false)
-//        }
+        var _isMyShop = false
+        arguments?.let {
+            _isMyShop = it.getBoolean(IS_MYSHOP, false)
+        }
         return ShopProductAdapterTypeFactory(
                 membershipStampAdapterListener = this,
                 shopProductClickedListener = this,
@@ -813,7 +815,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isGridSquareLayout = true,
                 deviceWidth = deviceWidth,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-                isShowTripleDot = !isOwner
+                isShowTripleDot = !_isMyShop
         )
     }
 
