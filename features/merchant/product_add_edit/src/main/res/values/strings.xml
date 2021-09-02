@@ -235,6 +235,10 @@
     <string name="text_shipment_conventional">Bawa pesanan ke gerai pengiriman terdekat dan minta resi dari petugas</string>
     <string name="title_shipment_on_demand">Dijemput Kurir</string>
     <string name="title_shipment_conventional">Antar ke Kantor Agen</string>
+    <string name="title_standard_shipment">Ubah jadi pengaturan standar?</string>
+    <string name="description_standard_shipment">Layanan pengiriman untuk produk ini akan disamakan dengan yang ada di Pengaturan Pengiriman tokomu.</string>
+    <string name="primary_button_standard_shipment">Ya, Ubah</string>
+    <string name="secondary_button_standard_shipment">Batal</string>
 
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>
