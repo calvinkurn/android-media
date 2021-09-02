@@ -38,13 +38,6 @@ object ShopScoreUtils {
     }
 }
 
-fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
-    if (throwable is IOException) {
-        setType(GlobalError.NO_CONNECTION)
-    } else {
-        setType(GlobalError.SERVER_ERROR)
-    }
-}
 
 fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
     val htmlString = HtmlLinkHelper(context, text)

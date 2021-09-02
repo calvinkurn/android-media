@@ -20,8 +20,6 @@ class BenefitPackageDataViewHolder(
         val LAYOUT = R.layout.item_benefit_package_data_section
     }
 
-    private var benefitPackageGradeAdapter: BenefitPackageGradeAdapter? = null
-
     override fun bind(element: BenefitPackageDataUiModel?) {
         with(itemView) {
             tvAdditionalInfoBenefitPackage?.text =
@@ -33,11 +31,11 @@ class BenefitPackageDataViewHolder(
                 benefitPackageDataListener.onLearnMoreToShopScoreClicked()
             }
         }
-        setupBenefitPackageAdapter()
+        setupBenefitPackageAdapter(element)
     }
 
-    private fun setupBenefitPackageAdapter() {
-        benefitPackageGradeAdapter = BenefitPackageGradeAdapter()
+    private fun setupBenefitPackageAdapter(element: BenefitPackageDataUiModel?) {
+        val benefitPackageGradeAdapter = BenefitPackageGradeAdapter()
         with(itemView) {
             rvBenefitPackageList?.apply {
                 layoutManager =
@@ -45,5 +43,6 @@ class BenefitPackageDataViewHolder(
                 adapter = benefitPackageGradeAdapter
             }
         }
+        benefitPackageGradeAdapter.setBenefitPackageList(element?.benefitPackageData)
     }
 }

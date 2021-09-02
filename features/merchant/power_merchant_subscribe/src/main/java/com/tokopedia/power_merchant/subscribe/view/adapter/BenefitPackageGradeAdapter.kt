@@ -11,14 +11,15 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitItem
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageDataUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageGradeUiModel
 import kotlinx.android.synthetic.main.item_benefit_package_section_pm_pro.view.*
 
 class BenefitPackageGradeAdapter :
     RecyclerView.Adapter<BenefitPackageGradeAdapter.BenefitPackageGradeViewHolder>() {
 
-    private val benefitPackageDataList = mutableListOf<BenefitPackageDataUiModel>()
+    private val benefitPackageDataList = mutableListOf<BenefitPackageGradeUiModel>()
 
-    private fun setBenefitPackageList(benefitPackageDataList: List<BenefitPackageDataUiModel>) {
+    fun setBenefitPackageList(benefitPackageDataList: List<BenefitPackageGradeUiModel>?) {
         if (benefitPackageDataList.isNullOrEmpty()) return
         this.benefitPackageDataList.clear()
         this.benefitPackageDataList.addAll(benefitPackageDataList)
@@ -45,7 +46,7 @@ class BenefitPackageGradeAdapter :
 
         private var benefitPackageItemAdapter: BenefitPackageItemAdapter? = null
 
-        fun bind(data: BenefitPackageDataUiModel) {
+        fun bind(data: BenefitPackageGradeUiModel) {
             with(itemView) {
                 imgBenefitPackageSection?.loadImage(data.iconBenefitUrl)
                 tvTitleBenefitPackageSection?.text = context.getString(

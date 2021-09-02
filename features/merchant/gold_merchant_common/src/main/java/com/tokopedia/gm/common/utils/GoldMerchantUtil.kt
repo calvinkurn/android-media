@@ -1,8 +1,10 @@
 package com.tokopedia.gm.common.utils
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.kotlin.extensions.view.orZero
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -50,6 +52,14 @@ object GoldMerchantUtil {
             Calendar.SUNDAY -> ONE_NUMBER
             Calendar.MONDAY -> ZERO_NUMBER
             else -> ZERO_NUMBER
+        }
+    }
+
+    fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
+        if (throwable is IOException) {
+            setType(GlobalError.NO_CONNECTION)
+        } else {
+            setType(GlobalError.SERVER_ERROR)
         }
     }
 }

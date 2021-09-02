@@ -7,6 +7,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.domain.mapper.BenefitPackageMapper
 import com.tokopedia.power_merchant.subscribe.domain.model.BenefitPackageResponse
 import com.tokopedia.power_merchant.subscribe.view.model.BaseBenefitPackageUiModel
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetBenefitPackageUseCase @Inject constructor(
@@ -15,23 +16,32 @@ class GetBenefitPackageUseCase @Inject constructor(
 ): BaseGqlUseCase<List<BaseBenefitPackageUiModel>>() {
 
     override suspend fun executeOnBackground(): List<BaseBenefitPackageUiModel> {
-        val gqlRequest = GraphqlRequest(BENEFIT_PACKAGE_QUERY, BenefitPackageResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(BENEFIT_PACKAGE_QUERY,
+            BenefitPackageResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(BenefitPackageResponse::class.java)
         if (gqlError.isNullOrEmpty()) {
-            val benefitPackageResponse: BenefitPackageResponse = gqlResponse.getData(BenefitPackageResponse::class.java)
+            val benefitPackageResponse: BenefitPackageResponse =
+                gqlResponse.getData(BenefitPackageResponse::class.java)
             return benefitPackageMapper.mapToBenefitPackageList(benefitPackageResponse)
         } else {
             throw MessageErrorException(gqlError.joinToString { it.message })
         }
     }
 
+    fun setParams(shopId: Long) {
+        params = RequestParams.create().apply {
+            putLong(SHOP_ID_PARAM, shopId)
+        }
+    }
+
     companion object {
+        const val SHOP_ID_PARAM = "shopId"
         val BENEFIT_PACKAGE_QUERY = """
             query BenefitPackage(${'$'}shopId: Int!) {
                shopLevel(input: {
-                  shopID: ${'$'}shopId
+                  shopID: "${'$'}shopId"
                   source: "android"
                   lang: "id"
                 }){
@@ -43,10 +53,11 @@ class GetBenefitPackageUseCase @Inject constructor(
                    }
               }
               goldGetPMGradeBenefitInfo(
-                 shop_id: ${'$'}shopId
+                 shop_id: ${'$'}shopId,
                  source: "android-goldmerchant", 
                  lang: "id", 
-                 device: "android"
+                 device: "android",
+                 fields: [""]
               ) {
                   next_level_benefit_package_list {
                       pm_grade_name

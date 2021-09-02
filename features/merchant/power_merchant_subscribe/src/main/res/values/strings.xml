@@ -4,6 +4,7 @@
     <string name="error_cancellation_tryagain">Coba Lagi</string>
     <string name="pm_bottom_sheet_expired_label">Status PM otomatis berhenti pada %1$s WIB.</string>
     <string name="pm_title_activity">Power Merchant</string>
+    <string name="pm_benefit_package_title_activity">Paket Keuntungan</string>
 
     <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turunkan status tokomu ke \nRegular Merchant?</string>
     <string name="pm_label_bottom_sheet_cancel_button">Berhenti Jadi Power Merchant</string>
@@ -230,5 +231,7 @@
     <string name="pm_pro_new_seller_title_coachmark_3">Cek keuntungan eksklusif Power Merchant PRO-mu, yuk!</string>
     <string name="pm_pro_new_seller_desc_coachmark_3">Kamu bisa lihat paket keuntungan yang kamu dapatkan di sini, ya.</string>
 
+    <string name="pm_benefit_package_upgrade">Raih</string>
+    <string name="pm_benefit_package_downgrade">Pertahankan</string>
 
 </resources>

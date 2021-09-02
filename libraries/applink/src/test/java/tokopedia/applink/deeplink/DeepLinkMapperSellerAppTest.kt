@@ -112,6 +112,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check pm benefit package appLink then should return tokopedia internal pm benefit package in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE, expectedDeepLink)
+    }
+
+    @Test
     fun `check voucher list appLink then should return tokopedia internal voucher list in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/voucher-list"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.VOUCHER_LIST, expectedDeepLink)

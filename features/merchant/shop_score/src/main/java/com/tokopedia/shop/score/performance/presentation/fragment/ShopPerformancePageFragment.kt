@@ -170,8 +170,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             shopIncome = shopLevelData?.niv?.toString().orEmpty(),
             productSold = shopLevelData?.itemSold.toString(),
             period = shopLevelData?.period.orEmpty(),
-            nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate
-                ?: "-"
+            nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-"
+            else shopLevelData?.nextUpdate ?: "-"
         )
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
@@ -506,7 +506,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         COACHMARK_LAST_POSITION_PM_RM -> {
                             scrollToLastItemCoachMark()
                         }
-                        else -> { }
+                        else -> {
+                        }
                     }
                 }
             })
@@ -743,7 +744,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    shopPerformanceAdapter.hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(
                         ItemShopPerformanceErrorUiModel(
                             it.throwable
