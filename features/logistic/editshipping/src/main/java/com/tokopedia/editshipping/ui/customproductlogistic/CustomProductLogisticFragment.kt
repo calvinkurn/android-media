@@ -101,7 +101,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 }
                 else -> {
                     binding.swipeRefresh.isRefreshing = true
-                    binding.shippingEditorLayout.gone()
+                    binding.shippingEditorLayoutOndemand.gone()
+                    binding.shippingEditorLayoutConventional.gone()
                     binding.btnSaveShipper.gone()
                 }
             }
@@ -111,11 +112,14 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun populateView(data: CustomProductLogisticModel) {
         updateShipperData(data)
         binding.swipeRefresh.isRefreshing = false
-        binding.shippingEditorLayout.visible()
         binding.btnSaveShipper.visible()
         binding.globalError.gone()
-        if (cplItemOnDemandAdapter.cplItem.isEmpty()) {
-            //set empty here
+        if (cplItemOnDemandAdapter.getShownShippers().isNotEmpty()) {
+            binding.shippingEditorLayoutOndemand.visible()
+        }
+
+        if (cplItemConventionalAdapter.getShownShippers().isNotEmpty()) {
+            binding.shippingEditorLayoutConventional.visible()
         }
     }
 
