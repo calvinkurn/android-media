@@ -36,7 +36,7 @@ class GetBenefitPackageUseCase @Inject constructor(
                   lang: "id"
                 }){
                    result {
-                     nextUpdate
+                     period
                    }
                    error {
                      message
