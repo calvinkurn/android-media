@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 
-class PenaltyStatusBottomSheet: BaseBottomSheetShopScore() {
+class PenaltyStatusBottomSheet : BaseBottomSheetShopScore() {
 
     override fun getLayoutResId(): Int = R.layout.bottom_sheet_status_penalty
 

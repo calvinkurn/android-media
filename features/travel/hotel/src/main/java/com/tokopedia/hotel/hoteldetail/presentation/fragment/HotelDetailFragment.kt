@@ -323,7 +323,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(error: Throwable) {
-        if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
+        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
 
             binding?.let {
@@ -332,8 +332,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
 
             context?.run {
-                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
-            }
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
@@ -438,7 +438,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 HotelShare(this).shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
-                        this.applicationContext)
+                    requireContext())
             }
         }
     }

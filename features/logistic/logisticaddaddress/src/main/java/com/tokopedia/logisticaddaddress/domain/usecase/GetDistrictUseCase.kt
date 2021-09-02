@@ -2,8 +2,8 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
-import com.tokopedia.logisticaddaddress.data.query.GetDistrictQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
@@ -23,7 +23,7 @@ class GetDistrictUseCase
                 "param" to placeId,
                 "err" to true
         )
-        val gqlRequest = GraphqlRequest(GetDistrictQuery.keroPlacesGetDistrict,
+        val gqlRequest = GraphqlRequest(KeroLogisticQuery.placesGetDistrict,
                 GetDistrictResponse::class.java, param)
         gql.clearRequest()
         gql.addRequest(gqlRequest)

@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
+
+    private static final int OS_11 = 30;
+
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
@@ -358,6 +362,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private boolean rolloutFingerprint() {
+        if (Build.VERSION.SDK_INT == OS_11) {
+            return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isEmpty();
+        }
         return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_SETTING_FINGERPRINT).isEmpty();
     }
 
@@ -408,6 +415,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onBiometricSettingClicked() {
+        accountAnalytics.eventClickFingerprint();
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.BIOMETRIC_SETTING);
     }
 

@@ -23,9 +23,8 @@ object PromoQuery {
            }
         }"""
 
-    fun promoCheckoutDigitalCheckVoucher() = """
+    fun rechargeCheckVoucher() = """
         query rechargeCheckVoucher(${'$'}data: RechargeInputVoucher!) {
-          status
               rechargeCheckVoucher(voucher: ${'$'}data) {
                   data {
                     success
@@ -44,10 +43,11 @@ object PromoQuery {
                   errors{
                     status
                     title
-                    }
-                   } 
+                   }
+                  } 
+              status
                }
-            """
+            """.trimIndent()
 
     fun promoCheckoutHotelCheckVoucher() = """
      query PropertyVoucher(${'$'}data: PropertyCheckVoucherRequest!) {

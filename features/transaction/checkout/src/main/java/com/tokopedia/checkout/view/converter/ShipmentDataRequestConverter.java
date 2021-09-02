@@ -73,6 +73,7 @@ public class ShipmentDataRequestConverter {
         shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
         shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
         shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
+        shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
         return shopProductCheckout;
     }
@@ -115,6 +116,7 @@ public class ShipmentDataRequestConverter {
                 shopProductCheckout.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                 shopProductCheckout.setCartString(shipmentCartItemModel.getCartString());
                 shopProductCheckout.setProductData(convertToProductDataCheckout(shipmentCartItemModel));
+                shopProductCheckout.setTokoNow(shipmentCartItemModel.isTokoNow());
 
                 ArrayList<String> promoCodes = new ArrayList<>();
                 List<PromoRequest> promoRequests = new ArrayList<>();
@@ -210,6 +212,9 @@ public class ShipmentDataRequestConverter {
         productDataCheckoutRequest.setFreeShipping(cartItem.isFreeShipping());
         productDataCheckoutRequest.setFreeShippingExtra(cartItem.isFreeShippingExtra());
         productDataCheckoutRequest.setCampaignId(cartItem.getAnalyticsProductCheckoutData().getCampaignId());
+        productDataCheckoutRequest.setProtectionPricePerProduct(cartItem.getProtectionPricePerProduct());
+        productDataCheckoutRequest.setProtectionTitle(cartItem.getProtectionTitle());
+        productDataCheckoutRequest.setProtectionAvailable(cartItem.isProtectionAvailable());
 
         return productDataCheckoutRequest;
     }
