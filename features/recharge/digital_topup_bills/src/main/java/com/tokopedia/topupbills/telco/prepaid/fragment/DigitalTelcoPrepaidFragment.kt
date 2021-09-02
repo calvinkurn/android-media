@@ -403,18 +403,25 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+                validatePhoneNumber(operatorData, telcoClientNumberWidget)
 
-                hitTrackingForInputNumber(selectedOperator)
+                // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
+//                hitTrackingForInputNumber(selectedOperator)
                 if (operatorId != selectedOperator.operator.id) {
                     operatorId = selectedOperator.operator.id
                     productId = 0
                     sharedModelPrepaid.setVisibilityTotalPrice(false)
-                    telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    telcoClientNumberWidget.run {
+                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                        clearErrorState()
+                    }
                     renderProductViewPager()
                     getProductListData()
                 }
             }
         } catch (exception: NoSuchElementException) {
+            operatorId = ""
+            productId = 0
             telcoClientNumberWidget.setErrorInputNumber(
                 getString(R.string.telco_number_error_prefix_not_found),
                 true
@@ -499,7 +506,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData() {
         sharedModelPrepaid.setProductListShimmer(true)
-        validatePhoneNumber(operatorData, telcoClientNumberWidget)
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(
                 DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,

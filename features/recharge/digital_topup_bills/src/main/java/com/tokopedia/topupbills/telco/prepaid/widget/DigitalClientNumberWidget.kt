@@ -3,7 +3,6 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.text.Editable
 import android.text.InputType
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -83,10 +82,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (count == 0) {
+                    if (s?.toString()?.isEmpty() == true) {
                         listener.onClearAutoComplete()
                         imgOperator.visibility = View.GONE
                     }
+
+                    if (inputNumberField.isInputError) clearErrorState()
 
                     listener.onRenderOperator()
                 }
@@ -137,6 +138,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             if (resetProvider) {
                 imgOperator.visibility = View.GONE
             }
+        }
+    }
+
+    fun clearErrorState() {
+        inputNumberField.run {
+            setMessage("")
+            isInputError = false
         }
     }
 

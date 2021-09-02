@@ -56,8 +56,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 import kotlin.math.abs
 
 /**
@@ -74,12 +81,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect =
         TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
-
     override var categoryId: Int = 0
         set(value) {
             field = value
             categoryName = topupAnalytics.getCategoryName(value)
         }
+
+    private var phoneValidatorJob: Job? = null
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -363,12 +371,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         operatorData: TelcoCatalogPrefixSelect,
         clientNumberWidget: DigitalClientNumberWidget
     ) {
-        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-            val phoneIsValid = Pattern.compile(validation.rule)
-                .matcher(clientNumberWidget.getInputNumber()).matches()
-            if (!phoneIsValid) {
-                clientNumberWidget.setErrorInputNumber(validation.message)
-                break
+        phoneValidatorJob?.cancel()
+        phoneValidatorJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(DELAY_INPUT_NUMBER_VALIDATOR)
+            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumberWidget.getInputNumber()).matches()
+                if (!phoneIsValid) {
+                    clientNumberWidget.setErrorInputNumber(validation.message)
+                    break
+                }
             }
         }
     }
@@ -601,6 +613,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300
+        const val DELAY_INPUT_NUMBER_VALIDATOR = 1000L
 
         const val TELCO_BASE_PREFERENCE_NAME = "telco_base_preferences"
         const val TELCO_PERMISSION_CHECKER_IS_DENIED = "telco_permission_checker_is_denied"
