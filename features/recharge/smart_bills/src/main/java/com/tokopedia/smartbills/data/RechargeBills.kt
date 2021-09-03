@@ -2,7 +2,6 @@ package com.tokopedia.smartbills.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
@@ -80,6 +79,9 @@ data class RechargeBills(
         @SerializedName("sections")
         @Expose
         var section: Section = Section(),
+        @SerializedName("promo")
+        @Expose
+        var promo: Promo = Promo(),
 
         ): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {

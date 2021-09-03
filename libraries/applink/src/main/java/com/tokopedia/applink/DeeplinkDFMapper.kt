@@ -5,6 +5,7 @@ import android.net.Uri
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
@@ -127,7 +128,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_S
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
@@ -359,6 +359,24 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_REVIEW, R.string.title_create_review))
 
             add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW) ||
+                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW) ||
+                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD)
+            }, DF_MERCHANT_REVIEW, R.string.title_product_review))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.INBOX_REPUTATION)
+            }, DF_MERCHANT_REVIEW, R.string.title_review_inbox))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.CREATE_REVIEW)
+            }, DF_MERCHANT_REVIEW, R.string.title_create_review))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.REVIEW_DETAIL)
+            }, DF_MERCHANT_REVIEW, R.string.title_review_detail))
+
+            add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
@@ -513,8 +531,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(MODALTOKO_INTERNAL_ORDER) ||
                         it.startsWith(HOTEL_INTERNAL_ORDER) ||
                         it.startsWith(PESAWAT_INTERNAL_ORDER) ||
-                        it.startsWith(BELANJA_INTERNAL_ORDER) ||
-                        it.startsWith(MARKETPLACE_INTERNAL_ORDER)
+                        it.startsWith(BELANJA_INTERNAL_ORDER)
             }, DF_BASE, R.string.title_buyerorder))
 
             // snapshot
