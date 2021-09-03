@@ -23,6 +23,10 @@ android {
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
+
+    buildFeatures {
+        buildConfig = false
+    }
 }
 
 dependencies {
@@ -36,6 +40,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
 
+    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
 
@@ -43,8 +51,5 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoCore
     implementation rootProject.ext.testDependencies.espressoContrib
 //    androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
-    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
-    implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.testing.cart_test)
-    androidTestUtil rootProject.ext.testDependencies.orchestrator
+//androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
