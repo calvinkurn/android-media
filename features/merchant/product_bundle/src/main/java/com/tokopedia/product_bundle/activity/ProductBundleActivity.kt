@@ -61,7 +61,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             data = RouteManager.getIntent(this, intent.data.toString()).data
             val pathSegments = it.pathSegments.orEmpty()
             val parentProductId = viewModel.getProductIdFromUri(it, pathSegments)
-            viewModel.setParentProductId(parentProductId.toLongOrZero())
+            viewModel.parentProductID = parentProductId.toLongOrZero()
             getBundleIdFromUri(it)
             getSelectedProductIdsFromUri(it)
             getPageSourceFromUri(it)
@@ -148,7 +148,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                                     productBundleInfo = bundleInfo,
                                     emptyVariantProductIds = emptyVariantProductIds,
                                     selectedBundleId = bundleId.toString(),
-                                    selectedProductIds = selectedProductIds
+                                    selectedProductIds = selectedProductIds,
+                                    source
                                 )
                             }
                         }

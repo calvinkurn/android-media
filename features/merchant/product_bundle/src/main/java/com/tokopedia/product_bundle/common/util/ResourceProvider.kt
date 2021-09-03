@@ -24,10 +24,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.preorder_time_unit_month)
     }
 
-    fun getEmptyProductBundleErrorMessage(): String {
-        return getString(R.string.error_bundle_is_empty_long) ?: ""
-    }
-
     fun getProductVariantNotSelected(): String {
         return getString(R.string.error_bundle_variant_not_selected) ?: ""
     }

@@ -22,6 +22,7 @@ import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
+import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoConstant
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
@@ -57,19 +58,15 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     var parentProductID: Long = 0L
+    var pageSource: String = ""
 
     private var productBundleMap: HashMap<ProductBundleMaster, List<ProductBundleDetail>> = HashMap()
 
     private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
     val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
 
-    private val addToCartResultLiveData = MutableLiveData<AddToCartBundleDataModel>()
-    val addToCartResult: LiveData<AddToCartBundleDataModel>
-        get() = addToCartResultLiveData
-
-    val inventoryError = Transformations.map(getBundleInfoResultLiveData) { result ->
-        InventoryError() // TODO('implement error mapper')
-    }
+    private val addToCartResultLiveData = MutableLiveData<AddToCartDataResult>()
+    val addToCartResult: LiveData<AddToCartDataResult> get() = addToCartResultLiveData
 
     private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
     val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData
@@ -79,6 +76,9 @@ class ProductBundleViewModel @Inject constructor(
 
     private val errorMessageLiveData: SingleLiveEvent<String> = SingleLiveEvent()
     val errorMessage: LiveData<String> get() = errorMessageLiveData
+
+    private val isBundleOutOfStockLiveData: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isBundleOutOfStock: LiveData<Boolean> get() = isBundleOutOfStockLiveData
 
     fun getProductIdFromUri(uri: Uri?, pathSegments: List<String>): String {
         return if (pathSegments.size >= 2) {
@@ -114,11 +114,6 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleMap[selectedProductBundleMaster.value] ?: listOf()
     }
 
-    fun getShopIdFromSelectedBundle(): Int {
-        val selectedBundleMaster = selectedProductBundleMaster.value ?: ProductBundleMaster()
-        return selectedBundleMaster.shopId
-    }
-
     fun isPreOrderActive(preOrderStatus: String): Boolean {
         return preOrderStatus == PREORDER_STATUS_ACTIVE
     }
@@ -129,10 +124,6 @@ class ProductBundleViewModel @Inject constructor(
             PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
             else -> ""
         }
-    }
-
-    fun setParentProductId(productId: Long) {
-        this.parentProductID = productId
     }
 
     fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
@@ -182,19 +173,25 @@ class ProductBundleViewModel @Inject constructor(
 
     fun addProductBundleToCart(parentProductId: Long, bundleId: Long, shopId: Long, productDetails: List<ProductDetail>) {
         launchCatchError(block = {
+            val atcParams = AddToCartBundleRequestParams(
+                shopId = shopId.toString(),
+                bundleId = bundleId.toString(),
+                bundleQty = ATC_BUNDLE_QUANTITY,
+                selectedProductPdp = parentProductId.toString(),
+                productDetails = productDetails
+            )
             val result = withContext(dispatchers.io) {
-                addToCartBundleUseCase.setParams(
-                    AddToCartBundleRequestParams(
-                        shopId = shopId.toString(),
-                        bundleId = bundleId.toString(),
-                        bundleQty = ATC_BUNDLE_QUANTITY,
-                        selectedProductPdp = parentProductId.toString(),
-                        productDetails = productDetails
-                    )
-                )
+                addToCartBundleUseCase.setParams(atcParams)
                 addToCartBundleUseCase.executeOnBackground()
             }
-            addToCartResultLiveData.value = result
+            if (result.data.isNotEmpty()) {
+                addToCartResultLiveData.value = AddToCartDataResult(
+                    requestParams = atcParams,
+                    responseResult = result
+                )
+            } else {
+                isBundleOutOfStockLiveData.value = true
+            }
         }, onError = {
             errorMessageLiveData.value = it.localizedMessage
         })
@@ -307,14 +304,9 @@ class ProductBundleViewModel @Inject constructor(
         return originalPrice - bundlePrice
     }
 
-    fun validateAddToCartInput(productBundleMaster: ProductBundleMaster,
-                               productBundleDetails: List<ProductBundleDetail>): Boolean {
+    fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {
         var isAddToCartInputValid = true
-        if (productBundleMaster.quota.isZero()) {
-            isAddToCartInputValid = false
-            errorMessageLiveData.value = rscProvider.getEmptyProductBundleErrorMessage()
-        }
-        else if (!isProductVariantSelectionComplete(productBundleDetails)) {
+        if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
         }
