@@ -1,11 +1,7 @@
 package com.tokopedia.exploreCategory.model.raw
 
-const val GQL_Affiliate_Generate_Link: String = """{
-  mutation generateAffiliateLink(
-    affiliateID: "1241235"
-    channel: ["instagram"]
-    link: [{ type: "pdp", url:"https://www.tokopedia.com/product", identifier: "1234", params: [""] }]
-  ) {
+const val GQL_Affiliate_Generate_Link: String = """mutation generateAffiliateLink(${"$"}affiliateID: String!, ${"$"}channel: [String], ${"$"}link: [Link]) {
+  generateAffiliateLink(affiliateID: ${"$"}affiliateID, channel: ${"$"}channel, link: ${"$"}link) {
     status
     data {
       error

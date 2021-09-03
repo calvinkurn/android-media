@@ -4,17 +4,18 @@ import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.exploreCategory.interfaces.ShareButtonInterface
 import com.tokopedia.exploreCategory.ui.viewholder.*
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.*
 
-class AffiliateAdapterFactory()
+class AffiliateAdapterFactory(var shareButtonInterface: ShareButtonInterface? = null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             AffiliateVerticalProductCardItemVH.LAYOUT -> AffiliateVerticalProductCardItemVH(parent)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
-            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent)
+            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent)
             else -> super.createViewHolder(parent, type)

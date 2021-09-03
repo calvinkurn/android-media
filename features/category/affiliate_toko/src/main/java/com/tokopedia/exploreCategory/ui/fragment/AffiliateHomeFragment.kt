@@ -90,7 +90,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
-                AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
             }
         }
     }
@@ -124,7 +123,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                 show()
                 errorTitle.text = error
                 setActionClickListener {
-                    AffiliatePromotionBottomSheet.newInstance().show(childFragmentManager, "")
+                    AffiliatePromotionBottomSheet.newInstance("","","","").show(childFragmentManager, "")
 //                    affiliateHomeViewModel.getAffiliateValidateUser()
                 }
             }

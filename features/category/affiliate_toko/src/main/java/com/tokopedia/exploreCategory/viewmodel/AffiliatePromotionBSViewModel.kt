@@ -6,28 +6,31 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.model.AffiliateGenerateLinkData
 import com.tokopedia.exploreCategory.usecase.AffiliateGenerateLinkUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliatePromotionBSViewModel @Inject constructor(
+        private val userSessionInterface: UserSessionInterface,
         var affiliateGenerateLinkUseCase: AffiliateGenerateLinkUseCase
 ) : BaseViewModel() {
-    private var generateLinkData = MutableLiveData<AffiliateGenerateLinkData>()
+    private var generateLinkData = MutableLiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data>()
     private var errorMessage = MutableLiveData<String>()
-    private var progressBar = MutableLiveData<Boolean>()
+    private var loading = MutableLiveData<Boolean>()
 
-    fun affiliateGenerateLink() {
+    fun affiliateGenerateLink(name: String?, url: String?, identifier: String?) {
+        loading.value = true
         launchCatchError(block = {
-            progressBar.value = false
-            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink("")
+            loading.value = false
+            generateLinkData.value = affiliateGenerateLinkUseCase.affiliateGenerateLink(userSessionInterface.userId, name, url, identifier)
         }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
+            loading.value = false
             errorMessage.value = it.localizedMessage
+            it.printStackTrace()
         })
     }
 
     fun getErrorMessage(): LiveData<String> = errorMessage
-    fun progressBar(): LiveData<Boolean> = progressBar
-    fun generateLinkData(): LiveData<AffiliateGenerateLinkData> = generateLinkData
+    fun loading(): LiveData<Boolean> = loading
+    fun generateLinkData(): LiveData<AffiliateGenerateLinkData.AffiliateGenerateLink.Data> = generateLinkData
 
 }

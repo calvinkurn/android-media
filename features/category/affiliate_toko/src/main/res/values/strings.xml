@@ -28,4 +28,5 @@
     <string name="affiliate_how_to_get_link_2">2. Tempel link produk di kolom yang disediakan pada halaman Promosikan</string>
     <string name="affiliate_how_to_get_link_3">3. Produk akan ditemukan jika link benar</string>
     <string name="affiliate_how_to_get_link_4">4. Dapatkan link affiliate dengan klik tombol Promosikan</string>
+    <string name="affiliate_link_generated_succesfully">Link affiliate untuk di %s tersalin dan siap dipromosikan.</string>
 </resources>
