@@ -277,7 +277,8 @@ ext {
     ]
 
     testing = [
-            cart_journey                    : ":testing:transaction:cart",
-            checkout_journey                : ":testing:transaction:checkout"
+            cart                            : ":testing:transaction:cart",
+            checkout                        : ":testing:transaction:checkout",
+            oneclickcheckout                : ":testing:transaction:oneclickcheckout"
     ]
 }
