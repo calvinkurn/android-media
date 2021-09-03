@@ -21,6 +21,7 @@ import rx.Subscriber
 private const val globalNavWidgetAndShowTopAdsTrue = "searchproduct/globalnavwidget/show-topads-true.json"
 private const val globalNavWidgetAndShowTopAdsFalse = "searchproduct/globalnavwidget/show-topads-false.json"
 private const val noGlobalNavWidget = "searchproduct/globalnavwidget/no-global-nav-widget.json"
+private const val searchProductPage2WithHeadlineAds = "searchproduct/with-topads-and-headline-ads.json"
 
 internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixtures() {
 
@@ -45,15 +46,20 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     private fun `When Load Data`() {
-        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
-            it[SearchApiConst.Q] = "pulsa xl"
-            it[SearchApiConst.START] = "0"
-            it[SearchApiConst.UNIQUE_ID] = "unique_id"
-            it[SearchApiConst.USER_ID] = productListPresenter.userId
-        }
+        val searchParameter = createMapParameterFirstPage()
 
         productListPresenter.loadData(searchParameter)
     }
+
+    private fun createMapParameterFirstPage() =
+        createMapParameter(SearchApiConst.START to "0")
+
+    private fun createMapParameter(vararg additionalParams: Pair<String, Any>) = mapOf(
+        SearchApiConst.Q to "pulsa xl",
+        SearchApiConst.UNIQUE_ID to "unique_id",
+        SearchApiConst.USER_ID to productListPresenter.userId,
+        *additionalParams
+    )
 
     private fun `Then verify view set product list`() {
         verify {
@@ -69,13 +75,13 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     }
 
     @Test
-    fun `Showing only Global Nav Widget`() {
+    fun `Hide headline ads with Global Nav Widget`() {
         `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`()
 
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify visitable list has global nav widget and no CPM`()
+        `Then verify visitable list has global nav widget and no CPM`(visitableListSlot.captured)
     }
 
     private fun `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`() {
@@ -84,14 +90,64 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
         }
     }
 
-    private fun `Then verify visitable list has global nav widget and no CPM`() {
-        val visitableList = visitableListSlot.captured
-
+    private fun `Then verify visitable list has global nav widget and no CPM`(
+        visitableList: List<Visitable<*>>
+    ) {
         visitableList[0].shouldBeInstanceOf<GlobalNavDataView>()
 
         for(i in 1 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemDataView>()
         }
+    }
+
+    @Test
+    fun `Hide headline ads on page 2 with Global Nav Widget`() {
+        `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is false`()
+        `Given search more product API will have headline ads`()
+        `Given view already load data`()
+
+        `When view load more data`()
+
+        val visitableList = mutableListOf<Visitable<*>>()
+        `Then verify view set and add product list`(visitableList)
+        `Then verify visitable list has global nav widget and no CPM`(visitableList)
+    }
+
+    private fun `Given search more product API will have headline ads`() {
+        val searchProductModel = searchProductPage2WithHeadlineAds.jsonToObject<SearchProductModel>()
+
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
+    }
+
+    private fun `Given view already load data`() {
+        val searchParameter = createMapParameterFirstPage()
+
+        productListPresenter.loadData(searchParameter)
+    }
+
+    private fun `When view load more data`() {
+        val searchParameter = createMapParameterLoadMore()
+
+        productListPresenter.loadMoreData(searchParameter)
+    }
+
+    private fun createMapParameterLoadMore() =
+        createMapParameter(SearchApiConst.START to "8")
+
+    private fun `Then verify view set and add product list`(visitableList: MutableList<Visitable<*>>) {
+        verify {
+            productListView.setProductList(capture(visitableListSlot))
+        }
+
+        visitableList.addAll(visitableListSlot.captured)
+
+        verify {
+            productListView.addProductList(capture(visitableListSlot))
+        }
+
+        visitableList.addAll(visitableListSlot.captured)
     }
 
     @Test
