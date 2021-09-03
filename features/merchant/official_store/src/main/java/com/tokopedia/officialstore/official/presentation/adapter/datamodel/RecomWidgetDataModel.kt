@@ -3,8 +3,9 @@ package com.tokopedia.officialstore.official.presentation.adapter.datamodel
 import android.os.Bundle
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
-class RecomWidgetDataModel(val recomWidgetList: RecommendationWidget, val categoryName: String) :
+class RecomWidgetDataModel(val recomWidgetList: BestSellerDataModel, val categoryName: String) :
     OfficialHomeVisitable {
     override fun getChangePayloadFrom(b: Any?): Bundle? = null
 

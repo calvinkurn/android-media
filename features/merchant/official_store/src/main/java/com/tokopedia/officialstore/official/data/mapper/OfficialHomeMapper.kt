@@ -20,6 +20,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -271,11 +272,11 @@ class OfficialHomeMapper (
         action.invoke(newList.toMutableList())
     }
 
-    fun mappingRecomWidget(data: RecommendationWidget, adapter: OfficialHomeAdapter?) {
+    fun mappingRecomWidget(data: BestSellerDataModel, adapter: OfficialHomeAdapter?) {
         listOfficialStore.run {
-            val index = indexOfFirst { it is RecomWidgetDataModel }
+            val index = indexOfFirst { it is BestSellerDataModel }
 
-            val benefit = RecomWidgetDataModel(data, "ads")
+            val benefit = data
 
             if(index == -1) add(BENEFIT_POSITION, benefit)
             else set(index, benefit)
