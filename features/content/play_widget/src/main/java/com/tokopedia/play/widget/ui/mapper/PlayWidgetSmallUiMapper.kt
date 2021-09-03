@@ -4,7 +4,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.util.PlayWidgetDateFormatter
+import com.tokopedia.play_common.util.datetime.PlayWidgetDateFormatter
 import javax.inject.Inject
 
 /**
