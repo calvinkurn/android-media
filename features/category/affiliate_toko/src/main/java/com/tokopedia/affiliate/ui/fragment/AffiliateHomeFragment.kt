@@ -128,7 +128,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                 }
             }
         })
-        affiliateHomeViewModel.validateUserdata().observe(this, { validateUserdata ->
+        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateUserStatus.data.isEligible) {
                 affiliateHomeViewModel.getAffiliatePerformance()
             }

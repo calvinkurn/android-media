@@ -44,6 +44,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {

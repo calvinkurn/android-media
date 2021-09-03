@@ -14,7 +14,7 @@ import javax.inject.Inject
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val affiliateValidateUseCase: AffiliateValidateUserStatus,
-        private val affiliatePerformanceData: AffiliatePerformanceUseCase,
+        private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
@@ -37,7 +37,7 @@ class AffiliateHomeViewModel @Inject constructor(
         shimmerVisibility.value = true
         launchCatchError(block = {
             shimmerVisibility.value = false
-            affiliatePerformance.value = affiliatePerformanceData.affiliatePerformance(userSessionInterface.userId)
+            affiliatePerformance.value = affiliatePerformanceUseCase.affiliatePerformance(userSessionInterface.userId)
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
@@ -59,7 +59,7 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
-    fun validateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliatePerformanceData(): LiveData<AffiliatePerformanceData> = affiliatePerformance
     fun progressBar(): LiveData<Boolean> = progressBar
 }
