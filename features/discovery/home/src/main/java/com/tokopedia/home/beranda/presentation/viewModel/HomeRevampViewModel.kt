@@ -25,9 +25,8 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
-import com.tokopedia.home.beranda.domain.model.walletapp.Balance
-import com.tokopedia.home.beranda.domain.model.walletapp.Balances
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -62,6 +61,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -93,37 +93,37 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeUseCase: Lazy<HomeRevampUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
-        private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
-        private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
-        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
-        private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
-        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
-        private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-        private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
-        private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
-        private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
-        private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
-        private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
-        private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
-        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-        private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-        private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
-        private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
-        private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
-        private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
-        private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
-        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
-        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
-        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-        private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val playWidgetTools: Lazy<PlayWidgetTools>,
-        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
+    private val homeUseCase: Lazy<HomeRevampUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
+    private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
+    private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
+    private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
+    private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
+    private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
+    private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
+    private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
+    private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
+    private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
+    private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
+    private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
+    private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
+    private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
+    private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+    private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
+    private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
+    private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
+    private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+    private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
+    private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+    private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val bestSellerMapper: Lazy<BestSellerMapper>,
+    private val homeDispatcher: Lazy<CoroutineDispatchers>,
+    private val playWidgetTools: Lazy<PlayWidgetTools>,
+    private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -1258,6 +1258,8 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getBalanceWidgetData() {
+        if (!userSession.get().isLoggedIn) return
+
         if (getHeaderDataJob == null || getHeaderDataJob?.isActive == false) {
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
 

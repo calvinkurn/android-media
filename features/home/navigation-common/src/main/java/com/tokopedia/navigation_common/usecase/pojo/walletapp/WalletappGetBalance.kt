@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.model.walletapp
+package com.tokopedia.navigation_common.usecase.pojo.walletapp
 
 
 import com.google.gson.annotations.Expose

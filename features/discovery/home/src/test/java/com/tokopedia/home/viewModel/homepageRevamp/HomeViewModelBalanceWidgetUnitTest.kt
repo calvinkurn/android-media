@@ -10,12 +10,12 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.domain.model.walletapp.Balance
-import com.tokopedia.home.beranda.domain.model.walletapp.Balances
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletappGetBalance
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balance
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletappGetBalance
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS

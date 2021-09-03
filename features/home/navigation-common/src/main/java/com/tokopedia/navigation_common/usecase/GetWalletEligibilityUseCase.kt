@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
-import com.tokopedia.navigation_common.usecase.pojo.WalletEligibleStatus
+import com.tokopedia.navigation_common.usecase.pojo.eligibility.WalletAppEligibility
 import com.tokopedia.navigation_common.usecase.query.QueryHomeWallet
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -17,20 +17,20 @@ class GetWalletEligibilityUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : UseCase<WalletStatus>() {
 
-    private var graphqlUseCase: GraphqlUseCase<WalletEligibleStatus>? = null
+    private var graphqlUseCase: GraphqlUseCase<WalletAppEligibility>? = null
 
     init {
         graphqlUseCase = GraphqlUseCase(graphqlRepository)
         graphqlUseCase?.setGraphqlQuery(QueryHomeWallet.eligibilityQuery)
         graphqlUseCase?.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase?.setTypeClass(WalletEligibleStatus::class.java)
+        graphqlUseCase?.setTypeClass(WalletAppEligibility::class.java)
     }
     override suspend fun executeOnBackground(): WalletStatus = withContext(Dispatchers.IO){
         graphqlUseCase?.clearCache()
         graphqlUseCase?.setRequestParams(getParams().parameters)
         val data = graphqlUseCase?.executeOnBackground()
         data?.let {
-            return@withContext WalletStatus(isGoPointsEligible = it.isEligible)
+            return@withContext WalletStatus(isGoPointsEligible = it.walletappGetWalletEligible.data.getOrNull(0)?.isEligible?:false)
         }
         return@withContext WalletStatus()
     }

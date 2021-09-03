@@ -1,16 +1,25 @@
-package com.tokopedia.home.beranda.domain.model.walletapp
+package com.tokopedia.navigation_common.usecase.pojo.walletapp
 
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Balances(
+data class Balance(
     @Expose
-    @SerializedName("activation_cta")
-    val activationCta: String = "",
+    @SerializedName("active")
+    val active: Boolean = false,
     @Expose
-    @SerializedName("balance")
-    val balance: List<Balance> = listOf(),
+    @SerializedName("amount")
+    val amount: Int = 0,
+    @Expose
+    @SerializedName("amount_fmt")
+    val amountFmt: String = "",
+    @Expose
+    @SerializedName("message")
+    val message: String = "",
+    @Expose
+    @SerializedName("wallet_code")
+    val walletCode: String = "",
     @Expose
     @SerializedName("code")
     val code: String = "",
@@ -23,9 +32,6 @@ data class Balances(
     @Expose
     @SerializedName("masked_phone")
     val maskedPhone: String = "",
-    @Expose
-    @SerializedName("message")
-    val message: String = "",
     @Expose
     @SerializedName("redirect_url")
     val redirectUrl: String = "",
