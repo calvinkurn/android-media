@@ -31,7 +31,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -201,11 +200,26 @@ class OfficialHomeFragment :
         observeProductRecommendation()
         observeFeaturedShopSuccessDC()
         observeFeaturedShopRemoveDC()
+        observeRecomwidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun observeRecomwidget() {
+        viewModel.recomWidget.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    officialHomeMapper.mappingRecomWidget(it.data, adapter)
+                }
+                is Fail -> {
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+        })
     }
 
     override fun onPause() {

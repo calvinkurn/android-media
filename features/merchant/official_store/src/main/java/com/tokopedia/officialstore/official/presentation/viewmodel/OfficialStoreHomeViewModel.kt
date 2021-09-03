@@ -24,6 +24,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -51,6 +52,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
+        private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -105,6 +107,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
+
+    private val _recomWidget = MutableLiveData<Result<RecommendationWidget>>()
+    val recomWidget : LiveData<Result<RecommendationWidget>>
+        get() = _recomWidget
 
     fun loadFirstData(category: Category?, location: String = "") {
         launchCatchError(block = {
@@ -184,6 +190,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
+                }
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP){
+                    val data =    getRecommendationUseCaseCoroutine.getData(
+                        GetRecommendationRequestParam(
+                            pageName = "best_seller_ads_os"
+                        )
+                    )
+                    _recomWidget.value = Success(data.first())
                 }
             }
         }){

@@ -270,4 +270,17 @@ class OfficialHomeMapper (
         }
         action.invoke(newList.toMutableList())
     }
+
+    fun mappingRecomWidget(data: RecommendationWidget, adapter: OfficialHomeAdapter?) {
+        listOfficialStore.run {
+            val index = indexOfFirst { it is RecomWidgetDataModel }
+
+            val benefit = RecomWidgetDataModel(data, "ads")
+
+            if(index == -1) add(BENEFIT_POSITION, benefit)
+            else set(index, benefit)
+
+            adapter?.submitList(this.toMutableList())
+        }
+    }
 }
