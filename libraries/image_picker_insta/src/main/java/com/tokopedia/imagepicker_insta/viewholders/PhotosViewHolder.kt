@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.views.ToggleViewGroup
 
-class PhotosViewHolder(val photoView: View) : RecyclerView.ViewHolder(photoView) {
+open class PhotosViewHolder(photoView: View) : RecyclerView.ViewHolder(photoView) {
     companion object {
         fun getInstance(parent: ViewGroup, contentHeight: Int): PhotosViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_photos, parent, false)
@@ -30,7 +31,8 @@ class PhotosViewHolder(val photoView: View) : RecyclerView.ViewHolder(photoView)
             assetView.setChecked(true)
         }
     }
-    fun setData(asset: Asset) {
-        assetView.loadAssetThumbnail(asset)
+
+    open fun setData(imageAdapterData: ImageAdapterData) {
+        assetView.loadAssetThumbnail(imageAdapterData.asset)
     }
 }

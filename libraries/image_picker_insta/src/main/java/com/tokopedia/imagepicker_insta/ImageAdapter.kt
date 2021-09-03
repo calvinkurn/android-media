@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
+import com.tokopedia.imagepicker_insta.models.VideoData
 import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
+import com.tokopedia.imagepicker_insta.viewholders.VideosViewHolder
 
 class ImageAdapter(
     val dataList: List<ImageAdapterData>,
@@ -39,28 +41,30 @@ class ImageAdapter(
     var canMultiSelect = false
 
     private val TYPE_CAMERA = 0
-    private val TYPE_ASSET = 1
+    private val TYPE_PHOTO = 1
+    private val TYPE_VIDEO = 2
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == TYPE_CAMERA) {
-            return CameraViewHolder.getInstance(parent, contentHeight) {
+        return when (viewType) {
+            TYPE_CAMERA -> CameraViewHolder.getInstance(parent, contentHeight) {
                 mainFragmentContract.handleOnCameraIconTap()
             }
-        } else {
-            return PhotosViewHolder.getInstance(parent, contentHeight)
+            TYPE_VIDEO -> VideosViewHolder.getInstance(parent, contentHeight)
+            else -> PhotosViewHolder.getInstance(parent, contentHeight)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         if (dataList[position].asset is Camera) return TYPE_CAMERA
-        return TYPE_ASSET
+        if (dataList[position].asset is VideoData) return TYPE_VIDEO
+        return TYPE_PHOTO
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is CameraViewHolder) {
             holder.setData()
         } else if (holder is PhotosViewHolder) {
-            holder.setData(dataList[position].asset)
+            holder.setData(dataList[position])
             holder.setChecked(selectedPositionMap[position], canMultiSelect)
 
             holder.itemView.setOnClickListener {
@@ -91,13 +95,13 @@ class ImageAdapter(
         }
 
         holder?.setChecked(null, canMultiSelect)
-        if(!isSelectedNextItem) {
+        if (!isSelectedNextItem) {
             itemSelectCallback?.invoke(dataList[position], false)
         }
 
     }
 
-    private fun selectNextItem(circleCount: Int?):Boolean{
+    private fun selectNextItem(circleCount: Int?): Boolean {
         if (canMultiSelect && circleCount != null) {
             val previousSelectedPos = findPreviousSelectedAdapterPosition(circleCount)
             val nextSelectedPos = findNextSelectedAdapterPosition(circleCount)
@@ -105,7 +109,7 @@ class ImageAdapter(
             if (nextSelectedPos != INVALID_KEY) {
                 itemSelectCallback?.invoke(dataList[nextSelectedPos], true)
                 return true
-            }else if (previousSelectedPos != INVALID_KEY){
+            } else if (previousSelectedPos != INVALID_KEY) {
                 itemSelectCallback?.invoke(dataList[previousSelectedPos], true)
                 return true
             }

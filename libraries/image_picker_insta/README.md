@@ -20,6 +20,7 @@ implementation project(rootProject.ext.libraries.imagePickerInsta)
   - Logic of recent folder - there is no such recent folder
   - Show video thumbnails and timer on video thumbnail
   - Use thumbnail content uri for faster loading
+  - Check for rotation and tablet behaviour
   
 - Helpful class
   - TkpdVideoPlayer
@@ -28,4 +29,12 @@ implementation project(rootProject.ext.libraries.imagePickerInsta)
 - PE
   - Need PIC for android storage
   - Need to know what type of media we can store, where we can store, naming conventions
- 
+
+
+MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+//use one of overloaded setDataSource() functions to set your data source
+retriever.setDataSource(context, Uri.fromFile(videoFile));
+String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+long timeInMillisec = Long.parseLong(time );
+
+retriever.release()

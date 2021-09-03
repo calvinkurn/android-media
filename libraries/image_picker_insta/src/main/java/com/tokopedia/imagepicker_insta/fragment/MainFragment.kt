@@ -371,6 +371,8 @@ class MainFragment : Fragment(), MainFragmentContract {
             selectedMediaView.removeAsset()
         }
         imageAdapter.clearSelectedItems()
+        //Todo Rahul can avoid this - Later
+        imageAdapter.notifyDataSetChanged()
     }
 
     override fun onStop() {

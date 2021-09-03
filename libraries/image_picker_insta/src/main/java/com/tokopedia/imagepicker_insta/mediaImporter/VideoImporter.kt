@@ -18,8 +18,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
 class VideoImporter : MediaImporter {
 
@@ -48,9 +46,12 @@ class VideoImporter : MediaImporter {
         return videoDataList
     }
 
-    fun getFormattedDurationText(dateLong: Long): String {
-        val durationText = dateFormat.format(Date(dateLong))
-        return durationText
+    fun getFormattedDurationText(durationInMillis: Long): String {
+        val seconds = durationInMillis / 1000
+        val secondText = if (seconds < 10) "0$seconds" else seconds
+        val minutes = seconds / 60
+        val minuteText = if (minutes < 10) "0$minutes" else minutes
+        return "$minuteText:$secondText"
     }
 
     fun File.getMediaDuration(context: Context): Long {
