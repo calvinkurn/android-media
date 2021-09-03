@@ -66,6 +66,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
 
+
     fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
         idlingResourceProvider?.increment()
         payLaterApplicationStatusUseCase.cancelJobs()

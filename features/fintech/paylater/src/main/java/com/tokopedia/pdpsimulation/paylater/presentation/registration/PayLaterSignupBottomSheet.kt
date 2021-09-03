@@ -126,7 +126,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterViewModel.let {
-            //  this.payLaterDataList = it.getPayLaterOptions()
+          //  this.payLaterDataList = it.getPayLaterOptions()
             this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }

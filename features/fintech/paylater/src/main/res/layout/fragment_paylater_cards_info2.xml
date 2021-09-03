@@ -72,24 +72,24 @@
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
+                    android:text="Simulasi pembayaran"
                     android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/unify_font_12"
                     app:layout_constraintLeft_toLeftOf="@id/ivPaylaterPartner"
                     app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartner"
                     app:typographyType="body_2"
-                    app:typographyWeight="bold"
-                    android:text="Simulasi pembayaran" />
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/interestText"
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
+                    android:text="Interest (0%)"
                     android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                     app:layout_constraintTop_toBottomOf="@id/simulasiHeading"
-                    app:typographyType="body_3"
-                    android:text="Interest (0%)" />
+                    app:typographyType="body_3" />
 
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -97,12 +97,12 @@
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
+                    android:text="Biaya Layanan (Gratis di Bulan Pertama)"
                     android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                     app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                     app:layout_constraintTop_toBottomOf="@id/interestText"
-                    app:typographyType="body_3"
-                    android:text="Biaya Layanan (Gratis di Bulan Pertama)" />
+                    app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/interestAmount"
@@ -137,12 +137,12 @@
                     android:paddingLeft="@dimen/unify_space_12"
                     android:paddingTop="@dimen/unify_space_12"
                     android:paddingBottom="@dimen/unify_space_12"
+                    android:text="30 Hari"
                     android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_13"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/serviceFeeText"
-                    app:typographyType="body_1"
-                    android:text="30 Hari" />
+                    app:typographyType="body_1" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/totalAmount"
@@ -179,11 +179,11 @@
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
+                    android:text="Belum termasuk ongkir atau biaya asuransi"
                     android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/duration"
-                    app:typographyType="small"
-                    android:text="Belum termasuk ongkir atau biaya asuransi" />
+                    app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btnHowToUse"
@@ -212,11 +212,11 @@
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
+                    android:text="Kenapa Kredivo?"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/borderGrey"
                     app:typographyType="body_2"
-                    app:typographyWeight="bold"
-                    android:text="Kenapa Kredivo?" />
+                    app:typographyWeight="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPaymentDesciption"
