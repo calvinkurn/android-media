@@ -251,7 +251,7 @@ class MixTopComponentViewHolder(
         setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
-            if(channel.channelViewAllCard.id.isNotEmpty()) {
+            if(channel.channelViewAllCard.id != "0") {
                 visitables.add(CarouselViewAllCardDataModel(channel.channelHeader.applink, channel.channelViewAllCard, this))
             }
             else {

@@ -22,13 +22,45 @@
         >
 
         <ImageView
-            android:contentDescription="@string/content_desc_view_all_image"
             android:id="@+id/iv_heading_view_all"
+            android:contentDescription="@string/content_desc_view_all_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_graphic_element_green"
             android:scaleType="fitXY"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_image_view_all"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            app:cardCornerRadius="@dimen/dp_8"
+            android:layout_marginHorizontal="@dimen/dp_12"
+            app:cardElevation="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@id/iv_heading_view_all">
+
+            <ImageView
+                android:id="@+id/iv_gimmick_view_all"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/Unify_N100"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description_image_view_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            tools:text="Description here is mandatory"
+            android:textColor="@color/Unify_N700"
+            app:layout_constraintTop_toBottomOf="@id/card_image_view_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_2"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_dc_mix_view_all"
@@ -47,7 +79,7 @@
             />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_chevron_down_view_all"
+            android:id="@+id/iv_chevron_right_view_all"
             android:layout_width="@dimen/unify_space_16"
             android:layout_height="@dimen/unify_space_16"
             app:icon_name="CHEVRON_RIGHT"
@@ -62,12 +94,14 @@
             android:id="@+id/tv_title_view_all"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:typographyType="heading_3"
+            app:typographyType="heading_5"
             tools:text="1000+"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintTop_toBottomOf="@id/iv_heading_view_all"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/dp_12"
+            android:visibility="gone"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -76,11 +110,13 @@
             android:layout_height="wrap_content"
             app:typographyType="body_3"
             tools:text="Description here is mandatory"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintTop_toBottomOf="@id/tv_title_view_all"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_2"
+            android:visibility="gone"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
