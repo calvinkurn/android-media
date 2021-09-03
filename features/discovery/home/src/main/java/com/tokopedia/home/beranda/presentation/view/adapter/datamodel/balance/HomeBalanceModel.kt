@@ -330,14 +330,14 @@ data class HomeBalanceModel(
                     defaultIconRes = mapTokopointDefaultIconRes(type)
                 )
             }
-            val tokopointAnimDrawerContent = tokopointMapData?.find { it.drawerItemType == TYPE_TOKOPOINT }
+            val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
             val alternateAnimDrawerContent = tokopointMapData?.toMutableList()?.apply {
                 remove(tokopointAnimDrawerContent)
             }
             tokopointAnimDrawerContent?.alternateBalanceDrawerItem = alternateAnimDrawerContent
             if (tokopointAnimDrawerContent != null) {
                 flagStateCondition(
-                    itemType = TYPE_TOKOPOINT,
+                    itemType = tokopointAnimDrawerContent.drawerItemType,
                     action = {
                         balanceDrawerItemModels[it] = tokopointAnimDrawerContent
                     }
@@ -384,7 +384,7 @@ data class HomeBalanceModel(
     private fun mapWalletApp(walletAppData: WalletAppData?) {
         walletAppData?.let { walletApp ->
             val selectedBalance =
-                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS).getOrNull(0)
+                walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS)
             if (selectedBalance != null) {
                 selectedBalance.let { balance ->
                     flagStateCondition(
@@ -430,7 +430,10 @@ data class HomeBalanceModel(
                     itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) }
+                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
                     )
                 } else {
                     itemTypeCondition(

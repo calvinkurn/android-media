@@ -444,6 +444,8 @@ class BalanceAdapter(
         }
 
         private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
+            textView.setTypeface(null, Typeface.NORMAL)
+
             textView.background = null
             textView.text = null
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))

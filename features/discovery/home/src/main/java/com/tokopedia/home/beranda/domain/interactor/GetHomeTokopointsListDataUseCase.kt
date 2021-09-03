@@ -34,6 +34,6 @@ class GetHomeTokopointsListDataUseCase @Inject constructor(
 
     companion object {
         private const val API_VERSION = "apiVersion"
-        private const val API_VERSION_VALUE = "3.0.0"
+        private const val API_VERSION_VALUE = "4.0.0"
     }
 }
