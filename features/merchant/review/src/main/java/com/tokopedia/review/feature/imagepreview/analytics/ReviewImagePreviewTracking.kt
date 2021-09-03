@@ -131,7 +131,7 @@ object ReviewImagePreviewTracking {
                 ),
                 ReviewTrackingConstant.EVENT_CATEGORY to ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_IMAGE_GALLERY,
                 ReadReviewTrackingConstants.KEY_USER_ID to userId,
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
                 ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
                 ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(

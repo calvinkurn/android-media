@@ -503,32 +503,30 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 productId
             )
         }
-        if (expandedReviewBottomSheet == null) {
-            if (isFromGallery) {
-                galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
-                    expandedReviewBottomSheet =
-                        ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                            it.rating,
-                            it.reviewTime,
-                            it.reviewerName,
-                            it.review,
-                            it.variantName
-                        )
-                }
-            } else {
-                with(productReview) {
-                    expandedReviewBottomSheet =
-                        ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                            productRating,
-                            reviewCreateTimestamp,
-                            user.fullName,
-                            message,
-                            variantName
-                        )
-                }
+        if (isFromGallery) {
+            galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
+                expandedReviewBottomSheet =
+                    ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
+                        it.rating,
+                        it.reviewTime,
+                        it.reviewerName,
+                        it.review,
+                        it.variantName
+                    )
             }
-            configBottomSheet()
+        } else {
+            with(productReview) {
+                expandedReviewBottomSheet =
+                    ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
+                        productRating,
+                        reviewCreateTimestamp,
+                        user.fullName,
+                        message,
+                        variantName
+                    )
+            }
         }
+        configBottomSheet()
         activity?.supportFragmentManager?.let {
             expandedReviewBottomSheet?.show(
                 it,
