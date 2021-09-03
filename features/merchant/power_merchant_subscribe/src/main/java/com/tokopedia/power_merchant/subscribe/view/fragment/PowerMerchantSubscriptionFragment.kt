@@ -176,6 +176,10 @@ open class PowerMerchantSubscriptionFragment :
         showRegularPmDeactivationBottomSheet()
     }
 
+    override fun onDeactivatePMClickListener() {
+        showRegularPmDeactivationBottomSheet()
+    }
+
     override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
         val bottomSheet = PMProStatusInfoBottomSheet.createInstance(model)
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
@@ -604,6 +608,9 @@ open class PowerMerchantSubscriptionFragment :
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
         val tickerList = pmBasicInfo?.tickers
+        val isRegularMerchant =
+            pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+                    pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
         val isNewSellerBefore30FirstMonday = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() &&
                 pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
@@ -630,7 +637,7 @@ open class PowerMerchantSubscriptionFragment :
             widgets.add(WidgetDividerUiModel)
             widgets.add(getNextShopGradeWidgetData(data))
         }
-        if (isNewSellerBefore30FirstMonday) {
+        if (isRegularMerchant) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(
                 WidgetSingleCtaUiModel(

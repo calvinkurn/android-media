@@ -361,6 +361,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onPMToPMProPage() {
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+    }
+
     override fun onProtectedParameterChevronClicked(protectedParameterDate: String) {
         val bottomSheetProtectedParameter = BottomSheetProtectedParameter.createInstance(
             protectedParameterDate

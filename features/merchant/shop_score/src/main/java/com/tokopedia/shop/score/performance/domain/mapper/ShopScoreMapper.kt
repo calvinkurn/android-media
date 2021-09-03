@@ -146,7 +146,10 @@ class ShopScoreMapper @Inject constructor(
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
                 val mapTimerNewSeller =
-                    mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
+                    mapToTimerNewSellerUiModel(
+                        shopAge,
+                        shopInfoPeriodUiModel.isEndTenureNewSeller, shopScore.toInt()
+                    )
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
                     if (shopAge in SHOP_AGE_THREE..SHOP_AGE_FIFTY_NINE) {
@@ -164,8 +167,12 @@ class ShopScoreMapper @Inject constructor(
             )
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
-                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge,
-                    shopScore))
+                addAll(
+                    mapToItemDetailPerformanceUiModel(
+                        shopScoreResult.shopScoreDetail, shopAge,
+                        shopScore
+                    )
+                )
             }
 
             if (isShowProtectedParameter(shopAge.toInt())) {
@@ -866,7 +873,7 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean)
+    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Int)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
@@ -876,7 +883,8 @@ class ShopScoreMapper @Inject constructor(
                 effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
                 isTenureDate = isEndTenure,
-                shopAge = shopAge
+                shopAge = shopAge,
+                shopScore = shopScore
             ), nextSellerDays > 0
         )
     }
@@ -907,7 +915,7 @@ class ShopScoreMapper @Inject constructor(
         return try {
             val date = Calendar.getInstance(getLocale())
             val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
-            val firstMondayDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays)
+            val firstMondayDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays, true)
             val totalTargetDays = diffDays + firstMondayDays
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + totalTargetDays)
             format(date.timeInMillis, PATTERN_DATE_TEXT)

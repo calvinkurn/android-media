@@ -190,15 +190,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPmProTncDescription" />
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerStatusMember"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnPmProUpgrade"/>
-
-    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerMembershipStatus"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"

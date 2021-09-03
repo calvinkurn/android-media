@@ -121,7 +121,7 @@
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
     <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (40%) dan diskusi (60%).
         &lt;br /&gt;&lt;br /&gt;Untuk perhitungan chat, setting awal jam operasional Tokopedia adalah 09.00 - 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan chat akan mengikuti jam operasional toko.</string>
-    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas. Pastikan diskusi dibalas selambat-lambatnya dalam waktu 3 hari semenjak diskusi diterima. Diskusi yang dibalas melebihi 3 hari akan dihitung sebagi diskusi yang tidak dibalas.</string>
+    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas. Pastikan diskusi dibalas selambat-lambatnya dalam waktu 7 hari semenjak diskusi diterima. Diskusi yang dibalas melebihi 7 hari akan dihitung sebagi diskusi yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
         &lt;br /&gt;Konvensional: 09.00 - 18.00 (tidak termasuk weekend)
         &lt;br /&gt;Instan: 09.00 - 17.00

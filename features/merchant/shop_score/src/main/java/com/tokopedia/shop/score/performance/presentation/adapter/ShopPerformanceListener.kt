@@ -22,6 +22,7 @@ interface ItemRMPotentialPMProListener {
 
 interface ItemPMPotentialPMProListener {
     fun onGotoBenefitPMPro()
+    fun onPMToPMProPage()
 }
 
 interface ItemRegularMerchantListener {

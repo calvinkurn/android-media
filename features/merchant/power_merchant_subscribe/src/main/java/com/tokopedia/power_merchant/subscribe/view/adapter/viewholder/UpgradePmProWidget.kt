@@ -54,22 +54,35 @@ class UpgradePmProWidget(
         with(itemView) {
             if (shopInfo.isNewSeller) {
                 if (shopInfo.is30DaysFirstMonday) {
-                    viewPmUpgradeTermSection?.tvTermStatus?.hide()
+                    viewPmUpgradeTermSection?.tvTermStatus?.show()
                     if (shopInfo.isEligiblePmPro) {
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_eligible_after_30_days)
+                        tvPmUpgradePmProDesc?.show()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                        tvSetMembershipStatus?.setTextMakeHyperlink(
+                            getString(R.string.pm_set_membership_status)
+                        ) {
+                            listener.onMembershipStatusClickListener()
+                        }
                     } else {
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
+                        tvPmUpgradePmProDesc?.show()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
                         hidePmProUpgradeSection()
+                        tvSetMembershipStatus?.setTextMakeHyperlink(
+                            getString(R.string.pm_deactivate_pm_pro_not_eligible)
+                        ) {
+                            listener.onDeactivatePMClickListener()
+                        }
                     }
                 } else {
                     tvPmUpgradePmProTitle?.text =
                         getString(R.string.pm_title_new_seller_before_30_days)
+                    tvPmUpgradePmProDesc?.show()
                     tvPmUpgradePmProDesc?.text = getString(
                         R.string.pm_desc_new_seller_before_30_days,
                         getDaysDate(shopInfo.shopAge)
@@ -83,6 +96,7 @@ class UpgradePmProWidget(
                     hidePmProUpgradeSection()
                 }
             } else {
+                viewPmUpgradeTermSection?.tvTermStatus?.show()
                 tvPmUpgradePmProDesc?.hide()
             }
         }
@@ -100,6 +114,7 @@ class UpgradePmProWidget(
             ""
         }
     }
+
 
     private fun hidePmProUpgradeSection() {
         with(itemView) {
@@ -211,5 +226,6 @@ class UpgradePmProWidget(
         fun onUpgradePmProClickListener(adapterPosition: Int)
         fun onUpgradePmProTnCClickListener()
         fun onMembershipStatusClickListener()
+        fun onDeactivatePMClickListener()
     }
 }

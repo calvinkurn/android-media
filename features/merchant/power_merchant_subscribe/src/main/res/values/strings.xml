@@ -83,6 +83,8 @@
     <string name="pm_desc_min_product_sold_term_new_seller_before_30_days">Pendapatan bersihmu %s</string>
 
     <string name="pm_set_membership_status">Atur status keanggotaanmu &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="pm_deactivate_pm_pro_not_eligible">Berhenti dari Power Merchant? &lt;a href="#"&gt;Klik di sini&lt;/a&gt;</string>
+
     <string name="pm_kyc_verify_ktp">Verifikasi data diri dengan KTP</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
     <string name="pm_kyc_not_verified">Data Diri Belum Terverifikasi</string>

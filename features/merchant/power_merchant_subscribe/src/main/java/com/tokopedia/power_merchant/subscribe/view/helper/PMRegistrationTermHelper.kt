@@ -221,8 +221,9 @@ object PMRegistrationTermHelper {
     ): RegistrationTermUiModel.ShopScore {
         val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
+        val isNewSellerEligible = isNewSeller && isFirstMondayNewSeller
         val isEligibleShopScore =
-            (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore()) && !shopInfo.isNewSeller
+            (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore()) && isNewSellerEligible
         val shopScoreResIcon: Int = getResDrawableIcon(shopInfo, isEligibleShopScore)
 
         val title: String
@@ -447,6 +448,30 @@ object PMRegistrationTermHelper {
             appLinkOrUrl = ctaAppLink,
             isChecked = isKycVerified,
             isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
+        )
+    }
+
+    fun getBenefitListPmProNewSeller(context: Context): List<PMProBenefitUiModel> {
+        return listOf(
+            PMProBenefitUiModel(
+                description = context.getString(
+                    R.string.pm_pro_general_benefit_1,
+                    Constant.POWER_MERCHANT_PRO_CHARGING
+                ),
+                icon = IconUnify.COURIER_FAST
+            ),
+            PMProBenefitUiModel(
+                description = context.getString(R.string.pm_pro_general_benefit_3),
+                icon = IconUnify.COURIER
+            ),
+            PMProBenefitUiModel(
+                description = context.getString(R.string.pm_pro_general_benefit_4),
+                imgUrl = PMConstant.Images.PM_PRO_BADGE
+            ),
+            PMProBenefitUiModel(
+                description = context.getString(R.string.pm_pro_general_benefit_6),
+                icon = IconUnify.STAR_CIRCLE
+            )
         )
     }
 

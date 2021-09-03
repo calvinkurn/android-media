@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify
+    android:id="@+id/cardPmProBenefitPackage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,13 +13,15 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bgBenefitPackageStatus"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
             android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:layout_constraintHeight_percent="0.55"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tvNextUpdatePmProStatus"
+            app:layout_constraintBottom_toBottomOf="@id/labelPmProStatus"
             tools:src="@drawable/bg_pm_pro_advanced_benefit_package" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -39,9 +42,11 @@
             android:id="@+id/labelPmProStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintStart_toStartOf="@id/tvTitleBenefitPackageStatus"
             app:layout_constraintTop_toBottomOf="@id/tvTitleBenefitPackageStatus"
+            app:layout_constraintBottom_toBottomOf="@id/bgBenefitPackageStatus"
             tools:text="ADVANCED"/>
 
         <com.tokopedia.iconunify.IconUnify

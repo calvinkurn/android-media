@@ -40,7 +40,7 @@ object GoldMerchantUtil {
         return sdf.format(timeMillis)
     }
 
-    fun getNNextDaysBasedOnFirstMonday(totalRemainderDays: Int): Int {
+    fun getNNextDaysBasedOnFirstMonday(totalRemainderDays: Int, isAddedWeek: Boolean = false): Int {
         val calendar = Calendar.getInstance(getLocale())
         calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)
         return when (calendar.get(Calendar.DAY_OF_WEEK)) {
@@ -49,8 +49,8 @@ object GoldMerchantUtil {
             Calendar.THURSDAY -> FOUR_NUMBER
             Calendar.FRIDAY -> THREE_NUMBER
             Calendar.SATURDAY -> TWO_NUMBER
-            Calendar.SUNDAY -> ONE_NUMBER
-            Calendar.MONDAY -> ZERO_NUMBER
+            Calendar.SUNDAY -> if (isAddedWeek) ONE_NUMBER + SEVEN_NUMBER else ONE_NUMBER
+            Calendar.MONDAY -> if (isAddedWeek) SEVEN_NUMBER else ZERO_NUMBER
             else -> ZERO_NUMBER
         }
     }

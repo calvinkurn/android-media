@@ -410,7 +410,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         with(pmRegistrationFooterView) {
-            if (shopInfo.isNewSeller) hideCtaButton()
+            if (shopInfo.isNewSeller && isPmProSelected) hideCtaButton()
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
             setTnCVisibility(needTnC)

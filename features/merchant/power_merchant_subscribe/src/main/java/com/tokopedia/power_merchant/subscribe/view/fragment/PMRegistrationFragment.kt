@@ -34,7 +34,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
     companion object {
         private const val KEY_PM_TIER_TYPE = "key_pm_tier_type"
-        private const val FOUR_BENEFIT_LIST = 4
 
         fun createInstance(pmTireType: Int): PMRegistrationFragment {
             return PMRegistrationFragment().apply {
@@ -142,9 +141,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     private fun getPMProNewSellerBenefitWidget(): WidgetPmProNewSellerBenefitUiModel {
         return WidgetPmProNewSellerBenefitUiModel(
             items = context?.let {
-                PMRegistrationTermHelper.getBenefitList(it).take(
-                    FOUR_BENEFIT_LIST
-                )
+                PMRegistrationTermHelper.getBenefitListPmProNewSeller(it)
             } ?: emptyList()
         )
     }
@@ -341,13 +338,13 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
-        val currentPMRegistrationSelected = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT
+        val currentPMProRegistrationSelected = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         return WidgetRegistrationHeaderUiModel(
             shopInfo = shopInfo,
             registrationTerms = if (currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT) {
-                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo, currentPMRegistrationSelected)
+                PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo, currentPMProRegistrationSelected)
             } else {
-                PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo, currentPMRegistrationSelected)
+                PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo, currentPMProRegistrationSelected)
             },
             selectedPmType = currentPmRegistrationTireType
         )

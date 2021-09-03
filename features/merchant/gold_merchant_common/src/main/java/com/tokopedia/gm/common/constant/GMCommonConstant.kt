@@ -25,4 +25,5 @@ const val THREE_NUMBER = 3
 const val FOUR_NUMBER = 4
 const val FIVE_NUMBER = 5
 const val SIX_NUMBER = 6
+const val SEVEN_NUMBER = 7
 const val PATTERN_DATE_TEXT = "dd MMMM yyyy"

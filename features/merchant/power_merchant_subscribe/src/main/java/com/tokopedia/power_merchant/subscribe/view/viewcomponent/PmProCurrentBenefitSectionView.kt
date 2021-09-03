@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMShopGrade
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
@@ -36,6 +39,13 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     fun show(data: WidgetExpandableUiModel) {
         showPmGrade(data.grade?.gradeName.orEmpty())
         setupUpdateInfo(data)
+        setBenefitPackageClicked()
+    }
+
+    private fun setBenefitPackageClicked() {
+        cardPmProBenefitPackage?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+        }
     }
 
     fun setOnUpdateInfoCtaClickedListener(callback: () -> Unit) {
@@ -50,12 +60,14 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
         if (data.isDowngradePeriod()) {
             tvNextUpdatePmProStatus.setTextMakeHyperlink(
-                context.getString(
-                    R.string.pm_next_update_benefit_package_downgrade_status,
-                    data.nextMonthlyRefreshDate,
-                    data.grade?.shopLevel,
-                    data.grade?.gradeName?.asCamelCase()
-                )
+                MethodChecker.fromHtml(
+                    context.getString(
+                        R.string.pm_next_update_benefit_package_downgrade_status,
+                        data.nextMonthlyRefreshDate,
+                        data.grade?.shopLevel,
+                        data.grade?.gradeName?.asCamelCase()
+                    )
+                ).toString()
             ) {
                 updateInfoCtaClickListener?.invoke()
             }
@@ -66,12 +78,14 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                 )
             } else {
                 tvNextUpdatePmProStatus.setTextMakeHyperlink(
-                    context.getString(
-                        R.string.pm_next_update_benefit_package_upgrade_status,
-                        data.nextMonthlyRefreshDate,
-                        data.nextShopLevel,
-                        data.nextGradeName.asCamelCase()
-                    )
+                    MethodChecker.fromHtml(
+                        context.getString(
+                            R.string.pm_next_update_benefit_package_upgrade_status,
+                            data.nextMonthlyRefreshDate,
+                            data.nextShopLevel,
+                            data.nextGradeName.asCamelCase()
+                        )
+                    ).toString()
                 ) {
                     updateInfoCtaClickListener?.invoke()
                 }
