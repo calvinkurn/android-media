@@ -3639,17 +3639,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel?
+        componentTrackDataModel: ComponentTrackDataModel
     ) {
         DynamicProductDetailTracking.ProductBundling.eventImpressionProductBundling(
-            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
+            viewModel.userId, bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
         )
     }
 
     override fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
-        componentTrackDataModel: ComponentTrackDataModel?
+        componentTrackDataModel: ComponentTrackDataModel
     ) {
         val productInfoP1 = viewModel.getDynamicProductInfoP1
         DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
@@ -3662,7 +3662,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
-        componentTrackDataModel: ComponentTrackDataModel?
+        componentTrackDataModel: ComponentTrackDataModel
     ) {
         DynamicProductDetailTracking.ProductBundling.eventClickMultiBundleProduct(
             bundleId, bundleProductId, viewModel.getDynamicProductInfoP1, componentTrackDataModel
