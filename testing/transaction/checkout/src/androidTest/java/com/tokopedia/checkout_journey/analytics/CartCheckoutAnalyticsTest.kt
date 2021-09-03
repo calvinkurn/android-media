@@ -1,12 +1,12 @@
-package com.tokopedia.checkout_journey.analytics
+package com.tokopedia.checkout.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.view.CartActivity
-import com.tokopedia.cart_journey.robot.cartPage
+import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.checkout_journey.R
-import com.tokopedia.checkout_journey.robot.checkoutPage
+import com.tokopedia.checkout.R
+import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper

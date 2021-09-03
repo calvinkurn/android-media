@@ -1,4 +1,4 @@
-package com.tokopedia.cart_journey.robot
+package com.tokopedia.cart.robot
 
 import android.content.Context
 import android.view.View
@@ -50,7 +50,7 @@ class CartPageRobot {
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart_journey.R.raw.cart_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
                 jsonString,
                 JsonArray::class.java
