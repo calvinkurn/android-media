@@ -238,16 +238,4 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             this.isNewNavigation = false
         }
     }
-
-    protected fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
-        if (errorToaster == null || errorToaster?.isShown == false) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
-            errorToaster = Toaster.build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
-            errorToaster?.show()
-        }
-    }
-
-    protected fun showErrorWithAction(throwable: Throwable, clickListener: View.OnClickListener) {
-        showToasterWithAction(ErrorHandler.getErrorMessage(requireContext(), throwable), Toaster.TYPE_ERROR, ERROR_COBA_LAGI, clickListener)
-    }
 }

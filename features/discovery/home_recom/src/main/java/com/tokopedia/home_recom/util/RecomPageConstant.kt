@@ -10,6 +10,10 @@ object RecomPageConstant {
     const val SAVED_QUERY_PARAM = "saved_query_param"
     const val SAVED_SOURCE = "saved_source"
     const val RV_SPAN_COUNT = 2
+    const val TEXT_ERROR = "ERROR"
+    const val ERROR_COBA_LAGI = "Coba Lagi"
+    const val ERROR_CTA_OK = "Oke"
+    const val REQUEST_CODE_LOGIN = 69
 
 
     const val DIFFUTIL_PAYLOAD = "payload"

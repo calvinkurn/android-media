@@ -53,6 +53,14 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
     }
 
+    fun resetFailedRecomTokonowCard(recomItem: RecommendationItem) {
+        dataList.forEach { item ->
+            if (recomItem.productId == recomItem.productId) {
+                recomItem.onFailedUpdateCart()
+            }
+        }
+    }
+
     private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
         var variantTotalItems = 0
         miniCart.values.forEach { miniCartItem ->

@@ -2,20 +2,21 @@ package com.tokopedia.home_recom.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.AsyncDifferConfig
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.RecomPageChooseAddressWidgetCallback
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.listener.RecomPageListener
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
+import com.tokopedia.home_recom.util.*
+import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.doSuccessOrFail
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
-import com.tokopedia.home_recom.util.RecomPageUiUpdater
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.home_recom.view.diffutil.RecomPageDiffUtil
@@ -25,15 +26,23 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 /**
  * Created by yfsx on 30/08/21.
  */
-class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecomPageListener, RecommendationListener, RecommendationErrorListener {
+class InfiniteTokonowRecomFragment :
+        BaseRecomPageFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(),
+        RecomPageListener,
+        RecommendationListener,
+        RecommendationErrorListener,
+        RecommendationTokonowListener {
 
     companion object {
         private const val className = "com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment"
@@ -58,7 +67,13 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
     private var ref: String = ""
     private var internalRef: String = ""
     private lateinit var viewModelProvider: ViewModelProvider
-    private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, null, this, null) }
+    private val adapterFactory by lazy {
+        HomeRecommendationTypeFactoryImpl(
+                this,
+                null,
+                this,
+                null, this)
+    }
     private lateinit var viewModel: InfiniteRecomViewModel
     private var pageName = ""
     private var recomPageUiUpdater: RecomPageUiUpdater = RecomPageUiUpdater(mutableListOf())
@@ -130,6 +145,13 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
     override fun onProductImpression(item: RecommendationItem) {
     }
 
+    override fun onProductTokonowNonVariantQuantityChanged(recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+    }
+
+    override fun onProductTokonowVariantClicked(recomItem: RecommendationItem, adapterPosition: Int) {
+    }
+
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
     }
 
@@ -151,6 +173,11 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
         viewModel.miniCartData.removeObservers(this)
         viewModel.recommendationNextLiveData.removeObservers(this)
         viewModel.errorGetRecomData.removeObservers(this)
+        viewModel.atcRecomTokonow.removeObservers(this)
+        viewModel.atcRecomTokonowSendTracker.removeObservers(this)
+        viewModel.atcRecomTokonowResetCard.removeObservers(this)
+        viewModel.atcRecomTokonowNonLogin.removeObservers(this)
+        viewModel.refreshMiniCartDataTrigger.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -170,13 +197,13 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
         viewModel.miniCartData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 recomPageUiUpdater.updateRecomWithMinicartData(it)
-                submitList(recomPageUiUpdater.dataList.toMutableList())
+                updateUi()
             }
         })
         viewModel.recommendationNextLiveData.observe(viewLifecycleOwner, Observer {
             it?.let { response ->
                 recomPageUiUpdater.appendNextData(response.toList())
-                submitList(recomPageUiUpdater.dataList.toMutableList())
+                updateUi()
             }
         })
         viewModel.errorGetRecomData.observe(viewLifecycleOwner, Observer {
@@ -195,6 +222,36 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
                 }
             }
         })
+        viewModel.atcRecomTokonow.observe(viewLifecycleOwner, Observer { data ->
+            data.doSuccessOrFail({
+                if (it.data.isNotEmpty()) {
+                    showToastSuccess(it.data)
+                }
+            }, {
+                showToastErrorWithPrompt(it)
+            })
+        })
+        viewModel.atcRecomTokonowSendTracker.observe(viewLifecycleOwner, Observer { data ->
+            data.doSuccessOrFail({
+                //send tracker atc
+            }, {})
+        })
+        viewModel.atcRecomTokonowResetCard.observe(viewLifecycleOwner, Observer {
+            recomPageUiUpdater.resetFailedRecomTokonowCard(it)
+            updateUi()
+        })
+        viewModel.atcRecomTokonowNonLogin.observe(viewLifecycleOwner, Observer {
+            goToLogin()
+            recomPageUiUpdater.resetFailedRecomTokonowCard(it)
+            updateUi()
+        })
+        viewModel.refreshMiniCartDataTrigger.observe(viewLifecycleOwner, Observer {
+            getMiniCartData()
+        })
+    }
+
+    private fun updateUi() {
+        submitList(recomPageUiUpdater.dataList.toMutableList())
     }
 
     private fun getMiniCartData() {
@@ -211,8 +268,15 @@ class InfiniteTokonowRecomFragment : BaseRecomPageFragment<HomeRecommendationDat
     }
 
     private fun showErrorSnackbarWithRetryLoad(pageNumber: Int, throwable: Throwable) {
-        showErrorWithAction(throwable, View.OnClickListener {
+        showToastErrorWithAction(throwable, View.OnClickListener {
             loadMoreData(pageNumber)
         })
+    }
+
+    private fun goToLogin() {
+        activity?.let {
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                    RecomPageConstant.REQUEST_CODE_LOGIN)
+        }
     }
 }

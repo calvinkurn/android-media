@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.view.viewholder.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 
 /**
  * A Class of Implementation Type Factory Pattern.
@@ -18,7 +19,8 @@ class HomeRecommendationTypeFactoryImpl(
         private val recommendationListener: RecommendationListener,
         private val titleListener: TitleListener?,
         private val recommendationErrorListener: RecommendationErrorListener,
-        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener?
+        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener?,
+        private val tokonowListener: RecommendationTokonowListener? = null
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     /**
      * This override function from [HomeRecommendationTypeFactory]
@@ -92,7 +94,7 @@ class HomeRecommendationTypeFactoryImpl(
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
+            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener, tokonowListener)
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view, productInfoListener)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view, recommendationListener)
             TitleDataModel.LAYOUT -> TitleViewHolder(view, titleListener)
