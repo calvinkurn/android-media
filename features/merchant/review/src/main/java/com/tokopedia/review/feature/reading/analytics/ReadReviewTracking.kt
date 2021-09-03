@@ -284,7 +284,7 @@ object ReadReviewTracking {
                         mutableListOf(bundlePromo) as ArrayList<Bundle>
                     )
                 }
-                putBundle(ReadReviewTrackingConstants.KEY_PROMO_CLICK, bundlePromoClick)
+                putBundle(ReadReviewTrackingConstants.EVENT_PROMO_VIEW, bundlePromoClick)
             }
             putBundle(ReadReviewTrackingConstants.KEY_ECOMMERCE, bundleEcommerce)
         }
