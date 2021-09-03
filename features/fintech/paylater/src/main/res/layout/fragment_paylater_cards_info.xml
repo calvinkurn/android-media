@@ -28,7 +28,7 @@
 
 
             <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ivPaylaterPartner"
+                android:id="@+id/ivPaylaterPartnerImg"
                 android:layout_width="@dimen/unify_space_48"
                 android:layout_height="@dimen/unify_space_48"
                 android:layout_marginTop="@dimen/unify_space_12"
@@ -47,8 +47,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
                 app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
-                app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
+                app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartnerImg"
+                app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartnerImg"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
@@ -85,8 +85,8 @@
                 android:layout_height="wrap_content"
                 app:barrierAllowsGoneWidgets="false"
                 app:barrierDirection="bottom"
-                app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartner"
-                app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner" />
+                app:layout_constraintTop_toBottomOf="@id/ivPaylaterPartnerImg"
+                app:constraint_referenced_ids="ivPaylaterPartnerImg, tvSubTitlePaylaterPartner" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/borderGrey"

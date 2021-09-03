@@ -53,19 +53,16 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         renderTabAndViewPager()
         observeViewModel()
 
-        val filterData = ArrayList<SortFilterItem>()
-        filterData.add(SortFilterItem(
-            "abc"
-        ) { })
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
+    }
 
+    private fun generateSortFilter(paylaterProduct: PaylaterGetSimulationV2) {
+        val filterData = ArrayList<SortFilterItem>()
+        paylaterProduct.data?.let {
+            for(i in it.indices)
+            {
+                it[i].text?.let { name -> filterData.add(SortFilterItem(name)) }
+            }
+        }
         sortFilter.addItem(filterData)
     }
 
@@ -87,11 +84,12 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PaylaterGetSimulationV2) {
 
-        val payLaterProduct = paylaterProduct.data
+        val payLaterProductList = paylaterProduct.data
+        generateSortFilter(paylaterProduct)
         payLaterOffersShimmerGroup.gone()
         payLaterDataGroup.visible()
         paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProduct!![0].detail!!)
+            pagerAdapter.setPaymentData(payLaterProductList!![0].detail!!)
         }
     }
 

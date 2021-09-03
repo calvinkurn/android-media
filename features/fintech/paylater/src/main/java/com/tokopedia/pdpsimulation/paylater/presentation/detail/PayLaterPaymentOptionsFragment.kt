@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -83,8 +84,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 //                    if (isUsageType) PAY_LATER_USAGE_ACTION else PAY_LATER_REGISTER_ACTION))
 
             it.openBottomSheet(
-                bundle, PayLaterActionStepsBottomSheet::class.java
-            )
+                    bundle, PayLaterActionStepsBottomSheet::class.java)
         }
     }
 
@@ -123,6 +123,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             btnHowToUse.text = data.cta?.name
 
 
+
 //            applicationStatusData?.let {
 //                setSubHeaderText(it, data.subHeader)
 //                setLabelData(it)
@@ -150,7 +151,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            imageView.loadImage(imageUrl)
+            ivPaylaterPartner.loadImage(imageUrl)
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
