@@ -101,6 +101,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -603,9 +604,9 @@ class ShopPageHomeTracking(
         eventMap[ECOMMERCE] = mutableMapOf(
                 PROMO_VIEW to mutableMapOf(
                         PROMOTIONS to mutableListOf(mutableMapOf(
-                                CREATIVE to showcaseItem.imageUrl,
+                                CREATIVE to showcaseItem.viewType,
                                 ID to showcaseItem.id,
-                                NAME to showcaseItem.name,
+                                NAME to ETALASE_NAVIGATION_BANNER,
                                 POSITION to showcasePosition
                         ))
                 )
@@ -632,9 +633,9 @@ class ShopPageHomeTracking(
         eventMap[ECOMMERCE] = mutableMapOf(
                 PROMO_CLICK to mutableMapOf(
                         PROMOTIONS to mutableListOf(mutableMapOf(
-                                CREATIVE to showcaseItem.imageUrl,
+                                CREATIVE to showcaseItem.viewType,
                                 ID to showcaseItem.id,
-                                NAME to showcaseItem.name,
+                                NAME to ETALASE_NAVIGATION_BANNER,
                                 POSITION to showcasePosition
                         ))
                 )
