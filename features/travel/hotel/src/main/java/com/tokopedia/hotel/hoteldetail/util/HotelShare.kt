@@ -19,7 +19,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
  * @author by jessica on 20/10/20
  */
 
-class HotelShare(val activity: Activity) {
+class HotelShare(var activity: Activity?) {
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
@@ -35,7 +35,7 @@ class HotelShare(val activity: Activity) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.hotel_detail_share_cta_link, data.property.name, data.city.name, url))
         }
-        activity.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
+        activity?.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
     }
 
     private fun generateBranchLink(data: PropertyDetailData, isPromo: Boolean, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {

@@ -115,6 +115,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var loadingProgressDialog: ProgressDialog? = null
     private var isTickerValid = false
     private var isScrolled = false
+    private lateinit var hotelShare: HotelShare
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +125,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
+            hotelShare = HotelShare(this)
         }
 
         arguments?.let {
@@ -434,8 +436,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
             trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
-            activity?.run {
-                HotelShare(this).shareEvent(propertyDetailData, isPromo,
+            if(::hotelShare.isInitialized)      {
+                hotelShare.shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
                     requireContext())
@@ -779,6 +781,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 isTraceStop = true
             }
         }
+    }
+
+    override fun onDestroy() {
+        hotelShare.activity = null
+        super.onDestroy()
     }
 
     companion object {
