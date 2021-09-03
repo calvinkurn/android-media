@@ -10,6 +10,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
@@ -73,6 +74,14 @@ class ReviewImagePreviewViewModelTest : ReviewImagePreviewViewModelTestFixture()
 
         verifyGetReviewImagesUseCaseExecuted()
         verifyReviewImagesErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when getUserId should return expected user ID`() {
+        val expectedUserId = ""
+        val actualUserId = viewModel.getUserId()
+
+        Assert.assertEquals(expectedUserId, actualUserId)
     }
 
     private fun onToggleLikeReviewSuccess_thenReturn(expectedResponse: ToggleLikeReviewResponse) {
