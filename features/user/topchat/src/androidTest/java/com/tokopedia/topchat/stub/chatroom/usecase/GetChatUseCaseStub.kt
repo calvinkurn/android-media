@@ -9,8 +9,9 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
+import com.tokopedia.topchat.common.getNext3Seconds
+import com.tokopedia.topchat.common.getNext6Hours
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
-import java.util.*
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
@@ -39,19 +40,6 @@ class GetChatUseCaseStub @Inject constructor(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
-
-    val broadcastCampaignStarted: GetExistingChatPojo
-        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
-            alterAttachmentAttributesAt(
-                listPosition = 0,
-                chatsPosition = 0,
-                repliesPosition = 0,
-                responseObj = response
-            ) { attr ->
-                attr.addProperty(start_date, getNextWeekTimestamp())
-                attr.addProperty(status_campaign, CampaignStatus.STARTED)
-            }
-        }
 
     val broadcastCampaignOnGoing: GetExistingChatPojo
         get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
@@ -103,31 +91,8 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
-    /**
-     * return next week timestamp in seconds
-     */
-    private fun getNextWeekTimestamp(): Long {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, 7)
-        return calendar.timeInMillis / 1_000
-    }
-
-    /**
-     * return the next 6 hours timestamp from now in seconds
-     */
-    private fun getNext6Hours(): Long {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, 6)
-        return calendar.timeInMillis / 1_000
-    }
-
-    /**
-     * return the next 1 seconds timestamp from now in seconds
-     */
-    private fun getNext3Seconds(): Long {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.SECOND, 3)
-        return calendar.timeInMillis / 1_000
+    fun getBannerAttachmentId(response: GetExistingChatPojo): String {
+        return response.chatReplies.list[0].chats[0].replies[0].attachment.id
     }
 
     private val chatReplies = "chatReplies"
@@ -180,14 +145,5 @@ class GetChatUseCaseStub @Inject constructor(
         return CommonUtil.fromJson(
             responseObj.toString(), GetExistingChatPojo::class.java
         )
-    }
-
-    fun getEndWordingBannerFrom(broadcastCampaignAboutToEnd: GetExistingChatPojo): String {
-        val attributes = broadcastCampaignAboutToEnd.chatReplies
-            .list[0].chats[0].replies[0].attachment.attributes
-        val banner = CommonUtil.fromJson<ImageAnnouncementPojo>(
-            attributes, ImageAnnouncementPojo::class.java
-        )
-        return banner.endStateWording!!
     }
 }

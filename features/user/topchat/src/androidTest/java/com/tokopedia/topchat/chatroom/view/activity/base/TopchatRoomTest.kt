@@ -597,7 +597,7 @@ abstract class TopchatRoomTest {
         matcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view)
+            withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
                     position, R.id.broadcast_campaign_label
                 )
@@ -609,7 +609,7 @@ abstract class TopchatRoomTest {
         matcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view)
+            withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
                     position, R.id.tp_broadcast_campaign_status
                 )
@@ -621,7 +621,7 @@ abstract class TopchatRoomTest {
         matcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view)
+            withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
                     position, R.id.tu_bc_countdown
                 )
@@ -633,7 +633,7 @@ abstract class TopchatRoomTest {
         matcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view)
+            withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
                     position, R.id.iu_broadcast_start_date
                 )
@@ -645,7 +645,7 @@ abstract class TopchatRoomTest {
         matcher: Matcher<in View>
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view)
+            withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
                     position, R.id.iu_broadcast_start_date
                 )

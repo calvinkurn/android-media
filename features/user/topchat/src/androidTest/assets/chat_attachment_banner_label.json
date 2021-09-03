@@ -1,0 +1,16 @@
+{
+  "chatAttachments": {
+    "list": [
+      {
+        "id": 568621359,
+        "type": 1,
+        "attributes": "{\"campaign_label\":\"Rilisan Spesial berakhir dalam\", \"is_campaign\":true,\"wording_end_state\":\"Campaign \\\"ril_spes_comm\\\" telah berakhir. Nantikan campaign berikutnya, ya!\",\"status_campaign\":2,\"start_date\":\"1640582774\",\"end_date\":\"1625601480\", \"url\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\",\"image_url\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\",\"image_url_thumbnail\":\"https://images-staging.tokopedia.net/img/SFrLiX/2020/9/30/9bad820e-812c-42c6-810b-582b7969f14e.jpg\"}",
+        "fallback": {
+          "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+          "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+        },
+        "isActual": true
+      }
+    ]
+  }
+}
