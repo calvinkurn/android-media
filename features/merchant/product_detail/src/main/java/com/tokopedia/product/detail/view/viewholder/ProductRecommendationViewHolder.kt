@@ -80,8 +80,10 @@ class ProductRecommendationViewHolder(
                 }
 
                 view.seeMoreRecom.setOnClickListener {
-                    listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
-                            ?: ""), getComponentTrackData(element))
+                    element.recomWidgetData?.let {
+                        listener.onSeeAllRecomClicked(it, pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
+                                ?: ""), getComponentTrackData(element))
+                    }
                 }
             }
         }
@@ -149,7 +151,9 @@ class ProductRecommendationViewHolder(
                 },
                 carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
                     override fun onSeeMoreClick() {
-                        listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
+                        element.recomWidgetData?.let {
+                            listener.onSeeAllRecomClicked(it, product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
+                        }
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf(),

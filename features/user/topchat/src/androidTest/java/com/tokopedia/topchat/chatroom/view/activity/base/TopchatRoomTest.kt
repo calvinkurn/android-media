@@ -592,6 +592,14 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertChatRoomList(matcher: Matcher<in View>) {
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
+    }
+
+    protected fun finishActivity() {
+        activityTestRule.finishActivity()
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
