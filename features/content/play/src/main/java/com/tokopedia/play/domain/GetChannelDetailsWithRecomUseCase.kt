@@ -128,6 +128,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     meta_description
                     is_show_button
                   }
+                  air_time
                 }
               }
             }

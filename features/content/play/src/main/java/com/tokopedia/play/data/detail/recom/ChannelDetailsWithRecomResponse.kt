@@ -54,6 +54,9 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("share")
             val share: Share = Share(),
+
+            @SerializedName("air_time")
+            val airTime: String = "",
     )
 
     data class Partner(
