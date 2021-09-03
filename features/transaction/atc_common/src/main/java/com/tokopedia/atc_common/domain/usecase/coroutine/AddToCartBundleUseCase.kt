@@ -4,19 +4,18 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartBundleGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartBundleDataMapper
-import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.usecase.query.MUTATION_ADD_TO_CART_BUNDLE
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class AddToCartBundleUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                  private val addToCartBundleDataMapper: AddToCartBundleDataMapper,
-                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartBundleDataModel>() {
+                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartBundleModel>() {
 
     private var params: Map<String, Any?> = emptyMap()
 
@@ -27,7 +26,7 @@ class AddToCartBundleUseCase @Inject constructor(@ApplicationContext private val
         )
     }
 
-    override suspend fun executeOnBackground(): AddToCartBundleDataModel {
+    override suspend fun executeOnBackground(): AddToCartBundleModel {
         if (params.isEmpty()) {
             throw RuntimeException("Parameters has not been initialized!")
         }
@@ -35,12 +34,7 @@ class AddToCartBundleUseCase @Inject constructor(@ApplicationContext private val
         val request = GraphqlRequest(MUTATION_ADD_TO_CART_BUNDLE, AddToCartBundleGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<AddToCartBundleGqlResponse>()
 
-        val result = addToCartBundleDataMapper.mapAddToCartBundleResponse(response.addToCartBundle)
-        if (result.success) {
-            return result.addToCartBundleDataModel
-        } else {
-            throw ResponseErrorException(result.errorMessage)
-        }
+        return addToCartBundleDataMapper.mapAddToCartBundleResponse(response.addToCartBundle)
     }
 
     companion object {

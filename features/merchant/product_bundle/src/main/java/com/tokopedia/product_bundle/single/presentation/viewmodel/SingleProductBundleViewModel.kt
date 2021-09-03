@@ -156,18 +156,24 @@ class SingleProductBundleViewModel @Inject constructor(
                 addToCartBundleUseCase.executeOnBackground()
             }
 
-            if (result.data.isNotEmpty()) {
-                mAddToCartResult.value = AddToCartDataResult(
-                    requestParams = atcParams,
-                    responseResult = result
-                )
-            } else {
-                mDialogError.value = SingleProductBundleDialogModel(
-                    title = result.message.firstOrNull(),
-                    message = result.message.lastOrNull(),
-                    type = SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH
-                )
-            }
+            result.validateResponse(
+                    onSuccess = {
+                        mAddToCartResult.value = AddToCartDataResult(
+                                requestParams = atcParams,
+                                responseResult = result.addToCartBundleDataModel
+                        )
+                    },
+                    onFailedWithMessages = {
+                        mDialogError.value = SingleProductBundleDialogModel(
+                                title = it.firstOrNull(),
+                                message = it.lastOrNull(),
+                                type = SingleProductBundleDialogModel.DialogType.DIALOG_REFRESH
+                        )
+                    },
+                    onFailedWithException = {
+                        // Todo : show toaster error with error message from throwable
+                    }
+            )
         }, onError = {
             mDialogError.value = SingleProductBundleDialogModel(
                 message = it.localizedMessage,
