@@ -24,7 +24,7 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
-        checkDependencies false
+        checkDependencies true
         htmlReport false
         warningsAsErrors false
         abortOnError false
