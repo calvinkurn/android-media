@@ -304,7 +304,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
             AnalyticsTrackerUtil.ActionKeys.VIEW_STATUSMATCHING_ON_REWARDS, "",
-            AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+            AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
             AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
         )
         if (itemView.context.isDarkMode()) {
@@ -326,7 +326,7 @@ class TopSectionVH(itemView: View, private val cardRuntimeHeightListener: CardRu
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_STATUSMATCHING_ON_REWARDS, "",
-                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                    AnalyticsTrackerUtil.EcommerceKeys.TOKOPOINT_BUSINESSUNIT,
                     AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
                 )
             }
