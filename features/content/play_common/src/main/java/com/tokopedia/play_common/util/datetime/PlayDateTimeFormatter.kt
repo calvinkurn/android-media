@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.util
+package com.tokopedia.play_common.util.datetime
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,6 +16,7 @@ object PlayWidgetDateFormatter {
 
     private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
     private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
+    private const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
 
     private const val GMT_DIVIDER = 100
 
@@ -24,7 +25,7 @@ object PlayWidgetDateFormatter {
     fun formatDate(
         raw: String,
         inputPattern: String = yyyyMMddTHHmmss,
-        outputPattern: String = ddMMMMyyyy_HHmm
+        outputPattern: String = ddMMMyyyy_HHmm
     ): String {
         return try {
             val inputFormat = SimpleDateFormat(inputPattern, locale)
