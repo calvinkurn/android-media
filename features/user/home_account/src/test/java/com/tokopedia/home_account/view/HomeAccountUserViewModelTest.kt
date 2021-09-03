@@ -153,8 +153,8 @@ class HomeAccountUserViewModelTest {
     fun `Successfully get recommendation first page`() {
         val expectedResult = mockk<RecommendationWidget>(relaxed = true)
         every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
-        } returns expectedResult
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        } returns listOf(expectedResult)
 
         viewModel.getFirstRecommendation()
 
@@ -167,8 +167,8 @@ class HomeAccountUserViewModelTest {
         val testPage = 2
         val expectedResult = mockk<RecommendationWidget>(relaxed = true)
         every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
-        } returns expectedResult
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
+        } returns listOf(expectedResult)
 
         viewModel.getRecommendation(testPage)
 
@@ -180,7 +180,7 @@ class HomeAccountUserViewModelTest {
     fun `Failed to get first recommendation`() {
         val expectedResult = mockk<Throwable>(relaxed = true)
         every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
         } throws expectedResult
 
         viewModel.getFirstRecommendation()
@@ -194,7 +194,7 @@ class HomeAccountUserViewModelTest {
         val testPage = 2
         val expectedResult = mockk<Throwable>(relaxed = true)
         every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)
