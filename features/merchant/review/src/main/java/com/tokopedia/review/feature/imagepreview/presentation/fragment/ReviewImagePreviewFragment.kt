@@ -449,8 +449,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun updateLikeCount(reviewId: String, totalLike: Int) {
         reviewImagePreviewDetail?.setLikeCount(totalLike.toString())
         if (isFromGallery) {
-            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.totalLiked =
-                totalLike
+            galleryRoutingData.loadedReviews.forEach {
+                if (it.feedbackId == reviewId) {
+                    it.totalLiked = totalLike
+                }
+            }
             return
         }
         productReview.likeDislike = productReview.likeDislike.copy(totalLike = totalLike)
@@ -458,8 +461,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
         if (isFromGallery) {
-            galleryRoutingData.loadedReviews.firstOrNull { it.feedbackId == reviewId }?.isLiked =
-                isLiked(likeStatus)
+            galleryRoutingData.loadedReviews.forEach {
+                if (it.feedbackId == reviewId ) {
+                    it.isLiked = isLiked(likeStatus)
+                }
+            }
             return
         }
         productReview.likeDislike = productReview.likeDislike.copy(likeStatus = likeStatus)
