@@ -41,10 +41,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurchaseComponent
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapter
@@ -57,16 +54,21 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+
 import javax.inject.Inject
 
 class TokoNowRecentPurchaseFragment:
     Fragment(),
     MiniCartWidgetListener,
     TokoNowView,
-    TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener,
-    TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
-    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener
+    TokoNowChooseAddressWidgetListener,
+    TokoNowCategoryGridListener,
+    TokoNowEmptyStateNoResultListener,
+    TokoNowRecommendationCarouselListener
 {
 
     companion object {
