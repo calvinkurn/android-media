@@ -1,4 +1,4 @@
-package com.tokopedia.checkout_journey.robot
+package com.tokopedia.checkout.robot
 
 import android.app.Activity
 import android.content.Context
