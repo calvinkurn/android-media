@@ -7,6 +7,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -36,7 +37,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
-                    leaderboardInfo = mapLeaderboardInfo()
+                    leaderboardInfo = mapLeaderboardInfo(),
+                    isUpcoming = mapUpcoming(it.airTime)
             )
         }
     }
@@ -200,6 +202,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
+
+    private fun mapUpcoming(airTime: String) = PlayUpcomingUiModel(
+        isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON
+    )
 
     companion object {
         private const val MS_PER_SECOND = 1000
