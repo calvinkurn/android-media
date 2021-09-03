@@ -36,8 +36,8 @@ import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
-import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
+import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -52,7 +52,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     lateinit var viewModel: PickerViewModel
 
     lateinit var rv: RecyclerView
-    lateinit var selectedImage: AssetImageView
+    lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout
     lateinit var tvSelectedFolder: AppCompatTextView
     lateinit var imageFitCenter: AppCompatImageView
@@ -138,7 +138,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     fun initViews(v: View) {
         rv = v.findViewById(R.id.rv)
-        selectedImage = v.findViewById(R.id.selected_image_view)
+        selectedMediaView = v.findViewById(R.id.selected_image_view)
         recentSection = v.findViewById(R.id.recent_section)
         tvSelectedFolder = v.findViewById(R.id.tv_selected_folder)
         imageFitCenter = v.findViewById(R.id.image_fit_center)
@@ -153,7 +153,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         setupRv()
     }
 
-    fun setupToolbar(v:View){
+    fun setupToolbar(v: View) {
         val toolbar: Toolbar = v.findViewById(R.id.toolbar)
         val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
         val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
@@ -187,11 +187,11 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
 
         imageFitCenter.setOnClickListener {
-            if (selectedImage.drawable != null) {
-                if (selectedImage.scaleType == ImageView.ScaleType.CENTER_CROP) {
-                    selectedImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            if (selectedMediaView.asset != null) {
+                if (selectedMediaView.scaleType == ImageView.ScaleType.CENTER_CROP) {
+                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 } else {
-                    selectedImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                    selectedMediaView.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
             }
         }
@@ -210,7 +210,7 @@ class MainFragment : Fragment(), MainFragmentContract {
             if (hasSelectedItems) {
                 imageAdapter.notifyDataSetChanged()
             }
-            selectedImage.removeAsset()
+            selectedMediaView.removeAsset()
         }
     }
 
@@ -255,6 +255,8 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun setObservers() {
+        viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
+
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
@@ -276,7 +278,7 @@ class MainFragment : Fragment(), MainFragmentContract {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
                         imageAdapter.clearSelectedItems()
                         imageAdapter.addSelectedItem(1)
-                        selectedImage.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                        selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
 
                         //update folders
                         if (!it.data.folderDataList.isNullOrEmpty()) {
@@ -299,9 +301,9 @@ class MainFragment : Fragment(), MainFragmentContract {
 
         imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
             if (isSelected) {
-                selectedImage.loadAsset(imageAdapterData.asset)
+                selectedMediaView.loadAsset(imageAdapterData.asset)
             } else {
-                selectedImage.removeAsset()
+                selectedMediaView.removeAsset()
             }
         }
     }
@@ -339,7 +341,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         if (!cameraCaptureFilePath.isNullOrEmpty()) {
             val imageAdapterData = viewModel.mediaUseCaseData?.mediaImporterData?.addCameraImage(cameraCaptureFilePath!!)
             if (imageAdapterData != null) {
-                selectedImage.loadAsset(imageAdapterData.asset)
+                selectedMediaView.loadAsset(imageAdapterData.asset)
                 addAssetToGallery(imageAdapterData.asset)
                 addToCurrnetDisplayedList(imageAdapterData)
             }
@@ -362,5 +364,9 @@ class MainFragment : Fragment(), MainFragmentContract {
             imageAdapter.addSelectedItem(1)
             imageAdapter.notifyItemInserted(1)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

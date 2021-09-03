@@ -31,10 +31,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.miscDependencies.cameraView
 
-//    def camerax_version = "1.0.1"
-//    implementation "androidx.camera:camera-camera2:$camerax_version"
-//    implementation "androidx.camera:camera-lifecycle:$camerax_version"
-//    implementation "androidx.camera:camera-view:1.0.0-alpha28"
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel

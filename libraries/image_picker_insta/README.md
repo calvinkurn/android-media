@@ -15,6 +15,10 @@
   - Show video thumbnails and timer on video thumbnail
   - Use thumbnail content uri for faster loading
   
+- Helpful class
+  - TkpdVideoPlayer
+  
+  
 - PE
   - Need PIC for android storage
   - Need to know what type of media we can store, where we can store, naming conventions
