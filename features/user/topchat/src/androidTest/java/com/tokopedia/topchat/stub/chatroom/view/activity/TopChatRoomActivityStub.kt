@@ -25,7 +25,7 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
     }
 
     fun getTotalItemInChat(): Int {
-        return findViewById<RecyclerView>(R.id.recycler_view).layoutManager?.itemCount ?:
+        return findViewById<RecyclerView>(R.id.recycler_view_chatroom).layoutManager?.itemCount ?:
             throw IllegalStateException("No recyclerview found")
     }
 }
