@@ -1,23 +1,34 @@
 package com.tokopedia.exploreCategory.ui.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.exploreCategory.adapter.AffiliateAdapter
 import com.tokopedia.exploreCategory.adapter.AffiliateAdapterFactory
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
-import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.AffiliateShareVHViewModel
+import com.tokopedia.exploreCategory.di.AffiliateComponent
+import com.tokopedia.exploreCategory.di.DaggerAffiliateComponent
+import com.tokopedia.exploreCategory.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
-import java.util.ArrayList
+import com.tokopedia.unifycomponents.Toaster
+import java.util.*
+import javax.inject.Inject
 
-class AffiliatePromotionBottomSheet : BottomSheetUnify(){
+class AffiliatePromotionBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+
+    @Inject
+    lateinit var viewModelProvider: ViewModelProvider.Factory
+    private lateinit var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel
 
     companion object {
 
@@ -29,7 +40,13 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(){
         }
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        initInject()
+        return super.onCreateDialog(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        affiliatePromotionBSViewModel = ViewModelProviders.of(this, viewModelProvider).get(AffiliatePromotionBSViewModel::class.java)
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -47,9 +64,42 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(){
             it.layoutManager = layoutManager
             it.adapter = adapter
         }
+        contentView?.run {
+            setObservers(this)
+        }
 
         adapter.addShareOptions()
         setChild(contentView)
+    }
+
+    private fun initInject() {
+        getComponent().inject(this)
+    }
+    private fun getComponent(): AffiliateComponent =
+            DaggerAffiliateComponent
+                    .builder()
+                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+    private fun setObservers(contentView: View) {
+        affiliatePromotionBSViewModel.generateLinkData().observe(this, {
+
+        })
+
+        affiliatePromotionBSViewModel.progressBar().observe(this, { visibility ->
+            if (visibility != null) {
+                if (visibility) {
+                } else {
+                }
+            }
+        })
+
+        affiliatePromotionBSViewModel.getErrorMessage().observe(this, { error ->
+            if (error != null) {
+                Toaster.build(contentView, error,
+                        Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            }
+        })
     }
 
 }
