@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.databinding.ItemDealsBrandHomeBinding
+import com.tokopedia.deals.databinding.ItemDealsBrandPopularItemBinding
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_deals_brand_home.view.*
-import kotlinx.android.synthetic.main.item_deals_brand_popular_item.view.*
 
 /**
  * @author by jessica on 17/06/20
@@ -20,12 +20,14 @@ class DealsBrandViewHolder(itemView: View, private val dealsBrandActionListener:
         with(itemView) {
             when(layoutType) {
                 LAYOUT -> {
-                    imgDealsBrand?.loadImage(brand.image)
-                    txtDealsBrand?.text = brand.title
+                    val bind = ItemDealsBrandPopularItemBinding.bind(itemView)
+                    bind.imgDealsBrand?.loadImage(brand.image)
+                    bind.txtDealsBrand?.text = brand.title
                 }
                 LAYOUT_WIDE -> {
-                    iv_brand?.loadImage(brand.image)
-                    brandName?.text = brand.title
+                    val bind = ItemDealsBrandHomeBinding.bind(itemView)
+                    bind.ivBrand?.loadImage(brand.image)
+                    bind.brandName?.text = brand.title
                 }
             }
             setOnClickListener { dealsBrandActionListener.onClickBrand(brand, adapterPosition) }

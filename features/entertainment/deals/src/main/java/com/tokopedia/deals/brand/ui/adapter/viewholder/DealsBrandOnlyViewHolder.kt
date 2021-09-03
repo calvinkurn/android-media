@@ -9,6 +9,8 @@ import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.DealsCommonBrandAdapter
 import com.tokopedia.deals.common.ui.adapter.viewholder.DealsBrandViewHolder
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.databinding.ItemDealsBrandHomeBinding
+import com.tokopedia.deals.databinding.ItemDealsBrandOnlyBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_deals_brand_only.view.*
@@ -16,6 +18,8 @@ import kotlinx.android.synthetic.main.item_deals_brand_only.view.*
 class DealsBrandOnlyViewHolder(itemView: View,
                                private val brandActionListener: DealsBrandActionListener
 ) : BaseViewHolder(itemView) {
+
+    private lateinit var binding : ItemDealsBrandOnlyBinding
 
     fun bind(brands: DealsBrandsDataView) {
         with(itemView) {
