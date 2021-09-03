@@ -4,12 +4,14 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.deals.R
 import com.tokopedia.deals.brand_detail.data.Brand
 import com.tokopedia.deals.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity
@@ -18,12 +20,12 @@ import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.lang.Math.abs
 import javax.inject.Inject
 
 class DealsBrandDetailFragment: BaseDaggerFragment() {
@@ -87,6 +89,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
 
     private fun setCollapsingLayout(title: String) {
         binding?.let {
+            setHasOptionsMenu(true)
             it.toolbarBrandDetail.apply {
                 (activity as DealsBrandDetailActivity).setSupportActionBar(this)
                 (activity as DealsBrandDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -97,15 +100,15 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                     val toolbar = it.toolbarBrandDetail
-                    val verticalOffsetAbs = Math.abs(verticalOffset)
-                    val difference = appBarLayout.totalScrollRange - toolbar.height
-                    if (verticalOffsetAbs >= difference) {
+                    if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         it.collapsingToolbarBrandDetail.title = title
+                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
                         context?.let {
                             setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                         }
-                    } else {
+                    } else if (verticalOffset == 0) {
                         it.collapsingToolbarBrandDetail.title = ""
+                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
                         context?.let {
                             setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                         }
@@ -115,8 +118,11 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setHeaderSection(brand: Brand){
-
+    private fun setHeaderSection(brandDetail: Brand){
+        binding?.let {
+            it.imgThumbnailBrandDetail.loadImage(brandDetail.featuredThumbnailImage)
+            it.imgIconBrandDetail.loadImage(brandDetail.featuredImage)
+        }
     }
 
     private fun observeBrandDetail() {
@@ -125,9 +131,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
                 is Success -> {
                     val brandDetail = it.data.data.brand
                     setCollapsingLayout(brandDetail.title)
-                    binding?.let {
-                        it.imgThumbnailBrandDetail.loadImage(brandDetail.featuredThumbnailImage)
-                    }
+                    setHeaderSection(brandDetail)
                 }
 
                 is Fail -> {
@@ -152,6 +156,14 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
 
     fun setDrawableColorFilter(drawable: Drawable?, color: Int) {
         drawable?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId ?: "" == R.id.action_share_deals) {
+            //shareLink()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
