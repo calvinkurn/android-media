@@ -181,7 +181,7 @@ fun getQueryCartRevampV3(): String {
                       bundle_quota
                       bundle_status
                       bundle_type
-                      EditBundleAppLink
+                      edit_app_link
                       slash_price_label
                     }
                     products {
@@ -429,7 +429,7 @@ fun getQueryCartRevampV3(): String {
                       bundle_quota
                       bundle_status
                       bundle_type
-                      EditBundleAppLink
+                      edit_app_link
                       slash_price_label
                     }
                     products {

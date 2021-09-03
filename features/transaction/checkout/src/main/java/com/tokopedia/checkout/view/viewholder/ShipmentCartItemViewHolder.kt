@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -161,7 +162,16 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             } else {
                 tickerError.setTextDescription(cartItemModel.errorMessage)
             }
-            tickerError.visible()
+
+            if (cartItemModel.isBundlingItem) {
+                if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                    tickerError.visible()
+                } else {
+                    tickerError.gone()
+                }
+            } else {
+                tickerError.visible()
+            }
         } else {
             tickerError.gone()
         }
@@ -176,19 +186,14 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         enableItemView()
     }
 
-    private fun disableItemView() {
-        val colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
-        mTvProductName.setTextColor(colorGreyNonActiveText)
-        mTvProductPrice.setTextColor(colorGreyNonActiveText)
-        mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText)
-        mTvOptionalNoteToSeller.setTextColor(colorGreyNonActiveText)
-        mTvProductCountAndWeight.setTextColor(colorGreyNonActiveText)
-        mTextVariant.setTextColor(colorGreyNonActiveText)
-        setImageFilterGrayScale()
+    private fun enableItemView() {
+        productBundlingInfo.alpha = 1.0f
+        llFrameItemProductContainer.alpha = 1.0f
     }
 
-    private fun setImageFilterGrayScale() {
-        mIvProductImage.imageAlpha = IMAGE_ALPHA_DISABLED
+    private fun disableItemView() {
+        productBundlingInfo.alpha = 0.5f
+        llFrameItemProductContainer.alpha = 0.5f
     }
 
     private fun renderBundlingInfo(cartItemModel: CartItemModel) {
@@ -208,7 +213,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 productBundlingInfo.visibility = View.VISIBLE
                 productImageLayoutParams.topMargin = 0
                 productNameLayoutParams.topMargin = 0
-                mSeparatorMultipleProductSameStore.show()
+                mSeparatorMultipleProductSameStore.invisible()
             } else {
                 productBundlingInfo.visibility = View.GONE
                 productImageLayoutParams.topMargin = productMarginTop
@@ -236,21 +241,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             productContainerLayoutParams.bottomMargin = bottomMargin
             productInfoLayoutParams.bottomMargin = bottomMargin
         }
-    }
-
-
-    private fun enableItemView() {
-        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        mTextVariant.setTextColor(ContextCompat.getColor(mTextVariant.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        setImageFilterNormal()
-    }
-
-    private fun setImageFilterNormal() {
-        mIvProductImage.imageAlpha = IMAGE_ALPHA_ENABLED
     }
 
     interface ShipmentItemListener {

@@ -129,6 +129,7 @@ object CartUiModelMapper {
                 isCollapsed = isCollapsible
                 isError = false
                 promoCodes = availableGroup.promoCodes
+                shopTypeInfo = availableGroup.shop.shopTypeInfo
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -308,19 +309,19 @@ object CartUiModelMapper {
             productSlashPriceLabel = product.slashPriceLabel
             productQtyLeft = product.productWarningMessage
             variant = if (product.variantDescriptionDetail.variantNames.isNotEmpty()) product.variantDescriptionDetail.variantNames.joinToString(", ") else ""
-            wholesalePriceData = product.wholesalePrice
+            wholesalePriceData = product.wholesalePrice.asReversed()
             isPreOrder = product.isPreorder == 1
             isWishlisted = product.isWishlisted
             cartId = product.cartId
             isCod = product.isCod
             productWeight = product.productWeight
-            parentId = if (product.parentId.isBlank() || product.parentId == "0") product.productId else product.parentId
             productCashBack = product.productCashback
             notes = product.productNotes
             originalNotes = notes
             maxNotesLength = cartData.maxCharNote
             isBundlingItem = cartDetail.bundleDetail.bundleId.isNotBlankOrZero()
             if (isBundlingItem) {
+                parentId = if (product.parentId.isBlank() || product.parentId == "0") product.productId + cartDetail.bundleDetail.bundleId else product.parentId
                 isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = cartDetail.bundleDetail.bundleMaxOrder
@@ -341,6 +342,7 @@ object CartUiModelMapper {
                     CartItemHolderData.BUNDLING_ITEM_DEFAULT
                 }
             } else {
+                parentId = if (product.parentId.isBlank() || product.parentId == "0") product.productId else product.parentId
                 bundleId = "0"
                 minOrder = product.productMinOrder
                 maxOrder = if (product.productSwitchInvenage == 0) {

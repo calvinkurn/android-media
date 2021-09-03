@@ -161,8 +161,7 @@ fun getQueryShipmentAddressFormV3(): String {
                       bundle_qty
                       bundle_quota
                       bundle_status
-                      bundle_type
-                      EditBundleAppLink
+                      bundle_type                     
                       slash_price_label
                     }
                     products {

@@ -1905,7 +1905,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 tickerProductError.setTextDescription(cartItemModel.getErrorMessage());
             }
-            tickerProductError.setVisibility(View.VISIBLE);
+
+            if (cartItemModel.isBundlingItem()) {
+                if (cartItemModel.getBundlingItemPosition() == ShipmentMapper.BUNDLING_ITEM_HEADER) {
+                    tickerProductError.setVisibility(View.VISIBLE);
+                } else {
+                    tickerProductError.setVisibility(View.GONE);
+                }
+            } else {
+                tickerProductError.setVisibility(View.VISIBLE);
+            }
         } else {
             tickerProductError.setVisibility(View.GONE);
         }
@@ -1921,32 +1930,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void disableItemView() {
-        int nonActiveTextColor = ContextCompat.getColor(tvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20);
-        tvProductName.setTextColor(nonActiveTextColor);
-        tvProductPrice.setTextColor(nonActiveTextColor);
-        tvProductOriginalPrice.setTextColor(nonActiveTextColor);
-        tvOptionalNoteToSeller.setTextColor(nonActiveTextColor);
-        tvItemCountAndWeight.setTextColor(nonActiveTextColor);
-        textVariant.setTextColor(nonActiveTextColor);
-        setImageFilterGrayScale();
-    }
-
-    private void setImageFilterGrayScale() {
-        ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+        productBundlingInfo.setAlpha(0.5f);
+        llFrameItemProductContainer.setAlpha(0.5f);
     }
 
     private void enableItemView() {
-        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
-        textVariant.setTextColor(ContextCompat.getColor(textVariant.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
-        tvProductOriginalPrice.setTextColor(ContextCompat.getColor(tvProductOriginalPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-        tvItemCountAndWeight.setTextColor(ContextCompat.getColor(tvItemCountAndWeight.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
-        setImageFilterNormal();
-    }
-
-    private void setImageFilterNormal() {
-        ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+        productBundlingInfo.setAlpha(1.0f);
+        llFrameItemProductContainer.setAlpha(1.0f);
     }
 
     private boolean isHavingPurchaseProtectionChecked() {

@@ -128,6 +128,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun setCartListData(cartListData: CartData) {
         this.cartListData = cartListData
+        this.promoSummaryUiModel = CartUiModelMapper.mapPromoSummaryUiModel(cartListData.promoSummary)
     }
 
     override fun getSummaryTransactionUiModel(): SummaryTransactionUiModel? {
@@ -453,6 +454,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
+        promoSummaryUiModel?.details?.clear()
         promoSummaryUiModel?.details?.addAll(
                 lastApplyUiModel.additionalInfo.usageSummaries.map {
                     PromoSummaryDetailData(
@@ -550,7 +552,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice).toDouble()
             cartItemHolderData.wholesalePriceFormatted = null
             cartItemHolderData.wholesalePrice = 0
-            subtotalBeforeSlashedPrice = (itemQty * cartItemHolderData.productPrice).toDouble()
+            subtotalBeforeSlashedPrice =
+                    if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice).toDouble()
+                    else (itemQty * cartItemHolderData.productPrice).toDouble()
         }
 
         if (cartItemHolderData.productCashBack.isNotBlank()) {
@@ -611,26 +615,33 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         val subtotalWholesalePriceMap = HashMap<String, Double>()
         val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
+        val calculatedBundlingId = HashSet<String>()
 
         for (cartItemHolderData in allCartItemDataList) {
             var itemQty =
-                    if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                    if (cartItemHolderData.isBundlingItem) cartItemHolderData.bundleQuantity
                     else cartItemHolderData.quantity
             totalItemQty += itemQty
-            if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
+            if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
                 for (cartItemHolderDataTmp in allCartItemDataList) {
                     if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
                             cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice) {
                         val tmpQty =
-                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.bundleQuantity
                                 else cartItemHolderData.quantity
                         itemQty += tmpQty
                     }
                 }
             }
 
-            if (!cartItemHolderData.wholesalePriceData.isNullOrEmpty()) {
+            if (cartItemHolderData.isBundlingItem) {
+                if (!calculatedBundlingId.contains(cartItemHolderData.bundleId)) {
+                    subtotalPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundlePrice
+                    subtotalBeforeSlashedPrice += cartItemHolderData.bundleQuantity * cartItemHolderData.bundleOriginalPrice
+                    calculatedBundlingId.add(cartItemHolderData.bundleId)
+                }
+            } else if (!cartItemHolderData.wholesalePriceData.isNullOrEmpty()) {
                 // Calculate price and cashback for wholesale marketplace product
                 val returnValueWholesaleProduct = calculatePriceWholesaleProduct(cartItemHolderData, itemQty)
 

@@ -167,8 +167,19 @@ class ShipmentMapper @Inject constructor() {
                     if (product.tradeInInfo.isValidTradeIn) {
                         productPrice = product.tradeInInfo.newDevicePrice.toLong()
                     }
-                    isError = !product.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.isNotEmpty()) product.errors[0] else ""
+                    isError = !product.errors.isNullOrEmpty() ||
+                            shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
+                            cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
+                    errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
+                        ""
+                    } else if (product.errors.isNotEmpty()) {
+                        product.errors[0]
+                    } else if (cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()) {
+                        // Bundle error
+                        cartDetail.errors[0]
+                    } else {
+                        ""
+                    }
                     errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (product.errors.size >= 2) product.errors[1] else ""
                     if (isError) {
                         if (firstErrorIndex == -1) {

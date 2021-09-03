@@ -19,6 +19,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -44,6 +45,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
@@ -57,11 +59,14 @@ class SingleProductBundleFragment(
 
     @Inject
     lateinit var viewModel: SingleProductBundleViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var tvBundleSold: Typography? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
+    private var loaderDialog: LoaderDialog? = null
     private var adapter = SingleProductBundleAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +104,10 @@ class SingleProductBundleFragment(
             adapter.setSelectedVariant(selectedProductId, viewModel.getVariantText(selectedProductVariant, selectedProductId))
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+        }
+        hideLoadingDialog()
     }
 
     override fun getScreenName() = SingleProductBundleFragment::class.java.simpleName
@@ -154,6 +163,7 @@ class SingleProductBundleFragment(
 
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
+            hideLoadingDialog()
             if (pageSource == PAGE_SOURCE_CART) {
                 val intent = Intent()
                 intent.putExtra(EXTRA_BUNDLE_ID, it.requestParams.bundleId)
@@ -176,6 +186,7 @@ class SingleProductBundleFragment(
                     getString(R.string.single_bundle_error_bundle_is_empty_long)
                 else -> getString(R.string.single_bundle_error_unknown)
             }
+            hideLoadingDialog()
             Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getString(R.string.action_oke)).show()
         })
@@ -190,6 +201,7 @@ class SingleProductBundleFragment(
                 primaryText = getString(R.string.action_select_another_bundle)
             }
 
+            hideLoadingDialog()
             DialogUnify(requireContext(), dialogAction, NO_IMAGE).apply {
                 setDescription(dialogStruct.message.orEmpty())
                 setPrimaryCTAText(primaryText)
@@ -213,6 +225,7 @@ class SingleProductBundleFragment(
             swipeRefreshLayout?.isVisible = !isError
             tvBundleSold?.isVisible = !isError
             totalAmount?.isVisible = !isError
+            hideLoadingDialog()
         })
     }
 
@@ -241,7 +254,7 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+                atcProductBundle()
             }
         }
     }
@@ -272,12 +285,37 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun showLoadingDialog() {
+        context?.let {
+            loaderDialog = LoaderDialog(it)
+            loaderDialog?.show()
+        }
+    }
+
+    private fun hideLoadingDialog() {
+        loaderDialog?.dialog?.dismiss()
+    }
+
     private fun refreshPage() {
         val productBundleActivity = requireActivity() as ProductBundleActivity
         productBundleActivity.refreshPage()
     }
 
+    private fun atcProductBundle() {
+        showLoadingDialog()
+        if (userSession.userId.isEmpty()) {
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+            startActivityForResult(intent, LOGIN_REQUEST_CODE)
+        } else {
+            viewModel.validateAndCheckout(parentProductID, adapter.getSelectedData())
+        }
+    }
+
     companion object {
+        // page request codes
+        const val LOGIN_REQUEST_CODE = 1122
+
+        // page initializer
         @JvmStatic
         fun newInstance(
             parentProductID: String,
