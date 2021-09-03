@@ -19,8 +19,8 @@ import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -45,6 +45,7 @@ class ShopHomeVideoViewHolder(
     private var btnYoutubePlayer: AppCompatImageView? = null
     private var ivVideoNotFound: AppCompatImageView? = null
     private var groupVideoError: Group? = null
+    private var textViewTitle: Typography? = itemView.findViewById(R.id.textViewTitle)
 
     init {
         youTubeThumbnailShopPageImageUnify = view.findViewById(R.id.youtube_home_shop_page)
@@ -99,7 +100,7 @@ class ShopHomeVideoViewHolder(
             }
         }
 
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {

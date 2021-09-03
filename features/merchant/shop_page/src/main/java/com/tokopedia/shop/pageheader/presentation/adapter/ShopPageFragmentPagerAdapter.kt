@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.collection.SparseArrayCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
@@ -32,12 +32,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
-                shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
+                val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
+                shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
-            shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
+            val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
+            shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
 

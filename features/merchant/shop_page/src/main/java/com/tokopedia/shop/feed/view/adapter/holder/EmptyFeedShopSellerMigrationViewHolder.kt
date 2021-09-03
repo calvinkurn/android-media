@@ -8,8 +8,9 @@ import com.tokopedia.seller_migration_common.presentation.util.touchlistener.Sel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
+import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.widget_shop_page_tab_feed_no_post_seller_migration.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class EmptyFeedShopSellerMigrationViewHolder(view: View,
                                              private val mainView: FeedShopContract.View): AbstractViewHolder<EmptyFeedShopSellerMigrationUiModel>(view) {
@@ -18,11 +19,15 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
         val LAYOUT = R.layout.widget_shop_page_tab_feed_no_post_seller_migration
     }
 
+    private val ivTabFeedNoPost: ShopCarouselBannerImageUnify? = view.findViewById(R.id.ivTabFeedNoPost)
+    private val tvSellerMigrationLearnMoreLink: Typography? = view.findViewById(R.id.tvSellerMigrationLearnMoreLink)
+    private val btnPlayStoreTabFeedNoPost: View? = view.findViewById(R.id.btnPlayStoreTabFeedNoPost)
+
     override fun bind(element: EmptyFeedShopSellerMigrationUiModel?) {
         with(itemView) {
             try {
                 if(ivTabFeedNoPost?.context?.isValidGlideContext() == true)
-                    ivTabFeedNoPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
+                    ivTabFeedNoPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_POST_FEED_BANNER_LINK)
             } catch (e: Throwable) { }
             tvSellerMigrationLearnMoreLink?.text = context?.let {
                 HtmlLinkHelper(it, getString(com.tokopedia.seller_migration_common.R.string.seller_migration_bottom_sheet_footer)).spannedString

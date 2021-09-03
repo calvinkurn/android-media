@@ -85,7 +85,6 @@ import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
@@ -225,7 +224,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
             createPostUrl = it.getString(PARAM_CREATE_POST_URL) ?: ""
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -348,7 +347,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.clearCache()
         isLoadingInitialData = true
         presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
-        recyclerView.scrollToPosition(0)
+        getRecyclerView(view).scrollToPosition(0)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {

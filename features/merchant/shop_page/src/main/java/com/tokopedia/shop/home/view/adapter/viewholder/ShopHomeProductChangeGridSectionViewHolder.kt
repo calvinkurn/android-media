@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
@@ -12,7 +13,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
-import kotlinx.android.synthetic.main.item_shop_product_change_grid_section_view.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -27,6 +28,9 @@ class ShopHomeProductChangeGridSectionViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_change_grid_section_view
     }
+    private val labelTotalProduct: Typography? = itemView.findViewById(R.id.label_total_product)
+    private val ivGridIcon: IconUnify? = itemView.findViewById(R.id.iv_grid_icon)
+    private val labelTampilan: Typography? = itemView.findViewById(R.id.label_tampilan)
 
     private val drawableProductGridList : Int
         get() = R.drawable.ic_shop_page_product_grid_list.takeIf {
@@ -45,20 +49,20 @@ class ShopHomeProductChangeGridSectionViewHolder(
 
     override fun bind(model: ShopHomeProductChangeGridSectionUiModel) {
         val productListDataFormatted = model.totalProduct.thousandFormatted()
-        itemView.label_total_product?.apply {
+        labelTotalProduct?.apply {
             text = String.format(
                     context.getString(R.string.shop_change_grid_section_total_product),
                     productListDataFormatted
             )
         }
         setGridIcon(model.gridType)
-        itemView.iv_grid_icon?.setOnClickListener {
+        ivGridIcon?.setOnClickListener {
             listener.onChangeProductGridClicked(switchGridLayout(model.gridType))
         }
         if(ShopUtil.isUsingNewNavigation()){
-            itemView.label_tampilan?.hide()
+            labelTampilan?.hide()
         }else{
-            itemView.label_tampilan?.show()
+            labelTampilan?.show()
         }
     }
 
@@ -76,7 +80,7 @@ class ShopHomeProductChangeGridSectionViewHolder(
             ShopProductViewGridType.SMALL_GRID -> drawableProductGridSmall
             ShopProductViewGridType.BIG_GRID -> drawableProductGridBig
         }
-        itemView.iv_grid_icon?.setImageDrawable(MethodChecker.getDrawable(
+        ivGridIcon?.setImageDrawable(MethodChecker.getDrawable(
                 itemView.context,
                 gridIcon
         ))
