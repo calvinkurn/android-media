@@ -1346,8 +1346,7 @@
           "promoted_text": "Dipromosikan oleh",
           "description": "Belanja di Advan Official Store dan dapatkan promo&#34; menarik!",
           "uri": "https://www.tokopedia.com/advan-official",
-          "layout": 1,
-          "position": 1
+          "layout": 1
         },
         "applinks": "tokopedia://shop/3072108"
       },
@@ -1432,8 +1431,7 @@
           "promoted_text": "Dipromosikan oleh",
           "description": "Belanja di nexard, diskon hingga 50%!",
           "uri": "https://staging.tokopedia.com/nexard",
-          "layout": 2,
-          "position": 14
+          "layout": 2
         },
         "applinks": "tokopedia://shop/480996"
       }
