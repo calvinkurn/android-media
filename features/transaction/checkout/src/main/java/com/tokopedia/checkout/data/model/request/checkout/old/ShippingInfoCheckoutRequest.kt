@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.request.checkout
+package com.tokopedia.checkout.data.model.request.checkout.old
 
 import android.annotation.SuppressLint
 import android.os.Parcelable

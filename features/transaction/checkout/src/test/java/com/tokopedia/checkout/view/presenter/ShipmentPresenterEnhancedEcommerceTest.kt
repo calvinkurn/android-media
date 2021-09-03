@@ -2,9 +2,9 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
