@@ -2,6 +2,9 @@ package com.tokopedia.buyerorder.unifiedhistory.list.analytics
 
 import android.app.Activity
 import android.os.Bundle
+import com.google.gson.JsonArray
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_LIST_TRACK
@@ -9,8 +12,11 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 /**
@@ -116,15 +122,16 @@ object UohAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun viewOrderListPage(isLoggedInStatus: Boolean, userId: String) {
-        val event = TrackAppUtils.gtmData(OPEN_SCREEN, "", "", "")
-        event[SCREEN_NAME] = ORDER_LIST_SCREEN_NAME
-        event[IS_LOGGED_IN_STATUS] = isLoggedInStatus
-        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        event[BUSINESS_UNIT] = ORDER_MANAGEMENT
-        event[USER_ID] = userId
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    fun viewOrderListPage(trackingQueue: TrackingQueue, isLoggedInStatus: Boolean, userId: String) {
+        val map = DataLayer.mapOf(
+            EVENT, OPEN_SCREEN,
+            SCREEN_NAME, ORDER_LIST_SCREEN_NAME,
+            IS_LOGGED_IN_STATUS, isLoggedInStatus,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            BUSINESS_UNIT, ORDER_MANAGEMENT,
+            USER_ID, userId
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     fun submitSearch(keyword: String, userId: String) {
@@ -208,33 +215,44 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun viewOrderCard(verticalLabel: String, userId: String, arrayImpressions: ArrayList<ECommerceImpressions.Impressions>) {
-        val arrayListBundleItems = arrayListOf<Bundle>()
-        arrayImpressions.forEach { impression ->
-            val bundleImpressions = Bundle().apply {
-                putString(ITEM_NAME, impression.name)
-                putString(ITEM_ID, impression.id)
-                putString(PRICE, impression.price)
-                putString(ITEM_BRAND, "")
-                putString(ITEM_CATEGORY, "")
-                putString(ITEM_VARIANT, "")
-                putString(INDEX, impression.position)
-            }
-            arrayListBundleItems.add(bundleImpressions)
-        }
+    fun viewOrderCard(trackingQueue: TrackingQueue, order: UohListOrder.Data.UohOrders.Order, userId: String, listProduct: JsonArray, position: String) {
+        val map = DataLayer.mapOf(
+            EVENT, VIEW_ITEM_LIST,
+            EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY,
+            EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
+            EVENT_LABEL, "",
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            BUSINESS_UNIT, ORDER_MANAGEMENT,
+            ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
+            ITEMS, convertOrderItemToDataImpressionObject(order, listProduct, position)
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
 
-        val bundle = Bundle().apply {
-            putString(EVENT, VIEW_ITEM_LIST)
-            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
-            putString(EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
-            putString(EVENT_LABEL, "")
-            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(USER_ID, userId)
-            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            putString(ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
-            putParcelableArrayList(ITEMS, arrayListBundleItems)
-        }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+    fun convertOrderItemToDataImpressionObject(order: UohListOrder.Data.UohOrders.Order, listProduct: JsonArray, position: String): Any  {
+        var eeProductId = ""
+        var eeProductPrice = ""
+        return DataLayer.listOf(
+            order.metadata.products.forEachIndexed { index, product ->
+                val itemName = product.title
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    val objProduct = listProduct.get(index)?.asJsonObject
+                    eeProductId = objProduct?.get(UohConsts.EE_PRODUCT_ID).toString()
+                    eeProductPrice = objProduct?.get(UohConsts.EE_PRODUCT_PRICE).toString()
+                }
+
+                DataLayer.mapOf(
+                    ITEM_NAME, itemName,
+                    ITEM_ID, eeProductId,
+                    PRICE, eeProductPrice,
+                    ITEM_BRAND, "",
+                    ITEM_VARIANT, "",
+                    ITEM_CATEGORY, "",
+                    INDEX, position
+                )
+            }
+        )
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
