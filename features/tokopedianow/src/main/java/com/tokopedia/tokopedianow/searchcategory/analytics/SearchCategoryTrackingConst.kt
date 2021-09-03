@@ -31,5 +31,10 @@ object SearchCategoryTrackingConst {
         const val DEFAULT = "default"
         const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
         const val VALUE_TOPADS = "- topads"
+        const val NONE = "none"
+        const val TOKOPEDIA_NOW = "Tokopedia NOW!"
+        const val RELATEDKEYWORD = "relatedKeyword"
+        const val PAGESOURCE = "pageSource"
+        const val LOCAL_SEARCH = "local_search"
     }
 }

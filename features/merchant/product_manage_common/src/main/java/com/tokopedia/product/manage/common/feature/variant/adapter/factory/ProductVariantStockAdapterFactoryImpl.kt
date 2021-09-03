@@ -4,13 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantTickerViewHolder
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 
 class ProductVariantStockAdapterFactoryImpl(
-    private val listener: ProductVariantStockViewHolder.ProductVariantStockListener
+    private val listener: ProductVariantStockViewHolder.ProductVariantStockListener,
+    private val campaignListener: ProductCampaignInfoListener
 ): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 
     override fun type(viewModel: ProductVariant): Int = ProductVariantStockViewHolder.LAYOUT
@@ -19,7 +21,7 @@ class ProductVariantStockAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ProductVariantStockViewHolder.LAYOUT -> ProductVariantStockViewHolder(parent, listener)
+            ProductVariantStockViewHolder.LAYOUT -> ProductVariantStockViewHolder(parent, listener, campaignListener)
             ProductVariantTickerViewHolder.LAYOUT -> ProductVariantTickerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

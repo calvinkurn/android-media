@@ -7,12 +7,8 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.tokopedia.buyerorder.R
 import com.tokopedia.unifycomponents.ticker.Ticker
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.regex.Pattern
-
 
 object BuyerUtils {
     val VIBRATE_DURATION = 150
@@ -34,23 +30,6 @@ object BuyerUtils {
     }
 
     @JvmStatic
-    fun convertMonth(num: Int, context: Context): String {
-        val entries = context.resources.getStringArray(R.array.month_title)
-        return entries[num]
-    }
-
-    @JvmStatic
-    fun setFormat(target: SimpleDateFormat, current: SimpleDateFormat, value: String): String? {
-        var result: String? = null
-        try {
-            result = target.format(current.parse(value))
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        return result
-    }
-
-    @JvmStatic
     fun getTickerType(typeStr: String): Int {
         return when (typeStr) {
             BuyerConsts.TICKER_TYPE_ERROR -> {
@@ -66,11 +45,6 @@ object BuyerUtils {
                 Ticker.TYPE_ANNOUNCEMENT
             }
         }
-    }
-
-    @JvmStatic
-    fun formatTitleHtml(desc: String, urlText: String, url: String): String? {
-        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
     }
 
     @JvmStatic

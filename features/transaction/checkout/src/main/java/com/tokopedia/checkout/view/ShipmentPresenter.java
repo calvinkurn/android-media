@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestGqlData;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -1248,6 +1249,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         checkoutRequest.setData(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList);
         checkoutRequest.setEgoldData(egoldData);
 
+        setCheckoutFeatureTypeData(checkoutRequest);
+
         if (cornerData != null) {
             checkoutRequest.setCornerData(cornerData);
         }
@@ -1284,6 +1287,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         return checkoutRequest;
+    }
+
+    private void setCheckoutFeatureTypeData(CheckoutRequest checkoutRequest) {
+        boolean hasTokoNowProduct = false;
+        List<DataCheckoutRequest> dataCheckoutRequests = checkoutRequest.getData();
+        if (dataCheckoutRequests != null) {
+            for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
+                List<ShopProductCheckoutRequest> shopProductCheckoutRequests = dataCheckoutRequest.getShopProducts();
+                if (!hasTokoNowProduct && shopProductCheckoutRequests != null) {
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : shopProductCheckoutRequests) {
+                        if (shopProductCheckoutRequest.isTokoNow()) {
+                            hasTokoNowProduct = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            checkoutRequest.setFeatureType(hasTokoNowProduct ? CheckoutRequestGqlData.FEATURE_TYPE_TOKONOW_PRODUCT : CheckoutRequestGqlData.FEATURE_TYPE_REGULAR_PRODUCT);
+        }
     }
 
     private void setCheckoutRequestPromoData(List<DataCheckoutRequest> dataCheckoutRequestList) {
@@ -1781,7 +1804,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
+        boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
 
         String mvc = generateRatesMvcParam(cartString);
 
@@ -1864,8 +1887,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setProductInsurance(shipmentDetailData.getShipmentCartData().getProductInsurance());
         shippingParam.setOrderValue(shipmentDetailData.getShipmentCartData().getOrderValue());
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
-        shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
-        shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
+        shippingParam.setBlackbox(shipmentDetailData.isBlackbox());
+        shippingParam.setPreorder(shipmentDetailData.getPreorder());
         shippingParam.setAddressId(recipientAddressModel.getId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);

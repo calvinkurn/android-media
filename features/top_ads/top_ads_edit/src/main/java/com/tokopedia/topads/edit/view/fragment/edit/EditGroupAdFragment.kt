@@ -272,6 +272,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             if (currentAutoBidState.isNotEmpty()) {
                 setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
                 actionEnable()
+            } else {
+                viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
             }
         })
     }

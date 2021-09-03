@@ -61,20 +61,20 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         )
 
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
         renderLabelBestSeller(
             isShowBestSeller,
             labelBestSeller,
             productCardModel
         )
 
+        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
         renderLabelBestSellerCategorySide(
             isShowCategorySide,
             textCategorySide,
             productCardModel
         )
 
+        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
         renderLabelBestSellerCategoryBottom(
             isShowCategoryBottom,
             textCategoryBottom,

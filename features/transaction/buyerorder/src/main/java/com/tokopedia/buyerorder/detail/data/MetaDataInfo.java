@@ -22,12 +22,6 @@ public class MetaDataInfo {
     @SerializedName("entity_brand_name")
     @Expose
     private String entityBrandName;
-    @SerializedName("entity_category_id")
-    @Expose
-    private int entityCategoryId;
-    @SerializedName("email")
-    @Expose
-    private String email;
     @SerializedName("entity_image")
     @Expose
     private String entityImage;
@@ -43,9 +37,6 @@ public class MetaDataInfo {
     @SerializedName("product_name")
     @Expose
     private String productName;
-    @SerializedName("entity_provider_id")
-    @Expose
-    private int entityProviderId;
     @SerializedName("start_date")
     @Expose
     private String startDate;
@@ -134,7 +125,6 @@ public class MetaDataInfo {
     @Expose
     private String customLinkType;
 
-
     public String getEndDate() {
         return endDate;
     }
@@ -211,14 +201,6 @@ public class MetaDataInfo {
         this.entityBrandName = entityBrandName;
     }
 
-    public int getEntityCategoryId() {
-        return entityCategoryId;
-    }
-
-    public void setEntityCategoryId(int entityCategoryId) {
-        this.entityCategoryId = entityCategoryId;
-    }
-
     public String getEntityImage() {
         return entityImage;
     }
@@ -245,14 +227,6 @@ public class MetaDataInfo {
 
     public void setEntityProductName(String entityProductName) {
         this.entityProductName = entityProductName;
-    }
-
-    public int getEntityProviderId() {
-        return entityProviderId;
-    }
-
-    public void setEntityProviderId(int entityProviderId) {
-        this.entityProviderId = entityProviderId;
     }
 
     public String getStartDate() {
@@ -320,8 +294,6 @@ public class MetaDataInfo {
     public String getSeoUrl() {
         return seoUrl;
     }
-
-    public String getEmail(){return email;}
 
     public String getProductAppUrl(){return productAppUrl;}
 
