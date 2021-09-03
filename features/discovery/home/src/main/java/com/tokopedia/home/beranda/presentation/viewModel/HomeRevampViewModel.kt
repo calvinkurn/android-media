@@ -1208,7 +1208,7 @@ open class HomeRevampViewModel @Inject constructor(
         if(getTokopointJob?.isActive == true) return
         getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
-                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+                val data = getTokopointListBasedOnElibility()
                 updateHeaderViewModel(
                         tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
                                 ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
@@ -1355,7 +1355,7 @@ open class HomeRevampViewModel @Inject constructor(
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
-            val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+            val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
             homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
             newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
         }) {
@@ -1395,11 +1395,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
-        val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+        val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
         if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
             throw IllegalStateException("Tokopoints data is null")
         }
         return tokopointsDrawerListHome
+    }
+
+    private suspend fun getTokopointListBasedOnElibility(): TokopointsDrawerListHomeData {
+        getHomeTokopointsListDataUseCase.get().setParams(isGopayEligible)
+        return getHomeTokopointsListDataUseCase.get().executeOnBackground()
     }
 
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {

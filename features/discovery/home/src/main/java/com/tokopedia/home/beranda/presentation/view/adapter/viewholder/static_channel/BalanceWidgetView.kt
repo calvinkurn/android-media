@@ -66,10 +66,14 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.balanceType == TYPE_STATE_2 && !element.isGopayEligible) {
+        if (element.isGopayEligible == null) {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.GONE
+        }
+        if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == false) {
             view_balance_widget_coachmark.visibility = View.INVISIBLE
             view_balance_widget_coachmark_new.visibility = View.GONE
-        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible) {
+        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == true) {
             view_balance_widget_coachmark.visibility = View.GONE
             view_balance_widget_coachmark_new.visibility = View.INVISIBLE
         } else {

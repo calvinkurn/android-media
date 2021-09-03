@@ -24,7 +24,7 @@ data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
     var balanceType: Int? = null,
     var isTokopointsOrOvoFailed: Boolean = false,
-    var isGopayEligible: Boolean = false
+    var isGopayEligible: Boolean? = null
 ) {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
@@ -84,7 +84,7 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible) {
+                if (isGopayEligible == null || isGopayEligible == true) {
                     balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
                 } else {
@@ -121,7 +121,7 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible) {
+                if (isGopayEligible == true) {
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
                 } else {
                     balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
@@ -231,15 +231,13 @@ data class HomeBalanceModel(
         val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
                 || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
                 balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
-        val isContainsNewTokopoint = balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.drawerItemType == TYPE_TOKOPOINT &&
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.state == STATE_SUCCESS
+        val isContainsNewTokopoint = balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.state == STATE_SUCCESS
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
     fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
         val balanceItem = balanceDrawerItemModels[BALANCE_POSITION_SECOND]
-        val isContainsNewTokopoint = balanceItem?.drawerItemType == TYPE_TOKOPOINT &&
-                balanceItem.state == STATE_SUCCESS
+        val isContainsNewTokopoint = balanceItem?.state == STATE_SUCCESS
         if (isContainsNewTokopoint) {
             return balanceItem?.balanceCoachmark
         }
@@ -321,7 +319,7 @@ data class HomeBalanceModel(
     }
 
     private fun mapTokopoint(tokopointDrawerListHomeData: TokopointsDrawerListHomeData?) {
-        if (isGopayEligible) {
+        if (isGopayEligible == true) {
             val tokopointMapData = tokopointDrawerListHomeData?.tokopointsDrawerList?.drawerList?.map {
                 val type = getDrawerType(it.type)
                 it.mapToHomeBalanceItemModel(
@@ -331,6 +329,12 @@ data class HomeBalanceModel(
                 )
             }
             val tokopointAnimDrawerContent = tokopointMapData?.getOrNull(0)
+            tokopointDrawerListHomeData?.tokopointsDrawerList?.coachmarkList?.getOrNull(0)?.coachmarkContent?.getOrNull(0)?.let {
+                tokopointAnimDrawerContent?.balanceCoachmark = BalanceCoachmark(
+                    title = it.title,
+                    description = it.content
+                )
+            }
             val alternateAnimDrawerContent = tokopointMapData?.toMutableList()?.apply {
                 remove(tokopointAnimDrawerContent)
             }
@@ -426,7 +430,7 @@ data class HomeBalanceModel(
                 )
             }
             TYPE_STATE_2 -> {
-                if (isGopayEligible) {
+                if (isGopayEligible == true) {
                     itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },

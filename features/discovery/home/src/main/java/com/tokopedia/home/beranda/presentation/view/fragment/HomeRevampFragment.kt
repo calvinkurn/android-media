@@ -16,6 +16,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -171,6 +172,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
@@ -614,6 +616,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
+        view.findViewById<Button>(R.id.btnTest).setOnClickListener {
+            setFalseNewWalletAppCoachmarkShown(context!!)
+            setFalseNewTokopointCoachmarkShown(context!!)
+        }
         oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
 
@@ -766,7 +772,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
             //add balance widget
             //uncomment this to activate balance widget coachmark
-            if (isUsingWalletApp()) {
+            if (isUsingWalletApp() && !isEligibleGopay) {
                 if (!skipBalanceWidget && !isWalletAppCoachmarkShown(currentContext)) {
                     val gopayWidget = getGopayBalanceWidgetView()
                     gopayWidget?.let {
@@ -860,9 +866,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
         if (!bottomSheetIsShowing) {
-            context?.let {
+            context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
-                coachmark = CoachMark2(it)
+                coachmark = CoachMark2(ctx)
                 coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
                 coachmark?.let {
                     it.setStepListener(object : CoachMark2.OnStepListener {
@@ -871,7 +877,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                     })
                     it.setOnDismissListener {
-                        showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                        showBalanceWidgetCoachmark(
+                            ctx,
+                            containsNewGopayAndTokopoints,
+                            tokopointsBalanceCoachmark
+                        )
                     }
                     //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
                     //will be removed along the coachmark removal in the future
@@ -881,7 +891,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                             coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
                         } else if (coachMarkItem.isEmpty()) {
-                            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                            showBalanceWidgetCoachmark(
+                                ctx,
+                                containsNewGopayAndTokopoints,
+                                tokopointsBalanceCoachmark
+                            )
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -889,6 +903,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 }
             }
+        }
+    }
+
+    private fun showBalanceWidgetCoachmark(
+        ctx: Context,
+        containsNewGopayAndTokopoints: Boolean,
+        tokopointsBalanceCoachmark: BalanceCoachmark?
+    ) {
+        if (!isNewWalletAppCoachmarkShown(ctx)) {
+            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+        } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
+            showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
         }
     }
 
@@ -909,11 +935,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.setOnDismissListener {
                             showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
+                            setNewWalletAppCoachmarkShown(it)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                         gopayCoachmarkIsShowing = true
-
-//                    coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
                     }
                 } catch (e: Exception) {
                     gopayCoachmarkIsShowing = false
@@ -933,9 +958,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 coachmarkTokopoint?.let { tokopointCoachmark ->
                     try {
                         if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
+                            tokopointCoachmark?.setOnDismissListener {
+                                setNewTokopointCoachmarkShown(it)
+                            }
                             tokopointCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                             tokopointsCoachmarkIsShowing = true
-//                    coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
                         }
                     } catch (e: Exception) {
                         tokopointsCoachmarkIsShowing = false

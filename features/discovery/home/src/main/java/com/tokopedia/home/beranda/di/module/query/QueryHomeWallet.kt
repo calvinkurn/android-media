@@ -60,7 +60,14 @@ object QueryHomeWallet {
             "               }\n" +
             "           }\n" +
             "        }\n" +
-            "    }\n" +
+            "       coachMarkList {\n" +
+            "          type\n" +
+            "          coachMarkContent {\n" +
+            "          title\n" +
+            "          content\n" +
+            "        }\n" +
+            "      }\n" +
+            "   }\n" +
             "}"
     val walletBalanceQuery : String = "{\n" +
             "  wallet(isGetTopup:true) {\n" +
