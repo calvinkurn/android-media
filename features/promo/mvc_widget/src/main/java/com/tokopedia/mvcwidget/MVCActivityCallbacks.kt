@@ -40,6 +40,8 @@ class MVCActivityCallbacks:Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        
+        if (activity is TransParentActivity) {
+            (activity.applicationContext as Application).unregisterActivityLifecycleCallbacks(this)
+        }
     }
 }

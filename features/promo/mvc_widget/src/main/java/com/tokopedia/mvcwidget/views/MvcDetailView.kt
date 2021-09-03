@@ -270,7 +270,6 @@ class MvcDetailView @JvmOverloads constructor(
                 widgetType = response.data.followWidget.type
                 mvcTracker?.viewCoupons(widgetType,this.shopId, userSession?.userId, this.mvcSource)
             }else{
-                widgetType = FollowWidgetType.DEFAULT
                 mvcTracker?.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }

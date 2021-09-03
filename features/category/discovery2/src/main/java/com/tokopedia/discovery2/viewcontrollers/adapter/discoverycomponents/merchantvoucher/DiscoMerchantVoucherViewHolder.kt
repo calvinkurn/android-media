@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -42,7 +43,7 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
                     discoMerchantVoucherViewModel.getShopID(),
                     UserSession(fragment.context).userId,
                     discoMerchantVoucherViewModel.position,
-                    data.animatedInfoList?.firstOrNull()?.title?:"")
+                    Utils.extractFromHtml(data.animatedInfoList?.firstOrNull()?.title))
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -81,7 +82,12 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun getAnalytics(couponName:String?):DiscoMerchantAnalytics{
-        return DiscoMerchantAnalytics((fragment as DiscoveryFragment).getDiscoveryAnalytics(),discoMerchantVoucherViewModel.components,discoMerchantVoucherViewModel.position,couponName)
+    private fun getAnalytics(couponName: String?): DiscoMerchantAnalytics {
+        return DiscoMerchantAnalytics(
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
+            discoMerchantVoucherViewModel.components,
+            discoMerchantVoucherViewModel.position,
+            Utils.extractFromHtml(couponName)
+        )
     }
 }

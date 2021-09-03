@@ -1227,7 +1227,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
             KEY_ID to "${components.id}_$shopId",
-            KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
             KEY_CREATIVE to (couponName ?: EMPTY_STRING),
             KEY_POSITION to 1
         ))
@@ -1248,7 +1248,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
             KEY_ID to "${components.id}_$shopId",
-            KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_SINGLE_COMPONENT",
             KEY_CREATIVE to (couponName ?: EMPTY_STRING),
             KEY_POSITION to 1
         ))
@@ -1269,7 +1269,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
             KEY_ID to "${components.id}_$shopId",
-            KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $MV_DETAIL_COMPONENT",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${positionInPage + 1} - $MV_DETAIL_COMPONENT",
             KEY_CREATIVE to "${couponName ?: EMPTY_STRING} - $shopType",
             KEY_POSITION to 1
         ))
