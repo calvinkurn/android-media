@@ -72,4 +72,9 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
+
+    //TAPCASH
+    const val KEY_VARIANT_TAPCASH = "BNI_Tap_cash"
+    const val VARIANT_OLD_TAPCASH = "old_tapcash"
+    const val VARIANT_NEW_TAPCASH = "new_tapcash"
 }
