@@ -69,8 +69,8 @@ dependencies {
     implementation rootProject.ext.testDependencies.androidTestRunner, {
         exclude module: 'support-annotations'
     }
-    implementation rootProject.ext.testDependencies.mockitorCore, { exclude group: 'net.bytebuddy' }
-    implementation rootProject.ext.testDependencies.mockitorAndroid
+//    implementation rootProject.ext.testDependencies.mockitorCore, { exclude group: 'net.bytebuddy' }
+//    implementation rootProject.ext.testDependencies.mockitorAndroid
 
     implementation rootProject.ext.testDependencies.assertJCore
 
@@ -111,7 +111,7 @@ dependencies {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
 
-    implementation rootProject.ext.testDependencies.mockk
+//    implementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.testDependencies.spek2Api, {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
