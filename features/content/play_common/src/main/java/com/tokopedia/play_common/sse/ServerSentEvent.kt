@@ -23,10 +23,10 @@ interface ServerSentEvent {
 
         fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean
 
-        fun onRetryError(sse: ServerSentEvent, throwable: Throwable, response: Response): Boolean
+        fun onRetryError(sse: ServerSentEvent, throwable: Throwable, response: Response?): Boolean
 
         fun onClosed(sse: ServerSentEvent)
 
-        fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request
+        fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request?
     }
 }
