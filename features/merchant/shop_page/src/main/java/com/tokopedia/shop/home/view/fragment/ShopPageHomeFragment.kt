@@ -110,11 +110,13 @@ import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import kotlinx.coroutines.CoroutineScope
@@ -235,7 +237,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator, this)
+        val userSession = UserSession(context)
+        val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
+        ShopHomeAdapterTypeFactory(
+                listener =  this,
+                onMerchantVoucherListWidgetListener = this,
+                shopHomeEndlessProductListener= this,
+                shopHomeCarouselProductListener= this,
+                shopProductEtalaseListViewHolderListener= this,
+                shopHomeCampaignNplWidgetListener= this,
+                shopProductChangeGridSectionListener= this,
+                playWidgetCoordinator = playWidgetCoordinator,
+                isShowTripleDot = !_isMyShop,
+                shopHomeShowcaseListWidgetListener = this
+        )
     }
 
     private val widgetDeleteDialogContainer by lazy {

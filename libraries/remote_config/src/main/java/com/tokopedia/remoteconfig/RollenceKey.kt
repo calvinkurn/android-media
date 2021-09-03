@@ -5,6 +5,7 @@ object RollenceKey {
     //    Shop Page
     const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
+    const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
 
     const val AB_TEST_SHOP_REVIEW = "review_shop"
@@ -56,6 +57,7 @@ object RollenceKey {
 
     const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
     const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
+    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"

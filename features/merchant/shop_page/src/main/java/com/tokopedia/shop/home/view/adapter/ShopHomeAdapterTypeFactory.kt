@@ -43,6 +43,7 @@ class ShopHomeAdapterTypeFactory(
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator,
+        private val isShowTripleDot: Boolean,
         private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
@@ -139,13 +140,13 @@ class ShopHomeAdapterTypeFactory(
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
-                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductItemBigGridViewHolder.LAYOUT -> {
-                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductItemListViewHolder.LAYOUT -> {
-                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener)
+                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)
