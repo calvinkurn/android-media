@@ -10,6 +10,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFiltere
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.user.session.UserSessionInterface
 
 class AccountHeaderMapper(
@@ -23,7 +24,11 @@ class AccountHeaderMapper(
                          userMembershipPojo: MembershipPojo?,
                          shopInfoPojo: ShopData.ShopInfoPojo?,
                          notificationPojo: ShopData.NotificationPojo?,
-                         isCache: Boolean): AccountHeaderDataModel {
+                         isCache: Boolean,
+                         walletAppData: WalletAppData? = null,
+                         isWalletAppError: Boolean = false,
+                         isEligibleForWalletApp: Boolean = false
+    ): AccountHeaderDataModel {
         var accountModel = AccountHeaderDataModel()
 
         when (val loginState = getLoginState()) {
@@ -63,13 +68,17 @@ class AccountHeaderMapper(
                             isLoading = false
                     )
                 }
+                walletAppData?.let {
+                    data.setWalletAppData(it)
+                }
+                data.isWalletAppFailed = isWalletAppError
+                data.isEligibleForWalletApp = isEligibleForWalletApp
                 // extra case when tokopoint null and ab is false
                 if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.isTokopointExternalAmountError){
                     data.isTokopointExternalAmountError = false
                 }
                 data.isCacheData = isCache
                 accountModel = data
-
             }
             AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN -> {
                 accountModel = AccountHeaderDataModel(loginState = loginState)

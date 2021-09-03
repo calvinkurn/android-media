@@ -129,7 +129,7 @@
             android:layout_height="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_4"
             android:scaleType="fitCenter"
-            tools:visibility="visible"
+            tools:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/img_user_login"
             app:layout_constraintLeft_toLeftOf="@id/usr_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_name"
@@ -154,6 +154,7 @@
             tools:text="John Doe"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            tools:visibility="gone"
             android:id="@+id/tv_ovo"
             android:layout_width="0dp"
             android:layout_marginStart="@dimen/dp_6"
@@ -217,7 +218,7 @@
             app:layout_constraintTop_toTopOf="@id/usr_ovo_badge_shimmer"
             app:layout_constraintBottom_toBottomOf="@id/usr_ovo_badge_shimmer"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="invisible"/>
 
 
         <com.tokopedia.unifyprinciples.Typography

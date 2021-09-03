@@ -1,6 +1,5 @@
 package com.tokopedia.navigation_common.usecase.pojo.walletapp
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -34,5 +33,8 @@ data class Balances(
     val type: String = "",
     @Expose
     @SerializedName("wallet_name")
-    val walletName: String = ""
+    val walletName: String = "",
+    @Expose
+    @SerializedName("global_menu_text")
+    val globalMenuText: GlobalMenuText = GlobalMenuText()
 )

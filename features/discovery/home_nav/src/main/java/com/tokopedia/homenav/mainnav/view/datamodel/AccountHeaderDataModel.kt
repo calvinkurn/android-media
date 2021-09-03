@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.datamodel
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class AccountHeaderDataModel(
@@ -32,7 +33,14 @@ data class AccountHeaderDataModel(
         var isCacheData: Boolean = false,
         var isGetShopLoading: Boolean = false,
         var isProfileLoading: Boolean = false,
-        var canGoToSellerAccount: Boolean = true
+        var canGoToSellerAccount: Boolean = true,
+        var gopayBalance: String = "",
+        var gopayPointsBalance: String = "",
+        var walletAppImageUrl: String = "",
+        var isWalletAppFailed: Boolean = false,
+        var isEligibleForWalletApp: Boolean = false,
+        var walletAppActivationCta: String = "",
+        var isWalletAppLinked: Boolean = false
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -60,6 +68,9 @@ data class AccountHeaderDataModel(
 
         const val DEFAULT_SHOP_ID_NOT_OPEN = "-1"
         const val DEFAULT_SHOP_ID_NOT_OPEN_TEXT = "Buka Toko Gratis"
+
+        private const val WALLET_CODE_PEMUDA = "PEMUDA"
+        private const val WALLET_CODE_PEMUDA_POINTS = "PEMUDAPOINTS"
     }
 
     fun copy(): AccountHeaderDataModel {
@@ -135,4 +146,14 @@ data class AccountHeaderDataModel(
         this.canGoToSellerAccount = canGoToSellerAccount
     }
 
+    fun setWalletAppData(walletAppData: WalletAppData) {
+        val selectedBalance = walletAppData.walletappGetBalance.balances.getOrNull(0)
+        val gopayBalance = selectedBalance?.balance?.find { it.walletCode == WALLET_CODE_PEMUDA }
+        val gopayPoints = selectedBalance?.balance?.find { it.walletCode == WALLET_CODE_PEMUDA_POINTS }
+        this.walletAppImageUrl = selectedBalance?.iconUrl?:""
+        this.gopayBalance = gopayBalance?.amountFmt?:""
+        this.gopayPointsBalance = gopayPoints?.amountFmt?:""
+        this.walletAppActivationCta = selectedBalance?.globalMenuText?.id?:""
+        this.isWalletAppLinked = selectedBalance?.isLinked?: false
+    }
 }

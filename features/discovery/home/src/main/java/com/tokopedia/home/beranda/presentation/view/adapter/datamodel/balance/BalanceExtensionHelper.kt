@@ -197,7 +197,11 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel?
                 colourRef = R.color.Unify_N700_68
             )
         } else {
-            balanceTitle = BalanceTextAttribute(text = balances.walletName)
+            balanceTitle = BalanceTextAttribute(
+                text = balances.walletName,
+                isBold = true,
+                colourRef = R.color.Unify_N700_96
+            )
             balanceSubtitle = BalanceTextAttribute(
                 text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
                 colourRef = R.color.Unify_G500,

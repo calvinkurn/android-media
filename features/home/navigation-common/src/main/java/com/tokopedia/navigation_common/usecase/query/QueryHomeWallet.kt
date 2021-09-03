@@ -31,6 +31,9 @@ object QueryHomeWallet {
             "                   icon_url\n" +
             "                   activation_cta\n" +
             "                   wallet_name\n" +
+            "                   global_menu_text {\n" +
+            "                       id\n" +
+                "                   }\n" +
             "                   }\n" +
             "             }\n" +
             "    }"

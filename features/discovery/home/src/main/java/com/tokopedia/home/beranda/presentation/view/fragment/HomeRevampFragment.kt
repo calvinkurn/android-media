@@ -818,25 +818,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
         context?.let { currentContext ->
-            if (!isGopayActivated) {
+            if (isGopayActivated) {
+                val ctaButton = getGopayNewBalanceWidgetView()
+                ctaButton?.let {
+                    this.add(
+                        CoachMark2Item(
+                            ctaButton,
+                            getString(R.string.home_gopay_new_coachmark_title),
+                            getString(R.string.home_gopay_new_coachmark_description)
+                        )
+                    )
+                }
+            } else {
                 val gopayWidget = getGopayNewActivateBalanceWidgetView()
                 gopayWidget?.let {
                     this.add(
                         CoachMark2Item(
                             gopayWidget,
-                            getString(R.string.home_gopay_new_activate_coachmark_title),
-                            getString(R.string.home_gopay_new_activate_coachmark_description)
-                        )
-                    )
-                }
-            } else {
-                val gopayWidget = getGopayNewBalanceWidgetView()
-                gopayWidget?.let {
-                    this.add(
-                        CoachMark2Item(
-                            gopayWidget,
-                            getString(R.string.home_gopay_new_coachmark_title),
-                            getString(R.string.home_gopay_new_coachmark_description)
+                            getString(R.string.home_gopay_new_active_cta_coachmark_title),
+                            getString(R.string.home_gopay_new_active_cta_coachmark_description)
                         )
                     )
                 }

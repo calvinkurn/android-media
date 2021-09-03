@@ -16,6 +16,8 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -126,6 +128,18 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetWalletEligbilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+        return GetWalletEligibilityUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetWalletAppUseCase(graphqlRepository: GraphqlRepository): GetWalletAppBalanceUseCase{
+        return GetWalletAppBalanceUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
@@ -135,7 +149,9 @@ class MainNavUseCaseModule {
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
             userSession: UserSessionInterface,
-            @ApplicationContext context: Context
+            @ApplicationContext context: Context,
+            getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
+            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
@@ -146,7 +162,9 @@ class MainNavUseCaseModule {
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
                 userSession = userSession,
-                context = context
+                context = context,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase,
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
         )
     }
     @MainNavScope

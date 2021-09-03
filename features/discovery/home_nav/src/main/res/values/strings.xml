@@ -90,4 +90,6 @@
     <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>
     <string name="account_header_store_title_role">Peran saya:</string>
+
+    <string name="mainnav_wallet_app_format">%s • %s Coins</string>
 </resources>

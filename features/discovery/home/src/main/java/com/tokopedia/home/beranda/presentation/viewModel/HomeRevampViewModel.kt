@@ -1276,11 +1276,6 @@ open class HomeRevampViewModel @Inject constructor(
                             isGopayEligible = this@HomeRevampViewModel.isGopayEligible
                             initBalanceModelByType()
                         })
-                        _homeCoachmarkData.postValue(Event(
-                            HomeCoachmarkModel(
-                                isGopayActive = walletAppBalance?.isLinked?:false,
-                                isGopayEligible = isGopayEligible
-                            )))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -1290,6 +1285,11 @@ open class HomeRevampViewModel @Inject constructor(
                     walletAppAbTestCondition(
                         isUsingWalletApp = {
                             walletAppBalance = getHomeBalanceWalletAppData(updateView = true)
+                            _homeCoachmarkData.postValue(Event(
+                                HomeCoachmarkModel(
+                                    isGopayActive = walletAppBalance?.isLinked?:false,
+                                    isGopayEligible = isGopayEligible
+                                )))
                         },
                         isUsingOldWallet = {
                             try {

@@ -37,6 +37,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
@@ -63,10 +65,19 @@ class BalanceAdapter(
         this.itemMap = itemMap
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
-        itemMap.balanceDrawerItemModels.mapValues {
-            balanceModelList.add(it.key, it.value)
+        try {
+            itemMap.balanceDrawerItemModels.mapValues {
+                balanceModelList.add(it.key, it.value)
+            }
+            submitList(balanceModelList.toMutableList())
+        } catch (e: IndexOutOfBoundsException) {
+            HomeServerLogger.logWarning(
+                type = TYPE_ERROR_SUBMIT_WALLET,
+                throwable = e,
+                reason = e.message?:""
+            )
+            e.printStackTrace()
         }
-        submitList(balanceModelList.toMutableList())
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {

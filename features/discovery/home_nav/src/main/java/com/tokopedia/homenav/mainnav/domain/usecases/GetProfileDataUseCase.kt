@@ -14,6 +14,9 @@ import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +34,9 @@ class GetProfileDataUseCase @Inject constructor(
         private val getTokopointStatusFiltered: GetTokopointStatusFiltered,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val userSession: UserSessionInterface,
-        @ApplicationContext private val context: Context
+        @ApplicationContext private val context: Context,
+        private val getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
+        private val getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
 ): UseCase<AccountHeaderDataModel>() {
 
 
@@ -47,6 +52,9 @@ class GetProfileDataUseCase @Inject constructor(
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopData? = null
             var tokopoint: TokopointsStatusFilteredPojo? = null
+            var isEligibleForWalletApp: Boolean = false
+            var walletAppData: WalletAppData? = null
+            var isWalletAppError: Boolean = false
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -73,12 +81,30 @@ class GetProfileDataUseCase @Inject constructor(
             if(isABNewTokopoint()) tokopoint =
                     (getTokopointCall.await().takeIf { it is Success } as? Success<TokopointsStatusFilteredPojo>)?.data
 
+            isEligibleForWalletApp = try {
+                getWalletEligibilityUseCase.executeOnBackground().isGoPointsEligible
+            } catch (e: Exception) {
+                false
+            }
 
-            // check if tokopoint = 0 or null then follow old flow (fetch saldo)
-            if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
-                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-                tokopoint = null
+            if (!isEligibleForWalletApp) {
+                // check if tokopoint = 0 or null then follow old flow (fetch saldo)
+                if(tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.toZeroIfNull().isZero() && tokopoint?.tokopointsStatusFiltered?.statusFilteredData?.points?.externalCurrencyAmount.toZeroIfNull().isZero()){
+                    ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+                    saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+                    tokopoint = null
+                }
+            } else {
+                walletAppData = try {
+                    ovoData = null
+                    saldoData = null
+                    tokopoint = null
+                    isWalletAppError = false
+                    getWalletAppBalanceUseCase.executeOnBackground()
+                } catch (e: Exception) {
+                    isWalletAppError = true
+                    null
+                }
             }
 
             shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopData>)?.data
@@ -91,7 +117,10 @@ class GetProfileDataUseCase @Inject constructor(
                     userMembershipData,
                     shopData?.userShopInfo,
                     shopData?.notifications,
-                    false
+                    false,
+                    walletAppData = walletAppData,
+                    isWalletAppError = isWalletAppError,
+                    isEligibleForWalletApp = isEligibleForWalletApp
             )
         }
     }

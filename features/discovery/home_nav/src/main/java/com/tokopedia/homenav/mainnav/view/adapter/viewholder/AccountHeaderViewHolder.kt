@@ -151,10 +151,28 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.gone()
             tvOvo.visible()
             usrOvoBadge.visible()
-            if (element.isTokopointExternalAmountError){
+            if(element.isEligibleForWalletApp && element.isWalletAppLinked) {
+                tvOvo.text = String.format(
+                    itemView.context.getString(R.string.mainnav_wallet_app_format),
+                    element.gopayBalance,
+                    element.gopayPointsBalance
+                )
+                usrOvoBadge.loadImage(element.walletAppImageUrl)
+            } else if(element.isEligibleForWalletApp && !element.isWalletAppLinked) {
+                if (element.walletAppActivationCta.isNotEmpty()) {
+                    tvOvo.text = element.walletAppActivationCta
+                    usrOvoBadge.loadImage(element.walletAppImageUrl)
+                } else {
+                    tvOvo.gone()
+                    usrOvoBadge.gone()
+                }
+            } else if (element.isWalletAppFailed && element.isEligibleForWalletApp) {
+                tvOvo.gone()
+                usrOvoBadge.gone()
+            } else if (element.isTokopointExternalAmountError){
                 tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
                 usrOvoBadge.clearImage()
-            }else if (element.isGetOvoError && element.isGetSaldoError) {
+            } else if (element.isGetOvoError && element.isGetSaldoError) {
                 tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
@@ -174,7 +192,6 @@ class AccountHeaderViewHolder(itemView: View,
                 } else if (element.saldo.isNotEmpty()) {
                     usrOvoBadge.setImageResource(R.drawable.ic_saldo)
                 }
-
             }
         }
 
@@ -240,7 +257,7 @@ class AccountHeaderViewHolder(itemView: View,
 
         btnSettings.visible()
         btnTryAgain.gone()
-        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) {
+        if ((element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) && !element.isEligibleForWalletApp) {
             usrOvoBadge.gone()
             btnTryAgain.visible()
         }

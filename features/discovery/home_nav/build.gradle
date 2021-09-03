@@ -111,6 +111,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 }
 
 project.ext {
