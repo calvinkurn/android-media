@@ -35,5 +35,5 @@ data class PlayChannelData(
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
         val statusInfo: PlayStatusInfoUiModel,
         val leaderboardInfo: PlayLeaderboardInfoUiModel,
-        val isUpcoming: PlayUpcomingUiModel
+        val upcomingInfo: PlayUpcomingUiModel
 )

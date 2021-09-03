@@ -38,7 +38,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
                     leaderboardInfo = mapLeaderboardInfo(),
-                    isUpcoming = mapUpcoming(it.airTime)
+                    upcomingInfo = mapUpcoming(it.airTime)
             )
         }
     }

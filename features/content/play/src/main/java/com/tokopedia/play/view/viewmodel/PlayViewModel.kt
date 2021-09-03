@@ -657,12 +657,20 @@ class PlayViewModel @Inject constructor(
     fun focusPage(channelData: PlayChannelData) {
         isActive.compareAndSet(false, true)
 
-        focusVideoPlayer(channelData)
-        updateChannelInfo(channelData)
-        startWebSocket(channelData.id)
+        if(channelData.upcomingInfo.isUpcoming) {
+            /**
+             * Handling upcoming fragment here
+             * 1. Show Upcoming Fragment
+             * 2. Start SSE
+             */
+        }
+        else {
+            focusVideoPlayer(channelData)
+            updateChannelInfo(channelData)
+            startWebSocket(channelData.id)
+            checkLeaderboard(channelData.id)
+        }
         trackVisitChannel(channelData.id)
-
-        checkLeaderboard(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
