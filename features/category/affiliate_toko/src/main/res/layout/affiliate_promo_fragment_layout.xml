@@ -31,7 +31,7 @@
         app:typographyWeight="bold"
         android:text="@string/affiliate_paste_product_link" />
 
-    <com.tokopedia.exploreCategory.ui.custom.AffiliateLinkTextField
+    <com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
         android:id="@+id/product_link_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

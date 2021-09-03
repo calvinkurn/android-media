@@ -24,7 +24,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navbar"
         />
 
-    <com.tokopedia.exploreCategory.ui.custom.LottieBottomNavbar
+    <com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
         android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_48"
