@@ -13,4 +13,9 @@
   - After clicking new picture it must reflect in image picker section
   - Logic of recent folder - there is no such recent folder
   - Show video thumbnails and timer on video thumbnail
+  - Use thumbnail content uri for faster loading
+  
+- PE
+  - Need PIC for android storage
+  - Need to know what type of media we can store, where we can store, naming conventions
  

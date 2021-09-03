@@ -10,7 +10,7 @@ object CursorUtil {
     val SORT_ORDER = MediaStore.Images.Media.DATE_ADDED + " DESC"
     fun getPhotoCursor(context: Context, query: String?, args: Array<String?>?): Cursor? {
         val projection = arrayOf(
-            MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED, MediaStore.Video.Media.DATE_TAKEN,
             MediaStore.Images.Media.DATA, MediaStore.Images.Media.SIZE
         )
         val images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -24,8 +24,8 @@ object CursorUtil {
 
     fun getVideoCursor(context: Context, query: String?, args: Array<String?>?): Cursor? {
         val projection = arrayOf(
-            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_ADDED,
-            MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE
+            MediaStore.Video.Media._ID, MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.DATE_TAKEN,
+            MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE, MediaStore.Video.Media.DURATION
         )
         val videos = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 

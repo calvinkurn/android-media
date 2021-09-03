@@ -16,23 +16,7 @@ class Photo {
         fun supportExtn(extn: String?): Boolean {
             return ("jpg".equals(extn, ignoreCase = true)
                     || "png".equals(extn, ignoreCase = true)
-                    || "jpeg".equals(extn, ignoreCase = true)
-                    || "gif".equals(extn, ignoreCase = true))
-        }
-
-        fun isOther(name: String): Boolean {
-            val isValidName = !TextUtils.isEmpty(name)
-            return if (isValidName) {
-                (name.contains("WhatsApp")
-                        || name.contains(FileUtil.getDownloadPath())
-                        || name.toLowerCase().contains("download")
-                        || name.toLowerCase().contains("facebook")
-                        || name.toLowerCase().contains("screenshot")
-                        || name.toLowerCase().contains("hike")
-                        || name.toLowerCase().contains("instagram")
-                        || name.toLowerCase().contains("shareit")
-                        || !name.toLowerCase().contains("dcim"))
-            } else false
+                    || "jpeg".equals(extn, ignoreCase = true))
         }
     }
 }

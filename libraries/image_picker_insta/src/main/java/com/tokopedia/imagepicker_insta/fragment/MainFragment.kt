@@ -26,6 +26,7 @@ import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.activity.MainActivity.Companion.MAX_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
+import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
@@ -271,21 +272,21 @@ class MainFragment : Fragment(), MainFragmentContract {
 
                     folders.clear()
 
-                    if (!it.data?.imageAdapterDataList.isNullOrEmpty()) {
-                        imageDataList.addAll(it.data!!.imageAdapterDataList)
+                    if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
+                        imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
                         imageAdapter.clearSelectedItems()
                         imageAdapter.addSelectedItem(1)
-                        selectedImage.loadAsset(it.data.imageAdapterDataList.first().asset)
+                        selectedImage.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
 
                         //update folders
-                        if (!it.data.folders.isNullOrEmpty()) {
-                            folders.addAll(it.data.folders)
+                        if (!it.data.folderDataList.isNullOrEmpty()) {
+                            folders.addAll(it.data.folderDataList)
                             tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
                         Toast.makeText(context, "List updated", Toast.LENGTH_SHORT).show()
                     } else {
-                        tvSelectedFolder.text = "No Photos are available"
+                        tvSelectedFolder.text = "No Media available"
                         Toast.makeText(context, "No data", Toast.LENGTH_SHORT).show()
                     }
                     imageAdapter.notifyDataSetChanged()
@@ -336,7 +337,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         * 4. Clear current Image file path
         * */
         if (!cameraCaptureFilePath.isNullOrEmpty()) {
-            val imageAdapterData = viewModel.photosImporterData?.addCameraImage(cameraCaptureFilePath!!)
+            val imageAdapterData = viewModel.mediaUseCaseData?.mediaImporterData?.addCameraImage(cameraCaptureFilePath!!)
             if (imageAdapterData != null) {
                 selectedImage.loadAsset(imageAdapterData.asset)
                 addAssetToGallery(imageAdapterData.asset)
