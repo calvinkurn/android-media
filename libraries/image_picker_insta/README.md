@@ -1,4 +1,10 @@
 # How to use
+working branch - origin/feature/rahullohra2903/image_picker_insta
+Library to include -
+implementation project(":libraries:image_picker_insta")
+OR
+implementation project(rootProject.ext.libraries.imagePickerInsta)
+
 
 - Camera Crop
   - https://developer.android.com/reference/androidx/camera/core/ViewPort

@@ -366,7 +366,15 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun reset(){
+        if (selectedMediaView.asset != null) {
+            selectedMediaView.removeAsset()
+        }
+        imageAdapter.clearSelectedItems()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        reset()
     }
 }
