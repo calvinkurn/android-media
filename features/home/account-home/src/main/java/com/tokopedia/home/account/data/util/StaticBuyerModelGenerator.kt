@@ -85,7 +85,7 @@ class StaticBuyerModelGenerator private constructor() {
                 menuDescription = context.getString(R.string.label_menu_tokopedia_affiliates)
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_favorites)
-                applink = ApplinkConst.AFFILIATE_EXPLORE
+                applink = ApplinkConst.AFFILIATE
                 isBeta = true
             })
 
