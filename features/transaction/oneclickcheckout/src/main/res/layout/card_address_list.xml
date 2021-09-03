@@ -14,19 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_18"
+            app:icon_name="LOCATION_OFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/address_detail"
-            app:unify_image_corner_radius="0"
-            app:unify_image_placeholder="@drawable/ic_pin_map_address"
-            app:unify_image_type="rect"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography

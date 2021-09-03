@@ -10,8 +10,8 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
 import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
@@ -110,6 +110,10 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
+        if(supportFragmentManager.isStateSaved || fragment.isAdded) {
+            return
+        }
+
         supportFragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 

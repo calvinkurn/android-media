@@ -1,6 +1,7 @@
 package com.tokopedia.play.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,14 +13,14 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 05/02/21.
  */
+@GqlQuery(TrackVisitChannelBroadcasterUseCase.QUERY_NAME, TrackVisitChannelBroadcasterUseCase.QUERY)
 class TrackVisitChannelBroadcasterUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers,
 ): GraphqlUseCase<VisitChannelTracking.Response>(graphqlRepository) {
 
-
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(TrackVisitChannelBroadcasterUseCaseQuery.GQL_QUERY)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(VisitChannelTracking.Response::class.java)
     }
@@ -44,13 +45,14 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 
         private const val PARAMS_CHANNEL_ID = "channelId"
 
-        private val query = """
-        mutation trackVisitChannelBroadcaster(${'$'}channelId: String!) {
-          broadcasterReportVisitChannel(channelID: ${'$'}channelId) {
-            success
-          }
-        }
-        """.trimIndent()
+        const val QUERY_NAME = "TrackVisitChannelBroadcasterUseCaseQuery"
+        const val QUERY = """
+            mutation trackVisitChannelBroadcaster(${'$'}channelId: String!) {
+              broadcasterReportVisitChannel(channelID: ${'$'}channelId) {
+                success
+              }
+            }
+        """
 
         fun createParams(
                 channelId: String,
