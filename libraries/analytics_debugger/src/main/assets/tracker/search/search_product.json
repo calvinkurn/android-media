@@ -93,7 +93,7 @@
           "item_category": ".+",
           "index": "\\d*.\\d*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "dimension40": "/searchproduct - topads productlist - \\d+",
+          "dimension40": ".*",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
           "dimension90": ".*"
         }
