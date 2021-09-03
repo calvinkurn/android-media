@@ -14,20 +14,6 @@ public class PaymentData {
     @SerializedName("textColor")
     @Expose
     private String textColor;
-    @SerializedName("backgroundColor")
-    @Expose
-    private String backgroundColor;
-    @SerializedName("imageUrl")
-    @Expose
-    private String imageUrl;
-
-    public PaymentData(String label, String value, String textColor, String backgroundColor, String imageUrl) {
-        this.label = label;
-        this.value = value;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
-        this.imageUrl = imageUrl;
-    }
 
     public String label() {
         return label;
@@ -41,22 +27,12 @@ public class PaymentData {
         return textColor;
     }
 
-    public String backgroundColor() {
-        return backgroundColor;
-    }
-
-    public String imageUrl() {
-        return imageUrl;
-    }
-
     @Override
     public String toString() {
         return "PaymentData{"
                 + "label=" + label + ", "
                 + "value=" + value + ", "
-                + "textColor=" + textColor + ", "
-                + "backgroundColor=" + backgroundColor + ", "
-                + "imageUrl=" + imageUrl
+                + "textColor=" + textColor
                 + "}";
     }
 }
