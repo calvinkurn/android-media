@@ -382,6 +382,10 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         val shopInfo = data.shopInfo
 
+        val isRMNewSeller = data.shopInfo.isNewSeller &&
+                data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+                data.pmStatus.status == PMStatusConst.INACTIVE
+
         val registrationTerms = if (isPmProSelected) {
             PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo, isPmProSelected)
         } else {
@@ -410,7 +414,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         with(pmRegistrationFooterView) {
-            if (shopInfo.isNewSeller && isPmProSelected) hideCtaButton()
+            if (isRMNewSeller && isPmProSelected) hideCtaButton()
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
             setTnCVisibility(needTnC)
