@@ -1,5 +1,7 @@
 package com.tokopedia.graphql.domain.example
 
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.data.extensions.requestAsFlow
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineStateUseCase
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -9,30 +11,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
-class GetNoParamUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    CoroutineUseCase<Unit, FooModel>(repository, dispatcher) {
-
-    override fun graphqlQuery(): String {
-        return """
-            query GetNoParam {
-                FooResponse {
-                    id
-                    msg
-                }
-            }
-        """.trimIndent()
-    }
-
-    override suspend fun execute(params: Unit): FooModel {
-        return request(emptyMap())
-    }
-
-}
-
-class GetNoParamStateUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    CoroutineStateUseCase<Unit, FooModel>(repository, dispatcher) {
+class GetNoParamUseCase(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+) : CoroutineUseCase<Unit, FooModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return """
@@ -46,13 +29,37 @@ class GetNoParamStateUseCase(repository: GraphqlRepository, dispatcher: Coroutin
     }
 
     override suspend fun execute(params: Unit): FooModel {
-        return request(emptyMap())
+        return repository.request(graphqlQuery(), params)
     }
 
 }
 
-class GetNoParamFlowUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    FlowUseCase<Unit, FooModel>(repository, dispatcher) {
+class GetNoParamStateUseCase(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+) : CoroutineStateUseCase<Unit, FooModel>(dispatcher) {
+
+    override fun graphqlQuery(): String {
+        return """
+            query GetNoParam {
+                FooResponse {
+                    id
+                    msg
+                }
+            }
+        """.trimIndent()
+    }
+
+    override suspend fun execute(params: Unit): FooModel {
+        return repository.request(graphqlQuery(), params)
+    }
+
+}
+
+class GetNoParamFlowUseCase(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+) : FlowUseCase<Unit, FooModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return """
@@ -66,13 +73,13 @@ class GetNoParamFlowUseCase(repository: GraphqlRepository, dispatcher: Coroutine
     }
 
     override suspend fun execute(params: Unit): Flow<FooModel> {
-        return request(emptyMap())
+        return repository.requestAsFlow(graphqlQuery(), params)
     }
 
 }
 
-class GetNoParamFlowStateUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
-    FlowStateUseCase<Unit, FooModel>(repository, dispatcher) {
+class GetNoParamFlowStateUseCase(private val repository: GraphqlRepository, dispatcher: CoroutineDispatcher) :
+    FlowStateUseCase<Unit, FooModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return """
@@ -86,7 +93,7 @@ class GetNoParamFlowStateUseCase(repository: GraphqlRepository, dispatcher: Coro
     }
 
     override suspend fun execute(params: Unit): Flow<Result<FooModel>> {
-        return request<FooModel>(emptyMap()).map { Success(it) }
+        return repository.requestAsFlow(graphqlQuery(), params)
     }
 
 }

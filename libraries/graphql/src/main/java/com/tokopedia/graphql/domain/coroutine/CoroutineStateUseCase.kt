@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.domain.coroutine
 
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -8,10 +7,9 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-abstract class CoroutineStateUseCase<Input, out Output : Any> constructor(
-    repository: GraphqlRepository,
+abstract class CoroutineStateUseCase<Input, Output : Any> constructor(
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<Input, Output>(repository) {
+) : GqlUseCase<Input, Output>() {
 
     /*
     * Executes the use case with state synchronously

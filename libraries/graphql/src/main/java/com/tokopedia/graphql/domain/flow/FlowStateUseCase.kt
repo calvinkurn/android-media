@@ -1,7 +1,6 @@
 package com.tokopedia.graphql.domain.flow
 
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GqlFlowUseCase
+import com.tokopedia.graphql.domain.GqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,17 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 
-abstract class FlowStateUseCase<Input, out Output : Any> constructor(
-    repository: GraphqlRepository,
+abstract class FlowStateUseCase<Input, Output : Any> constructor(
     private val dispatcher: CoroutineDispatcher
-) : GqlFlowUseCase<Input, Output>(repository) {
-
-
-    /*
-    * override this to set the code to be executed
-    * */
-    @Throws(RuntimeException::class)
-    protected abstract suspend fun execute(params: Input): Flow<Result<Output>>
+) : GqlUseCase<Input, Flow<Result<Output>>>() {
 
     /*
     * Executes the use case based on dispatcher's flow with state
