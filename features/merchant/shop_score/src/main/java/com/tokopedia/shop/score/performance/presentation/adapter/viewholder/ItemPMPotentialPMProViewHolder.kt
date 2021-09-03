@@ -26,7 +26,7 @@ class ItemPMPotentialPMProViewHolder(
         with(itemView) {
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
             potentialPowerMerchantWidget?.setOnClickListener {
-                itemStatusPMProListener.onGotoPMProPage()
+                itemStatusPMProListener.onPMToPMProPage()
             }
             tv_see_all_benefit_pm_to_pm_pro?.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
