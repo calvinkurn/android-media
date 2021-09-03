@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -53,7 +52,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoNowRecentPurchaseViewModel @Inject constructor(
@@ -67,7 +65,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers,
-    private val context: Context
 ): BaseViewModel(dispatcher.io) {
 
     companion object {
@@ -207,35 +204,16 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
     private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
         return asyncCatchError(block = {
-            withContext(dispatcher.io) {
-                val recommendationWidgets = getRecommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                        pageName = pageName,
-                        xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
-                        xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
-                    )
+            val recommendationWidgets = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
+                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
                 )
+            )
 
-                if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
-                    layoutList.addProductRecom(pageName, recommendationWidgets.first())
-
-                    val layout = RepurchaseLayoutUiModel(
-                        layoutList = layoutList,
-                        nextPage = INITIAL_PAGE,
-                        state = TokoNowLayoutState.SHOW
-                    )
-
-                    _getLayout.postValue(Success(layout))
-                }
-            }
-        }) { /* nothing to do */ }
-    }
-
-    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            withContext(dispatcher.io) {
-                val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-                layoutList.addCategoryGrid(response, context)
+            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+                layoutList.addProductRecom(pageName, recommendationWidgets.first())
 
                 val layout = RepurchaseLayoutUiModel(
                     layoutList = layoutList,
@@ -245,6 +223,21 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
 
                 _getLayout.postValue(Success(layout))
             }
+        }) { /* nothing to do */ }
+    }
+
+    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+            layoutList.addCategoryGrid(response)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _getLayout.postValue(Success(layout))
         }) {
             /* nothing to do */
         }

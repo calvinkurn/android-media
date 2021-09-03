@@ -76,7 +76,7 @@ class TokoNowCategoryGridViewHolder(
     }
 
     private fun showCategoryGrid(data: TokoNowCategoryGridUiModel) {
-        tvTitle?.text = data.title
+        tvTitle?.text = if (data.title.isEmpty()) itemView.context.getString(data.titleRes) else data.title
         tvSeeAll?.setOnClickListener {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
             RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)

@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.recentpurchase.domain.mapper
 
-import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -41,11 +40,12 @@ object RepurchaseLayoutMapper {
         add(RepurchaseEmptyStateNoHistoryUiModel(description))
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, context: Context) {
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
         val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response)
         add(TokoNowCategoryGridUiModel(
                 id = "",
-                title = context.getString(R.string.tokopedianow_repurchase_category_grid_title),
+                title = "",
+                titleRes = R.string.tokopedianow_repurchase_category_grid_title,
                 categoryList = categoryList,
                 state = TokoNowLayoutState.SHOW
             )

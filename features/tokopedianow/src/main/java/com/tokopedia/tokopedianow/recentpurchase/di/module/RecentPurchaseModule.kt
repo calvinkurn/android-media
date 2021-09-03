@@ -25,13 +25,7 @@ class RecentPurchaseModule {
     fun provideGrqphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @RecentPurchaseScope
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
-
+    
     @RecentPurchaseScope
     @Provides
     fun provideGetRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
