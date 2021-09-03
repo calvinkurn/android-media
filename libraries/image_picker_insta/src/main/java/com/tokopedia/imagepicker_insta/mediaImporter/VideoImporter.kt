@@ -18,10 +18,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 class VideoImporter : MediaImporter {
-
-    private val dateFormat = SimpleDateFormat("mm:ss")
 
     override fun importMediaFromInternalDir(context: Context): List<Asset> {
         val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
@@ -47,9 +46,9 @@ class VideoImporter : MediaImporter {
     }
 
     fun getFormattedDurationText(durationInMillis: Long): String {
-        val seconds = durationInMillis / 1000
-        val secondText = if (seconds < 10) "0$seconds" else seconds
-        val minutes = seconds / 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis)
+        val secondText = if (seconds < 10) "0$seconds" else seconds % 60
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(durationInMillis)
         val minuteText = if (minutes < 10) "0$minutes" else minutes
         return "$minuteText:$secondText"
     }
@@ -147,13 +146,5 @@ class VideoImporter : MediaImporter {
             imageAdapterDataList.add(ImageAdapterData(it))
         }
         return MediaImporterData(imageAdapterDataList, folders)
-    }
-
-    protected fun validLocationPoint(item: Double): Boolean {
-        return !isDoubleEqual(item, 0.toDouble()) && item <= 180 && item >= -180
-    }
-
-    fun isDoubleEqual(x1: Double, x2: Double): Boolean {
-        return x1.compareTo(x2) == 0
     }
 }

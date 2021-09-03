@@ -129,16 +129,4 @@ class PhotoImporter:MediaImporter{
         }
         return MediaImporterData(imageAdapterDataList, folders)
     }
-
-    protected fun locationValid(latitude: Double, longitude: Double): Boolean? {
-        return validLocationPoint(latitude) && validLocationPoint(longitude)
-    }
-
-    protected fun validLocationPoint(item: Double): Boolean {
-        return !isDoubleEqual(item, 0.toDouble()) && item <= 180 && item >= -180
-    }
-
-    fun isDoubleEqual(x1: Double, x2: Double): Boolean {
-        return x1.compareTo(x2) == 0
-    }
 }
