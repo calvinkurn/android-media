@@ -69,3 +69,21 @@ fun convertBitmapToImageFile(bitmap: Bitmap, quality: Int, filePath: String): Fi
 
     return file
 }
+
+const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
+const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
+
+fun String.removeRegionCodeAndCharacter(): String {
+    val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
+    val symbolRegex = Regex(REGEX_PHONE_NUMBER)
+    if (this.contains(regionRegex)) {
+        return this.replace(regionRegex, "0")
+    }
+
+    return this.replace(symbolRegex, "")
+}
+
+fun String.getValidEmail(): String? {
+    if (this.contains('*')) return ""
+    return this
+}

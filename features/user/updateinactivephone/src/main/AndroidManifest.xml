@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
       
-        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.features.InactivePhoneActivity"
           android:label="Inactive Phone"
           android:theme="@style/Theme.White"
           android:screenOrientation="portrait"
@@ -30,15 +30,21 @@
   
           </intent-filter>
         </activity>
-        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity"
           android:screenOrientation="portrait"/>
-        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneAccountListActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListActivity"
           android:screenOrientation="portrait"/>
-        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneDataUploadActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity"
           android:windowSoftInputMode="adjustResize"
           android:screenOrientation="portrait"
           android:theme="@style/Theme.White"/>
-        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneSuccessPageActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"/>
+        <activity android:name="com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"/>
+        <activity android:name="com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity"
           android:screenOrientation="portrait"
           android:theme="@style/Theme.White"/>
     </application>

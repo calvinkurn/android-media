@@ -12,6 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
     android:theme="?toolbarTheme"
+    android:textColor="@color/Unify_N700"
     app:elevation="@dimen/spacing_lvl2"
     app:contentInsetLeft="0dp"
     app:contentInsetStart="0dp"

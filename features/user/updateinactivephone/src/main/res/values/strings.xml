@@ -59,7 +59,7 @@
     <string name="text_camera_description_selfie">Pastikan wajah dan kartu identitasmu terlihat jelas di dalam bingkai foto ini.</string>
     <string name="text_camera_description_saving_book">Posisikan buku tabungan di dalam bingkai &amp; pastikan informasi terlihat jelas.</string>
     <string name="text_camera_error_make_file">Terjadi kesalahan silahkan coba kembali.</string>
-    <string name="text_title">"<b>Ubah Nomor HP</b>"</string>
+    <string name="text_title">Ubah Nomor HP</string>
     <string name="text_button_camera">Kamera</string>
     <string name="text_button_gallery">Galeri</string>
     <string name="text_select_image">Pilih Foto</string>
@@ -120,5 +120,12 @@
   <string name="image_shutter_2">image shutter 2</string>
   <string name="button_back">button back</string>
 
+  <string name="pin_challenge_title">PIN Tokopedia</string>
+  <string name="pin_challenge_desc">Masukkan 6 digit PIN Tokopedia kamu.</string>
+  <string name="pin_challenge_forgot_pin_text_button">Ajukan perubahan nomor HP</string>
+  <string name="pin_challenge_forgot_pin_text_desc">Lupa pin Tokopedia?</string>
+  <string name="pin_onboarding_description">Masukan PIN Tokopediamu dengan benar dan pastikan email mu aktif ya. </string>
+  
+  <string name="button_text_save">Simpan</string>
 
 </resources>

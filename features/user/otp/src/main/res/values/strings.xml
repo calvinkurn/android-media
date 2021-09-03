@@ -71,4 +71,11 @@
     <string name="user_title_login_by_qr">Masuk Sebagai:</string>
     <string name="approve_button_login_by_qr">Ya, Lanjut masuk</string>
     <string name="reject_button_login_by_qr">Batal</string>
+  
+    <!--  otp inactive phone  -->
+    <string name="inactive_phone_text_footer_email_challenge_meta">Tidak punya akses ke email?</string>
+    <string name="inactive_phone_text_footer_email_challenge_action">Ajukan perubahan nomor HP</string>
+  
+    <string name="inactive_phone_text_footer_pin_challenge_meta">Tidak punya akses ke email?</string>
+    <string name="inactive_phone_text_footer_pin_challenge_action">Ajukan perubahan nomor HP</string>
 </resources>

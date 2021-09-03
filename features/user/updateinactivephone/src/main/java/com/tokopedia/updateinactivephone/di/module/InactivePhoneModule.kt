@@ -2,12 +2,11 @@ package com.tokopedia.updateinactivephone.di.module
 
 import android.content.Context
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.di.InactivePhoneContext
 import com.tokopedia.updateinactivephone.di.InactivePhoneScope
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
-import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
+import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,10 +33,6 @@ class InactivePhoneModule(private val context: Context) {
     @InactivePhoneScope
     @Provides
     fun provideUserSession(): UserSessionInterface = UserSession(context)
-
-    @InactivePhoneScope
-    @Provides
-    fun provideUserDataTemporary(): UserDataTemporary = UserDataTemporary(context)
 
     @InactivePhoneScope
     @Provides

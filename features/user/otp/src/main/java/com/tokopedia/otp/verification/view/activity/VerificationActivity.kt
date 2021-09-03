@@ -15,6 +15,8 @@ import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.*
 import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -133,7 +135,11 @@ open class VerificationActivity : BaseOtpActivity() {
     open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
-                EmailVerificationFragment.createInstance(bundle)
+                if (otpData.source == SOURCE_INACTIVE_PHONE) {
+                    InactivePhoneEmailVerificationFragment.createInstance(bundle)
+                } else {
+                    EmailVerificationFragment.createInstance(bundle)
+                }
             }
             OtpConstant.OtpMode.SMS -> {
                 SmsVerificationFragment.createInstance(bundle)
@@ -145,7 +151,11 @@ open class VerificationActivity : BaseOtpActivity() {
                 GoogleAuthVerificationFragment.createInstance(bundle)
             }
             OtpConstant.OtpMode.PIN -> {
-                PinVerificationFragment.createInstance(bundle)
+                if (otpData.source == SOURCE_INACTIVE_PHONE) {
+                    InactivePhonePinVerificationFragment.createInstance(bundle)
+                } else {
+                    PinVerificationFragment.createInstance(bundle)
+                }
             }
             OtpConstant.OtpMode.MISCALL -> {
                 MisscallVerificationFragment.createInstance(bundle)
@@ -178,5 +188,7 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_MODE = "otpMode"
         const val TAG_OTP_VALIDATOR = "otpValidator"
         const val TAG_OTP_MISCALL = "otpMiscall"
+
+        private const val SOURCE_INACTIVE_PHONE = "inactivePhone"
     }
 }

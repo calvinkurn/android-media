@@ -1,6 +1,8 @@
 package com.tokopedia.updateinactivephone.di.module
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.updateinactivephone.di.InactivePhoneScope
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
@@ -37,4 +39,23 @@ class InactivePhoneUseCaseModule {
     fun provideImageUploadUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): ImageUploadUseCase {
         return ImageUploadUseCase(apiClient)
     }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideGetStatusInactivePhoneNumberUseCase(
+        repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): GetStatusInactivePhoneNumberUseCase {
+        return GetStatusInactivePhoneNumberUseCase(repository, dispatchers)
+    }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideSubmitExpeditedInactivePhoneUseCase(
+        repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): SubmitExpeditedInactivePhoneUseCase {
+        return SubmitExpeditedInactivePhoneUseCase(repository, dispatchers)
+    }
+
 }
