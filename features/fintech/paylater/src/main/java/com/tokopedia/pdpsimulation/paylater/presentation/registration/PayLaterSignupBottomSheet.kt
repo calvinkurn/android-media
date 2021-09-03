@@ -119,14 +119,14 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         payLaterViewModel.let {
-            this.payLaterDataList = it.getPayLaterOptions()
+           // this.payLaterDataList = it.getPayLaterOptions()
             initAdapter()
         }
     }
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterViewModel.let {
-            this.payLaterDataList = it.getPayLaterOptions()
+            //  this.payLaterDataList = it.getPayLaterOptions()
             this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }

@@ -54,37 +54,37 @@
                 app:tabSelectedTextColor="@color/Unify_G500"
                 app:tabTextColor="@color/Unify_N700_68" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvTitleSimulation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:text="@string/pay_later_simulation_header_title"
-                android:textSize="@dimen/unify_font_16"
-                app:typographyType="heading_4"
-                app:typographyWeight="bold" />
+            <!--            <com.tokopedia.unifyprinciples.Typography-->
+            <!--                android:id="@+id/tvTitleSimulation"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="@dimen/unify_space_16"-->
+            <!--                android:text="@string/pay_later_simulation_header_title"-->
+            <!--                android:textSize="@dimen/unify_font_16"-->
+            <!--                app:typographyType="heading_4"-->
+            <!--                app:typographyWeight="bold" />-->
 
 
-            <com.tokopedia.sortfilter.SortFilter
-                android:id="@+id/sortFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_8"
-                app:sort_filter_relationship="OR"
-                app:sort_filter_type="quick" />
+            <!--            <com.tokopedia.sortfilter.SortFilter-->
+            <!--                android:id="@+id/sortFilter"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginLeft="@dimen/unify_space_16"-->
+            <!--                android:layout_marginTop="@dimen/unify_space_8"-->
+            <!--                app:sort_filter_relationship="OR"-->
+            <!--                app:sort_filter_type="quick" />-->
 
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvAvailablePaylater"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/unify_space_16"
-                android:text="Available Pay Later for this product"
-                android:textSize="@dimen/unify_font_16"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold" />
+            <!--            <com.tokopedia.unifyprinciples.Typography-->
+            <!--                android:id="@+id/tvAvailablePaylater"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="@dimen/unify_space_16"-->
+            <!--                android:layout_marginTop="@dimen/unify_space_16"-->
+            <!--                android:text="Available Pay Later for this product"-->
+            <!--                android:textSize="@dimen/unify_font_16"-->
+            <!--                app:typographyType="heading_3"-->
+            <!--                app:typographyWeight="bold" />-->
 
 
         </LinearLayout>

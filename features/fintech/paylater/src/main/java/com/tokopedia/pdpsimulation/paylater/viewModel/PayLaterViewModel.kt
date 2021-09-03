@@ -6,8 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
+import com.tokopedia.pdpsimulation.paylater.domain.model.PaylaterGetSimulationV2
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,39 +16,63 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-        private val payLaterProductDetailUseCase: PayLaterProductDetailUseCase,
-        private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
-        private val payLaterApplicationStatusMapperUseCase: PayLaterApplicationStatusMapperUseCase,
-        @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
+    private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
+    private val payLaterApplicationStatusMapperUseCase: PayLaterApplicationStatusMapperUseCase,
+    private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _payLaterActivityResultLiveData = MutableLiveData<Result<PayLaterProductData>>()
-    val payLaterActivityResultLiveData: LiveData<Result<PayLaterProductData>> = _payLaterActivityResultLiveData
-    private val _payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
+    private val _payLaterApplicationStatusResultLiveData =
+        MutableLiveData<Result<UserCreditApplicationStatus>>()
     val payLaterApplicationStatusResultLiveData: LiveData<Result<UserCreditApplicationStatus>> =
         _payLaterApplicationStatusResultLiveData
+
+    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PaylaterGetSimulationV2>>()
+    val payLaterOptionsDetailLiveData: LiveData<Result<PaylaterGetSimulationV2>> =
+        _payLaterOptionsDetailLiveData
+
     var isPayLaterProductActive = false
 
-    private var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
+    private var idlingResourceProvider =
+        TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
 
-    fun getPayLaterProductData() {
-        idlingResourceProvider?.increment()
-        payLaterProductDetailUseCase.cancelJobs()
-        if (payLaterActivityResultLiveData.value !is Success)
-            payLaterProductDetailUseCase.getPayLaterData(
-                    ::onPayLaterDataSuccess,
-                    ::onPayLaterDataError
+    fun getPayLaterAvailableDetail(price: Long) {
+        paylaterGetSimulationV2usecase.cancelJobs()
+        if (payLaterOptionsDetailLiveData.value !is Success) {
+            paylaterGetSimulationV2usecase.getPayLaterProductDetails(
+                ::onAvailableDetailSuccess,
+                ::onAvailableDetailFail,
+                price
             )
+        }
+
     }
+
+    fun getMockOne(price: Long) {
+        paylaterGetSimulationV2usecase.mockData()?.let {
+            _payLaterOptionsDetailLiveData.value = Success(it)
+        }
+    }
+
+    private fun onAvailableDetailFail(throwable: Throwable) {
+        _payLaterOptionsDetailLiveData.value = Fail(throwable)
+    }
+
+    private fun onAvailableDetailSuccess(paylaterGetSimulationV2: PaylaterGetSimulationV2?) {
+        paylaterGetSimulationV2?.let {
+            _payLaterOptionsDetailLiveData.value = Success(it)
+        }
+    }
+
 
     fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
         idlingResourceProvider?.increment()
         payLaterApplicationStatusUseCase.cancelJobs()
         if (shouldFetch && payLaterApplicationStatusResultLiveData.value !is Success)
             payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
-                    ::onPayLaterApplicationStatusSuccess,
-                    ::onPayLaterApplicationStatusError
+                ::onPayLaterApplicationStatusSuccess,
+                ::onPayLaterApplicationStatusError
             )
         else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
     }
@@ -75,27 +98,8 @@ class PayLaterViewModel @Inject constructor(
         _payLaterApplicationStatusResultLiveData.value = Fail(throwable)
     }
 
-    private fun onPayLaterDataSuccess(productDataList: PayLaterProductData) {
-        idlingResourceProvider?.decrement()
-        _payLaterActivityResultLiveData.value = Success(productDataList)
-    }
-
-    private fun onPayLaterDataError(throwable: Throwable) {
-        idlingResourceProvider?.decrement()
-        _payLaterActivityResultLiveData.value = Fail(throwable)
-    }
-
-    fun getPayLaterOptions(): ArrayList<PayLaterItemProductData> {
-        payLaterActivityResultLiveData.value?.let {
-            if (it is Success && !it.data.productList.isNullOrEmpty()) {
-                return it.data.productList ?: arrayListOf()
-            }
-        }
-        return arrayListOf()
-    }
 
     override fun onCleared() {
-        payLaterProductDetailUseCase.cancelJobs()
         payLaterApplicationStatusUseCase.cancelJobs()
         payLaterApplicationStatusMapperUseCase.cancelJobs()
         super.onCleared()

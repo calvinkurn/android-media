@@ -31,7 +31,6 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationSt
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
-import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,27 +101,15 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         setUpModeSwitcher()
         renderTabAndViewPager()
         initListeners()
-        val filterData = ArrayList<SortFilterItem>()
-        filterData.add(SortFilterItem(
-            "abc"
-        ) { })
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
-        filterData.add(SortFilterItem("abc"))
 
-        sortFilter.addItem(filterData)
     }
 
     override fun getSimulationProductInfo() {
         payLaterViewPager.visible()
         when (paymentMode) {
             is PayLater -> {
-                payLaterViewModel.getPayLaterProductData()
+                payLaterViewModel.getMockOne(productPrice)
+
             }
             is CreditCard -> {
                 creditCardViewModel.getCreditCardSimulationData(productPrice)
@@ -140,11 +127,11 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-        payLaterDataList = payLaterViewModel.getPayLaterOptions()
+//        payLaterDataList = payLaterViewModel.getPayLaterOptions()
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        payLaterDataList = payLaterViewModel.getPayLaterOptions()
+//        payLaterDataList = payLaterViewModel.getPayLaterOptions()
         applicationStatusList = data.applicationDetailList ?: arrayListOf()
     }
 

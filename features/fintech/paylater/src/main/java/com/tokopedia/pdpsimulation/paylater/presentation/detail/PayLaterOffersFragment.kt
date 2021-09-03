@@ -7,22 +7,19 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.pdpsimulation.paylater.domain.model.PaylaterGetSimulationV2
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
-import timber.log.Timber
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PayLaterOffersFragment : BaseDaggerFragment() {
@@ -55,28 +52,47 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
         observeViewModel()
+
+        val filterData = ArrayList<SortFilterItem>()
+        filterData.add(SortFilterItem(
+            "abc"
+        ) { })
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+        filterData.add(SortFilterItem("abc"))
+
+        sortFilter.addItem(filterData)
     }
 
-
-
-    private fun callApi(i: Int) {
-
-    }
 
     private fun observeViewModel() {
-        payLaterViewModel.payLaterActivityResultLiveData.observe(viewLifecycleOwner, {
+        payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onPayLaterDataLoaded(it.data)
-                is Fail -> onPayLaterDataLoadingFail(it.throwable)
+                is Success -> payLaterAvailableDataLoad(it.data)
+                is Fail -> payLaterAvailableDataLoadFail()
             }
         })
 
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> onPayLaterApplicationStatusLoaded(it.data)
-                is Fail -> onPayLaterApplicationLoadingFail()
-            }
-        })
+
+    }
+
+    private fun payLaterAvailableDataLoadFail() {
+
+    }
+
+    private fun payLaterAvailableDataLoad(paylaterProduct: PaylaterGetSimulationV2) {
+
+        val payLaterProduct = paylaterProduct.data
+        payLaterOffersShimmerGroup.gone()
+        payLaterDataGroup.visible()
+        paymentOptionViewPager.post {
+            pagerAdapter.setPaymentData(payLaterProduct!![0].detail!!)
+        }
     }
 
     override fun getScreenName(): String {
@@ -90,59 +106,33 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        payLaterViewModel.getPayLaterApplicationStatus(true)
-    }
-
-    private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-        payLaterViewModel.getPayLaterApplicationStatus(false)
-        payLaterOffersShimmerGroup.gone()
-        when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> {
-                pdpSimulationCallback?.showNoNetworkView()
-                return
-            }
-            is IllegalStateException -> {
-                payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
-            }
-            else -> {
-                payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
-            }
-        }
-        payLaterOffersGlobalError.show()
-        payLaterOffersGlobalError.setActionClickListener {
-            payLaterOffersGlobalError.hide()
-            payLaterOffersShimmerGroup.visible()
-            payLaterViewModel.getPayLaterProductData()
-        }
-    }
-
-    // set payLater + application status data in pager adapter
-    private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        payLaterOffersShimmerGroup.gone()
-        payLaterDataGroup.visible()
-        val payLaterProductList = ArrayList<PayLaterItemProductData>()
-        payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
-        paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList
-                    ?: arrayListOf())
-        }
-    }
-
-    private fun onPayLaterApplicationLoadingFail() {
-        // set payLater data in view pager
-        paymentOptionViewPager.post {
-            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
-                try {
-                    payLaterOffersShimmerGroup.gone()
-                    payLaterDataGroup.visible()
-                    pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-        } 
-    }
+//
+//    // set payLater + application status data in pager adapter
+//    private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+//        payLaterOffersShimmerGroup.gone()
+//        payLaterDataGroup.visible()
+//        val payLaterProductList = ArrayList<PayLaterItemProductData>()
+//        payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
+//        paymentOptionViewPager.post {
+//            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList
+//                    ?: arrayListOf())
+//        }
+//    }
+//
+//    private fun onPayLaterApplicationLoadingFail() {
+//        // set payLater data in view pager
+//        paymentOptionViewPager.post {
+//            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
+//                try {
+//                    payLaterOffersShimmerGroup.gone()
+//                    payLaterDataGroup.visible()
+//                    pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+//                } catch (e: Exception) {
+//                    Timber.e(e)
+//                }
+//            }
+//        }
+//    }
 
     companion object {
         const val PAGE_MARGIN = 16

@@ -94,12 +94,19 @@ data class GatewayDetail(
     @SerializedName("faq_url") val faq_url: String?,
     @SerializedName("apply_url") val apply_url: String?,
     @SerializedName("benefit") val benefit: List<Benefit?>?,
-    @SerializedName("detail") val detail: List<Detail?>?,
+    @SerializedName("detail") val detail: List<SingleProductDetail?>?,
     @SerializedName("faq") val faq: List<Faq?>?,
     @SerializedName("how_to_use") val how_toUse: HowToUse?,
     @SerializedName("how_to_apply") val how_toApply: HowToApply?,
     @SerializedName("tnc") val tnc: List<String?>?
 ) : Parcelable
+
+@Parcelize
+data class SingleProductDetail(
+    @SerializedName("title") val title: String?,
+    @SerializedName("content") val content: List<String>?
+) : Parcelable
+
 
 @Parcelize
 data class HowToApply(
