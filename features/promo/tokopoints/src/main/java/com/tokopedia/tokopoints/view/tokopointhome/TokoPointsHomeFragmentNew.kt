@@ -466,7 +466,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
 
         AnalyticsTrackerUtil.sendEvent(mUsersession.userId,
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+                AnalyticsTrackerUtil.EventKeys.VIEW_TOKOPOINT_IRIS,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.VIEW_HOMEPAGE,
                 "", AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,

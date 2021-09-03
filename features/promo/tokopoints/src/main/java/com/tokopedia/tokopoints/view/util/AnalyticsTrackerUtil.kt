@@ -232,7 +232,8 @@ object AnalyticsTrackerUtil {
             const val EVENT_LABEL = "eventLabel"
             const val ECOMMERCE = "ecommerce"
             const val EVENT_TOKOPOINT = "eventTokopoint"
-            const val EVENT_TOKOPOINT_IRIS = "viewTokopointIris"
+            const val VIEW_TOKOPOINT_IRIS = "viewTokopointIris"
+            const val EVENT_TOKOPOINT_IRIS = "eventTokopointIris"
             const val EVENT_VIEW_TOKOPOINT = "eventViewTokopoint"
             const val EVENT_CLICK_COUPON = "clickCoupon"
             const val EVENT_VIEW_COUPON = "viewCoupon"
@@ -321,7 +322,7 @@ object AnalyticsTrackerUtil {
             const val IMPRESSION_RECOM_ACTION = "impression - products"
             const val CLICK_RECOM_ACTION = "click - products"
             const val VIEW_STATUSMATCHING_ON_REWARDS = "view status matching ticker"
-            const val CLICK_STATUSMATCHING_ON_REWARDS = "click status matching ticke"
+            const val CLICK_STATUSMATCHING_ON_REWARDS = "click status matching ticker"
         }
     }
 
