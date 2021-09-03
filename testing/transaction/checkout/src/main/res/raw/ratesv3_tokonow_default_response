@@ -62,7 +62,7 @@
               },
               "products": [
                 {
-                  "shipper_name": "Gojek",
+                  "shipper_name": "NOW!",
                   "shipper_id": 10,
                   "shipper_product_id": 20,
                   "shipper_product_name": "Same Day",
@@ -138,7 +138,7 @@
             "shipper_name": "Gojek",
             "shipper_desc": "6-8 jam|1002",
             "promo_detail": "",
-            "benefit_desc": "Kuota Bebas Ongkirmu habis",
+            "benefit_desc": "",
             "point_change": 0,
             "user_point": 0,
             "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia\u003c/b\u003e",
@@ -147,9 +147,9 @@
             "is_applied": 0,
             "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
             "discounted_rate": 0,
-            "shipping_rate": 0,
-            "benefit_amount": 0,
-            "disabled": true,
+            "shipping_rate": 13000,
+            "benefit_amount": 13000,
+            "disabled": false,
             "hide_shipper_name": true,
             "cod": {
               "is_cod_available": 0,
@@ -171,8 +171,8 @@
             }
           },
           "pre_order": {
-            "header": "Barang akan dikirim mulai 25 Jan",
-            "label": "PreOrder 3 Hari",
+            "header": "",
+            "label": "",
             "display": false
           }
         }

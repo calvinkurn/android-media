@@ -1,10 +1,10 @@
-package com.tokopedia.checkout.journey.analytics
+package com.tokopedia.checkout.testing.journey.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.checkout.robot.checkoutPage
-import com.tokopedia.checkout.test.R
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.checkout.testing.R
+import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -27,11 +27,11 @@ class CheckoutAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -54,13 +54,12 @@ class CheckoutAnalyticsTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics  {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
     }
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 

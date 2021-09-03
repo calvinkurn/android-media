@@ -1,30 +1,20 @@
-package com.tokopedia.checkout.robot
+package com.tokopedia.checkout.testing.robot
 
 import android.app.Activity
 import android.content.Context
 import android.view.View
-import android.widget.CheckBox
-import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder
-import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
-import com.tokopedia.cart.view.viewholder.CartShopViewHolder
-import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -34,15 +24,9 @@ import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
-import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.isA
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -182,7 +166,7 @@ class CheckoutPageRobot {
         val position = scrollRecyclerViewToFirstOrder(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(position, object : ViewAction {
+                    .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java), object : ViewAction {
                         override fun getConstraints(): Matcher<View>? = null
 
                         override fun getDescription(): String = "Assert Single Shipment Selected UI"
@@ -226,7 +210,6 @@ class ResultRobot {
     }
 
     fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryFileName: String) {
-//        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, queryFileName), hasAllSuccess())
         assertThat(cassavaTestRule.validate(queryFileName), hasAllSuccess())
     }
 
@@ -234,126 +217,4 @@ class ResultRobot {
         val paymentPassData = Intents.getIntents().last().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)
         assertNotNull(paymentPassData)
     }
-}
-
-fun cartPage(func: CartPageRobot.() -> Unit) = CartPageRobot().apply(func)
-
-class CartPageRobot {
-
-    var cartListData: CartListData? = null
-
-    fun waitForData() {
-        Thread.sleep(2000)
-    }
-
-    fun assertMainContent() {
-        onView(withId(com.tokopedia.cart.R.id.ll_cart_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        onView(withId(com.tokopedia.cart.R.id.rv_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-
-    fun assertTickerAnnouncementViewHolder(position: Int) {
-        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<TickerAnnouncementViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "performing assertion action on TickerAnnouncementViewHolder"
-
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(View.VISIBLE, view.findViewById<Ticker>(com.tokopedia.cart.R.id.cartTicker).visibility)
-            }
-        }))
-    }
-
-    fun assertCartSelectAllViewHolder(position: Int) {
-        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartSelectAllViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "performing assertion action on CartSelectAllViewHolder"
-
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(com.tokopedia.cart.R.id.checkbox_global).visibility)
-                Assert.assertEquals(true, view.findViewById<CheckboxUnify>(com.tokopedia.cart.R.id.checkbox_global).isChecked)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<Typography>(com.tokopedia.cart.R.id.text_select_all).visibility)
-            }
-        }))
-    }
-
-    fun assertCartTickerErrorViewHolder(position: Int, message: String) {
-        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartTickerErrorViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "performing assertion action on CartTickerErrorViewHolder"
-
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(message, view.findViewById<Typography>(com.tokopedia.cart.R.id.ticker_description).text)
-            }
-        }))
-    }
-
-    fun assertFirstCartShopViewHolder(view: View,
-                                      position: Int,
-                                      shopIndex: Int) {
-        onView(withId(com.tokopedia.cart.R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
-
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun perform(uiController: UiController?, view: View) {
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.shopName
-                        ?: "", view.findViewById<Typography>(com.tokopedia.cart.R.id.tv_shop_name).text)
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
-                        ?: "", view.findViewById<Typography>(com.tokopedia.cart.R.id.tv_fulfill_district).text)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(com.tokopedia.cart.R.id.image_shop_badge).visibility)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(com.tokopedia.cart.R.id.img_free_shipping).visibility)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(com.tokopedia.cart.R.id.rv_cart_item).visibility)
-                Assert.assertTrue(view.findViewById<CheckBox>(com.tokopedia.cart.R.id.cb_select_shop).isChecked)
-            }
-        }))
-
-        assertOnEachCartItem(
-                view = view,
-                recyclerViewId = com.tokopedia.cart.R.id.rv_cart_item,
-                shopIndex = shopIndex
-        )
-
-    }
-
-    fun assertOnEachCartItem(view: View, recyclerViewId: Int, shopIndex: Int) {
-        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
-
-        val tempStoreDesc = childRecyclerView.contentDescription
-        childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
-
-        val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
-        for (i in 0 until childItemCount) {
-            try {
-                onView(allOf(withId(recyclerViewId), withContentDescription(CommonActions.UNDER_TEST_TAG)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(i, object : ViewAction {
-                            override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
-
-                            override fun getConstraints(): Matcher<View>? = null
-
-                            override fun perform(uiController: UiController?, view: View) {
-                                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.cartItemDataList?.get(i)?.cartItemData?.originData?.productName, view.findViewById<Typography>(com.tokopedia.cart.R.id.text_product_name).text.toString())
-                            }
-                        }))
-
-            } catch (e: PerformException) {
-                e.printStackTrace()
-            }
-        }
-        childRecyclerView.contentDescription = tempStoreDesc
-    }
-
-    fun clickPromoButton() {
-        onView(withId(com.tokopedia.cart.R.id.promo_checkout_btn_cart)).perform(ViewActions.click())
-    }
-
-    fun clickBuyButton() {
-        onView(withId(com.tokopedia.cart.R.id.go_to_courier_page_button)).perform(ViewActions.click())
-    }
-
-    infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
-        return ResultRobot().apply(func)
-    }
-
 }

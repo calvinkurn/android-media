@@ -1,10 +1,9 @@
-package com.tokopedia.checkout.journey.simple
+package com.tokopedia.checkout.testing.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.checkout.robot.checkoutPage
-import com.tokopedia.checkout.test.R
+import com.tokopedia.checkout.testing.R
+import com.tokopedia.checkout.testing.robot.checkoutPage
 import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -26,10 +25,7 @@ class CheckoutTokoNowTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
     private fun setup(safResponse: Int = R.raw.saf_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -52,12 +48,11 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp0)",
+                    title = "NOW! (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -75,12 +70,11 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp0)",
+                    title = "NOW! (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -98,7 +92,7 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (",
+                    title = "NOW! (",
                     originalPrice = "Rp13.000",
                     discountedPrice = " Rp8.000)",
                     eta = "Estimasi tiba hari ini",
@@ -106,7 +100,6 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -122,20 +115,18 @@ class CheckoutTokoNowTest {
             // Wait for Rates
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Same Day (Rp13.000)",
+                    title = "NOW! (Rp13.000)",
                     eta = "Estimasi tiba hari ini",
                     message = "Kuota Bebas Ongkirmu habis")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 
@@ -145,7 +136,5 @@ class CheckoutTokoNowTest {
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
         private const val CHECKOUT_KEY = "checkout"
-
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
 }
