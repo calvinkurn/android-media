@@ -31,7 +31,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerView
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
-import com.tokopedia.buyerorderdetail.presentation.bottomsheet.DelayedEtaBottomSheetFragment
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -48,6 +47,7 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.LoaderUnify
