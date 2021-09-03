@@ -11,11 +11,18 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+
+        // testInstrumentationRunnerArguments clearPackageData: 'true'
+        // Leak Canary Listener, if do not want to use, just comment the code below
+        // 'listener': 'leakcanary.FailTestOnLeakRunListener'
     }
 
-    viewBinding {
-        enabled true
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
 }
 
 repositories {
@@ -37,7 +44,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.checkout)
 //    implementation fileTree(dir: 'libs', include: ['*.jar'])
 //
-    // implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+      implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 //    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
 //    implementation projectOrAar(rootProject.ext.libraries.applink)
 //    implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -90,8 +97,10 @@ dependencies {
 //    androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
     implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    /*androidTestImplementation projectOrAar(rootProject.ext.testing.cart)
-    androidTestUtil rootProject.ext.testDependencies.orchestrator*/
+    androidTestImplementation projectOrAar(rootProject.ext.testing.cart_test)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
+
+    implementation projectOrAar(rootProject.ext.features.checkout)
 }
 
 project.ext {
