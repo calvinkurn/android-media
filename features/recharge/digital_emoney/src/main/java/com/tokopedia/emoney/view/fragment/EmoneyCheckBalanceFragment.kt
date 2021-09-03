@@ -209,7 +209,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
                             isButtonShow = true,
                             isGlobalErrorShow = false,
-                            mandiriGetSocketTimeout = true
+                            tapCashWriteFailed = true
                     )
                 } else if((throwable is UnknownHostException) || errorMessage.first.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
