@@ -10,6 +10,7 @@ import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.productcard.ProductCardListView
 
 class ShopProductItemListViewHolder(
         itemView: View,
@@ -24,7 +25,7 @@ class ShopProductItemListViewHolder(
         val LAYOUT = R.layout.item_shop_product_card_list
     }
 
-    private val productCardView: ProductCardGridView? = itemView.findViewById(R.id.productCardView)
+    private val productCardView: ProductCardListView? = itemView.findViewById(R.id.productCardView)
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCardView?.setProductModel(

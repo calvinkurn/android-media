@@ -906,10 +906,10 @@ class NewShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            initViews(view)
             if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
-            initViews(view)
         }
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
