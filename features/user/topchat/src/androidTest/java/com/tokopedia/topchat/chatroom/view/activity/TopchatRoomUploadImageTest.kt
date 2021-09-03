@@ -20,6 +20,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatImageUploadViewHolder
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matchers.greaterThan
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Test
 
@@ -103,13 +104,33 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         )
     }
 
+    @Test
+    fun should_not_showing_chat_status_when_failed_to_upload_image() {
+        // Given
+        uploadImageUseCase.isError = true
+        openChatRoom()
+
+        // When
+        openImagePicker()
+
+        // Then
+        assertImageUploadViewModelAtPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(0, R.id.chat_status))
+            .check(matches(not(isDisplayed())))
+    }
+
     private fun assertImageContainerAtPosition(position: Int) {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
-        )
+        assertImageUploadViewModelAtPosition(position)
         onView(withRecyclerView(R.id.recycler_view_chatroom)
             .atPositionOnView(position, R.id.fl_image_container))
             .check(matches(isDisplayed()))
+    }
+
+    private fun assertImageUploadViewModelAtPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).check(
+            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
+        )
     }
 
     private fun clickImageUploadErrorHandler() {
