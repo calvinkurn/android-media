@@ -63,6 +63,7 @@
     <string name="smart_bills_add_bills_product_placeholder_data">Paket Data</string>
     <string name="smart_bills_add_bills_nominal_error">Oops, nominal tidak boleh kosong</string>
     <string name="smart_bills_add_bills_number_not_found">Maaf, nomor tidak ditemukan</string>
+    <string name="smart_bills_add_bills_ticker_desc">Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.</string>
 
     <string name="smart_bills_delete_bills">Hapus Tagihan</string>
     <string name="smart_bills_delete_dialog_title">Hapus tagihan ini?</string>

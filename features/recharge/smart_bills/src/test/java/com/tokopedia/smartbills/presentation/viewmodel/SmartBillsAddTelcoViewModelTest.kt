@@ -99,44 +99,6 @@ class SmartBillsAddTelcoViewModelTest {
         Assert.assertEquals(actual, mapOf(SmartBillsAddTelcoViewModel.PARAM_FIELDS to enquiryParams))
     }
 
-    @Test
-    fun getMenuDetailAddTelco_Success_SuccessLoadData(){
-        //given
-        val addTelco = TelcoCatalogMenuDetailData(TopupBillsMenuDetail(tickers = listOf(
-                TopupBillsTicker(1)
-        )))
-
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = TelcoCatalogMenuDetailData::class.java
-        result[objectType] = addTelco
-        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-
-        //when
-        smartBillsAddTelcoViewModel.getMenuDetailAddTelco(mapParams)
-
-        //then
-        val actualData = smartBillsAddTelcoViewModel.listTicker.value
-        assert(actualData is Success)
-        val actual = (actualData as Success).data
-        Assert.assertNotNull(actual)
-        Assert.assertEquals(addTelco.catalogMenuDetailData.tickers, actual)
-    }
-
-    @Test
-    fun getMenuDetailAddTelco_Fail_FailLoadData() {
-        //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
-
-        //when
-        smartBillsAddTelcoViewModel.getMenuDetailAddTelco(mapParams)
-
-        //then
-        val actualData = smartBillsAddTelcoViewModel.listTicker.value
-        assert(actualData is Fail)
-    }
 
     @Test
     fun getAddBillRecharge_Success() {

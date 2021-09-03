@@ -677,21 +677,25 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
-        if (tickers.isNotEmpty()) {
+        if (tickers.isNotEmpty() || isAddSBM) {
             val messages = mutableListOf<TickerData>()
-            for (item in tickers) {
-                var description: String = item.content
-                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
-                    description += " [${item.actionText}]{${item.actionLink}}"
+            if (isAddSBM){
+                messages.add(TickerData(getString(R.string.add_bills_ticker_desc), Ticker.TYPE_ANNOUNCEMENT))
+            } else {
+                for (item in tickers) {
+                    var description: String = item.content
+                    if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                        description += " [${item.actionText}]{${item.actionLink}}"
+                    }
+                    messages.add(TickerData(item.name, description,
+                            when (item.type) {
+                                TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                                TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                                TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                                TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
+                                else -> Ticker.TYPE_INFORMATION
+                            }))
                 }
-                messages.add(TickerData(item.name, description,
-                        when (item.type) {
-                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
-                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
-                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
-                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
-                            else -> Ticker.TYPE_INFORMATION
-                        }))
             }
 
             if (messages.size == 1) {

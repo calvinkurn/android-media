@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
+import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
@@ -37,10 +40,6 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     val inputNumberNotFound: LiveData<String>
         get() = mutableInputNumberNotFound
 
-    private val mutableListTicker = MutableLiveData<Result<List<TopupBillsTicker>>>()
-    val listTicker: LiveData<Result<List<TopupBillsTicker>>>
-        get() = mutableListTicker
-
     private val mutableCatalogPrefixSelect = MutableLiveData<Result<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<Result<TelcoCatalogPrefixSelect>>
         get() = mutableCatalogPrefixSelect
@@ -61,21 +60,6 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     val catalogProduct: LiveData<Result<RechargeCatalogProductInputMultiTabData>>
         get() = mutableCatalogProduct
 
-
-    fun getMenuDetailAddTelco(mapParam: Map<String, Any>) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                        TelcoCatalogMenuDetailData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-            }.getSuccessData<TelcoCatalogMenuDetailData>()
-
-            mutableListTicker.postValue(Success(data.catalogMenuDetailData.tickers))
-        }) {
-            mutableListTicker.postValue(Fail(it))
-        }
-    }
 
     fun getPrefixAddTelco(menuId: Int){
         rechargeCatalogPrefixSelectUseCase.execute(

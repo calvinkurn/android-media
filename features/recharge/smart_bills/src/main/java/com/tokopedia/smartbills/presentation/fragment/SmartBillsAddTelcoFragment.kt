@@ -20,7 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.view.bottomsheet.AddSmartBillsInquiryBottomSheet
@@ -116,7 +115,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun showLayout(){
-        observeTicker()
         observePrefix()
         observeSelectedPrefix()
         observeInquiry()
@@ -127,7 +125,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private fun getMenuDetailTicker(){
         showLoader()
         hideTicker()
-        viewModel.getMenuDetailAddTelco(viewModel.createMenuDetailAddTelcoParams(menuId.toIntOrZero()))
     }
 
     private fun getPrefixTelco(){
@@ -146,23 +143,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         viewModel.addBill(viewModel.createAddBillsParam(RechargeSBMAddBillRequest(productId, clientNumber)))
     }
 
-    private fun observeTicker(){
-        observe(viewModel.listTicker){
-            when(it){
-                is Success -> {
-                    if (!it.data.isNullOrEmpty()) {
-                        showTicker(it.data)
-                    } else {
-                        hideTicker()
-                    }
-                }
-
-                is Fail -> {
-                    hideTicker()
-                }
-            }
-        }
-    }
 
     private fun observePrefix(){
         observe(viewModel.catalogPrefixSelect){
@@ -173,6 +153,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 is Success -> {
                     validationsPhoneNumber = it.data.rechargeCatalogPrefixSelect.validations.toMutableList()
                     showMainLayouts()
+                    showTicker()
                     hideLoader()
                 }
             }
@@ -257,19 +238,10 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         ticker_sbm_add_telco.hide()
     }
 
-    private fun showTicker(listTicker: List<TopupBillsTicker>){
+    private fun showTicker(){
         ticker_sbm_add_telco.show()
         val messages = ArrayList<TickerData>()
-        for (item in listTicker) {
-            messages.add(TickerData(item.name, item.content,
-                    when (item.type) {
-                        "warning" -> Ticker.TYPE_WARNING
-                        "info" -> Ticker.TYPE_INFORMATION
-                        "success" -> Ticker.TYPE_ANNOUNCEMENT
-                        "error" -> Ticker.TYPE_ERROR
-                        else -> Ticker.TYPE_INFORMATION
-                    }, isFromHtml = true))
-        }
+        messages.add(TickerData("", getString(R.string.smart_bills_add_bills_ticker_desc),Ticker.TYPE_ANNOUNCEMENT, isFromHtml = true))
         context?.run {
             val tickerAdapter = TickerPagerAdapter(context, messages)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
