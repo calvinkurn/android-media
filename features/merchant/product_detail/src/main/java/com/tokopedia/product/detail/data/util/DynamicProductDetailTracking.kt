@@ -2074,7 +2074,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.CREATIVE, "layout:$layout;comp:$comp;temp:$temp;",
-                            ProductTrackingConstant.Tracking.ID,"",
+                            ProductTrackingConstant.Tracking.ID, "",
                             ProductTrackingConstant.Tracking.NAME, "product detail page - $productId",
                             ProductTrackingConstant.Tracking.POSITION, "$cpos"
                         )
