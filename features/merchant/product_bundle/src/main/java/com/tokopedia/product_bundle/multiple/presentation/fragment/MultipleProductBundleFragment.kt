@@ -294,6 +294,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             setSecondaryCTAClickListener { dismiss() }
             setPrimaryCTAClickListener {
                 refreshPage()
+                dismiss()
             }
         }.show()
     }

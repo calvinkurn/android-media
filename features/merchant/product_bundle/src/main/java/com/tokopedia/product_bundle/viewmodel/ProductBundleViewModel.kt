@@ -193,6 +193,7 @@ class ProductBundleViewModel @Inject constructor(
                 isBundleOutOfStockLiveData.value = true
             }
         }, onError = {
+            // TODO: log error, provide default error message
             errorMessageLiveData.value = it.localizedMessage
         })
     }
