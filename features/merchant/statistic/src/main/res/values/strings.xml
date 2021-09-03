@@ -40,4 +40,5 @@
     <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan performa operasional tokomu di sini, ya.</string>
     <string name="stc_upgrade_to_pm">Fitur ini hanya untuk Power Merchant, Power Merchant PRO, dan Official Store. <font color="#03AC0E">Upgrade Toko</font></string>
     <string name="stc_custom_lbl">Custom</string>
+    <string name="stc_select_same_month_only_info">Hanya bisa memilih tanggal di bulan yang sama.</string>
 </resources>

@@ -97,7 +97,7 @@ object SearchTracking {
     }
 
     object Category {
-        const val TOKONOW_TOP_NAV = "tokonow - top nav"
+        const val TOP_NAV = "top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKONOW_EMPTY_RESULT =
@@ -106,7 +106,6 @@ object SearchTracking {
     }
 
     object Misc {
-        const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
         const val RECOM_LIST_PAGE = "searchproduct"

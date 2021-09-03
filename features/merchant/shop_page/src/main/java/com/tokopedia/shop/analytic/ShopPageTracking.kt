@@ -89,7 +89,7 @@ open class ShopPageTracking(
             addCustomDimension(eventMap, customDimensionShopPage)
             if (customDimensionShopPage is CustomDimensionShopPageProduct) {
                 eventMap[ShopPageTrackingConstant.PRODUCT_ID] = customDimensionShopPage.productId.orEmpty()
-                eventMap[ShopPageTrackingConstant.SHOP_REF] = customDimensionShopPage.shopRef
+                eventMap[ShopPageTrackingConstant.DIMENSION_90] = customDimensionShopPage.shopRef
             }
         }
         return eventMap

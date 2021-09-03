@@ -30,13 +30,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -107,7 +105,6 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
-import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShopReviewPage
@@ -145,6 +142,7 @@ import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -157,6 +155,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -218,6 +217,8 @@ class NewShopPageFragment :
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
+        private const val DEFAULT_SHOWCASE_ID = "0"
+        private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -317,6 +318,7 @@ class NewShopPageFragment :
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenShotDetector: ScreenshotDetector? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
@@ -350,7 +352,7 @@ class NewShopPageFragment :
 
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState()
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onStop()
     }
 
@@ -369,7 +371,8 @@ class NewShopPageFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
-        UniversalShareBottomSheet.clearScreenShotDetector()
+        removeTemporaryShopImage(shopImageFilePath)
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onDestroy()
     }
 
@@ -882,7 +885,9 @@ class NewShopPageFragment :
             }
             initViews(view)
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        context?.let {
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+        }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1074,7 +1079,25 @@ class NewShopPageFragment :
         }
     }
 
-    private fun redirectToShopSearchProduct() {
+    private fun redirectToSearchAutoCompletePage() {
+        val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
+                ApplinkConst.SHOP_ETALASE,
+                shopId,
+                DEFAULT_SHOWCASE_ID
+        ), "utf-8")
+        val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                .buildUpon()
+                .appendQueryParameter(SearchApiConst.Q, "")
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
+                .build()
+                .toString()
+        RouteManager.route(context, searchPageUri)
+    }
+
+    private fun redirectToShopSearchProductPage() {
         context?.let { context ->
             shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
                 startActivity(ShopSearchProductActivity.createIntent(
@@ -1093,10 +1116,9 @@ class NewShopPageFragment :
 
     override fun onResume() {
         super.onResume()
-        removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
-        UniversalShareBottomSheet.getScreenShotDetector()?.start()
+        screenShotDetector?.start()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1213,7 +1235,10 @@ class NewShopPageFragment :
 
     private fun clickSearch() {
         shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
-        redirectToShopSearchProduct()
+        if (GlobalConfig.isSellerApp())
+            redirectToShopSearchProductPage()
+        else
+            redirectToSearchAutoCompletePage()
     }
 
     private fun clickSettingButton() {
@@ -1296,7 +1321,10 @@ class NewShopPageFragment :
             setupSearchbar(
                     hints = listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProduct()
+                        if (GlobalConfig.isSellerApp())
+                            redirectToShopSearchProductPage()
+                        else
+                            redirectToSearchAutoCompletePage()
                     }
             )
         }
@@ -2468,7 +2496,7 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
     }
 
     override fun onRequestPermissionsResult(
@@ -2477,7 +2505,7 @@ class NewShopPageFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
+        screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     fun setupShopPageFab(config: ShopPageFabConfig) {

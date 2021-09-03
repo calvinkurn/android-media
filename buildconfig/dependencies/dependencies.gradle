@@ -85,6 +85,7 @@ ext {
     leakCanaryVersion = '2.2'
     embraceVersion = '4.8.10'
     newRelicVersion = '5.28.1'
+    windowVersion = '1.0.0-alpha07'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -222,7 +223,7 @@ ext {
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
             kotlinPoet            : "com.squareup:kotlinpoet:1.4.3",
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
-            facebook              : "com.facebook.android:facebook-android-sdk:8.1.0",
+            facebook              : "com.facebook.android:facebook-android-sdk:11.2.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
@@ -287,7 +288,8 @@ ext {
             newRelic              : "com.newrelic.agent.android:android-agent:$newRelicVersion",
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
-            embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion"
+            embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
+            window                : "androidx.window:window:$windowVersion"
     ]
 
     testDependencies = [
