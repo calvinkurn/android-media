@@ -2070,13 +2070,13 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
 
             val ecommerce = DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
+                ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            "creative", "layout:$layout;comp:$comp;temp:$temp;",
-                            "id","",
-                            "name", "product detail page - $productId",
-                            "position", "$cpos"
+                            ProductTrackingConstant.Tracking.CREATIVE, "layout:$layout;comp:$comp;temp:$temp;",
+                            ProductTrackingConstant.Tracking.ID,"",
+                            ProductTrackingConstant.Tracking.NAME, "product detail page - $productId",
+                            ProductTrackingConstant.Tracking.POSITION, "$cpos"
                         )
                     )
                 )
