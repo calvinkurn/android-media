@@ -1,0 +1,9 @@
+ext {
+    testing = [
+            productDetail           : ":testing:merchant:product_detail",
+
+            cart                    : ":testing:transaction:cart",
+            checkout                : ":testing:transaction:checkout",
+            oneclickcheckout        : ":testing:transaction:oneclickcheckout",
+    ]
+}

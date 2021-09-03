@@ -1,0 +1,6 @@
+// Sort alphabetically by name
+includeIfEnabled("testing:merchant:product_detail")
+
+includeIfEnabled("testing:transaction:cart")
+includeIfEnabled("testing:transaction:checkout")
+includeIfEnabled("testing:transaction:oneclickcheckout")
