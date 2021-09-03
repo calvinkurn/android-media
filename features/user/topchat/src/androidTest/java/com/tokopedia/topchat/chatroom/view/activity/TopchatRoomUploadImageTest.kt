@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intending
@@ -33,7 +34,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         // When
         openImagePicker()
         // Then
-        assertImageContainerAtPosition(0)
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
 
     @Test
@@ -47,8 +48,8 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         //send second image
         openImagePicker()
         // Then
-        assertImageContainerAtPosition(0)
-        assertImageContainerAtPosition(1)
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+        assertImageContainerAtPosition(1, matches(isDisplayed()))
         onView(withId(R.id.recycler_view_chatroom)).check(withItemCount(greaterThan(count)))
     }
 
@@ -63,7 +64,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openChatRoom()
 
         // Then
-        assertImageContainerAtPosition(0)
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
     }
 
     @Test
@@ -114,23 +115,25 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         openImagePicker()
 
         // Then
-        assertImageUploadViewModelAtPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(0, R.id.chat_status))
-            .check(matches(not(isDisplayed())))
+        assertImageReadStatusAtPosition(0, matches(not(isDisplayed())))
     }
 
-    private fun assertImageContainerAtPosition(position: Int) {
-        assertImageUploadViewModelAtPosition(position)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(position, R.id.fl_image_container))
-            .check(matches(isDisplayed()))
-    }
-
-    private fun assertImageUploadViewModelAtPosition(position: Int) {
+    private fun assertImageContainerAtPosition(position: Int, assertions: ViewAssertion) {
         onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
         )
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(position, R.id.fl_image_container))
+            .check(assertions)
+    }
+
+    private fun assertImageReadStatusAtPosition(position: Int, assertions: ViewAssertion) {
+        onView(withId(R.id.recycler_view_chatroom)).check(
+            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
+        )
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(position, R.id.chat_status))
+            .check(assertions)
     }
 
     private fun clickImageUploadErrorHandler() {
