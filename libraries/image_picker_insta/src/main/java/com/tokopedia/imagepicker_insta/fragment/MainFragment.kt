@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker.common.ImageEditorBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImageRatioType
@@ -28,10 +30,7 @@ import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.menu.MenuManager
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.Camera
-import com.tokopedia.imagepicker_insta.models.FolderData
-import com.tokopedia.imagepicker_insta.models.ImageAdapterData
+import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
@@ -88,26 +87,39 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     private fun proceedNextStep() {
-        if (imageAdapter.isSelectedPositionsEmpty()) {
+        if (!imageAdapter.isSelectedPositionsEmpty()) {
 
-            val assets = imageAdapter.selectedPositionMap.keys.map {
-                imageAdapter.dataList[it].asset.assetPath
+            val applink = (activity as? MainActivity)?.applinkForGalleryProceed
+            if (!applink.isNullOrEmpty()) {
+
+                val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
+                    imageAdapter.dataList[it].asset.contentUri
+                }
+
+                val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedMediaUriList)
+                RouteManager.route(activity, finalApplink)
             }
-            val assetList = ArrayList<String>(assets)
-            val intent = ImageEditorActivity.getIntent(
-                context,
-                ImageEditorBuilder(
-                    assetList,
-                    defaultRatio = ImageRatioType.RATIO_1_1
-                )
-            )
-            startActivityForResult(intent, EDITOR_REQUEST_CODE)
         } else {
             Toast.makeText(context, "Select any image first", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun handleCameraPermissionCallback() {
+    fun openEditor() {
+        val assets = imageAdapter.selectedPositionMap.keys.map {
+            imageAdapter.dataList[it].asset.assetPath
+        }
+        val assetList = ArrayList<String>(assets)
+        val intent = ImageEditorActivity.getIntent(
+            context,
+            ImageEditorBuilder(
+                assetList,
+                defaultRatio = ImageRatioType.RATIO_1_1
+            )
+        )
+        startActivityForResult(intent, EDITOR_REQUEST_CODE)
+    }
+
+    private fun handleCameraPermissionCallback() {
         if (activity is MainActivity) {
             (activity as MainActivity).cameraPermissionCallback = { hasAllPermission ->
                 if (hasAllPermission) {
@@ -119,7 +131,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    fun initDagger() {
+    private fun initDagger() {
         if (context is AppCompatActivity) {
             viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
             val component = DaggerImagePickerComponent.builder().build()
@@ -136,7 +148,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         return v
     }
 
-    fun initViews(v: View) {
+    private fun initViews(v: View) {
         rv = v.findViewById(R.id.rv)
         selectedMediaView = v.findViewById(R.id.selected_image_view)
         recentSection = v.findViewById(R.id.recent_section)
@@ -165,10 +177,23 @@ class MainFragment : Fragment(), MainFragmentContract {
 
         (activity as MainActivity).run {
             setSupportActionBar(toolbar)
-            toolbarIcon.setImageResource(this.toolbarIconRes)
+            setToolbarIcon(this, toolbarIcon)
             toolbarTitle.text = this.toolbarTitle
             toolbarSubtitle.text = this.toolbarSubTitle
         }
+    }
+
+    private fun setToolbarIcon(activity: MainActivity, imageView: AppCompatImageView) {
+        if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
+            imageView.setImageResource(activity.toolbarIconRes)
+        } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(activity.toolbarIconUrl)
+                .into(imageView)
+        } else {
+            imageView.visibility = View.GONE
+        }
+
     }
 
     private fun setClicks() {
@@ -239,7 +264,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     private fun openCamera() {
         cameraCaptureFilePath = null
-        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this))
+        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture)
     }
 
     override fun handleOnCameraIconTap() {
@@ -278,7 +303,7 @@ class MainFragment : Fragment(), MainFragmentContract {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
                         imageAdapter.clearSelectedItems()
 
-                        if(imageAdapter.addSelectedItem(1)) {
+                        if (imageAdapter.addSelectedItem(1)) {
                             selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
                         }
 

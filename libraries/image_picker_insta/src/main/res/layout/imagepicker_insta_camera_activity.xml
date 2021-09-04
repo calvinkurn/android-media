@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:name="com.tokopedia.imagepicker_insta.fragment.MainFragment"
     android:layout_width="match_parent"
+    android:id="@+id/parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 

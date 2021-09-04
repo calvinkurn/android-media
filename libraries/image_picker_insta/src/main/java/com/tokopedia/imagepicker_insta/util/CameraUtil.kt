@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
+import com.tokopedia.imagepicker_insta.models.BundleData
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -19,9 +20,9 @@ object CameraUtil {
     const val LOG_TAG = "INSTA_CAM"
 
     val REQUEST_IMAGE_CAPTURE = 200
-    fun openCamera(weakFragment: WeakReference<Fragment?>?): String? {
+    fun openCamera(weakFragment: WeakReference<Fragment?>?, applinkToNavigateAfterMediaCapture: String?): String? {
         weakFragment?.get()?.let {
-            it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList()))
+            it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture))
         }
         return null
 
@@ -57,7 +58,7 @@ object CameraUtil {
     }
 
     private fun getExternalDir(context: Context, isImage: Boolean = true): File? {
-        if(isImage)
+        if (isImage)
             return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
     }
@@ -97,5 +98,25 @@ object CameraUtil {
 
         }
         return filePath
+    }
+
+    fun createApplinkToSendFileUris(applink: String, fileUriList: List<Uri>): String {
+        if (!applink.isNullOrEmpty()) {
+            val fileUriStringBuilder = StringBuilder()
+            fileUriList.forEach {
+                fileUriStringBuilder.append(it.toString())
+                fileUriStringBuilder.append(",")
+            }
+            if (fileUriStringBuilder.isNotEmpty()) {
+                fileUriStringBuilder.removeSuffix(",")
+            }
+            val finalApplink = Uri.parse(applink)
+                .buildUpon()
+                .appendQueryParameter(BundleData.URIS, fileUriStringBuilder.toString())
+                .build()
+                .toString()
+            return finalApplink
+        }
+        return ""
     }
 }

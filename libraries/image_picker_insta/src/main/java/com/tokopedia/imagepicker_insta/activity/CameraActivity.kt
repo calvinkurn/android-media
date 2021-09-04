@@ -15,30 +15,35 @@ import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.models.BundleData
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.views.CameraButton
 import com.tokopedia.imagepicker_insta.views.CameraButtonListener
+import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 
 
 class CameraActivity : BaseActivity() {
 
     lateinit var cameraView: CameraView
+    lateinit var parent: View
     lateinit var cameraButton: CameraButton
     lateinit var imageFlash: AppCompatImageView
     lateinit var imageSelfieCamera: AppCompatImageView
+    var applinkToNavigateAfterMediaCapture: String? = null
 
     companion object {
-        const val BUNDLE_KEY_URIS = "uris"
 
-        fun getIntent(context: Context, fileUriList: List<Uri>): Intent {
+        fun getIntent(context: Context, fileUriList: List<Uri>, applinkToNavigateAfterMediaCapture: String?): Intent {
             val uriList = ArrayList<String>()
             fileUriList.forEach {
                 uriList.add(it.toString())
             }
             val intent = Intent(context, CameraActivity::class.java)
-            intent.putExtra(BUNDLE_KEY_URIS, uriList)
+            intent.putExtra(BundleData.URIS, uriList)
+            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
             return intent
         }
     }
@@ -47,6 +52,9 @@ class CameraActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.imagepicker_insta_camera_activity)
 
+        readIntentData()
+
+        parent = findViewById(R.id.parent)
         cameraView = findViewById(R.id.camera_view)
         cameraButton = findViewById(R.id.camera_button)
         imageFlash = findViewById(R.id.image_flash)
@@ -62,6 +70,10 @@ class CameraActivity : BaseActivity() {
 
         setToolbar()
         setListeners()
+    }
+
+    fun readIntentData() {
+        applinkToNavigateAfterMediaCapture = intent.getStringExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE)
     }
 
     fun setToolbar() {
@@ -129,17 +141,25 @@ class CameraActivity : BaseActivity() {
                 val file = CameraUtil.createMediaFile(this@CameraActivity)
                 result.toFile(file) {
                     Timber.d("${CameraUtil.LOG_TAG} picture taken: ${it?.path}")
+                    if (it != null) {
+                        afterMediaIsCaptured(Uri.fromFile(it))
+                    } else {
+                        showError("Unable to take picture")
+                    }
                 }
+
             }
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
                 Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
+                afterMediaIsCaptured(Uri.fromFile(result.file))
             }
 
             override fun onCameraError(exception: CameraException) {
                 super.onCameraError(exception)
                 Timber.d("${CameraUtil.LOG_TAG} error: ${exception.reason}")
+                showError("Something went wrong")
             }
 
             override fun onVideoRecordingStart() {
@@ -150,6 +170,19 @@ class CameraActivity : BaseActivity() {
                 super.onVideoRecordingEnd()
             }
         })
+    }
+
+    private fun afterMediaIsCaptured(uri: Uri) {
+        if (!applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
+            val finalApplink = CameraUtil.createApplinkToSendFileUris(applinkToNavigateAfterMediaCapture!!, arrayListOf(uri))
+            RouteManager.route(this, finalApplink)
+        } else {
+            finish()
+        }
+    }
+
+    private fun showError(message: String) {
+        Toaster.build(parent, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     fun checkForFlash(cameraOptions: CameraOptions) {
