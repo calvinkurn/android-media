@@ -74,3 +74,4 @@ includeIfEnabled("libraries:screen_recorder")
 includeIfEnabled("libraries:screenshot_observer")
 includeIfEnabled("libraries:unit_test")
 includeIfEnabled("libraries:macrobenchmark")
+include 'libraries:image_picker_insta'

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="imagepicker_insta_toolbar_title">#6D7588</color>
+    <color name="imagepicker_insta_menu">#00AA5B</color>
+    <color name="imagepicker_insta_image_bg">#F0F3F7</color>
+</resources>
