@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.startsWithPattern
 
 /**
@@ -48,6 +49,12 @@ object DeeplinkMapperContent {
     }
 
     fun getContentCreatePostDeepLink(deepLink: String): String {
+
+        if(deepLink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM)){
+                val regexExp = "${ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM}/?".toRegex()
+                return deepLink.replace(regexExp, INTERNAL_PRODUCT_PICKER_FROM_SHOP)
+        }
+
         when {
             deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) ||
                     deepLink.startsWithPattern(ApplinkConst.CONTENT_DRAFT_POST) ||

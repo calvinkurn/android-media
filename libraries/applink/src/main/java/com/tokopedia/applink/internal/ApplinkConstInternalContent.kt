@@ -15,6 +15,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_AFFILIATE_DRAFT_POST = "$INTERNAL_AFFILIATE/draft/"
     const val AFFILIATE_EDIT = "$INTERNAL_CONTENT/affiliate/{id}/edit"
     const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
+    const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
 
     const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
 
