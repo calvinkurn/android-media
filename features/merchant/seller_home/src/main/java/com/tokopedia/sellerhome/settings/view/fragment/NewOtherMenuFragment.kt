@@ -33,6 +33,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
+import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -66,6 +67,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     private var otherMenuHeader: ConstraintLayout? = null
     private var contentMotionLayout: MotionLayout? = null
     private var secondaryInfoRecyclerView: RecyclerView? = null
+    private var topadsTopupView: TopadsTopupView? = null
 
     private var motionLayoutAnimator: OtherMenuContentAnimator? = null
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
@@ -131,7 +133,9 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     override fun onShareButtonAnimationCompleted() {
-        // TODO: Animate scroll view
+        topadsTopupView?.run {
+            toggleTopadsTopupWithAnimation()
+        }
     }
 
     private fun initView() {
@@ -140,6 +144,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
             scrollView = findViewById(R.id.sv_sah_new_other)
             otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
             secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
+            topadsTopupView = findViewById(R.id.topads_topup_view_sah)
         }
     }
 
@@ -148,6 +153,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         setupSecondaryInfoAdapter()
         setupScrollHeaderAnimator()
         setupContentAnimator()
+        topadsTopupView?.setTopadsValue("Rp 0")
     }
 
     private fun setupRecyclerView() {

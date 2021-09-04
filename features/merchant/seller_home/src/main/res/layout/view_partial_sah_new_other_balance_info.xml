@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_title"
-                tools:src="@tools:sample/avatars"/>
+                app:srcCompat="@drawable/ic_sah_new_other_saldo"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_sah_new_other_saldo_title"
@@ -82,7 +82,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_topads_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_topads_title"
-                tools:src="@tools:sample/avatars"/>
+                app:srcCompat="@drawable/ic_sah_new_other_topads"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_sah_new_other_topads_title"
@@ -95,15 +95,12 @@
                 app:layout_constraintBottom_toBottomOf="@id/guideline_sah_new_other_topads"
                 app:typographyType="body_3"/>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_sah_new_other_topads_value"
+            <com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
+                android:id="@+id/topads_topup_view_sah"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_NN950"
                 app:layout_constraintTop_toTopOf="@id/guideline_sah_new_other_topads"
-                app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="heading_5"
-                tools:text="Top up sekarang!"/>
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_sah_new_other_topads"
