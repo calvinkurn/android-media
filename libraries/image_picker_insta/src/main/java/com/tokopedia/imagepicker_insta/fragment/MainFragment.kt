@@ -277,8 +277,10 @@ class MainFragment : Fragment(), MainFragmentContract {
                     if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
                         imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
                         imageAdapter.clearSelectedItems()
-                        imageAdapter.addSelectedItem(1)
-                        selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+
+                        if(imageAdapter.addSelectedItem(1)) {
+                            selectedMediaView.loadAsset(it.data.mediaImporterData.imageAdapterDataList.first().asset)
+                        }
 
                         //update folders
                         if (!it.data.folderDataList.isNullOrEmpty()) {

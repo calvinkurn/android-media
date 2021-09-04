@@ -32,8 +32,14 @@ class ImageAdapter(
         return selectedPositionMap.isEmpty()
     }
 
-    fun addSelectedItem(position: Int) {
+    fun addSelectedItem(position: Int):Boolean {
+        if(dataList[position].asset is VideoData){
+            if(!(dataList[position].asset as VideoData).canBeSelected){
+                return false
+            }
+        }
         selectedPositionMap[position] = selectedPositionMap.size + 1
+        return true
     }
 
     fun clearSelectedItems() {
