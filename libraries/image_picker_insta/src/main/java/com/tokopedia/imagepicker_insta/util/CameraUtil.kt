@@ -20,9 +20,8 @@ object CameraUtil {
 
     val REQUEST_IMAGE_CAPTURE = 200
     fun openCamera(weakFragment: WeakReference<Fragment?>?): String? {
-//        return dispatchTakePictureIntent(weakFragment)
         weakFragment?.get()?.let {
-            it.startActivity(CameraActivity.getIntent(it.requireContext()))
+            it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList()))
         }
         return null
 

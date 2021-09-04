@@ -5,6 +5,7 @@ import android.content.Intent
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -29,8 +30,16 @@ class CameraActivity : BaseActivity() {
     lateinit var imageSelfieCamera: AppCompatImageView
 
     companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, CameraActivity::class.java)
+        const val BUNDLE_KEY_URIS = "uris"
+
+        fun getIntent(context: Context, fileUriList: List<Uri>): Intent {
+            val uriList = ArrayList<String>()
+            fileUriList.forEach {
+                uriList.add(it.toString())
+            }
+            val intent = Intent(context, CameraActivity::class.java)
+            intent.putExtra(BUNDLE_KEY_URIS, uriList)
+            return intent
         }
     }
 
