@@ -22,7 +22,7 @@ class CameraButton @JvmOverloads constructor(
     lateinit var imageCapture: AppCompatImageView
     var countDownTimer: CountDownTimer? = null
     val longPressHandler = android.os.Handler()
-    var longTime = 0L
+    var longTimeMillis = 0L
     val ANIMATION_DURATION = 300L
     var cameraButtonListener: CameraButtonListener?=null
     var imageCaptureAction = MotionEvent.ACTION_CANCEL
@@ -50,7 +50,7 @@ class CameraButton @JvmOverloads constructor(
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     imageCaptureAction = event.action
-                    longTime = System.currentTimeMillis() / 1000
+                    longTimeMillis = System.currentTimeMillis()
                     longPressHandler.postDelayed({
                         if (imageCaptureAction == MotionEvent.ACTION_DOWN){
                             onLongPressStart()
@@ -61,13 +61,14 @@ class CameraButton @JvmOverloads constructor(
                 }
                 MotionEvent.ACTION_UP -> {
                     imageCaptureAction = event.action
-                    val currentTime = System.currentTimeMillis() / 1000
-                    if (currentTime - longTime < ON_CLICK_TIME) {
+                    val currentTime = System.currentTimeMillis()
+                    val longTimeForDebugMillis = longTimeMillis
+                    if (currentTime - longTimeForDebugMillis < ON_CLICK_TIME) {
                         onClick()
                     } else {
                         onLongPressEnd()
                     }
-                    longTime = 0L
+                    longTimeMillis = 0L
                     return@setOnTouchListener true
                 }
             }
@@ -129,7 +130,7 @@ class CameraButton @JvmOverloads constructor(
      * Start this timer when video recording is started
      * */
     fun startCountDown() {
-        val totalSecondsMillis = 10 * 1000L
+        val totalSecondsMillis = 60 * 1000L
         val interval = 1000L
         countDownTimer = object : CountDownTimer(totalSecondsMillis, interval) {
 

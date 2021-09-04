@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -12,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -22,6 +24,7 @@ import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.VideoData
+import java.io.File
 
 class MediaView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -114,6 +117,12 @@ class MediaView @JvmOverloads constructor(
             .also {
                 playerView.player = it
             }
+
+        simpleExoPlayer?.addListener(object :Player.EventListener{
+            override fun onPlayerError(error: ExoPlaybackException) {
+                super.onPlayerError(error)
+            }
+        })
         scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
@@ -151,8 +160,11 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun createVideoItem(videoData: VideoData) {
-
-        val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(videoData.uri)
+        //TODO Rahul remove dummy
+        val tmpFile = File("/data/user/0/com.tokopedia.tkpd/files/image_picker/VID_20210904_051914_415925773560163203.mp4")
+//        val tmpUri = Uri.fromFile(tmpFile)
+        val tmpUri = videoData.uri
+        val videoSource = ProgressiveMediaSource.Factory(dataFactory).createMediaSource(tmpUri)
         simpleExoPlayer?.prepare(videoSource)
         simpleExoPlayer?.playWhenReady = true
     }

@@ -31,14 +31,17 @@ class VideoImporter : MediaImporter {
                 val isFileSupported = (filePath.endsWith(".mp4"))
 
                 if (isFileSupported) {
-                    val videoData = VideoData(
-                        filePath,
-                        StorageUtil.INTERNAL_FOLDER_NAME,
-                        Uri.fromFile(it),
-                        it.lastModified(),
-                        getFormattedDurationText(it.getMediaDuration(context))
-                    )
-                    videoDataList.add(videoData)
+                    val duration = it.getMediaDuration(context)
+                    if(duration!=null && duration>=1) {
+                        val videoData = VideoData(
+                            filePath,
+                            StorageUtil.INTERNAL_FOLDER_NAME,
+                            Uri.fromFile(it),
+                            it.lastModified(),
+                            getFormattedDurationText(duration)
+                        )
+                        videoDataList.add(videoData)
+                    }
                 }
             }
         }
@@ -53,14 +56,13 @@ class VideoImporter : MediaImporter {
         return "$minuteText:$secondText"
     }
 
-    fun File.getMediaDuration(context: Context): Long {
+    fun File.getMediaDuration(context: Context): Long? {
         if (!exists()) return 0
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(context, Uri.parse(absolutePath))
         val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         retriever.release()
-
-        return duration.toLongOrNull() ?: 0
+        return duration?.toLong()
     }
 
     override fun importMedia(context: Context): MediaImporterData {

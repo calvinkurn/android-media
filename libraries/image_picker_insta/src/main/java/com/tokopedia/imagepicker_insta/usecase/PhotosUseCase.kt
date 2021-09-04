@@ -68,7 +68,6 @@ class PhotosUseCase @Inject constructor() {
 
         val combinedAdapterDataList = ArrayList(photosData.imageAdapterDataList)
         combinedAdapterDataList.addAll(videosData.imageAdapterDataList)
-        sortAdapterDataList(combinedAdapterDataList)
 
         val combinedFolderDataList = getFolderDataListFromFolders(combinedFoldersSet, combinedAdapterDataList)
 
@@ -81,6 +80,7 @@ class PhotosUseCase @Inject constructor() {
         }
 
         if(internalMediaAdapterDataList.isNotEmpty()){
+//            combinedAdapterDataList.clear() //Todo Rahul remove
             combinedAdapterDataList.addAll(internalMediaAdapterDataList)
 
             combinedFolderDataList.add(
@@ -91,6 +91,7 @@ class PhotosUseCase @Inject constructor() {
                 )
             )
         }
+        sortAdapterDataList(combinedAdapterDataList)
 
         val mediaImporterData = MediaImporterData(combinedAdapterDataList, combinedFoldersSet)
         return MediaUseCaseData(mediaImporterData, combinedFolderDataList)

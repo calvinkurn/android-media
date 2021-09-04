@@ -77,17 +77,17 @@ class CameraActivity : BaseActivity() {
             override fun onLongClickStart() {
                 cameraView.mode = Mode.VIDEO
 
-                if (cameraView.isTakingVideo) {
+                if (!cameraView.isTakingVideo) {
                     startRecordingVideo()
                 }
             }
 
             override fun onLongClickEnd() {
-                cameraView.mode = Mode.PICTURE
 
                 if (cameraView.isTakingVideo) {
                     stopRecordingVideo()
                 }
+                cameraView.mode = Mode.PICTURE
             }
 
         }
@@ -135,6 +135,10 @@ class CameraActivity : BaseActivity() {
 
             override fun onVideoRecordingStart() {
                 super.onVideoRecordingStart()
+            }
+
+            override fun onVideoRecordingEnd() {
+                super.onVideoRecordingEnd()
             }
         })
     }
