@@ -12,6 +12,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post_new.*
@@ -129,6 +130,18 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
     private fun postFeed(){
 
+    }
+
+    private fun openImagePicker(title:String, subtitle:String, iconUrl:String){
+        val intent = MainActivity.getIntent(this,
+            title = title,
+            subtitle = subtitle,
+            toolbarIconUrl = iconUrl,
+            applinkForBackNavigation = "",
+            applinkForGalleryProceed = "",
+            applinkToNavigateAfterMediaCapture = ""
+        )
+        startActivity(intent)
     }
 
 }

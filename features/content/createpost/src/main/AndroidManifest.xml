@@ -58,7 +58,19 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_affiliate"
+                    android:pathPattern="@string/applink_cp_path_create_post_v2"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="com.tokopedia.createpost.view.service.SubmitPostService"
