@@ -439,6 +439,7 @@ public interface ApplinkConst {
     String DISCOVERY = "tokopedia://discovery";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
+    String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

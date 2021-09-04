@@ -385,6 +385,10 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE, R.string.title_product_detail))
 
             add(DFP({
+                it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2)
+            }, DF_BASE, R.string.title_image_picker))
+
+            add(DFP({
                 it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
                         it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
                         it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)

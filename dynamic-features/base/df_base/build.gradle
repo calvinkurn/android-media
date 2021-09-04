@@ -157,4 +157,5 @@ dependencies {
 
     //Library
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 }
