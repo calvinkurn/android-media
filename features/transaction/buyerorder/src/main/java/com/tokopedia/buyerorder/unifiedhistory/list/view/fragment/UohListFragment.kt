@@ -1879,7 +1879,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString(),
                     list = list
@@ -1898,7 +1898,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                     name = productName,
                     id = recommendationItem.productId.toString(),
-                    price = recommendationItem.price,
+                    price = recommendationItem.priceInt.toString(),
                     category = recommendationItem.categoryBreadcrumbs,
                     position = index.toString()), topAds, it)
         }
@@ -1932,7 +1932,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name
-        val productPrice = recommendationItem.price
+        val productPrice = recommendationItem.priceInt.toString()
         val productCategory = recommendationItem.categoryBreadcrumbs
         val qty = recommendationItem.quantity.toString()
         val imageUrl = recommendationItem.imageUrl
