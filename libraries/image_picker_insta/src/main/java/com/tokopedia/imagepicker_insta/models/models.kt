@@ -45,5 +45,5 @@ object BundleData {
     val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
     val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
     val APPLINK_FOR_BACK_NAVIGATION = "link_back"
-    val URIS = "image_picker_uris"
+    val URIS = "ip_uris"
 }
