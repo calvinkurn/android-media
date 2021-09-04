@@ -66,10 +66,7 @@ class ShopProductListBaseAdapter(
 
         if (holder.itemView != null) {
             holder.itemView.setOnClickListener { v ->
-//                val bundle = Bundle()
-//                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.code)
-//                (holder.imgBanner.context as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_IN_ADAPTER)
-//
+                viewModel.setNewProductValue(item)
 //                sendClickEvent(itemContext, item, holder.getAdapterPosition())
             }
         }

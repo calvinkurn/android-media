@@ -14,6 +14,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     val pageData = MutableLiveData<Resources<GetShopProduct>>()
     val sortLiveData = MutableLiveData<Resources<GetShopPagePListSortModel>>()
     val newSortValeLiveData = MutableLiveData<ShopPagePListSortItem>()
+    val newProductValLiveData = MutableLiveData<ShopPageProduct>()
     private val gql = MultiRequestGraphqlUseCase()
     private val gqlSort = MultiRequestGraphqlUseCase()
     private var shopId: Int = -1
@@ -26,6 +27,10 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
 
     fun setNewSortValue(value: ShopPagePListSortItem) {
         newSortValeLiveData.value = value
+    }
+
+    fun setNewProductValue(value: ShopPageProduct) {
+        newProductValLiveData.value = value
     }
 
     fun getList(pageNumber: Int) {

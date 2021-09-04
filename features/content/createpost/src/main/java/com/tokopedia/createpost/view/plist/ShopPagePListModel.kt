@@ -2,6 +2,7 @@ package com.tokopedia.createpost.view.plist
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
+import java.io.Serializable
 
 data class GetShopProduct(
     @field:SerializedName("GetShopProduct")
@@ -22,7 +23,7 @@ data class Paging(
 )
 
 
-data class ShopPageProduct(
+data class ShopPageProduct (
     @field:SerializedName("name")
     val name: String? = null,
 
@@ -37,7 +38,7 @@ data class ShopPageProduct(
 
     @field:SerializedName("campaign")
     val campaign: Campaign
-) : BaseItem()
+) : BaseItem(),  Serializable
 
 data class PrimaryImage(
     @field:SerializedName("resize300")
