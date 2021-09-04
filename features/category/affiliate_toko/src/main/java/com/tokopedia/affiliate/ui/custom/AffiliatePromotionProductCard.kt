@@ -1,49 +1,43 @@
 package com.tokopedia.affiliate.ui.custom
 
-import androidx.annotation.IntDef
 import com.tokopedia.affiliate.model.AffiliateSearchData
 import com.tokopedia.productcard.ProductCardModel
 
 class AffiliatePromotionProductCard  {
 
+    enum class AdditionalInfoType(val type : Int){
+        COMMISSION_AMOUNT_TYPE(1),
+        DISCOUNT_PERCENTAGE_TYPE(2),
+        SLASHED_PRICE_TYPE(3),
+        FINAL_PRICE_TYPE(4)
+    }
+
+    enum class FooterType(val type : Int){
+        SHOP(1),
+        RATING(2)
+    }
+
     companion object {
-        const val COMMISSION_AMOUNT_TYPE = 1
-        const val DISCOUNT_PERCENTAGE_TYPE = 2
-        const val SLASHED_PRICE_TYPE = 3
-        const val FINAL_PRICE_TYPE = 4
-
-        const val SHOP = 1
-        const val RATING = 2
-
-        @IntDef(value = [COMMISSION_AMOUNT_TYPE,DISCOUNT_PERCENTAGE_TYPE,SLASHED_PRICE_TYPE,FINAL_PRICE_TYPE])
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class AdditionalInfoType
-
-
-        @IntDef(value = [SHOP,RATING])
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class FooterType
-
         fun toAffiliateProductModel(item : AffiliateSearchData.Cards.Items) : ProductCardModel{
             return ProductCardModel(
                     productImageUrl = item.image?.android ?: item.image?.ios ?: "",
                     productName = item.title ?: "",
-                    discountPercentage = getAdditionalDataFromType(item, 1),
-                    slashedPrice = getAdditionalDataFromType(item, SLASHED_PRICE_TYPE),
-                    priceRange = getAdditionalDataFromType(item, FINAL_PRICE_TYPE),
+                    discountPercentage = getAdditionalDataFromType(item, AdditionalInfoType.DISCOUNT_PERCENTAGE_TYPE),
+                    slashedPrice = getAdditionalDataFromType(item, AdditionalInfoType.SLASHED_PRICE_TYPE),
+                    priceRange = getAdditionalDataFromType(item, AdditionalInfoType.FINAL_PRICE_TYPE),
                     labelGroupList = arrayListOf(ProductCardModel.LabelGroup("category",
-                            getAdditionalDataFromType(item, COMMISSION_AMOUNT_TYPE),"textGreen"),
+                            getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),"textGreen"),
                             ProductCardModel.LabelGroup("status","Toko Tidak Aktif",
                                     "transparentBlack")),
-                    shopBadgeList = arrayListOf(ProductCardModel.ShopBadge(getFooterDataFromType(item,SHOP)?.footerIcon?.isNotEmpty() == true,
-                            getFooterDataFromType(item,SHOP)?.footerIcon ?: "")),
-                    shopLocation = getFooterDataFromType(item,SHOP)?.footerText ?: "",
-                    countSoldRating = getFooterDataFromType(item,RATING)?.footerText ?: ""
+                    shopBadgeList = arrayListOf(ProductCardModel.ShopBadge(getFooterDataFromType(item,FooterType.SHOP)?.footerIcon?.isNotEmpty() == true,
+                            getFooterDataFromType(item,FooterType.SHOP)?.footerIcon ?: "")),
+                    shopLocation = getFooterDataFromType(item,FooterType.SHOP)?.footerText ?: "",
+                    countSoldRating = getFooterDataFromType(item,FooterType.RATING)?.footerText ?: ""
             )
         }
 
-        private fun getAdditionalDataFromType(item : AffiliateSearchData.Cards.Items, @AdditionalInfoType type : Int) : String{
-            val data = (item.additionalInformation?.find{ it.type == type})?.htmlText
+        private fun getAdditionalDataFromType(item : AffiliateSearchData.Cards.Items, type : AdditionalInfoType) : String{
+            val data = (item.additionalInformation?.find{ it.type == type.type})?.htmlText
             return if (data?.isNotEmpty() == true){
                 data
             }else {
@@ -51,8 +45,8 @@ class AffiliatePromotionProductCard  {
             }
         }
 
-        private fun getFooterDataFromType(item : AffiliateSearchData.Cards.Items, @FooterType type : Int) : AffiliateSearchData.Cards.Items.Footer?{
-            return (item.footer?.find{ it.footerType == type})
+        private fun getFooterDataFromType(item : AffiliateSearchData.Cards.Items,type : FooterType) : AffiliateSearchData.Cards.Items.Footer?{
+            return (item.footer?.find{ it.footerType == type.type})
         }
     }
 }
