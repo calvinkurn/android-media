@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.settings.view.animator
 
-import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 

@@ -33,6 +33,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
+import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -71,6 +72,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private var motionLayoutAnimator: OtherMenuContentAnimator? = null
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
+    private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -135,6 +137,9 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     override fun onShareButtonAnimationCompleted() {
         topadsTopupView?.run {
             toggleTopadsTopupWithAnimation()
+            setOnAnimationFinishedListener {
+                secondaryShopInfoAnimator?.swipeRecyclerViewGently()
+            }
         }
     }
 
@@ -184,6 +189,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
             secondaryInfoRecyclerView?.run {
                 layoutManager = LinearLayoutManager(it, RecyclerView.HORIZONTAL, false)
                 adapter = secondaryInfoAdapter
+                secondaryShopInfoAnimator = SecondaryShopInfoAnimator(this)
             }
             secondaryInfoAdapter?.showInitialInfo()
         }
