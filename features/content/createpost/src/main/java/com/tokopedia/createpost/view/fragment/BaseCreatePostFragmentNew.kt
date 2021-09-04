@@ -36,13 +36,14 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     @Inject
     lateinit var affiliateAnalytics: AffiliateAnalytics
 
-    protected var viewModel: CreatePostViewModel = CreatePostViewModel()
+    protected var createPostModel: CreatePostViewModel = CreatePostViewModel()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var createContentViewModelPresenter: CreateContentPostViewModel
-
-
+    protected val createContentPostViewModel: CreateContentPostViewModel by lazy {
+        val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory)
+        viewModelProvider.get(CreateContentPostViewModel::class.java)
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -67,10 +68,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         presenter.attachView(this)
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            createContentViewModelPresenter = viewModelProvider.get(CreateContentPostViewModel::class.java)
-        }
+
         initVar(savedInstanceState)
             fetchContentForm()
 
@@ -78,12 +76,12 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     protected open fun initVar(savedInstanceState: Bundle?) {
         when {
             savedInstanceState != null -> {
-                viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
-                createContentViewModelPresenter.setNewContentData(viewModel)
+                createPostModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
+                createContentPostViewModel.setNewContentData(createPostModel)
             }
             arguments != null -> {
-                viewModel.postId = requireArguments().getString(PARAM_POST_ID, "")
-                viewModel.authorType = requireArguments().getString(PARAM_TYPE, "")
+                createPostModel.postId = requireArguments().getString(PARAM_POST_ID, "")
+                createPostModel.authorType = requireArguments().getString(PARAM_TYPE, "")
             }
             else -> {
                 activity?.finish()
@@ -93,8 +91,8 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        createContentViewModelPresenter._createPostViewModelData.observe(this, Observer {
-            viewModel = it
+        createContentPostViewModel._createPostViewModelData.observe(viewLifecycleOwner, Observer {
+            createPostModel = it
         })
     }
 
@@ -118,27 +116,27 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     ) {
         updateHeader(feedContentForm.authors)
 
-        viewModel.token = feedContentForm.token
-        viewModel.maxImage = feedContentForm.media.maxMedia
-        viewModel.allowImage = feedContentForm.media.allowImage
-        viewModel.allowVideo = feedContentForm.media.allowVideo
-        viewModel.maxProduct = feedContentForm.maxTag
-        viewModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
-        if (viewModel.caption.isEmpty()) viewModel.caption = feedContentForm.caption
+        createPostModel.token = feedContentForm.token
+        createPostModel.maxImage = feedContentForm.media.maxMedia
+        createPostModel.allowImage = feedContentForm.media.allowImage
+        createPostModel.allowVideo = feedContentForm.media.allowVideo
+        createPostModel.maxProduct = feedContentForm.maxTag
+        createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
+        if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 
-        if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
-            viewModel.urlImageList.clear()
-            viewModel.urlImageList.addAll(feedContentForm.media.media.map {
+        if (feedContentForm.media.media.isNotEmpty() && createPostModel.fileImageList.isEmpty()) {
+            createPostModel.urlImageList.clear()
+            createPostModel.urlImageList.addAll(feedContentForm.media.media.map {
                 MediaModel(it.mediaUrl,
                     it.type)
             })
         }
-        createContentViewModelPresenter.setNewContentData(viewModel)
+        createContentPostViewModel.setNewContentData(createPostModel)
 
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(VIEW_MODEL, viewModel)
+        outState.putParcelable(VIEW_MODEL, createPostModel)
     }
     private fun updateHeader(authors: List<Author>) {
             activityListener?.updateHeader(HeaderViewModel(

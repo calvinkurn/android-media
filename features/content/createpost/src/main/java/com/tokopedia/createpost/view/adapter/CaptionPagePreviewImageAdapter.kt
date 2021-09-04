@@ -37,9 +37,7 @@ class CaptionPagePreviewImageAdapter(
             with(itemView){
                 content_preview_page_image.setImageUrl(imageItemData.path)
                 content_preview_page_product_tag.showWithCondition(imageItemData.products.isNotEmpty())
-                content_preview_page_product_tag.setOnClickListener {
-                    onTagProductClick?.invoke(imageItemData.products)
-                }
+
             }
         }
     }

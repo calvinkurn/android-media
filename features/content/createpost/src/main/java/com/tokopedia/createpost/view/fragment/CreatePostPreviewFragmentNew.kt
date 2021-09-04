@@ -59,7 +59,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private val imageList: ArrayList<String>
-        get() = ArrayList(viewModel.completeImageList.map { it.path })
+        get() = ArrayList(createPostModel.completeImageList.map { it.path })
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
@@ -80,7 +80,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
+        presenter.fetchContentForm(createPostModel.productIdList, createPostModel.authorType, createPostModel.postId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,12 +90,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun initVar() {
-        viewModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
+        createPostModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
 
     }
 
     private fun initView() {
-        val relatedProducts = ArrayList(viewModel.relatedProducts)
+        val relatedProducts = ArrayList(createPostModel.relatedProducts)
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
         image_position_text?.text = context?.let {
@@ -104,11 +104,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     "(1/${imageList.size})")
             )
         }
-        val mediaModel = viewModel.completeImageList[viewModel.currentCorouselIndex]
+        val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         product_tag_button.setOnClickListener {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
-            viewModel.completeImageList[viewModel.currentCorouselIndex].tags.add(
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
                 FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
             openProductTaggingScreen()
 
@@ -116,7 +116,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         content_tag_product_text.setOnClickListener {
             removeExtraTagListElement(mediaModel)
             val tagListSize = mediaModel.tags.size
-            viewModel.completeImageList[viewModel.currentCorouselIndex].tags.add(
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags.add(
                 FeedXMediaTagging(tagIndex = tagListSize, posX = 0.5f, posY = 0.5f))
             openProductTaggingScreen()
         }
@@ -129,7 +129,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             val tagListSize = mediaModel.tags.size
             val extraSize = tagListSize - mediaModel.products.size
             for (i in 0 until extraSize) {
-                viewModel.completeImageList[viewModel.currentCorouselIndex]
+                createPostModel.completeImageList[createPostModel.currentCorouselIndex]
                     .tags.removeAt((tagListSize + i) - 1)
             }
 
@@ -138,7 +138,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun updateResultIntent() {
-        createContentViewModelPresenter.setNewContentData(viewModel)
+        createContentPostViewModel.setNewContentData(createPostModel)
     }
 
 
@@ -156,7 +156,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 page_indicator.hide()
             }
 
-            viewModel.completeImageList.forEachIndexed() { index, feedMedia ->
+            createPostModel.completeImageList.forEachIndexed() { index, feedMedia ->
 
                 if (feedMedia.type == MediaType.IMAGE) {
                     val products = feedMedia.products
@@ -189,8 +189,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                     val y = e?.y ?: 0L
                                     val posX = round((x.toFloat() / imageItem.width) * 10) / 10
                                     val posY = round((y.toFloat() / imageItem.height) * 10) / 10
-                                    val tagIndex = viewModel.completeImageList[index].tags.size
-                                    viewModel.completeImageList[index].tags.add(FeedXMediaTagging(
+                                    val tagIndex = createPostModel.completeImageList[index].tags.size
+                                    createPostModel.completeImageList[index].tags.add(FeedXMediaTagging(
                                         tagIndex = tagIndex,
                                         posX = posX,
                                         posY = posY))
@@ -235,15 +235,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             }
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    viewModel.currentCorouselIndex = current
+                    createPostModel.currentCorouselIndex = current
                     page_indicator.setCurrentIndicator(current)
                     val position = "(${current + 1}/${imageList.size})"
                     image_position_text.text = String.format(
                         context.getString(R.string.feed_content_position_text),
                         position
                     )
-                    if (viewModel.completeImageList[current].type == MediaType.VIDEO) {
-                        playVideo(viewModel.completeImageList[current],
+                    if (createPostModel.completeImageList[current].type == MediaType.VIDEO) {
+                        playVideo(createPostModel.completeImageList[current],
                             current)
                     }
 
@@ -262,7 +262,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         videoItem?.layoutParams = param
-        viewModel.completeImageList[position].videoView = videoItem
+        createPostModel.completeImageList[position].videoView = videoItem
         videoItem?.run {
             contentVideoPreviewImage?.setImageUrl(imageList[position])
             bindVideo(feedMedia)
@@ -283,8 +283,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         mediaModel: MediaModel,
         index: Int
     ) {
-        val videoItem = viewModel.completeImageList[index].videoView
-        viewModel.completeImageList[index].isPlaying = true
+        val videoItem = createPostModel.completeImageList[index].videoView
+        createPostModel.completeImageList[index].isPlaying = true
         videoItem?.run {
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -292,19 +292,19 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     videoPlayer = FeedExoPlayer(context)
                 feed_content_layout_video?.player = videoPlayer?.getExoPlayer()
                 feed_content_layout_video?.videoSurfaceView?.setOnClickListener {
-                    if (viewModel.completeImageList[index].isPlaying) {
+                    if (createPostModel.completeImageList[index].isPlaying) {
                         videoPlayer?.pause()
                         showVideoLoading()
-                        viewModel.completeImageList[index].isPlaying = false
+                        createPostModel.completeImageList[index].isPlaying = false
                     } else {
                         hideVideoLoading()
                         videoPlayer?.resume()
-                        viewModel.completeImageList[index].isPlaying = true
+                        createPostModel.completeImageList[index].isPlaying = true
                     }
 
                 }
                 content_product_tagging_parent?.setOnClickListener {
-                    openBottomSheet(viewModel.completeImageList[index].products)
+                    openBottomSheet(createPostModel.completeImageList[index].products)
                 }
 
                 videoPlayer?.start(mediaModel.path, isMute)
@@ -348,26 +348,26 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     override fun deleteItemFromProductTagList(position: Int) {
 
-        val currentImagePos = viewModel.currentCorouselIndex
+        val currentImagePos = createPostModel.currentCorouselIndex
 //        try {
-            viewModel.completeImageList[currentImagePos].products.removeAt(position)
-            viewModel.completeImageList[currentImagePos].tags.removeAt(position)
+            createPostModel.completeImageList[currentImagePos].products.removeAt(position)
+            createPostModel.completeImageList[currentImagePos].tags.removeAt(position)
 //        } catch (e: Exception) {
 //            Timber.e(e)
 //        }
-        removeExtraTagListElement(viewModel.completeImageList[currentImagePos])
+        removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
 
         //update tagIndex
-        viewModel.completeImageList[currentImagePos].tags.forEachIndexed { index, feedXMediaTagging ->
+        createPostModel.completeImageList[currentImagePos].tags.forEachIndexed { index, feedXMediaTagging ->
             feedXMediaTagging.tagIndex = index
         }
 
-        if (viewModel.completeImageList[currentImagePos].products.size == 0) {
+        if (createPostModel.completeImageList[currentImagePos].products.size == 0) {
             if (::contentProductTagBS.isInitialized)
                 contentProductTagBS.dismiss()
 
         }
-        val mediaModel = viewModel.completeImageList[currentImagePos]
+        val mediaModel = createPostModel.completeImageList[currentImagePos]
 
         if (mediaModel.type == MediaType.VIDEO)
             bindVideo(mediaModel)
@@ -400,9 +400,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
         intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, "")
         intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
-            viewModel.maxProduct - viewModel.productIdList.size)
+            createPostModel.maxProduct - createPostModel.productIdList.size)
         intent.putStringArrayListExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN,
-            ArrayList(viewModel.productIdList))
+            ArrayList(createPostModel.productIdList))
 
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
@@ -423,12 +423,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             ?: arrayListOf()
 
         products.forEach {
-            viewModel.productIdList.add(it.productId)
+            createPostModel.productIdList.add(it.productId)
             val relatedProductItem = mapResultToRelatedProductItem(it)
-            viewModel.completeImageList[viewModel.currentCorouselIndex].products.add(
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
                 relatedProductItem)
         }
-        val mediaModel = viewModel.completeImageList[viewModel.currentCorouselIndex]
+        val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
         if (mediaModel.products.size > 0) {
             if (mediaModel.type == MediaType.VIDEO)
@@ -459,7 +459,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
             lihatProductTagView.setOnClickListener {
-                openBottomSheet(viewModel.completeImageList[viewModel.currentCorouselIndex].products)
+                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products)
             }
             val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
             val childCount = layout?.childCount ?: 0
@@ -487,7 +487,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         mediaModel.videoView?.run {
             content_product_tagging_parent.showWithCondition(mediaModel.products.isNotEmpty())
             content_product_tagging_parent?.setOnClickListener {
-                openBottomSheet(viewModel.completeImageList[viewModel.currentCorouselIndex].products)
+                openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products)
             }
 
         }

@@ -7,10 +7,14 @@ import javax.inject.Inject
 
 class CreateContentPostViewModel@Inject constructor(
 ) : BaseViewModel(Dispatchers.Main) {
-     val _createPostViewModelData = MutableLiveData<CreatePostViewModel>()
+    val _createPostViewModelData = MutableLiveData<CreatePostViewModel>()
 
-     fun setNewContentData(createPostViewModel: CreatePostViewModel) {
-       _createPostViewModelData.postValue(createPostViewModel)
+    fun getPostData() : CreatePostViewModel? {
+        return _createPostViewModelData.value
+    }
+
+    fun setNewContentData(createPostViewModel: CreatePostViewModel) {
+        _createPostViewModelData.postValue(createPostViewModel)
 
     }
 
