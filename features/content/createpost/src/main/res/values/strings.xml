@@ -55,4 +55,6 @@
     <string name="cp_label_add_sticker">Aa</string>
 
     <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
