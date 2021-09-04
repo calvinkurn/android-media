@@ -3,12 +3,14 @@ package com.tokopedia.imagepicker_insta
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.fragment.MainFragmentContract
+import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoData
 import com.tokopedia.imagepicker_insta.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.PhotosViewHolder
 import com.tokopedia.imagepicker_insta.viewholders.VideosViewHolder
+import com.tokopedia.unifycomponents.Toaster
 
 class ImageAdapter(
     val dataList: List<ImageAdapterData>,
@@ -142,6 +144,12 @@ class ImageAdapter(
     }
 
     private fun selectItem(position: Int, holder: PhotosViewHolder) {
+        if(dataList[position].asset is VideoData){
+            if(!(dataList[position].asset as VideoData).canBeSelected){
+                mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoImporter.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
+                return
+            }
+        }
         if (selectedPositionMap.size != maxMultiSelectLimit) {
 
             if (!canMultiSelect && selectedPositionMap.isNotEmpty()) {

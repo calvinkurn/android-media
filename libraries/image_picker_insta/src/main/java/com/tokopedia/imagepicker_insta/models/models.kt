@@ -7,7 +7,7 @@ import java.io.File
 abstract class Asset(val assetPath: String, val folder: String, val contentUri: Uri, val createdDate: Long)
 class Camera : Asset("", "", Uri.EMPTY, 0L)
 data class PhotosData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long) : Asset(filePath, folderName, uri, _createdDate)
-data class VideoData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long, val durationText: String) :
+data class VideoData(val filePath: String, val folderName: String, val uri: Uri, val _createdDate: Long, val durationText: String, val canBeSelected:Boolean) :
     Asset(filePath, folderName, uri, _createdDate)
 
 data class MediaImporterData(

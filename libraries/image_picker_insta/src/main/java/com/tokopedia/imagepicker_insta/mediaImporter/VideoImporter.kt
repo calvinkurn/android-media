@@ -17,10 +17,13 @@ import com.tokopedia.imagepicker_insta.util.StorageUtil
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 class VideoImporter : MediaImporter {
+
+    companion object {
+        val DURATION_MAX_LIMIT = 59
+    }
 
     override fun importMediaFromInternalDir(context: Context): List<Asset> {
         val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
@@ -32,13 +35,14 @@ class VideoImporter : MediaImporter {
 
                 if (isFileSupported) {
                     val duration = it.getMediaDuration(context)
-                    if(duration!=null && duration>=1) {
+                    if (duration != null && duration >= 1) {
                         val videoData = VideoData(
                             filePath,
                             StorageUtil.INTERNAL_FOLDER_NAME,
                             Uri.fromFile(it),
                             it.lastModified(),
-                            getFormattedDurationText(duration)
+                            getFormattedDurationText(duration),
+                            isVideoWithinLimit(duration)
                         )
                         videoDataList.add(videoData)
                     }
@@ -54,6 +58,10 @@ class VideoImporter : MediaImporter {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(durationInMillis)
         val minuteText = if (minutes < 10) "0$minutes" else minutes
         return "$minuteText:$secondText"
+    }
+
+    fun isVideoWithinLimit(durationInMillis: Long): Boolean {
+        return (durationInMillis / 1000) <= DURATION_MAX_LIMIT
     }
 
     fun File.getMediaDuration(context: Context): Long? {
@@ -126,7 +134,8 @@ class VideoImporter : MediaImporter {
                                         index
                                     ),
                                     _createdDate = dateLong,
-                                    durationText = getFormattedDurationText(duration)
+                                    durationText = getFormattedDurationText(duration),
+                                    canBeSelected = isVideoWithinLimit(duration)
                                 )
                                 folders.add(folderName)
                                 videosList.add(videosData)

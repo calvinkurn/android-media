@@ -250,7 +250,7 @@ class MainFragment : Fragment(), MainFragmentContract {
 
     override fun showToast(message: String, toasterType: Int) {
         view?.let {
-            Toaster.build(it, message, toasterType).show()
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType).show()
         }
     }
 
@@ -366,7 +366,7 @@ class MainFragment : Fragment(), MainFragmentContract {
         }
     }
 
-    private fun reset(){
+    private fun reset() {
         if (selectedMediaView.asset != null) {
             selectedMediaView.removeAsset()
         }
