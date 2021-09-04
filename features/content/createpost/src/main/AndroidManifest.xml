@@ -52,6 +52,14 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity
+            android:name="com.tokopedia.createpost.view.activity.CreatePostActivityNew"
+            android:label="@string/cp_title_create_post"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <service
             android:name="com.tokopedia.createpost.view.service.SubmitPostService"
             android:enabled="true"

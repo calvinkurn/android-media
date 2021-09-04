@@ -55,4 +55,19 @@
     <string name="cp_label_add_sticker">Aa</string>
 
     <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
+
+    <!--CONTENT-->
+    <string name="feed_content_position_text">Tag produk pada postingan ini %s</string>
+    <string name="feed_content_post_tag_text">Lihat Barang</string>
+    <string name="feed_content_tag_product_text">Tag Produk</string>
+    <string name="feed_content_product_bottom_sheet_name">Yang ada di foto ini</string>
+    <string name="feed_content_caption_text">Tulis keterangan...</string>
+    <string name="feed_content_post_sebagai">Post sebagai</string>
+    <string name="feed_content_dialog_title">Yakin nggak lanjut tag produk?</string>
+    <string name="feed_content_dialog_desc">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>
+    <string name="feed_content_primary_cta_text">Lanjut Tag Produk</string>
+    <string name="feed_content_sec_cta_text">Keluar</string>
+    <string name="feed_content_text_lanjut">Lanjut</string>
+    <string name="feed_content_text_post">Post</string>
+    <string name="feed_content_delete_toaster_text">Tag produk telah dihapus.</string>
 </resources>
