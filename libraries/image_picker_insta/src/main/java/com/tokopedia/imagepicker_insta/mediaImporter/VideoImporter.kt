@@ -49,8 +49,8 @@ class VideoImporter : MediaImporter {
     }
 
     fun getFormattedDurationText(durationInMillis: Long): String {
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis)
-        val secondText = if (seconds < 10) "0$seconds" else seconds % 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis) % 60
+        val secondText = if (seconds < 10) "0$seconds" else seconds
         val minutes = TimeUnit.MILLISECONDS.toMinutes(durationInMillis)
         val minuteText = if (minutes < 10) "0$minutes" else minutes
         return "$minuteText:$secondText"
