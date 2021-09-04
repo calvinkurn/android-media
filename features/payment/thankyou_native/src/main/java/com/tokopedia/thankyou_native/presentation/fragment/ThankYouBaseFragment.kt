@@ -473,7 +473,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
 
     private fun getOrderListPageIntent(): Intent? {
-        return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
+        return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

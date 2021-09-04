@@ -32,6 +32,7 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
                 productImageUrl,
                 false,
                 333311,
+                "",
                 ""
         )
         val bundleData = Bundle()

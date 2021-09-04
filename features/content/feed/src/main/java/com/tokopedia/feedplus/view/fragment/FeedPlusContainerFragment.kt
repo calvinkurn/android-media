@@ -129,6 +129,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
     private var useNewInbox = false
+    private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -351,9 +352,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initView() {
         hideAllFab(true)
-        if (!userSession.isLoggedIn) {
-            fab_feed.show()
-            fab_feed.setOnClickListener { onGoToLogin() }
+        isSeller = userSession.hasShop() || userSession.isAffiliate
+        if (!userSession.isLoggedIn && !isSeller) {
+            fab_feed.hide()
         }
         setAdapter()
         setViewPager()
@@ -506,7 +507,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFeedFab(whitelistDomain: WhitelistDomain) {
-        fab_feed.show()
+        val isLoggedIn = userSession.isLoggedIn
+        if (isSeller && isLoggedIn)
+            fab_feed.show()
         isFabExpanded = true
         when {
             isSellerMigrationEnabled(context) -> {

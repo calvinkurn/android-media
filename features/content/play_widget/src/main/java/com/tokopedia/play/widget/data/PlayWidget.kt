@@ -23,6 +23,7 @@ data class PlayWidgetItem(
         @SerializedName("appLink") val appLink: String = "",
         @SerializedName("webLink") val webLink: String = "",
         @SerializedName("startTime") val startTime: String = "",
+        @SerializedName("widgetSortingMethod") val widgetSortingMethod: String = "",
         @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
         @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),

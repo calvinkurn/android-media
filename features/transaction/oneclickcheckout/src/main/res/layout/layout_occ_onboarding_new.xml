@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/container_occ_onboarding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -37,6 +38,7 @@
     </com.tokopedia.unifycomponents.ContainerUnify>
 
     <View
+        android:id="@+id/divider_occ_onboarding"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:background="@color/Unify_N50" />

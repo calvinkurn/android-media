@@ -2,15 +2,24 @@ package com.tokopedia.createpost.view.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.view.View
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 
 /**
  * Created by isfaaghyth on 20/03/19.
  * github: @isfaaghyth
  */
 data class MediaModel(
-        val path: String = "",
-        val type: String = "image"
-): Parcelable {
+    val path: String = "",
+    val type: String = "image",
+    var isPlaying: Boolean = false,
+    var tags: MutableList<FeedXMediaTagging> = arrayListOf(),
+    var products: MutableList<RelatedProductItem> = arrayListOf(),
+    @Transient
+    var videoView: View? = null,
+    @Transient
+    var imageView: View? = null
+) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString()?: "",
             parcel.readString()?: "")

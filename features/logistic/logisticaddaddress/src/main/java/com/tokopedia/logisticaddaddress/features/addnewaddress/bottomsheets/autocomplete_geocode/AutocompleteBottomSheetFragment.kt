@@ -2,17 +2,17 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.aut
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.BottomSheets.BottomSheetsState.FULL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.Place
@@ -27,6 +27,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -38,14 +39,13 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-13.
  */
-class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetAdapter.ActionListener {
+class AutocompleteBottomSheetFragment : BottomSheetUnify(), AutocompleteBottomSheetAdapter.ActionListener {
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentSearch: String = ""
     private var actionListener: ActionListener? = null
-    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
-    private val defaultLat: Double by lazy { -6.175794 }
-    private val defaultLong: Double by lazy { 106.826457 }
+    private val defaultLat: Double by lazy { DEFAULT_LAT }
+    private val defaultLong: Double by lazy { DEFAULT_LONG }
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var isFullFlow: Boolean = true
@@ -60,6 +60,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
 
     private val viewModel by lazy {
         ViewModelProvider(this, factory).get(AutoCompleteBottomSheetViewModel::class.java)
+    }
+
+    init {
+        isFullpage = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,20 +86,25 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         setObservers()
     }
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_autocomplete
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun title(): String {
-        return getString(R.string.title_bottomsheet_search_location)
-    }
 
-    override fun state(): BottomSheetsState {
-        return FULL
-    }
+     fun initView() {
+        binding = BottomsheetAutocompleteBinding.inflate(LayoutInflater.from(context), null, false)
+         setChild(binding.root)
+         setTitle(getString(R.string.title_bottomsheet_search_location))
+         setCloseClickListener {
+             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(isFullFlow, isLogisticLabel)
+             hideKeyboardAndDismiss()
+         }
 
-    override fun initView(view: View) {
-        binding = BottomsheetAutocompleteBinding.bind(view)
         adapter = AutocompleteBottomSheetAdapter(this)
         hideListLocation()
 
@@ -129,16 +138,14 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
 
     private fun setViewListener() {
         if (currentSearch.isNotEmpty()) {
-            binding.etSearchLogistic.apply {
-                setText(currentSearch)
-                selectAll()
+            binding.layoutSearch.apply {
+                searchBarTextField.setText(currentSearch)
+                searchBarTextField.selectAll()
                 requestFocus()
-                setListenerClearBtn()
-                setSelection(text.length)
+                searchBarTextField.setSelection(searchBarTextField.text.length)
             }
             loadAutocomplete(currentSearch)
         } else {
-            binding.icClose.visibility = View.GONE
             context?.let {
                 if (!AddNewAddressUtils.isLocationEnabled(it)) {
                     // When user does not enable location
@@ -150,18 +157,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
             }
         }
 
-        binding.etSearchLogistic.run {
+        binding.layoutSearch.searchBarTextField.run {
             setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
             }
+
             rxEditText(this).subscribe(object : Subscriber<String>() {
                 override fun onNext(t: String) {
                     if (t.isNotEmpty()) {
-                        binding.icClose.visibility = View.VISIBLE
-                        setListenerClearBtn()
                         loadAutocomplete(t)
-                    } else {
-                        binding.icClose.visibility = View.GONE
                     }
                 }
 
@@ -203,23 +207,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
                 }
             }
         })
-    }
-
-    private fun setListenerClearBtn() {
-        binding.icClose.setOnClickListener {
-            binding.etSearchLogistic.setText("")
-            hideListLocation()
-            binding.icClose.visibility = View.GONE
-        }
-    }
-
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(isFullFlow, isLogisticLabel)
-            hideKeyboardAndDismiss()
-        }
     }
 
     fun initInjector() {
@@ -274,7 +261,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
             putExtra(EXTRA_IS_FULL_FLOW, isFullFlow)
             putExtra(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
             putExtra(EXTRA_IS_CIRCUIT_BREAKER, true)
-            startActivityForResult(this, 1212)
+            startActivityForResult(this, ADD_EDIT_ADDRESS_REQUEST)
         }
     }
 
@@ -307,7 +294,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
      * won't work probably due to some API changes from Google
      */
     private fun hideKeyboardAndDismiss() {
-        AddNewAddressUtils.hideKeyboard(binding.etSearchLogistic, context)
+        AddNewAddressUtils.hideKeyboard(binding.layoutSearch.searchBarTextField, context)
         dismiss()
     }
 
@@ -325,6 +312,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         private const val CURRENT_LAT = "CURRENT_LAT"
         private const val CURRENT_LONG = "CURRENT_LONG"
         private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+        private const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+
+        private const val DEFAULT_LAT = -6.175794
+        private const val DEFAULT_LONG = 106.826457
+        private const val ADD_EDIT_ADDRESS_REQUEST = 1212
 
         fun newInstance(currentLat: Double, currentLong: Double, currentSearch: String, isLogisticLabel: Boolean): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
