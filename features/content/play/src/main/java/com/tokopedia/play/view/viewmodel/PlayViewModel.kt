@@ -671,34 +671,6 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
 
         checkLeaderboard(channelData.id)
-
-//        viewModelScope.launch {
-//            var index = 0
-//            while(true) {
-//                delay(3000)
-//                val text = if (index % 2 == 0) "eggy & 5 penonton lainnya <b>follow toko<b> ini, index ${index++}"
-//                else "eggy & 5, index ${index++}"
-//                _uiEvent.emit(
-//                        ShowRealTimeNotificationEvent(
-//                                RealTimeNotificationUiModel(
-//                                        "",
-//                                        MethodChecker.fromHtml(text),
-//                                        "#50BA47"
-//                                )
-//                        )
-//                )
-//            }
-//        }
-//
-//        viewModelScope.launch {
-//            while(true) {
-//                delay(300)
-//                setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
-//            }
-//        }
-
-//        setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
-//        setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
