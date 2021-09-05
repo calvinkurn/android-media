@@ -3,11 +3,11 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
@@ -24,6 +24,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
@@ -51,6 +52,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
+        private val bestSellerMapper: BestSellerMapper,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -189,14 +191,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                 }
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP){
-                    val data =    getRecommendationUseCaseCoroutine.getData(
-                        GetRecommendationRequestParam(
-                            pageName = "best_seller_ads_os"
-                        )
-                    )
-                    val bestSellerDataModel = converttoBestSellerDataModel(data.first(), it.channel.widgetParam)
-                    _recomWidget.value = Success(bestSellerDataModel)
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_BEST_SELLING){
+                    fetchRecomWidegtData(it.channel.pageName,  it.channel.widgetParam)
                 }
             }
         }){
@@ -204,16 +200,19 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun converttoBestSellerDataModel(data: RecommendationWidget, widgetParam: String): BestSellerDataModel {
-        return BestSellerDataModel(
-            id = data.tid,
-            title = data.title,
-            subtitle = data.subtitle,
-            seeMoreAppLink = data.seeMoreAppLink,
-            pageName = data.pageName,
-            recommendationItemList = data.recommendationItemList,
-            widgetParam = widgetParam
-        )
+    private suspend fun fetchRecomWidegtData(pageName: String, widgetParam: String) {
+        try {
+            val data = getRecommendationUseCaseCoroutine.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    queryParam = widgetParam
+                )
+            )
+            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
+            _recomWidget.value = Success(bestSellerDataModel)
+        } catch (t: Throwable) {
+            Fail(t)
+        }
     }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {

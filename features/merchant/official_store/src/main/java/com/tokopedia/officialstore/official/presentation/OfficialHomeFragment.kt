@@ -122,6 +122,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
     private var localChooseAddress: OSChooseAddressData? = null
+    private var recommendationWishlistItem: RecommendationItem? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -218,9 +219,11 @@ class OfficialHomeFragment :
         viewModel.recomWidget.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     officialHomeMapper.mappingRecomWidget(it.data, adapter)
                 }
                 is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     showErrorNetwork(it.throwable)
                 }
 
@@ -998,34 +1001,28 @@ class OfficialHomeFragment :
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition)
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition) as HashMap<String, Any>)
     }
 
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        recommendationWishlistItem = recommendationItem
-//        showProductCardOptions(
-//            this,
-//            recommendationItem.createProductCardOptionsModel(widgetPosition))
+        recommendationWishlistItem = recommendationItem
+        showProductCardOptions(
+            this,
+            recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
-//        BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
-//        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
     }
 
     override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-//        BestSellerWidgetTracker.sendViewAllClickTracker(bestSellerDataModel.id, bestSellerDataModel.title, userId)
-//        RouteManager.route(context, appLink)
+        RouteManager.route(context, appLink)
     }
 
     override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-//        BestSellerWidgetTracker.sendViewAllCardClickTracker(bestSellerDataModel.id, bestSellerDataModel.title, userId)
-//        RouteManager.route(context, appLink)
+        RouteManager.route(context, appLink)
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -1040,5 +1037,17 @@ class OfficialHomeFragment :
         }
         return false
 
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }

@@ -127,18 +127,13 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedBrandViewHolder.LAYOUT
     }
 
-    override fun type(recomWidgetDataModel: RecomWidgetDataModel): Int {
-        return RecomWidgetViewHolder.LAYOUT
-    }
-
     override fun type(bestSellerDataModel: BestSellerDataModel): Int {
         return BestSellerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
-//            RecomWidgetViewHolder.LAYOUT -> RecomWidgetViewHolder(view)
-            BestSellerViewHolder.LAYOUT-> BestSellerViewHolder(view,recommendationWidgetListener)
+            BestSellerViewHolder.LAYOUT-> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view)
