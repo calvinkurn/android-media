@@ -31,9 +31,13 @@
         android:textColor="@color/Unify_N0"
         android:ellipsize="end"
         android:lines="1"
+        app:layout_constrainedWidth="true"
         app:layout_constraintTop_toTopOf="@id/layout_sah_new_other_shop_avatar"
         app:layout_constraintStart_toEndOf="@id/layout_sah_new_other_shop_avatar"
+        app:layout_constraintEnd_toStartOf="@id/iv_sah_new_other_shop_name"
         app:layout_constraintBottom_toBottomOf="@id/layout_sah_new_other_shop_avatar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:typographyType="heading_4"
         tools:text="Rockerpowershop"/>
 
@@ -41,12 +45,11 @@
         android:id="@+id/iv_sah_new_other_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
         app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_shop_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_name"
-        app:layout_constraintHorizontal_bias="0"
         app:icon_name="CHEVRON_RIGHT"
         app:icon_color_light_enable="@color/Unify_N0"/>
 

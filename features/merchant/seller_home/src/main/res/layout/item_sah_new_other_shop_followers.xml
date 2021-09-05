@@ -56,7 +56,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/shimmer_sah_new_other_shop_followers_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:corners="@integer/setting_shimmer_radius"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_new_other_shop_followers_desc"
@@ -66,7 +67,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_sah_new_other_shop_followers_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:corners="@integer/setting_shimmer_radius"/>
 
     <include
         layout="@layout/partial_item_sah_new_other_failed"

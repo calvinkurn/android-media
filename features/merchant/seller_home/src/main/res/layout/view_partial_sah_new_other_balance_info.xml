@@ -50,6 +50,27 @@
                 app:typographyType="heading_5"
                 tools:text="Rp0"/>
 
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/shimmer_sah_new_other_balance_saldo"
+                android:layout_width="@dimen/sah_new_other_balance_info_shimmer_width"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_value"
+                app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_value"
+                app:layout_constraintHorizontal_bias="0"
+                app:corners="@integer/setting_shimmer_radius"/>
+
+            <include
+                layout="@layout/partial_item_sah_new_other_failed"
+                android:id="@+id/error_state_sah_new_other_saldo"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_value"
+                app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_value"/>
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_sah_new_other_saldo"
                 android:layout_width="wrap_content"
@@ -101,6 +122,27 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/guideline_sah_new_other_topads"
                 app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/shimmer_sah_new_other_topads"
+                android:layout_width="@dimen/sah_new_other_balance_info_shimmer_width"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/topads_topup_view_sah"
+                app:layout_constraintBottom_toBottomOf="@id/topads_topup_view_sah"
+                app:layout_constraintHorizontal_bias="0"
+                app:corners="@integer/setting_shimmer_radius"/>
+
+            <include
+                layout="@layout/partial_item_sah_new_other_failed"
+                android:id="@+id/error_state_sah_new_other_topads"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@id/shimmer_sah_new_other_topads"
+                app:layout_constraintBottom_toBottomOf="@id/shimmer_sah_new_other_topads"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_sah_new_other_topads"

@@ -30,7 +30,7 @@ class RMTransactionViewHolder(itemView: View?) :
     private val descTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_transaction_desc)
     private val loadingLayout: ConstraintLayout? =
-        itemView?.findViewById(R.id.error_state_sah_new_other_shop_transaction)
+        itemView?.findViewById(R.id.shimmer_sah_new_other_shop_transaction)
     private val errorLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_transaction)
 

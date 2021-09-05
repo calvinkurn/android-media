@@ -79,4 +79,5 @@
     <dimen name="sah_new_other_header_shop_name_margin_bottom">11dp</dimen>
     <dimen name="sah_new_other_header_share_width">18dp</dimen>
     <dimen name="sah_new_other_layout_animation_start_margin_top">200dp</dimen>
+    <dimen name="sah_new_other_balance_info_shimmer_width">112dp</dimen>
 </resources>
