@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,7 +47,13 @@ class ShopOperationalViewHolder(itemView: View?) :
     private fun setSuccessOperationalHour(shopOperational: ShopOperationalData) {
         setOperationalHourTitle(shopOperational)
         setOperationalHourIcon(shopOperational)
-        descTextView?.text = shopOperational.timeDescription
+
+        shopOperational.timeDescriptionRes?.let { timeRes ->
+            descTextView?.text = getString(timeRes)
+        }
+        shopOperational.timeDescription?.let { timeDesc ->
+            descTextView?.text = timeDesc
+        }
 
         successGroup?.show()
         loadingLayout?.gone()
@@ -67,7 +74,7 @@ class ShopOperationalViewHolder(itemView: View?) :
         shopOperationalIcon?.run {
             setImage(
                 newIconId = shopOperational.operationalIconType,
-                newLightEnable = shopOperational.operationalIconColor
+                newLightEnable = MethodChecker.getColor(context, shopOperational.operationalIconColorRes)
             )
         }
     }

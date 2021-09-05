@@ -93,7 +93,6 @@ class NewOtherMenuViewHolder(
 
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
-            dummySuccess()
             toggleTopadsTopupWithAnimation()
             setOnAnimationFinishedListener {
                 secondaryShopInfoAnimator?.swipeRecyclerViewGently()
@@ -121,7 +120,35 @@ class NewOtherMenuViewHolder(
         )
     }
 
-    fun setBalanceSaldoSuccess(saldoString: String) {
+    fun setBalanceSaldoData(state: SettingResponseState<String>) {
+        when (state) {
+            is SettingResponseState.SettingSuccess -> {
+                setBalanceSaldoSuccess(state.data)
+            }
+            is SettingResponseState.SettingError -> {
+                setBalanceSaldoFailed()
+            }
+            else -> {
+                setBalanceSaldoLoading()
+            }
+        }
+    }
+
+    fun setBalanceTopadsData(state: SettingResponseState<String>) {
+        when (state) {
+            is SettingResponseState.SettingSuccess -> {
+                setBalanceTopadsSuccess(state.data)
+            }
+            is SettingResponseState.SettingError -> {
+                setBalanceTopadsFailed()
+            }
+            else -> {
+                setBalanceTopadsLoading()
+            }
+        }
+    }
+
+    private fun setBalanceSaldoSuccess(saldoString: String) {
         balanceSaldoTextView?.run {
             text = saldoString
             show()
@@ -130,7 +157,7 @@ class NewOtherMenuViewHolder(
         shimmerSaldo?.gone()
     }
 
-    fun setBalanceTopadsSuccess(topadsValueString: String) {
+    private fun setBalanceTopadsSuccess(topadsValueString: String) {
         balanceTopadsTopupView?.run {
             setTopadsValue(topadsValueString)
             show()
@@ -139,25 +166,25 @@ class NewOtherMenuViewHolder(
         shimmerTopads?.gone()
     }
 
-    fun setBalanceSaldoLoading() {
+    private fun setBalanceSaldoLoading() {
         balanceSaldoTextView?.invisible()
         errorLayoutSaldo?.gone()
         shimmerSaldo?.show()
     }
 
-    fun setBalanceTopadsLoading() {
+    private fun setBalanceTopadsLoading() {
         balanceTopadsTopupView?.invisible()
         errorLayoutTopads?.gone()
         shimmerTopads?.show()
     }
 
-    fun setBalanceSaldoFailed() {
+    private fun setBalanceSaldoFailed() {
         balanceSaldoTextView?.invisible()
         errorLayoutSaldo?.show()
         shimmerSaldo?.gone()
     }
 
-    fun setBalanceTopadsFailed() {
+    private fun setBalanceTopadsFailed() {
         balanceTopadsTopupView?.invisible()
         errorLayoutTopads?.show()
         shimmerTopads?.gone()
@@ -313,19 +340,6 @@ class NewOtherMenuViewHolder(
         setFreeShippingData(SettingResponseState.SettingSuccess("https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BOE_Badge.png"))
         setReputationBadgeData(SettingResponseState.SettingSuccess("https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg"))
         setShopFollowersData(SettingResponseState.SettingSuccess("100rb"))
-        setShopOperationalData(
-            SettingResponseState.SettingSuccess(
-                ShopOperationalData(
-                    false,
-                    true,
-                    IconUnify.SHOP,
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                    ),
-                    "10.00 WIB"
-                )
-            ))
         setShopStatusData(SettingResponseState.SettingSuccess(
             ShopStatusUiModel(
                 userShopInfoWrapper = UserShopInfoWrapper(

@@ -186,20 +186,6 @@ class ShopSecondaryInfoAdapter(
                 )
             ),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingSuccess("100rb")),
-            ShopOperationalWidgetUiModel(
-                SettingResponseState.SettingSuccess(
-                    ShopOperationalData(
-                        false,
-                        true,
-                        IconUnify.SHOP,
-                        MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                        ),
-                        "10.00 WIB"
-                    )
-                )
-            ),
             ShopStatusWidgetUiModel(SettingResponseState.SettingSuccess(PowerMerchantProStatus.Advanced))
         )
     }

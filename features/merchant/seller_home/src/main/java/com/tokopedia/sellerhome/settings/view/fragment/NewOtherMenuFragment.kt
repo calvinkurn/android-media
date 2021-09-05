@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -24,7 +26,10 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.viewholder.NewOtherMenuViewHolder
+import com.tokopedia.sellerhome.settings.view.viewmodel.NewOtherMenuViewModel
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -40,7 +45,13 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(NewOtherMenuViewModel::class.java)
+    }
 
     private var viewHolder: NewOtherMenuViewHolder? = null
 
@@ -57,6 +68,12 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         context?.let {
             viewHolder = NewOtherMenuViewHolder(view, it, this, userSession, this)
         }
+        observeLiveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllOtherMenuData()
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}
@@ -105,5 +122,71 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     override fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> =
         adapter
+
+    private fun observeLiveData() {
+        observeShopBadge()
+        observeShopTotalFollowers()
+        observeShopStatus()
+        observeShopOperationalHour()
+        observeSaldoBalance()
+        observeKreditTopads()
+        observeFreeShipping()
+        observeIsTopAdsAutoTopup()
+    }
+
+    private fun observeShopBadge() {
+        viewModel.shopBadgeLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setReputationBadgeData(it)
+        }
+    }
+
+    private fun observeShopTotalFollowers() {
+        viewModel.shopTotalFollowersLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopFollowersData(it)
+        }
+    }
+
+    private fun observeShopStatus() {
+        viewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopStatusData(it)
+        }
+    }
+
+    private fun observeShopOperationalHour() {
+        viewModel.shopOperationalLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopOperationalData(it)
+        }
+    }
+
+    private fun observeSaldoBalance() {
+        viewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setBalanceSaldoData(it)
+        }
+    }
+
+    private fun observeKreditTopads() {
+        viewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setBalanceTopadsData(it)
+        }
+    }
+
+    private fun observeFreeShipping() {
+        viewModel.isFreeShippingActive.observe(viewLifecycleOwner) {
+            viewHolder?.setFreeShippingData(it)
+        }
+    }
+
+    private fun observeIsTopAdsAutoTopup() {
+        viewModel.isTopAdsAutoTopupLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    viewHolder?.setIsTopadsAutoTopup(result.data)
+                }
+                is Fail -> {
+                    // TODO: Show toaster error
+                }
+            }
+        }
+    }
 
 }
