@@ -122,7 +122,7 @@ class TopupBillsContactListFragment:
                     ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 val phoneNumber = cursor.getString(cursor.getColumnIndex(
                     ContactsContract.CommonDataKinds.Phone.NUMBER))
-                contacts.add(Contact(name, phoneNumber))
+                contacts.add(Contact(name, formatPrefixClientNumber(phoneNumber)))
             }
         }
         cursor?.close()
@@ -135,6 +135,31 @@ class TopupBillsContactListFragment:
                 CommonTopupBillsDataMapper.mapContactToDataView(this.contacts))
             binding?.commonTopupbillsFavoriteNumberClue?.show()
         }
+    }
+
+    private fun formatPrefixClientNumber(phoneNumber: String?): String {
+        phoneNumber?.run {
+            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
+                return phoneNumber
+            }
+            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
+            if (!phoneNumberWithPrefix.startsWith("0")) {
+                phoneNumberWithPrefix = "0$phoneNumber"
+            }
+            return phoneNumberWithPrefix
+        }
+        return ""
+    }
+
+    private fun validatePrefixClientNumber(phoneNumber: String): String {
+        var phoneNumber = phoneNumber
+        if (phoneNumber.startsWith("62")) {
+            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
+        }
+        if (phoneNumber.startsWith("+62")) {
+            phoneNumber = phoneNumber.replace("+62", "0")
+        }
+        return phoneNumber.replace("[^0-9]+".toRegex(), "")
     }
 
     override fun onContactNumberClick(name: String, number: String) {

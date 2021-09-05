@@ -403,30 +403,32 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderProductFromCustomData() {
         try {
-            if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
+            if (postpaidClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
                 operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
                 operatorSelected?.run {
                     operatorName = operator.attributes.name
                     productName = operatorName
-                    when (inputNumberActionType) {
-                        InputNumberActionType.MANUAL -> {
-                            topupAnalytics.eventInputNumberManual(categoryId, operatorName)
-                        }
-                        InputNumberActionType.CONTACT -> {
-                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                        }
-                        InputNumberActionType.FAVORITE -> {
-                            topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-                        }
-                        InputNumberActionType.CONTACT_HOMEPAGE -> {
-                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                        }
-                        else -> {
 
-                        }
-                    }
+                    // TODO: [Misael] check tracking ini lagi nanti
+//                    when (inputNumberActionType) {
+//                        InputNumberActionType.MANUAL -> {
+//                            topupAnalytics.eventInputNumberManual(categoryId, operatorName)
+//                        }
+//                        InputNumberActionType.CONTACT -> {
+//                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+//                        }
+//                        InputNumberActionType.FAVORITE -> {
+//                            topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+//                        }
+//                        InputNumberActionType.CONTACT_HOMEPAGE -> {
+//                            topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+//                        }
+//                        else -> {
+//
+//                        }
+//                    }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
                     if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
@@ -439,7 +441,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
-                getString(R.string.telco_number_error_not_found)
+                getString(R.string.telco_number_error_prefix_not_found)
             )
         }
     }

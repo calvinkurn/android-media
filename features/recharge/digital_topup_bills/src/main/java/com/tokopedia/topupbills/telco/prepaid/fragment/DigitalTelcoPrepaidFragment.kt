@@ -397,26 +397,34 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderProductFromCustomData() {
         try {
-            if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
+            if (telcoClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
                 showProducts = true
                 val selectedOperator =
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+                validatePhoneNumber(operatorData, telcoClientNumberWidget)
 
-                hitTrackingForInputNumber(selectedOperator)
+                // TODO: [Misael] ini check trackingnya, karena sekarang dari ketikan, kepanggil mulu
+//                hitTrackingForInputNumber(selectedOperator)
                 if (operatorId != selectedOperator.operator.id) {
                     operatorId = selectedOperator.operator.id
                     productId = 0
                     sharedModelPrepaid.setVisibilityTotalPrice(false)
-                    telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    telcoClientNumberWidget.run {
+                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                        clearErrorState()
+                    }
                     renderProductViewPager()
                     getProductListData()
                 }
             }
-        } catch (exception: Exception) {
+        } catch (exception: NoSuchElementException) {
+            operatorId = ""
+            productId = 0
             telcoClientNumberWidget.setErrorInputNumber(
-                getString(R.string.telco_number_error_not_found)
+                getString(R.string.telco_number_error_prefix_not_found),
+                true
             )
         }
     }
@@ -498,7 +506,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData() {
         sharedModelPrepaid.setProductListShimmer(true)
-        validatePhoneNumber(operatorData, telcoClientNumberWidget)
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(
                 DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,

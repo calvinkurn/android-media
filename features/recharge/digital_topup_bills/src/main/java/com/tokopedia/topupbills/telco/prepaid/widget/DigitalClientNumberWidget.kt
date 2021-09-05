@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
@@ -20,7 +22,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactD
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -31,9 +33,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     : FrameLayout(context, attrs, defStyleAttr) {
 
     protected val imgOperator: ImageView
-    protected val btnClear: ImageView
-    protected val inputNumberField: TextFieldUnify
-    protected val btnContactPicker: ImageView
+    protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
 
     private val inputNumberResult: TextView
@@ -47,8 +47,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     init {
         view = View.inflate(context, getLayout(), this)
         imgOperator = view.findViewById(R.id.telco_img_operator)
-        btnClear = view.findViewById(R.id.telco_clear_input_number_btn)
-        btnContactPicker = view.findViewById(R.id.telco_contact_picker_btn)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
 
         layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
@@ -56,16 +54,20 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
         inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
-        btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
-        btnClear.setOnClickListener {
-            inputNumberField.textFieldInput.setText("")
-            inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
+        inputNumberField.icon1.run {
+            setOnClickListener { listener.onNavigateToContact() }
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
+            show()
+        }
+        inputNumberField.clearIconView.setOnClickListener {
+            inputNumberField.editText.setText("")
+            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
-            it.hide()
             imgOperator.hide()
             listener.onClearAutoComplete()
         }
-        inputNumberField.textFieldInput.run {
+
+        inputNumberField.editText.run {
             inputType = InputType.TYPE_CLASS_TEXT
             threshold = AUTOCOMPLETE_THRESHOLD
             dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
@@ -80,9 +82,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (count != 0) {
-                        btnClear.visibility = View.VISIBLE
+                    if (s?.toString()?.isEmpty() == true) {
+                        listener.onClearAutoComplete()
+                        imgOperator.visibility = View.GONE
                     }
+
+                    if (inputNumberField.isInputError) clearErrorState()
+
                     listener.onRenderOperator()
                 }
             })
@@ -113,7 +119,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun clearFocusAutoComplete() {
-        inputNumberField.textFieldInput.clearFocus()
+        inputNumberField.editText.clearFocus()
     }
 
     open fun getLayout(): Int {
@@ -124,10 +130,21 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         this.listener = listener
     }
 
-    fun setErrorInputNumber(errorMessage: String) {
+    fun setErrorInputNumber(errorMessage: String, resetProvider: Boolean = false) {
         inputNumberField.run {
             setMessage(errorMessage)
-            setError(true)
+            isInputError = true
+
+            if (resetProvider) {
+                imgOperator.visibility = View.GONE
+            }
+        }
+    }
+
+    fun clearErrorState() {
+        inputNumberField.run {
+            setMessage("")
+            isInputError = false
         }
     }
 
@@ -140,21 +157,21 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private fun hideErrorInputNumber() {
         inputNumberField.run {
             setMessage("")
-            setError(false)
+            isInputError = false
         }
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.textFieldInput.setText(formatPrefixClientNumber(inputNumber))
+        inputNumberField.editText.setText(formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(inputNumberField.textFieldInput.text.toString())
+        return formatPrefixClientNumber(inputNumberField.editText.text.toString())
     }
 
     fun setContactName(contactName: String) {
         val validatedLabel = validateContactName(contactName)
-        inputNumberField.textFieldWrapper.hint = validatedLabel
+        inputNumberField.textInputLayout.hint = validatedLabel
     }
 
     fun setIconOperator(url: String) {
@@ -182,12 +199,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             mutableListOf(),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
-                    return inputNumberField.textFieldInput.text.toString()
+                    return inputNumberField.editText.text.toString()
                 }
             }
         )
 
-        inputNumberField.textFieldInput.setAdapter(autoCompleteAdapter)
+        inputNumberField.editText.setAdapter(autoCompleteAdapter)
     }
 
     private fun validateContactName(contactName: String): String {
