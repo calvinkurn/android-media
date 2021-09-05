@@ -285,9 +285,10 @@ class PlayFragment @Inject constructor(
     fun setFragmentActive(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
             /**
-             * Workaround because the first UI load is slower
+             * Workaround because the first UI load is slower,
+             * TODO("Maybe find a way to have this logic from viewModel")
              */
-            if (position == 0) delay(500L)
+            if (position == 0) delay(FIRST_FRAGMENT_ACTIVE_DELAY)
             viewLifecycleOwner.awaitResume()
             playViewModel.submitAction(SetChannelActiveAction)
         }
@@ -626,5 +627,6 @@ class PlayFragment @Inject constructor(
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         private const val KEYBOARD_REGISTER_DELAY = 200L
+        private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

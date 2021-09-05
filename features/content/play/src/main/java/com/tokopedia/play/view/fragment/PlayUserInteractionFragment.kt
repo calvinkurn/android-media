@@ -303,14 +303,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
-//        shouldOpenCartPage()
         playViewModel.submitAction(ClickCartAction)
         analytic.clickCartIcon()
     }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
-//        copyToClipboard(content)
-//        showLinkCopiedToaster()
         playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
@@ -537,7 +534,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         handleVideoHorizontalTopBounds()
 
-//        likeView.setEnabled(false)
         videoSettingsView.setFullscreen(orientation.isLandscape)
 
         if (orientation.isLandscape) setupLandscapeView()
@@ -980,11 +976,6 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
-//    private fun shouldOpenCartPage() {
-//        analytic.clickCartIcon()
-//        viewModel.doInteractionEvent(InteractionEvent.CartPage)
-//    }
-
     private fun doSendChat(message: String) {
         playViewModel.sendChat(message)
     }
@@ -1006,18 +997,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun shouldComposeChat() {
         sendChatView?.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
-    }
-
-    private fun doLikeUnlike(shouldLike: Boolean) {
-        //Used to show mock like when user click like
-//        playViewModel.changeLikeCount(shouldLike)
-//
-//        viewModel.doLikeUnlike(
-//                likeParamInfo = playViewModel.likeParamInfo,
-//                shouldLike = shouldLike
-//        )
-
-        analytic.clickLike(shouldLike)
     }
 
     private fun openLoginPage() {

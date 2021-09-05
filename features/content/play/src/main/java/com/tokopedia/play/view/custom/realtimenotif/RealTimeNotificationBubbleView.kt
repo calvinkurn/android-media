@@ -32,18 +32,6 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
         setupView(view)
     }
 
-    fun setNotification(notification: RealTimeNotificationUiModel) {
-        imageNotif.setImageUrl(notification.icon)
-        tvNotifCopy.text = notification.text
-
-        val bgColor = try {
-            Color.parseColor(notification.bgColor)
-        } catch (e: IllegalArgumentException) {
-            Color.parseColor("#AD009F92")
-        }
-        setBackgroundColor(bgColor)
-    }
-
     fun setIconUrl(url: String) {
         imageNotif.setImageUrl(url)
     }

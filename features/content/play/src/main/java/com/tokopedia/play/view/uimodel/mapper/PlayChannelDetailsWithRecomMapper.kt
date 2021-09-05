@@ -103,8 +103,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     welcomeFormatResponse
             ),
             lifespan = if (config.lifespan <= 0) DEFAULT_LIFESPAN_IN_MS else config.lifespan,
-//                welcomeNotification = RealTimeNotificationUiModel("", "eggy & 10 penonton lainnya follow toko ini", "#50BA47"),
-//                lifespan = 1000L,
     )
 
     private fun mapVideoInfo(
