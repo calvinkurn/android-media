@@ -332,7 +332,7 @@ object AnalyticsTrackerUtil {
             const val CREATIVE = "creative"
             const val USERID = "userId"
             const val PROMOTIONS = "promotions"
-            const val BUSINESSUNIT = " buyer growth platform"
+            const val BUSINESSUNIT = "tokopoints"
             const val CURRENTSITE = " tokopediamarketplace"
             const val ITEM_LIST = "item_list"
             const val ITEMS = "impressions"

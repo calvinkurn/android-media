@@ -49,6 +49,7 @@
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_sectionTitle"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_sectionTitle"
         app:typographyType="heading_6"
         app:typographyWeight="bold" />
 

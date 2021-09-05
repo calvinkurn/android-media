@@ -34,8 +34,11 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.NotificationUnify
 
-
-class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
+class TopSectionVH(
+    itemView: View,
+    private val cardRuntimeHeightListener: CardRuntimeHeightListener,
+    private val toolbarItemList: Any?
+) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
     private var dynamicAction: DynamicItemActionView? = null
@@ -136,7 +139,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 if (dataList[i]?.counterTotal?.isShowCounter!!) {
                     dataList[i]?.counterTotal?.counterStr?.let { dynamicAction?.setLayoutLabel(it, i) }
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[0]?.cta?.let {
                         hideNotification(0, dataList[0])
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 0)
@@ -148,10 +151,17 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 1)
                     }
                 }
-                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                     dataList[2]?.cta?.let {
                         hideNotification(2, dataList[2])
                         dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 2)
+                    }
+                }
+
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_bbo)?.setOnClickListener {
+                    dataList[3]?.cta?.let {
+                        hideNotification(0, dataList[3])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 3)
                     }
                 }
             }

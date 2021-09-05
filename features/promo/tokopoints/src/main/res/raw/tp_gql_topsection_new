@@ -1,5 +1,5 @@
 {
-  tokopediaRewardTopSection {
+  tokopediaRewardTopSection(apiVersion: "2.0.0") {
     title
     profilePicture
     introductionText

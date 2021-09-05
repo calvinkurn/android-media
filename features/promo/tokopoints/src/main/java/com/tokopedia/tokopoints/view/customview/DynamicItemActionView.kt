@@ -16,7 +16,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.unifycomponents.NotificationUnify
 
 class DynamicItemActionView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     lateinit var holderTLLayout: LinearLayout
@@ -24,17 +24,21 @@ class DynamicItemActionView @JvmOverloads constructor(
     lateinit var ivTLLayout: ImageView
     lateinit var tvTLLayout: TextView
     lateinit var notifTLLayout: NotificationUnify
-
-    lateinit var holderCenterLayout: LinearLayout
-    lateinit var holderRightLayout: LinearLayout
-    lateinit var ivCenterLayout: ImageView
-    lateinit var ivRightLayout: ImageView
-    lateinit var tvCenterLayout: TextView
-    lateinit var tvRightLayout: TextView
-    lateinit var tvCenterLabel: TextView
-    lateinit var tvRightLabel: TextView
-    lateinit var notifCenterLayout: NotificationUnify
-    lateinit var notifRightLayout: NotificationUnify
+    lateinit var holderTRLayout: LinearLayout
+    lateinit var tvTRLabel: TextView
+    lateinit var ivTRLayout: ImageView
+    lateinit var tvTRLayout: TextView
+    lateinit var notifTRLayout: NotificationUnify
+    lateinit var holderBLLayout: LinearLayout
+    lateinit var ivBLLayout: ImageView
+    lateinit var tvBLLayout: TextView
+    lateinit var tvBLLabel: TextView
+    lateinit var notifBLLayout: NotificationUnify
+    lateinit var tvBRLabel: TextView
+    lateinit var holderBRLayout: LinearLayout
+    lateinit var tvBRLayout: TextView
+    lateinit var ivBRLayout: ImageView
+    lateinit var notifBRLayout: NotificationUnify
 
     init {
         setUpUI()
@@ -48,24 +52,32 @@ class DynamicItemActionView @JvmOverloads constructor(
         tvTLLabel = view.findViewById(R.id.label_tokomember2)
         notifTLLayout = view.findViewById(R.id.notif_tokomember)
 
-        holderRightLayout = view.findViewById(R.id.holder_topquest)
-        ivRightLayout = view.findViewById(R.id.image_topquest)
-        tvRightLayout = view.findViewById(R.id.label_topquest)
-        tvRightLabel = view.findViewById(R.id.label_topquest2)
-        notifRightLayout = view.findViewById(R.id.notif_topquest)
-        holderCenterLayout = view.findViewById(R.id.holder_tokopoint)
-        ivCenterLayout = view.findViewById(R.id.image_tokopoint)
-        tvCenterLayout = view.findViewById(R.id.label_tokopoint1)
-        tvCenterLabel = view.findViewById(R.id.label_tokopoint2)
-        notifCenterLayout = view.findViewById(R.id.notif_tokopoint)
+        holderTRLayout = view.findViewById(R.id.holder_bbo)
+        ivTRLayout = view.findViewById(R.id.image_bbo)
+        tvTRLayout = view.findViewById(R.id.label_bbo)
+        tvTRLabel = view.findViewById(R.id.label_bbo2)
+        notifTRLayout = view.findViewById(R.id.notif_bbo)
+
+        holderBRLayout = view.findViewById(R.id.holder_tokopoint)
+        ivBRLayout = view.findViewById(R.id.image_tokopoint)
+        tvBRLayout = view.findViewById(R.id.label_tokopoint1)
+        tvBRLabel = view.findViewById(R.id.label_tokopoint2)
+        notifBRLayout = view.findViewById(R.id.notif_tokopoint)
+
+        holderBLLayout = view.findViewById(R.id.holder_topquest)
+        ivBLLayout = view.findViewById(R.id.image_topquest)
+        tvBLLayout = view.findViewById(R.id.label_topquest)
+        tvBLLabel = view.findViewById(R.id.label_topquest2)
+        notifBLLayout = view.findViewById(R.id.notif_topquest)
         addView(view)
     }
 
     fun setLayoutText(title: String, position: Int) {
         when (position) {
             FIRST_TAB -> tvTLLayout.text = title
-            SECOND_TAB -> tvCenterLayout.text = title
-            else -> tvRightLayout.text = title
+            SECOND_TAB -> tvBLLayout.text = title
+            THIRD_TAB -> tvBRLayout.text = title
+            else ->tvTRLayout.text = title
         }
     }
 
@@ -76,12 +88,16 @@ class DynamicItemActionView @JvmOverloads constructor(
                 tvTLLabel.text = label
             }
             SECOND_TAB -> {
-                tvCenterLabel.show()
-                tvCenterLabel.text = label
+                tvBLLabel.show()
+                tvBLLabel.text = label
             }
-            else -> {
-                tvRightLabel.show()
-                tvRightLabel.text = label
+            THIRD_TAB -> {
+                tvBRLabel.show()
+                tvBRLabel.text = label
+            }
+            else ->{
+                tvTRLabel.show()
+                tvTRLabel.text = label
             }
         }
     }
@@ -89,16 +105,18 @@ class DynamicItemActionView @JvmOverloads constructor(
     fun setLayoutIcon(imgUrl: String, position: Int) {
         when (position) {
             FIRST_TAB -> ivTLLayout.loadImage(imgUrl)
-            SECOND_TAB -> ivCenterLayout.loadImage(imgUrl)
-            else -> ivRightLayout.loadImage(imgUrl)
+            SECOND_TAB -> ivBLLayout.loadImage(imgUrl)
+            THIRD_TAB -> ivBRLayout.loadImage(imgUrl)
+            else -> ivTRLayout.loadImage(imgUrl)
         }
     }
 
     fun setLayoutVisibility(visibility: Int, position: Int) {
         when (position) {
             FIRST_TAB -> holderTLLayout.visibility = visibility
-            SECOND_TAB -> holderCenterLayout.visibility = visibility
-            else -> holderRightLayout.visibility = visibility
+            SECOND_TAB -> holderBLLayout.visibility = visibility
+            THIRD_TAB -> holderBRLayout.visibility = visibility
+            else -> holderTRLayout.visibility = visibility
         }
     }
 
@@ -106,15 +124,35 @@ class DynamicItemActionView @JvmOverloads constructor(
         when (position) {
             FIRST_TAB -> {
                 notifTLLayout.show()
-                notifTLLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifTLLayout.setNotification(
+                    notif,
+                    NotificationUnify.NONE_TYPE,
+                    NotificationUnify.COLOR_PRIMARY
+                )
             }
             SECOND_TAB -> {
-                notifCenterLayout.show()
-                notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifBLLayout.show()
+                notifBLLayout.setNotification(
+                    notif,
+                    NotificationUnify.NONE_TYPE,
+                    NotificationUnify.COLOR_PRIMARY
+                )
             }
-            else -> {
-                notifRightLayout.show()
-                notifRightLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            THIRD_TAB -> {
+                notifBRLayout.show()
+                notifBRLayout.setNotification(
+                    notif,
+                    NotificationUnify.NONE_TYPE,
+                    NotificationUnify.COLOR_PRIMARY
+                )
+            }
+            else ->{
+                notifTRLayout.show()
+                notifTRLayout.setNotification(
+                    notif,
+                    NotificationUnify.NONE_TYPE,
+                    NotificationUnify.COLOR_PRIMARY
+                )
             }
         }
     }
@@ -122,31 +160,31 @@ class DynamicItemActionView @JvmOverloads constructor(
     fun hideNotification(position: Int) {
         when (position) {
             FIRST_TAB -> notifTLLayout.hide()
-            SECOND_TAB -> notifCenterLayout.hide()
-            else -> notifRightLayout.hide()
+            SECOND_TAB -> notifBLLayout.hide()
+            THIRD_TAB -> notifBRLayout.hide()
+            else -> notifTRLayout.hide()
         }
     }
 
     fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
-        when (position) {
-            FIRST_TAB -> notifTLLayout.hide()
-            SECOND_TAB -> notifCenterLayout.hide()
-            else ->
-                notifRightLayout.hide()
-        }
+        hideNotification(position)
         RouteManager.route(context, applink)
         text?.let {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
-                    text)
+            AnalyticsTrackerUtil.sendEvent(
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                text,
+                AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+            )
         }
     }
 
     companion object {
         const val FIRST_TAB = 0
         const val SECOND_TAB = 1
+        const val THIRD_TAB = 2
     }
 
 }
