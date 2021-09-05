@@ -93,6 +93,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     var isInstantCheckout = false
     var inputFields: Map<String, String> = mapOf()
+    var isSpecialProduct = false
 
     var categoryName = ""
     var operatorName = ""
@@ -175,7 +176,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                                     productName,
                                     price,
                                     isInstantCheckout,
-                                    promoCode.isNotEmpty()
+                                    promoCode.isNotEmpty(),
+                                    isSpecialProduct
                             )
                             navigateToPayment(it.data)
                         }

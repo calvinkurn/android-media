@@ -20,6 +20,9 @@ interface DigitalTopupEventTracking {
             const val CATEGORY_ID = "digitalCategoryId"
             const val VALUE_ITEMS = "items"
             const val VALUE_ITEM_LIST = "item_list"
+
+            const val REGULAR_PRODUCT = "regular product"
+            const val SPECIAL_PROMO = "special product promo"
         }
     }
 

@@ -175,13 +175,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                         itemProduct.attributes.price,
                         itemProduct.attributes.productPromo?.newPrice,
+                        itemProduct.isSpecialProductPromo(),
                         object: DigitalProductBottomSheet.ActionListener {
-                            override fun onClickOnProduct() {
+                            override fun onClickOnProduct(isSpecialProduct: Boolean) {
                                 activity?.run {
                                     telcoTelcoProductView.selectProductItem(position)
                                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId, isSpecialProduct)
                                 }
                             }
                         }

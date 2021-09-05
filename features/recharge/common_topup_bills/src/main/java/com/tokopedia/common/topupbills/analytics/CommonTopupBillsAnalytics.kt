@@ -31,7 +31,8 @@ class CommonTopupBillsAnalytics {
                              productName: String,
                              productPrice: Int,
                              isInstantCheckout: Boolean = false,
-                             isPromoUsed: Boolean = false) {
+                             isPromoUsed: Boolean = false,
+                             isSpecialProduct: Boolean = false) {
         val isInstantCheckoutValue = if (isInstantCheckout) Label.INSTANT else Label.NO_INSTANT
         val isPromoUsedValue = if (isPromoUsed) Label.PROMO else Label.NO_PROMO
 
@@ -39,16 +40,18 @@ class CommonTopupBillsAnalytics {
         val clickBuyEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
                     CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
-                    ADD, DataLayer.mapOf(
-                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                            NAME, productName,
-                            ID, productId,
-                            PRICE, productPrice,
-                            BRAND, operatorName,
-                            CATEGORY, categoryName,
-                            VARIANT, EMPTY,
-                            QUANTITY, 1
-                        ))
+                    ADD,
+                    DataLayer.mapOf(PRODUCTS,
+                            DataLayer.listOf(
+                                    DataLayer.mapOf(
+                                            NAME, productName,
+                                            ID, productId,
+                                            PRICE, productPrice,
+                                            BRAND, operatorName,
+                                            CATEGORY, categoryName,
+                                            VARIANT, if (isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
+                                            QUANTITY, 1)
+                            )
                     )
             )
         }
@@ -65,20 +68,22 @@ class CommonTopupBillsAnalytics {
         // View Checkout
         val viewCheckoutEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
-                    CHECKOUT, DataLayer.mapOf(
-                        ActionField.ACTION_FIELD, DataLayer.mapOf(
-                            ActionField.ACTION_FIELD_STEP, 1,
-                            ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_VIEW_CHECKOUT
-                        ),
-                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                            NAME, productName,
-                            ID, productId,
-                            PRICE, productPrice,
-                            BRAND, operatorName,
-                            CATEGORY, categoryName,
-                            VARIANT, EMPTY,
-                            QUANTITY, 1
-                        ))
+                    CHECKOUT,
+                    DataLayer.mapOf(ActionField.ACTION_FIELD,
+                            DataLayer.mapOf(ActionField.ACTION_FIELD_STEP, 1,
+                                    ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_VIEW_CHECKOUT
+                            ),
+                            PRODUCTS,
+                            DataLayer.listOf(
+                                    DataLayer.mapOf(NAME, productName,
+                                            ID, productId,
+                                            PRICE, productPrice,
+                                            BRAND, operatorName,
+                                            CATEGORY, categoryName,
+                                            VARIANT, if (isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
+                                            QUANTITY, 1
+                                    )
+                            )
                     )
             )
         }
@@ -95,20 +100,20 @@ class CommonTopupBillsAnalytics {
         // Click Proceed to Payment
         val clickPaymentEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
-                    CHECKOUT, DataLayer.mapOf(
-                        ActionField.ACTION_FIELD, DataLayer.mapOf(
-                            ActionField.ACTION_FIELD_STEP, 2,
-                            ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_CLICK_CHECKOUT
-                        ),
-                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                            NAME, productName,
-                            ID, productId,
-                            PRICE, productPrice,
-                            BRAND, operatorName,
-                            CATEGORY, categoryName,
-                            VARIANT, EMPTY,
-                            QUANTITY, 1
-                        ))
+                    CHECKOUT,
+                    DataLayer.mapOf(ActionField.ACTION_FIELD,
+                            DataLayer.mapOf(ActionField.ACTION_FIELD_STEP, 2,
+                                    ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_CLICK_CHECKOUT
+                            ),
+                            PRODUCTS,
+                            DataLayer.listOf(DataLayer.mapOf(NAME, productName,
+                                    ID, productId,
+                                    PRICE, productPrice,
+                                    BRAND, operatorName,
+                                    CATEGORY, categoryName,
+                                    VARIANT, if (isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
+                                    QUANTITY, 1
+                            ))
                     )
             )
         }

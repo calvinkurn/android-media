@@ -6,6 +6,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.REGULAR_PRODUCT
+import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.SPECIAL_PROMO
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -215,15 +217,15 @@ class DigitalTopupAnalytics {
 
         for (element in digitalTrackProductTelcoList) {
             productTelcoList.add(Bundle().apply {
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, element.itemProduct.attributes.desc)
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, element.itemProduct.id)
-                    putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, element.itemProduct.attributes.pricePlain)
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, "none / others")
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(element.itemProduct.attributes.categoryId))
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
-                    putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_DIMENSION, "${getTrackingCategoryName(element.itemProduct.attributes.categoryId)} - " +
-                    "product ${element.position} - ${element.itemProduct.attributes.desc}")
-                    putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_INDEX, element.position)
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, element.itemProduct.attributes.desc)
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, element.itemProduct.id)
+                putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, element.itemProduct.attributes.pricePlain)
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, "none / others")
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(element.itemProduct.attributes.categoryId))
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_DIMENSION, "${getTrackingCategoryName(element.itemProduct.attributes.categoryId)} - " +
+                        "product ${element.position} - ${element.itemProduct.attributes.desc}")
+                putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_INDEX, element.position)
             })
         }
 
@@ -270,7 +272,9 @@ class DigitalTopupAnalytics {
     }
 
     fun pickProductDetail(itemProduct: TelcoProduct,
-                          operatorName: String, userId: String) {
+                          operatorName: String,
+                          userId: String,
+                          isSpecialProduct: Boolean) {
         val productTelcoList = ArrayList<Bundle>()
         productTelcoList.add(Bundle().apply {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
@@ -278,7 +282,7 @@ class DigitalTopupAnalytics {
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, itemProduct.attributes.pricePlain)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, operatorName)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(itemProduct.attributes.categoryId))
-            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, if (isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_QUANTITY, 1)
         })
 

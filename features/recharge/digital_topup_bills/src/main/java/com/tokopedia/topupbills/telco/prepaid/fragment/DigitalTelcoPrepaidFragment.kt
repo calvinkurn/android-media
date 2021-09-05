@@ -198,7 +198,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 if (telcoProduct.attributes.productPromo != null) "1" else "0",
                 telcoProduct.attributes.categoryId.toString(),
                 telcoProduct.attributes.operatorId.toString(),
-                telcoProduct.id)
+                telcoProduct.id,
+                telcoProduct.isSpecialProductPromo())
     }
 
     private fun initViewPager() {
@@ -651,7 +652,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun generateCheckoutPassData(inputNumber: String, promoStatus: String,
-                                         categoryId: String, operatorId: String, productId: String) {
+                                         categoryId: String, operatorId: String,
+                                         productId: String, isSpecialProduct: Boolean = false) {
         checkoutPassData = getDefaultCheckoutPassDataBuilder()
                 .categoryId(categoryId)
                 .clientNumber(inputNumber)
@@ -659,6 +661,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 .operatorId(operatorId)
                 .productId(productId)
                 .utmCampaign(categoryId)
+                .isSpecialProduct(isSpecialProduct)
                 .build()
     }
 
