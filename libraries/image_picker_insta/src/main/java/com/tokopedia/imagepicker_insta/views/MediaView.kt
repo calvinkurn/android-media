@@ -24,6 +24,7 @@ import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.VideoData
+import timber.log.Timber
 import java.io.File
 
 class MediaView @JvmOverloads constructor(
@@ -121,6 +122,8 @@ class MediaView @JvmOverloads constructor(
         simpleExoPlayer?.addListener(object :Player.EventListener{
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
+                Timber.e(error.message)
+                Timber.e(error.rendererException)
             }
         })
         scaleType = ImageView.ScaleType.CENTER_CROP

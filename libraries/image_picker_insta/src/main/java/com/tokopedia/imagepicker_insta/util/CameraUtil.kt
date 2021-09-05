@@ -2,9 +2,11 @@ package com.tokopedia.imagepicker_insta.util
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Size
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
@@ -67,6 +69,32 @@ object CameraUtil {
         val file = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         file.mkdirs()
         return file
+    }
+
+
+    fun getVideoResolution(path: String?): Size? {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(path)
+        val width: Int = Integer.valueOf(
+            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+        )
+        val height: Int = Integer.valueOf(
+            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+        )
+        retriever.release()
+        val rotation: Int = getVideoRotation(path)
+        return if (rotation == 90 || rotation == 270) {
+            Size(height, width)
+        } else Size(width, height)
+    }
+
+    fun getVideoRotation(videoFilePath: String?): Int {
+        val mediaMetadataRetriever = MediaMetadataRetriever()
+        mediaMetadataRetriever.setDataSource(videoFilePath)
+        val orientation = mediaMetadataRetriever.extractMetadata(
+            MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION
+        )
+        return Integer.valueOf(orientation)
     }
 
     private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?): String? {

@@ -156,7 +156,8 @@ class ImageAdapter(
                 return
             }
         }
-        if (selectedPositionMap.size != maxMultiSelectLimit) {
+//        if (selectedPositionMap.size != maxMultiSelectLimit) {
+        if (selectedPositionMap.size != 5) { //TODO Rahul only for debug - remove this line
 
             if (!canMultiSelect && selectedPositionMap.isNotEmpty()) {
                 //Remove previously selected item

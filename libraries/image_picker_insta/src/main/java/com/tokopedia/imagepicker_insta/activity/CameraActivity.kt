@@ -7,9 +7,13 @@ import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import com.daasuu.mp4compose.FillMode
+import com.daasuu.mp4compose.composer.Mp4Composer
+import com.daasuu.mp4compose.logger.Logger
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
@@ -23,7 +27,9 @@ import com.tokopedia.imagepicker_insta.views.CameraButton
 import com.tokopedia.imagepicker_insta.views.CameraButtonListener
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
-
+import com.daasuu.mp4compose.FillModeCustomItem
+import android.media.tv.TvContract.Channels.getVideoResolution
+import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 
 class CameraActivity : BaseActivity() {
 
@@ -33,6 +39,44 @@ class CameraActivity : BaseActivity() {
     lateinit var imageFlash: AppCompatImageView
     lateinit var imageSelfieCamera: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
+    var cropVideoPath:String?=null
+    val mp4ComposerListener = object : Mp4Composer.Listener {
+        override fun onProgress(progress: Double) {
+            Timber.d("NOOB, onProgess: $progress")
+        }
+
+        override fun onCurrentWrittenVideoTime(timeUs: Long) {
+            Timber.d("NOOB, onCurrentWrittenVideoTime: $timeUs")
+        }
+
+        override fun onCompleted() {
+            Timber.d("NOOB, onCompleted")
+        }
+
+        override fun onCanceled() {
+            Timber.d("NOOB, onCanceled")
+        }
+
+        override fun onFailed(exception: Exception?) {
+            exception?.printStackTrace()
+            Timber.e("NOOB, ${exception?.message} ")
+
+        }
+    }
+    val mp4ComposerLogger = object : Logger {
+        override fun debug(tag: String?, message: String?) {
+//            Timber.d("NOOB, Logger $message")
+        }
+
+        override fun error(tag: String?, message: String?, error: Throwable?) {
+            Timber.e("NOOB, Logger $message")
+        }
+
+        override fun warning(tag: String?, message: String?) {
+            Timber.w("NOOB, Logger $message")
+        }
+    }
+    var mp4Composer:Mp4Composer?=null
 
     companion object {
 
@@ -67,6 +111,7 @@ class CameraActivity : BaseActivity() {
         cameraView.mode = Mode.PICTURE
 
         cameraView.flash = Flash.OFF
+        cameraView.videoMaxDuration = VideoImporter.DURATION_MAX_LIMIT
 
         setToolbar()
         setListeners()
@@ -153,7 +198,8 @@ class CameraActivity : BaseActivity() {
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
                 Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
-                afterMediaIsCaptured(Uri.fromFile(result.file))
+//                afterMediaIsCaptured(Uri.fromFile(result.file))
+                cropVideo(result)
             }
 
             override fun onCameraError(exception: CameraException) {
@@ -170,6 +216,32 @@ class CameraActivity : BaseActivity() {
                 super.onVideoRecordingEnd()
             }
         })
+    }
+
+    /**
+     * TODO Rahul Ensure second recording will only start when mp4Composer is finished
+    * */
+    private fun cropVideo(result: VideoResult) {
+        val destinationPath = CameraUtil.createMediaFile(this, false).absolutePath
+        cropVideoPath = destinationPath
+        Timber.d("NOOB, Cropped Video : $cropVideoPath")
+
+
+        val fillModeCustomItem = FillModeCustomItem(
+            cameraView.scaleX,
+            cameraView.rotation,
+            0f,
+            0f,
+            result.size.width.toFloat(),
+            result.size.height.toFloat()
+        )
+        mp4Composer = Mp4Composer(Uri.fromFile(result.file), destinationPath, this, mp4ComposerLogger)
+            .size(cameraView.width, cameraView.width)
+            .fillMode(FillMode.CUSTOM)
+            .customFillMode(fillModeCustomItem)
+            .listener(mp4ComposerListener)
+            .start()
+
     }
 
     private fun afterMediaIsCaptured(uri: Uri) {
@@ -234,5 +306,10 @@ class CameraActivity : BaseActivity() {
 
     fun capturePhoto() {
         cameraView.takePicture()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mp4Composer?.cancel()
     }
 }

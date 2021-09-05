@@ -6,7 +6,7 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:visibility="gone"
-        app:use_controller="false"
+        app:use_controller="true"
         android:id="@+id/media_player_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
