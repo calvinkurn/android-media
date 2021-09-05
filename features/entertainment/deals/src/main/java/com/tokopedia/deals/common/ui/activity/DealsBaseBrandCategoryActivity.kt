@@ -25,7 +25,7 @@ import java.lang.Math.abs
 
 open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
-    private lateinit var binding: ActivityBaseBrandCategoryDealsBinding
+    lateinit var binding: ActivityBaseBrandCategoryDealsBinding
 
     lateinit var dealBrandCategoryActivityViewModel: DealsBrandCategoryActivityViewModel
     lateinit var adapter: DealsFragmentPagerAdapter
