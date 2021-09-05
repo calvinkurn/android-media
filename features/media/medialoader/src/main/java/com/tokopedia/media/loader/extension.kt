@@ -97,6 +97,7 @@ inline fun ImageView.loadIcon(
     GlideApp
         .with(context)
         .load(url)
+        .override(300, 300)
         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         .into(this)
 }
