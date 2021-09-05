@@ -1,31 +1,33 @@
 package com.tokopedia.deals.home.ui.adapter.viewholder
 
-import android.view.View
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
+import com.tokopedia.deals.databinding.ItemDealsVoucherPlaceCardBinding
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
 
 class VoucherPlaceCardViewHolder(
-        itemView: View,
-        private val voucherPlaceCardListener: DealsVoucherPlaceCardListener
-) : RecyclerView.ViewHolder(itemView) {
+    val binding:  ItemDealsVoucherPlaceCardBinding,
+    private val voucherPlaceCardListener: DealsVoucherPlaceCardListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(voucherPlaceCard: VoucherPlaceCardDataView) {
-        itemView.run {
-            img_voucher_place_card.loadImage(
+        binding.run {
+            imgVoucherPlaceCard.loadImage(
                 voucherPlaceCard.imageUrl,
                 getLocationPlaceholder(adapterPosition)
             )
-            txt_voucher_place_card_name.text = voucherPlaceCard.name
+            txtVoucherPlaceCardName.text = voucherPlaceCard.name
 
-            if (voucherPlaceCard.count.isNotEmpty()) txt_voucher_place_card_count.text = voucherPlaceCard.count
-            else txt_voucher_place_card_count.hide()
+            if (voucherPlaceCard.count.isNotEmpty())
+                txtVoucherPlaceCardCount.text = voucherPlaceCard.count
+            else
+                txtVoucherPlaceCardCount.hide()
 
-            setOnClickListener {
+            root.setOnClickListener {
                 voucherPlaceCardListener.onVoucherPlaceCardClicked(
                         voucherPlaceCard,
                         adapterPosition

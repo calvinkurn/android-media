@@ -5,13 +5,13 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
+import com.tokopedia.deals.databinding.ItemDealsCategoryListBinding
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.home.ui.dataview.CategoriesDataView
 import com.tokopedia.deals.home.ui.fragment.DealsCategoryBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_category_list.view.*
 
 /**
  * @author by jessica on 17/06/20
@@ -21,17 +21,18 @@ class DealsHomeCategoriesViewHolder(itemView: View, private val categoryListener
     : BaseViewHolder(itemView) {
 
     fun bind(categories: CategoriesDataView) {
+        val binding = ItemDealsCategoryListBinding.bind(itemView)
         if (!categories.isLoaded) {
-            itemView.contentCategoriesShimmering.show()
-            itemView.rvDealsHomeCategories.hide()
+            binding.contentCategoriesShimmering.root.show()
+            binding.rvDealsHomeCategories.hide()
         } else {
-            with(itemView) {
-                contentCategoriesShimmering.hide()
+            with(binding) {
+                contentCategoriesShimmering.root.hide()
                 rvDealsHomeCategories.show()
                 val categoriesAdapter = DealsCategoryAdapter(categoryListener)
 
                 rvDealsHomeCategories.adapter = categoriesAdapter
-                rvDealsHomeCategories.layoutManager = GridLayoutManager(context, DEALS_CATEGORY_SPAN_COUNT)
+                rvDealsHomeCategories.layoutManager = GridLayoutManager(root.context, DEALS_CATEGORY_SPAN_COUNT)
 
                 categoriesAdapter.dealsCategories = categories.list
 

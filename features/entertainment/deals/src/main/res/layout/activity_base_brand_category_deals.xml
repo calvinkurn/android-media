@@ -34,6 +34,7 @@
 
                 <include
                     layout="@layout/content_base_deals_search_bar"
+                    android:id="@+id/contentBaseDealsSearchBar"
                     app:layout_collapseMode="none" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.deals.R
+import com.tokopedia.deals.databinding.ItemDealsCategoryBinding
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.ui.adapter.viewholder.DealsCategoryViewHolder
 import com.tokopedia.deals.home.ui.dataview.DealsCategoryDataView
@@ -24,8 +24,8 @@ class DealsCategoryAdapter(private val dealsCategoryListener: DealsCategoryListe
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsCategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_deals_category, parent, false)
-        return DealsCategoryViewHolder(itemView)
+        val binding = ItemDealsCategoryBinding.inflate(inflater, parent, false)
+        return DealsCategoryViewHolder(binding)
     }
 
     fun enableSeeMoreCategory(maxItem: Int) {

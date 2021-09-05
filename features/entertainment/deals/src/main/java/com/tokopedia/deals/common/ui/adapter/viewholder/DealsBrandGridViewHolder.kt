@@ -1,6 +1,7 @@
 package com.tokopedia.deals.common.ui.adapter.viewholder
 
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -8,9 +9,9 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.DealsCommonBrandAdapter
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.databinding.ItemDealsBrandPageBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_brand_page.view.*
 
 class DealsBrandGridViewHolder(
         itemView: View,
@@ -18,56 +19,57 @@ class DealsBrandGridViewHolder(
 ) : BaseViewHolder(itemView) {
 
     fun bind(brands: DealsBrandsDataView) {
-        with(itemView) {
+        val binding = ItemDealsBrandPageBinding.bind(itemView)
+        with(binding) {
             if (!brands.isLoaded) {
-                cl_containter_brand?.hide()
-                showShimmering(itemView, brands)
+                clContainterBrand.hide()
+                showShimmering(binding, brands)
             } else {
-                shimmering?.hide()
-                one_row_shimmering?.hide()
+                shimmering.root.hide()
+                oneRowShimmering.root.hide()
 
                 if (brands.brands.isNotEmpty()) {
-                    cl_containter_brand?.show()
-                    showTitle(itemView, brands)
-                    showSeeAllText(itemView, brands)
-                    setupItemAdapter(itemView, brands)
+                    clContainterBrand.show()
+                    showTitle(binding, brands)
+                    showSeeAllText(binding, brands)
+                    setupItemAdapter(binding, brands)
                 } else {
-                    cl_containter_brand?.hide()
+                    clContainterBrand?.hide()
                 }
             }
         }
     }
 
-    private fun showSeeAllText(itemView: View, brands: DealsBrandsDataView) {
+    private fun showSeeAllText(itemView:  ItemDealsBrandPageBinding, brands: DealsBrandsDataView) {
         if (brands.seeAllText.isEmpty()) {
-            itemView.txt_brand_see_all?.hide()
-            itemView.unused_line?.show()
+            itemView.txtBrandSeeAll.hide()
+            itemView.unusedLine.show()
         } else {
-            itemView.txt_brand_see_all?.show()
-            itemView.unused_line?.hide()
-            itemView.txt_brand_see_all?.text = brands.seeAllText
-            itemView.txt_brand_see_all?.setOnClickListener {
+            itemView.txtBrandSeeAll.show()
+            itemView.unusedLine.hide()
+            itemView.txtBrandSeeAll.text = brands.seeAllText
+            itemView.txtBrandSeeAll.setOnClickListener {
                 brandActionListener.onClickSeeAllBrand(brands.seeAllUrl)
             }
         }
     }
 
-    private fun showTitle(itemView: View, brands: DealsBrandsDataView) {
+    private fun showTitle(itemView:  ItemDealsBrandPageBinding, brands: DealsBrandsDataView) {
         if (brands.title.isEmpty()) {
-            itemView.tv_brand_title?.hide()
-            itemView.unused_line?.hide()
+            itemView.tvBrandTitle.hide()
+            itemView.unusedLine.hide()
         } else {
-            itemView.tv_brand_title?.show()
-            itemView.unused_line?.show()
-            itemView.tv_brand_title?.text = brands.title
+            itemView.tvBrandTitle.show()
+            itemView.unusedLine.show()
+            itemView.tvBrandTitle.text = brands.title
         }
     }
 
-    private fun setupItemAdapter(itemView: View, brands: DealsBrandsDataView) {
+    private fun setupItemAdapter(itemView:  ItemDealsBrandPageBinding, brands: DealsBrandsDataView) {
         val adapter = DealsCommonBrandAdapter(brandActionListener, DealsBrandViewHolder.LAYOUT_WIDE)
-        itemView.rv_brands?.tag = brands.category
-        itemView.rv_brands?.adapter = adapter
-        itemView.rv_brands?.layoutManager = object : GridLayoutManager(itemView.context, BRAND_SPAN_COUNT) {
+        itemView.rvBrands.tag = brands.category
+        itemView.rvBrands.adapter = adapter
+        itemView.rvBrands.layoutManager = object : GridLayoutManager(itemView.root.context, BRAND_SPAN_COUNT) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
                 lp?.width = (width / BRAND_SPAN_COUNT)
                 return true
@@ -76,13 +78,13 @@ class DealsBrandGridViewHolder(
         adapter.brandList = brands.brands
     }
 
-    private fun showShimmering(itemView: View, brands: DealsBrandsDataView) {
+    private fun showShimmering(itemView: ItemDealsBrandPageBinding, brands: DealsBrandsDataView) {
         if (brands.oneRow) {
-            itemView.one_row_shimmering?.show()
-            itemView.shimmering?.hide()
+            itemView.oneRowShimmering.root.show()
+            itemView.shimmering.root.hide()
         } else {
-            itemView.shimmering?.show()
-            itemView.one_row_shimmering.hide()
+            itemView.shimmering.root.show()
+            itemView.oneRowShimmering.root.hide()
         }
     }
 

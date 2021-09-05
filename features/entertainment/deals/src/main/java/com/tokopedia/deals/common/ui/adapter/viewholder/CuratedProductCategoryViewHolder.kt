@@ -10,64 +10,74 @@ import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.deals.databinding.ItemDealsCuratedProductCategoryBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_curated_product_category.view.*
 
 class CuratedProductCategoryViewHolder(
-        itemView: View,
-        private val curatedProductCategoryListener: CuratedProductCategoryListener
+    itemView: View,
+    private val curatedProductCategoryListener: CuratedProductCategoryListener
 ) : BaseViewHolder(itemView), ProductCardListener {
 
     private var productCardAdapter: DealsProductCardAdapter = DealsProductCardAdapter(this)
     var sectionTitle: String = ""
 
     fun bindData(curatedProductCategory: CuratedProductCategoryDataView) {
+        val binding = ItemDealsCuratedProductCategoryBinding.bind(itemView)
         sectionTitle = curatedProductCategory.title
         if (!curatedProductCategory.isLoaded) {
-            itemView.contentCuratedProductShimmering.show()
-            itemView.content_curated_product_category_title.hide()
+            binding.contentCuratedProductShimmering.root.show()
+            binding.contentCuratedProductCategoryTitle.hide()
         } else {
-            itemView.run {
-                contentCuratedProductShimmering.hide()
-                content_curated_product_category_title.show()
+            binding.run {
+                contentCuratedProductShimmering.root.hide()
+                contentCuratedProductCategoryTitle.show()
 
-                txt_curated_product_category_title.text = curatedProductCategory.title
+                txtCuratedProductCategoryTitle.text = curatedProductCategory.title
 
-                if (curatedProductCategory.subtitle.isNotEmpty()) txt_curated_product_category_subtitle.text = curatedProductCategory.subtitle
-                else txt_curated_product_category_subtitle.hide()
+                if (curatedProductCategory.subtitle.isNotEmpty())
+                    txtCuratedProductCategorySubtitle.text = curatedProductCategory.subtitle
+                else txtCuratedProductCategorySubtitle.hide()
 
-                btn_curated_product_category_see_all.apply {
-                    visibility = if (curatedProductCategory.hasSeeAllButton) View.VISIBLE else View.GONE
+                btnCuratedProductCategorySeeAll.apply {
+                    visibility =
+                        if (curatedProductCategory.hasSeeAllButton) View.VISIBLE else View.GONE
                     setOnClickListener {
                         curatedProductCategoryListener.onSeeAllProductClicked(
-                                curatedProductCategory,
-                                adapterPosition
+                            curatedProductCategory,
+                            adapterPosition
                         )
                     }
                 }
-                lst_curated_product_category_card.apply {
+                lstCuratedProductCategoryCard.apply {
                     layoutManager = GridLayoutManager(context, PRODUCT_SPAN_COUNT)
                     adapter = productCardAdapter
                     productCardAdapter.productCards = curatedProductCategory.productCards
                 }
-                addOnImpressionListener(curatedProductCategory, {
-                    curatedProductCategoryListener.onImpressionCuratedProduct(curatedProductCategory,position)
+                binding.root.addOnImpressionListener(curatedProductCategory, {
+                    curatedProductCategoryListener.onImpressionCuratedProduct(
+                        curatedProductCategory,
+                        position
+                    )
                 })
-                ViewCompat.setNestedScrollingEnabled(lst_curated_product_category_card, false)
+                ViewCompat.setNestedScrollingEnabled(lstCuratedProductCategoryCard, false)
             }
         }
     }
 
-    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page:Int) {
+    override fun onImpressionProduct(
+        productCardDataView: ProductCardDataView,
+        productItemPosition: Int,
+        page: Int
+    ) {
         /* do nothing*/
     }
 
     override fun onProductClicked(
-            itemView: View,
-            productCardDataView: ProductCardDataView,
-            position: Int
+        itemView: View,
+        productCardDataView: ProductCardDataView,
+        position: Int
     ) {
         curatedProductCategoryListener.onProductClicked(productCardDataView, position, sectionTitle)
     }

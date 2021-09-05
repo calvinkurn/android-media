@@ -10,10 +10,10 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.DealsCommonBrandAdapter
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.databinding.ItemDealsPopularBrandListBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_popular_brand_list.view.*
 
 /**
  * @author by jessica on 17/06/20
@@ -23,12 +23,14 @@ class DealsBrandsViewHolder(itemView: View, private val brandActionListener: Dea
     : BaseViewHolder(itemView) {
 
     fun bind(categories: DealsBrandsDataView) {
-        with(itemView) {
+
+        val binding = ItemDealsPopularBrandListBinding.bind(itemView)
+        with(binding){
             if (!categories.isLoaded) {
                 container.hide()
-                shimmering.show()
+                shimmering.root.show()
             } else {
-                shimmering.hide()
+                shimmering.root.hide()
                 container.show()
                 txtDealsPopularBrandTitle.text = categories.title
                 txtDealsPopularBrandSeeAll.text = categories.seeAllText
@@ -38,12 +40,13 @@ class DealsBrandsViewHolder(itemView: View, private val brandActionListener: Dea
 
                 val adapter = DealsCommonBrandAdapter(brandActionListener, DealsBrandViewHolder.LAYOUT)
                 rvDealsBrandPopular.adapter = adapter
-                rvDealsBrandPopular.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                rvDealsBrandPopular.layoutManager = LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
 
                 adapter.brandList = categories.brands
             }
 
             ViewCompat.setNestedScrollingEnabled(rvDealsBrandPopular, false)
+
         }
     }
 

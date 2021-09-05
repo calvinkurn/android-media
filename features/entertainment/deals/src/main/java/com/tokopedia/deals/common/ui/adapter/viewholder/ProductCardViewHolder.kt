@@ -7,49 +7,52 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.deals.databinding.ItemDealsProductCardBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_product_card.view.*
 
 class ProductCardViewHolder(itemView: View, private val productCardListener: ProductCardListener) :
     RecyclerView.ViewHolder(itemView) {
 
     fun bindData(productCardDataView: ProductCardDataView) {
-        itemView.run {
-            img_product_card.loadImage(productCardDataView.imageUrl)
+        val binding = ItemDealsProductCardBinding.bind(itemView)
+        binding.run {
+            imgProductCard.loadImage(productCardDataView.imageUrl)
             productCardDataView.productCategory?.let {
                 if(it.name.trim().isNotEmpty()) {
-                    txt_product_card_category.show()
-                    txt_product_card_category.text = it.name
-                    txt_product_card_category.setTextColor(ContextCompat.getColor(context, it.color))
-                } else txt_product_card_category.hide()
+                    txtProductCardCategory.show()
+                    txtProductCardCategory.text = it.name
+                    txtProductCardCategory.setTextColor(ContextCompat.getColor(txtProductCardCategory.context, it.color))
+                } else txtProductCardCategory.hide()
             }
-            txt_product_card_title.text = productCardDataView.title
+            txtProductCardTitle.text = productCardDataView.title
 
             if (productCardDataView.discount.isNotEmpty() && !productCardDataView.discount.startsWith(ZERO_PERCENT)) {
-                label_product_card_discount.show()
-                label_product_card_discount.setLabel(productCardDataView.discount)
+                labelProductCardDiscount.show()
+                labelProductCardDiscount.setLabel(productCardDataView.discount)
             } else {
-                label_product_card_discount.hide()
+                labelProductCardDiscount.hide()
             }
 
             if(productCardDataView.oldPrice.isNotEmpty() && productCardDataView.oldPrice != productCardDataView.price){
-                txt_product_card_old_price.show()
-                txt_product_card_old_price.apply {
+                txtProductCardOldPrice.show()
+                txtProductCardOldPrice.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = productCardDataView.oldPrice
                 }
             } else {
-                txt_product_card_old_price.hide()
+                txtProductCardOldPrice.hide()
             }
 
-            txt_product_card_price.text = productCardDataView.price
-            txt_product_card_shop.text = productCardDataView.shop
 
-            setOnClickListener {
+
+            txtProductCardPrice.text = productCardDataView.price
+            txtProductCardShop.text = productCardDataView.shop
+
+            root.setOnClickListener {
                 productCardListener.onProductClicked(
-                    this,
+                    it,
                     productCardDataView,
                     adapterPosition
                 )

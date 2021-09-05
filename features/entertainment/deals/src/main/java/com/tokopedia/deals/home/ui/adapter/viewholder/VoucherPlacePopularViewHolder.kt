@@ -4,34 +4,44 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.deals.databinding.ItemDealsVoucherPopularPlaceBinding
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.adapter.DealsVoucherPlaceCardAdapter
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 
 class VoucherPlacePopularViewHolder(
-        itemView: View,
-        private val voucherPlaceCardListener: DealsVoucherPlaceCardListener
+    itemView: View,
+    private val voucherPlaceCardListener: DealsVoucherPlaceCardListener
 ) : BaseViewHolder(itemView) {
 
     private val voucherPlaceCardAdapter = DealsVoucherPlaceCardAdapter(voucherPlaceCardListener)
 
     fun bindData(voucherPlacePopular: VoucherPlacePopularDataView) {
-        itemView.run {
-            txt_voucher_popular_place_title.text = voucherPlacePopular.title
+
+        val binding = ItemDealsVoucherPopularPlaceBinding.bind(itemView)
+        binding.run {
+            txtVoucherPopularPlaceTitle
+                .text = voucherPlacePopular.title
 
             if (voucherPlacePopular.subtitle.isNotEmpty()) {
-                txt_voucher_popular_place_subtitle.text = voucherPlacePopular.subtitle
-            } else txt_voucher_popular_place_subtitle.hide()
+                txtVoucherPopularPlaceSubtitle
+                    .text = voucherPlacePopular.subtitle
+            } else txtVoucherPopularPlaceSubtitle.hide()
 
-            lst_voucher_popular_place_card.apply {
+            lstVoucherPopularPlaceCard
+            .apply {
                 layoutManager = GridLayoutManager(context, VOUCHER_PLACE_SPAN_COUNT)
                 adapter = voucherPlaceCardAdapter
                 voucherPlaceCardAdapter.voucherPlaceCards = voucherPlacePopular.voucherPlaceCards
-            }
+            }.also {
+                    ViewCompat.setNestedScrollingEnabled(it, false)
+                }
 
-            ViewCompat.setNestedScrollingEnabled(lst_voucher_popular_place_card, false)
+
+        }
+        itemView.run {
+
         }
         voucherPlaceCardListener.onVoucherPlaceCardBind(voucherPlacePopular, adapterPosition)
     }

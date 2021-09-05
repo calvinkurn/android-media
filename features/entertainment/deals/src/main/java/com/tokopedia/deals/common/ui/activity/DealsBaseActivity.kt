@@ -6,6 +6,7 @@ import android.os.PersistableBundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,15 +22,13 @@ import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.databinding.ActivityBaseDealsBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.activity_base_deals.*
-import kotlinx.android.synthetic.main.content_base_deals_search_bar.*
-import kotlinx.android.synthetic.main.content_base_toolbar.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -40,6 +39,8 @@ import kotlin.math.abs
 
 abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback {
 
+    protected lateinit var root : View
+    private lateinit var binding: ActivityBaseDealsBinding
     private lateinit var dealsComponent: DealsComponent
     private var permissionCheckerHelper = PermissionCheckerHelper()
 
@@ -84,6 +85,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     open fun isHomePage(): Boolean = false
 
     private fun setupView() {
+        root = findViewById<View>(android.R.id.content).getRootView()
+        binding = ActivityBaseDealsBinding.bind(root)
         setUpScrollView()
         handleToolbarVisibilityWihLocName(currentLoc.name)
         setupLocation()
@@ -94,27 +97,30 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun setUpScrollView() {
 
-        appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
+        
+
+        binding.appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height) {
                 //collapse
-                imgDealsSearchIcon.show()
+                binding.contentBaseToolbar.imgDealsSearchIcon.show()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                    binding.appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                 }
             } else {
-                imgDealsSearchIcon.hide()
+                binding.contentBaseToolbar.imgDealsSearchIcon.hide()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
+                    binding.appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
                 }
             }
         })
 
-        imgDealsSearchIcon.setOnClickListener {
+        binding.contentBaseToolbar.imgDealsSearchIcon.setOnClickListener {
             searchBarActionListener?.onClickSearchBar()
         }
     }
 
     private fun setupLocation() {
+
         if (isHomePage()) {
             setUpPermissionChecker()
         } else {
@@ -123,8 +129,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         observeLocation()
 
         currentLoc = dealsLocationUtils.getLocation()
-        txtDealsBaseLocationHint.setOnClickListener { onClickLocation() }
-        txtDealsBaseLocationTitle.setOnClickListener { onClickLocation() }
+        binding.contentBaseToolbar.txtDealsBaseLocationHint.setOnClickListener { onClickLocation() }
+        binding.contentBaseToolbar.txtDealsBaseLocationTitle.setOnClickListener { onClickLocation() }
     }
 
     private fun observeLocation() {
@@ -135,7 +141,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     fun renderLocationName(name: String) {
-        txtDealsBaseLocationTitle.text = name
+        binding.contentBaseToolbar.txtDealsBaseLocationTitle.text = name
     }
 
     private fun setUpPermissionChecker() {
@@ -181,14 +187,14 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupOrderListMenu() {
-        imgDealsOrderListMenu.setOnClickListener {
+        binding.contentBaseToolbar.imgDealsOrderListMenu.setOnClickListener {
             dealsAnalytics.clickOrderListDeals()
             RouteManager.route(this, ApplinkConst.DEALS_ORDER)
         }
     }
 
     private fun setupSearchBar() {
-        with(searchBarDealsBaseSearch) {
+        with(binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch) {
             if (!isSearchAble()) {
                 searchBarTextField.inputType = InputType.TYPE_NULL
                 searchBarTextField.setOnClickListener { searchBarActionListener?.onClickSearchBar() }
@@ -210,7 +216,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupBackButton() {
-        imgDealsBaseBackIcon.setOnClickListener { this.onBackPressed() }
+        binding.contentBaseToolbar.imgDealsBaseBackIcon.setOnClickListener { this.onBackPressed() }
     }
 
     protected fun getDealsComponent(): DealsComponent {
@@ -258,14 +264,14 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     fun handleToolbarVisibilityWihLocName(name: String) {
         if (!name.isBlank()) {
-            txtDealsBaseLocationTitle.text = name
-            txtDealsBaseLocationTitle.show()
-            searchBarDealsBaseSearch.show()
-            shimmerSearchBar.hide()
-            shimmerDealsBaseLocationTitle.hide()
+            binding.contentBaseToolbar.txtDealsBaseLocationTitle.text = name
+            binding.contentBaseToolbar.txtDealsBaseLocationTitle.show()
+            binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.show()
+            binding.contentBaseDealsSearchBar.shimmerSearchBar.hide()
+            binding.contentBaseToolbar.shimmerDealsBaseLocationTitle.hide()
         } else {
-            shimmerSearchBar.show()
-            shimmerDealsBaseLocationTitle.show()
+            binding.contentBaseDealsSearchBar.shimmerSearchBar.show()
+            binding.contentBaseToolbar.shimmerDealsBaseLocationTitle.show()
         }
     }
 }

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.deals.R
+import com.tokopedia.deals.databinding.ItemDealsVoucherPlaceCardBinding
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.adapter.viewholder.VoucherPlaceCardViewHolder
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
@@ -21,7 +21,7 @@ class DealsVoucherPlaceCardAdapter(private val voucherPlaceCardListener: DealsVo
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherPlaceCardViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_deals_voucher_place_card, parent, false)
+        val itemView = ItemDealsVoucherPlaceCardBinding.inflate(inflater, parent, false)
         return VoucherPlaceCardViewHolder(itemView, voucherPlaceCardListener)
     }
 
