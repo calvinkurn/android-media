@@ -41,7 +41,7 @@ class QuickEditVariantPriceBottomSheet(
         return ProductVariantAdapter(ProductVariantPriceAdapterFactoryImpl(this))
     }
 
-    override fun onPriceChanged(variantId: String, price: Int) {
+    override fun onPriceChanged(variantId: String, price: Double) {
         viewModel.setVariantPrice(variantId, price)
     }
 
@@ -55,7 +55,7 @@ class QuickEditVariantPriceBottomSheet(
 
     private fun isVariantsPriceValid(result: EditVariantResult): Boolean {
         result.variants.forEach {
-            if(it.price < MINIMUM_PRICE) {
+            if(it.price < MINIMUM_PRICE.toDouble()) {
                 return false
             }
         }

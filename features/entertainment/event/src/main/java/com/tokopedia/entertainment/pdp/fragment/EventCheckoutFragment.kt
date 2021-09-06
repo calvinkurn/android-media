@@ -337,7 +337,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
 
 
-        tg_event_checkout_summary_price_price.text = getRupiahFormat(metadata.totalPrice)
+        tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
         context?.let {
             tg_event_checkout_tnc.makeLinks(
@@ -604,6 +604,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
+        const val ZERO_PRICE = 0
 
         const val ROUND_VALUE = 25f
 

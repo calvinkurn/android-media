@@ -16,6 +16,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
@@ -25,6 +26,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitor
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
+import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.fragment.StatisticFragment
@@ -134,18 +136,20 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
+        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession),
-            StatisticPageHelper.getProductStatistic(this, userSession),
+            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
             StatisticPageHelper.getOperationalStatistic(this, userSession),
             StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
+        val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession),
-            StatisticPageHelper.getProductStatistic(this, userSession),
+            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
             StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }

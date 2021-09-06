@@ -6,7 +6,6 @@ import android.os.Handler
 import android.view.*
 import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,6 +46,7 @@ import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
+import com.tokopedia.statistic.view.bottomsheet.RMDateFilterInfoBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
@@ -405,14 +405,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
+    fun setSelectedWidget(widget: String) {
+        this.selectedWidget = widget
+    }
+
     private fun sendSelectedFilterClickEvent(filter: WidgetFilterUiModel) {
         getCategoryPage()?.let { categoryPage ->
             StatisticTracker.sendTableFilterClickEvent(categoryPage, filter.name)
         }
-    }
-
-    fun setSelectedWidget(widget: String) {
-        this.selectedWidget = widget
     }
 
     private fun loadInitialLayoutData(action: () -> Unit) {
@@ -482,7 +482,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 ?: if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
                     statisticPage?.pageTitle != getString(R.string.stc_shop)
                 ) {
-                    val headerSubTitle: String = getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
+                    val headerSubTitle: String =
+                        getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
                     val startEndDateFmt =
                         DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
                     "$headerSubTitle ($startEndDateFmt)"
@@ -583,9 +584,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
-        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<TableWidgetUiModel>().map {
-            val tableFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map TableAndPostDataKey(it.dataKey, tableFilter, it.maxData, it.maxDisplay)
+        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<TableWidgetUiModel>()
+            .map {
+                val tableFilter = it.tableFilters
+                    .find { filter -> filter.isSelected }?.value.orEmpty()
+                return@map TableAndPostDataKey(it.dataKey, tableFilter, it.maxData, it.maxDisplay)
         }
         performanceMonitoringTableWidget = PerformanceMonitoring.start(TABLE_WIDGET_TRACE)
         mViewModel.getTableWidgetData(dataKeys)
@@ -607,14 +610,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun selectDateRange() {
         if (!isAdded || context == null) return
-        StatisticTracker.sendDateFilterEvent(userSession)
-        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
-            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-            applyDateRange(it)
-        }?.show()
+        if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
+            showRmDateFilterInfoBottomSheet()
+        } else {
+            StatisticTracker.sendDateFilterEvent(userSession)
+            dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
+                setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+                applyDateRange(it)
+            }?.show()
 
-        val tabName = statisticPage?.pageTitle.orEmpty()
-        StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
+            val tabName = statisticPage?.pageTitle.orEmpty()
+            StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
+        }
+    }
+
+    private fun showRmDateFilterInfoBottomSheet() {
+        val bottomSheet = RMDateFilterInfoBottomSheet.newInstance()
+        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun applyDateRange(item: DateFilterItem) {
@@ -847,7 +863,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeWidgetLayoutLiveData() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+        mViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
 
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
@@ -861,7 +877,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeUserRole() {
-        mViewModel.userRole.observe(viewLifecycleOwner, Observer {
+        mViewModel.userRole.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> checkUserRole(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(
@@ -877,7 +893,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         statisticPage?.let {
             mViewModel.getTickers(it.tickerPageName)
         }
-        mViewModel.tickers.observe(viewLifecycleOwner, Observer {
+        mViewModel.tickers.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> showTickers(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(
@@ -892,7 +908,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         liveData: LiveData<Result<List<D>>>,
         type: String
     ) {
-        liveData.observe(viewLifecycleOwner, Observer { result ->
+        liveData.observe(viewLifecycleOwner, { result ->
             startLayoutRenderingPerformanceMonitoring()
 
             when (result) {
@@ -976,7 +992,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         menu.findItem(R.id.actionStcOtherMenu)?.isVisible = shouldShowActionMenu
 
         val minFilterSize = 1
-        val shouldShowFilterMenu = statisticPage?.dateFilters?.size.orZero() > minFilterSize
+        val shouldShowFilterMenu = statisticPage?.dateFilters?.size.orZero() >= minFilterSize
         menu.findItem(R.id.actionStcSelectDate)?.isVisible = shouldShowFilterMenu
     }
 

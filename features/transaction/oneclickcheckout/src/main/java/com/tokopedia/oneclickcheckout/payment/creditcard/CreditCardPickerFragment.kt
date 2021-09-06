@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +20,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.URLEncoder
 
 class CreditCardPickerFragment : BaseDaggerFragment() {
 
-    private var webView: WebView? = null
-    private var progressBar: LoaderUnify? = null
+    private var binding by autoClearedNullable<FragmentPaymentMethodBinding>()
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -41,37 +39,32 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_payment_method, container, false)
+        binding = FragmentPaymentMethodBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
         initWebView()
         loadWebView()
     }
 
-    private fun initViews(view: View) {
-        webView = view.findViewById(R.id.web_view)
-        progressBar = view.findViewById(R.id.progress_bar)
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView?.clearCache(true)
-        val webSettings = webView?.settings
-        webSettings?.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            builtInZoomControls = false
-            displayZoomControls = true
-            setAppCacheEnabled(true)
-        }
-        webView?.webViewClient = PaymentMethodWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        binding?.apply {
+            webView.clearCache(true)
+            val webSettings = webView.settings
+            webSettings?.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                builtInZoomControls = false
+                displayZoomControls = true
+                setAppCacheEnabled(true)
+            }
+            webView.webViewClient = PaymentMethodWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false
+            webView.visible()
         }
-        webView?.visible()
     }
 
     private fun loadWebView() {
@@ -80,7 +73,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
             activity?.finish()
             return
         }
-        webView?.postUrl(additionalData.changeCcLink, getPayload(additionalData).toByteArray())
+        binding?.webView?.postUrl(additionalData.changeCcLink, getPayload(additionalData).toByteArray())
     }
 
     private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
@@ -104,17 +97,17 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
             handler?.cancel()
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progressBar?.visible()
+            binding?.progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
@@ -30,6 +29,7 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
@@ -65,7 +65,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
     private var chatIcon: ImageUnify? = null
-    private var labelUnavailable: Typography? = null
+    private var textCannotProcess: Typography? = null
+    private var textCannotProcessQuantity: Typography? = null
     private var imageChevronUnavailable: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
@@ -77,7 +78,8 @@ class MiniCartWidget @JvmOverloads constructor(
         view = inflate(context, R.layout.widget_mini_cart, this)
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
-        labelUnavailable = view?.findViewById(R.id.label_unavailable)
+        textCannotProcess = view?.findViewById(R.id.text_cannot_process)
+        textCannotProcessQuantity = view?.findViewById(R.id.text_cannot_process_quantity)
         imageChevronUnavailable = view?.findViewById(R.id.image_chevron_unavailable)
     }
 
@@ -122,17 +124,17 @@ class MiniCartWidget @JvmOverloads constructor(
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(it, fragment)
                 }
-                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
+                GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let { context ->
                             hideProgressLoading()
-                            onSuccessUpdateCartForCheckout(context)
+                            onSuccessGoToCheckout(context)
                         }
                     }
                 }
-                GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
+                GlobalEvent.STATE_FAILED_TO_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        onFailedUpdateCartForCheckout(it, fragment)
+                        onFailedGoToCheckout(it, fragment)
                     }
                 }
             }
@@ -163,66 +165,70 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+    private fun onFailedGoToCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
         hideProgressLoading()
         setTotalAmountLoading(true)
         fragment.context?.let { context ->
-            handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
+            handleFailedGoToCheckout(view, context, fragment.parentFragmentManager, globalEvent)
         }
     }
 
-    private fun handleFailedUpdateCartForCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+    private fun handleFailedGoToCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
         val data = globalEvent.data
-        if (data != null) {
-            // Goes here if failed but get response from BE
-            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
+        if (data != null && data is MiniCartCheckoutData) {
+            // Goes here if failed and get response from BE
+            handleFailedGoToCheckoutWithData(view, data, fragmentManager, context, globalEvent)
         } else {
             // Goes here if failed and get no response from BE
-            handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
+            handleFailedGoToCheckoutWithThrowable(view, globalEvent, fragmentManager, context)
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
-        if (data is Data) {
-            if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
-                // Prioritize to show out of service data
-                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
-                    override fun onGoToHome() {
-                        RouteManager.route(context, ApplinkConst.HOME)
-                    }
-
-                    override fun onRefreshErrorPage() {
-                        showProgressLoading()
-                        viewModel?.updateCart(true, globalEvent.observer)
-                    }
-                })
-                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
-            } else {
-                // Reload data
-                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                    viewModel?.getLatestWidgetState()
-                } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                    viewModel?.getCartList()
+    private fun handleFailedGoToCheckoutWithData(view: View?, miniCartCheckoutData: MiniCartCheckoutData, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
+        if (miniCartCheckoutData.outOfService.id.isNotBlank() && miniCartCheckoutData.outOfService.id != "0") {
+            // Prioritize to show out of service data
+            globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, miniCartCheckoutData.outOfService, object : GlobalErrorBottomSheetActionListener {
+                override fun onGoToHome() {
+                    RouteManager.route(context, ApplinkConst.HOME)
                 }
 
-                // Show toaster error if have no out of service data
-                var ctaText = context.getString(R.string.mini_cart_cta_ok)
-                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                    ctaText = data.toasterAction.text
+                override fun onRefreshErrorPage() {
+                    showProgressLoading()
+                    viewModel?.goToCheckout(globalEvent.observer)
                 }
-                if (data.toasterAction.showCta) {
-                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(data.error, ctaText)
-                    }
-                } else {
-                    showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
-                }
-                analytics.eventClickBuyThenGetToasterError(data.error)
+            })
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+            analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description, isOCCFlow)
+        } else {
+            // Reload data
+            if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                viewModel?.getLatestWidgetState()
+            } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                viewModel?.getCartList()
             }
+
+            // Show toaster error if have no out of service data
+            var ctaText = context.getString(R.string.mini_cart_cta_ok)
+            if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                ctaText = miniCartCheckoutData.toasterAction.text
+            }
+            val errorMessage = miniCartCheckoutData.errorMessage ?: ""
+            if (miniCartCheckoutData.toasterAction.showCta) {
+                showToaster(view, errorMessage, Toaster.TYPE_ERROR, ctaText) {
+                    if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        miniCartListBottomSheet.scrollToUnavailableSection()
+                    }
+                    analytics.eventClickAtcToasterErrorCta(errorMessage, ctaText)
+                }
+            } else {
+                showToaster(view, errorMessage, Toaster.TYPE_ERROR, isShowCta = false)
+            }
+            val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+            analytics.eventClickBuyThenGetToasterError(errorMessage, isOCCFlow)
         }
     }
 
-    private fun handleFailedUpdateCartWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedGoToCheckoutWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
         val throwable = globalEvent.throwable
         if (throwable != null) {
             when (throwable) {
@@ -234,33 +240,41 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.updateCart(true, globalEvent.observer)
+                            viewModel?.goToCheckout(globalEvent.observer)
                         }
                     })
-                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle), isOCCFlow)
                 }
                 is SocketTimeoutException -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
                     val ctaText = context.getString(R.string.mini_cart_cta_ok)
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    analytics.eventClickBuyThenGetToasterError(message)
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
                 else -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
                     val ctaText = context.getString(R.string.mini_cart_cta_ok)
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    analytics.eventClickBuyThenGetToasterError(message)
+                    val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
             }
         }
     }
 
-    private fun onSuccessUpdateCartForCheckout(context: Context) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+    private fun onSuccessGoToCheckout(context: Context) {
+        val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        } else {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+        }
+
         context.startActivity(intent)
     }
 
@@ -320,7 +334,7 @@ class MiniCartWidget @JvmOverloads constructor(
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
@@ -332,7 +346,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
-        analytics.eventClickBuy(pageName, products)
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
     private fun initializeProgressDialog(context: Context?) {
@@ -409,6 +424,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         setTotalAmountLoading(true)
+        viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
@@ -423,33 +439,68 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-            totalAmount?.apply {
-                setLabelTitle("")
-                setAmount("")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
-                amountCtaView.isEnabled = false
-                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-                amountCtaView.requestLayout()
-            }
-            labelUnavailable?.apply {
-                text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
-                show()
-            }
-            imageChevronUnavailable?.show()
+            renderUnavailableWidget(miniCartSimplifiedData)
         } else {
-            totalAmount?.apply {
-                setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-                amountCtaView.isEnabled = true
-                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-                amountCtaView.requestLayout()
-            }
-            labelUnavailable?.gone()
-            imageChevronUnavailable?.gone()
+            renderAvailableWidget(miniCartSimplifiedData)
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
+        validateAmountCtaLabel(miniCartSimplifiedData)
+    }
+
+    private fun validateAmountCtaLabel(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
+            // Change button from `Beli Langsung` to `Beli` if ellipsis
+            totalAmount?.post {
+                val ellipsis = totalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
+                if (ellipsis > 0) {
+                    val ctaText = context.getString(R.string.mini_cart_widget_cta_text_default)
+                    if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
+                        totalAmount?.setCtaText(ctaText)
+                    } else {
+                        totalAmount?.setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        totalAmount?.apply {
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
+            amountCtaView.isEnabled = true
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+        }
+        textCannotProcess?.gone()
+        textCannotProcessQuantity?.gone()
+        imageChevronUnavailable?.gone()
+    }
+
+    private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        totalAmount?.apply {
+            setLabelTitle("")
+            setAmount("")
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText(ctaText)
+            amountCtaView.isEnabled = false
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+        }
+        textCannotProcess?.apply {
+            text = context.getString(R.string.mini_cart_label_cannot_process)
+            show()
+        }
+        textCannotProcessQuantity?.apply {
+            text = context.getString(R.string.mini_cart_cannot_process_quantity, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
+            show()
+        }
+        imageChevronUnavailable?.show()
     }
 
     private fun setAmountViewLayoutParams() {
@@ -497,15 +548,15 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
-    override fun onBottomSheetSuccessUpdateCartForCheckout() {
+    override fun onBottomSheetSuccessGoToCheckout() {
         context?.let {
-            onSuccessUpdateCartForCheckout(it)
+            onSuccessGoToCheckout(it)
         }
     }
 
-    override fun onBottomSheetFailedUpdateCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+    override fun onBottomSheetFailedGoToCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
         context?.let {
-            handleFailedUpdateCartForCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
+            handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
         }
     }
 

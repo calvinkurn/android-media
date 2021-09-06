@@ -248,7 +248,7 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtcMulti("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
 
         //then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -263,7 +263,7 @@ class UohListViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doAtcMulti("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
 
         //then
         assert(uohListViewModel.atcMultiResult.value is Fail)
@@ -277,7 +277,7 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         //when
-        uohListViewModel.doAtcMulti("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
 
         //then
         assert(uohListViewModel.atcMultiResult.value is Success)

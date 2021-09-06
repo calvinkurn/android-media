@@ -95,6 +95,8 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                         val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
                         if (isSuccessRegister) {
                             it.startActivities(arrayOf(intentHome, intentNewUser))
+                        } else {
+                            it.startActivity(intentHome)
                         }
                     } else {
                         it.startActivity(intentHome)

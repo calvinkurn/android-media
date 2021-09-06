@@ -25,6 +25,9 @@ data class ProductReview(
         @SerializedName("feedbackID")
         @Expose
         var feedbackID: String = "",
+        @SerializedName("variantName")
+        @Expose
+        val variantName: String = "",
         @SerializedName("message")
         @Expose
         var message: String = "",

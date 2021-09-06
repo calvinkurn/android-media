@@ -39,14 +39,14 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             imageHeight +
                             cardPaddingBottom +
                             bestSellerLabelHeight +
+                            categoryBottomLabelHeight +
                             campaignLabelHeight +
                             contentMarginTop +
                             contentHeight +
                             buttonAddToCartSectionHeight +
                             buttonQuantityEditorSectionHeight +
                             buttonVariantSectionHeight +
-                            buttonNotifyMeSectionHeight +
-                            categoryBottomLabelHeight
+                            buttonNotifyMeSectionHeight
             )
         }
 
@@ -69,8 +69,7 @@ private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boole
 
 private fun getTextCategoryBottomHeight(context: Context, hasLabelBestSeller: Boolean): Int {
     return if (hasLabelBestSeller)
-        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_margin_bottom) //bottom
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height)
     else 0
 }
 
@@ -110,6 +109,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
             val totalHeight = cardPaddingTop +
                     bestSellerLabelHeight +
+                    categoryBottomLabelHeight +
                     campaignLabelHeight +
                     contentMarginTop +
                     cardPaddingBottom +
@@ -118,8 +118,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
                     buttonAddToCartSectionHeight +
                     buttonQuantityEditorSectionHeight +
                     buttonVariantSectionHeight +
-                    buttonNotifyMeSectionHeight +
-                    categoryBottomLabelHeight
+                    buttonNotifyMeSectionHeight
 
             productCardHeightList.add(totalHeight)
         }

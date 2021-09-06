@@ -43,5 +43,10 @@
     <string name="img_options_heading">Mau kasih lihat foto yang mana?</string>
     <string name="tn_title">Title</string>
     <string name="tokopedia_link">tokopedia.link</string>
+    <string name="permission_dialog_title">Boleh minta akses ke galeri kamu?</string>
+    <string name="permission_dialog_description">Kamu bakal bisa simpan dan bagikan konten dari Tokopedia langsung di HP kamu.</string>
+    <string name="permission_dialog_primary_cta">Izinkan Akses</string>
+    <string name="permission_dialog_secondary_cta">Lain Kali</string>
+    <string name="permission_denied_toast">Oops, izinkan akses ke galeri biar bisa bagi-bagi konten dari Tokopedia, ya.</string>
 
 </resources>

@@ -242,6 +242,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
             if(it.isEmpty() && productIds.isNotEmpty()) {
+                getLatestBid()
                 viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
             }
         })
@@ -274,6 +275,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minBid = it.minBid
             maxBid = it.maxBid
         }
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if (it.bidType.equals("product_auto_search")) {
+                    budgetInput.textFieldInput.setText(suggestBidPerClick)
+                } else if (it.bidType.equals("product_auto_browse")) {
+                    budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                }
+            }
+        })
         checkForbidValidity(getCurrentBid())
         checkForRekommendedBid(getCurrentRekommendedBid())
     }
@@ -305,7 +315,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
                 minSuggestedBidPencerian.visibility = View.VISIBLE
                 setMessageErrorField("", "", false, false)
-                actionEnable(false)
+                actionEnable(true)
             }
             result > maxBid.toDouble() -> {
                 minSuggestedBidPencerian.visibility = View.GONE
@@ -349,7 +359,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
                 minSuggestedBidRekomendasi.visibility = View.VISIBLE
                 setMessageErrorField("", "", false, true)
-                actionEnable(false)
+                actionEnable(true)
             }
             result > maxBid.toDouble() -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
@@ -656,10 +666,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             it.forEach {
                 if (it.bidType.equals("product_search")) {
                     budgetInput.textFieldInput.setText(
-                        ( it.priceBid?.toInt()?:0).toString()
+                        ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
                     )
                 } else if(it.bidType.equals("product_browse")) {
-                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:0).toString())
+                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
                 }
             }
         })

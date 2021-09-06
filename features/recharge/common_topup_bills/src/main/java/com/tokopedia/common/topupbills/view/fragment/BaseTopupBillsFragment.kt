@@ -250,9 +250,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
+                    data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
                         view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                            val errMsg = ErrorHandler.getErrorMessage(context, throwable as Throwable)
+                            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }

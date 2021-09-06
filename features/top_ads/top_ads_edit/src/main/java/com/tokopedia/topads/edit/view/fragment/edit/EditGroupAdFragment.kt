@@ -114,7 +114,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         if (priceDaily != 0.0F) {
             toggle?.isChecked = true
             daily_budget?.visible()
-            setCurrentDailyBudget((priceDaily).toString())
+            setCurrentDailyBudget((priceDaily).toInt().toString())
         } else {
             daily_budget?.gone()
         }
@@ -272,6 +272,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             if (currentAutoBidState.isNotEmpty()) {
                 setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
                 actionEnable()
+            } else {
+                viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
             }
         })
     }

@@ -12,7 +12,8 @@ import dagger.Component
     ViewModelModule::class,
     GqlRawQueryModule::class,
     ProductWishlistModule::class,
-    ProductDetailUserModule::class],
+    ProductDetailUserModule::class,
+    ProductDetailDevModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailComponent {
     fun inject(fragment: DynamicProductDetailFragment)

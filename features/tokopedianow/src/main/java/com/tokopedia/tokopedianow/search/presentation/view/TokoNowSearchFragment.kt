@@ -2,10 +2,12 @@ package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -15,14 +17,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.tokopedianow.search.di.SearchComponent
-import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
-import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
-import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
-import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
@@ -34,9 +29,17 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOO
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
+import com.tokopedia.tokopedianow.search.di.SearchComponent
+import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
+import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
+import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
+import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -48,7 +51,8 @@ class TokoNowSearchFragment:
         BaseSearchCategoryFragment(),
         SuggestionListener,
         CategoryJumperListener,
-        CTATokoNowHomeListener {
+        CTATokoNowHomeListener,
+        BroadMatchListener {
 
     companion object {
         @JvmStatic
@@ -93,6 +97,7 @@ class TokoNowSearchFragment:
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartBroadMatchTrackingLiveData.observe(this::sendATCBroadMatchTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -139,6 +144,7 @@ class TokoNowSearchFragment:
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
+            broadMatchListener = this,
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -147,12 +153,28 @@ class TokoNowSearchFragment:
     override fun getViewModel() = tokoNowSearchViewModel
 
     override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
-        val context = context ?: return
-
         SearchTracking.sendSuggestionClickEvent(getViewModel().query, suggestionDataView.suggestion)
 
-        val applink = ApplinkConstInternalTokopediaNow.SEARCH + "?" + suggestionDataView.query
-        RouteManager.route(context, applink)
+        performNewProductSearch(suggestionDataView.query)
+    }
+
+    private fun performNewProductSearch(queryParams: String) {
+        val context = context ?: return
+
+        val applinkToSearchResult = ApplinkConstInternalTokopediaNow.SEARCH + "?" + queryParams
+        val modifiedApplinkToSearchResult = modifyApplinkToSearchResult(applinkToSearchResult)
+
+        RouteManager.route(context, modifiedApplinkToSearchResult)
+    }
+
+    private fun modifyApplinkToSearchResult(applink: String): String {
+        val urlParser = URLParser(applink)
+
+        val params = urlParser.paramKeyValueMap
+        params[SearchApiConst.PREVIOUS_KEYWORD] = getViewModel().query
+
+        return ApplinkConstInternalTokopediaNow.SEARCH + "?" +
+            UrlParamUtils.generateUrlParamString(params)
     }
 
     override fun onFindInTokopediaClick() {
@@ -328,4 +350,61 @@ class TokoNowSearchFragment:
     override fun getEventLabel(isOOC: Boolean): String {
         return getViewModel().query
     }
+
+    override fun getRecyclerViewPool() = recycledViewPool
+
+    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+        val trackingQueue = trackingQueue ?: return
+
+        SearchTracking.sendBroadMatchImpressionEvent(
+            trackingQueue = trackingQueue,
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
+    }
+
+    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+        SearchTracking.sendBroadMatchClickEvent(
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
+
+        RouteManager.route(context, broadMatchItemDataView.applink)
+    }
+
+    override fun onBroadMatchItemATCNonVariant(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        quantity: Int,
+        broadMatchIndex: Int,
+    ) {
+        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
+    }
+
+    private fun sendATCBroadMatchTrackingEvent(
+        atcTrackingData: Triple<Int, String, BroadMatchItemDataView>
+    ) {
+        val (quantity, _, broadMatchItemDataView) = atcTrackingData
+
+        SearchTracking.sendBroadMatchAddToCartEvent(
+            broadMatchItemDataView,
+            getViewModel().query,
+            getUserId(),
+            quantity,
+        )
+    }
+
+    override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
+
+        val applink = getBroadMatchSeeAllApplink(broadMatchDataView)
+
+        RouteManager.route(context, applink)
+    }
+
+    private fun getBroadMatchSeeAllApplink(broadMatchDataView: BroadMatchDataView) =
+        if (broadMatchDataView.applink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
+            modifyApplinkToSearchResult(broadMatchDataView.applink)
+        else broadMatchDataView.applink
 }
