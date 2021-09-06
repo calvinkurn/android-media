@@ -185,6 +185,7 @@ ext {
             payment                         : ":features:payment:payment",
             paymentSetting                  : ":features:payment:payment_setting",
             pms                             : ":features:payment:pms",
+            goPayKyc                        : ":features:payment:gopay_kyc",
             withdraw                        : ":features:payment:withdraw",
 
             gallery                         : ":features:merchant:gallery",

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.gopay_kyc">
+
+    <application>
+        <activity
+            android:name=".presentation.activity.GoPayKycActivity"
+            android:label="@string/title_gopay_kyc"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_payment"
+                    android:path="@string/path_gopay_kyc"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>
