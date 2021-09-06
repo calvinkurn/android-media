@@ -69,7 +69,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
             itemView.reviewPendingStars.renderInitialReviewWithData(ReviewInboxConstants.RATING_5)
-            Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, ReviewInboxConstants.RATING_5, inboxReviewId, seen) } }, 200)
+            invokeListener(reputationId, productId, ReviewInboxConstants.RATING_5, inboxReviewId, seen)
         }
     }
 
@@ -79,11 +79,15 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
                     reviewPendingItemListener.trackStarsClicked(reputationId, productId, position, isEligible)
-                    Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) } }, ANIMATION_DELAY)
+                    invokeListener(reputationId, productId, position, inboxReviewId, seen)
                 }
             })
             show()
         }
+    }
+
+    private fun invokeListener(reputationId: String, productId: String, position: Int, inboxReviewId: String, seen: Boolean) {
+        Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) } }, ANIMATION_DELAY)
     }
 
     private fun showDate(date: String) {
