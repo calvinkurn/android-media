@@ -87,7 +87,7 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
     private val fragmentUpcomingView by viewComponent {
-        FragmentUpcomingViewComponent(channelId, it, R.id.fl_upcoming, childFragmentManager)
+        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, childFragmentManager)
     }
 
     private lateinit var playParentViewModel: PlayParentViewModel
