@@ -1,0 +1,250 @@
+package com.tokopedia.mvcwidget.multishopmvc
+
+import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.GradientDrawable
+import android.util.AttributeSet
+import android.view.View
+import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.Tracker
+import com.tokopedia.mvcwidget.Tracker.Event.CLICK_COUPON_TITLE
+import com.tokopedia.mvcwidget.Tracker.Event.CLICK_PRODUCT_CARD
+import com.tokopedia.mvcwidget.Tracker.Event.CLICK_SHOP_NAME
+import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
+import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
+import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponListAdapter
+import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+
+class MvcMultiShopView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
+    var view: View? = null
+
+    var ivShopIcon: AppCompatImageView? = null
+    var ivShopChevron: AppCompatImageView? = null
+    var ivCouponOne: ImageUnify? = null
+    var ivCouponTwo: ImageUnify? = null
+    var productParentOne: ConstraintLayout? = null
+    var productParentTwo: ConstraintLayout? = null
+    var parentContainer: ConstraintLayout? = null
+    var tvShopName: Typography? = null
+    var tvCashBackTitle: Typography? = null
+    var tvCashBackValue: Typography? = null
+    var tvCouponCount: Typography? = null
+    var tvDealsCouponOne: Typography? = null
+    var tvDealsCouponTwo: Typography? = null
+
+
+    init {
+        view = View.inflate(context, R.layout.mvc_layout_mulitshop_item, this)
+
+        ivShopIcon = view?.findViewById(R.id.iv_shop_icon)
+        ivShopChevron = view?.findViewById(R.id.iv_shop_arrow)
+        ivCouponOne = view?.findViewById(R.id.iv_coupon1)
+        ivCouponTwo = view?.findViewById(R.id.iv_coupon2)
+        productParentOne = view?.findViewById(R.id.container_coupon1)
+        productParentTwo = view?.findViewById(R.id.container_coupon2)
+        parentContainer = view?.findViewById(R.id.parent_container)
+        tvShopName = view?.findViewById(R.id.tv_shop_name)
+        tvCashBackTitle = view?.findViewById(R.id.tv_cashback_title)
+        tvCashBackValue = view?.findViewById(R.id.tv_cashback_value)
+        tvCouponCount = view?.findViewById(R.id.tv_coupon_count)
+        tvDealsCouponOne = view?.findViewById(R.id.tv_deals_coupon1)
+        tvDealsCouponTwo = view?.findViewById(R.id.tv_deals_coupon2)
+
+    }
+
+    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+
+        item.shopIcon.let {
+            if (it.isNotEmpty()) {
+                ivShopIcon?.loadImage(it)
+            }
+        }
+        if (item.products?.size != null && item.products.isNotEmpty()) {
+            if (item.products.size == 1) {
+                productParentOne?.show()
+                item.products[0]?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        ivCouponOne?.setImageUrl(it, 1f)
+                    }
+                }
+                if (!item.products[0]?.benefitLabel.isNullOrEmpty()) {
+                    tvDealsCouponOne?.show()
+                    tvDealsCouponOne?.text = item.products[0]?.benefitLabel
+                    if ((tvDealsCouponOne?.context).isDarkMode()) {
+                        setStrokeColor(ivCouponOne)
+                    }
+                } else {
+                    tvDealsCouponOne?.hide()
+                }
+            }
+
+            if (item.products.size > 1) {
+                productParentTwo?.show()
+                item.products[1]?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        ivCouponTwo?.setImageUrl(it, 1f)
+                    }
+                }
+                if (!item.products[1]?.benefitLabel.isNullOrEmpty()) {
+                    tvDealsCouponTwo?.show()
+                    tvDealsCouponTwo?.text = item.products[1]?.benefitLabel
+                    if ((tvDealsCouponTwo?.context).isDarkMode()) {
+                        setStrokeColor(tvDealsCouponTwo)
+                    }
+                } else {
+                    tvDealsCouponTwo?.hide()
+                }
+                productParentOne?.show()
+                item.products[0]?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        ivCouponOne?.loadImage(it)
+                    }
+                }
+                if (!item.products[0]?.benefitLabel.isNullOrEmpty()) {
+                    tvDealsCouponOne?.show()
+                    tvDealsCouponOne?.text = item.products[0]?.benefitLabel
+                    if ((tvDealsCouponOne?.context).isDarkMode()) {
+                        setStrokeColor(tvDealsCouponOne)
+                    }
+                } else {
+                    tvDealsCouponOne?.hide()
+                }
+            }
+        }
+        tvShopName?.text = item.shopName
+        tvCashBackTitle?.text = item.cashBackTitle
+        tvCashBackValue?.text = item.cashBackValue
+        tvCouponCount?.text = item.couponCount
+
+        if ((this.context).isDarkMode()) {
+            parentContainer?.background?.colorFilter = PorterDuffColorFilter(
+                MethodChecker.getColor(
+                    parentContainer?.context,
+                    com.tokopedia.unifyprinciples.R.color.dark_N75
+                ), PorterDuff.Mode.SRC_IN
+            )
+        }
+
+        tvShopName?.setOnClickListener {
+            shopClickListener(item,source)
+        }
+
+        ivShopChevron?.setOnClickListener {
+            shopClickListener(item,source)
+        }
+
+        ivCouponOne?.setOnClickListener {
+            RouteManager.route(this.context, item?.products?.get(0)?.redirectAppLink)
+            sendCouponClickEvent(
+                item.shopName,
+                CLICK_PRODUCT_CARD,
+                item.AdInfo ?: AdInfo(),
+                source
+            )
+        }
+
+        ivCouponTwo?.setOnClickListener {
+            RouteManager.route(this.context, item?.products?.get(1)?.redirectAppLink)
+            sendCouponClickEvent(
+                item.shopName,
+                CLICK_PRODUCT_CARD,
+                item.AdInfo ?: AdInfo(),
+                source
+            )
+        }
+
+        this.setOnClickListener {
+            val shopName = item.shopName
+            val shopApplink = item?.applink
+            val shopId = item?.id
+            it.context.startActivity(
+                TransParentActivity.getIntent(
+                    it.context,
+                    shopId,
+                    0,
+                    shopApplink,
+                    shopName
+                )
+            )
+            sendCouponClickEvent(
+                item.shopName,
+                CLICK_COUPON_TITLE,
+                item.AdInfo ?: AdInfo(),
+                source
+            )
+        }
+    }
+
+    private fun shopClickListener(item: MultiShopModel, @MvcSource source: Int) {
+        RouteManager.route(this.context, item.applink)
+        sendCouponClickEvent(
+            item.shopName,
+            CLICK_SHOP_NAME,
+            item.AdInfo ?: AdInfo(),
+            source
+        )
+    }
+
+    private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
+        TopAdsUrlHitter(context).hitClickUrl(
+            this::class.java.simpleName,
+            adInfo?.AdClickUrl,
+            adInfo?.AdID,
+            "",
+            "",
+            ""
+        )
+    }
+
+    private fun sendCouponClickEvent(
+        shopName: String,
+        eventAction: String,
+        adInfo: AdInfo,
+        @MvcSource mvcSource: Int
+    ) {
+        sendTopadsClick(this.context, adInfo)
+        Tracker.mvcMultiShopCardClick(
+            shopName,
+            eventAction,
+            mvcSource,
+            UserSession(context).userId
+        )
+    }
+
+    private fun setStrokeColor(view: View?) {
+        val drawable = view?.background as GradientDrawable
+        drawable.setStroke(
+            view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
+                .toInt(),
+            ContextCompat.getColor(
+                view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
+        (view as Typography).setTextColor(
+            ContextCompat.getColor(
+                view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
+    }
+}

@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/dp_60"
         android:orientation="vertical">
 
-        <include layout="@layout/categorylist_shimmer" />
+        <include layout="@layout/mvc_multishoplist_shimmer" />
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
@@ -41,12 +41,13 @@
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-        <com.tokopedia.tokopoints.view.customview.ServerErrorView
+        <com.tokopedia.globalerror.GlobalError
             android:id="@+id/server_error_view"
             android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/tp_mvc_notfound_error" />
+        <include layout="@layout/mvc_notfound_error" />
     </ViewFlipper>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -65,10 +66,9 @@
             app:expandedTitleGravity="left|bottom"
             app:expandedTitleMarginBottom="@dimen/dp_8"
             app:expandedTitleMarginStart="0dp"
-            app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
             app:layout_scrollFlags="noScroll">
 
-            <com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
+            <com.tokopedia.mvcwidget.customview.MerchantRewardToolbar
                 android:id="@+id/toolbar_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"

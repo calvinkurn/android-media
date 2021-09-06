@@ -51,6 +51,8 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
             } else {
                 throw NullPointerException("error in data")
             }
+
+
         }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }

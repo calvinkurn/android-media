@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
@@ -75,8 +76,8 @@ class MvcDetailView @JvmOverloads constructor(
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
-        DaggerMvcComponent.builder()
-                .build().inject(this)
+         DaggerMvcComponent.builder().baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
 
         if (context is AppCompatActivity) {
             val viewModelProvider = ViewModelProviders.of(context, viewModelFactory)

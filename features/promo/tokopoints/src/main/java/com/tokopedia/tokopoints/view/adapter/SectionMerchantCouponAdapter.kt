@@ -1,40 +1,36 @@
 package com.tokopedia.tokopoints.view.adapter
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
+import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
+import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
+import com.tokopedia.mvcwidget.multishopmvc.data.DataMapperMultiShopView
+import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
-import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
+import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewholder
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.PersistentAdsData
-import com.tokopedia.tokopoints.view.util.isDarkMode
-import com.tokopedia.tokopoints.view.util.isEventTriggered
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.ImageUnify
-import java.util.Arrays
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
+import kotlin.collections.set
 
-class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>, context: Context) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
+class SectionMerchantCouponAdapter(val arrayList: ArrayList<CatalogMVCWithProductsListItem>) :
+    RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>(),
+    MerchantVoucherViewholder.GetAdInfoData {
 
     val eventSet = HashSet<String?>()
     val REWARDS_MVC_SOURCE = 3
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_mvclist_item, parent, false)
         return CouponListViewHolder(view)
     }
 
@@ -48,137 +44,15 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
 
     inner class CouponListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        var ivShopIcon: AppCompatImageView = view.findViewById(R.id.iv_shop_icon)
-        var ivShopChevron: AppCompatImageView = view.findViewById(R.id.iv_shop_arrow)
-        var ivCouponOne: ImageUnify = view.findViewById(R.id.iv_coupon1)
-        var ivCouponTwo: ImageUnify = view.findViewById(R.id.iv_coupon2)
-        var productParentOne: ConstraintLayout = view.findViewById(R.id.container_coupon1)
-        var productParentTwo: ConstraintLayout = view.findViewById(R.id.container_coupon2)
-        var parentContainer: ConstraintLayout = view.findViewById(R.id.parent_container)
-        var tvShopName = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name)
-        var tvCashBackTitle = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_title)
-        var tvCashBackValue = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_value)
-        var tvCouponCount = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_coupon_count)
-        var tvDealsCouponOne = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_deals_coupon1)
-        var tvDealsCouponTwo = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_deals_coupon2)
+        var mvcShopView: MvcMultiShopView = view.findViewById(R.id.mvc_multishop)
 
         fun bind(position: Int) {
-            setData(this, arrayList[position])
+            setData(this, DataMapperMultiShopView.map(arrayList[position]))
         }
     }
 
-    private fun setData(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
-
-        item?.shopInfo?.shopStatusIconURL?.let {
-            if (it.isNotEmpty()) {
-                vh.ivShopIcon.loadImage(it)
-            }
-        }
-
-        if (item?.products?.size != null && item?.products?.size > 0) {
-            if (item?.products?.size == 1) {
-                vh.productParentOne.show()
-                item?.products?.get(0)?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        vh.ivCouponOne.setImageUrl(it, 1f)
-                    }
-                }
-                if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
-                    vh.tvDealsCouponOne.show()
-                    vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
-                    if (isDarkMode(vh.tvDealsCouponTwo.context)) {
-                        setStrokeColor(vh.tvDealsCouponTwo)
-                    }
-
-                } else {
-                    vh.tvDealsCouponOne.hide()
-                }
-            }
-
-            if (item?.products?.size > 1) {
-                vh.productParentTwo.show()
-                item?.products?.get(1)?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        vh.ivCouponTwo.setImageUrl(it, 1f)
-                    }
-                }
-                if (!item?.products?.get(1)?.benefitLabel.isNullOrEmpty()) {
-                    vh.tvDealsCouponTwo.show()
-                    vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
-                    if (isDarkMode(vh.tvDealsCouponTwo.context)) {
-                        setStrokeColor(vh.tvDealsCouponTwo)
-                    }
-                } else {
-                    vh.tvDealsCouponTwo.hide()
-                }
-
-                vh.productParentOne.show()
-                item?.products?.get(0)?.imageURL?.let {
-                    if (it.isNotEmpty()) {
-                        vh.ivCouponOne.loadImage(it)
-                    }
-                }
-                if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
-                    vh.tvDealsCouponOne.show()
-                    vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
-                    if (isDarkMode(vh.tvDealsCouponOne.context)) {
-                        setStrokeColor(vh.tvDealsCouponOne)
-                    }
-                } else {
-                    vh.tvDealsCouponOne.hide()
-                }
-            }
-        }
-
-        vh.tvShopName.text = item?.shopInfo?.name
-        vh.tvCashBackTitle.text = item?.title
-        vh.tvCashBackValue.text = item?.maximumBenefitAmountStr
-        vh.tvCouponCount.text = item?.subtitle
-
-        if (isDarkMode(vh.itemView.context)) {
-            vh.parentContainer.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(vh.parentContainer.context,
-                    com.tokopedia.unifyprinciples.R.color.dark_N75), PorterDuff.Mode.SRC_IN)
-        }
-
-        vh.tvShopName.setOnClickListener {
-            shopClickListener(vh, item)
-        }
-
-        vh.ivShopChevron.setOnClickListener {
-            shopClickListener(vh, item)
-        }
-
-        vh.ivCouponOne.setOnClickListener {
-            RouteManager.route(vh.itemView.context, item?.products?.get(0)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
-        }
-
-        vh.ivCouponTwo.setOnClickListener {
-            RouteManager.route(vh.itemView.context, item?.products?.get(1)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
-        }
-
-        vh.itemView.setOnClickListener {
-            val shopName = item?.shopInfo?.name
-            val shopApplink = item?.shopInfo?.appLink
-            val shopId = item?.shopInfo?.id
-            if (shopName != null && shopApplink != null && shopId != null) {
-                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, REWARDS_MVC_SOURCE, shopApplink, shopName))
-            }
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
-        }
-    }
-
-
-    private fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
-        RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME, vh, item?.AdInfo)
-    }
-
-    fun setStrokeColor(view: View) {
-        val drawable = view.getBackground() as GradientDrawable
-        drawable.setStroke(view.context.resources.getDimensionPixelSize(R.dimen.tp_padding_xxsmall), ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-        (view as com.tokopedia.unifyprinciples.Typography).setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+    private fun setData(vh: CouponListViewHolder, item: MultiShopModel) {
+        vh.mvcShopView.setMultiShopModel(item,REWARDS_MVC_SOURCE)
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
@@ -193,23 +67,16 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context, it) }
-        if (check != null && !check) {
+        if (eventSet.contains(adInfo?.AdID)) {
             eventSet.add(adInfo?.AdID)
-            setPersistentData(context, eventSet)
             TopAdsUrlHitter(packageName).hitImpressionUrl(
-                    context,
-                    adInfo?.AdViewUrl,
-                    "",
-                    "",
-                    ""
+                context,
+                adInfo?.AdViewUrl,
+                "",
+                "",
+                ""
             )
         }
-    }
-
-    fun setPersistentData(context: Context, eventSet: HashSet<String?>) {
-        val persistentAdsData = PersistentAdsData(context)
-        persistentAdsData.setAdsSet(eventSet)
     }
 
     private fun sendCouponClickEvent(shopName: String?, eventAction: String, vh: CouponListViewHolder, adInfo: AdInfo?) {
@@ -246,5 +113,9 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
 
     companion object {
         val packageName = SectionMerchantCouponAdapter::class.java.`package`.toString()
+    }
+
+    override fun getAdInfo(): HashSet<String?> {
+        return eventSet
     }
 }

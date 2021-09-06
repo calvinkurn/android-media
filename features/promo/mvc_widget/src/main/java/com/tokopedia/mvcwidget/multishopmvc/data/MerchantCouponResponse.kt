@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.model.merchantcoupon
+package com.tokopedia.mvcwidget.multishopmvc.data
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem

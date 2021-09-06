@@ -12,5 +12,9 @@
     <string name="mvc_text_collapse">Lihat Selengkapnya</string>
     <string name="mvc_text_expand">Sembunyikan</string>
     <string name="mvc_mulai_belanja">Mulai Belanja</string>
+    <string name="tp_kupon_toko">Kupon Toko</string>
+    <string name="tp_mvc_empty_title">Nggak ada apa-apa di sini</string>
+    <string name="tp_mvc_empty_subtitle">Kupon yang kamu cari nggak ketemu, nih. Coba cek kupon lainnya, yuk!</string>
+    <string name="tp_catalog_code_error_btn">Ke Homepage</string>
 
 </resources>

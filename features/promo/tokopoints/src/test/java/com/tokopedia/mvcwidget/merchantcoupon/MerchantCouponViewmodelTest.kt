@@ -1,12 +1,15 @@
-package com.tokopedia.tokopoints.view.merchantcoupon
+package com.tokopedia.mvcwidget.merchantcoupon
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
-import com.tokopedia.tokopoints.view.model.merchantcoupon.MerchantCouponResponse
-import com.tokopedia.tokopoints.view.model.merchantcoupon.ProductCategoriesFilterItem
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponData
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponUsecase
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
+import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
+import com.tokopedia.mvcwidget.multishopmvc.data.MerchantCouponResponse
+import com.tokopedia.mvcwidget.multishopmvc.data.ProductCategoriesFilterItem
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

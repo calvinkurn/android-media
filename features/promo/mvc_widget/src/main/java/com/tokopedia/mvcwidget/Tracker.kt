@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget
 
 import androidx.annotation.IntDef
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.mvcwidget.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.MvcSource.Companion.PDP
 import com.tokopedia.mvcwidget.MvcSource.Companion.REWARDS
@@ -30,10 +31,12 @@ object Tracker {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
+        const val ECOMMERCE = "ecommerce"
         const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val TOKOMEMBER_BUSINESSUNIT = "tokomember"
         const val PHYSICALGOODS_BUSINESSUNIT = "physical goods"
+        const val MERCHANT_COUPONLIST_SCREEN_NAME="mvcwidget/multishopverticallist"
     }
 
     object Event {
@@ -42,6 +45,10 @@ object Tracker {
         const val VIEW_MV = "viewMerchantVoucherIris"
         const val VIEW_SHOP = "viewShopPageIris"
         const val CLICK_KUPON = "clickCoupon"
+        const val CLICK_PRODUCT_CARD = "click product card"
+        const val CLICK_SHOP_NAME = "click shop name"
+        const val CLICK_COUPON_TITLE = "click coupon title"
+        const val EVENT_VIEW_PROMO = "promoView"
     }
 
     object Category {
@@ -74,6 +81,7 @@ object Tracker {
         const val CLICK_LIHAT_SELENGKAPNYA = "click lihat selengkapnya"
         const val CLICK_MULAI_BELANJA = "click mulai belanja"
         const val VIEW_TOKOMEMBER = "view coupon tokomember"
+        const val VIEW_MVC_COUPON="impression-mvc"
     }
 
     object Label {
@@ -84,7 +92,7 @@ object Tracker {
         const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
     }
 
-    fun fillCommonItems(map: MutableMap<String, Any>, userId: String? , businessUnit : String) {
+    fun fillCommonItems(map: MutableMap<String, Any>, userId: String?, businessUnit: String) {
         map[Constants.BUSINESS_UNIT] = businessUnit
         map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
         userId?.let {
@@ -94,15 +102,20 @@ object Tracker {
 
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean) {
+    fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean
+    ) {
         val map = mutableMapOf<String, Any>()
         when (source) {
             MvcSource.PDP -> {
                 map[Constants.EVENT] = Event.CLICK_MV
                 map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
-                if(isTokomember){
+                if (isTokomember) {
                     map[Constants.EVENT_ACTION] = Action.CLICK_TOKOMEMBER_ENTRY_POINT
-                }else{
+                } else {
                     map[Constants.EVENT_ACTION] = Action.CLICK_COUPON_ENTRY_POINT
                 }
 
@@ -112,9 +125,9 @@ object Tracker {
             MvcSource.SHOP -> {
                 map[Constants.EVENT] = Event.CLICK_SHOP
                 map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
-                if(isTokomember){
+                if (isTokomember) {
                     map[Constants.EVENT_ACTION] = Action.CLICK_TOKOMEMBER_ENTRY_POINT
-                }else{
+                } else {
                     map[Constants.EVENT_ACTION] = Action.CLICK_COUPON
                 }
 
@@ -122,7 +135,7 @@ object Tracker {
 
             }
         }
-        fillCommonItems(map, userId,PHYSICALGOODS_BUSINESSUNIT)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -150,7 +163,12 @@ object Tracker {
     }
 
     //4,10,19, 25
-    fun viewFollowButtonToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean) {
+    fun viewFollowButtonToast(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isSuccess: Boolean
+    ) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -177,7 +195,12 @@ object Tracker {
     }
 
     //5,9,20,24,44,45 - DO NOT SEND TRACKERS YET - IT IS MUTUALLY DECIDED WITH PO
-    fun viewCoupons(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+    fun viewCoupons(
+        @FollowWidgetType widgetType: String,
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int
+    ) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -208,7 +231,12 @@ object Tracker {
     }
 
     //2,6,17,21
-    fun viewWidgetImpression(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int) {
+    fun viewWidgetImpression(
+        @FollowWidgetType widgetType: String,
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int
+    ) {
         val map = mutableMapOf<String, Any>()
         when (source) {
             MvcSource.PDP -> {
@@ -260,7 +288,12 @@ object Tracker {
     }
 
     //8,11,23,26
-    fun viewJadiMemberToast(shopId: String, userId: String?, @MvcSource source: Int, isSuccess: Boolean) {
+    fun viewJadiMemberToast(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isSuccess: Boolean
+    ) {
         val map = mutableMapOf<String, Any>()
 
         when (source) {
@@ -308,7 +341,7 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun clickCekInfoButtonClose(shopId: String,userId: String?,@MvcSource source: Int){
+    fun clickCekInfoButtonClose(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
         map[Constants.EVENT] = Event.CLICK_MV
         map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
@@ -390,19 +423,19 @@ object Tracker {
     //35,36,37,38,39,40,41,42,43
 
 
-   //MVC close memberhsip GTM
+    //MVC close memberhsip GTM
     fun clickLihatExpand(shopId: String, userId: String?, @MvcSource source: Int) {
-       val map = mutableMapOf<String, Any>()
-       map[Constants.EVENT] = Event.CLICK_MV
-       map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER_CLOSE
-       map[Constants.EVENT_LABEL] = "${Label.MVC_CLOSE_VIEW_SELEGKAPANYA} $shopId"
-       map[Constants.EVENT_ACTION] = Action.CLICK_LIHAT_SELENGKAPNYA
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.CLICK_MV
+        map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER_CLOSE
+        map[Constants.EVENT_LABEL] = "${Label.MVC_CLOSE_VIEW_SELEGKAPANYA} $shopId"
+        map[Constants.EVENT_ACTION] = Action.CLICK_LIHAT_SELENGKAPNYA
 
-       fillCommonItems(map, userId, TOKOMEMBER_BUSINESSUNIT)
-       getTracker().sendGeneralEvent(map)
-   }
+        fillCommonItems(map, userId, TOKOMEMBER_BUSINESSUNIT)
+        getTracker().sendGeneralEvent(map)
+    }
 
-    fun  clickMulaiBelanjaButton(shopId: String, userId: String?, @MvcSource source: Int){
+    fun clickMulaiBelanjaButton(shopId: String, userId: String?, @MvcSource source: Int) {
         val map = mutableMapOf<String, Any>()
         map[Constants.EVENT] = Event.CLICK_MV
         map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER_CLOSE
@@ -425,7 +458,7 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
+    fun tokomemberImpressionOnPdp(shopId: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[Constants.EVENT] = Event.VIEW_SHOP
         map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
@@ -436,6 +469,34 @@ object Tracker {
         getTracker().sendGeneralEvent(map)
     }
 
+    fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.EVENT_VIEW_PROMO
+        map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
+        map[Constants.EVENT_LABEL] = label
+        map[Constants.EVENT_ACTION] = Action.VIEW_MVC_COUPON
+        map[Constants.ECOMMERCE] = DataLayer.mapOf("promoView", mapData)
+
+        fillCommonItems(map, "", "")
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    fun mvcMultiShopCardClick(
+        shopName: String,
+        eventAction: String,
+        @MvcSource source: Int,
+        userId: String?,
+        label: String = ""
+    ) {
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.CLICK_KUPON
+        map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
+        map[Constants.EVENT_ACTION] = eventAction
+        map[Constants.EVENT_LABEL] = label
+
+        fillCommonItems(map, userId, "")
+        getTracker().sendGeneralEvent(map)
+    }
 }
 
 @Retention(AnnotationRetention.SOURCE)
@@ -447,6 +508,6 @@ annotation class MvcSource {
         const val SHOP = 1
         const val PDP = 2
         const val REWARDS = 3
-
+        const val DISCOVERY = 4
     }
 }

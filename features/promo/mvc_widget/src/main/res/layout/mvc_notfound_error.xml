@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/ivCouponError"
         android:layout_width="@dimen/dp_280"
