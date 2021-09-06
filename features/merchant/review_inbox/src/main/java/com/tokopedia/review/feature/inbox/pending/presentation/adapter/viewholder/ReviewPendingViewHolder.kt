@@ -29,7 +29,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
-            showIncentive(status.isEligible)
+            showIncentive(status.isEligible, status.incentiveLabel)
         }
     }
 
@@ -99,9 +99,12 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun showIncentive(isEligible: Boolean) {
+    private fun showIncentive(isEligible: Boolean, incentiveLabel: String) {
         if (isEligible) {
-            itemView.reviewPendingOvoIncentiveLabel.show()
+            itemView.reviewPendingOvoIncentiveLabel.apply {
+                setLabel(incentiveLabel)
+                show()
+            }
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()
