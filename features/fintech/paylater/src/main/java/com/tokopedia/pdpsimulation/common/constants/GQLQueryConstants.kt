@@ -52,7 +52,7 @@ const val GQL_PAY_LATER_APPLICATION_STATUS = """query getUserApplicationStatus{
     }
 }"""
 
-const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Int){
+const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Float){
   cc_fetchpdpcreditcardsimulation(Amount: ${'$'}Amount) {
    	data {
       cicilan {
@@ -114,8 +114,8 @@ const val GQL_CREDIT_CARD_BANK_LIST = """query {
 }"""
 
 
-const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}Amount: Int) {
-  paylater_getSimulationV2(Amount: ${'$'}Amount) {
+const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}request: PaylaterGetSimulationV2Request!) {
+  paylater_getSimulationV2(request: ${'$'}request) {
     data {
       tenure
       text
@@ -134,7 +134,6 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}Am
         tenure
         activation_status
         account_status
-        is_disabled
         cta {
           name
           description_1

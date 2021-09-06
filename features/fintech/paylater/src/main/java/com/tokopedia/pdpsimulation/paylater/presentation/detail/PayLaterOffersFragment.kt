@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.paylater.domain.model.PaylaterGetSimulationV2
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.sortfilter.SortFilterItem
@@ -55,9 +55,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     }
 
-    private fun generateSortFilter(paylaterProduct: PaylaterGetSimulationV2) {
+    private fun generateSortFilter(paylaterProduct: PayLaterGetSimulation) {
         val filterData = ArrayList<SortFilterItem>()
-        paylaterProduct.data?.let {
+        paylaterProduct.productList?.let {
             for(i in it.indices)
             {
                 it[i].text?.let { name -> filterData.add(SortFilterItem(name)) }
@@ -82,9 +82,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     }
 
-    private fun payLaterAvailableDataLoad(paylaterProduct: PaylaterGetSimulationV2) {
+    private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
 
-        val payLaterProductList = paylaterProduct.data
+        val payLaterProductList = paylaterProduct.productList
         generateSortFilter(paylaterProduct)
         payLaterOffersShimmerGroup.gone()
         payLaterDataGroup.visible()

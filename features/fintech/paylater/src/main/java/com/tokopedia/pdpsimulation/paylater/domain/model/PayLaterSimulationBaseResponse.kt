@@ -5,23 +5,18 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 
-@Parcelize
-data class PayLaterSimulationBaseResponse(
-    @SerializedName("data") val data: PayLaterSimulationData
-) : Parcelable
-
 
 @Parcelize
 data class PayLaterSimulationData(
 
-    @SerializedName("paylater_getSimulationV2") val PaylaterGetSimulationV2: PaylaterGetSimulationV2?
+    @SerializedName("paylater_getSimulationV2") val paylaterGetSimulation: PayLaterGetSimulation
 ) : Parcelable
 
 
 @Parcelize
-data class PaylaterGetSimulationV2(
+data class PayLaterGetSimulation(
 
-    @SerializedName("data") val data: List<PayLaterAllData>?
+    @SerializedName("data") val productList: List<PayLaterAllData>?
 ) : Parcelable
 
 @Parcelize
@@ -69,7 +64,6 @@ data class Detail(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("activation_status") val activation_status: Int?,
     @SerializedName("account_status") val account_status: Int?,
-    @SerializedName("is_disabled") val is_disabled: Boolean?,
     @SerializedName("cta") val cta: Cta?,
     @SerializedName("gateway_detail") val gateway_detail: GatewayDetail?
 ) : Parcelable

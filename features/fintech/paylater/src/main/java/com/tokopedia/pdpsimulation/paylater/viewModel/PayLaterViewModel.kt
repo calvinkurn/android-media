@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
-import com.tokopedia.pdpsimulation.paylater.domain.model.PaylaterGetSimulationV2
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,8 +27,8 @@ class PayLaterViewModel @Inject constructor(
     val payLaterApplicationStatusResultLiveData: LiveData<Result<UserCreditApplicationStatus>> =
         _payLaterApplicationStatusResultLiveData
 
-    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PaylaterGetSimulationV2>>()
-    val payLaterOptionsDetailLiveData: LiveData<Result<PaylaterGetSimulationV2>> =
+    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
+    val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
         _payLaterOptionsDetailLiveData
 
     var isPayLaterProductActive = false
@@ -49,7 +49,7 @@ class PayLaterViewModel @Inject constructor(
 
     }
 
-//    fun getMockOne(price: Long) {
+//    fun getMockOne(price: Long)
 //        paylaterGetSimulationV2usecase.mockData()?.let {
 //            _payLaterOptionsDetailLiveData.value = Success(it)
 //        }
@@ -59,8 +59,8 @@ class PayLaterViewModel @Inject constructor(
         _payLaterOptionsDetailLiveData.value = Fail(throwable)
     }
 
-    private fun onAvailableDetailSuccess(paylaterGetSimulationV2: PaylaterGetSimulationV2?) {
-        paylaterGetSimulationV2?.let {
+    private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
+        paylaterGetSimulation?.let {
             _payLaterOptionsDetailLiveData.value = Success(it)
         }
     }
