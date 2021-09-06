@@ -17,6 +17,7 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -65,10 +66,10 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun initVar() {
-        createContentViewModelPresenter._createPostViewModelData.also { viewModel = it.value!! }
+        createPostModel = createContentPostViewModel.getPostData() ?: CreatePostViewModel()
     }
     private fun initView() {
-        adapter.updateProduct(viewModel.completeImageList)
+        adapter.updateProduct(createPostModel.completeImageList)
         content_post_image_rv.setHasFixedSize(true)
         content_post_image_rv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -87,8 +88,11 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
     }
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCaption(){
+        if (createPostModel.caption.isNotEmpty())
+            caption.setText(createPostModel.caption)
+
         caption.afterTextChanged {
-            viewModel.caption = it
+            createPostModel.caption = it
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
@@ -126,10 +130,10 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
         }
     }
     private inline val isPostEnabled: Boolean
-        get() = viewModel.postId.isNotBlank() ||
-                (viewModel.completeImageList.isNotEmpty()
-                        && viewModel.relatedProducts.isNotEmpty()
-                        && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
+        get() = createPostModel.postId.isNotBlank() ||
+                (createPostModel.completeImageList.isNotEmpty()
+                        && createPostModel.relatedProducts.isNotEmpty()
+                        && (createPostModel.adIdList.isNotEmpty()) || createPostModel.productIdList.isNotEmpty())
 
     override fun onDestroy() {
         presenter.detachView()
