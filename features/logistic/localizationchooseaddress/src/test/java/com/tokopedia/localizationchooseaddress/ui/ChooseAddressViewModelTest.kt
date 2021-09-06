@@ -7,6 +7,7 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.DefaultChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.GetChosenAddressListQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressGqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -71,15 +72,25 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Set Chosen Address Success`() {
-        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns SetStateChosenAddressQqlResponse()
-        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950", false)
+        val model = StateChooseAddressParam(
+            3, 11234, "Hutagalung", "Rumah",
+            "-6.22119739999998", "106.81941940000002", 2270,
+            "12950", false
+        )
+        coEvery { chooseAddressRepo.setStateChosenAddress(any()) } returns SetStateChosenAddressQqlResponse()
+        chooseAddressViewModel.setStateChosenAddress(model)
         verify { setChosenAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Set Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any(), any()) } throws defaultThrowable
-        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950", false)
+        val model = StateChooseAddressParam(
+            3, 11234, "Hutagalung", "Rumah",
+            "-6.22119739999998", "106.81941940000002", 2270,
+            "12950", false
+        )
+        coEvery { chooseAddressRepo.setStateChosenAddress(any()) } throws defaultThrowable
+        chooseAddressViewModel.setStateChosenAddress(model)
         verify { setChosenAddressObserver.onChanged(match { it is Fail }) }
     }
 

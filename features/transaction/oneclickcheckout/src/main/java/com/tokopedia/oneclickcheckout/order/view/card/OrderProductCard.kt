@@ -4,58 +4,32 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.view.View
-import androidx.constraintlayout.widget.Group
+import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
+class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
-    private lateinit var product: OrderProduct
-    private lateinit var shop: OrderShop
-
-    private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
-    private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
-    private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
-    private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
-    private val tvQuantityStockAvailable by lazy { view.findViewById<Typography>(R.id.tv_quantity_stock_available) }
-    private val qtyEditorProduct by lazy { view.findViewById<QuantityEditorUnify>(R.id.qty_editor_product) }
-    private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
-    private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
-    private val ivShop by lazy { view.findViewById<ImageUnify>(R.id.iv_shop) }
-    private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
-    private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
-    private val iuImageFulfillment by lazy { view.findViewById<ImageUnify>(R.id.iu_image_fulfill) }
-    private val iuFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iu_free_shipping) }
-    private val separatorFreeShipping by lazy { view.findViewById<Typography>(R.id.separator_free_shipping) }
-    private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
-    private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
-    private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
-    private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
-    private val btnProtectionInfo by lazy { view.findViewById<IconUnify>(R.id.btn_protection_info) }
-    private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
-    private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
-    private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
+    private var product: OrderProduct = OrderProduct()
+    private var shop: OrderShop = OrderShop()
+    private var productIndex: Int = 0
 
     private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
@@ -64,44 +38,205 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private var resetQuantityJob: Job? = null
 
-    fun setProduct(product: OrderProduct) {
+    fun setData(product: OrderProduct, shop: OrderShop, productIndex: Int) {
         this.product = product
+        this.shop = shop
+        this.productIndex = productIndex
+        initView()
     }
 
-    fun isProductInitialized(): Boolean {
-        return ::product.isInitialized
+    private fun initView() {
+        renderDivider()
+        renderProductTicker()
+        renderProductNames()
+        renderPrice()
+        renderProductInfo()
+        renderProductAlert()
+        renderNotes()
+        renderQuantity()
+        renderPurchaseProtection()
     }
 
-    fun initView() {
-        if (isProductInitialized()) {
-            ivProductImage?.setImageUrl(product.productImageUrl)
-            tvProductName?.text = product.productName
-            showPrice()
+    private fun renderDivider() {
+        if (productIndex == 0) {
+            binding.dividerOrderProduct.gone()
+        } else {
+            binding.dividerOrderProduct.visible()
+        }
+    }
 
-            if (product.cashback.isNotEmpty()) {
-                lblCashback?.setLabel(product.cashback)
-                lblCashback?.visible()
+    private fun renderProductTicker() {
+        if (product.errorMessage.isNotEmpty()) {
+            binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
+            binding.tickerOrderProduct.visible()
+            if (!product.hasTriggerViewErrorProductLevelTicker) {
+                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId.toString(), product.errorMessage)
+                product.hasTriggerViewErrorProductLevelTicker = true
+            }
+        } else {
+            binding.tickerOrderProduct.gone()
+            product.hasTriggerViewErrorProductLevelTicker = false
+        }
+    }
+
+    private fun renderProductNames() {
+        binding.apply {
+            ivProductImage.setImageUrl(product.productImageUrl)
+            tvProductName.text = product.productName
+            if (product.variant.isNotBlank()) {
+                tvProductVariant.text = product.variant
+                tvProductVariant.visible()
             } else {
-                lblCashback?.gone()
+                tvProductVariant.gone()
+            }
+            if (!product.isError && product.productWarningMessage.isNotBlank()) {
+                tvQtyLeft.text = MethodChecker.fromHtml(product.productWarningMessage)
+                tvQtyLeft.visible()
+            } else {
+                tvQtyLeft.gone()
             }
 
-            tfNote?.textFieldInput?.textSize = 16f
-            tfNote?.textFieldInput?.isSingleLine = false
-            tfNote?.setCounter(MAX_NOTES_LENGTH)
-            tfNote?.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-            tfNote?.textFieldInput?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+            val alpha = if (product.isError) DISABLE_ALPHA else ENABLE_ALPHA
+            ivProductImage.alpha = alpha
+            tvProductName.alpha = alpha
+            flexboxOrderProductNames.alpha = alpha
+        }
+    }
+
+    private fun renderPrice() {
+        binding.apply {
+            tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.finalPrice, false).removeDecimalSuffix()
+
+            if (!product.isError && product.slashPriceLabel.isNotBlank()) {
+                lblProductSlashPricePercentage.setLabel(product.slashPriceLabel)
+                lblProductSlashPricePercentage.visible()
+                if (product.originalPrice > 0) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.originalPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
+            } else if (!product.isError) {
+                lblProductSlashPricePercentage.gone()
+                var slashPrice = 0L
+                if (product.wholesalePrice > 0 && product.wholesalePrice < product.productPrice) {
+                    slashPrice = product.productPrice
+                }
+                if (product.initialPrice > 0 && product.productPrice < product.initialPrice) {
+                    slashPrice = if (slashPrice == 0L) {
+                        product.initialPrice
+                    } else {
+                        minOf(slashPrice, product.initialPrice)
+                    }
+                }
+                if (slashPrice > 0L) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(slashPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
+            } else {
+                tvProductSlashPrice.gone()
+                lblProductSlashPricePercentage.gone()
+            }
+
+            flexboxOrderProductPrices.alpha = if (product.isError) DISABLE_ALPHA else ENABLE_ALPHA
+        }
+    }
+
+    private fun renderProductInfo() {
+        binding.apply {
+            flexboxOrderProductInfo.removeAllViews()
+            if (!product.isError && product.wholesalePrice > 0) {
+                val textView = Typography(flexboxOrderProductInfo.context).apply {
+                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setType(Typography.BODY_3)
+                    text = root.context.getString(R.string.lbl_wholesale_product)
+                }
+                flexboxOrderProductInfo.addView(textView, 0)
+            }
+            if (!product.isError && product.productInformation.isNotEmpty()) {
+                for (information in product.productInformation) {
+                    val textView = Typography(flexboxOrderProductInfo.context).apply {
+                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setType(Typography.BODY_3)
+                        text = if (flexboxOrderProductInfo.childCount > 0) "$information, " else information
+                    }
+                    flexboxOrderProductInfo.addView(textView, 0)
                 }
             }
-            if (noteTextWatcher != null) {
-                tfNote?.textFieldInput?.removeTextChangedListener(noteTextWatcher)
+        }
+    }
+
+    private fun renderProductAlert() {
+        binding.apply {
+            if (!product.isError && product.productAlertMessage.isNotBlank()) {
+                tvProductAlertMessage.text = product.productAlertMessage
+                tvProductAlertMessage.visible()
+            } else {
+                tvProductAlertMessage.gone()
             }
-            tfNote?.textFieldInput?.setText(product.notes)
+        }
+    }
+
+    private fun renderNotes() {
+        binding.apply {
+            if (product.isError) {
+                tfNote.gone()
+                tvProductNotesPlaceholder.gone()
+                tvProductNotesPreview.gone()
+                tvProductNotesEdit.gone()
+                return@apply
+            }
+            if (product.isEditingNotes) {
+                showNotesTextField()
+                return@apply
+            }
+            tfNote.gone()
+            if (product.notes.isEmpty()) {
+                tvProductNotesPreview.gone()
+                tvProductNotesEdit.gone()
+                tvProductNotesPlaceholder.visible()
+                tvProductNotesPlaceholder.setOnClickListener {
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+                    showNotesTextField()
+                }
+                return@apply
+            }
+            tvProductNotesPreview.text = product.notes
+            tvProductNotesPlaceholder.gone()
+            tvProductNotesPreview.visible()
+            tvProductNotesEdit.visible()
+            tvProductNotesEdit.setOnClickListener {
+                orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+                showNotesTextField()
+                tfNote.textFieldInput.setSelection(tfNote.textFieldInput.length())
+            }
+        }
+    }
+
+    private fun showNotesTextField() {
+        binding.apply {
+            tvProductNotesPlaceholder.gone()
+            tvProductNotesPreview.gone()
+            tvProductNotesEdit.gone()
+            tfNote.visible()
+            product.isEditingNotes = true
+            tfNote.requestFocus()
+            tfNote.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            tfNote.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            tfNote.setCounter(product.maxCharNote)
+            if (noteTextWatcher != null) {
+                tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
+            }
+            tfNote.textFieldInput.setText(product.notes)
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
-                    listener.onProductChange(product, false)
+                    listener.onProductChange(product, productIndex, false)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -112,31 +247,51 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     /* no-op */
                 }
             }
-            tfNote?.textFieldInput?.addTextChangedListener(noteTextWatcher)
+            tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
+            tfNote.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    product.isEditingNotes = false
+                    renderNotes()
+                    KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
+                    listener.forceUpdateCart()
+                    true
+                } else false
+            }
+        }
+    }
 
+    private fun renderQuantity() {
+        binding.apply {
+            if (product.isError) {
+                qtyEditorProduct.gone()
+                return@apply
+            }
+            qtyEditorProduct.visible()
             if (quantityTextWatcher != null) {
                 // reset listener
-                qtyEditorProduct?.editText?.removeTextChangedListener(quantityTextWatcher)
-                qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
+                qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
+                qtyEditorProduct.setValueChangedListener { _, _, _ -> }
             }
-            qtyEditorProduct?.autoHideKeyboard = true
-            qtyEditorProduct?.minValue = product.quantity.minOrderQuantity
-            qtyEditorProduct?.maxValue = product.quantity.maxOrderStock
-            oldQtyValue = product.quantity.orderQuantity
-            qtyEditorProduct?.setValue(product.quantity.orderQuantity)
-            qtyEditorProduct?.setValueChangedListener { newValue, _, _ ->
+            qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            qtyEditorProduct.autoHideKeyboard = true
+            qtyEditorProduct.minValue = product.minOrderQuantity
+            qtyEditorProduct.maxValue = product.maxOrderStock
+            oldQtyValue = product.orderQuantity
+            qtyEditorProduct.setValue(product.orderQuantity)
+            qtyEditorProduct.setValueChangedListener { newValue, _, _ ->
                 // prevent multiple callback with same newValue
-                if (product.quantity.orderQuantity != newValue) {
-                    product.quantity.orderQuantity = newValue
-                    listener.onProductChange(product)
-                    showPrice()
+                if (product.orderQuantity != newValue) {
+                    product.orderQuantity = newValue
+                    listener.onProductChange(product, productIndex)
+                    renderPrice()
+                    renderProductInfo()
                 }
             }
-            qtyEditorProduct?.setAddClickListener {
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+            qtyEditorProduct.setAddClickListener {
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
             }
-            qtyEditorProduct?.setSubstractListener {
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+            qtyEditorProduct.setSubstractListener {
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -145,14 +300,14 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     if (newValue > 0 && oldQtyValue != newValue) {
                         resetQuantityJob?.cancel()
                         oldQtyValue = newValue
-                        qtyEditorProduct?.setValue(newValue)
+                        qtyEditorProduct.setValue(newValue)
                     } else if (newValue <= 0) {
                         // trigger reset quantity debounce to prevent empty quantity edit text
                         resetQuantityJob?.cancel()
                         resetQuantityJob = launch {
                             delay(DEBOUNCE_RESET_QUANTITY_MS)
                             if (isActive) {
-                                qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                                qtyEditorProduct.setValue(product.minOrderQuantity)
                             }
                         }
                     }
@@ -166,137 +321,68 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     /* no-op */
                 }
             }
-            qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
-
-            renderProductTickerMessage()
-            renderPurchaseProtection()
+            qtyEditorProduct.editText.addTextChangedListener(quantityTextWatcher)
         }
     }
 
     private fun renderPurchaseProtection() {
-        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-            tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
-            tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
-            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPricePerProduct, false).removeDecimalSuffix()
-            btnProtectionInfo.setOnClickListener {
-                val url = product.purchaseProtectionPlanData.protectionLinkUrl
-                if (url.isNotBlank()) {
-                    listener.onPurchaseProtectionInfoClicked(url)
+        binding.apply {
+            if (!product.isError && product.purchaseProtectionPlanData.isProtectionAvailable) {
+                tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
+                tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
+                tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPricePerProduct, false).removeDecimalSuffix()
+                btnProtectionInfo.setOnClickListener {
+                    val url = product.purchaseProtectionPlanData.protectionLinkUrl
+                    if (url.isNotBlank()) {
+                        listener.onPurchaseProtectionInfoClicked(url, product.categoryId, product.purchaseProtectionPlanData.protectionPricePerProduct, product.purchaseProtectionPlanData.protectionTitle)
+                    }
                 }
-            }
-            cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
-            cbPurchaseProtection.setOnCheckedChangeListener { _, isChecked ->
-                handleOnPurchaseProtectionCheckedChange(isChecked)
-            }
-            val lastState = listener.getLastPurchaseProtectionCheckState()
-            if (lastState != PurchaseProtectionPlanData.STATE_EMPTY) {
-                val tmpIsChecked = lastState == PurchaseProtectionPlanData.STATE_TICKED
-                cbPurchaseProtection.isChecked = tmpIsChecked
-                handleOnPurchaseProtectionCheckedChange(tmpIsChecked)
-            } else {
-                cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
-            }
-            tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
+                cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
+                cbPurchaseProtection.setOnCheckedChangeListener { _, isChecked ->
+                    handleOnPurchaseProtectionCheckedChange(isChecked)
+                }
+                val lastState = listener.getLastPurchaseProtectionCheckState(product.productId)
+                if (lastState != PurchaseProtectionPlanData.STATE_EMPTY) {
+                    val tmpIsChecked = lastState == PurchaseProtectionPlanData.STATE_TICKED
+                    cbPurchaseProtection.isChecked = tmpIsChecked
+                    handleOnPurchaseProtectionCheckedChange(tmpIsChecked)
+                } else {
+                    cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+                }
+                tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
 
-            groupPurchaseProtection.show()
-        } else {
-            groupPurchaseProtection.gone()
+                groupPurchaseProtection.show()
+            } else {
+                groupPurchaseProtection.gone()
+            }
         }
     }
 
     private fun handleOnPurchaseProtectionCheckedChange(tmpIsChecked: Boolean) {
         product.purchaseProtectionPlanData.stateChecked = if (tmpIsChecked) PurchaseProtectionPlanData.STATE_TICKED else PurchaseProtectionPlanData.STATE_UNTICKED
-        listener.onProductChange(product, false)
-        listener.onPurchaseProtectionCheckedChange(tmpIsChecked)
-    }
-
-    private fun renderProductTickerMessage() {
-        if (product.tickerMessage.message.isNotEmpty()) {
-            var completeText = product.tickerMessage.message
-            for (replacement in product.tickerMessage.replacement) {
-                completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
-            }
-            tvQuantityStockAvailable?.text = MethodChecker.fromHtml(completeText)
-        } else {
-            tvQuantityStockAvailable?.text = ""
-        }
-    }
-
-    private fun showPrice() {
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
-
-        if (product.originalPrice.isNotBlank()) {
-            tvProductSlashPrice.text = product.originalPrice
-            tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            tvProductSlashPrice.visible()
-        } else {
-            tvProductSlashPrice.gone()
-        }
-
-        if (product.freeOngkirImg.isNotEmpty()) {
-            iuFreeShipping?.let {
-                it.setImageUrl(product.freeOngkirImg)
-                it.visible()
-            }
-            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
-                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
-            } else {
-                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
-            }
-            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
-            separatorFreeShipping?.visible()
-        } else {
-            iuFreeShipping?.gone()
-            separatorFreeShipping?.gone()
-        }
-    }
-
-    fun setShop(orderShop: OrderShop) {
-        tvShopName?.text = orderShop.shopName
-        if (orderShop.shopBadge.isNotEmpty()) {
-            ivShop?.setImageUrl(orderShop.shopBadge)
-            ivShop?.visible()
-            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
-        } else {
-            ivShop?.gone()
-        }
-        if (orderShop.cityName.isNotEmpty()) {
-            if (orderShop.isFulfillment && orderShop.fulfillmentBadgeUrl.isNotEmpty()) {
-                iuImageFulfillment?.setImageUrl(orderShop.fulfillmentBadgeUrl)
-                iuImageFulfillment?.visible()
-            } else {
-                iuImageFulfillment?.gone()
-            }
-            tvShopLocation?.text = orderShop.cityName
-            tvShopLocation?.visible()
-        } else {
-            tvShopLocation?.gone()
-            iuImageFulfillment?.gone()
-        }
-        val error = orderShop.errors.firstOrNull()
-        if (error?.isNotEmpty() == true) {
-            labelError.setLabel(error)
-            labelError.visible()
-        } else {
-            labelError.gone()
-        }
-
-        this.shop = orderShop
+        listener.onProductChange(product, productIndex, false)
+        listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
     interface OrderProductCardListener {
 
-        fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+        fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true)
 
-        fun onPurchaseProtectionInfoClicked(url: String)
+        fun forceUpdateCart()
 
-        fun onPurchaseProtectionCheckedChange(isChecked: Boolean)
+        fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String)
 
-        fun getLastPurchaseProtectionCheckState(): Int
+        fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
+
+        fun getLastPurchaseProtectionCheckState(productId: Long): Int
     }
 
     companion object {
+        const val VIEW_TYPE = 3
         const val MAX_NOTES_LENGTH = 144
+
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
 
         private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
     }

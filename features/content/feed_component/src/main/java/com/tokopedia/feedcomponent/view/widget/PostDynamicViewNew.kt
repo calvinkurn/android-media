@@ -1,5 +1,7 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.annotation.SuppressLint
+import android.animation.LayoutTransition
 import android.content.Context
 import android.os.CountDownTimer
 import android.os.Handler
@@ -36,7 +38,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
-import com.tokopedia.feedcomponent.util.util.productThousandFormatted
+import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -57,6 +59,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -71,6 +74,8 @@ private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
 private const val TIME_FOUR_SEC = 4000L
+private const val TIMER_TO_BE_SHOWN = 3000L
+private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
@@ -79,6 +84,7 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
+private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
@@ -245,7 +251,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val count = followers.count
         val isVideo = mediaType != TYPE_IMAGE
 
-        if (count >= 100) {
+        if (count >= FOLLOW_COUNT_THRESHOLD) {
             followCount.text =
                 String.format(
                     context.getString(R.string.feed_header_follow_count_text),
@@ -502,7 +508,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
-                            .plus("<font color='#6D7588'><b>")
+                            .plus("<font color='#6D7588'>")
                             .plus(context.getString(R.string.feed_component_read_more_button))
                             .plus("</b></font>")
                     )
@@ -651,6 +657,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun bindItems(
         feedXCard: FeedXCard,
     ) {
@@ -682,44 +689,86 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
                 media.forEach { feedMedia ->
 
+                    feedMedia.isImageImpressedFirst = true
+
                     if (feedMedia.type == TYPE_IMAGE) {
+                        var imageWidth = 0
+                        var imageHeight = 0
+
                         val imageItem = getImageView()
                         feedMedia.imageView = imageItem
                         imageItem?.run {
-                            findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
+                            val postImage = findViewById<ImageUnify>(R.id.post_image)
+                            postImage.setImageUrl(feedMedia.mediaUrl)
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
                                 products.isNotEmpty()
                             )
+
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
+                            val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+                            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+                            layoutLihatProdukParent.layoutTransition.apply {
+//                                enableTransitionType(LayoutTransition.CHANGING)
+                                setDuration(LayoutTransition.CHANGING,300)
+                            }
+
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
                                     context,
                                     R.drawable.ic_thumb_filled
                                 )
                             )
+                            doOnLayout {
+                                imageWidth = width
+                                imageHeight = height
+                                feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
+                                    val productTagView = PostTagView(context, feedXMediaTagging)
+                                    productTagView.postDelayed({
+                                        productTagView.bindData(listener,
+                                            products,
+                                            imageWidth,
+                                            imageHeight,
+                                            positionInFeed)
+
+                                    }, TIME_SECOND)
+
+
+                                    layout.addView(productTagView)
+                                }
+
+                            }
                             imagePostListener.userImagePostImpression(
                                 positionInFeed,
                                 pageControl.indicatorCurrentPosition
                             )
+
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                        var productTagBubbleShowing = false
                                         listener?.onImageClicked(
                                             postId.toString(),
                                             feedXCard.typename,
                                             feedXCard.followers.isFollowed,
                                             feedXCard.author.id
                                         )
+
+                                        for (i in 0 until layout.childCount) {
+                                            var view = layout.getChildAt(i)
+                                            if (view is PostTagView) {
+                                                val item = (view as PostTagView)
+                                                productTagBubbleShowing = item.showExpandedView()
+                                            }
+                                        }
+                                        showViewWithSlideAnimation(layoutLihatProdukParent)
                                         if (!productTagText.isVisible) {
                                             productTagText.apply {
                                                 visible()
-                                                animate().alpha(1f).start()
                                             }
-                                        } else {
+                                        } else if(!productTagBubbleShowing) {
                                             productTagText.gone()
-                                            productTagText.animate().alpha(0f)
                                         }
                                         return true
                                     }
@@ -882,7 +931,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMute = !isMute
                 if (isMute)
                     listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
-                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
         }
@@ -899,11 +948,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
+            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
+            layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             handlerAnim?.postDelayed({
+                showViewWithSlideAnimation(layoutLihatProdukParent)
                 video_tag_text.visible()
-                video_tag_text.animate().alpha(1F).start()
             }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -927,7 +979,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
-                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1152,8 +1204,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (!fromSlide) {
             carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
         }
         if (videoPlayer != null) {
+            videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
             videoPlayer = null
@@ -1193,18 +1247,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindImage(products: List<FeedXProduct>, media: FeedXMedia) {
+        var isInflatedBubbleShowing = false
         val imageItem = media.imageView
         imageItem?.run {
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
+            val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+            layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
+
             productTagText.gone()
+            for (i in 0 until layout.childCount) {
+                var view = layout.getChildAt(i)
+                if (view is PostTagView) {
+                    val item = (view as PostTagView)
+                    item.resetView()
+                }
+            }
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
+                showViewWithSlideAnimation(layoutLihatProdukParent)
                 handlerAnim?.postDelayed({
                     productTagText.apply {
                         visible()
-                        animate().alpha(1f).start()
                     }
 
                 }, TIME_SECOND)
@@ -1213,8 +1280,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 handlerHide = Handler(Looper.getMainLooper())
             handlerHide?.postDelayed({
                 productTagText.apply {
-                    gone()
-                    animate().alpha(0f).start()
+                    if (!shouldContinueToShowLihatProduct(layout)) {
+                        gone()
+                    }
                 }
             }, TIME_FOUR_SEC)
         }
@@ -1238,5 +1306,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         videoItem?.layoutParams = param
         return videoItem
+    }
+
+    private fun shouldContinueToShowLihatProduct(layout: ConstraintLayout) : Boolean{
+        var isInflatedBubbleShowing = false
+        for (i in 0 until layout.childCount) {
+            var view = layout.getChildAt(i)
+            if (view is PostTagView) {
+                val item = (view as PostTagView)
+                isInflatedBubbleShowing = item.getExpandedViewVisibility()
+            }
+        }
+        return isInflatedBubbleShowing
     }
 }

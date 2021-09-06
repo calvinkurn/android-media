@@ -9,7 +9,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATED_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATION_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_LOW_WALLET_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_NO_PHONE_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_TOP_UP_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -52,16 +57,26 @@ class OrderSummaryPageActivityOvoRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -93,16 +108,26 @@ class OrderSummaryPageActivityOvoRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -125,16 +150,26 @@ class OrderSummaryPageActivityOvoRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -165,16 +200,26 @@ class OrderSummaryPageActivityOvoRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")

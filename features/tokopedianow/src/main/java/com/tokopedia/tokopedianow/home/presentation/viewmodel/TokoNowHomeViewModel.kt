@@ -30,13 +30,15 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.PRODUCT_RECOM
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
@@ -241,6 +243,12 @@ class TokoNowHomeViewModel @Inject constructor(
                     setItemStateToLoading(item)
                     getLayoutComponentData(layout, warehouseId, localCacheModel)
 
+                    if (layout is HomeProductRecomUiModel || layout is TokoNowRecentPurchaseUiModel) {
+                        miniCartSimplifiedData?.let {
+                            setMiniCartAndProductQuantity(it)
+                        }
+                    }
+
                     val data = HomeLayoutListUiModel(
                         items = homeLayoutItemList,
                         state = TokoNowLayoutState.LOAD_MORE
@@ -315,7 +323,7 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         quantity: Int,
         shopId: String,
-        @HomeLayoutType type: String
+        @TokoNowLayoutType type: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
 
@@ -378,9 +386,9 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getRecentPurchaseProducts(): List<HomeProductCardUiModel> {
-        val item = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
-        val recentPurchase = item?.layout as? HomeRecentPurchaseUiModel
+    fun getRecentPurchaseProducts(): List<TokoNowProductCardUiModel> {
+        val item = homeLayoutItemList.firstOrNull { it.layout is TokoNowRecentPurchaseUiModel }
+        val recentPurchase = item?.layout as? TokoNowRecentPurchaseUiModel
         return recentPurchase?.productList.orEmpty()
     }
 
@@ -393,7 +401,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String, localCacheModel: LocalCacheModel?) {
         when (item) {
             is HomeComponentVisitable -> getGlobalHomeComponentAsync(item, localCacheModel).await() // Tokopedia Home Common Component
-            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId, localCacheModel) // TokoNow Home Component
+            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, localCacheModel) // TokoNow Home Component
             is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
         }
     }
@@ -407,13 +415,11 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowHomeComponent(
         item: HomeLayoutUiModel,
-        warehouseId: String,
         localCacheModel: LocalCacheModel?
     ) {
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item).await()
             is HomeProductRecomUiModel -> getHomeLayoutDataAsync(item, localCacheModel).await()
-            is HomeRecentPurchaseUiModel -> getRecentPurchaseDataAsync(item, warehouseId).await()
         }
     }
 
@@ -428,6 +434,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
         when(item) {
             is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
+            is TokoNowRecentPurchaseUiModel -> getRecentPurchaseDataAsync(item, warehouseId).await()
         }
     }
 
@@ -464,7 +471,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private suspend fun getRecentPurchaseDataAsync(
-        item: HomeRecentPurchaseUiModel,
+        item: TokoNowRecentPurchaseUiModel,
         warehouseId: String
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
@@ -509,7 +516,7 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         shopId: String,
         quantity: Int,
-        @HomeLayoutType type: String
+        @TokoNowLayoutType type: String
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
@@ -533,7 +540,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun updateItemCart(
         miniCartItem: MiniCartItem,
         quantity: Int,
-        @HomeLayoutType type: String
+        @TokoNowLayoutType type: String
     ) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
@@ -553,7 +560,7 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    private fun removeItemCart(miniCartItem: MiniCartItem, @HomeLayoutType type: String) {
+    private fun removeItemCart(miniCartItem: MiniCartItem, @TokoNowLayoutType type: String) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -582,7 +589,12 @@ class TokoNowHomeViewModel @Inject constructor(
         miniCartSimplifiedData = miniCart
     }
 
-    private fun trackProductAddToCart(productId: String, quantity: Int, type: String, cartId: String) {
+    private fun trackProductAddToCart(
+        productId: String,
+        quantity: Int,
+        @TokoNowLayoutType type: String,
+        cartId: String
+    ) {
         if(type == RECENT_PURCHASE) {
             trackRecentPurchaseAddToCart(productId, quantity, cartId)
         } else if (type ==  PRODUCT_RECOM) {
@@ -590,21 +602,30 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private fun trackProductUpdateCart(productId: String, quantity: Int, type: String, cartId: String) {
+    private fun trackProductUpdateCart(
+        productId: String,
+        quantity: Int,
+        @TokoNowLayoutType type: String,
+        cartId: String
+    ) {
         if(type == PRODUCT_RECOM) {
             trackRecentProductRecomAddToCart(productId, quantity, cartId)
         }
     }
 
-    private fun trackProductRemoveCart(productId: String, type: String, cartId: String) {
+    private fun trackProductRemoveCart(
+        productId: String,
+        @TokoNowLayoutType type: String,
+        cartId: String
+    ) {
         if(type == PRODUCT_RECOM) {
             trackRecentProductRecomAddToCart(productId, DEFAULT_QUANTITY, cartId)
         }
     }
 
     private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
-        val recentPurchase = homeItem?.layout as? HomeRecentPurchaseUiModel
+        val homeItem = homeLayoutItemList.firstOrNull { it.layout is TokoNowRecentPurchaseUiModel }
+        val recentPurchase = homeItem?.layout as? TokoNowRecentPurchaseUiModel
         val productList = recentPurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
 

@@ -72,15 +72,17 @@ class OrderSummaryPageViewModelTestHelper {
             500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), false)
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
-        shippingDurationViewModels = listOf(firstDuration, secondDuration)
+        shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
     }
 
-    val address = OrderProfileAddress(addressId = 1)
+    val address = OrderProfileAddress(addressId = 1, latitude = "0", longitude = "0")
 
     val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = OrderProfile(address = address, shipment = shipment)
+    val payment = OrderProfilePayment(gatewayCode = "payment")
+
+    val preference = OrderProfile(address = address, shipment = shipment, payment = payment)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,
@@ -91,7 +93,7 @@ class OrderSummaryPageViewModelTestHelper {
             logisticPromoViewModel = logisticPromo,
             logisticPromoTickerMessage = "Tersedia bbo")
 
-    val product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))
+    val product = OrderProduct(productId = Long.MAX_VALUE, orderQuantity = 1)
 
-    val orderData = OrderData(cart = OrderCart(product = product), preference = preference)
+    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE),products = mutableListOf(product)), preference = preference)
 }

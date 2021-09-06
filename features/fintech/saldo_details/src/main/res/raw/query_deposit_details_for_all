@@ -7,8 +7,10 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
               note
               amount
               type_description
-              image
+              withdrawal_status_string
+              withdrawal_status_color
               create_time
+              have_detail
         }
     }
 
@@ -17,11 +19,13 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
         have_error
         have_next_page
         deposit_history_list {
-              note
-              amount
-              type_description
-              image
-              create_time
+            note
+            amount
+            type_description
+            withdrawal_status_string
+            withdrawal_status_color
+            create_time
+            have_detail
         }
     }
 
@@ -30,11 +34,13 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
         have_error
         have_next_page
         deposit_history_list {
-              note
-              amount
-              type_description
-              image
-              create_time
+                note
+                amount
+                type_description
+                withdrawal_status_string
+                withdrawal_status_color
+                create_time
+                have_detail
         }
     }
 }

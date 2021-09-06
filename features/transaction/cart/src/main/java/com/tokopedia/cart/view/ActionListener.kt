@@ -4,7 +4,10 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -21,7 +24,7 @@ interface ActionListener {
 
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
-    fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
+    fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
     fun onCartDataEnableToCheckout()
 
@@ -77,7 +80,15 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
+    fun onCollapseAvailableItem(index: Int)
+
+    fun onExpandAvailableItem(index: Int)
+
+    fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int)
+
+    fun scrollToClickedExpandedProduct(index: Int, offset: Int)
+
+    fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
 
@@ -90,4 +101,5 @@ interface ActionListener {
     fun onNeedToGoneLocalizingAddressWidget()
 
     fun onLocalizingAddressUpdatedFromWidget()
+
 }

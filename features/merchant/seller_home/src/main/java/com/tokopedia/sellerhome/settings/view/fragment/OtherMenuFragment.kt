@@ -37,6 +37,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
@@ -48,7 +49,6 @@ import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
-import com.tokopedia.sellerhome.settings.view.customview.FireworksLottieView
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -64,7 +64,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
-    OtherMenuViewHolder.Listener, OtherMenuAdapter.Listener, StatusBarCallback, SettingTrackingListener {
+    OtherMenuViewHolder.Listener, OtherMenuAdapter.Listener, StatusBarCallback,
+    SettingTrackingListener, SellerHomeFragmentListener {
 
     companion object {
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
@@ -73,6 +74,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
         private const val MAXIMUM_ALPHA = 255f
         private const val ALPHA_CHANGE_THRESHOLD = 150
+
+        private const val SCROLLVIEW_INITIAL_POSITION = 0
 
         const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
@@ -151,7 +154,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var recyclerView: RecyclerView? = null
     private var statusBarBackgroundView: View? = null
     private var scrollView: NestedScrollView? = null
-    private var fireworksLottieView: FireworksLottieView? = null
 
     override fun onResume() {
         super.onResume()
@@ -267,9 +269,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         currentFragmentType = fragmentType
-        if (fragmentType == FragmentType.OTHER) {
-            fireworksLottieView?.animateFireworks()
-        } else {
+        if (fragmentType != FragmentType.OTHER) {
             multipleErrorSnackbar?.dismiss()
         }
     }
@@ -321,6 +321,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onKreditTopAdsRefresh() {
         otherMenuViewModel.getKreditTopAds()
+    }
+
+    override fun onScrollToTop() {
+        scrollView?.post {
+            scrollView?.smoothScrollTo(SCROLLVIEW_INITIAL_POSITION, SCROLLVIEW_INITIAL_POSITION)
+        }
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
@@ -632,7 +638,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setupView(view: View) {
         statusBarBackgroundView?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
-        fireworksLottieView?.loadAnimationFromUrl()
         populateAdapterData()
         recyclerView?.layoutManager = LinearLayoutManager(context)
         context?.let {
@@ -665,7 +670,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusBarBackgroundView = findViewById(R.id.view_sah_other_status_bar_background)
             recyclerView = findViewById(R.id.recycler_view)
             scrollView = findViewById(R.id.sv_sah_other_menu)
-            fireworksLottieView = findViewById(R.id.lottie_anniv_fireworks)
         }
     }
 
@@ -700,7 +704,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusHeaderImage?.gone()
             statusIconImage?.gone()
             whiteBackgroundView?.gone()
-            fireworksLottieView?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
@@ -709,7 +712,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusHeaderImage?.visible()
             statusIconImage?.visible()
             whiteBackgroundView?.visible()
-            fireworksLottieView?.visible()
         }
     }
 

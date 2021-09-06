@@ -6,17 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
 import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
-import com.tokopedia.analyticsdebugger.cassava.validator.core.toJson
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainValidatorFragment : Fragment() {
@@ -24,19 +22,22 @@ class MainValidatorFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var analyticsParser: AnalyticsMapParser
+
     private val testPath: String by lazy {
         arguments?.getString(ARGUMENT_TEST_PATH)
-                ?: throw IllegalArgumentException("Path not found!!")
+            ?: throw IllegalArgumentException("Path not found!!")
     }
 
     private val isFromNetwork: Boolean by lazy {
         arguments?.getBoolean(ARGUMENT_IS_NETWORK)
-                ?: true
+            ?: true
     }
 
     val viewModel: ValidatorViewModel by lazy {
         ViewModelProvider(requireActivity(), viewModelFactory)
-                .get(ValidatorViewModel::class.java)
+            .get(ValidatorViewModel::class.java)
     }
 
     private val mAdapter: ValidatorResultAdapter by lazy {
@@ -52,7 +53,11 @@ class MainValidatorFragment : Fragment() {
         viewModel.fetchQueryFromAsset(testPath, isFromNetwork)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_main_validator, container, false)
     }
 
@@ -84,7 +89,7 @@ class MainValidatorFragment : Fragment() {
     }
 
     private fun goToDetail(item: Validator) {
-        val exp = item.data.toJson()
+        val exp = analyticsParser.parse(item.data)
         val act = item.matches
 
         callback?.goDetail(exp, act)
@@ -106,12 +111,12 @@ class MainValidatorFragment : Fragment() {
         private const val ARGUMENT_IS_NETWORK = "ARGUMENT_IS_NETWORK"
 
         fun newInstance(path: String, isFromNetwork: Boolean): MainValidatorFragment =
-                MainValidatorFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARGUMENT_TEST_PATH, path)
-                        putBoolean(ARGUMENT_IS_NETWORK, isFromNetwork)
-                    }
+            MainValidatorFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARGUMENT_TEST_PATH, path)
+                    putBoolean(ARGUMENT_IS_NETWORK, isFromNetwork)
                 }
+            }
     }
 
 }
