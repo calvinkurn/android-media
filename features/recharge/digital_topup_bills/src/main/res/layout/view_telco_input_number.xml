@@ -12,16 +12,24 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3">
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/layout_lvl9"/>
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/telco_field_input_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_44"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl2"
-            app:text_field_input_type="phone"
-            app:text_field_label="@string/digital_client_label"
-            app:layout_constraintEnd_toStartOf="@id/telco_contact_picker_layout"
+            app:unify_text_field_clearable="true"
+            app:unify_text_field_input_type="phone"
+            app:unify_text_field_label="@string/digital_client_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,10 +37,10 @@
             android:id="@+id/telco_img_operator"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/spacing_lvl5"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/unify_space_96"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toBottomOf="@id/telco_field_input_number"
-            app:layout_constraintEnd_toStartOf="@id/telco_contact_picker_layout"
+            app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/telco_field_input_number"
             tools:ignore="contentDescription" />
 
