@@ -275,7 +275,7 @@ object CheckoutRequestMapper {
             this.finsurance = finsurance
             shippingId = shippingInfo?.shippingId?.toLong() ?: 0
             spId = shippingInfo?.spId?.toLong() ?: 0
-            ratesId = shippingInfo?.ratesId?.toLong() ?: 0
+            ratesId = shippingInfo?.ratesId?.toLongOrZero() ?: 0
             ut = shippingInfo?.ut ?: ""
             checksum = shippingInfo?.checksum ?: ""
             val tmpRatesFeature = shippingInfo?.ratesFeature
