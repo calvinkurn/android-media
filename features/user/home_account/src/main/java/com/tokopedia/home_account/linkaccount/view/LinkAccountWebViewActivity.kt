@@ -8,8 +8,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD
 import com.tokopedia.home_account.R
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.WebViewHelper
 
 /**
  * Created by Yoris on 10/08/21.
@@ -24,6 +27,16 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
             val intent = Intent(context, LinkAccountWebViewActivity::class.java)
             intent.putExtra(KEY_URL, url)
             return intent
+        }
+
+        fun getLinkAccountUrl(context: Context, redirectionApplink: String): String {
+            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(LinkAccountFragment.BASE_URL, context)
+            if (finalUrl != null) {
+                finalUrl += "&ld=$redirectionApplink"
+            } else {
+                finalUrl = "${LinkAccountFragment.BASE_URL}?&ld=$redirectionApplink"
+            }
+            return finalUrl
         }
     }
 
@@ -68,7 +81,8 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        val mUrl = intent.getStringExtra(KEY_URL)
+        val redirection = intent.getStringExtra(PARAM_LD) ?: ApplinkConst.HOME
+        val mUrl = getLinkAccountUrl(this, redirection)
         return LinkAccountWebviewFragment.newInstance(mUrl)
     }
 

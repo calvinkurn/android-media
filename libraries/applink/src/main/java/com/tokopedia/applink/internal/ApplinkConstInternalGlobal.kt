@@ -51,6 +51,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
     const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
+    const val PARAM_LD = "redirectionApplink"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -491,4 +492,8 @@ object ApplinkConstInternalGlobal {
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking
     const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+
+    // LinkAccountWebViewActivity
+    // tokopedia-android-internal://global/link-account-webview
+    const val LINK_ACCOUNT_WEBVIEW = "$INTERNAL_GLOBAL/link-account-webview"
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.linkaccount.view
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
@@ -39,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import com.tokopedia.webview.WebViewHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -161,7 +159,8 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        goToLinkPage(activity)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+        startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
     }
 
     override fun onViewAccountClicked() {
@@ -216,24 +215,11 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
         fun getSuccessPage(): String = "${BASE_URL}?page=success"
 
-        fun goToLinkPage(activity: FragmentActivity?) {
-            activity?.run {
-                val i = LinkAccountWebViewActivity.newInstance(this, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
-                startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
-            }
-        }
-
         fun gotoSuccessPage(activity: FragmentActivity?) {
             activity?.run {
                 val i = LinkAccountWebViewActivity.newInstance(this, getSuccessPage())
                 startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
             }
-        }
-
-        fun getLinkAccountUrl(context: Context, redirectionApplink: String): String? {
-            var finalUrl = WebViewHelper.appendGAClientIdAsQueryParam(BASE_URL, context)
-            finalUrl += "&ld=$redirectionApplink"
-            return finalUrl
         }
 
         fun createInstance(bundle: Bundle): Fragment {

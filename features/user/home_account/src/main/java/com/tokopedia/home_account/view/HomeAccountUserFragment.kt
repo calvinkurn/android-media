@@ -57,7 +57,6 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.linkaccount.view.LinkAccountFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
@@ -1166,7 +1165,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onLinkingAccountClicked() {
         homeAccountAnalytic.trackClickLinkAccount()
-        LinkAccountFragment.goToLinkPage(activity)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(ApplinkConstInternalGlobal.PARAM_LD, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        }
+        startActivity(intent)
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
