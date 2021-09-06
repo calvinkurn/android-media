@@ -45,10 +45,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.KeyboardWatcher
@@ -88,6 +85,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(channelId, it, R.id.fl_upcoming, childFragmentManager)
     }
 
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -367,6 +367,7 @@ class PlayFragment @Inject constructor(
         observeBottomInsetsState()
         observePinned()
         observePiPEvent()
+        observeUpcomingInfo()
 
         observeUiState()
     }
@@ -439,6 +440,12 @@ class PlayFragment @Inject constructor(
     private fun observePiPEvent() {
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
             if (it is PiPState.Requesting) onEnterPiPState(it)
+        })
+    }
+
+    private fun observeUpcomingInfo() {
+        playViewModel.observableUpcomingInfo.observe(viewLifecycleOwner, DistinctObserver {
+            fragmentUpcomingView.safeInit()
         })
     }
 
