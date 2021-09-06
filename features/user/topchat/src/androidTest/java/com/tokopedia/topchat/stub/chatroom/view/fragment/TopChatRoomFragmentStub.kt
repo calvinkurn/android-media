@@ -18,6 +18,12 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         childFragmentManager.executePendingTransactions()
     }
 
+    override fun showChangeAddressBottomSheet() {
+        if (SUCCESS_CHANGE_ADDRESS) {
+            getChangeAddressListener().onAddressDataChanged()
+        }
+    }
+
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
                 view, this, this, this,
@@ -28,7 +34,13 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         }
     }
 
+    override fun onDetach() {
+        SUCCESS_CHANGE_ADDRESS = false
+        super.onDetach()
+    }
+
     companion object {
+        var SUCCESS_CHANGE_ADDRESS = true
         fun createInstance(
                 bundle: Bundle
         ): TopChatRoomFragmentStub {
