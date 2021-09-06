@@ -44,8 +44,8 @@ class RegisterCheckFingerprintUseCase @Inject constructor(
         const val PARAM_BIOMETRIC_ID = "device_biometrics"
 
         val query: String = """
-            query register_check_fp {
-                OTPBiometricCheckRegistered {
+            query register_check_fp(${'$'}device_biometrics: String!) {
+                OTPBiometricCheckRegistered(device_biometrics: ${'$'}device_biometrics) {
                         registered
                         errorMessage
                 }
