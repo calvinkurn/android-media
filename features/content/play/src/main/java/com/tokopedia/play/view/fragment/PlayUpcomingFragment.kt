@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -100,7 +101,7 @@ class PlayUpcomingFragment @Inject constructor(
             } ?: upcomingTimerViewComponent.invisible()
         }
 
-        toolbarView.setIsShareable(true)
+        toolbarView.setShareInfo(playViewModel.latestCompleteChannelData.shareInfo)
 
         btnAction.setOnClickListener {
             btnAction.isLoading = true
@@ -147,7 +148,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onBackButtonClicked(view: ToolbarViewComponent) {
-        TODO("Not yet implemented")
+        (requireActivity() as PlayActivity).onBackPressed(isSystemBack = false)
     }
 
     override fun onMoreButtonClicked(view: ToolbarViewComponent) {
