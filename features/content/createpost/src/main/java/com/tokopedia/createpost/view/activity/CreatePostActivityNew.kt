@@ -117,15 +117,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         } else {
             create_post_toolbar.visibility = View.VISIBLE
         }
-//        content_action_post_button.setOnClickListener {
-//            if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
-//                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-//                content_action_post_button?.text = getString(R.string.feed_content_text_post)
-//                inflateFragment()
-//            } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
-//                postFeed()
-//            }
-//        }
+        content_action_post_button.setOnClickListener {
+            if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
+                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+                content_action_post_button?.text = getString(R.string.feed_content_text_post)
+                inflateFragment()
+            } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
+                postFeed()
+            }
+        }
 
 
     }

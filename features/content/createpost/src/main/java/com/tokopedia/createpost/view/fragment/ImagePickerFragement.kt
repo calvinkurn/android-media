@@ -80,6 +80,9 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
 
                 activityListener?.launchProductTagFragment(mediaList)
 
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                activity?.finish()
+
             }
         }
     }
