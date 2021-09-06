@@ -94,7 +94,7 @@ class TokoPointsHomeViewModelTest {
 
         coEvery { recomUsecase.getRequestParams(viewModel.PAGE_NUMBER, viewModel.PAGE_NAME) } returns requestParams
         every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
-        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
+        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[viewModel.recommIndex]) } returns recommendationList
 
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
@@ -147,7 +147,7 @@ class TokoPointsHomeViewModelTest {
 
         coEvery { recomUsecase.getRequestParams(viewModel.PAGE_NUMBER, viewModel.PAGE_NAME) } returns requestParams
         every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
-        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
+        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[viewModel.recommIndex]) } returns recommendationList
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
 
