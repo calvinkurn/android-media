@@ -1456,6 +1456,7 @@ class PlayViewModel @Inject constructor(
          */
 
         viewModelScope.launch {
+            delay(1000)
             _uiEvent.emit(
                 ShowToasterEvent.RemindMe(message = UiString.Resource(R.string.play_remind_me_success))
             )
