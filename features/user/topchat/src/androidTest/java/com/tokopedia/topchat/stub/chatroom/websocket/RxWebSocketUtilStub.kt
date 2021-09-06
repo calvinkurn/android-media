@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.domain.pojo.*
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -29,6 +30,14 @@ class RxWebSocketUtilStub constructor(
 ) : RxWebSocketUtil(
     emptyList(), 60, 5, 5
 ) {
+
+    val changeAddressResponse: WebSocketResponse
+        get() {
+            return AndroidFileUtil.parse(
+                "buyer/ws_opposite_with_label.json",
+                WebSocketResponse::class.java
+            )
+        }
 
     private val websocketInfoObservable = PublishSubject.create<WebSocketInfo>()
     private val websocket: WebSocket = WebSocketStub()

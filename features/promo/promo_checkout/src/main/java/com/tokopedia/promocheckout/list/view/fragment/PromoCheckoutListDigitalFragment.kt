@@ -3,6 +3,7 @@ package com.tokopedia.promocheckout.list.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -20,6 +21,7 @@ import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalP
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
+import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
 open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
@@ -100,8 +102,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     private fun showABTestPromo(page: Int){
         if (isCouponActive && isABTestPromo()) {
+            myCouponVisibility(true)
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }else{
+            myCouponVisibility(false)
             hideLoading()
             promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
         }
@@ -117,6 +121,12 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     fun isABTestPromo(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
         .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_COUPON)
             == PROMO_DIGITAL_AB_TEST_COUPON)
+
+    private fun myCouponVisibility(visibility: Boolean){
+        view?.let {
+            it.txtPromoMyCoupon.visibility = if(visibility) View.VISIBLE else View.GONE
+        }
+    }
 
     fun isABTestProduct(categoryId: Int): Boolean = (categoryId == CATEGORY_ID_LISTRIK || categoryId == CATEGORY_ID_TELCO_PULSA)
 

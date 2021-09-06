@@ -197,6 +197,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setHasGeolocation(!TextUtils.isEmpty(userAddress.getLongitude()) && !TextUtils.isEmpty(userAddress.getLatitude()));
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
             shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
+            shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 

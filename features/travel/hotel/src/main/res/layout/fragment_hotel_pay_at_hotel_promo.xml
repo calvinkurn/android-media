@@ -17,8 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_payathotel_no_promo" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvHotelPayAtHotelPromoTitle"

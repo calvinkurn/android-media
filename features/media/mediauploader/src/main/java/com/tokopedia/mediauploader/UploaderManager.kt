@@ -100,8 +100,21 @@ class UploaderManager constructor(
     * common error tracker and expose to user
     * */
     fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
-        trackToTimber(fileToUpload, sourceId, message.map { it.addPrefix() })
-        return UploadResult.Error(message.first().addPrefix())
+        val errorMessage = mutableListOf<String>()
+
+        // this validation to preventing overload logging on scalyr if error message is empty
+        if (message.isNotEmpty()) {
+            errorMessage.addAll(message)
+
+            trackToTimber(fileToUpload, sourceId, message.map { it.addPrefix() })
+        } else {
+            // if error message "really" empty, adding a network error message as general message
+            errorMessage.add(NETWORK_ERROR)
+        }
+
+        return UploadResult.Error(
+            errorMessage.first().addPrefix()
+        )
     }
 
 }

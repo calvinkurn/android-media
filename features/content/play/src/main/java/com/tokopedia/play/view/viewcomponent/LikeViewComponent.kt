@@ -9,7 +9,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -66,16 +65,12 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
-        /**
-         * TODO: backend is not yet setup for multiplelike, so spamming like right now will counted 1 like
-         * to prevent unconsistency view, we take the largest likes
-         */
-        tvTotalLikes.text = if(totalLikes.totalLike > totalLikes.previousLike || !isMultipleLike) totalLikes.totalLikeFormatted
-                            else totalLikes.previousLikeFormatted
+    fun setTotalLikes(totalLikes: String) {
+        tvTotalLikes.text = totalLikes
     }
 
     fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+        animationLike.cancelAnimation()
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
             if (animate) {

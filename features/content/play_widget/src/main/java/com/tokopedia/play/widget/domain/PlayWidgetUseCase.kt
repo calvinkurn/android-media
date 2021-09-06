@@ -50,6 +50,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 appLink
                 webLink
                 startTime
+                widgetSortingMethod
                 config{
                   hasPromo
                   isReminderSet
