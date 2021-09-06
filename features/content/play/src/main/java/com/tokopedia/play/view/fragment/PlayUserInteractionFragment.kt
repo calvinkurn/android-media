@@ -1451,7 +1451,8 @@ class PlayUserInteractionFragment @Inject constructor(
         val text = getTextFromUiString(event.message)
         doShowToaster(
                 toasterType = when (event) {
-                    is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                    is ShowToasterEvent.Info,
+                    is ShowToasterEvent.RemindMe -> Toaster.TYPE_NORMAL
                     is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
                 },
                 message = text
