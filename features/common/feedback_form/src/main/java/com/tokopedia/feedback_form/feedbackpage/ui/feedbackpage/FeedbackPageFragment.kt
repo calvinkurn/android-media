@@ -224,6 +224,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                             initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
             val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.FEEDBACK_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }

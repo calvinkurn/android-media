@@ -2,15 +2,15 @@ package com.tokopedia.imagepicker.common
 
 import android.content.Intent
 
-fun Intent.putImagePickerBuilder(imagePickerBuilder: ImagePickerBuilder, sourcePage: ImagePickerPageSource? = null) {
+fun Intent.putImagePickerBuilder(imagePickerBuilder: ImagePickerBuilder) {
     putExtra(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder)
-    sourcePage?.let {
-        putExtra(EXTRA_SOURCE_PAGE, sourcePage.value)
-    }
 }
 
-fun Intent.putImageEditorBuilder(imageEditorBuilder: ImageEditorBuilder, sourcePage: ImagePickerPageSource? = null) {
+fun Intent.putImageEditorBuilder(imageEditorBuilder: ImageEditorBuilder) {
     putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder)
+}
+
+fun Intent.putParamPageSource(sourcePage: ImagePickerPageSource? = null) {
     sourcePage?.let {
         putExtra(EXTRA_SOURCE_PAGE, sourcePage.value)
     }

@@ -51,10 +51,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -1169,7 +1166,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
                 }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder, ImagePickerPageSource.TOP_CHAT_PAGE)
+            intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.TOP_CHAT_PAGE)
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
