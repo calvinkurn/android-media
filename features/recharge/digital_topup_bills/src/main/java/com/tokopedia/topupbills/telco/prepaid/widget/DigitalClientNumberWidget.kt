@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.jetbrains.annotations.NotNull
@@ -76,7 +75,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     private fun initListener() {
         inputNumberField.icon1.run {
-            setOnClickListener { listener.onNavigateToContact() }
+            setOnClickListener { listener.onNavigateToContact(false) }
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
             show()
         }
@@ -86,7 +85,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             hideErrorInputNumber()
             sortFilterChip.clearFilter()
             imgOperator.hide()
-            // TODO: tologn revisit ini onClearAutoComplete bareng PR textfield2
             listener.onClearAutoComplete()
         }
 

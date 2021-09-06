@@ -526,12 +526,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
-<<<<<<< HEAD
         postpaidClientNumberWidget.setFilterChipShimmer(false)
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers.take(5))
-=======
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
->>>>>>> 7bc5588492aebf16429abfc88528b2d5f0a2d6bf
     }
 
     private fun performanceMonitoringStopTrace() {
