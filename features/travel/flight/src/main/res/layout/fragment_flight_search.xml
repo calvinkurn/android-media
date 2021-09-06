@@ -32,7 +32,7 @@
                 app:tickerShapeType="full"
                 tools:visibility="visible" />
 
-            <include layout="@layout/include_flight_quick_filter" />
+            <include android:id="@+id/flightSortFilter" layout="@layout/include_flight_quick_filter" />
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
