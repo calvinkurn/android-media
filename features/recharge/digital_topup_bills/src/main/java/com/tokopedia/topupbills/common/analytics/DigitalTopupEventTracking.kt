@@ -20,6 +20,7 @@ interface DigitalTopupEventTracking {
             const val CATEGORY_ID = "digitalCategoryId"
             const val VALUE_ITEMS = "items"
             const val VALUE_ITEM_LIST = "item_list"
+            const val PROMOTIONS = "promotions"
 
             const val REGULAR_PRODUCT = "regular product"
             const val SPECIAL_PROMO = "special product promo"
@@ -35,6 +36,7 @@ interface DigitalTopupEventTracking {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
 
+            const val VIEW_ITEM = "view_item"
             const val VIEW_ITEM_LIST = "view_item_list"
             const val SELECT_CONTENT = "select_content"
             const val ADD_TO_CART = "add_to_cart"
@@ -76,6 +78,9 @@ interface DigitalTopupEventTracking {
             const val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
             const val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
             const val IMPRESSION_FILTER_CLUSTER = "impression filter cluster"
+
+            const val VIEW_SPECIAL_PRODUCT_PROMO = "view special product promo"
+            const val CLICK_SPECIAL_PRODUCT_PROMO = "click special product promo"
         }
     }
 
@@ -99,7 +104,9 @@ interface DigitalTopupEventTracking {
             const val LIST = "list"
             const val POSITION = "position"
             const val CREATIVE = "creative"
+            const val CREATIVE_NAME = "creative_name"
             const val CREATIVE_URL = "creative_url"
+            const val CREATIVE_SLOT = "creative_slot"
             const val PROMO_ID = "promo_id"
             const val PROMO_CODE = "promo_code"
             const val QUANTITY = "quantity"

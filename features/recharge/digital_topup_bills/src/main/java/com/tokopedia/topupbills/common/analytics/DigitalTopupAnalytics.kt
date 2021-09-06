@@ -136,7 +136,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 action,
-                "${getTrackingCategoryName(categoryId)}")
+                getTrackingCategoryName(categoryId))
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -184,7 +184,7 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_RESET_FILTER_CLUSTER,
-                "${getTrackingCategoryName(categoryId)}")
+                getTrackingCategoryName(categoryId))
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -321,11 +321,13 @@ class DigitalTopupAnalytics {
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.RECENT_ICON_IMPRESSION,
                         "eventLabel", "none",
-                        "ecommerce", DataLayer.mapOf(
-                        "impressions", DataLayer.listOf(
-                        *recentList.toTypedArray()
-                )
-                )
+                        "ecommerce",
+                        DataLayer.mapOf(
+                                "impressions",
+                                DataLayer.listOf(
+                                        *recentList.toTypedArray()
+                                )
+                        )
                 )
         )
 
@@ -348,24 +350,25 @@ class DigitalTopupAnalytics {
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_RECENT_ICON,
                         "eventLabel", "${getTrackingCategoryName(itemRecent.categoryId)} - $position",
-                        "ecommerce", DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf(
-                        "list", "category id ${itemRecent.categoryId} - " +
-                        "product $position - " +
-                        "${itemRecent.clientNumber} - ${itemRecent.title}"
-                ),
-                        "products", recentList.toArray()
-                )
-                )
+                        "ecommerce",
+                        DataLayer.mapOf("click",
+                                DataLayer.mapOf(
+                                        "actionField",
+                                        DataLayer.mapOf("list",
+                                                "category id ${itemRecent.categoryId} - " +
+                                                        "product $position - " +
+                                                        "${itemRecent.clientNumber} - ${itemRecent.title}"
+                                        ),
+                                        "products", recentList.toArray()
+                                )
+                        )
                 )
         )
     }
 
     fun impressionEnhanceCommercePromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
         val promoList = ArrayList<Any>()
-        for (i in 0 until topupBillsTrackPromoList.size) {
-            val promo = topupBillsTrackPromoList[i]
+        for (promo in topupBillsTrackPromoList) {
             promoList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, promo.promoItem.id,
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",
@@ -410,13 +413,60 @@ class DigitalTopupAnalytics {
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_PROMO_DIGITAL,
                         "eventLabel", "${topupBillsPromo.promoCode} - $position",
-                        "ecommerce", DataLayer.mapOf(
-                        "promoClick", DataLayer.mapOf(
-                        "promotions", promoList.toArray()
-                )
-                )
+                        "ecommerce",
+                        DataLayer.mapOf(
+                                "promoClick",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        promoList.toArray()
+                                )
+                        )
                 )
         )
+    }
+
+    fun impressionSpecialPromoProduct(itemProduct: TelcoProduct, position: Int, operatorName: String, userId: String) {
+        val promotions = arrayListOf(Bundle().apply {
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
+            putInt(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position)
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME,
+                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.pricePlain}")
+        })
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.VIEW_ITEM)
+            putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
+            putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.VIEW_SPECIAL_PRODUCT_PROMO)
+            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName")
+            putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
+            putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
+            putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
+            putParcelableArrayList(DigitalTopupEventTracking.Additional.PROMOTIONS, promotions)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.VIEW_ITEM, eventDataLayer)
+    }
+
+    fun clickSpecialPromoProduct(itemProduct: TelcoProduct, position: Int, operatorName: String, userId: String) {
+        val promotions = arrayListOf(Bundle().apply {
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
+            putInt(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position)
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME,
+                    "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.pricePlain}")
+        })
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
+            putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_SPECIAL_PRODUCT_PROMO)
+            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName")
+            putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
+            putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
+            putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
+            putParcelableArrayList(DigitalTopupEventTracking.Additional.PROMOTIONS, promotions)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.SELECT_CONTENT, eventDataLayer)
     }
 
     private fun getTrackingCategoryName(categoryId: Int): String {

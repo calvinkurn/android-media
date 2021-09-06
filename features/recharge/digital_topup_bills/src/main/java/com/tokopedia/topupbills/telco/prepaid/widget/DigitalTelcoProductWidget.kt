@@ -54,7 +54,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             dataTracking.addAll(it.products)
         }
 
-        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, object : TelcoProductViewHolder.OnClickListener {
+        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, object : TelcoProductViewHolder.ActionListener {
             override fun onClickItemProduct(element: TelcoProduct, position: Int) {
                 val label = getLabelProductItem(element.id)
                 listener.onClickProduct(element, position, label)
@@ -62,6 +62,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
             override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
                 listener.onSeeMoreProduct(element, position)
+            }
+
+            override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
+                listener.onTrackImpressionSpecialProduct(itemProduct, position)
             }
         }))
         recyclerView.adapter = adapter
@@ -174,6 +178,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
+        fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int)
     }
 
     companion object {

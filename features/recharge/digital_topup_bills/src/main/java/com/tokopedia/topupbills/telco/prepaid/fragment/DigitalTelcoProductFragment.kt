@@ -163,6 +163,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             if (::selectedOperatorName.isInitialized) {
                 topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
                         userSession.userId, labelList)
+                if (itemProduct.isSpecialProductPromo())
+                    topupAnalytics.clickSpecialPromoProduct(itemProduct, position,
+                            selectedOperatorName, userSession.userId)
+
             }
         }
 
@@ -176,7 +180,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         itemProduct.attributes.price,
                         itemProduct.attributes.productPromo?.newPrice,
                         itemProduct.isSpecialProductPromo(),
-                        object: DigitalProductBottomSheet.ActionListener {
+                        object : DigitalProductBottomSheet.ActionListener {
                             override fun onClickOnProduct(isSpecialProduct: Boolean) {
                                 activity?.run {
                                     telcoTelcoProductView.selectProductItem(position)
@@ -202,6 +206,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         override fun onScrollToPositionItem(position: Int) {
             sharedModelPrepaid.setPositionScrollToItem(position)
+        }
+
+        override fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int) {
+            topupAnalytics.impressionSpecialPromoProduct(itemProduct, position,
+                    selectedOperatorName, userSession.userId)
         }
     }
 
