@@ -20,12 +20,10 @@ import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
-import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
@@ -56,7 +54,7 @@ class ProfileViewHolder(
                 account_user_item_profile_name?.run {
                     account_user_item_profile_name?.setPadding(
                         paddingLeft,
-                        8,
+                        ProfileViewHolder.TOP_PAD,
                         paddingRight,
                         paddingBottom
                     )
@@ -224,6 +222,7 @@ class ProfileViewHolder(
     }
 
     companion object {
+        const val TOP_PAD = 8
         val LAYOUT = R.layout.home_account_item_profile
         private const val DEFAULT_NAME = "toppers-"
     }

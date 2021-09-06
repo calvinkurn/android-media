@@ -2,8 +2,7 @@ package com.tokopedia.home_account.view.fragment
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +13,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
-import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFundsAndInvestmentAdapter
 import com.tokopedia.home_account.view.adapter.uimodel.SubtitleUiModel
@@ -30,12 +29,10 @@ import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.searchbar.helper.ViewHelper
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
 import javax.inject.Inject
+
 
 class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
@@ -119,13 +116,13 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         context?.let { context ->
             adapter = HomeAccountFundsAndInvestmentAdapter(this)
             binding?.fundsAndInvestmentRv?.adapter = adapter
-            val layoutManager = SpanningLinearLayoutManager(
+            val layoutManager = LinearLayoutManager(
                 binding?.fundsAndInvestmentRv?.context,
                 LinearLayoutManager.VERTICAL,
                 false
             )
             val verticalDivider =
-                ContextCompat.getDrawable(context, R.drawable.vertical_divider)
+                ContextCompat.getDrawable(context, R.drawable.horizontal_devider)
             if (context.isDarkMode()) {
                 verticalDivider?.mutate()?.setColorFilter(
                     ContextCompat.getColor(context, R.color.vertical_divider_dms_dark),
@@ -137,10 +134,27 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                     PorterDuff.Mode.SRC_IN
                 )
             }
-            val dividerItemDecoration = DividerItemDecoration(
+            val dividerItemDecoration = object : DividerItemDecoration(
                 context,
                 layoutManager.orientation
-            )
+            ) {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position: Int = parent.getChildAdapterPosition(view)
+                    when (adapter?.getItem(position)) {
+                        is TitleUiModel, is SubtitleUiModel -> {
+                            outRect.setEmpty()
+                        }
+                        is WalletUiModel -> {
+                            super.getItemOffsets(outRect, view, parent, state)
+                        }
+                    }
+                }
+            }
 
             verticalDivider?.run {
                 dividerItemDecoration.setDrawable(this)

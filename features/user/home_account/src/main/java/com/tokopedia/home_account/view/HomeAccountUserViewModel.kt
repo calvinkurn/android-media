@@ -159,7 +159,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getRecommendation(page: Int) {
-        launchCatchError(Dispatchers.IO, block = {
+        launchCatchError(block = {
             val recommendationWidget = getRecommendationList(page)
             if (checkFirstPage(page)) {
                 _firstRecommendationData.postValue(Success(recommendationWidget))
@@ -183,7 +183,7 @@ class HomeAccountUserViewModel @Inject constructor(
                 AKUN_PAGE,
                 emptyList()
         )
-        return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
+        return getRecommendationUseCase.createObservable(params).toBlocking().first()[0]
     }
 
     fun getUserPageAssetConfig() {

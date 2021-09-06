@@ -20,13 +20,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -181,56 +179,68 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Successfully get recommendation first page`() {
-        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        val expectedResult = mutableListOf(RecommendationWidget())
+        coEvery {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns expectedResult
 
         viewModel.getFirstRecommendation()
 
-        val result = viewModel.firstRecommendationData.getOrAwaitValue()
-        Assertions.assertThat(result).isEqualTo(Success(expectedResult))
+        coVerify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.firstRecommendationData.value)
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data, expectedResult[0])
     }
 
     @Test
     fun `Successfully get recommendation load more`() {
         val testPage = 2
-        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        val expectedResult = mutableListOf(RecommendationWidget())
+        coEvery {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns expectedResult
 
         viewModel.getRecommendation(testPage)
 
-        val result = viewModel.getRecommendationData.getOrAwaitValue()
-        Assertions.assertThat(result).isEqualTo(Success(expectedResult.recommendationItemList))
+        coVerify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.getRecommendationData.value)
+        Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, expectedResult[0].recommendationItemList)
     }
 
     @Test
     fun `Failed to get first recommendation`() {
-        val expectedResult = mockk<Throwable>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        val expectedResult = Throwable()
+        coEvery {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking()
         } throws expectedResult
 
         viewModel.getFirstRecommendation()
 
-        val result = viewModel.firstRecommendationData.getOrAwaitValue()
-        Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
+        coVerify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.firstRecommendationData.value)
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Fail).throwable, expectedResult)
     }
 
     @Test
     fun `Failed to get more recommendation`() {
         val testPage = 2
-        val expectedResult = mockk<Throwable>(relaxed = true)
-        every {
-            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        val expectedResult = Throwable()
+        coEvery {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking()
         } throws expectedResult
 
         viewModel.getRecommendation(testPage)
 
-        val result = viewModel.getRecommendationData.getOrAwaitValue()
-        Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
+        coVerify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.getRecommendationData.value)
+        Assert.assertEquals((viewModel.getRecommendationData.value as Fail).throwable, expectedResult)
     }
 
     @Test
@@ -509,7 +519,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Success get tokopoint balance and point`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { tokopointsBalanceAndPointUseCase(any()) } returns successGetBalanceAndPointResponse
+        coEvery { tokopointsBalanceAndPointUseCase(Unit) } returns successGetBalanceAndPointResponse
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
 
@@ -523,7 +533,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Failed get tokopoint balance and point`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { tokopointsBalanceAndPointUseCase(any()) } coAnswers { throw throwableResponse }
+        coEvery { tokopointsBalanceAndPointUseCase(Unit) } coAnswers { throw throwableResponse }
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.TOKOPOINT)
 
