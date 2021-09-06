@@ -35,7 +35,7 @@ class ChatRoomFakePresenterModule {
 
     @Provides
     @ChatScope
-    fun provideGetChatUseCase(
+    fun provideTopChatRoomPresenter(
             tkpdAuthInterceptor: TkpdAuthInterceptor,
             fingerprintInterceptor: FingerprintInterceptor,
             userSession: UserSessionInterface,
@@ -67,36 +67,36 @@ class ChatRoomFakePresenterModule {
             remoteConfig: RemoteConfig
     ): TopChatRoomPresenter {
         return TopChatRoomPresenterStub(
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                userSession,
-                webSocketUtil,
-                getChatUseCase,
-                topChatRoomWebSocketMessageMapper,
-                getTemplateChatRoomUseCase,
-                replyChatUseCase,
-                getExistingMessageIdUseCase,
-                getShopFollowingUseCase,
-                toggleFavouriteShopUseCase,
-                addToCartUseCase,
-                compressImageUseCase,
-                seamlessLoginUsecase,
-                getChatRoomSettingUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
-                uploadImageUseCase,
-                orderProgressUseCase,
-                groupStickerUseCase,
-                chatAttachmentUseCase,
-                chatToggleBlockChat,
-                chatBackgroundUseCase,
-                chatSrwUseCase,
-                tokoNowWHUsecase,
-                moveChatToTrashUseCase,
-                sharedPref,
-                dispatchers,
-                remoteConfig
-        )
+                        tkpdAuthInterceptor,
+                        fingerprintInterceptor,
+                        userSession,
+                        webSocketUtil,
+                        getChatUseCase,
+                        topChatRoomWebSocketMessageMapper,
+                        getTemplateChatRoomUseCase,
+                        replyChatUseCase,
+                        getExistingMessageIdUseCase,
+                        getShopFollowingUseCase,
+                        toggleFavouriteShopUseCase,
+                        addToCartUseCase,
+                        compressImageUseCase,
+                        seamlessLoginUsecase,
+                        getChatRoomSettingUseCase,
+                        addWishListUseCase,
+                        removeWishListUseCase,
+                        uploadImageUseCase,
+                        orderProgressUseCase,
+                        groupStickerUseCase,
+                        chatAttachmentUseCase,
+                        chatToggleBlockChat,
+                        chatBackgroundUseCase,
+                        chatSrwUseCase,
+                        tokoNowWHUsecase,
+                        moveChatToTrashUseCase,
+                        sharedPref,
+                        dispatchers,
+                        remoteConfig
+                )
     }
 
 }

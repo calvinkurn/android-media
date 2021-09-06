@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
 import android.content.Intent
@@ -8,10 +7,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.StringRes
@@ -38,7 +34,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams.Companion.ATC_FROM_TOPCHAT
+import com.tokopedia.atc_common.AtcFromExternalSource.ATC_FROM_TOPCHAT
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
@@ -60,9 +56,12 @@ import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -86,6 +85,7 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -115,10 +115,12 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
@@ -151,7 +153,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     SearchListener, BroadcastSpamHandlerViewHolder.Listener,
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
-    SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener {
+    SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
+    FlexBoxChatLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -207,9 +210,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
 
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
+    var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
+    var chatBoxPadding: View? = null
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
     override fun isLoadMoreEnabledByDefault(): Boolean = false
+
+    /**
+     * stack to keep latest change address request
+     */
+    private val changeAddressStack = Stack<HeaderCtaButtonAttachment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -263,17 +274,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initObserver() {
-        presenter.srw.observe(viewLifecycleOwner, {
+        presenter.srw.observe(viewLifecycleOwner) {
             rvSrw?.updateStatus(it)
             updateSrwPreviewState()
-        })
-        adapter.srwUiModel.observe(viewLifecycleOwner, {
+        }
+        adapter.srwUiModel.observe(viewLifecycleOwner) {
             if (it == null) {
                 showTemplateChatIfReady()
             } else {
                 getViewState().hideTemplateChat()
             }
-        })
+        }
     }
 
     override fun updateSrwPreviewState() {
@@ -287,10 +298,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showTemplateChatIfReady() {
-        getViewState().showTemplateChatIfReady(
-            adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
-            !isSeller()
-        )
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            getViewState().hideTemplateChat()
+        } else {
+            getViewState().showTemplateChatIfReady(
+                adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
+                !isSeller()
+            )
+        }
     }
 
     override fun hasProductPreviewShown(): Boolean {
@@ -392,6 +407,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
+        chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
     }
 
     private fun initStickerView() {
@@ -421,6 +437,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         loadInitialData()
         initLoadMoreListener()
         onReplyBoxEmpty()
+        initKeyboardListener(view)
+        removeAttachmentIfNecessary(savedInstanceState)
     }
 
     private fun setupBackground() {
@@ -620,6 +638,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return {
             this.messageId = it
             loadInitialData()
+            if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = it)
+            }
         }
     }
 
@@ -868,7 +889,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this
+            this, this, this, this
         )
     }
 
@@ -1080,12 +1101,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
     }
 
-    private fun onSendingMessage(): () -> Unit {
+    private fun onSendingMessage(clearMessage: Boolean = true): () -> Unit {
         return {
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
-            clearEditText()
             sellerReviewHelper.hasRepliedChat = true
+            if (clearMessage) {
+                clearEditText()
+            }
         }
     }
 
@@ -1126,10 +1149,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
-        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            hideSeparatedChatTemplate()
+        } else {
+            getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
+        }
     }
 
     override fun onErrorGetTemplate() {
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hide()
         getViewState().setTemplate(null)
     }
 
@@ -1954,6 +1983,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
+    private fun showToasterMsg(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun showToasterConfirmation(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
@@ -2145,15 +2180,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             messageId,
             question,
             startTime,
-            opponentId
-        ) {
-            analytics.eventSendMessage()
-            getViewState().scrollToBottom()
-            sellerReviewHelper.hasRepliedChat = true
-        }
+            opponentId,
+            onSendingMessage(false)
+        )
+    }
+
+    private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
+        onSendAndReceiveMessage()
+        presenter.sendSrwFrom(attachment, opponentId)
+        onSendingMessage(false).invoke()
     }
 
     private fun addSrwBubbleToChat() {
+        if (chatRoomFlexModeListener?.isFlexMode() != null) {
+            addSrwBubble()
+        }
+    }
+
+    private fun addSrwBubble() {
         val srwState = rvSrw?.getStateInfo()
         adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
     }
@@ -2192,6 +2236,104 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
         sendButton?.setOnClickListener {
             onSendButtonClicked()
+        }
+    }
+
+    private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
+            TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
+            override fun onKeyboardShow() {
+                if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                    chatBoxPadding?.show()
+                    showSeparatedChatTemplateIfFlex()
+                }
+            }
+
+            override fun onKeyboardHide() {
+                hideSeparatedChatTemplate()
+            }
+        })
+    }
+
+    private fun viewStateShouldShowTemplate(): Boolean {
+        val isLastMsgFromBroadcastAndIamBuyer = adapter.isLastMessageBroadcast() && !isSeller()
+        return !isLastMsgFromBroadcastAndIamBuyer &&
+                !shouldShowSrw() &&
+                !adapter.isLastMsgSrwBubble()
+    }
+
+    private fun showSeparatedChatTemplateIfFlex() {
+        if (viewStateShouldShowTemplate()) {
+            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.show()
+        } else {
+            hideSeparatedChatTemplate()
+        }
+    }
+
+    private fun hideSeparatedChatTemplate() {
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hide()
+        chatBoxPadding?.hide()
+    }
+
+    fun toggleTemplateChatWhenFlex(toggle: Boolean) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
+            try {
+                if (!toggle) {
+                    getViewState().hideTemplateChat()
+                } else if (toggle && viewStateShouldShowTemplate()) {
+                    getViewState().showTemplateChat()
+                }
+            } catch (ignored: Exception) {}
+        }
+    }
+
+    private fun removeAttachmentIfNecessary(savedInstance: Bundle?) {
+        val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
+        if(isNecessary) {
+            getViewState().clearAttachmentPreview()
+        }
+    }
+
+    override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
+        changeAddressStack.push(attachment)
+        showChangeAddressBottomSheet()
+    }
+
+    protected open fun showChangeAddressBottomSheet() {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(getChangeAddressListener())
+        chooseAddressBottomSheet.show(childFragmentManager, "")
+    }
+
+    protected fun getChangeAddressListener(
+    ): ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+        return object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+            override fun onLocalizingAddressServerDown() {
+
+            }
+
+            override fun onAddressDataChanged() {
+                if (changeAddressStack.empty()) return
+                val attachment = changeAddressStack.pop() ?: return
+                val msg = context?.getString(
+                    com.tokopedia.localizationchooseaddress.R.string.toaster_success_chosen_address
+                ) ?: ""
+                showToasterMsg(msg)
+                initUserLocation()
+                sendSrwQuestion(attachment)
+            }
+
+            override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                return "chat"
+            }
+
+            override fun onLocalizingAddressLoginSuccessBottomSheet() {
+
+            }
+
+            override fun onDismissChooseAddressBottomSheet() {
+                if (changeAddressStack.empty()) return
+                changeAddressStack.pop()
+            }
         }
     }
 

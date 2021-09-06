@@ -30,9 +30,9 @@ data class ItemChatAttributesContactPojo constructor(
         var thumbnail: String = "",
         @SerializedName("is_auto_reply")
         @Expose
-        var isAutoReply: Boolean = false,
+        var isAutoReply: Boolean? = false,
         @SerializedName("to_uid")
         @Expose
-        var toUid: String = ""
+        var toUid: String? = ""
 
 )

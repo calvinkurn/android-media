@@ -84,7 +84,9 @@ object PlayWidgetUiMock {
             totalView = "10,0 rb",
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.NoPromo,
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasGiveaway = true,
+            poolType = "",
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -109,7 +111,7 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
+            promoType = PlayWidgetPromoType.Default("Diskon 100%"),
             reminderType = PlayWidgetReminderType.Reminded,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
@@ -119,7 +121,9 @@ object PlayWidgetUiMock {
                     "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
                     isShow = true
             ),
-            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734"
+            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
+            hasGiveaway = true,
+            poolType = "",
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

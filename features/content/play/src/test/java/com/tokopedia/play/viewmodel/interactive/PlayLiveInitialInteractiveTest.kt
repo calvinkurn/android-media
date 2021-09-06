@@ -2,11 +2,14 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -44,7 +47,9 @@ class PlayLiveInitialInteractiveTest {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
             videoMetaInfo = videoInfoBuilder.buildVideoMeta(
                     videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
             )
@@ -102,18 +107,18 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val timeBeforeStartTap = 15000L
         val durationTap = 5000L
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Scheduled(timeBeforeStartTap, durationTap),
                 title = title
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher,
                 remoteConfig = mockRemoteConfig,
         ) {
@@ -137,17 +142,17 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val durationTap = 5000L
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Live(durationTap),
                 title = title
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher,
                 remoteConfig = mockRemoteConfig,
         ) {
@@ -171,19 +176,19 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Finished,
                 title = title
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = emptyList()
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)

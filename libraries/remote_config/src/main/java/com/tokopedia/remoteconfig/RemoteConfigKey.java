@@ -203,7 +203,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
     public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
 
-    public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
@@ -230,6 +229,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+    public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
+    public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
 
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
@@ -253,4 +254,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
+    public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 }

@@ -7,16 +7,19 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.item_product_manage_variant.view.*
+import java.math.RoundingMode
+import java.text.NumberFormat
 
 class ProductVariantPriceViewHolder(
     itemView: View,
-    private val priceMap: MutableMap<String, Int>,
+    private val priceMap: MutableMap<String, Double>,
     private val listener: ProductVariantListener
 ): AbstractViewHolder<ProductVariant>(itemView) {
 
@@ -65,8 +68,10 @@ class ProductVariantPriceViewHolder(
 
     private fun setTextFieldPriceValue(variant: ProductVariant) {
        itemView.textFieldPrice.apply {
-           val price = priceMap.getOrElse(variant.id, { variant.price }).toString()
-           val priceRupiah = CurrencyFormatHelper.convertToRupiah(price)
+           val price = priceMap.getOrElse(variant.id, { variant.price })
+           // For now, set the price to int first as we do not support decimal price edit
+           val priceString = price.toInt().orZero().toString()
+           val priceRupiah = CurrencyFormatHelper.convertToRupiah(priceString)
            val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
            val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
 
@@ -116,7 +121,7 @@ class ProductVariantPriceViewHolder(
         itemView.textFieldPrice.run {
             priceTextWatcher = object: TextWatcher {
                 override fun afterTextChanged(input: Editable) {
-                    val price = CurrencyFormatHelper.convertRupiahToInt(input.toString())
+                    val price = CurrencyFormatHelper.convertRupiahToInt(input.toString()).toDouble()
                     priceMap[variant.id] = price
 
                     removeTextFieldPriceListeners()
@@ -142,8 +147,8 @@ class ProductVariantPriceViewHolder(
         }
     }
 
-    private fun showHidePriceError(price: Int) {
-        if (price < MINIMUM_PRICE) {
+    private fun showHidePriceError(price: Double) {
+        if (price < MINIMUM_PRICE.toDouble()) {
             showMinPriceError()
         } else {
             hidePriceError()
@@ -151,6 +156,6 @@ class ProductVariantPriceViewHolder(
     }
 
     interface ProductVariantListener {
-        fun onPriceChanged(variantId: String, price: Int)
+        fun onPriceChanged(variantId: String, price: Double)
     }
 }

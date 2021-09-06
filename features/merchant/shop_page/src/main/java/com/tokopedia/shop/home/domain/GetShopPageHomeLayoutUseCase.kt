@@ -59,6 +59,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     ratio
                     isATC
                     etalaseID
+                    isShowEtalaseName
                   }
                   data {
                     ... on DisplayWidget {
@@ -66,6 +67,12 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                    }
+                    ... on EtalaseWidget {
+                      imageUrl
+                      appLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID

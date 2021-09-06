@@ -96,7 +96,7 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.liveness)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
-    implementation project(rootProject.ext.features.telephony_masking)
+    implementation projectOrAar(rootProject.ext.features.telephony_masking)
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)

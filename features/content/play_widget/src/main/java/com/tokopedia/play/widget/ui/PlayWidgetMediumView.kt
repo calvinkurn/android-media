@@ -239,11 +239,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         mIsAutoPlay = data.config.autoPlay
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        mWidgetInternalListener?.onWidgetAttached(recyclerViewItem)
-    }
-
     /**
      * Setup view
      */

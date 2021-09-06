@@ -63,11 +63,11 @@
 /features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
+/features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/statistic/                           @tokopedia/android-minionstuart-dev
 /features/merchant/gallery/                             @tokopedia/android-minionstuart-dev
-/features/merchant/favorite/                            @tokopedia/android-minionstuart-dev
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
@@ -81,8 +81,9 @@
 /features/merchant/shop_open/                           @tokopedia/android-minionken-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionken-dev
-/features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
+/features/merchant/favorite/                            @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
+/features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 
@@ -122,7 +123,6 @@
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionmark-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionmark-dev
-/features/recharge/recharge_slice                       @tokopedia/android-minionmark-dev
 /features/recharge/rechargeocr                          @tokopedia/android-minionmark-dev
 /features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionmark-dev
@@ -139,7 +139,6 @@
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
 /features/travel/travel_passenger                       @tokopedia/android-minionmark-dev
-/features/travel/travel_slice                           @tokopedia/android-minionmark-dev
 
 /features/salam/umrah                                   @tokopedia/android-minionmark-dev
 /libraries/travel_calendar                              @tokopedia/android-minionmark-dev

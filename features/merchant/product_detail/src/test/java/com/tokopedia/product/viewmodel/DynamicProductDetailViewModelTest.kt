@@ -1,6 +1,7 @@
 package com.tokopedia.product.viewmodel
 
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -37,7 +38,6 @@ import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -45,7 +45,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,7 +55,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.Matchers.*
+import org.mockito.Matchers.anyInt
+import org.mockito.Matchers.anyString
 import rx.Observable
 
 @ExperimentalCoroutinesApi
@@ -563,7 +563,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -598,7 +598,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -624,7 +624,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -650,7 +650,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -676,7 +676,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -684,17 +684,17 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
         coVerify(inverse = true) {
@@ -710,17 +710,17 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on error occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         coVerify(inverse = true) {
@@ -1370,86 +1370,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * MoveToWareHouse
-     */
-    @Test
-    fun onSuccessMoveProductToWareHouse() {
-        val productId = "123"
-        val productActionSubmit = ProductActionSubmit()
-
-        coEvery {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        } returns productActionSubmit
-
-        viewModel.moveProductToWareHouse(productId)
-        coVerify {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        }
-
-        Assert.assertEquals((viewModel.moveToWarehouseResult.value as Success).data, anyBoolean())
-    }
-
-    @Test
-    fun onErrorMoveProductToWareHouse() {
-        //Given
-        coEvery {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.moveProductToWareHouse(anyString())
-
-        verify {
-            moveProductToWarehouseUseCase.createParams(anyString(), anyString(), anyString())
-        }
-        coVerify {
-            moveProductToWarehouseUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.moveToWarehouseResult.value is Fail)
-    }
-
-    /**
-     * MoveToEtalase
-     */
-    @Test
-    fun onSuccessMoveProductToEtalase() {
-        coEvery {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        } returns ProductActionSubmit()
-
-        viewModel.moveProductToEtalase(anyString(), anyString(), anyString())
-
-        verify {
-            moveProductToEtalaseUseCase.createParams(anyString(), anyString(), anyString(), anyString(), anyString())
-        }
-
-        coVerify {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        }
-
-        Assert.assertEquals((viewModel.moveToEtalaseResult.value as Success).data, anyBoolean())
-    }
-
-    @Test
-    fun onErrorMoveProductToEtalase() {
-        coEvery {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.moveProductToEtalase(anyString(), anyString(), anyString())
-
-        verify {
-            moveProductToEtalaseUseCase.createParams(anyString(), anyString(), anyString(), anyString(), anyString())
-        }
-
-        coVerify {
-            moveProductToEtalaseUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.moveToEtalaseResult.value is Fail)
-    }
-
-    /**
      * Add/Remove Wishlist
      */
     @Test
@@ -1508,18 +1428,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.removeWishList(productId, null, {
             Assert.assertEquals(it, errorMessage)
         })
-    }
-
-    @Test
-    fun onSuccessCancelWarehouseJob() {
-        viewModel.cancelWarehouseUseCase()
-        verify { viewModel.cancelWarehouseUseCase() }
-    }
-
-    @Test
-    fun onSuccessCancelEtalaseJob() {
-        viewModel.cancelEtalaseUseCase()
-        verify { viewModel.cancelEtalaseUseCase() }
     }
 
     /**
@@ -1769,14 +1677,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             trackAffiliateUseCase.cancelJobs()
-        }
-
-        verify {
-            moveProductToWarehouseUseCase.cancelJobs()
-        }
-
-        verify {
-            moveProductToEtalaseUseCase.cancelJobs()
         }
 
         verify {

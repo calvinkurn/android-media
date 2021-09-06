@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
-import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
@@ -80,7 +78,6 @@ class SearchEventListViewHolder(val view: View,
 
             holder.view.setOnClickListener {
                 listener.clickEventSearchSuggestion(element, listKegiatan, position+1)
-                RouteManager.route(holder.view.context, element.app_url)
             }
 
             if(element.tanggal_kegiatan.isBlank() || element.tanggal_kegiatan.equals("0") || element.category.equals("3")){

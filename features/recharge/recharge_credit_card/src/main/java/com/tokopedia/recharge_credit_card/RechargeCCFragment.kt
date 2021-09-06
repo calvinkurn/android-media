@@ -10,15 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
@@ -148,7 +147,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun initializedViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
             rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
         }
@@ -321,7 +320,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
         trackAddToCartEvent()
         context?.let {
-            val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }
@@ -340,9 +339,9 @@ class RechargeCCFragment : BaseDaggerFragment() {
             REQUEST_CODE_CART -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
-                            showErrorToaster(MessageErrorException(message))
+                        val error = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(error.message)) {
+                            showErrorToaster(error)
                         }
                     }
                 }

@@ -15,7 +15,7 @@
     <string name="stc_date">Tanggal</string>
     <string name="stc_until">Sampai dengan</string>
     <string name="stc_show">Tampilkan</string>
-    <string name="stc_custom">Custom</string>
+    <string name="stc_custom">Custom (%1$s)</string>
     <string name="stc_today_real_time">Hari ini (real time)</string>
     <string name="stc_per_day">Per Hari</string>
     <string name="stc_per_week">Per Minggu</string>
@@ -38,4 +38,7 @@
     <string name="stc_product_coachmark_desc">Cek dan lihat perkembangan Performa produk tokomu di sini, ya.</string>
     <string name="stc_operational_coachmark_title">Yuk, pantau operasional tokomu!</string>
     <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan performa operasional tokomu di sini, ya.</string>
+    <string name="stc_upgrade_to_pm">Fitur ini hanya untuk Power Merchant, Power Merchant PRO, dan Official Store. <font color="#03AC0E">Upgrade Toko</font></string>
+    <string name="stc_custom_lbl">Custom</string>
+    <string name="stc_select_same_month_only_info">Hanya bisa memilih tanggal di bulan yang sama.</string>
 </resources>

@@ -3,6 +3,9 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,16 +16,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.smartbills.data.DataRechargeMultiCheckoutResponse
-import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -77,14 +76,25 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.io) {
+            val response = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeListSmartBills.Response>()
+            }
 
-            if (data.response != null) {
+            val error = response.getError(RechargeListSmartBills.Response::class.java)
+            if(error.isNullOrEmpty()){
+                val data = response.getSuccessData<RechargeListSmartBills.Response>()
+                if (data.response != null) {
                     mutableStatementBills.postValue(Success(data.response))
+                } else {
+                    throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+                }
             } else {
-                throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+                val firstError = error.firstOrNull()
+                if (firstError?.extensions?.developerMessage?.contains(HARD_CODE_EMPTY_RESPONSE) ?: false){
+                    mutableStatementBills.postValue(Success(RechargeListSmartBills()))
+                } else {
+                    throw(MessageErrorException(firstError?.message))
+                }
             }
         }) {
             mutableStatementBills.postValue(Fail(it))
@@ -112,9 +122,9 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(request: MultiCheckoutRequest?) {
+    fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
         if (request != null) {
-            val idempotencyKey = request.attributes.identifier.userId?.generateRechargeCheckoutToken() ?: ""
+            val idempotencyKey = userId.generateRechargeCheckoutToken()
             val mapParam: HashMap<String, String> = hashMapOf()
             mapParam[IDEMPOTENCY_KEY] = idempotencyKey
             mapParam[CONTENT_TYPE] = "application/json"
@@ -190,5 +200,7 @@ class SmartBillsViewModel @Inject constructor(
         const val DEFAULT_OS_TYPE = "1"
         const val IDEMPOTENCY_KEY = "Idempotency-Key"
         const val CONTENT_TYPE = "Content-Type"
+
+        const val HARD_CODE_EMPTY_RESPONSE = "error get base data: [favorite] empty favorite data"
     }
 }

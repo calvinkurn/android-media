@@ -1,0 +1,626 @@
+{
+  "aceSearchShop": {
+    "header": {
+      "total_data": 10000,
+      "response_code": 2,
+      "keyword_process": "7"
+    },
+    "source": "solr",
+    "total_shop": 10000,
+    "search_url": "https://ace.tokopedia.com/search/v1/shop?device=android&ob=23&q=samsung&rows=8",
+    "paging": {
+      "uri_next": "https://ace.tokopedia.com/search/v1/shop?device=android&ob=23&q=samsung&rows=8&start=8",
+      "uri_previous": ""
+    },
+    "tab_name": "shop",
+    "suggestion": {
+      "currentKeyword": "",
+      "query": "",
+      "text": ""
+    },
+    "shops": [
+      {
+        "shop_id": 2400899,
+        "shop_name": "Eraspace - Samsung Authorized",
+        "shop_domain": "eraspace-samsung",
+        "shop_url": "https://www.tokopedia.com/eraspace-samsung",
+        "shop_applink": "tokopedia://shop/2400899",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/6/29/4feee5a2-8d21-43ac-ac3a-3c0c79b4ef3d.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/GAnVPX/2021/6/29/4feee5a2-8d21-43ac-ac3a-3c0c79b4ef3d.jpg",
+        "shop_description": "Selamat datang di Samsung Mobile Indonesia. Kami menjual produk resmi dan bergaransi. \nJam Operasional : Senin - Minggu, 09.30 – 15.00.",
+        "shop_tag_line": "Menjual Barang Bergaransi Resmi",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "35rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 21722219,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 1499302209,
+            "name": "Samsung Galaxy S21 Ultra 12/256GB - Phantom Black",
+            "url": "https://www.tokopedia.com/eraspace-samsung/samsung-galaxy-s21-ultra-12-256gb-phantom-black",
+            "applink": "tokopedia://product/1499302209",
+            "price": 17499000,
+            "price_format": "Rp 17.499.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/23/a8177ab2-831f-4ea3-97b9-53919975c645.jpg"
+          },
+          {
+            "id": 864642294,
+            "name": "Samsung Galaxy A11 (3GB/32GB) Black",
+            "url": "https://www.tokopedia.com/eraspace-samsung/samsung-galaxy-a11-3gb-32gb-black",
+            "applink": "tokopedia://product/864642294",
+            "price": 1699000,
+            "price_format": "Rp 1.699.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/24/6912c78d-6867-4491-8c7e-69e6f93f9e70.png"
+          },
+          {
+            "id": 1094900310,
+            "name": "Samsung Clear View Cover Note 20 - Black",
+            "url": "https://www.tokopedia.com/eraspace-samsung/samsung-clear-view-cover-note-20-black",
+            "applink": "tokopedia://product/1094900310",
+            "price": 349500,
+            "price_format": "Rp 349.500",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/9/f902a448-db67-46ca-8568-077902b515d6.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2400899",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/diamond-1-hd.gif",
+        "reputation_score": 65677,
+        "is_official": true,
+        "ga_key": "/searchshop/samsung/eraspace-samsung",
+        "is_pm_pro": false
+      },
+      {
+        "shop_id": 3853181,
+        "shop_name": "Samsung Storage Official",
+        "shop_domain": "samsung-storage",
+        "shop_url": "https://www.tokopedia.com/samsung-storage",
+        "shop_applink": "tokopedia://shop/3853181",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/8/24/3853181/3853181_94f7da62-0dba-4d9b-bf92-4d2f2bcd8342.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2018/8/24/3853181/3853181_94f7da62-0dba-4d9b-bf92-4d2f2bcd8342.jpg",
+        "shop_description": "Samsung Storage Official adalah Toko online Resmi untuk Samsung Memory, Flashdrive &amp; SSD. \nGaransi Resmi DISTRIBUTOR",
+        "shop_tag_line": "The Right Memory &amp; Storage for You",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "20rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 38440811,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 0,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 1898485287,
+            "name": "Samsung MicroSD Evo Plus 32GB 64GB 128GB 256GB 512GB 1TB Memory card",
+            "url": "https://www.tokopedia.com/samsung-storage/samsung-microsd-evo-plus-32gb-64gb-128gb-256gb-512gb-1tb-memory-card-32-gb-microsd-only",
+            "applink": "tokopedia://product/1898485287",
+            "price": 92000,
+            "price_format": "Rp 92.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/23/f29d4433-146a-4991-879a-3b232aeb9bfc.jpg"
+          },
+          {
+            "id": 1577641143,
+            "name": "Samsung SSD 870 EVO 250GB 500GB 1TB 2.5\" SATA III Internal SSD SATA3",
+            "url": "https://www.tokopedia.com/samsung-storage/samsung-ssd-870-evo-250gb-500gb-1tb-2-5-sata-iii-internal-ssd-sata3-ssd-only-250gb",
+            "applink": "tokopedia://product/1577641143",
+            "price": 790500,
+            "price_format": "Rp 790.500",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/28/4bf6f7c6-312d-45c3-b9c6-3c92f291874e.jpg"
+          },
+          {
+            "id": 1272334200,
+            "name": "Samsung SSD T7 Portable SSD External 500GB 1TB 2TB Garansi Resmi 3th",
+            "url": "https://www.tokopedia.com/samsung-storage/samsung-ssd-t7-portable-ssd-external-500gb-1tb-2tb-garansi-resmi-3th-titan-grey-500gb",
+            "applink": "tokopedia://product/1272334200",
+            "price": 1848000,
+            "price_format": "Rp 1.848.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/29/8a9a7f3e-8670-4b1f-be28-07d6f064c762.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3853181",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/diamond-1-hd.gif",
+        "reputation_score": 51265,
+        "is_official": true,
+        "ga_key": "/searchshop/samsung/samsung-storage",
+        "is_pm_pro": false
+      },
+      {
+        "shop_id": 3950917,
+        "shop_name": "Samsung Tjakarta",
+        "shop_domain": "samsungjakarta",
+        "shop_url": "https://www.tokopedia.com/samsungjakarta",
+        "shop_applink": "tokopedia://shop/3950917",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/8/29/39203037/39203037_ebcff49e-25f4-49f6-8405-a550147aea0c.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2018/8/29/39203037/39203037_ebcff49e-25f4-49f6-8405-a550147aea0c.jpg",
+        "shop_description": "Pastikan produk yang anda beli Original 100% dan Garansi seumur hidup / LifeTime Warranty hanya di Samsung Tjakarta Online\nOriginal 100%",
+        "shop_tag_line": "Samsung Original 100% sudah hadir disini",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "26rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 39203037,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 0,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 324321341,
+            "name": "RAM NB DDR4 4GB PC 19200/2400 MHz SODIMM NB/LAPTOP SAMSUNG",
+            "url": "https://www.tokopedia.com/samsungjakarta/ram-nb-ddr4-4gb-pc-19200-2400-mhz-sodimm-nb-laptop-samsung",
+            "applink": "tokopedia://product/324321341",
+            "price": 288000,
+            "price_format": "Rp 288.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/2/39203037/39203037_a3717c5c-fae2-4423-97b0-fffd274a5ccc_1000_1000"
+          },
+          {
+            "id": 324322439,
+            "name": "RAM NB DDR4 8GB PC 19200/2400 MHz SODIMM NB/LAPTOP SAMSUNG",
+            "url": "https://www.tokopedia.com/samsungjakarta/ram-nb-ddr4-8gb-pc-19200-2400-mhz-sodimm-nb-laptop-samsung",
+            "applink": "tokopedia://product/324322439",
+            "price": 539000,
+            "price_format": "Rp 539.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/2/39203037/39203037_8409a117-39b5-48af-8683-3f9697209c94_1000_1000"
+          },
+          {
+            "id": 1418860514,
+            "name": "Arctic Cooling MX-4 MX4 Thermal Compound Paste 4 Gram Thermal Paste",
+            "url": "https://www.tokopedia.com/samsungjakarta/arctic-cooling-mx-4-mx4-thermal-compound-paste-4-gram-thermal-paste",
+            "applink": "tokopedia://product/1418860514",
+            "price": 46900,
+            "price_format": "Rp 46.900",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/11/8a045cb8-7fe2-4b08-acdf-37086d45bb51.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": true,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3950917",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/diamond-1-hd.gif",
+        "reputation_score": 50799,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/samsungjakarta",
+        "is_pm_pro": true
+      },
+      {
+        "shop_id": 915370,
+        "shop_name": "Samsung Electronics Indonesia Online Store",
+        "shop_domain": "samsungonlinestore",
+        "shop_url": "https://www.tokopedia.com/samsungonlinestore",
+        "shop_applink": "tokopedia://shop/915370",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/3/5/915370/915370_6410d664-9836-4966-aba8-663c1ab424ec.png",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2020/3/5/915370/915370_6410d664-9836-4966-aba8-663c1ab424ec.png",
+        "shop_description": "Original only, No KW, no abal2. Harga mahal, harap maklum. Jagalah gadget Samsung anda sesuai dengan kualitas kelengkapan yang seharusnya.",
+        "shop_tag_line": "Produk Samsung Original Resmi SEIN",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "10rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 5074706,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 1482253072,
+            "name": "SEIN ORIGINAL Stylus S Pen Samsung Galaxy Tab S6 Lite Original Resmi",
+            "url": "https://www.tokopedia.com/samsungonlinestore/sein-original-stylus-s-pen-samsung-galaxy-tab-s6-lite-original-resmi-abu-abu",
+            "applink": "tokopedia://product/1482253072",
+            "price": 319000,
+            "price_format": "Rp 319.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/6/27/d48d9fed-1c6c-4d0d-bd9b-3a1a0d4fb7f5.jpg"
+          },
+          {
+            "id": 1857313813,
+            "name": "SEIN PAKET Samsung Galaxy Tab S7 Plus Keyboard Cover 8/256GB WIFI LTE",
+            "url": "https://www.tokopedia.com/samsungonlinestore/sein-paket-samsung-galaxy-tab-s7-plus-keyboard-cover-8-256gb-wifi-lte-tanpa-keyboard",
+            "applink": "tokopedia://product/1857313813",
+            "price": 14450000,
+            "price_format": "Rp 14.450.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/9/2/5074706/5074706_1b46c5b4-9211-489a-b320-d072e9af66d6_700_700"
+          },
+          {
+            "id": 1592105224,
+            "name": "SEIN Original Samsung Galaxy Buds Pro ANC Active Noise Cancellation",
+            "url": "https://www.tokopedia.com/samsungonlinestore/sein-original-samsung-galaxy-buds-pro-anc-active-noise-cancellation-silver",
+            "applink": "tokopedia://product/1592105224",
+            "price": 1599000,
+            "price_format": "Rp 1.599.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/21/157b66f5-aa85-4c33-9360-4585a0cac45a.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": true,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=915370",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/gold-3-hd.gif",
+        "reputation_score": 23027,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/samsungonlinestore",
+        "is_pm_pro": false
+      },
+      {
+        "shop_id": 1667173,
+        "shop_name": "samsung distributor",
+        "shop_domain": "distrosamsung",
+        "shop_url": "https://www.tokopedia.com/distrosamsung",
+        "shop_applink": "tokopedia://shop/1667173",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2016/12/4/1667173/1667173_b648242d-f1ec-48d2-b238-e5ad5c4cbee4.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2016/12/4/1667173/1667173_b648242d-f1ec-48d2-b238-e5ad5c4cbee4.jpg",
+        "shop_description": "DIKIRIM HARI INI JG BATAS WAKTU ORDER BACA DULU : https://www.tokopedia.com/distrosamsung/note/516722/batas-waktu-orderan-amp-tentang-kurir",
+        "shop_tag_line": "TANYA STOK DULU YA DI DISKUSI SEBELUM ORDER",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "4,5rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 14467051,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 202883516,
+            "name": "Charger Samsung S8 Fast Charging kabel data tipe C ORI 100%",
+            "url": "https://www.tokopedia.com/distrosamsung/charger-samsung-s8-fast-charging-kabel-data-tipe-c-ori-100",
+            "applink": "tokopedia://product/202883516",
+            "price": 85000,
+            "price_format": "Rp 85.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/31/934d1e4a-4ac5-4604-a489-c37cba538f91.jpg"
+          },
+          {
+            "id": 979887283,
+            "name": "Charger Samsung Fast Charging kabel data tipe C ORI 100%",
+            "url": "https://www.tokopedia.com/distrosamsung/charger-samsung-fast-charging-kabel-data-tipe-c-ori-100",
+            "applink": "tokopedia://product/979887283",
+            "price": 85000,
+            "price_format": "Rp 85.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/31/333605d3-be8a-4678-849e-f070a93957be.jpg"
+          },
+          {
+            "id": 143647250,
+            "name": "Kabel data samsung original 100% Microusb",
+            "url": "https://www.tokopedia.com/distrosamsung/kabel-data-samsung-original-100-microusb",
+            "applink": "tokopedia://product/143647250",
+            "price": 28000,
+            "price_format": "Rp 28.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/11/3/14467051/14467051_d171acc3-5c10-41da-9117-25f82dae4bd3_1024_1024"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1667173",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/gold-1-hd.gif",
+        "reputation_score": 6615,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/distrosamsung",
+        "is_pm_pro": true
+      },
+      {
+        "shop_id": 2386090,
+        "shop_name": "Samsung Electronic",
+        "shop_domain": "samsung-digital",
+        "shop_url": "https://www.tokopedia.com/samsung-digital",
+        "shop_applink": "tokopedia://shop/2386090",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2017/8/18/2386090/2386090_26490abf-220e-40dc-a4fd-ffbea6cde12b.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2017/8/18/2386090/2386090_26490abf-220e-40dc-a4fd-ffbea6cde12b.jpg",
+        "shop_description": "Samsung Electronics is creating a culture of infinite possibilities that enriches lives and amazes the world.",
+        "shop_tag_line": "Inspire the World, Create the Future.",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "3,8rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 21590922,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 5,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 216918198,
+            "name": "SAMSUNG RT19M300BGS Kulkas Lemari Es 2 Pintu 210L RT19M300 RT19M",
+            "url": "https://www.tokopedia.com/samsung-digital/samsung-rt19m300bgs-kulkas-lemari-es-2-pintu-210l-rt19m300-rt19m",
+            "applink": "tokopedia://product/216918198",
+            "price": 3195000,
+            "price_format": "Rp 3.195.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/6/21590922/21590922_91745761-2ed3-48cc-91e0-577ffe87208e_700_700"
+          },
+          {
+            "id": 349962689,
+            "name": "SAMSUNG QA65Q8CNA 65\" 65 Inch QLED 4K Curved Smart LED TV 65Q8CN 65Q8C",
+            "url": "https://www.tokopedia.com/samsung-digital/samsung-qa65q8cna-65-65-inch-qled-4k-curved-smart-led-tv-65q8cn-65q8c",
+            "applink": "tokopedia://product/349962689",
+            "price": 34385000,
+            "price_format": "Rp 34.385.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/3/19/21590922/21590922_79264642-617c-4765-8eab-01ac782cb57a_1000_1000.jpg"
+          },
+          {
+            "id": 1861520738,
+            "name": "Samsung 55AU8000 55Inch Crystal UHD Smart 4K Tv LED UA55AU8000",
+            "url": "https://www.tokopedia.com/samsung-digital/samsung-55au8000-55inch-crystal-uhd-smart-4k-tv-led-ua55au8000",
+            "applink": "tokopedia://product/1861520738",
+            "price": 9999999,
+            "price_format": "Rp 9.999.999",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/3/dd87afd7-6dde-4451-aad7-f42f6f7e0fc2.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 15,
+            "is_percentage": true
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2386090",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/gold-1-hd.gif",
+        "reputation_score": 5908,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/samsung-digital",
+        "is_pm_pro": true
+      },
+      {
+        "shop_id": 693118,
+        "shop_name": "samsung s6 flat",
+        "shop_domain": "jewivra",
+        "shop_url": "https://www.tokopedia.com/jewivra",
+        "shop_applink": "tokopedia://shop/693118",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/6/4/693118/693118_3a58cc4a-efab-4166-a07a-bc735d52c3a1.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/shops-1/2020/6/4/693118/693118_3a58cc4a-efab-4166-a07a-bc735d52c3a1.jpg",
+        "shop_description": "100% original",
+        "shop_tag_line": "high quality",
+        "shop_location": "Kab. Bandung",
+        "shop_total_transaction": "2,7rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 2410053,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 4,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 1269633496,
+            "name": "chainring crank chain ring litepro 56T bcd 130mm",
+            "url": "https://www.tokopedia.com/jewivra/chainring-crank-chain-ring-litepro-56t-bcd-130mm-merah",
+            "applink": "tokopedia://product/1269633496",
+            "price": 145500,
+            "price_format": "Rp 145.500",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/23/947fdae4-a4d3-4218-91f6-51285883e51d.jpg"
+          },
+          {
+            "id": 1202488787,
+            "name": "pedal sepeda GUB GC020",
+            "url": "https://www.tokopedia.com/jewivra/pedal-sepeda-gub-gc020-rainbow",
+            "applink": "tokopedia://product/1202488787",
+            "price": 155000,
+            "price_format": "Rp 155.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/21/d93c4e19-3563-44cc-b86e-cdc310c9fd67.jpg"
+          },
+          {
+            "id": 952167641,
+            "name": "shifter shimano alivio 9 speed sl M4000 kanan",
+            "url": "https://www.tokopedia.com/jewivra/shifter-shimano-alivio-9-speed-sl-m4000-kanan",
+            "applink": "tokopedia://product/952167641",
+            "price": 358000,
+            "price_format": "Rp 358.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/22/14dca0a6-41b2-417c-a7ed-60c60ccffa46.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 0,
+            "is_percentage": false
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=693118",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/gold-1-hd.gif",
+        "reputation_score": 4651,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/jewivra",
+        "is_pm_pro": false
+      },
+      {
+        "shop_id": 10113445,
+        "shop_name": "Samsung Authorized Store",
+        "shop_domain": "samsungauthorizedstore",
+        "shop_url": "https://www.tokopedia.com/samsungauthorizedstore",
+        "shop_applink": "tokopedia://shop/10113445",
+        "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/27/feb0232d-d638-4eab-9583-09e1d38a6890.jpg",
+        "shop_image_300": "https://images.tokopedia.net/img/cache/300/GAnVPX/2020/11/27/feb0232d-d638-4eab-9583-09e1d38a6890.jpg",
+        "shop_description": "",
+        "shop_tag_line": "",
+        "shop_location": "Jakarta",
+        "shop_total_transaction": "1,6rb",
+        "shop_total_favorite": "0",
+        "shop_gold_shop": 1,
+        "shop_is_owner": 127137638,
+        "shop_rate_speed": 0,
+        "shop_rate_accuracy": 0,
+        "shop_rate_service": 0,
+        "shop_status": 1,
+        "products": [
+          {
+            "id": 1379766415,
+            "name": "Samsung Mesin Cuci Top Loading Wobble, 10 Kg - WA10M5120SG/SE",
+            "url": "https://www.tokopedia.com/samsungauthorizedstore/samsung-mesin-cuci-top-loading-wobble-10-kg-wa10m5120sg-se",
+            "applink": "tokopedia://product/1379766415",
+            "price": 3299000,
+            "price_format": "Rp 3.299.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/5/e442332f-a6bb-42d3-8fac-035a00ffa89f.jpg"
+          },
+          {
+            "id": 1379787175,
+            "name": "Samsung AC 0.5 PK Standard R32 - AR05TGHQASINSE",
+            "url": "https://www.tokopedia.com/samsungauthorizedstore/samsung-ac-0-5-pk-standard-r32-ar05tghqasinse",
+            "applink": "tokopedia://product/1379787175",
+            "price": 2649000,
+            "price_format": "Rp 2.649.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/1/0056162d-303b-4c02-a7b6-e8e2e795e020.jpg"
+          },
+          {
+            "id": 1376965848,
+            "name": "Samsung Microwave Solo, 23 L - MS23K3515AS/SE",
+            "url": "https://www.tokopedia.com/samsungauthorizedstore/samsung-microwave-solo-23-l-ms23k3515as-se",
+            "applink": "tokopedia://product/1376965848",
+            "price": 979000,
+            "price_format": "Rp 979.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/26/65f7ad24-0f1b-4dcd-b387-73708132a7fa.jpg"
+          }
+        ],
+        "voucher": {
+          "free_shipping": false,
+          "cashback": {
+            "cashback_value": 3,
+            "is_percentage": true
+          }
+        },
+        "shop_lucky": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=10113445",
+        "reputation_image_uri": "https://images.tokopedia.net/img/repsys/silver-4-hd.gif",
+        "reputation_score": 1843,
+        "is_official": false,
+        "ga_key": "/searchshop/samsung/samsungauthorizedstore",
+        "is_pm_pro": false
+      }
+    ],
+    "top_shop": []
+  },
+  "headlineAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.017095029,
+      "total_data": 0
+    },
+    "data": []
+  },
+  "quickFilter": {
+    "data": {
+      "filter": [
+        {
+          "title": "Toko",
+          "template_name": "",
+          "search": {
+            "placeholder": ""
+          },
+          "options": [
+            {
+              "key": "shopname",
+              "value": "true",
+              "name": "Nama Toko",
+              "icon": "",
+              "totalData": "",
+              "valMax": "",
+              "valMin": "",
+              "hexColor": "",
+              "isPopular": true,
+              "isNew": true,
+              "Description": ""
+            }
+          ]
+        },
+        {
+          "title": "Power Merchant Pro",
+          "template_name": "",
+          "search": {
+            "placeholder": ""
+          },
+          "options": [
+            {
+              "key": "pmpro",
+              "value": "true",
+              "name": "Power Merchant Pro",
+              "icon": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
+              "totalData": "",
+              "valMax": "",
+              "valMin": "",
+              "hexColor": "",
+              "isPopular": false,
+              "isNew": false,
+              "Description": ""
+            }
+          ]
+        },
+        {
+          "title": "Official Store",
+          "template_name": "",
+          "search": {
+            "placeholder": ""
+          },
+          "options": [
+            {
+              "key": "official",
+              "value": "true",
+              "name": "Official Store",
+              "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+              "totalData": "",
+              "valMax": "",
+              "valMin": "",
+              "hexColor": "",
+              "isPopular": true,
+              "isNew": false,
+              "Description": ""
+            }
+          ]
+        },
+        {
+          "title": "Power Merchant",
+          "template_name": "",
+          "search": {
+            "placeholder": ""
+          },
+          "options": [
+            {
+              "key": "goldmerchant",
+              "value": "true",
+              "name": "Power Merchant",
+              "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+              "totalData": "",
+              "valMax": "",
+              "valMin": "",
+              "hexColor": "",
+              "isPopular": true,
+              "isNew": false,
+              "Description": ""
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
