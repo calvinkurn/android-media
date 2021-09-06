@@ -216,8 +216,8 @@ object BitmapHelper {
         else {
             otherPadding = topPadding
         }
-        canvas.drawBitmap(this, 0f, thisPadding, null)
-        canvas.drawBitmap(otherBitmap, this.width.toFloat(), otherPadding, null)
+        canvas.drawBitmap(this, 0f, 0f, null)
+        canvas.drawBitmap(otherBitmap, this.width.toFloat(), 0f, null)
         return resultBitmap
     }
 
