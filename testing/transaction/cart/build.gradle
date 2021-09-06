@@ -29,7 +29,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
-    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    api projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.testDependencies.espressoCore
     implementation rootProject.ext.testDependencies.espressoContrib

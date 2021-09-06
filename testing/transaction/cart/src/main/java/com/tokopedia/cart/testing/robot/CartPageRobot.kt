@@ -50,7 +50,7 @@ class CartPageRobot {
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.R.raw.cart_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.testing.R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
                 jsonString,
                 JsonArray::class.java

@@ -1,43 +1,163 @@
-plugins {
-
-    id 'com.android.application'
-    id 'kotlin-android'
-}
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 android {
-    compileSdkVersion 30
+
+//    sourceSets.each {
+//        it.java.srcDirs += "src/$it.name/kotlin"
+//    }
+//
+//    packagingOptions {
+//        exclude 'META-INF/**'
+//    }
+//
+//    testOptions {
+//        unitTests.all {
+//            testLogging.events = ["passed", "skipped", "failed"]
+//        }
+//        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+//    }
 
     defaultConfig {
-        applicationId "com.tokopedia.merchant"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+//        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+//        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    api projectOrAar(rootProject.ext.features.productDetail)
+//    implementation projectOrAar(rootProject.ext.libraries.iris)
+//    implementation projectOrAar(rootProject.ext.libraries.irisSession)
+//    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+//    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+//    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+//    implementation projectOrAar(rootProject.ext.libraries.baseList)
+//    implementation projectOrAar(rootProject.ext.libraries.applink)
+//    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+//    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+//    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
+//    implementation projectOrAar(rootProject.ext.libraries.analytics)
+//    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+//    implementation projectOrAar(rootProject.ext.libraries.track)
+//    implementation projectOrAar(rootProject.ext.libraries.utils)
+//    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+//    implementation projectOrAar(rootProject.ext.libraries.logger)
+//
+//    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+//    implementation projectOrAar(rootProject.ext.features.gallery)
+//    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
+//    implementation projectOrAar(rootProject.ext.features.medialoader)
+//    implementation projectOrAar(rootProject.ext.features.merchantVoucher)
+//    implementation projectOrAar(rootProject.ext.features.productShare)
+//    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+//    implementation projectOrAar(rootProject.ext.features.searchbar)
+//    implementation projectOrAar(rootProject.ext.features.shopCommon)
+//    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+//    implementation projectOrAar(rootProject.ext.features.topAdsManagementSourceTagging)
+//    implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
+//    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+//    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+//    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+//    implementation projectOrAar(rootProject.ext.features.referral)
+//    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+//    implementation projectOrAar(rootProject.ext.features.commonTradein)
+//    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+//    implementation projectOrAar(rootProject.ext.features.productCard)
+//    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+//    implementation projectOrAar(rootProject.ext.features.stickyLogin)
+//    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+//    implementation projectOrAar(rootProject.ext.libraries.linker)
+//    implementation projectOrAar(rootProject.ext.libraries.keys)
+//    implementation projectOrAar(rootProject.ext.features.atc_common)
+//    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+//    implementation projectOrAar(rootProject.ext.features.cart_common)
+//    implementation projectOrAar(rootProject.ext.libraries.webview)
+//    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
+//    implementation projectOrAar(rootProject.ext.features.chatcommon)
+//    implementation projectOrAar(rootProject.ext.features.variantCommon)
+//    implementation rootProject.ext.miscDependencies.viewPager2
+//    implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
+//    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+//    implementation projectOrAar(rootProject.ext.features.minicart)
+//    implementation rootProject.ext.miscDependencies.liveDataKtx
+//
+//    implementation rootProject.ext.unifyDependencies.principles
+//    implementation rootProject.ext.unifyDependencies.components
+//    implementation rootProject.ext.unifyDependencies.icons
+//    implementation rootProject.ext.unifyDependencies.dialog
+//    implementation rootProject.ext.unifyDependencies.global_error
+//    implementation rootProject.ext.unifyDependencies.icons
+//    implementation rootProject.ext.unifyDependencies.coach_mark
+//
+//    implementation rootProject.ext.tkpdInternalLibDependencies.url
+//    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+//    implementation projectOrAar(rootProject.ext.libraries.graphql)
+//    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
+//    implementation rootProject.ext.tkpdInternalLibDependencies.network
+//    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+//    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+//    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+//    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+//
+//    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+//    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+//    implementation rootProject.ext.miscDependencies.multiDex
+//    implementation rootProject.ext.supportLibDependencies.constraintLayout
+//    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+//    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+//        exclude group: "com.android.support"
+//    }
+//    implementation (rootProject.ext.firebase.crashlytics) {
+//        transitive = true
+//    }
+//    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+//
+//    // Embrace
+//    implementation rootProject.ext.miscDependencies.embraceSdk
+//
+//    //video player
+//    implementation rootProject.ext.miscDependencies.exoPlayerCore
+//    implementation rootProject.ext.miscDependencies.exoPlayerUi
+//    implementation rootProject.ext.miscDependencies.exoPlayer
+//    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+//    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+//    implementation rootProject.ext.debugToolsDependencies.chuck
+//    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+//    implementation rootProject.ext.networkDependencies.glide
+//    implementation rootProject.ext.miscDependencies.lottie
+//    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+//    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+//    testImplementation rootProject.ext.testDependencies.assertJ
+//
+//    androidTestImplementation rootProject.ext.miscDependencies.dagger
+//    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+//
+//    implementation rootProject.ext.miscDependencies.dagger
+//    kapt rootProject.ext.miscDependencies.daggerCompiler
+//
+//    testImplementation rootProject.ext.testDependencies.archCoreTesting
+//    testImplementation rootProject.ext.testDependencies.mockk
+//    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+//    testImplementation rootProject.ext.testDependencies.json
+//    testImplementation rootProject.ext.miscDependencies.coroutineCore
+//    testImplementation rootProject.ext.miscDependencies.coroutineTest
+//    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+//    androidTestImplementation rootProject.ext.testDependencies.testCore
+//
+//    // UI Test
+//    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+//    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+//    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+//    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+//    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+//    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+//    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+//    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+//    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
+
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
