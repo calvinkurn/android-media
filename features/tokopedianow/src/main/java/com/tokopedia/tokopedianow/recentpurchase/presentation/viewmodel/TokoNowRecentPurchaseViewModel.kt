@@ -22,14 +22,29 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLayoutList
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductGrid
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
+import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductGridUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,6 +57,7 @@ import javax.inject.Inject
 class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val getRepurchaseProductListUseCase: GetRepurchaseProductListUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val getCategoryListUseCase: GetCategoryListUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
@@ -142,7 +158,14 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 page
             ).productList
 
-            layoutList.addProductGrid(getProductListResponse)
+            if (getProductListResponse.isNullOrEmpty()) {
+                getEmptyState(
+                    id = EMPTY_STATE_NO_RESULT,
+                    warehouseId = warehouseID.toString()
+                )
+            } else {
+                layoutList.addProductGrid(getProductListResponse)
+            }
         }) {
 
         }
@@ -179,19 +202,93 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }, source)
     }
 
-    fun getProductRecomOoc() {
-        launchCatchError(block = {
+    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val recommendationWidgets = getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
-                    pageName = ConstantValue.PAGE_NAME_RECOMMENDATION_PARAM,
+                    pageName = pageName,
                     xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
                     xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
                 )
             )
+
             if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
-                // get recommendation data
+                layoutList.addProductRecom(pageName, recommendationWidgets.first())
+
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    nextPage = INITIAL_PAGE,
+                    state = TokoNowLayoutState.SHOW
+                )
+
+                _getLayout.postValue(Success(layout))
             }
         }) { /* nothing to do */ }
+    }
+
+    private fun getCategoryGridAsync(warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+            layoutList.addCategoryGrid(response)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _getLayout.postValue(Success(layout))
+        }) {
+            /* nothing to do */
+        }
+    }
+
+    fun getEmptyState(id: String, isSearching: Boolean = false, warehouseId: String = "") {
+        launchCatchError(block = {
+            layoutList.removeLoading()
+            when(id) {
+                EMPTY_STATE_NO_HISTORY -> {
+                    val description = if (isSearching) {
+                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
+                    } else {
+                        R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+                    }
+                    layoutList.addEmptyStateNoHistory(description)
+                }
+                EMPTY_STATE_OOC -> {
+                    layoutList.clear()
+                    layoutList.addChooseAddress()
+                    layoutList.addEmptyStateOoc()
+                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+                }
+                else -> {
+                    layoutList.clear()
+                    layoutList.addChooseAddress()
+                    layoutList.addEmptyStateNoResult()
+                    getCategoryGridAsync(warehouseId).await()
+                    getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
+                }
+            }
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                nextPage = INITIAL_PAGE,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _getLayout.postValue(Success(layout))
+        }) { /* nothing to do */ }
+    }
+
+    fun removeChooseAddressWidget() {
+        layoutList.removeChooseAddress()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            nextPage = INITIAL_PAGE,
+            state = TokoNowLayoutState.SHOW
+        )
+
+        _getLayout.postValue(Success(layout))
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {

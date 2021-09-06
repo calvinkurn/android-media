@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -34,7 +35,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitl
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -188,7 +188,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         val categoryGridIndex = minOf(visitableList.size, 2)
         val categoryGridUIModel = TokoNowCategoryGridUiModel(
                 id = "",
-                title = CATEGORY_GRID_TITLE,
+                title = "",
+                titleRes = R.string.tokopedianow_repurchase_category_grid_title,
                 categoryList = null,
                 state = TokoNowLayoutState.LOADING,
         )

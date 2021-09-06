@@ -1,0 +1,37 @@
+package com.tokopedia.tokopedianow.recentpurchase.constant
+
+import androidx.annotation.StringDef
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.PRODUCT_RECOM_OOC
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.PRODUCT_RECOM_NO_RESULT
+
+/**
+ * IDs for layout that does not returned by Home Dynamic Channel query.
+ * For example: Choose Address Widget. Home Dynamic Channel GQL does not
+ * return Choose Address Widget, so the ID should be defined here.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(
+        CHOOSE_ADDRESS_WIDGET_ID,
+        EMPTY_STATE_NO_RESULT,
+        EMPTY_STATE_NO_HISTORY,
+        EMPTY_STATE_OOC,
+        ERROR_STATE_FAILED_TO_FETCH_DATA,
+        PRODUCT_RECOM_OOC,
+        PRODUCT_RECOM_NO_RESULT
+)
+annotation class RepurchaseStaticLayoutId {
+    companion object {
+        const val CHOOSE_ADDRESS_WIDGET_ID = "0"
+        const val EMPTY_STATE_NO_RESULT = "1"
+        const val EMPTY_STATE_NO_HISTORY = "2"
+        const val EMPTY_STATE_OOC = "3"
+        const val ERROR_STATE_FAILED_TO_FETCH_DATA = "4"
+        const val PRODUCT_RECOM_OOC = "5"
+        const val PRODUCT_RECOM_NO_RESULT = "6"
+    }
+}

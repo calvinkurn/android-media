@@ -3,14 +3,20 @@ package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -18,6 +24,9 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -29,8 +38,11 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurchaseComponent
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapter
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapterTypeFactory
@@ -42,11 +54,27 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+
 import javax.inject.Inject
 
-class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
+class TokoNowRecentPurchaseFragment:
+    Fragment(),
+    MiniCartWidgetListener,
+    TokoNowView,
+    TokoNowChooseAddressWidgetListener,
+    TokoNowCategoryGridListener,
+    TokoNowEmptyStateNoResultListener,
+    TokoNowRecommendationCarouselListener
+{
 
     companion object {
+        const val SOURCE = "tokonow"
+        const val CATEGORY_LEVEL_DEPTH = 1
+
         fun newInstance(): TokoNowRecentPurchaseFragment {
             return TokoNowRecentPurchaseFragment()
         }
@@ -61,11 +89,17 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
     private var statusBarBg: View? = null
     private var miniCartWidget: MiniCartWidget? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private val carouselScrollPosition = SparseIntArray()
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
-                productCardListener = RepurchaseProductCardListener(requireContext())
+                productCardListener = RepurchaseProductCardListener(requireContext()),
+                tokoNowChooseAddressWidgetListener = this,
+                tokoNowListener = this,
+                tokoNowCategoryGridListener = this,
+                tokoNowEmptyStateNoResultListener = this,
+                tokoNowRecommendationCarouselListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -101,12 +135,105 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         super.onAttach(context)
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
+    }
+
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
+    }
+
+    override fun onChooseAddressWidgetRemoved() {
+        if(rvRecentPurchase?.isComputingLayout == false) {
+            viewModel.removeChooseAddressWidget()
+        }
+    }
+
+    override fun getFragmentPage(): Fragment = this
+
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() = refreshLayout()
+
+    override fun onCategoryRetried() {
+        // TO-DO : retry to get category
+    }
+
+    override fun onAllCategoryClicked() {
+        // TO-DO : analytics
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        // TO-DO : analytics
+    }
+
+    override fun onFindInTokopediaClick() {
+        RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    override fun goToTokopediaNowHome() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onRemoveFilterClick(option: Option) { /* noting to do */ }
+
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
+    }
+
+    override fun onBindRecommendationCarousel(
+        model: TokoNowRecommendationCarouselUiModel,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onImpressedRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onClickRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onATCNonVariantRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int
+    ) {
+        // TO-DO :
+    }
+
+    override fun onAddVariantRecommendationCarouselItem(
+        model: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem
+    ) {
+        // TO-DO :
     }
 
     private fun initInjector() {
@@ -221,7 +348,7 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
             val toolbarHeight = NavToolbarExt.getFullToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
-                // TO-DO: implement refresh here
+                refreshLayout()
             }
         }
     }
@@ -261,7 +388,7 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
                     warehouseId = it.data.tokonow.warehouseId
                 )
             } else {
-                // TO-DO: Show empty state
+                showEmptyState(EMPTY_STATE_OOC)
             }
         }
 
@@ -319,8 +446,58 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         submitList(data)
 
         when(data.state) {
-            TokoNowLayoutState.LOADING -> viewModel.getLayoutList()
+            TokoNowLayoutState.LOADING -> onLoadingLayout()
             TokoNowLayoutState.SHOW -> viewModel.getLayoutData(1, "param", 3, 4)
+        }
+    }
+
+    private fun onLoadingLayout() {
+        checkAddressDataAndServiceArea()
+        if (!isChooseAddressWidgetShowed()) {
+            viewModel.removeChooseAddressWidget()
+        }
+    }
+
+    private fun isChooseAddressWidgetShowed(): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
+        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+            TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+            true
+        )
+        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
+    }
+
+    private fun checkAddressDataAndServiceArea() {
+        checkIfChooseAddressWidgetDataUpdated()
+        val shopId = localCacheModel?.shop_id.toLongOrZero()
+        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+        checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        localCacheModel?.let {
+            context?.apply {
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(this, it)) {
+                    updateCurrentPageLocalCacheModelData()
+                }
+            }
+        }
+    }
+
+    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
+        context?.let {
+            when {
+                shopId == 0L -> viewModel.getChooseAddress(SOURCE)
+                warehouseId == 0L -> showEmptyState(EMPTY_STATE_OOC)
+                else -> showLayout()
+            }
         }
     }
 
@@ -356,34 +533,13 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         viewModel.getMiniCart(shopId, warehouseId)
     }
 
-    private fun updateCurrentPageLocalCacheModelData() {
-        context?.let {
-            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
-        }
-    }
-
-    private fun checkIfChooseAddressWidgetDataUpdated() {
-        localCacheModel?.let {
-            context?.apply {
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(this, it)) {
-                    updateCurrentPageLocalCacheModelData()
-                }
-            }
-        }
-    }
-
-    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
-        context?.let {
-            when {
-                shopId == 0L -> viewModel.getChooseAddress(TokoNowHomeFragment.SOURCE)
-                warehouseId == 0L -> {
-                    // TO-DO: Implement show empty state
-                }
-                else -> {
-                   // TO-DO: Implement show layout
-                }
-            }
-        }
+    private fun showEmptyState(id: String) {
+        viewModel.getEmptyState(
+            id = id,
+            warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        )
+        miniCartWidget?.hide()
+        setupPadding(false)
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -408,7 +564,17 @@ class TokoNowRecentPurchaseFragment: Fragment(), MiniCartWidgetListener {
         }
     }
 
+    private fun showLayout() {
+        // TO-DO: Show Layout (Repurchase page + Minicart)
+        viewModel.getLayoutList()
+    }
+
     private fun loadMoreProduct() {
         // TO-DO: call load more product here
+    }
+
+    private fun refreshLayout() {
+        carouselScrollPosition.clear()
+        viewModel.showLoading()
     }
 }
