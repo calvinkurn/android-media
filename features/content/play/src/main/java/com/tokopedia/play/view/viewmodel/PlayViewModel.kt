@@ -232,6 +232,9 @@ class PlayViewModel @Inject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val upcomingInfo: PlayUpcomingUiModel?
+        get() = _observableUpcomingInfo.value
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData

@@ -33,6 +33,17 @@ class FragmentUpcomingViewComponent(
         }
     }
 
+    fun safeRelease() = synchronized(this) {
+        if (!isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(true, false)
+
+        fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+    }
+
     private fun getPlayUpcomingFragment(): Fragment {
         val fragmentFactory = fragmentManager.fragmentFactory
         return fragmentFactory.instantiate(container.context.classLoader, PlayUpcomingFragment::class.java.name).apply {
