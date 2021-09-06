@@ -36,7 +36,7 @@ class ShopProductSortAdapter(
 //        }
 
 
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.rbSort.setOnClickListener {
             for (item in dataSet) {
                 item.isSelected = false
             }

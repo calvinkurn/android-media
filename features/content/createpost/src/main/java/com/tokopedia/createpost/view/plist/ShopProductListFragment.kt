@@ -81,6 +81,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         addListObserver()
         addSortValObserver()
         addProductValObserver()
+        addBsObserver()
     }
 
     private fun addListObserver() = presenter.productList.observe(this, Observer {
