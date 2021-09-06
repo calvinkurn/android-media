@@ -19,9 +19,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
+import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -41,6 +42,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private lateinit var ivUpcomingCover: AppCompatImageView
+    private val upcomingTimerViewComponent by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
     private lateinit var btnAction: UnifyButton
 
     private lateinit var playViewModel: PlayViewModel
@@ -73,37 +75,32 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        setCover(view)
-        setButtonAction()
-        setToolbar()
-    }
+        playViewModel.upcomingInfo?.let {
+            if(it.coverUrl.isNotEmpty()) {
+                Glide.with(view)
+                    .load(it.coverUrl)
+                    .into(ivUpcomingCover)
+            }
 
-    private fun setCover(view: View) {
-        val coverUrl = playViewModel.upcomingInfo?.coverUrl ?: ""
-        if(coverUrl.isNotEmpty()) {
-            Glide.with(view)
-                .load(coverUrl)
-                .into(ivUpcomingCover)
-        }
-    }
+            if(!it.isReminderSet) {
+                btnAction.text = getString(R.string.play_remind_me)
+                btnAction.show()
+            }
+            else {
+                btnAction.hide()
+            }
 
-    private fun setButtonAction() {
-        val isReminderSet = playViewModel.upcomingInfo?.isReminderSet ?: false
-        if(!isReminderSet) {
-            btnAction.text = getString(R.string.play_remind_me)
-            btnAction.show()
+            val targetCalendar = PlayDateTimeFormatter.convertToCalendar(it.startTime)
+            targetCalendar?.let { calendar ->
+                upcomingTimerViewComponent.setTimer(calendar)
+            } ?: upcomingTimerViewComponent.invisible()
         }
-        else {
-            btnAction.hide()
-        }
+
+        toolbarView.setIsShareable(true)
 
         btnAction.setOnClickListener {
             btnAction.isLoading = true
         }
-    }
-
-    private fun setToolbar() {
-        toolbarView.setIsShareable(true)
     }
 
     private fun setupObserver() {
