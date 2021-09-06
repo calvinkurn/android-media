@@ -674,10 +674,11 @@ class PlayViewModel @Inject constructor(
         }
         else {
             focusVideoPlayer(channelData)
-            updateChannelInfo(channelData)
             startWebSocket(channelData.id)
             checkLeaderboard(channelData.id)
         }
+
+        updateChannelInfo(channelData)
         trackVisitChannel(channelData.id)
     }
 
