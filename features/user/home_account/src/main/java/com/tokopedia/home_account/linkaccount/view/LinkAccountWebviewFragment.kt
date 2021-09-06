@@ -3,6 +3,7 @@ package com.tokopedia.home_account.linkaccount.view
 import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.home_account.R
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 /**
@@ -38,12 +39,12 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun showSkipDialog() {
-        if(activity!=null){
+        if(activity != null){
             DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Aktifin GoPay lain kali?")
-                setDescription("Tenang aja, akun Tokopedia & Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.")
-                setPrimaryCTAText("Iya, Nanti Aja")
-                setSecondaryCTAText("Kembali")
+                setTitle(getString(R.string.title_skip_gopay_dialog))
+                setDescription(getString(R.string.desc_skip_gopay_dialog))
+                setPrimaryCTAText(getString(R.string.label_primary_btn_gopay_dialog))
+                setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
                     webView?.loadUrl(LinkAccountFragment.getSuccessPage())
                     dismiss()

@@ -115,4 +115,9 @@
     <string name="label_call_tokopedia">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
 
     <string name="label_link_account_menu_skip">Lewati</string>
+
+    <string name="title_skip_gopay_dialog">Aktifin GoPay lain kali?</string>
+    <string name="desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
+    <string name="label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
+    <string name="label_secondary_btn_gopay_dialog">Kembali</string>
 </resources>
