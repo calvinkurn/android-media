@@ -85,7 +85,8 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     private fun toggleTipsNewSeller(popupEndTenureUiModel: PopupEndTenureUiModel?) {
         when (popupEndTenureUiModel?.shopType) {
             ShopType.POWER_MERCHANT, ShopType.POWER_MERCHANT_PRO -> {
-                if (popupEndTenureUiModel.shopScore.getNumberFormat(ShopScoreConstant.NULL_NUMBER) <
+                if (popupEndTenureUiModel.shopScore
+                        .getNumberFormat(ShopScoreConstant.NULL_NUMBER) <
                     ShopScoreConstant.SHOP_AGE_SIXTY
                 ) {
                     tvTipsIncreasePerformance?.hide()
@@ -95,8 +96,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
                     tickerTipsIncreasePerformance?.hide()
                 }
             }
-            else -> {
-            }
+            else -> { }
         }
     }
 

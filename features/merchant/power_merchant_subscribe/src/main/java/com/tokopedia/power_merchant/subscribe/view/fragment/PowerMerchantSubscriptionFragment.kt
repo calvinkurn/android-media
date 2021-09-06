@@ -630,13 +630,6 @@ open class PowerMerchantSubscriptionFragment :
                 widgets.add(it)
             }
         }
-        val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
-                && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE
-                && isPmPro && isPmActive
-        if (shouldShowNextGradeWidget) {
-            widgets.add(WidgetDividerUiModel)
-            widgets.add(getNextShopGradeWidgetData(data))
-        }
         if (isRegularMerchant) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(
@@ -682,17 +675,6 @@ open class PowerMerchantSubscriptionFragment :
         val expiredTime = pmBasicInfo?.pmStatus?.expiredTime
         val autoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orTrue()
         return !expiredTime.isNullOrBlank() && autoExtendEnabled
-    }
-
-    private fun getNextShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetNextShopGradeUiModel {
-        val nextGrade = data.nextPMGrade
-        return WidgetNextShopGradeUiModel(
-            shopLevel = nextGrade?.shopLevel.orZero(),
-            shopScoreMin = nextGrade?.shopScoreMin.orZero(),
-            gradeName = nextGrade?.gradeName ?: PMShopGrade.ADVANCED,
-            gradeBadgeUrl = nextGrade?.imgBadgeUrl.orEmpty(),
-            benefitList = data.nextPMBenefits?.map { it.benefitName }.orEmpty()
-        )
     }
 
     private fun getCurrentShopGradeBenefit(data: PMGradeBenefitInfoUiModel): WidgetExpandableUiModel {
@@ -786,10 +768,8 @@ open class PowerMerchantSubscriptionFragment :
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
         if (isPmPro && isNewSeller) {
-            recyclerView?.post {
-                if (getCoachMarkItems().value.isNotEmpty()) {
-                    coachMark?.showCoachMark(getCoachMarkItems().value)
-                }
+            if (getCoachMarkItems().value.isNotEmpty()) {
+                coachMark?.showCoachMark(getCoachMarkItems().value)
             }
         }
     }

@@ -932,11 +932,9 @@ class ShopScoreMapper @Inject constructor(
         val powerMerchantData = powerMerchantResponse?.powerMerchant
         return when {
             isOfficialStore -> ShopType.OFFICIAL_STORE
-            powerMerchantData?.pmTier == PMTier.PRO
-                    && powerMerchantData.status == PMStatusConst.ACTIVE ->
+            powerMerchantData?.pmTier == PMTier.PRO ->
                 ShopType.POWER_MERCHANT_PRO
-            powerMerchantData?.pmTier == PMTier.REGULAR
-                    && powerMerchantData.status == PMStatusConst.ACTIVE ->
+            powerMerchantData?.pmTier == PMTier.REGULAR ->
                 ShopType.POWER_MERCHANT
             else -> ShopType.REGULAR_MERCHANT
         }

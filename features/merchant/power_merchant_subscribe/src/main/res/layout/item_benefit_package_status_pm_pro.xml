@@ -17,12 +17,18 @@
             android:layout_height="@dimen/layout_lvl0"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            app:layout_constraintHeight_percent="0.55"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/labelPmProStatus"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBenefitPackage"
             tools:src="@drawable/bg_pm_pro_advanced_benefit_package" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBenefitPackage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleBenefitPackageStatus"
@@ -36,17 +42,18 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:typographyType="body_1"
             app:typographyWeight="bold"
+            android:textColor="@color/Unify_N700_96"
             android:text="@string/pm_title_benefit_package_status"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelPmProStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="6dp"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintStart_toStartOf="@id/tvTitleBenefitPackageStatus"
             app:layout_constraintTop_toBottomOf="@id/tvTitleBenefitPackageStatus"
-            app:layout_constraintBottom_toBottomOf="@id/bgBenefitPackageStatus"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBenefitPackage"
             tools:text="ADVANCED"/>
 
         <com.tokopedia.iconunify.IconUnify
@@ -85,7 +92,7 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:typographyType="body_3"
-            tools:text="@string/pm_next_update_benefit_package_upgrade_status"
+            tools:text="Update selanjutnya: 5 Juli 2021. Raih Level 3 untuk dapat paket keuntungan Expert. Selengkapnya "
             app:layout_constraintTop_toBottomOf="@id/bgBenefitPackageStatus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iconPmProDowngradeStatus"

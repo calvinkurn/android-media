@@ -37,8 +37,8 @@ class ExpandableWidget(
             } else {
                 viewPmProBenefitSection.gone()
                 viewPmBenefitSection.visible()
-                viewPmBenefitSection.setOnExpandedChanged(true)
             }
+            viewPmBenefitSection.setOnExpandedChanged(true)
 
             setupExpandableItem(element)
             setupPmSection()

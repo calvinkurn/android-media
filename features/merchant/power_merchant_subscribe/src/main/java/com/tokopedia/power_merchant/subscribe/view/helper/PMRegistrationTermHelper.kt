@@ -219,13 +219,12 @@ object PMRegistrationTermHelper {
     private fun getShopScoreTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmPro: Boolean
+        isPmProSelected: Boolean
     ): RegistrationTermUiModel.ShopScore {
         val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
-        val isNewSellerEligible = isNewSeller && isFirstMondayNewSeller
         val isEligibleShopScore =
-            (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore()) && isNewSellerEligible
+            (isPmProSelected && shopInfo.isEligibleShopScorePmPro()) || (!isPmProSelected && shopInfo.isEligibleShopScore())
         val shopScoreResIcon: Int = getResDrawableIcon(shopInfo, isEligibleShopScore)
 
         val title: String
@@ -234,7 +233,7 @@ object PMRegistrationTermHelper {
         var ctaAppLink: String? = null
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
 
-        val shopScoreThreshold = if (isPmPro) {
+        val shopScoreThreshold = if (isPmProSelected) {
             shopInfo.shopScorePmProThreshold
         } else {
             shopInfo.shopScoreThreshold

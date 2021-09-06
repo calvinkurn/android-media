@@ -96,6 +96,11 @@ class UpgradePmProWidget(
                     hidePmProUpgradeSection()
                 }
             } else {
+                tvSetMembershipStatus?.setTextMakeHyperlink(
+                    getString(R.string.pm_set_membership_status)
+                ) {
+                    listener.onMembershipStatusClickListener()
+                }
                 viewPmUpgradeTermSection?.tvTermStatus?.show()
                 tvPmUpgradePmProDesc?.hide()
             }

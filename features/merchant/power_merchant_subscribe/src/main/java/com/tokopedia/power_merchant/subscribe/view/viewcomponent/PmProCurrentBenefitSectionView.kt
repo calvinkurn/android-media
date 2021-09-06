@@ -43,8 +43,8 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     }
 
     private fun setBenefitPackageClicked() {
-        cardPmProBenefitPackage?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+        iconPmProStatus?.setOnClickListener {
+            updateInfoCtaClickListener?.invoke()
         }
     }
 
@@ -69,7 +69,9 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                     )
                 ).toString()
             ) {
-                updateInfoCtaClickListener?.invoke()
+                context?.let {
+                    RouteManager.route(it, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+                }
             }
         } else {
             if (data.nextShopLevel == data.grade?.shopLevel) {
@@ -87,7 +89,9 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
                         )
                     ).toString()
                 ) {
-                    updateInfoCtaClickListener?.invoke()
+                    context?.let {
+                        RouteManager.route(it, ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+                    }
                 }
             }
         }
