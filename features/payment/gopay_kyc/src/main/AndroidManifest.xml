@@ -5,9 +5,8 @@
     <application>
         <activity
             android:name=".presentation.activity.GoPayKycActivity"
-            android:label="@string/title_gopay_kyc"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.Tokopoints3">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,6 +19,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.activity.GoPayKtpInstructionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
 
     </application>
 </manifest>

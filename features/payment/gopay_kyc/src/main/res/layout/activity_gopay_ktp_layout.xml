@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/upgradeGoPayHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_title="Upgrade GoPay Plus"
+        app:unify_header_subtitle="Langkah 1 dari 2"/>
+
+    <FrameLayout
+        android:id="@+id/kycInstructionFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

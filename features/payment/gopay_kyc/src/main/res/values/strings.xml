@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">GoPay Kyc</string>
+    <string name="gopay_kyc_upgrade_now">Upgrade Sekarang</string>
+    <string name="gopay_kyc_benefit_header_description_text">Cukup upload selfie dan e-KTP, bisa langsung nikmatin semua keuntungan khusus buat kamu.</string>
+    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus, gratis!</string>
+
+    <string name="gopay_kyc_wallet_benefit_title_text">Isi saldo sampai Rp10 juta</string>
+    <string name="gopay_kyc_wallet_benefit_description_text">Per bulannya, kamu bisa punya saldo sampai Rp10 juta, lho.</string>
+    <string name="gopay_kyc_atm_benefit_title_text">Tarik tunai GoPay di ATM BCA</string>
+    <string name="gopay_kyc_atm_benefit_description_text">Nggak perlu kartu kredit atau debit. Cukup cari ATM terdekat lalu tarik GoPay-mu.</string>
+    <string name="gopay_kyc_instant_debit_benefit_title_text">Transfer ke bank dengan instan</string>
+    <string name="gopay_kyc_instant_debit_benefit_description_text">Transfer GoPay kamu ke rekening bank apa pun, kapan aja.</string>
+    <string name="gopay_kyc_friends_benefit_title_text">Bayar ke teman &amp; keluarga</string>
+    <string name="gopay_kyc_friends_benefit_description_text">Bisa juga minta GoPay dan patungan buat jajan rame-rame.</string>
+    <string name="gopay_kyc_payback_benefit_title_text">Jaminan saldo GoPay kembali</string>
+    <string name="gopay_kyc_payback_benefit_description_text">Perlingungan ekstra buat saldomu</string>
 
 </resources>
