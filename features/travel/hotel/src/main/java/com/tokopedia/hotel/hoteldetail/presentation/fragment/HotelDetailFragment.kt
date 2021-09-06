@@ -66,6 +66,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.item_network_error_view.*
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -125,7 +126,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
-            hotelShare = HotelShare(this)
+            val ctx = WeakReference<Activity>(this)
+            hotelShare = HotelShare(ctx)
         }
 
         arguments?.let {
@@ -782,12 +784,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         }
     }
-
-    override fun onDestroy() {
-        hotelShare.activity = null
-        super.onDestroy()
-    }
-
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103

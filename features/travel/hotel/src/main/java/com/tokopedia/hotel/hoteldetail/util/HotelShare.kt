@@ -14,14 +14,15 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import java.lang.ref.WeakReference
 
 /**
  * @author by jessica on 20/10/20
  */
 
-class HotelShare(var activity: Activity?) {
+class HotelShare(var activity: WeakReference<Activity>) {
 
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
     fun shareEvent(data: PropertyDetailData, isPromo: Boolean, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
@@ -35,7 +36,7 @@ class HotelShare(var activity: Activity?) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.hotel_detail_share_cta_link, data.property.name, data.city.name, url))
         }
-        activity?.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
+        activity.get()?.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
     }
 
     private fun generateBranchLink(data: PropertyDetailData, isPromo: Boolean, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
