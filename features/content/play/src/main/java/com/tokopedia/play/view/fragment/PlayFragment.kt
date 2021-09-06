@@ -376,7 +376,6 @@ class PlayFragment @Inject constructor(
         observeBottomInsetsState()
         observePinned()
         observePiPEvent()
-        observeUpcomingInfo()
 
         observeUiState()
     }
@@ -449,17 +448,6 @@ class PlayFragment @Inject constructor(
     private fun observePiPEvent() {
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
             if (it is PiPState.Requesting) onEnterPiPState(it)
-        })
-    }
-
-    private fun observeUpcomingInfo() {
-        playViewModel.observableUpcomingInfo.observe(viewLifecycleOwner, DistinctObserver {
-            fragmentUpcomingView.safeInit()
-
-            fragmentVideoView.safeRelease()
-            fragmentVideoView.hide()
-            fragmentYouTubeView.safeRelease()
-            fragmentYouTubeView.hide()
         })
     }
 
