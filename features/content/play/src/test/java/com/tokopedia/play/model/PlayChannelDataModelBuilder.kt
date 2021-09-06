@@ -12,8 +12,7 @@ class PlayChannelDataModelBuilder {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
     private val likeModelBuilder = PlayLikeModelBuilder()
-    private val totalViewBuilder = PlayTotalViewModelBuilder()
-    private val shareInfoBuilder = PlayShareInfoModelBuilder()
+    private val channelReportBuilder = PlayChannelReportModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val pinnedBuilder = PlayPinnedModelBuilder()
     private val quickReplyBuilder = PlayQuickReplyModelBuilder()
@@ -22,12 +21,11 @@ class PlayChannelDataModelBuilder {
 
     fun buildChannelData(
             id: String = "1",
-            channelInfo: PlayChannelInfoUiModel = channelInfoBuilder.buildChannelInfo(),
+            channelDetail: PlayChannelDetailUiModel = channelInfoBuilder.buildChannelDetail(),
             partnerInfo: PlayPartnerInfo = partnerInfoBuilder.buildPlayPartnerInfo(),
-            likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildCompleteData(),
-            totalViewInfo: PlayTotalViewUiModel = totalViewBuilder.buildCompleteData(),
-            shareInfo: PlayShareInfoUiModel = shareInfoBuilder.build(),
-            cartInfo: PlayCartInfoUiModel = cartInfoBuilder.buildCompleteData(),
+            likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildLikeInfo(),
+            channelReportInfo: PlayChannelReportUiModel = channelReportBuilder.buildChannelReport(),
+            cartInfo: PlayCartInfoUiModel = cartInfoBuilder.build(),
             pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
             quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
             videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
@@ -35,16 +33,15 @@ class PlayChannelDataModelBuilder {
             leaderboardInfo: PlayLeaderboardInfoUiModel = PlayLeaderboardInfoUiModel()
     ) = PlayChannelData(
             id = id,
-            channelInfo = channelInfo,
+            channelDetail = channelDetail,
             partnerInfo = partnerInfo,
             likeInfo = likeInfo,
-            totalViewInfo = totalViewInfo,
-            shareInfo = shareInfo,
             cartInfo = cartInfo,
             pinnedInfo = pinnedInfo,
             quickReplyInfo = quickReplyInfo,
             videoMetaInfo = videoMetaInfo,
             statusInfo = statusInfo,
-            leaderboardInfo = leaderboardInfo
+            leaderboardInfo = leaderboardInfo,
+            channelReportInfo = channelReportInfo,
     )
 }

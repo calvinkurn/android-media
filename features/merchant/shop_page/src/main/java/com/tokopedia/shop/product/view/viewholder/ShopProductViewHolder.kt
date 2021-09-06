@@ -26,7 +26,8 @@ class ShopProductViewHolder(
         private val isFixWidth: Boolean,
         private val deviceWidth: Int,
         @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef private val shopTrackType: Int,
-        private val layoutType: Int
+        private val layoutType: Int,
+        private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val totalReview: TextView? = null
     lateinit var productCard: ProductCardGridView
@@ -47,7 +48,11 @@ class ShopProductViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCard.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, false)
+                ShopPageProductListMapper.mapToProductCardModel(
+                        shopProductUiModel = shopProductUiModel,
+                        isWideContent = false,
+                        isShowThreeDots = isShowTripleDot
+                )
         )
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {

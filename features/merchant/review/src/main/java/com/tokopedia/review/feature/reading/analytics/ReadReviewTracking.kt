@@ -52,8 +52,9 @@ object ReadReviewTracking {
                     ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION,
                     countRating,
                     countReview
+
                 ),
-                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
                 ReadReviewTrackingConstants.KEY_USER_ID to userId,
                 ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,

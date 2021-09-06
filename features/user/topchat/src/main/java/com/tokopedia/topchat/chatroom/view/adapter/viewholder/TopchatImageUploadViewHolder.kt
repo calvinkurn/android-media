@@ -62,9 +62,15 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun bind(element: ImageUploadViewModel?) {
         if (element == null) return
         super.bind(element)
-        bindChatReadStatus(element)
+        hideReadStatusIfRetry(element)
         bindBackground(element)
         bindLoadingAnimation(element)
+    }
+
+    private fun hideReadStatusIfRetry(element: ImageUploadViewModel) {
+        if(element.isRetry) {
+            chatReadStatus.hide()
+        }
     }
 
     private fun bindLoadingAnimation(element: ImageUploadViewModel) {
