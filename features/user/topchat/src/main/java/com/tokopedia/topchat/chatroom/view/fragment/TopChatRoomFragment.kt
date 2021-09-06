@@ -60,6 +60,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -83,6 +84,7 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -150,7 +152,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     SearchListener, BroadcastSpamHandlerViewHolder.Listener,
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
-    SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener {
+    SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
+    FlexBoxChatLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -212,6 +215,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
     override fun isLoadMoreEnabledByDefault(): Boolean = false
+
+    /**
+     * stack to keep latest change address request
+     */
+    private val changeAddressStack = Stack<HeaderCtaButtonAttachment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -880,7 +888,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this
+            this, this, this, this
         )
     }
 
@@ -1092,12 +1100,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
     }
 
-    private fun onSendingMessage(): () -> Unit {
+    private fun onSendingMessage(clearMessage: Boolean = true): () -> Unit {
         return {
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
-            clearEditText()
             sellerReviewHelper.hasRepliedChat = true
+            if (clearMessage) {
+                clearEditText()
+            }
         }
     }
 
@@ -1972,6 +1982,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
+    private fun showToasterMsg(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun showToasterConfirmation(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
@@ -2163,12 +2179,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             messageId,
             question,
             startTime,
-            opponentId
-        ) {
-            analytics.eventSendMessage()
-            getViewState().scrollToBottom()
-            sellerReviewHelper.hasRepliedChat = true
-        }
+            opponentId,
+            onSendingMessage(false)
+        )
+    }
+
+    private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
+        onSendAndReceiveMessage()
+        presenter.sendSrwFrom(attachment, opponentId)
+        onSendingMessage(false).invoke()
     }
 
     private fun addSrwBubbleToChat() {
@@ -2270,6 +2289,50 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
         if(isNecessary) {
             getViewState().clearAttachmentPreview()
+        }
+    }
+
+    override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
+        changeAddressStack.push(attachment)
+        showChangeAddressBottomSheet()
+    }
+
+    protected open fun showChangeAddressBottomSheet() {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(getChangeAddressListener())
+        chooseAddressBottomSheet.show(childFragmentManager, "")
+    }
+
+    protected fun getChangeAddressListener(
+    ): ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+        return object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+            override fun onLocalizingAddressServerDown() {
+
+            }
+
+            override fun onAddressDataChanged() {
+                if (changeAddressStack.empty()) return
+                val attachment = changeAddressStack.pop() ?: return
+                val msg = context?.getString(
+                    com.tokopedia.localizationchooseaddress.R.string.toaster_success_chosen_address
+                ) ?: ""
+                showToasterMsg(msg)
+                initUserLocation()
+                sendSrwQuestion(attachment)
+            }
+
+            override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                return "chat"
+            }
+
+            override fun onLocalizingAddressLoginSuccessBottomSheet() {
+
+            }
+
+            override fun onDismissChooseAddressBottomSheet() {
+                if (changeAddressStack.empty()) return
+                changeAddressStack.pop()
+            }
         }
     }
 

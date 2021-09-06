@@ -3,9 +3,6 @@ package com.tokopedia.buyerorder.detail.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
-import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics;
 import com.tokopedia.network.NetworkRouter;
@@ -22,16 +19,6 @@ import okhttp3.Interceptor;
 
 @Module
 public class OrderDetailModule {
-
-    @Provides
-    PostCancelReasonUseCase providePostCancelUseCase(@ApplicationContext Context context) {
-        List<Interceptor> interceptorList = new ArrayList<>(2);
-        interceptorList.add(new TkpdOldAuthInterceptor(context,
-                (NetworkRouter) context, new UserSession(context)));
-        ErrorResponseInterceptor errorResponseInterceptor = new ErrorResponseInterceptor(ErrorResponse.class);
-        interceptorList.add(errorResponseInterceptor);
-        return new PostCancelReasonUseCase(interceptorList, context);
-    }
 
     @Provides
     SendEventNotificationUseCase providesSendEventNotificationUseCase(@ApplicationContext Context context) {
