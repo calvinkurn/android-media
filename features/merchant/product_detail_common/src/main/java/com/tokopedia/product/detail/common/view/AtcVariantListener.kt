@@ -1,14 +1,14 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
-import com.tokopedia.product.detail.common.VariantConstant.STATE_SELECTED
+import com.tokopedia.product.detail.common.VariantConstant.IGNORE_STATE
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
 /**
  * Created by Yehezkiel on 06/05/21
  */
 interface AtcVariantListener {
-    fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state:Int = STATE_SELECTED)
+    fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int = IGNORE_STATE)
     fun getStockWording(): String = ""
 
     fun onVariantGuideLineClicked(url: String) {}

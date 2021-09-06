@@ -35,6 +35,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private val productSlashPrice = view.findViewById<Typography>(R.id.txt_header_slash_price)
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
     private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
+    private val labelCashback = view.findViewById<Label>(R.id.lbl_header_cashback_percentage)
 
     private val labelVar1 = view.findViewById<Label>(R.id.lbl_variant_name_1)
     private val labelVar2 = view.findViewById<Label>(R.id.lbl_variant_name_2)
@@ -45,6 +46,13 @@ class AtcVariantHeaderViewHolder(private val view: View,
         loadDescription(element.headerData)
         renderVariantName(element.variantTitle)
         renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
+        renderCashback(element.cashBackPercentage)
+    }
+
+    private fun renderCashback(cashBackPercentage: Int) = with(view) {
+        labelCashback.shouldShowWithAction(cashBackPercentage > 0) {
+            labelCashback.text = context.getString(com.tokopedia.product.detail.common.R.string.template_cashback, cashBackPercentage.toString())
+        }
     }
 
     override fun bind(element: VariantHeaderDataModel, payloads: MutableList<Any>) {
