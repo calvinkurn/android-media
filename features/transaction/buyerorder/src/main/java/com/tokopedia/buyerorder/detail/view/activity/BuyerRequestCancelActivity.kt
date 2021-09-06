@@ -11,7 +11,6 @@ import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.fragment.BuyerRequestCancelFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import java.io.Serializable
 import java.lang.reflect.Type
 
 /**

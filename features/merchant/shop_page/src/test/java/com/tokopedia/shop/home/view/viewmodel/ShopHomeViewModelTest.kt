@@ -759,7 +759,8 @@ class ShopHomeViewModelTest {
                                 PlayWidgetPromoType.Default(""),
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming,
-                                false
+                                false,
+                                ""
                         )
                 )
         )
