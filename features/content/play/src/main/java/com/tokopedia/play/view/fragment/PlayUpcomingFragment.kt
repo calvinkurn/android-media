@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.R
@@ -21,6 +23,8 @@ class PlayUpcomingFragment @Inject constructor(
     private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment() {
 
+    private lateinit var ivUpcomingCover: AppCompatImageView
+
     private lateinit var playViewModel: PlayViewModel
 
     override fun getScreenName(): String = "Play Upcoming"
@@ -36,5 +40,28 @@ class PlayUpcomingFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_play_upcoming, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        setupView(view)
+    }
+
+    private fun initView(view: View) {
+        ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
+    }
+
+    private fun setupView(view: View) {
+        setCover(view)
+    }
+
+    private fun setCover(view: View) {
+        val coverUrl = playViewModel.upcomingInfo?.coverUrl ?: ""
+        if(coverUrl.isNotEmpty()) {
+            Glide.with(view)
+                .load(coverUrl)
+                .into(ivUpcomingCover)
+        }
     }
 }
