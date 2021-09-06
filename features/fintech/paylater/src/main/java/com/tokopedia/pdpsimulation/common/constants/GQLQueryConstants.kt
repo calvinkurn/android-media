@@ -79,6 +79,7 @@ const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(
   }
 }"""
 
+
 const val GQL_CREDIT_CARD_PDP_META_INFO = """query {
   cc_fetchpdpinfometadata() {
     cta_redir_url
@@ -180,4 +181,16 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
       }
     } 
 	}
+}"""
+
+
+const val GQL_GETPRODUCT_DETAIL = """query{
+  getProductV3(${'$'}productID: String, ${'$'}options:BasicOptions!) {
+    productName
+    url
+    price
+     pictures{
+      urlThumbnail
+    }
+  }
 }"""

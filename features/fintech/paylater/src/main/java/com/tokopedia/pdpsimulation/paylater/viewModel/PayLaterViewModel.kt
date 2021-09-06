@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
@@ -19,6 +20,7 @@ class PayLaterViewModel @Inject constructor(
     private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
     private val payLaterApplicationStatusMapperUseCase: PayLaterApplicationStatusMapperUseCase,
     private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+    private val productDetailUseCase: ProductDetailUseCase,
 
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -31,6 +33,10 @@ class PayLaterViewModel @Inject constructor(
     private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
     val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
         _payLaterOptionsDetailLiveData
+
+
+    private val _productDetailLiveData = MutableLiveData<Result<BaseProductDetailClass>>()
+    val productDetailLiveData: LiveData<Result<BaseProductDetailClass>> = _productDetailLiveData
 
     var isPayLaterProductActive = false
 
@@ -47,6 +53,24 @@ class PayLaterViewModel @Inject constructor(
                 price
             )
         }
+
+    }
+
+    fun getProductDetail(productId: String) {
+        productDetailUseCase.cancelJobs()
+        if (productDetailLiveData.value !is Success)
+            productDetailUseCase.getProductDetail(
+                ::onAvailableProductDetail,
+                ::onFailProductDetail,
+                productId
+            )
+    }
+
+    private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
+
+    }
+
+    private fun onFailProductDetail(throwable: Throwable) {
 
     }
 
