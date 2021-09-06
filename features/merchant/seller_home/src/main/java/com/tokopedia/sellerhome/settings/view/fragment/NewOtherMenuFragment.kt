@@ -47,6 +47,7 @@ import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBo
 import com.tokopedia.sellerhome.settings.view.viewholder.NewOtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.NewOtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -107,6 +108,11 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private var canShowErrorToaster = true
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as? SellerHomeActivity)?.attachCallback(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,6 +125,9 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         super.onViewCreated(view, savedInstanceState)
         context?.let {
             viewHolder = NewOtherMenuViewHolder(view, it, this, userSession, this)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBar()
         }
         observeLiveData()
     }
@@ -285,7 +294,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        (activity as? Activity)?.requestStatusBarDark()
+        (activity as? Activity)?.requestStatusBarLight()
     }
 
     override fun setCurrentFragmentType(fragmentType: Int) {
