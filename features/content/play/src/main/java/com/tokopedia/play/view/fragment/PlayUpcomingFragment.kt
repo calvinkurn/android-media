@@ -15,8 +15,6 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
@@ -28,6 +26,7 @@ import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
+import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
@@ -48,15 +47,16 @@ class PlayUpcomingFragment @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(),
-    ToolbarViewComponent.Listener
+    ToolbarViewComponent.Listener,
+    UpcomingActionButtonViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val upcomingTimerViewComponent by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
+    private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
 
     private lateinit var ivUpcomingCover: AppCompatImageView
     private lateinit var tvUpcomingTitle: AppCompatTextView
-    private lateinit var btnAction: UnifyButton
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -86,7 +86,6 @@ class PlayUpcomingFragment @Inject constructor(
     private fun initView(view: View) {
         ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
         tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
-        btnAction = view.findViewById(R.id.btn_action)
     }
 
     private fun setupView(view: View) {
@@ -94,11 +93,10 @@ class PlayUpcomingFragment @Inject constructor(
             if(it.coverUrl.isNotEmpty())
                 Glide.with(view).load(it.coverUrl).into(ivUpcomingCover)
 
-            if(!it.isReminderSet) {
-                btnAction.text = getString(R.string.play_remind_me)
-                btnAction.show()
-            }
-            else btnAction.hide()
+            actionButton.setButtonStatus(
+                if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
+                else UpcomingActionButtonViewComponent.Status.HIDDEN
+            )
 
             tvUpcomingTitle.text = it.title
 
@@ -109,11 +107,6 @@ class PlayUpcomingFragment @Inject constructor(
         }
 
         toolbarView.setShareInfo(playViewModel.latestCompleteChannelData.shareInfo)
-
-        btnAction.setOnClickListener {
-            btnAction.isLoading = true
-            playViewModel.submitAction(ClickRemindMeUpcomingChannel)
-        }
     }
 
     private fun setupObserver() {
@@ -127,7 +120,7 @@ class PlayUpcomingFragment @Inject constructor(
                 when(event) {
                     is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     is ShowToasterEvent.RemindMe -> {
-                        btnAction.isLoading = false
+                        actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
                         handleToasterEvent(event)
                     }
                 }
@@ -186,16 +179,6 @@ class PlayUpcomingFragment @Inject constructor(
                 v.parent.requestLayout()
             }
         }
-
-        btnAction.doOnApplyWindowInsets { view, insets, _, margin ->
-            val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-
-            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
-                marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                view.parent.requestLayout()
-            }
-        }
     }
 
     private fun renderToolbarView(
@@ -204,6 +187,10 @@ class PlayUpcomingFragment @Inject constructor(
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
+    }
+
+    override fun onClickActionButton() {
+        playViewModel.submitAction(ClickRemindMeUpcomingChannel)
     }
 
     override fun onBackButtonClicked(view: ToolbarViewComponent) {
