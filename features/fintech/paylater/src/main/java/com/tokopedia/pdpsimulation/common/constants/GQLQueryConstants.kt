@@ -52,7 +52,7 @@ const val GQL_PAY_LATER_APPLICATION_STATUS = """query getUserApplicationStatus{
     }
 }"""
 
-const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Float){
+const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(${'$'}Amount: Int){
   cc_fetchpdpcreditcardsimulation(Amount: ${'$'}Amount) {
    	data {
       cicilan {
@@ -114,7 +114,7 @@ const val GQL_CREDIT_CARD_BANK_LIST = """query {
 }"""
 
 
-const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}Amount: Float) {
+const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}Amount: Int) {
   paylater_getSimulationV2(Amount: ${'$'}Amount) {
     data {
       tenure

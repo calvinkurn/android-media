@@ -49,11 +49,11 @@ class PayLaterViewModel @Inject constructor(
 
     }
 
-    fun getMockOne(price: Long) {
-        paylaterGetSimulationV2usecase.mockData()?.let {
-            _payLaterOptionsDetailLiveData.value = Success(it)
-        }
-    }
+//    fun getMockOne(price: Long) {
+//        paylaterGetSimulationV2usecase.mockData()?.let {
+//            _payLaterOptionsDetailLiveData.value = Success(it)
+//        }
+//    }
 
     private fun onAvailableDetailFail(throwable: Throwable) {
         _payLaterOptionsDetailLiveData.value = Fail(throwable)
