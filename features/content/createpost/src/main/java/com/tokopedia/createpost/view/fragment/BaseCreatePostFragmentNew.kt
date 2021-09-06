@@ -43,7 +43,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     lateinit var createContentPostViewModel: CreateContentPostViewModel
 
 
-
     @Inject
     lateinit var userSession: UserSessionInterface
 

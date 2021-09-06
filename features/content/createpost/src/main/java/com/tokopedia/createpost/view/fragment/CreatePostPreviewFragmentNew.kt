@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,15 +10,13 @@ import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.plist.ShopPageProduct
 import com.tokopedia.createpost.view.posttag.ProductTaggingView
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
@@ -61,6 +60,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
+        private const val PARAM_PRODUCT = "product"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -397,23 +397,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun goToAttachProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
-        intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY,
-            userSession.shopId)
-        intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, true)
-        intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
-        intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, "")
-        intent.putExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
-            createPostModel.maxProduct - createPostModel.productIdList.size)
-        intent.putStringArrayListExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN,
-            ArrayList(createPostModel.productIdList))
+            activity?.let{
+                val intent = RouteManager.getIntent(context, "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
+                startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
+            }
 
-        startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            REQUEST_ATTACH_PRODUCT -> if (resultCode == ContentCreatePostFragment.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
+            REQUEST_ATTACH_PRODUCT -> if (resultCode == Activity.RESULT_OK) {
                 getAttachProductResult(data)
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -422,12 +415,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun getAttachProductResult(data: Intent?) {
-        val products = data?.getParcelableArrayListExtra<ResultProduct>(
-            ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-            ?: arrayListOf()
+        val product = data?.getSerializableExtra(
+            PARAM_PRODUCT) as ShopPageProduct
 
-        products.forEach {
-            createPostModel.productIdList.add(it.productId)
+
+        product?.let {
+            createPostModel.productIdList.add(it.pId!!)
             val relatedProductItem = mapResultToRelatedProductItem(it)
             createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
                 relatedProductItem)
@@ -443,12 +436,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         updateResultIntent()
     }
 
-    private fun mapResultToRelatedProductItem(item: ResultProduct): RelatedProductItem {
+    private fun mapResultToRelatedProductItem(item: ShopPageProduct): RelatedProductItem {
         return RelatedProductItem(
-            id = item.productId,
-            name = item.name,
-            price = item.price,
-            image = item.productImageThumbnail
+            id = item.pId!!,
+            name = item.name!!,
+            price = item.price.priceIdr,
+            image = item.pImage.img
         )
     }
 

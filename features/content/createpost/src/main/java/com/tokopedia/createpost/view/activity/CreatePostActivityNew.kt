@@ -7,11 +7,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.fragment.ImagePickerFragement
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.view.viewmodel.MediaModel
@@ -20,8 +24,9 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post_new.*
+import java.util.concurrent.TimeUnit
 
-class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener  {
+class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -156,8 +161,24 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
 
     }
-    private fun postFeed(){
 
+    private fun postFeed() {
+        val cacheManager = SaveInstanceCacheManager(this, true)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            intent.extras?.get(CreatePostViewModel.TAG), TimeUnit.DAYS.toMillis(7)
+        )
+        SubmitPostServiceNew.startService(this, cacheManager.id!!)
+        goToFeed()
+        finish()
+    }
+
+    private fun goToFeed() {
+        this.let {
+            val applink = ApplinkConst.FEED.plus("?after_post=true")
+            val intent = RouteManager.getIntent(it, applink)
+            startActivity(intent)
+        }
     }
 
 
