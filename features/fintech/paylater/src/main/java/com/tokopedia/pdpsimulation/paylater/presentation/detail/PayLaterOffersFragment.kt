@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
@@ -26,6 +27,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    lateinit var payLaterProductList: List<PayLaterAllData>
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
@@ -70,6 +72,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun selectOtherTenure(position: Int) {
+        paymentOptionViewPager.post {
+            pagerAdapter.setPaymentData(payLaterProductList[position].detail!!)
+        }
+
 
     }
 
@@ -91,12 +97,12 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
 
-        val payLaterProductList = paylaterProduct.productList
+        payLaterProductList = paylaterProduct.productList!!
         generateSortFilter(paylaterProduct)
         payLaterOffersShimmerGroup.gone()
         payLaterDataGroup.visible()
         paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList!![0].detail!!)
+            pagerAdapter.setPaymentData(payLaterProductList[0].detail!!)
         }
     }
 

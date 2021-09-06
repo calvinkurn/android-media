@@ -46,11 +46,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            if (!userSession.isLoggedIn()) {
+            if (!userSession.isLoggedIn) {
                 if (fullLoginOption.isChecked) {
-                    startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+                    startActivityForResult(
+                        RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN
+                    )
                 } else {
-                    startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
+                    startActivityForResult(
+                        RouteManager.getIntent(
+                            this,
+                            ApplinkConstInternalTestApp.LOGIN
+                        ), REQUEST_CODE_LOGIN
+                    )
                 }
             } else {
                 Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
@@ -108,6 +116,9 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-   //     RouteManager.route(this, "tokopedia://fintech/paylater?category=iOS&price=5350000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fbakso-abang-ade%2Fi-phone-11-ibox-128gb-hitam-128-gb&userID=3660665")
+        RouteManager.route(
+            this,
+            "tokopedia://fintech/paylater?category=iOS&price=5350000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fbakso-abang-ade%2Fi-phone-11-ibox-128gb-hitam-128-gb&userID=3660665"
+        )
     }
 }

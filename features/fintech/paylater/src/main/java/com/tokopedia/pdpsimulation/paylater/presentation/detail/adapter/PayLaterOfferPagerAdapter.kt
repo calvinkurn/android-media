@@ -22,7 +22,7 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentS
     private fun setBundleData(position: Int): Bundle {
         val paymentOption = paymentProductList[position]
         return Bundle().apply {
-            putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentProductList[position])
+            putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentOption)
 
         }
     }
@@ -49,6 +49,11 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentS
 
     override fun getPageWidth(position: Int): Float {
         return 0.9f
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
+
     }
 
 }
