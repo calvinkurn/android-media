@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Size
@@ -16,6 +17,7 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 object CameraUtil {
 
@@ -24,7 +26,14 @@ object CameraUtil {
     val REQUEST_IMAGE_CAPTURE = 200
     fun openCamera(weakFragment: WeakReference<Fragment?>?, applinkToNavigateAfterMediaCapture: String?): String? {
         weakFragment?.get()?.let {
-            it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture))
+            if (applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
+                it.startActivityForResult(
+                    CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture),
+                    CameraActivity.REQUEST_CODE
+                )
+            } else {
+                it.startActivity(CameraActivity.getIntent(it.requireContext(), emptyList(), applinkToNavigateAfterMediaCapture))
+            }
         }
         return null
 
@@ -126,6 +135,14 @@ object CameraUtil {
 
         }
         return filePath
+    }
+
+    fun getIntentfromFileUris(fileUriList: ArrayList<Uri>):Intent{
+        val intent = Intent()
+        val bundle = Bundle()
+        bundle.putParcelableArrayList(BundleData.URIS,fileUriList)
+        intent.putExtras(bundle)
+        return intent
     }
 
     fun createApplinkToSendFileUris(applink: String, fileUriList: List<Uri>): String {

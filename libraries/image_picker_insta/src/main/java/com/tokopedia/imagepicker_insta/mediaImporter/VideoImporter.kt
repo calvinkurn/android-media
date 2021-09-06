@@ -16,6 +16,7 @@ import com.tokopedia.imagepicker_insta.util.FileUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -65,12 +66,18 @@ class VideoImporter : MediaImporter {
     }
 
     fun File.getMediaDuration(context: Context): Long? {
-        if (!exists()) return 0
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(context, Uri.parse(absolutePath))
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        return duration?.toLong()
+        try {
+            if (!exists()) return 0
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(context, Uri.parse(absolutePath))
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            return duration?.toLong()
+        }catch (th:Throwable){
+            Timber.e(th)
+            return null
+        }
+
     }
 
     override fun importMedia(context: Context): MediaImporterData {

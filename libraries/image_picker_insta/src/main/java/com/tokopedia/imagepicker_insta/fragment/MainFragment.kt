@@ -24,6 +24,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker_insta.*
+import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.activity.MainActivity.Companion.MAX_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
@@ -89,15 +90,18 @@ class MainFragment : Fragment(), MainFragmentContract {
     private fun proceedNextStep() {
         if (!imageAdapter.isSelectedPositionsEmpty()) {
 
+            val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
+                imageAdapter.dataList[it].asset.contentUri
+            }
+
             val applink = (activity as? MainActivity)?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
-                val selectedMediaUriList = imageAdapter.selectedPositionMap.keys.map {
-                    imageAdapter.dataList[it].asset.contentUri
-                }
-
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, selectedMediaUriList)
                 RouteManager.route(activity, finalApplink)
+            } else {
+                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(selectedMediaUriList)))
+                activity?.finish()
             }
         } else {
             Toast.makeText(context, "Select any image first", Toast.LENGTH_SHORT).show()
@@ -342,9 +346,11 @@ class MainFragment : Fragment(), MainFragmentContract {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            CameraUtil.REQUEST_IMAGE_CAPTURE -> {
+            CameraActivity.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    handleCameraSuccessResponse()
+                    handleCameraSuccessResponse(data)
+                } else {
+                    handleCameraErrorResponse(data)
                 }
             }
             EDITOR_REQUEST_CODE -> {
@@ -358,7 +364,33 @@ class MainFragment : Fragment(), MainFragmentContract {
         imageOrPathList.size
     }
 
-    private fun handleCameraSuccessResponse() {
+    private fun handleCameraSuccessResponse(data: Intent?) {
+//        val urlList = data?.extras?.putParcelableArrayList(BundleData.URIS, null)
+        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        if (dstLink.isNullOrEmpty()) {
+            //Update current UI
+            //TODO  Rahul means media is captured
+            activity?.let {
+                Toast.makeText(it, "Pending", Toast.LENGTH_SHORT).show()
+            }
+
+        } else {
+            activity?.setResult(Activity.RESULT_OK, data)
+            activity?.finish()
+        }
+    }
+
+    private fun handleCameraErrorResponse(data: Intent?) {
+        val dstLink = (activity as? MainActivity)?.applinkToNavigateAfterMediaCapture
+        if (dstLink.isNullOrEmpty()) {
+            //DO nothing
+        } else {
+            activity?.setResult(Activity.RESULT_CANCELED, data)
+            activity?.finish()
+        }
+    }
+
+    private fun handleOldCameraSuccessResponse() {
         /*
         * 1. Add image to viewModel's list
         * 2. add image to selected image

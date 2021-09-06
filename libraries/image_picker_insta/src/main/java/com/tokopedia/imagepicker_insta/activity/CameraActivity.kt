@@ -1,35 +1,40 @@
 package com.tokopedia.imagepicker_insta.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProviders
 import com.daasuu.mp4compose.FillMode
+import com.daasuu.mp4compose.FillModeCustomItem
 import com.daasuu.mp4compose.composer.Mp4Composer
 import com.daasuu.mp4compose.logger.Logger
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
+import com.otaliastudios.cameraview.size.AspectRatio
+import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.models.BundleData
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
 import com.tokopedia.imagepicker_insta.views.CameraButtonListener
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
-import com.daasuu.mp4compose.FillModeCustomItem
-import android.media.tv.TvContract.Channels.getVideoResolution
-import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 
 class CameraActivity : BaseActivity() {
 
@@ -37,9 +42,19 @@ class CameraActivity : BaseActivity() {
     lateinit var parent: View
     lateinit var cameraButton: CameraButton
     lateinit var imageFlash: AppCompatImageView
+    lateinit var imageCaptureRegion: AppCompatImageView
     lateinit var imageSelfieCamera: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
-    var cropVideoPath:String?=null
+    lateinit var viewModel: CameraViewModel
+    var cropVideoPath: String? = null
+    val bitmapCallback = BitmapCallback {
+        if (it != null) {
+            cropBitmap(it)
+        } else {
+            showError("Something went wrong in taking photos")
+            exitActivityOnError()
+        }
+    }
     val mp4ComposerListener = object : Mp4Composer.Listener {
         override fun onProgress(progress: Double) {
             Timber.d("NOOB, onProgess: $progress")
@@ -50,14 +65,27 @@ class CameraActivity : BaseActivity() {
         }
 
         override fun onCompleted() {
+
             Timber.d("NOOB, onCompleted")
+            if(!cropVideoPath.isNullOrEmpty()){
+                showToast("Cropping Video Finished")
+                exitActivityOnSuccess(Uri.parse(cropVideoPath))
+            }else{
+                showToast("Cropping Video Unknown error")
+                exitActivityOnError()
+            }
+
         }
 
         override fun onCanceled() {
+            showError("Cropping Video cancelled")
             Timber.d("NOOB, onCanceled")
+            exitActivityOnError()
         }
 
         override fun onFailed(exception: Exception?) {
+            showError("Cropping Video exception")
+            exitActivityOnError()
             exception?.printStackTrace()
             Timber.e("NOOB, ${exception?.message} ")
 
@@ -76,10 +104,11 @@ class CameraActivity : BaseActivity() {
             Timber.w("NOOB, Logger $message")
         }
     }
-    var mp4Composer:Mp4Composer?=null
+    var mp4Composer: Mp4Composer? = null
 
     companion object {
 
+        val REQUEST_CODE = 213
         fun getIntent(context: Context, fileUriList: List<Uri>, applinkToNavigateAfterMediaCapture: String?): Intent {
             val uriList = ArrayList<String>()
             fileUriList.forEach {
@@ -95,6 +124,7 @@ class CameraActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.imagepicker_insta_camera_activity)
+        viewModel = ViewModelProviders.of(this)[CameraViewModel::class.java]
 
         readIntentData()
 
@@ -103,6 +133,7 @@ class CameraActivity : BaseActivity() {
         cameraButton = findViewById(R.id.camera_button)
         imageFlash = findViewById(R.id.image_flash)
         imageSelfieCamera = findViewById(R.id.image_selfie_camera)
+        imageCaptureRegion = findViewById(R.id.capture_region)
 
         imageFlash.visibility = View.GONE
         imageSelfieCamera.visibility = View.GONE
@@ -111,10 +142,25 @@ class CameraActivity : BaseActivity() {
         cameraView.mode = Mode.PICTURE
 
         cameraView.flash = Flash.OFF
-        cameraView.videoMaxDuration = VideoImporter.DURATION_MAX_LIMIT
+        cameraView.videoMaxDuration = VideoImporter.DURATION_MAX_LIMIT * 1000
 
         setToolbar()
         setListeners()
+    }
+
+    private fun handleCaptureSize() {
+        val width = SizeSelectors.minWidth(cameraView.width)
+        val height = SizeSelectors.minHeight(cameraView.width)
+        val dimensions = SizeSelectors.and(width, height)
+        val ratio = SizeSelectors.aspectRatio(AspectRatio.of(1, 1), 0f)
+        val result = SizeSelectors.or(
+            SizeSelectors.and(ratio, dimensions),  // Try to match both constraints
+            ratio,  // If none is found, at least try to match the aspect ratio
+            SizeSelectors.biggest() // If none is found, take the biggest
+        )
+        cameraView.setVideoSize(result)
+        cameraView.setPreviewStreamSize(result)
+        cameraView.setPictureSize(result)
     }
 
     fun readIntentData() {
@@ -133,6 +179,27 @@ class CameraActivity : BaseActivity() {
 
     private fun setListeners() {
 
+        viewModel.liveDataCropPhoto.observe(this, {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    showToast("Cropping Photo, don't exit")
+                }
+
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data != null) {
+                        exitActivityOnSuccess(it.data)
+                    } else {
+                        showError("Something went wrong in getting uri")
+                        exitActivityOnError()
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    showError("Something went wrong in cropping")
+                    exitActivityOnError()
+
+                }
+            }
+        })
         cameraButton.cameraButtonListener = object : CameraButtonListener {
             override fun onClick() {
                 cameraView.mode = Mode.PICTURE
@@ -183,22 +250,13 @@ class CameraActivity : BaseActivity() {
 
             override fun onPictureTaken(result: PictureResult) {
                 super.onPictureTaken(result)
-                val file = CameraUtil.createMediaFile(this@CameraActivity)
-                result.toFile(file) {
-                    Timber.d("${CameraUtil.LOG_TAG} picture taken: ${it?.path}")
-                    if (it != null) {
-                        afterMediaIsCaptured(Uri.fromFile(it))
-                    } else {
-                        showError("Unable to take picture")
-                    }
-                }
-
+                Timber.d("${CameraUtil.LOG_TAG} picture taken:")
+                result.toBitmap(bitmapCallback)
             }
 
             override fun onVideoTaken(result: VideoResult) {
                 super.onVideoTaken(result)
                 Timber.d("${CameraUtil.LOG_TAG} video taken: ${result.file.path}")
-//                afterMediaIsCaptured(Uri.fromFile(result.file))
                 cropVideo(result)
             }
 
@@ -220,8 +278,9 @@ class CameraActivity : BaseActivity() {
 
     /**
      * TODO Rahul Ensure second recording will only start when mp4Composer is finished
-    * */
+     * */
     private fun cropVideo(result: VideoResult) {
+        showToast("Cropping Vide, please don't close the screen")
         val destinationPath = CameraUtil.createMediaFile(this, false).absolutePath
         cropVideoPath = destinationPath
         Timber.d("NOOB, Cropped Video : $cropVideoPath")
@@ -244,6 +303,11 @@ class CameraActivity : BaseActivity() {
 
     }
 
+    private fun cropBitmap(srcBitmap: Bitmap) {
+        val file = CameraUtil.createMediaFile(this@CameraActivity)
+        viewModel.cropPhoto(srcBitmap, imageCaptureRegion.y.toInt(), cameraView.width, file)
+    }
+
     private fun afterMediaIsCaptured(uri: Uri) {
         if (!applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
             val finalApplink = CameraUtil.createApplinkToSendFileUris(applinkToNavigateAfterMediaCapture!!, arrayListOf(uri))
@@ -255,6 +319,10 @@ class CameraActivity : BaseActivity() {
 
     private fun showError(message: String) {
         Toaster.build(parent, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+    }
+
+    private fun showToast(message: String) {
+        Toaster.build(parent, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
     fun checkForFlash(cameraOptions: CameraOptions) {
@@ -297,7 +365,17 @@ class CameraActivity : BaseActivity() {
         } catch (th: Throwable) {
             Timber.e(th)
         }
+    }
 
+
+    fun exitActivityOnError() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
+    }
+
+    private fun exitActivityOnSuccess(uri: Uri) {
+        setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(arrayListOf(uri)))
+        afterMediaIsCaptured(uri)
     }
 
     fun stopRecordingVideo() {
