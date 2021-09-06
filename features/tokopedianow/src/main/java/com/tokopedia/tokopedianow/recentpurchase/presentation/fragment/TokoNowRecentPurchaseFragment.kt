@@ -130,9 +130,6 @@ class TokoNowRecentPurchaseFragment:
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
-        val bottomSheet = TokoNowRepurchaseSortFilterOnBuyingBottomSheet()
-        bottomSheet.show(childFragmentManager, 1, this)
-
         viewModel.showLoading()
     }
 
@@ -243,7 +240,8 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onApplySortFilterOnBuying(value: Int) {
-        viewModel.getLayoutData(1, "param", 3, 4)
+        // TO-DO : get layout
+//        viewModel.getLayoutData(1, "param", 3, 4)
     }
 
     private fun initInjector() {
