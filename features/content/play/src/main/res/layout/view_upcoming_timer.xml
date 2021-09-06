@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_timer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Akan mulai dalam"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
+        android:id="@+id/timer_upcoming"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_timer_label"
+        app:timer_unify_highlight_show_text="false"
+        app:timer_unify_highlight_size="small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
