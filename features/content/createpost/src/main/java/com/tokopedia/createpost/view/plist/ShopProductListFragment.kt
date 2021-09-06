@@ -3,6 +3,8 @@ package com.tokopedia.createpost.view.plist
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +20,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.recycler_view
-
 
 class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
 
@@ -58,19 +59,18 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         mAdapter.resetAdapter()
         mAdapter.notifyDataSetChanged()
         mAdapter.startDataLoading()
+        view.sb_shop_product.searchBarIcon.setImageDrawable(null)
 
-        view.sb_shop_product.searchBarIcon.hide()
+//        view.cu_sort_chip.setOnClickListener {
+//             getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
+//            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
+//        }
 
-        view.cu_sort_chip.chip_right_icon.background = (getIconUnifyDrawable(
-            requireContext(),
-            R.drawable.ic_arrow_down,
-            ContextCompat.getColor(requireContext(), R.color.black_70)
-        ))
-
-        view.cu_sort_chip.setOnClickListener {
-             getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
+        view.cu_sort_chip.setChevronClickListener {
+            getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
             fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
         }
+
     }
 
     private fun initListener() {
