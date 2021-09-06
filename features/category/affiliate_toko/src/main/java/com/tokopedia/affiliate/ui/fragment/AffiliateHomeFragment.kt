@@ -21,9 +21,10 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,12 +35,12 @@ import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
 import java.util.ArrayList
 import javax.inject.Inject
 
-class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
+class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
 
     companion object {
         fun getFragmentInstance(): Fragment {
@@ -63,7 +64,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
-            affiliateHomeViewModel.getAffiliateValidateUser()
+            //TODO
+            affiliateHomeViewModel.getAffiliatePerformance()
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
@@ -123,8 +125,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
                 show()
                 errorTitle.text = error
                 setActionClickListener {
-                    AffiliatePromotionBottomSheet.newInstance("","","","").show(childFragmentManager, "")
-//                    affiliateHomeViewModel.getAffiliateValidateUser()
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                 }
             }
         })
@@ -134,10 +135,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
-            affiliatePerformance.affiliatePerformance.data.links.items.let { products ->
+            affiliatePerformance.affiliatePerformance.data.links?.items?.let { products ->
                 if (products.isNotEmpty()) {
                     for (product in products) {
-                        adapter.addElement(AffiliateProductCardVHViewModel(product))
+                        adapter.addElement(AffiliateSharedProductCardsModel(product))
                     }
                 } else {
                     showNoAffiliate()
@@ -178,4 +179,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
-}
+
+    override fun onProductClick(productName: String, productImage: String, productUrl: String, productIdentifier: String) {
+        AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
+    } }

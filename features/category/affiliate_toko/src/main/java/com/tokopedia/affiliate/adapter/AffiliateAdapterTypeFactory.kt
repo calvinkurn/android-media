@@ -3,9 +3,9 @@ package com.tokopedia.affiliate.adapter
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
 interface AffiliateAdapterTypeFactory {
-    fun type(viewModel: AffiliateProductCardVHViewModel): Int
-    fun type(viewModel: AffiliateShimmerVHViewModel): Int
-    fun type(viewModel: AffiliateShareVHViewModel): Int
-    fun type(viewModel: AffiliatePromotionCardVHViewModel): Int
-    fun type(viewModel: AffiliatePromotionErrorCardVHViewModel): Int
+    fun type(viewModelShared: AffiliateSharedProductCardsModel): Int
+    fun type(viewModel: AffiliateShimmerModel): Int
+    fun type(viewModel: AffiliateShareModel): Int
+    fun type(viewModel: AffiliatePromotionCardModel): Int
+    fun type(viewModel: AffiliatePromotionErrorCardModel): Int
 }

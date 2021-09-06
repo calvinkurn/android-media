@@ -2,9 +2,9 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
+import com.tokopedia.affiliate.model.AffiliateSearchData
 
-class AffiliateProductCardVHViewModel(val product: AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item) : Visitable<AffiliateAdapterTypeFactory> {
+class AffiliatePromotionCardModel(val promotionItem: AffiliateSearchData.Cards.Items) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {
         return typeFactory.type(this)

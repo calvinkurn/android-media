@@ -86,11 +86,11 @@
                 android:id="@+id/products_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintTop_toBottomOf="@id/affiliate_promoted_products"
                 tools:itemCount="4"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/affiliate_product_card_shimmer_item_layout"
+                tools:listitem="@layout/affiliate_vertical_product_card_item_layout"
                 tools:orientation="vertical" />
 
             <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -104,7 +104,7 @@
                 app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
                 app:imageDpiSupportType="singleDpi"
                 app:layout_constraintTop_toBottomOf="@id/user_image"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
 
             <com.tokopedia.globalerror.GlobalError
@@ -117,7 +117,7 @@
                 android:visibility="gone"
                 app:globalerrors_type="SERVER_ERROR"
                 app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_iv"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

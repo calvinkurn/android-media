@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
 
 class AffiliateProductShimmerCardItemVH(itemView: View)
-    : AbstractViewHolder<AffiliateShimmerVHViewModel>(itemView) {
+    : AbstractViewHolder<AffiliateShimmerModel>(itemView) {
 
     companion object {
         @JvmField
@@ -15,7 +15,7 @@ class AffiliateProductShimmerCardItemVH(itemView: View)
         var LAYOUT = R.layout.affiliate_product_card_shimmer_item_layout
     }
 
-    override fun bind(element: AffiliateShimmerVHViewModel?) {
+    override fun bind(element: AffiliateShimmerModel?) {
 
     }
 }

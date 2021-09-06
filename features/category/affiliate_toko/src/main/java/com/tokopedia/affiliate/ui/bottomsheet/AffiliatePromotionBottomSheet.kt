@@ -23,7 +23,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -38,15 +38,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
     private var url: String? = null
     private var identifier: String? = null
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf(
-            AffiliateShareVHViewModel("Instagram", IconUnify.INSTAGRAM),
-            AffiliateShareVHViewModel("TikTok", IconUnify.TIKTOK),
-            AffiliateShareVHViewModel("Youtube", IconUnify.YOUTUBE),
-            AffiliateShareVHViewModel("Facebook", IconUnify.FACEBOOK),
-            AffiliateShareVHViewModel("Twitter", IconUnify.TWITTER),
-            AffiliateShareVHViewModel("Blog", IconUnify.GLOBE),
-            AffiliateShareVHViewModel("Whatsapp", IconUnify.WHATSAPP),
-            AffiliateShareVHViewModel("Line", IconUnify.LINE),
-            AffiliateShareVHViewModel("Lainnya", null)
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM),
+            AffiliateShareModel("TikTok", IconUnify.TIKTOK),
+            AffiliateShareModel("Youtube", IconUnify.YOUTUBE),
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK),
+            AffiliateShareModel("Twitter", IconUnify.TWITTER),
+            AffiliateShareModel("Blog", IconUnify.GLOBE),
+            AffiliateShareModel("Whatsapp", IconUnify.WHATSAPP),
+            AffiliateShareModel("Line", IconUnify.LINE),
+            AffiliateShareModel("Lainnya", null)
     )
 
     @Inject
@@ -145,7 +145,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
 
     private fun loading(stop: Boolean) {
         for (visitable in listVisitable) {
-            val updateVisitable = visitable as AffiliateShareVHViewModel
+            val updateVisitable = visitable as AffiliateShareModel
             if (currentName == updateVisitable.name) {
                 updateVisitable.buttonLoad = stop
                 adapter.setElement(adapter.list.indexOf(visitable), updateVisitable)
