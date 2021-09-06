@@ -207,9 +207,9 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
     }
 
     private fun KeywordFilterItemDataView.assertKeywordFilterItem(expectedOption: Option) {
-        val actualOption = this.option
-        assert(actualOption == expectedOption) {
-            "Option data is ${actualOption.uniqueId}.\nExpected ${expectedOption.uniqueId}"
+        val actualNegativeKeyword = negativeKeyword
+        assert(actualNegativeKeyword == expectedOption.name) {
+            "Negative keyword is $negativeKeyword.\nExpected is ${expectedOption.name}"
         }
     }
 

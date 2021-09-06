@@ -1,0 +1,9 @@
+{
+  "title": "Sembunyikan barang",
+  "search": {
+    "searchable": 0,
+    "placeholder": ""
+  },
+  "template_name": "template_negative_keyword",
+  "options": []
+}

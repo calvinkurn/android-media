@@ -17,7 +17,6 @@ import com.tokopedia.filter.common.data.*
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -226,11 +225,8 @@ internal class SortFilterBottomSheetViewModel {
     private fun createKeywordFilterDataView(filter: Filter) =
         KeywordFilterDataView(
             filter = filter,
-            itemList = filter.options.map(::createKeywordFilterItemDataView),
+            keywordParam = mapParameter[SearchApiConst.Q] ?: "",
         )
-
-    private fun createKeywordFilterItemDataView(option: Option) =
-        KeywordFilterItemDataView(option = option)
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()

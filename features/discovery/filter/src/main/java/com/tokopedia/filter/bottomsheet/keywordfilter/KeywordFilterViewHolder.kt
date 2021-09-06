@@ -87,7 +87,7 @@ internal class KeywordFilterViewHolder(
 
         fun bind(keywordFilterItemDataView: KeywordFilterItemDataView) {
             sortFilterChipsUnify?.apply {
-                chipText = keywordFilterItemDataView.option.name
+                chipText = keywordFilterItemDataView.negativeKeyword
                 chipSize = ChipsUnify.SIZE_MEDIUM
                 chipType = ChipsUnify.TYPE_NORMAL
                 setOnClickListener {
