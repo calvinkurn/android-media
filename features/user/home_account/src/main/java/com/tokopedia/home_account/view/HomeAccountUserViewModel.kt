@@ -183,7 +183,7 @@ class HomeAccountUserViewModel @Inject constructor(
             val response = getHomeAccountTokopointsUseCase(Unit)
 
             withContext(dispatcher) {
-                if (response.tokopointsStatusFilteredDataModel.resultStatus.code == "200" && response.tokopointsStatusFilteredDataModel.resultStatus.status == "OK") {
+                if (isSuccessGetTokoPoint(response)) {
                     _tokopoints.value = Success(response.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
                 } else {
                     _tokopoints.postValue(Fail(Throwable(response.tokopointsStatusFilteredDataModel.resultStatus.message[0])))
@@ -192,6 +192,11 @@ class HomeAccountUserViewModel @Inject constructor(
         }, onError = {
             _tokopoints.postValue(Fail(it))
         })
+    }
+
+    private fun isSuccessGetTokoPoint(tokopointsDataModel: TokopointsDataModel): Boolean {
+        return tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.code == SUCCESS_CODE &&
+            tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.status == SUCCESS_STAT
     }
 
     fun getSaldoBalance() {
@@ -231,6 +236,9 @@ class HomeAccountUserViewModel @Inject constructor(
 
     companion object {
         private const val AKUN_PAGE = "account"
+
+        private const val SUCCESS_CODE = "200"
+        private const val SUCCESS_STAT = "OK"
     }
 
 }
