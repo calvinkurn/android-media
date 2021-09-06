@@ -56,16 +56,15 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
-enum class PlayLikeMode {
-    Single,
-    Multiple
+sealed class PlayLikeMode {
+    data class Single(val shouldAnimate: Boolean) : PlayLikeMode()
+    object Multiple : PlayLikeMode()
 }
 
 data class PlayLikeUiState(
         val isLiked: Boolean,
         val shouldShow: Boolean,
         val canLike: Boolean,
-        val animate: Boolean,
         val totalLike: String,
         val likeMode: PlayLikeMode,
 )

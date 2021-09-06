@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.state.PlayLikeMode
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -69,7 +70,18 @@ class LikeViewComponent(
         tvTotalLikes.text = totalLikes
     }
 
-    fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+    fun playRemindAnimation() {
+        //TODO("Play Remind Animation")
+    }
+
+    fun setLike(shouldLike: Boolean, mode: PlayLikeMode) {
+        when (mode) {
+            is PlayLikeMode.Single -> playSingleLikeAnimation(shouldLike, mode.shouldAnimate)
+            PlayLikeMode.Multiple -> {}
+        }
+    }
+
+    private fun playSingleLikeAnimation(shouldLike: Boolean, animate: Boolean) {
         animationLike.cancelAnimation()
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
@@ -82,10 +94,6 @@ class LikeViewComponent(
             else animationLike.progress = END_ANIMATED_PROGRESS
         }
         currentLikeStatus = shouldLike
-    }
-
-    fun playRemindAnimation() {
-        //TODO("Play Remind Animation")
     }
 
     private fun playAnimation(animationType: AnimationType) {

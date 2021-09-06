@@ -174,9 +174,9 @@ class PlayViewModel @Inject constructor(
                     isLiked = likeInfo.status == PlayLikeStatus.Liked,
                     shouldShow = !bottomInsets.isAnyShown && status.isActive,
                     canLike = likeInfo.status != PlayLikeStatus.Unknown,
-                    animate = likeInfo.source == LikeSource.UserAction,
                     totalLike = channelReport.totalLikeFmt,
-                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple else PlayLikeMode.Single,
+                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
+                    else PlayLikeMode.Single(likeInfo.source == LikeSource.UserAction),
                 ),
                 totalView = channelReport.totalViewFmt,
                 isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
