@@ -56,7 +56,6 @@ class EditorItemSelectionAdapter constructor(
         notifyDataSetChanged()
     }
 
-
     private fun onItemSelected(item: ItemSelection, position: Int) {
         if (position < 0) return
 

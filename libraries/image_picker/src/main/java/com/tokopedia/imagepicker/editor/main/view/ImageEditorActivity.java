@@ -778,6 +778,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (currentStep > 0) {
             currentEditStepIndexList.set(imageIndex, currentStep - 1);
             refreshPage(imageIndex);
+            watermarkItemSelection.clearData();
             imageEditThumbnailListWidget.notifyDataSetChanged();
         }
     }
