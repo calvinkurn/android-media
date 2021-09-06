@@ -18,7 +18,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifycomponents.ChipsUnify
 
 
-class ShopProductListFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback {
+class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
 
@@ -145,6 +145,10 @@ class ShopProductListFragment : BaseDaggerFragment(), View.OnClickListener, Adap
     override fun getScreenName(): String {
         // TODO("Not yet implemented")
         return ""
+    }
+
+    override fun initInjector() {
+
     }
 
     companion object {
