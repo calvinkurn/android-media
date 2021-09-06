@@ -21,7 +21,7 @@ class AffiliateVerticalProductCardItemVH(itemView: View)
 
     override fun bind(element: AffiliateProductCardVHViewModel?) {
         element?.product?.let { product->
-            itemView.product_image.setImageUrl(product.image.android)
+            itemView.product_image.setImageUrl(product.image?.android ?: "")
             itemView.product_name.text = product.title
             if(product.status == PRODUCT_ACTIVE){
                 itemView.status_bullet.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.affiliate_circle_active))
@@ -32,6 +32,7 @@ class AffiliateVerticalProductCardItemVH(itemView: View)
                 itemView.product_status.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_NN500))
                 itemView.product_status.text = getString(R.string.affiliate_inactive)
             }
+            itemView.shop_name.text = product.footer.firstOrNull()?.footerText
         }
     }
 }

@@ -17,13 +17,13 @@ data class AffiliatePerformanceData(
         @Keep
         data class Data(
                 @SerializedName("error")
-                var error: Error,
+                var error: Error? = null,
                 @SerializedName("filters")
-                var filters: Filters,
+                var filters: Filters? = null,
                 @SerializedName("links")
-                var links: Links,
+                var links: Links? = null,
                 @SerializedName("performanceSummary")
-                var performanceSummary: PerformanceSummary,
+                var performanceSummary: PerformanceSummary? = null,
                 @SerializedName("status")
                 var status: Boolean
         ) {
@@ -42,7 +42,7 @@ data class AffiliatePerformanceData(
                     @SerializedName("sectionID")
                     var sectionID: Int,
                     @SerializedName("sectionTitle")
-                    var sectionTitle: String,
+                    var sectionTitle: String ?= null,
                     @SerializedName("totalCount")
                     var totalCount: Int
             ) {
@@ -51,22 +51,22 @@ data class AffiliatePerformanceData(
                         @SerializedName("footer")
                         var footer: List<Footer>,
                         @SerializedName("id")
-                        var id: Int,
+                        var id: Int?=null,
                         @SerializedName("image")
-                        var image: Image,
+                        var image: Image ?=null,
                         @SerializedName("performanceSummary")
-                        var performanceSummary: PerformanceSummary,
+                        var performanceSummary: PerformanceSummary?=null,
                         @SerializedName("status")
-                        var status: Int,
+                        var status: Int?=null,
                         @SerializedName("title")
-                        var title: String
+                        var title: String?=null
                 ) {
                     @Keep
                     data class Footer(
                             @SerializedName("footerIcon")
-                            var footerIcon: String,
+                            var footerIcon: String?= null,
                             @SerializedName("footerText")
-                            var footerText: String
+                            var footerText: String?= null
                     )
 
                     @Keep

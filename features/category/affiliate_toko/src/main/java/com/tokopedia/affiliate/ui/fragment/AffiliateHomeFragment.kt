@@ -63,7 +63,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
-            affiliateHomeViewModel.getAffiliateValidateUser()
+            //TODO
+            affiliateHomeViewModel.getAffiliatePerformance()
         }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
@@ -134,7 +135,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>() {
             }
         })
         affiliateHomeViewModel.getAffiliatePerformanceData().observe(this, { affiliatePerformance ->
-            affiliatePerformance.affiliatePerformance.data.links.items.let { products ->
+            affiliatePerformance.affiliatePerformance.data.links?.items?.let { products ->
                 if (products.isNotEmpty()) {
                     for (product in products) {
                         adapter.addElement(AffiliateProductCardVHViewModel(product))

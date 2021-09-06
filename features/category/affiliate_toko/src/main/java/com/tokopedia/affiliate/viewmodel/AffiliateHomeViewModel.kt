@@ -34,10 +34,42 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun getAffiliatePerformance() {
+        progressBar.value = false
         shimmerVisibility.value = true
         launchCatchError(block = {
             shimmerVisibility.value = false
-            affiliatePerformance.value = affiliatePerformanceUseCase.affiliatePerformance(userSessionInterface.userId)
+            //TODO
+            affiliatePerformance.value = AffiliatePerformanceData(AffiliatePerformanceData.AffiliatePerformance(AffiliatePerformanceData.AffiliatePerformance.Data(
+                    links = AffiliatePerformanceData.AffiliatePerformance.Data.Links(
+                            hasMore = false,
+                            arrayListOf(
+                                    AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
+                                            arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
+                                                    footerText = "VAIA Official"
+                                            )),
+                                            title = "Profuct 1",
+                                            status = 1),
+                                    AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
+                                            arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
+                                                    footerText = "VAIA Official"
+                                            )),
+                                            title = "Profuct 2"),
+                                    AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
+                                            arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
+                                                    footerText = "VAIA Official"
+                                            )),
+                                            title = "Profuct 3"),
+                                    AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
+                                            arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
+                                                    footerText = "VAIA Official"
+                                            )),
+                                            title = "Profuct 4")
+                            ),
+                            sectionID = 0,
+                            totalCount = 4
+                    ), status = true
+            )))
+//            affiliatePerformance.value = affiliatePerformanceUseCase.affiliatePerformance(userSessionInterface.userId)
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
