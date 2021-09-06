@@ -53,6 +53,10 @@ class NewOtherMenuViewModel @Inject constructor(
     companion object {
         private const val DELAY_TIME = 5000L
         private const val GENTLY_SWIPE_DELAY = 1000L
+        private const val START_TOPUP_ANIM_DELAY = 2000L
+        private const val TOGGLE_TOPUP_ANIM_DELAY = 1000L
+
+        private const val MAX_TOGGLE_TIMES = 2
 
         private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
     }
@@ -66,7 +70,7 @@ class NewOtherMenuViewModel @Inject constructor(
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
     private val _shopOperationalLiveData = MutableLiveData<SettingResponseState<ShopOperationalData>>()
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<String>>()
-    private val _kreditTopAdsLiveData = MutableLiveData<SettingResponseState<String>>()
+    private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
@@ -80,7 +84,7 @@ class NewOtherMenuViewModel @Inject constructor(
     val balanceInfoLiveData: LiveData<SettingResponseState<String>>
         get() = _balanceInfoLiveData
     val kreditTopAdsLiveData: LiveData<SettingResponseState<String>>
-        get() = _kreditTopAdsLiveData
+        get() = _kreditTopAdsFormattedLiveData
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
 
@@ -100,7 +104,7 @@ class NewOtherMenuViewModel @Inject constructor(
         addSource(_balanceInfoLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.Saldo, it)
         }
-        addSource(_kreditTopAdsLiveData) {
+        addSource(_kreditTopAdsFormattedLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.Topads, it)
         }
     }
@@ -154,6 +158,11 @@ class NewOtherMenuViewModel @Inject constructor(
         }
     }
 
+    private val _kreditTopAdsLiveData = MutableLiveData<Float>()
+    private val _numberOfTopupToggleCounts = MutableLiveData<Int>()
+    val numberOfTopupToggleCounts: LiveData<Int>
+        get() = _numberOfTopupToggleCounts
+
     val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
     val isToasterAlreadyShown: LiveData<Boolean>
@@ -164,6 +173,7 @@ class NewOtherMenuViewModel @Inject constructor(
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
         setSuccessStateMapDefaultValue()
+        resetTopadsToggleCount()
 
         getShopBadgeData()
         getShopTotalFollowersData()
@@ -250,8 +260,14 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     fun getKreditTopAds() {
-        _kreditTopAdsLiveData.value = SettingResponseState.SettingLoading
+        _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingLoading
         getKreditTopAdsData()
+    }
+
+    fun startToggleTopadsCredit() {
+        launchCatchError(block = {
+            toggleTopadsTopupWithDelay()
+        }){}
     }
 
     private fun getFreeShippingStatusData() {
@@ -356,14 +372,16 @@ class NewOtherMenuViewModel @Inject constructor(
     private fun getKreditTopAdsData() {
         launchCatchError(
             block = {
-                val topAdsBalance = withContext(dispatcher.io) {
+                val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                    topAdsDashboardDepositUseCase.executeOnBackground().getCurrencyFormatted()
+                    val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
+                    _kreditTopAdsLiveData.postValue(topAdsBalance)
+                    topAdsBalance.getCurrencyFormatted()
                 }
-                _kreditTopAdsLiveData.value = SettingResponseState.SettingSuccess(topAdsBalance)
+                _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingSuccess(topAdsBalanceFormatted)
             },
             onError = {
-                _kreditTopAdsLiveData.value = SettingResponseState.SettingError(it)
+                _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingError(it)
             }
         )
     }
@@ -411,7 +429,29 @@ class NewOtherMenuViewModel @Inject constructor(
     private suspend fun swipeSecondaryInfoGentlyWithDelay() {
         withContext(dispatcher.main) {
             delay(GENTLY_SWIPE_DELAY)
-            _shouldSwipeSecondaryInfoGently.postValue(true)
+            if (_shouldSwipeSecondaryInfoGently.value == false) {
+                _shouldSwipeSecondaryInfoGently.postValue(true)
+            }
+        }
+    }
+
+    private fun resetTopadsToggleCount() {
+        _kreditTopAdsLiveData.value = null
+        _numberOfTopupToggleCounts.value = null
+    }
+
+    private suspend fun toggleTopadsTopupWithDelay() {
+        withContext(dispatcher.main) {
+            if (_kreditTopAdsLiveData.value == 0f) {
+                val toggleCount: Int? = _numberOfTopupToggleCounts.value
+                if (toggleCount == null) {
+                    delay(START_TOPUP_ANIM_DELAY)
+                    _numberOfTopupToggleCounts.postValue(1)
+                } else if (toggleCount < MAX_TOGGLE_TIMES){
+                    delay(TOGGLE_TOPUP_ANIM_DELAY)
+                    _numberOfTopupToggleCounts.postValue(toggleCount.inc())
+                }
+            }
         }
     }
 

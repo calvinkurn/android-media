@@ -279,6 +279,10 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         }
     }
 
+    override fun onTopadsValueSet() {
+        viewModel.startToggleTopadsCredit()
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
         (activity as? Activity)?.requestStatusBarDark()
@@ -304,6 +308,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         observeShouldSwipeSecondaryInfo()
         observeMultipleErrorToaster()
         observeToasterAlreadyShown()
+        observeToggleTopadsCount()
     }
 
     private fun observeShopBadge() {
@@ -430,6 +435,14 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     private fun observeToasterAlreadyShown() {
         viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
             canShowErrorToaster = !isToasterAlreadyShown
+        }
+    }
+
+    private fun observeToggleTopadsCount() {
+        viewModel.numberOfTopupToggleCounts.observe(viewLifecycleOwner) { count ->
+            if (count != null) {
+                viewHolder?.toggleTopadsTopup()
+            }
         }
     }
 

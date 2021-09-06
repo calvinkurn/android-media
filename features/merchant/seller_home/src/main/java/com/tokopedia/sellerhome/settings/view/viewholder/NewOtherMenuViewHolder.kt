@@ -186,6 +186,15 @@ class NewOtherMenuViewHolder(
         secondaryShopInfoAnimator?.swipeRecyclerViewGently()
     }
 
+    fun toggleTopadsTopup() {
+        balanceTopadsTopupView?.run {
+            setOnAnimationFinishedListener {
+                listener.onTopadsValueSet()
+            }
+            toggleTopadsTopupWithAnimation()
+        }
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
@@ -312,7 +321,7 @@ class NewOtherMenuViewHolder(
         balanceTopadsTopupView?.run {
             setTopadsValue(topadsValueString)
             show()
-            toggleTopadsTopupWithAnimation()
+            listener.onTopadsValueSet()
         }
         errorLayoutTopads?.gone()
         shimmerTopads?.gone()
@@ -412,6 +421,7 @@ class NewOtherMenuViewHolder(
         fun onKreditTopAdsRefresh()
         fun onFreeShippingRefresh()
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
+        fun onTopadsValueSet()
     }
 
 }
