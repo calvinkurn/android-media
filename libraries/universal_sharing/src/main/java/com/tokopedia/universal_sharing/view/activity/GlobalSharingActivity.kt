@@ -89,7 +89,7 @@ class GlobalSharingActivity: BaseActivity() {
     private fun askPermission() {
         isNeedPermission = true
         ActivityCompat.requestPermissions(this, arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+            Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION)
     }
 
     private fun getFileProvider(imageFile: File): Uri {
@@ -105,9 +105,9 @@ class GlobalSharingActivity: BaseActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if(requestCode == 100) {
-            if ((grantResults.isNotEmpty() &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        if(requestCode == REQUEST_CODE_PERMISSION
+            && grantResults.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 isNeedPermission = false
                 checkSharingOptions()
             }
@@ -117,13 +117,8 @@ class GlobalSharingActivity: BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            REQUEST_CODE_CHOOSER -> {
-                finish()
-            }
-            REQUEST_CODE_INSTAGRAM -> {
-                finish()
-            }
+        if(REQUEST_CODE_CHOOSER || REQUEST_CODE_INSTAGRAM) {
+            finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -139,5 +134,8 @@ class GlobalSharingActivity: BaseActivity() {
 
         private const val REQUEST_CODE_CHOOSER = 100
         private const val REQUEST_CODE_INSTAGRAM = 102
+
+        private const val REQUEST_CODE_PERMISSION = 99
+
     }
 }
