@@ -72,7 +72,7 @@ class MainFragment : Fragment(), MainFragmentContract {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity, menu)
+        MenuManager.addCustomMenu(activity, menu) { proceedNextStep() }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
