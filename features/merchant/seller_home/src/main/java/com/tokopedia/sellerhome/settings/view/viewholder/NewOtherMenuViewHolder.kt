@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -258,6 +259,14 @@ class NewOtherMenuViewHolder(
         secondaryInfoRecyclerView?.run {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = secondaryInfoAdapter
+            itemAnimator = null
+            val decorationDrawable = context?.resources?.getDrawable(R.drawable.divider_sah_new_other_secondary, null)
+            val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL).apply {
+                decorationDrawable?.let {
+                    setDrawable(it)
+                }
+            }
+            addItemDecoration(itemDecoration)
             secondaryShopInfoAnimator = SecondaryShopInfoAnimator(this)
         }
     }
