@@ -171,28 +171,30 @@ class PlayViewModel @Inject constructor(
                 showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
                 status = status,
                 like = PlayLikeUiState(
-                        isLiked = likeInfo.status == PlayLikeStatus.Liked,
-                        shouldShow = !bottomInsets.isAnyShown && status.isActive,
-                        canLike = likeInfo.status != PlayLikeStatus.Unknown,
-                        animate = likeInfo.source == LikeSource.UserAction,
-                        totalLike = channelReport.totalLikeFmt,
+                    isLiked = likeInfo.status == PlayLikeStatus.Liked,
+                    shouldShow = !bottomInsets.isAnyShown && status.isActive,
+                    canLike = likeInfo.status != PlayLikeStatus.Unknown,
+                    animate = likeInfo.source == LikeSource.UserAction,
+                    totalLike = channelReport.totalLikeFmt,
+                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple else PlayLikeMode.Single,
                 ),
                 totalView = channelReport.totalViewFmt,
                 isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
                 cart = PlayCartUiState(
-                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
-                        count = if (cartInfo.itemCount > 0) {
-                            val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
-                            PlayCartCount.Show(countText)
-                        } else PlayCartCount.Hide
+                    shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+                    count = if (cartInfo.itemCount > 0) {
+                        val countText =
+                            if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
+                        PlayCartCount.Show(countText)
+                    } else PlayCartCount.Hide
                 ),
                 rtn = PlayRtnUiState(
-                        shouldShow = channelType.isLive &&
-                                !bottomInsets.isAnyShown &&
-                                status.isActive &&
-                                !channelDetail.videoInfo.orientation.isHorizontal &&
-                                !videoPlayer.isYouTube,
-                        lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+                    shouldShow = channelType.isLive &&
+                            !bottomInsets.isAnyShown &&
+                            status.isActive &&
+                            !channelDetail.videoInfo.orientation.isHorizontal &&
+                            !videoPlayer.isYouTube,
+                    lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
                 )
         )
     }
@@ -239,11 +241,6 @@ class PlayViewModel @Inject constructor(
 
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
-
-    val isAllowMultipleLike: Boolean
-//        get() = videoPlayer.isYouTube // Youtube
-//        get() = !videoPlayer.isYouTube && channelType.isVod // Vod
-        get() = !videoPlayer.isYouTube && channelType.isLive // Live
 
     private var mChannelData: PlayChannelData? = null
 
@@ -1410,43 +1407,66 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleClickLike() = needLogin(REQUEST_CODE_LOGIN_LIKE) {
-        val likeInfo = _likeInfo.value
-        if (likeInfo.status == PlayLikeStatus.Unknown) return@needLogin
 
-        val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
-        _likeInfo.setValue {
-            copy(status = newStatus, source = LikeSource.UserAction)
+        fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
+            val currentTotalLike = _channelReport.value.totalLike
+            val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
+            return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
+                val totalLike = (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(0)
+                val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
+                totalLike to fmt
+            } else {
+                currentTotalLike to currentTotalLikeFmt
+            }
         }
 
-        val currentTotalLike = _channelReport.value.totalLike
-        val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
-        val (newTotalLike, newTotalLikeFmt) = if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-            val totalLike = (_channelReport.value.totalLike + (if (newStatus == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(0)
-            val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
-            totalLike to fmt
-        } else {
-            currentTotalLike to currentTotalLikeFmt
+        fun handleClickLikeLive() {
+            val newStatus = PlayLikeStatus.Liked
+            _likeInfo.setValue {
+                copy(status = newStatus, source = LikeSource.UserAction)
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            //TODO("Hit Socket")
         }
 
-        _channelReport.setValue {
-            copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
-        }
+        fun handleClickLikeNonLive() {
+            val likeInfo = _likeInfo.value
+            if (likeInfo.status == PlayLikeStatus.Unknown) return
 
-        viewModelScope.launch {
-            repo.postLike(
+            val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
+            _likeInfo.setValue {
+                copy(status = newStatus, source = LikeSource.UserAction)
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            viewModelScope.launch {
+                repo.postLike(
                     contentId = likeInfo.contentId.toLongOrZero(),
                     contentType = likeInfo.contentType,
                     likeType = likeInfo.likeType,
                     shouldLike = newStatus == PlayLikeStatus.Liked
-            )
-        }
+                )
+            }
 
-        playAnalytic.clickLike(
+            playAnalytic.clickLike(
                 channelId = channelId,
                 channelType = channelType,
                 channelName = _channelDetail.value.channelInfo.title,
                 likeStatus = newStatus,
-        )
+            )
+        }
+
+        if (channelType.isLive) handleClickLikeLive()
+        else handleClickLikeNonLive()
     }
 
     private fun handleClickShare() {

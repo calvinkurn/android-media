@@ -84,6 +84,10 @@ class LikeViewComponent(
         currentLikeStatus = shouldLike
     }
 
+    fun playRemindAnimation() {
+        //TODO("Play Remind Animation")
+    }
+
     private fun playAnimation(animationType: AnimationType) {
         if(animationType != currentAnimation) {
             animationLike.setAnimation(

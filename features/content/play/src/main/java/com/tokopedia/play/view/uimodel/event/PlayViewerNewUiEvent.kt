@@ -29,6 +29,11 @@ data class ShowRealTimeNotificationEvent(
         val notification: RealTimeNotificationUiModel,
 ) : PlayViewerNewUiEvent()
 
+/**
+ * Multiple Likes
+ */
+object RemindLikeEvent : PlayViewerNewUiEvent()
+
 //---------------------
 
 sealed class UiString {

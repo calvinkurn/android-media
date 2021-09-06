@@ -542,8 +542,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
-
-        likeView.setIsMultipleLike(playViewModel.isAllowMultipleLike)
     }
 
     private fun setupInsets(view: View) {

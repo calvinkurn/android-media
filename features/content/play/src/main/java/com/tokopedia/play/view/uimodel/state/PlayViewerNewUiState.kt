@@ -56,12 +56,18 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
+enum class PlayLikeMode {
+    Single,
+    Multiple
+}
+
 data class PlayLikeUiState(
         val isLiked: Boolean,
         val shouldShow: Boolean,
         val canLike: Boolean,
         val animate: Boolean,
         val totalLike: String,
+        val likeMode: PlayLikeMode,
 )
 
 data class PlayCartUiState(
