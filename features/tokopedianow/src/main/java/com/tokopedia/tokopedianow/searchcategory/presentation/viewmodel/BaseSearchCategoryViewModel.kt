@@ -602,7 +602,7 @@ abstract class BaseSearchCategoryViewModel(
             if (product.childs.isEmpty())
                 NonVariantATCDataView(
                         minQuantity = product.minOrder,
-                        maxQuantity = product.stock,
+                        maxQuantity = product.maxOrder,
                         quantity = getProductNonVariantQuantity(product.id)
                 )
             else null

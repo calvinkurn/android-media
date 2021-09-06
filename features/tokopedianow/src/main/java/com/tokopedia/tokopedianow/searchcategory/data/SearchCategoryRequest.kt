@@ -95,7 +95,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             originalPrice
             childs
             parentId
-            stock
+            maxOrder
             ratingAverage
             minOrder
             source_engine

@@ -45,7 +45,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 7
+                "maxOrder": 7
               },
               {
                 "id": 574261652,
@@ -59,7 +59,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 4
+                "maxOrder": 4
               },
               {
                 "id": 576261652,
@@ -73,7 +73,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               }
             ]
           },
@@ -94,7 +94,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 574262652,
@@ -108,7 +108,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 12
+                "maxOrder": 12
               },
               {
                 "id": 574262352,
@@ -122,7 +122,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               }
             ]
           },
@@ -143,7 +143,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 1981032854,
@@ -157,7 +157,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 469752802,
@@ -171,7 +171,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               }
             ]
           },
@@ -192,7 +192,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 1911369091,
@@ -206,7 +206,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 1781420935,
@@ -220,7 +220,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               }
             ]
           },
@@ -241,7 +241,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 378687907,
@@ -255,7 +255,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               },
               {
                 "id": 473836862,
@@ -269,7 +269,7 @@
                   "id": 3102419
                 },
                 "minOrder": 1,
-                "stock": 13
+                "maxOrder": 13
               }
             ]
           }

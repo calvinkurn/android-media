@@ -41,7 +41,7 @@ class SearchProductVariantNonVariantTest: SearchTestFixtures() {
 
         val nonVariantATC = productItemDataViewNonVariant.nonVariantATC!!
         assertThat(nonVariantATC.minQuantity, shouldBe(productNonVariant.minOrder))
-        assertThat(nonVariantATC.maxQuantity, shouldBe(productNonVariant.stock))
+        assertThat(nonVariantATC.maxQuantity, shouldBe(productNonVariant.maxOrder))
     }
 
     @Test
