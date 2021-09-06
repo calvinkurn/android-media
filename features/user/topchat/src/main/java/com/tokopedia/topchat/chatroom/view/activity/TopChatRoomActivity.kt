@@ -503,7 +503,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onBackPressed() {
-        if(chatRoomFragment.onBackPressed()) {
+        if(::chatRoomFragment.isInitialized && chatRoomFragment.onBackPressed()) {
             return
         } else {
             super.onBackPressed()
