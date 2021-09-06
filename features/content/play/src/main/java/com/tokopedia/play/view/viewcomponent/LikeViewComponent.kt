@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -60,11 +59,12 @@ class LikeViewComponent(
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
-        tvTotalLikes.text = totalLikes.totalLikeFormatted
+    fun setTotalLikes(totalLikes: String) {
+        tvTotalLikes.text = totalLikes
     }
 
     fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+        animationLike.cancelAnimation()
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
             if (animate) animationLike.playAnimation()

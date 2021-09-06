@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder.detail.analytics
 
-import android.app.Activity
 import com.tokopedia.track.TrackApp
 
 /**
@@ -9,7 +8,7 @@ import com.tokopedia.track.TrackApp
 object BuyerAnalytics {
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 }

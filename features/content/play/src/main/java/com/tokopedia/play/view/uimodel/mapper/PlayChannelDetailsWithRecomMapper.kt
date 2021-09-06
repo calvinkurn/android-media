@@ -2,12 +2,15 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -19,18 +22,26 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayChannelDetailsWithRecomMapper @Inject constructor(
-        private val htmlTextTransformer: HtmlTextTransformer
+        private val htmlTextTransformer: HtmlTextTransformer,
+        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
 ) {
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
-                    channelInfo = mapChannelInfo(it.isLive, it.config, it.title),
+                    channelDetail = PlayChannelDetailUiModel(
+                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title),
+                        shareInfo = mapShareInfo(it.share),
+                        rtnConfigInfo = mapRealTimeNotificationConfig(
+                            it.config.welcomeFormat,
+                            it.config.realTimeNotif
+                        ),
+                        videoInfo = mapVideoInfo(it.video),
+                    ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
-                    totalViewInfo = mapTotalViewInfo(),
-                    shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
+                    channelReportInfo = mapChannelReportInfo(),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
@@ -42,13 +53,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapChannelInfo(
+            channelId: String,
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
             title: String
     ) = PlayChannelInfoUiModel(
+            id = channelId,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             backgroundUrl = configResponse.roomBackground.imageUrl,
-            title
+            title = title,
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
@@ -58,17 +71,17 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             status = PlayPartnerFollowStatus.Unknown,
     )
 
-    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
-            param = PlayLikeParamInfoUiModel(
-                    contentId = feedLikeParamResponse.contentId,
-                    contentType = feedLikeParamResponse.contentType,
-                    likeType = feedLikeParamResponse.likeType
-            )
+    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel(
+            contentId = feedLikeParamResponse.contentId,
+            contentType = feedLikeParamResponse.contentType,
+            likeType = feedLikeParamResponse.likeType,
+            status = PlayLikeStatus.Unknown,
+            source = LikeSource.Network,
     )
 
-    private fun mapTotalViewInfo() = PlayTotalViewUiModel.Incomplete
+    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
 
-    private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share, isActive: Boolean, isFreezed: Boolean): PlayShareInfoUiModel {
+    private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
             shareResponse.text.replace("${'$'}{url}", shareResponse.redirectUrl)
         } catch (e: Throwable) {
@@ -79,12 +92,27 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 content = htmlTextTransformer.transform(fullShareContent),
                 shouldShow = shareResponse.isShowButton
                         && shareResponse.redirectUrl.isNotBlank()
-                        && isActive
-                        && !isFreezed
         )
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel.Incomplete(
+    private fun mapRealTimeNotificationConfig(
+            welcomeFormatResponse: RealTimeNotification,
+            config: ChannelDetailsWithRecomResponse.RealTimeNotificationConfig
+    ) = PlayRealTimeNotificationConfig(
+            welcomeNotification = realTimeNotificationMapper.mapWelcomeFormat(
+                    welcomeFormatResponse
+            ),
+            lifespan = if (config.lifespan <= 0) DEFAULT_LIFESPAN_IN_MS else config.lifespan,
+    )
+
+    private fun mapVideoInfo(
+        videoResponse: ChannelDetailsWithRecomResponse.Video
+    ) = PlayVideoConfigUiModel(
+        id = videoResponse.id,
+        orientation = VideoOrientation.getByValue(videoResponse.orientation),
+    )
+
+    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
             shouldShow = configResponse.showCart
     )
 
@@ -204,6 +232,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     companion object {
         private const val MS_PER_SECOND = 1000
         private const val DEFAULT_MAX_FEATURED_PRODUCT = 5
+
+        private const val DEFAULT_LIFESPAN_IN_MS = 1000L
     }
 
     data class ExtraParams(

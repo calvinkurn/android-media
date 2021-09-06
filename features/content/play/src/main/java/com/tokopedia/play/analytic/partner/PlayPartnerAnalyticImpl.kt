@@ -1,5 +1,8 @@
 package com.tokopedia.play.analytic.partner
 
+import com.tokopedia.play.analytic.KEY_TRACK_CLICK
+import com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT
+import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
@@ -25,12 +28,5 @@ class PlayPartnerAnalyticImpl @Inject constructor() : PlayPartnerAnalytic {
                 "$KEY_TRACK_CLICK - shop",
                 "$shopId - $channelId - ${channelType.value}"
         )
-    }
-
-    companion object {
-        private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
-
-        private const val KEY_TRACK_CLICK = "click"
-        private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
     }
 }

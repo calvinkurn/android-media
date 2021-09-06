@@ -11,7 +11,6 @@ object BuyerConsts {
     const val PARAM_JSON_LIST_PRODUCT = "param_json_list_product"
     const val PARAM_INVOICE = "param_invoice"
     const val INVOICE = "invoice"
-    const val PARAM = "param"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
     const val PARAM_URI = "uri"
@@ -29,15 +28,11 @@ object BuyerConsts {
     const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
     const val PARAM_HELP_LINK_URL = "help_link_url"
     const val PARAM_SOURCE_UOH = "source_uoh"
-    const val CANCEL_BUYER_REQUEST_TWO_LAYER = 105
     const val ACTION_OK = "OK"
     const val LAINNYA = "lainnya"
-    const val KEY_REQUEST_CANCEL = "request_cancel"
     const val KEY_SETELAH = "setelah"
     const val KEY_LAGI = "lagi"
-    const val KEY_HOUR = "jam"
     const val KEY_HOUR_DIVIDER = ":"
-    const val KEY_MINUTE = "menit"
     const val REASON_CODE_LAINNYA = 599
     const val TICKER_URL = "#ticker_url"
     const val TICKER_LABEL = "#ticker_label"
@@ -45,8 +40,6 @@ object BuyerConsts {
     const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
     const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
-    const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
-    const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
     const val INSTANT_CANCEL_BUYER_REQUEST = 100
     const val RESULT_CODE_SUCCESS = 1
     const val RESULT_CODE_BACK = 0
@@ -56,26 +49,6 @@ object BuyerConsts {
     const val TICKER_TYPE_WARNING = "warning"
 
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
-    const val HOST_DEALS = "deals"
-    const val HOST_DIGITAL = "digital"
-    const val HOST_EVENTS = "events"
-    const val HOST_GIFTCARDS = "giftcards"
-    const val HOST_INSURANCE = "insurance"
-    const val HOST_MODALTOKO = "modaltoko"
-    const val HOST_BUYER = "buyer"
-    const val HOST_BELANJA = "belanja"
-    const val HOST_ORDER_LIST = "order_list"
-    const val APPLINK_INTERNAL_ORDER = "tokopedia-android-internal://order"
-    const val HOST_HOTEL = "hotel"
-    const val HOST_FLIGHT = "pesawat"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
-
-    const val PRODUCT_ID = "product_id"
-    const val QUANTITY = "quantity"
-    const val NOTES = "notes"
-    const val SHOP_ID = "shop_id"
-    const val PRODUCT_PRICE = "product_price"
-    const val CATEGORY = "category"
-    const val PRODUCT_NAME = "product_name"
 }
