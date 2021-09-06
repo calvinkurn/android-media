@@ -21,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertTrue
@@ -93,10 +93,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as buyer should return chat list of messages`() {
@@ -115,10 +112,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, BUYER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as seller should return chat list of messages`() {
@@ -143,10 +137,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, SELLER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as undefined should return chat list of messages as buyer`() {
@@ -165,10 +156,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, -1)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage should throw the Fail state`() {

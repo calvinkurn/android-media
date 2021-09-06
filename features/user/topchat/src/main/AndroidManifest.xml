@@ -79,7 +79,8 @@
             android:name=".chatroom.view.activity.TopChatRoomActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

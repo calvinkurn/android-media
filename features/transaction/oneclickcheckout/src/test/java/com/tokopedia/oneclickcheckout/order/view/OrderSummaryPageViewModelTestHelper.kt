@@ -72,7 +72,7 @@ class OrderSummaryPageViewModelTestHelper {
             500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), false)
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
-        shippingDurationViewModels = listOf(firstDuration, secondDuration)
+        shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
     }
 

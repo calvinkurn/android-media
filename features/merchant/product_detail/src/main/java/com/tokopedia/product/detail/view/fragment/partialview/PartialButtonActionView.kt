@@ -68,6 +68,7 @@ class PartialButtonActionView private constructor(val view: View,
 
         private const val QUANTITY_REGEX = "[^0-9]"
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
+        private const val TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME = 1000L
         private const val DEFAULT_TOTAL_STOCK = 1
     }
 
@@ -263,7 +264,14 @@ class PartialButtonActionView private constructor(val view: View,
                     }
                     qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
                 })
-                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                .debounce {
+                    if (it < minQuantity) {
+                        // Use longer debounce when reset qty, to support automation
+                        Observable.just(it).delay(TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                    } else {
+                        Observable.just(it).delay(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                    }
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Int>() {
