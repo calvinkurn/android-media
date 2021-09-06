@@ -121,12 +121,8 @@ class PlayUpcomingFragment @Inject constructor(
             }
 
             playViewModel.uiEvent.collect { event ->
-                when (event) {
-                    is OpenPageEvent -> {
-                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
-                    }
-                    is ShowToasterEvent -> handleToasterEvent(event)
-                }
+                if(event is OpenPageEvent)
+                    openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
             }
         }
     }
@@ -158,17 +154,6 @@ class PlayUpcomingFragment @Inject constructor(
             is UiString.Text -> uiString.text
             is UiString.Resource -> getString(uiString.resource)
         }
-    }
-
-    private fun handleToasterEvent(event: ShowToasterEvent) {
-        val text = getTextFromUiString(event.message)
-        doShowToaster(
-            toasterType = when (event) {
-                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
-                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-            },
-            message = text
-        )
     }
 
     private fun setupInsets() {
