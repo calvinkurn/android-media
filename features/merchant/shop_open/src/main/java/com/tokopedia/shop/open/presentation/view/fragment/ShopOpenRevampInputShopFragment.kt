@@ -463,15 +463,15 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title))
         val tncUnclickableAreaSpan = setupClickableSpan("", getString(R.string.open_shop_revamp_tnc_unclickable))
         val privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))
-        val ZERO_SPAN = 0
-        val TWENTY_SPAN = 20
+        val spanZero = 0
+        val spanTwenty = 20
         val TWENTY_ONE_SPAN = 21
         val TWENTY_FOUR_SPAN = 24
         val TWENTY_FIVE_SPAN = 25
 
-        textTnc.setSpan(tncClickableSpan, ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncClickableSpan, spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
