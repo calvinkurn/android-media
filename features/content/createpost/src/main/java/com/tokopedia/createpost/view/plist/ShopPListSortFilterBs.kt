@@ -34,7 +34,7 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel) : BottomSheetU
                 is Loading -> {
                 }
                 is Success -> {
-                    adapter = ShopProductSortAdapter(it.data.result)
+                    adapter = ShopProductSortAdapter(it.data.sortData.result, vm)
                     rvSort?.adapter = adapter
                 }
                 is ErrorMessage -> {

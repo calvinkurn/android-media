@@ -8,6 +8,11 @@ data class GetShopPagePListSortModel(
     val result: List<ShopPagePListSortItem>
 )
 
+data class ShopPlIstSortingListBase(
+    @field:SerializedName("shopSortingOptions")
+    val sortData: GetShopPagePListSortModel
+)
+
 data class ShopPagePListSortItem(
     @field:SerializedName("name")
     val name: String,

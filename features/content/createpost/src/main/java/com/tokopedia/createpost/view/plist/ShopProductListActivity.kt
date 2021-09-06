@@ -7,10 +7,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        updateTitle("Tag Produk")
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopProductListFragment.newInstance()
+        return ShopProductListFragment.newInstance(intent.getStringExtra("shopid"), intent.getStringExtra("source"))
 //        return if (mUserSession?.isLoggedIn == true) {
 //            tokoPointsHomeFragmentNew
 //        } else {

@@ -38,17 +38,17 @@ data class ShopPageProduct (
 
     @field:SerializedName("campaign")
     val campaign: Campaign
-) : BaseItem(),  Serializable
+) : BaseItem(), Serializable
 
 data class PrimaryImage(
     @field:SerializedName("resize300")
     val img: String
-)
+) : Serializable
 
 data class SPrice(
     @field:SerializedName("text_idr")
     val priceIdr: String
-)
+) : Serializable
 
 data class Campaign(
     @field:SerializedName("discounted_percentage")
@@ -59,4 +59,4 @@ data class Campaign(
 
     @field:SerializedName("original_price_fmt")
     val oPriceFormatted: String,
-)
+) : Serializable

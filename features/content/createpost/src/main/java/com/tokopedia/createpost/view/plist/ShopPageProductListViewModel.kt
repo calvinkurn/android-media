@@ -3,6 +3,8 @@ package com.tokopedia.createpost.view.plist
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.Dispatchers
@@ -12,22 +14,28 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
 
     val productList = MutableLiveData<Resources<GetShopProduct>>()
     val pageData = MutableLiveData<Resources<GetShopProduct>>()
-    val sortLiveData = MutableLiveData<Resources<GetShopPagePListSortModel>>()
+    val sortLiveData = MutableLiveData<Resources<ShopPlIstSortingListBase>>()
     val newSortValeLiveData = MutableLiveData<ShopPagePListSortItem>()
     val newProductValLiveData = MutableLiveData<ShopPageProduct>()
+    val showBs = MutableLiveData<Boolean>()
     private val gql = MultiRequestGraphqlUseCase()
     private val gqlSort = MultiRequestGraphqlUseCase()
-    private var shopId: Int = -1
+    private var shopId: String? = "-1"
+    private var sort: String? = null
+    private var soruce: String? = "shop_product"
 
-    fun getPageData(shopId: Int) {
-        this.shopId = 463441
+    fun getPageData(shopId: String?, source: String?, sort: String = "") {
+        this.shopId = shopId
+        this.soruce = source
         productList.value = Loading()
         getList(1)
     }
 
     fun setNewSortValue(value: ShopPagePListSortItem) {
         newSortValeLiveData.value = value
+        showBs.value = true
     }
+
 
     fun setNewProductValue(value: ShopPageProduct) {
         newProductValLiveData.value = value
@@ -36,9 +44,14 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     fun getList(pageNumber: Int) {
         launchCatchError(block = {
             val variablesMain = java.util.HashMap<String, Any>()
-            variablesMain["shopId"] = shopId
+            variablesMain["shopId"] = shopId!!
             variablesMain["page"] = pageNumber
             variablesMain["perPage"] = 10
+
+            if (sort?.isNotEmpty() == true) {
+                variablesMain["sort"] = sort!!.toInt()
+            }
+
             val request = GraphqlRequest(
                 getQ(),
                 GetShopProduct::class.java,
@@ -58,22 +71,23 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     fun getSortData() {
         launchCatchError(block = {
             val variablesMain = java.util.HashMap<String, Any>()
-            variablesMain["shopId"] = shopId
+            variablesMain["shopId"] = shopId!!
             variablesMain["query"] = ""
             variablesMain["status"] = 1
             variablesMain["device"] = "android"
             variablesMain["source"] = "shop_product"
             val request = GraphqlRequest(
                 getQSort(),
-                GetShopPagePListSortModel::class.java,
+                ShopPlIstSortingListBase::class.java,
                 variablesMain,
                 false
             )
             gqlSort.clearRequest()
             gqlSort.addRequest(request)
+            //gqlSort.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(5000).build())
             val response =
                 gqlSort.executeOnBackground()
-                    .getData<GetShopPagePListSortModel>(GetShopPagePListSortModel::class.java)
+                    .getData<ShopPlIstSortingListBase>(ShopPlIstSortingListBase::class.java)
             sortLiveData.value = Success(response)
         }) {
             sortLiveData.value = ErrorMessage(it.toString())
@@ -96,8 +110,8 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     }
 
     fun getQ(): String {
-        return "query GetShopProduct(\$shopId: String!, \$pageNumber: Int!, \$perPage: Int!) {\n" +
-                "  GetShopProduct(shopID: \$shopId, filter: {page: \$pageNumber, perPage: \$perPage}) {\n" +
+        return "query GetShopProduct(\$sort: Int,\$shopId: String!, \$pageNumber: Int!, \$perPage: Int!) {\n" +
+                "  GetShopProduct(shopID: \$shopId, filter: {sort:\$sort, page: \$pageNumber, perPage: \$perPage}) {\n" +
                 "    status\n" +
                 "    errors\n" +
                 "    totalData\n" +

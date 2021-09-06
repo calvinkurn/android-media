@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
 
 
-class ShopProductSortAdapter(private val dataSet: List<ShopPagePListSortItem>) :
+class ShopProductSortAdapter(
+    private val dataSet: List<ShopPagePListSortItem>,
+    val vm: ShopPageProductListViewModel
+) :
     RecyclerView.Adapter<ShopProductSortAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,13 +29,23 @@ class ShopProductSortAdapter(private val dataSet: List<ShopPagePListSortItem>) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.rbSort.text = dataSet[position].name
 
-        viewHolder.rbSort.setOnCheckedChangeListener { compoundButton, b ->
-            dataSet[position].isSelected = b;
+//        viewHolder.rbSort.setOnCheckedChangeListener { compoundButton, b ->
+//            dataSet[position].isSelected = b;
+//            notifyDataSetChanged()
+//            vm.setNewSortValue(dataSet[position])
+//        }
+
+
+        viewHolder.itemView.setOnClickListener {
+            for (item in dataSet) {
+                item.isSelected = false
+            }
+
+            dataSet[position].isSelected = true;
+
             notifyDataSetChanged()
-            //TODO this result to back
+            vm.setNewSortValue(dataSet[position])
         }
-
-
     }
 
     override fun getItemCount() = dataSet.size

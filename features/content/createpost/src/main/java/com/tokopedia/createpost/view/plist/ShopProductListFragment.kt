@@ -15,13 +15,15 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.ChipsUnify
+import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.recycler_view
 
 
 class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
 
     val presenter: ShopPageProductListViewModel by lazy { ViewModelProviders.of(this)[ShopPageProductListViewModel::class.java] }
-
+    var getImeiBS : ShopPListSortFilterBs? = null
     private val mAdapter: ShopProductListBaseAdapter by lazy {
         ShopProductListBaseAdapter(
             presenter,
@@ -42,6 +44,10 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
+
+        if (arguments != null) {
+            presenter.getPageData(arguments?.getString("shopid"), arguments?.getString("source"))
+        }
     }
 
     private fun initViews(view: View) {
@@ -53,6 +59,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         mAdapter.notifyDataSetChanged()
         mAdapter.startDataLoading()
 
+        view.sb_shop_product.searchBarIcon.hide()
+
         view.cu_sort_chip.chip_right_icon.background = (getIconUnifyDrawable(
             requireContext(),
             R.drawable.ic_arrow_down,
@@ -60,8 +68,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         ))
 
         view.cu_sort_chip.setOnClickListener {
-            val getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
-            fragmentManager?.let { fm -> getImeiBS.show(fm, "") }
+             getImeiBS = ShopPListSortFilterBs.newInstance(presenter)
+            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
         }
     }
 
@@ -96,6 +104,11 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
     private fun addSortValObserver() = presenter.newSortValeLiveData.observe(this, Observer {
         view?.cu_sort_chip?.chipText = it.name
         view?.cu_sort_chip?.chipType = ChipsUnify.TYPE_SELECTED
+        presenter.getPageData(
+            arguments?.getString("shopid"),
+            arguments?.getString("source"),
+            it.value.toString()
+        )
     }
     )
 
@@ -110,7 +123,17 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         }
         )
 
-    override fun onRetryPageLoad(pageNumber: Int) {}
+    private fun addBsObserver() =
+        presenter.showBs.observe(this, Observer { product ->
+            activity?.let {
+                getImeiBS?.dismiss()
+            }
+        }
+        )
+
+    override fun onRetryPageLoad(pageNumber: Int) {
+        presenter.getPageData(arguments?.getString("shopid"), arguments?.getString("source"))
+    }
 
     override fun onEmptyList(rawObject: Any) {
 
@@ -157,8 +180,13 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback {
         private val CONTAINER_ERROR = 2
         private val CONTAINER_EMPTY = 3
 
-        fun newInstance(): ShopProductListFragment {
-            return ShopProductListFragment()
+        fun newInstance(shopId: String, source: String): ShopProductListFragment {
+            val bundle = Bundle()
+            bundle.putString("shopid", shopId)
+            bundle.putString("source", source)
+            val fragment = ShopProductListFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }
