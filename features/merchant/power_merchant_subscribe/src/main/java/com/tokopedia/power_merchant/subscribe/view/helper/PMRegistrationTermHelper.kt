@@ -343,9 +343,9 @@ object PMRegistrationTermHelper {
         if (shopInfo.hasActiveProduct) {
             title = context.getString(R.string.pm_already_have_one_active_product)
             description = if (isNewSeller) {
-                context.getString(R.string.pm_label_already_have_one_active_product)
-            } else {
                 context.getString(R.string.pm_label_already_have_one_active_product_new_seller)
+            } else {
+                context.getString(R.string.pm_label_already_have_one_active_product)
             }
         } else {
             title = context.getString(R.string.pm_have_not_one_active_product_yet)
