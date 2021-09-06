@@ -784,10 +784,8 @@ open class PowerMerchantSubscriptionFragment :
 
     private fun showCoachMark() {
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val isNewSellerMore30Days =
-            pmBasicInfo?.shopInfo?.isNewSeller.orFalse() &&
-                    pmBasicInfo?.shopInfo?.shopAge.orZero() >= NEW_SELLER_30_DAYS
-        if (isPmPro && isNewSellerMore30Days) {
+        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
+        if (isPmPro && isNewSeller) {
             recyclerView?.post {
                 if (getCoachMarkItems().value.isNotEmpty()) {
                     coachMark?.showCoachMark(getCoachMarkItems().value)
@@ -807,10 +805,10 @@ open class PowerMerchantSubscriptionFragment :
     private fun getCoachMarkItems(): Lazy<ArrayList<CoachMark2Item>> {
         return lazy {
             arrayListOf<CoachMark2Item>().apply {
-                getWidgetDividerView()?.let { headerView ->
+                getWidgetDividerView()?.let { widgetDividerView ->
                     add(
                         CoachMark2Item(
-                            headerView,
+                            widgetDividerView,
                             getString(R.string.pm_pro_new_seller_title_coachmark_1),
                             getString(R.string.pm_pro_new_seller_desc_coachmark_1),
                             position = CoachMark2.POSITION_BOTTOM
@@ -818,10 +816,10 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
 
-                getWidgetBenefitPackageView()?.let { periodDetailView ->
+                getWidgetBenefitPackageView()?.let { widgetBenefitPackageView ->
                     add(
                         CoachMark2Item(
-                            periodDetailView,
+                            widgetBenefitPackageView,
                             getString(R.string.pm_pro_new_seller_title_coachmark_2),
                             getString(R.string.pm_pro_new_seller_desc_coachmark_2),
                             position = CoachMark2.POSITION_TOP
@@ -829,10 +827,10 @@ open class PowerMerchantSubscriptionFragment :
                     )
                 }
 
-                getCheckStatusPMProView()?.let { lastItemView ->
+                getCheckStatusPMProView()?.let { statusPMProView ->
                     add(
                         CoachMark2Item(
-                            lastItemView,
+                            statusPMProView,
                             getString(R.string.pm_pro_new_seller_title_coachmark_3),
                             getString(R.string.pm_pro_new_seller_desc_coachmark_3),
                             position = CoachMark2.POSITION_BOTTOM

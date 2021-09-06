@@ -68,7 +68,8 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
             KEY_ITEM_END_TENURE_POP_UP, PopupEndTenureUiModel::class.java
         )
         ivNewSellerIllustration?.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
-        tvShopLevel?.text = popupEndTenureUiModel?.shopLevel
+        tvShopLevel?.text =
+            getString(R.string.title_level_pop_up_end_tenure, popupEndTenureUiModel?.shopLevel)
         setShopScore(popupEndTenureUiModel?.shopScore.orEmpty())
         setupLevelBarNewSeller(popupEndTenureUiModel?.shopLevel.orEmpty())
         toggleTipsNewSeller(popupEndTenureUiModel)
@@ -94,7 +95,8 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
                     tickerTipsIncreasePerformance?.hide()
                 }
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -123,10 +125,14 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
     private fun setupLevelBarNewSeller(shopLevel: String) {
         ivLevelBarNewSeller?.apply {
             when (shopLevel.getNumberFormat(ShopScoreConstant.NULL_NUMBER)) {
-                ShopScoreConstant.SHOP_SCORE_LEVEL_ONE -> setImageResource(R.drawable.ic_one_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_TWO -> setImageResource(R.drawable.ic_two_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_THREE -> setImageResource(R.drawable.ic_three_level_green)
-                ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> setImageResource(R.drawable.ic_four_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_ONE ->
+                    setImageResource(R.drawable.ic_one_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_TWO ->
+                    setImageResource(R.drawable.ic_two_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_THREE ->
+                    setImageResource(R.drawable.ic_three_level_green)
+                ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR ->
+                    setImageResource(R.drawable.ic_four_level_green)
             }
         }
     }

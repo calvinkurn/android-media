@@ -138,7 +138,7 @@ class ShopInfoViewHolder(
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         with(itemView) {
-            if (uiModel.shopAge < SHOP_AGE_SIXTY || uiModel.shopScore < 0) {
+            if (uiModel.shopScore < 0) {
                 shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
                 shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 shopScoreMaxLabel?.hide()

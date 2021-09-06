@@ -137,6 +137,7 @@
 
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
+    <string name="title_level_pop_up_end_tenure">Level %s</string>
     <string name="title_level_1">Level 1</string>
     <string name="title_level_2">Level 2</string>
     <string name="title_level_3">Level 3</string>

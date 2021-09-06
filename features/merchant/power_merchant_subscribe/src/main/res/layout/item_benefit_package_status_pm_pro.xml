@@ -36,7 +36,7 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:typographyType="body_1"
             app:typographyWeight="bold"
-            tools:text="@string/pm_title_benefit_package_status"/>
+            android:text="@string/pm_title_benefit_package_status"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelPmProStatus"

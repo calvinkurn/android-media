@@ -45,7 +45,9 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
@@ -416,7 +418,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             if (!isNewSeller) shopScorePenaltyTracking.impressMenuPenalty()
 
         if (menu?.findItem(INFO_MENU_ID)?.isVisible == true)
-            if (!viewModel.userSession.isShopOfficialStore) shopScorePenaltyTracking.impressMenuInfoPage()
+            if (!viewModel.userSession.isShopOfficialStore)
+                shopScorePenaltyTracking.impressMenuInfoPage()
     }
 
     private fun showPenaltyBadge() {
@@ -825,14 +828,21 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             }
         }
         if (isShowPopupEndTenure) {
-            cacheManager?.put(
-                BottomSheetPopupEndTenure.KEY_ITEM_END_TENURE_POP_UP,
-                popupEndTenureUiModel
-            )
-            bottomSheetPopupEndTenure.show(childFragmentManager)
+            if (isMoreThanSixHours()) {
+                cacheManager?.put(
+                    BottomSheetPopupEndTenure.KEY_ITEM_END_TENURE_POP_UP,
+                    popupEndTenureUiModel
+                )
+                bottomSheetPopupEndTenure.show(childFragmentManager)
+            }
         }
     }
 
+    private fun isMoreThanSixHours(): Boolean {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = System.currentTimeMillis()
+        return cal.get(Calendar.HOUR_OF_DAY) >= SIX_HOURS_OF_DAY
+    }
 
     companion object {
 
@@ -841,6 +851,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         private const val PENALTY_BADGE_DELAY = 1000L
         private const val COACH_MARK_RENDER_SHOW = 1000L
+        private const val SIX_HOURS_OF_DAY = 6
 
         private const val COACHMARK_LAST_POSITION_PM_RM = 2
         private const val COACHMARK_HEADER_POSITION = 0

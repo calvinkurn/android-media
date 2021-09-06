@@ -239,7 +239,21 @@ object PMRegistrationTermHelper {
         }
 
         if (isNewSeller) {
-            if (!isFirstMondayNewSeller) {
+            if (isFirstMondayNewSeller) {
+                val textColor = if (isEligibleShopScore) {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                } else {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    )
+                }
+                title = context.getString(R.string.pm_title_shop_score_term_new_seller_after_30_days, textColor, shopScoreFmt)
+                description = context.getString(R.string.pm_desc_shop_score_term_new_seller_after_30_days)
+            } else {
                 title =
                     context.getString(R.string.pm_title_shop_score_term_new_seller_before_30_days)
                 description =
@@ -247,9 +261,6 @@ object PMRegistrationTermHelper {
                         R.string.pm_desc_shop_score_term_new_seller_before_30_days,
                         shopScoreFmt
                     )
-            } else {
-                title = context.getString(R.string.pm_shop_score_not_eligible_new_seller)
-                description = context.getString(R.string.pm_new_seller_shop_score_description)
             }
             ctaText = context.getString(R.string.pm_learn_shop_performance)
             ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
@@ -317,6 +328,7 @@ object PMRegistrationTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): RegistrationTermUiModel.ActiveProduct {
+        val isNewSeller = shopInfo.isNewSeller
         val shopScoreResIcon: Int = if (shopInfo.hasActiveProduct) {
             R.drawable.ic_pm_checked
         } else {
@@ -330,7 +342,11 @@ object PMRegistrationTermHelper {
 
         if (shopInfo.hasActiveProduct) {
             title = context.getString(R.string.pm_already_have_one_active_product)
-            description = context.getString(R.string.pm_label_already_have_one_active_product)
+            description = if (isNewSeller) {
+                context.getString(R.string.pm_label_already_have_one_active_product)
+            } else {
+                context.getString(R.string.pm_label_already_have_one_active_product_new_seller)
+            }
         } else {
             title = context.getString(R.string.pm_have_not_one_active_product_yet)
             description = if (shopInfo.isNewSeller) {
@@ -355,12 +371,12 @@ object PMRegistrationTermHelper {
     private fun getKycTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmPro: Boolean
+        isPmProSelected: Boolean
     ): RegistrationTermUiModel {
-        val isEligibleShopScore = (!isPmPro && !shopInfo.isEligibleShopScore()) ||
-                (isPmPro && !shopInfo.isEligibleShopScorePmPro())
+        val isEligibleShopScore = (!isPmProSelected && !shopInfo.isEligibleShopScore()) ||
+                (isPmProSelected && !shopInfo.isEligibleShopScorePmPro())
 
-        val kycAppLink = if (isPmPro) {
+        val kycAppLink = if (isPmProSelected) {
             PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
         } else {
             PMConstant.AppLink.KYC_POWER_MERCHANT
@@ -378,7 +394,11 @@ object PMRegistrationTermHelper {
         when {
             isKycVerified -> {
                 title = if (shopInfo.isNewSeller) {
-                    context.getString(R.string.pm_description_kyc_verified_new_seller)
+                    if (!shopInfo.is30DaysFirstMonday) {
+                        context.getString(R.string.pm_description_kyc_verified_new_seller)
+                    } else {
+                        context.getString(R.string.pm_description_kyc_verified_before_30_first_monday)
+                    }
                 } else {
                     context.getString(R.string.pm_kyc_verified)
                 }
@@ -433,7 +453,7 @@ object PMRegistrationTermHelper {
                 shopKycResIcon = R.drawable.ic_pm_failed
             }
         }
-        if (shopInfo.isNewSeller && isPmPro) {
+        if (shopInfo.isNewSeller && isPmProSelected) {
             if (!shopInfo.is30DaysFirstMonday) {
                 description = title
                 title = context.getString(R.string.pm_kyc_verify_ktp)
