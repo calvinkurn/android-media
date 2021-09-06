@@ -64,7 +64,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         UserSession(activity)
     }
 
-    private val MIN_SHOP_NAME_LENGTH = 3
+    private val MINIMUM_SHOP_NAME_LENGTH = 3
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
     private lateinit var txtInputShopName: TextFieldUnify
@@ -463,18 +463,23 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title))
         val tncUnclickableAreaSpan = setupClickableSpan("", getString(R.string.open_shop_revamp_tnc_unclickable))
         val privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))
+        val ZERO_SPAN = 0
+        val TWENTY_SPAN = 20
+        val TWENTY_ONE_SPAN = 21
+        val TWENTY_FOUR_SPAN = 24
+        val TWENTY_FIVE_SPAN = 25
 
-        textTnc.setSpan(tncClickableSpan, 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncClickableSpan, ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN, TWENTY_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(tncUnclickableAreaSpan, 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.NORMAL), 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), 21, 24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(privacyPolicyClickableSpan, 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), 25, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         txtTermsAndConditions.setText(textTnc)
         txtTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance())
