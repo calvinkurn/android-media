@@ -54,9 +54,14 @@ class GlobalSharingActivity: BaseActivity() {
         val image = bundle.getString(KEY_IMAGE_URL)
 
         val share = Intent(Intent.ACTION_SEND)
-        share.type = "text/plain"
         share.putExtra(Intent.EXTRA_TEXT, text)
         share.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+        if(text?.isEmpty() == true && image?.isNotEmpty() == true) {
+            share.type = "image/png"
+        } else {
+            share.type = "text/plain"
+        }
 
         if(image?.isNotEmpty() == true) {
             SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
@@ -69,9 +74,13 @@ class GlobalSharingActivity: BaseActivity() {
 
     private fun shareToInstagram(bundle: Bundle) {
         val image = bundle.getString(KEY_IMAGE_URL) ?: ""
-        SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
-            val imgFile = getFileProvider(File(it))
-            openInstagramStory(imgFile)
+        if(image.isNotEmpty()) {
+            SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
+                val imgFile = getFileProvider(File(it))
+                openInstagramStory(imgFile)
+            }
+        } else {
+            finish()
         }
     }
 
@@ -116,12 +125,8 @@ class GlobalSharingActivity: BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            REQUEST_CODE_CHOOSER or REQUEST_CODE_INSTAGRAM -> {
-                finish()
-            }
-        }
         super.onActivityResult(requestCode, resultCode, data)
+        finish()
     }
 
     companion object {
