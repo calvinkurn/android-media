@@ -183,7 +183,8 @@ object AtcCommonMapper {
                        selectedProductFulfillment: Boolean,
                        selectedQuantity: Int,
                        shouldShowDeleteButton: Boolean,
-                       uspImageUrl: String): List<AtcVariantVisitable>? {
+                       uspImageUrl: String,
+                       cashBackPercentage: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -198,6 +199,7 @@ object AtcCommonMapper {
                         variantTitle = selectedChild?.optionName ?: listOf(),
                         isTokoCabang = selectedProductFulfillment,
                         uspImageUrl = uspImageUrl,
+                        cashBackPercentage = cashBackPercentage,
                         headerData = headerData.second)
         ).also {
             idCounter += 1

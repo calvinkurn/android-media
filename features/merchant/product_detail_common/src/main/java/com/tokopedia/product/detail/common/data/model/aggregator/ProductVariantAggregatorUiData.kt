@@ -28,6 +28,8 @@ data class ProductVariantAggregatorUiData(
 
         var uspImageUrl: String = "",
 
+        var cashBackPercentage: Int = 0,
+
         //region only for tracker
         var simpleBasicInfo: SimpleBasicInfo = SimpleBasicInfo(),
 

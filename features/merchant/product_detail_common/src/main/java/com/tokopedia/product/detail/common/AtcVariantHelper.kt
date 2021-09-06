@@ -90,7 +90,8 @@ object AtcVariantHelper {
                         shopType = productInfoP1.shopTypeString,
                         boData = boData ?: BebasOngkir(),
                         reData = updatedReData,
-                        uspImageUrl = uspImageUrl
+                        uspImageUrl = uspImageUrl,
+                        cashBackPercentage = productInfoP1.data.isCashback.percentage
                 ),
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
