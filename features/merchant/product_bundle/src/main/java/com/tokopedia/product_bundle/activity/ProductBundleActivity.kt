@@ -28,7 +28,6 @@ import javax.inject.Inject
 
 class ProductBundleActivity : BaseSimpleActivity() {
 
-    private var productId: String = "0"
     private var bundleId: Long = 0
     private var selectedProductIds: List<String> = emptyList()
     private var source: String = ""
@@ -61,13 +60,15 @@ class ProductBundleActivity : BaseSimpleActivity() {
 //          Applink sample = tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
             data = RouteManager.getIntent(this, intent.data.toString()).data
             val pathSegments = it.pathSegments.orEmpty()
-            getProductIdFromUri(it, pathSegments)
+            val parentProductId = viewModel.getProductIdFromUri(it, pathSegments)
+            viewModel.parentProductID = parentProductId.toLongOrZero()
             getBundleIdFromUri(it)
             getSelectedProductIdsFromUri(it)
             getPageSourceFromUri(it)
         }
-        viewModel.getBundleInfo(productId.toLongOrZero())
-        entryPointFragment.setProductId(productId)
+        val parentProductId = viewModel.parentProductID
+        viewModel.getBundleInfo(parentProductId)
+        entryPointFragment.setProductId(parentProductId.toString())
         entryPointFragment.setPageSource(source)
 
         setupToolbarActions()
@@ -87,14 +88,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
-    }
-
-    private fun getProductIdFromUri(uri: Uri, pathSegments: List<String>) {
-        productId = if (pathSegments.size >= 2) {
-            uri.pathSegments.getOrNull(1).orEmpty()
-        } else {
-            "0" // TODO: Please handle this default case if productId is 0
-        }
     }
 
     private fun getBundleIdFromUri(uri: Uri) {
@@ -146,12 +139,18 @@ class ProductBundleActivity : BaseSimpleActivity() {
                             }
                             viewModel.isSingleProductBundle(bundleInfo) -> {
                                 val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
-                                SingleProductBundleFragment.newInstance(productId, bundleInfo,
+                                SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo,
                                     bundleId.toString(), selectedProductId, emptyVariantProductIds,
                                     source)
                             }
                             else -> {
-                                MultipleProductBundleFragment.newInstance(bundleInfo, emptyVariantProductIds)
+                                MultipleProductBundleFragment.newInstance(
+                                    productBundleInfo = bundleInfo,
+                                    emptyVariantProductIds = emptyVariantProductIds,
+                                    selectedBundleId = bundleId.toString(),
+                                    selectedProductIds = selectedProductIds,
+                                    source
+                                )
                             }
                         }
                         supportFragmentManager.beginTransaction()

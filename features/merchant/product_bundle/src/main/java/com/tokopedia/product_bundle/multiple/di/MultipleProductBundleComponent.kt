@@ -7,7 +7,8 @@ import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProdu
 import dagger.Component
 
 @MultipleProductBundleScope
-@Component(modules = [ProductBundleViewModelModule::class], dependencies = [ProductBundleComponent::class])
+@Component(modules = [ProductBundleModule::class, ProductBundleViewModelModule::class],
+    dependencies = [ProductBundleComponent::class])
 interface MultipleProductBundleComponent {
     fun inject(fragment: MultipleProductBundleFragment)
 }
