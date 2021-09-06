@@ -62,6 +62,13 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             .build()
             .inject(this)
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            createContentViewModelPresenter = viewModelProvider.get(CreateContentPostViewModel::class.java)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -90,10 +97,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            createContentViewModelPresenter = viewModelProvider.get(CreateContentPostViewModel::class.java)
-        }
         createContentViewModelPresenter._createPostViewModelData.observe(requireActivity(), Observer {
             viewModel = it
         })
