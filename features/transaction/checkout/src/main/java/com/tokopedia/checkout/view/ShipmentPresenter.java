@@ -7,18 +7,21 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestGqlData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
-import com.tokopedia.network.exception.MessageErrorException;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper;
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData;
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductData;
@@ -28,10 +31,12 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil;
@@ -53,6 +58,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
@@ -71,6 +77,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
@@ -81,15 +89,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestGqlDataMapper;
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.EgoldData;
-import com.tokopedia.checkout.data.model.request.checkout.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.PromoRequest;
-import com.tokopedia.checkout.data.model.request.common.RatesFeature;
-import com.tokopedia.checkout.data.model.request.checkout.ShopProductCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.TokopediaCornerData;
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
@@ -124,11 +123,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -709,7 +710,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                       String deviceId,
                                                       CheckoutRequest checkoutRequest) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestGqlDataMapper.INSTANCE.map(checkoutRequest));
+        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
@@ -1352,7 +1353,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
 
-            checkoutRequest.setFeatureType(hasTokoNowProduct ? CheckoutRequestGqlData.FEATURE_TYPE_TOKONOW_PRODUCT : CheckoutRequestGqlData.FEATURE_TYPE_REGULAR_PRODUCT);
+            checkoutRequest.setFeatureType(hasTokoNowProduct ? FEATURE_TYPE_TOKONOW_PRODUCT : FEATURE_TYPE_REGULAR_PRODUCT);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.request.checkout
+package com.tokopedia.checkout.data.model.request.checkout.old
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
@@ -16,7 +16,9 @@ data class ProductDataCheckoutRequest(
         var productQuantity: Int = 0,
         @SerializedName("product_notes")
         var productNotes: String? = null,
-
+        // Additional data
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
         var productName: String? = null,
         var productPrice: String? = null,
         var productBrand: String? = null,

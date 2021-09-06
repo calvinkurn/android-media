@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.request.checkout
+package com.tokopedia.checkout.data.model.request.checkout.old
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
@@ -34,8 +34,9 @@ data class ShopProductCheckoutRequest(
         var promos: List<PromoRequest>? = null,
         @SerializedName("is_order_priority")
         var isOrderPriority: Int = 0,
+        // Todo : add bundle data
 
-        // Additional data, won't be dispatched over network
+        // Additional data
         var cartString: String? = "",
         var isTokoNow: Boolean = false
 ) : Parcelable
