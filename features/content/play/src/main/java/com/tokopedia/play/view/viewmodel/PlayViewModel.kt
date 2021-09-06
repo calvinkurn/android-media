@@ -615,6 +615,7 @@ class PlayViewModel @Inject constructor(
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
+            ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
         }
     }
@@ -1449,6 +1450,18 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
+    private fun handleRemindMeUpcomingChannel() = needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
+        /**
+         * TODO("Call API Reminder Here")
+         */
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                ShowToasterEvent.RemindMe(message = UiString.Resource(R.string.play_remind_me_success))
+            )
+        }
+    }
+
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
@@ -1486,5 +1499,6 @@ class PlayViewModel @Inject constructor(
          */
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
+        private const val REQUEST_CODE_LOGIN_REMIND_ME = 573
     }
 }

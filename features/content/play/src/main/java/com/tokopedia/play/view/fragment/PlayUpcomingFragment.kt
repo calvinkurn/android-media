@@ -24,6 +24,7 @@ import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
+import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
@@ -111,6 +112,7 @@ class PlayUpcomingFragment @Inject constructor(
 
         btnAction.setOnClickListener {
             btnAction.isLoading = true
+            playViewModel.submitAction(ClickRemindMeUpcomingChannel)
         }
     }
 
@@ -122,9 +124,32 @@ class PlayUpcomingFragment @Inject constructor(
             }
 
             playViewModel.uiEvent.collect { event ->
-                if(event is OpenPageEvent)
-                    openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                when(event) {
+                    is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                    is ShowToasterEvent.RemindMe -> {
+                        btnAction.isLoading = false
+                        handleToasterEvent(event)
+                    }
+                }
             }
+        }
+    }
+
+    private fun handleToasterEvent(event: ShowToasterEvent) {
+        val text = getTextFromUiString(event.message)
+        doShowToaster(
+            toasterType = when (event) {
+                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+            },
+            message = text
+        )
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
         }
     }
 

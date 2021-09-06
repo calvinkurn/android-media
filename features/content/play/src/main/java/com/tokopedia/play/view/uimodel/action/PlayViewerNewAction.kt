@@ -20,4 +20,6 @@ object ClickPartnerNameAction : PlayViewerNewAction()
 object ClickFollowInteractiveAction : PlayViewerNewAction()
 object ClickRetryInteractiveAction : PlayViewerNewAction()
 
+object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
