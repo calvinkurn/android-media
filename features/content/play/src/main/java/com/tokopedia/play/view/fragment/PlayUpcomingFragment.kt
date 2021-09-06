@@ -14,12 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -30,6 +34,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -114,7 +119,56 @@ class PlayUpcomingFragment @Inject constructor(
                 val state = cachedState.value
                 renderToolbarView(state.followStatus, state.partnerName)
             }
+
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is OpenPageEvent -> {
+                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                    }
+                    is ShowToasterEvent -> handleToasterEvent(event)
+                }
+            }
         }
+    }
+
+    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
+            playViewModel.requestPiPBrowsingPage(
+                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
+            )
+        } else {
+            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
+        }
+    }
+
+    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+        if (requestCode == null) {
+            RouteManager.route(context, applink, *params)
+        } else {
+            val intent = RouteManager.getIntent(context, applink, *params)
+            startActivityForResult(intent, requestCode)
+        }
+        activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) activity?.finish()
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
+    }
+
+    private fun handleToasterEvent(event: ShowToasterEvent) {
+        val text = getTextFromUiString(event.message)
+        doShowToaster(
+            toasterType = when (event) {
+                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+            },
+            message = text
+        )
     }
 
     private fun setupInsets() {
@@ -156,7 +210,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onFollowButtonClicked(view: ToolbarViewComponent) {
-        TODO("Not yet implemented")
+        playViewModel.submitAction(ClickFollowAction)
     }
 
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
