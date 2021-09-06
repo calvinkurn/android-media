@@ -1622,7 +1622,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onBackPressed(): Boolean {
         if (super.onBackPressed()) return true
-        if (presenter.isUploading()) {
+        if (::presenter.isInitialized && presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
             finishActivity()
