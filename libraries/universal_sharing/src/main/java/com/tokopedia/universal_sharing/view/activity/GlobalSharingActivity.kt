@@ -22,7 +22,7 @@ class GlobalSharingActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(!hasStoragePermissions()) {
+        if (!hasStoragePermissions()) {
             askPermission()
         } else {
             checkSharingOptions()
