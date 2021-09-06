@@ -23,6 +23,7 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
@@ -149,13 +150,6 @@ class PlayUpcomingFragment @Inject constructor(
         if (shouldFinish) activity?.finish()
     }
 
-    private fun getTextFromUiString(uiString: UiString): String {
-        return when (uiString) {
-            is UiString.Text -> uiString.text
-            is UiString.Resource -> getString(uiString.resource)
-        }
-    }
-
     private fun setupInsets() {
         toolbarView.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -199,7 +193,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
-        TODO("Not yet implemented")
+        playViewModel.submitAction(ClickPartnerNameAction)
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
