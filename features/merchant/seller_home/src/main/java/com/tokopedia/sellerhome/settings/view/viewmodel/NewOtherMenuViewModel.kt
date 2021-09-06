@@ -22,7 +22,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.NewGetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
-import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuErrorType
+import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,15 +52,15 @@ class NewOtherMenuViewModel @Inject constructor(
 
     companion object {
         private const val DELAY_TIME = 5000L
+        private const val GENTLY_SWIPE_DELAY = 1000L
 
         private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
     }
 
     private val _isToasterAlreadyShown = NonNullLiveData(false)
-    private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    private val _isFreeShippingActive = MutableLiveData<SettingResponseState<String>>()
+    private val _freeShippingUrlLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
@@ -84,65 +84,54 @@ class NewOtherMenuViewModel @Inject constructor(
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
 
-    private val _shopBadgeFollowersErrorLiveData = MutableLiveData<Boolean>()
-    val shopBadgeFollowersErrorLiveData: LiveData<Boolean>
-        get() = _shopBadgeFollowersErrorLiveData
-    private val _shopBadgeFollowersShimmerLiveData = MediatorLiveData<Boolean>().apply {
-        addSource(_shopBadgeLiveData) { state ->
-            val shouldShowShimmer = state is SettingResponseState.SettingLoading &&
-                    _shopTotalFollowersLiveData.value is SettingResponseState.SettingLoading
-            val shouldShowError = state is SettingResponseState.SettingError &&
-                    _shopTotalFollowersLiveData.value is SettingResponseState.SettingError
-            value = shouldShowShimmer
-            _shopBadgeFollowersErrorLiveData.value = shouldShowError
-        }
-        addSource(_shopTotalFollowersLiveData) { state ->
-            val shouldShowShimmer = state is SettingResponseState.SettingLoading &&
-                    _shopBadgeLiveData.value is SettingResponseState.SettingLoading
-            val shouldShowError = state is SettingResponseState.SettingError &&
-                    _shopBadgeLiveData.value is SettingResponseState.SettingError
-            value = shouldShowShimmer
-            _shopBadgeFollowersErrorLiveData.value = shouldShowError
-        }
-    }
-    val shopBadgeFollowersShimmerLiveData: LiveData<Boolean>
-        get() = _shopBadgeFollowersShimmerLiveData
-
-    private val _errorStateMap = MediatorLiveData<Map<OtherMenuErrorType, Boolean>>().apply {
+    private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Badge, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Badge, it)
         }
         addSource(_shopTotalFollowersLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Followers, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Followers, it)
         }
         addSource(_userShopInfoLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Status, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Status, it)
         }
         addSource(_shopOperationalLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Operational, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Operational, it)
         }
         addSource(_balanceInfoLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Saldo, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Saldo, it)
         }
         addSource(_kreditTopAdsLiveData) {
-            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Topads, it)
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.Topads, it)
         }
     }
 
-    private val _shouldShowAllError = MutableLiveData<Boolean>()
-    val shouldShowAllError: LiveData<Boolean>
-        get() = _shouldShowAllError
+    private val _secondarySuccessStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
+        addSource(_shopBadgeLiveData) {
+            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Badge, it)
+        }
+        addSource(_shopTotalFollowersLiveData) {
+            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Followers, it)
+        }
+        addSource(_userShopInfoLiveData) {
+            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Status, it)
+        }
+        addSource(_shopOperationalLiveData) {
+            value = value?.getUpdatedSuccessMap(OtherMenuDataType.Operational, it)
+        }
+        addSource(_freeShippingUrlLiveData) {
+            value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
+        }
+    }
+
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
         addSource(_errorStateMap) { map ->
             val errorCounts = map?.count { it.value }.orZero()
-            if (errorCounts < map?.count().orZero()) {
+            if (errorCounts <= map?.count().orZero()) {
                 val shouldShowMultipleErrorToaster = errorCounts >= 2 && _hasShownMultipleErrorToaster.value == false
                 value = shouldShowMultipleErrorToaster
                 _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
-                _shouldShowAllError.value = false
             } else {
                 value = false
-                _shouldShowAllError.value = true
             }
         }
     }
@@ -150,17 +139,32 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _shouldShowMultipleErrorToaster
     private val _hasShownMultipleErrorToaster = MutableLiveData(false)
 
+    val shouldSwipeSecondaryInfo: LiveData<Boolean>
+        get() = _shouldSwipeSecondaryInfoGently
+    private val _shouldSwipeSecondaryInfoGently = MediatorLiveData<Boolean>().apply {
+        addSource(_secondarySuccessStateMap) { map ->
+            val successCount = map?.count { it.value }.orZero()
+            if (successCount == map?.count().orZero()) {
+                launch(coroutineContext) {
+                    swipeSecondaryInfoGentlyWithDelay()
+                }
+            } else {
+                value = false
+            }
+        }
+    }
+
     val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
-    val isStatusBarInitialState: LiveData<Boolean>
-        get() = _isStatusBarInitialState
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
-    val isFreeShippingActive: LiveData<SettingResponseState<String>>
-        get() = _isFreeShippingActive
+    val freeShippingUrlLiveData: LiveData<SettingResponseState<String>>
+        get() = _freeShippingUrlLiveData
 
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
+        setSuccessStateMapDefaultValue()
+
         getShopBadgeData()
         getShopTotalFollowersData()
         getUserShopInfoData()
@@ -188,10 +192,6 @@ class NewOtherMenuViewModel @Inject constructor(
         }
     }
 
-    fun setIsStatusBarInitialState(isInitialState: Boolean) {
-        _isStatusBarInitialState.value = isInitialState
-    }
-
     fun getShopPeriodType() {
         launchCatchError(block = {
             val periodData = withContext(dispatcher.io) {
@@ -208,11 +208,11 @@ class NewOtherMenuViewModel @Inject constructor(
         _errorStateMap.value?.forEach{
             if (it.value) {
                 when(it.key) {
-                    OtherMenuErrorType.Badge -> getShopBadge()
-                    OtherMenuErrorType.Followers -> getShopTotalFollowers()
-                    OtherMenuErrorType.Status -> getUserShopInfo()
-                    OtherMenuErrorType.Operational -> getShopOperational()
-                    OtherMenuErrorType.Saldo -> getBalanceInfo()
+                    OtherMenuDataType.Badge -> getShopBadge()
+                    OtherMenuDataType.Followers -> getShopTotalFollowers()
+                    OtherMenuDataType.Status -> getUserShopInfo()
+                    OtherMenuDataType.Operational -> getShopOperational()
+                    OtherMenuDataType.Saldo -> getBalanceInfo()
                     else -> getKreditTopAds()
                 }
             }
@@ -220,7 +220,7 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
-        _isFreeShippingActive.value = SettingResponseState.SettingLoading
+        _freeShippingUrlLiveData.value = SettingResponseState.SettingLoading
         getFreeShippingStatusData()
     }
 
@@ -267,7 +267,7 @@ class NewOtherMenuViewModel @Inject constructor(
                 getShopFreeShippingInfoUseCase.execute(params).first().freeShipping.imgUrl
             }
 
-            _isFreeShippingActive.value = SettingResponseState.SettingSuccess(isFreeShippingActive)
+            _freeShippingUrlLiveData.value = SettingResponseState.SettingSuccess(isFreeShippingActive)
         }){}
     }
 
@@ -383,26 +383,58 @@ class NewOtherMenuViewModel @Inject constructor(
         )
     }
 
-    fun setErrorStateMapDefaultValue() {
+    private fun setErrorStateMapDefaultValue() {
         if (_errorStateMap.value == null) {
             _errorStateMap.value = mutableMapOf(
-                OtherMenuErrorType.Badge to false,
-                OtherMenuErrorType.Followers to false,
-                OtherMenuErrorType.Status to false,
-                OtherMenuErrorType.Operational to false,
-                OtherMenuErrorType.Saldo to false,
-                OtherMenuErrorType.Topads to false,
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.Saldo to false,
+                OtherMenuDataType.Topads to false,
             )
+        }
+    }
+
+    private fun setSuccessStateMapDefaultValue() {
+        if (_secondarySuccessStateMap.value == null) {
+            _secondarySuccessStateMap.value = mutableMapOf(
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.FreeShipping to false
+            )
+        }
+    }
+
+    private suspend fun swipeSecondaryInfoGentlyWithDelay() {
+        withContext(dispatcher.main) {
+            delay(GENTLY_SWIPE_DELAY)
+            _shouldSwipeSecondaryInfoGently.postValue(true)
         }
     }
 
     private fun SettingResponseState<*>.isError(): Boolean =
         this is SettingResponseState.SettingError
 
-    private fun Map<OtherMenuErrorType, Boolean>.getUpdatedErrorMap(errorType: OtherMenuErrorType, state: SettingResponseState<*>): Map<OtherMenuErrorType, Boolean> {
+    private fun SettingResponseState<*>.isSuccess(): Boolean =
+        this is SettingResponseState.SettingSuccess
+
+    private fun Map<OtherMenuDataType, Boolean>.getUpdatedErrorMap(dataType: OtherMenuDataType, state: SettingResponseState<*>): Map<OtherMenuDataType, Boolean> {
         return mapValues {
-            if (it.key == errorType) {
+            if (it.key == dataType) {
                 state.isError()
+            } else {
+                it.value
+            }
+        }
+    }
+
+    private fun Map<OtherMenuDataType, Boolean>.getUpdatedSuccessMap(dataType: OtherMenuDataType, state: SettingResponseState<*>): Map<OtherMenuDataType, Boolean> {
+        return mapValues {
+            if (it.key == dataType) {
+                state.isSuccess()
             } else {
                 it.value
             }

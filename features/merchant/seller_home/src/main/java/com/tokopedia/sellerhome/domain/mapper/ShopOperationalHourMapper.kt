@@ -133,7 +133,7 @@ object ShopOperationalHourMapper {
                         )
                 } else {
                     operationalTimeIcon = IconUnify.CLOCK
-                    operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     startTime =
                         DateFormatUtils.formatDate(
                             OPERATIONAL_HOUR_RESPONSE_FORMAT,

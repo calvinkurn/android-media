@@ -94,7 +94,7 @@ class NewOtherMenuViewHolder(
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
             setOnAnimationFinishedListener {
-                secondaryShopInfoAnimator?.swipeRecyclerViewGently()
+                // TODO: What to do
             }
         }
     }
@@ -152,49 +152,6 @@ class NewOtherMenuViewHolder(
         }
     }
 
-    private fun setBalanceSaldoSuccess(saldoString: String) {
-        balanceSaldoTextView?.run {
-            text = saldoString
-            show()
-        }
-        errorLayoutSaldo?.gone()
-        shimmerSaldo?.gone()
-    }
-
-    private fun setBalanceTopadsSuccess(topadsValueString: String) {
-        balanceTopadsTopupView?.run {
-            setTopadsValue(topadsValueString)
-            show()
-            toggleTopadsTopupWithAnimation()
-        }
-        errorLayoutTopads?.gone()
-        shimmerTopads?.gone()
-    }
-
-    private fun setBalanceSaldoLoading() {
-        balanceSaldoTextView?.invisible()
-        errorLayoutSaldo?.gone()
-        shimmerSaldo?.show()
-    }
-
-    private fun setBalanceTopadsLoading() {
-        balanceTopadsTopupView?.invisible()
-        errorLayoutTopads?.gone()
-        shimmerTopads?.show()
-    }
-
-    private fun setBalanceSaldoFailed() {
-        balanceSaldoTextView?.invisible()
-        errorLayoutSaldo?.show()
-        shimmerSaldo?.gone()
-    }
-
-    private fun setBalanceTopadsFailed() {
-        balanceTopadsTopupView?.invisible()
-        errorLayoutTopads?.show()
-        shimmerTopads?.gone()
-    }
-
     fun setShopOperationalData(state: SettingResponseState<ShopOperationalData>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setShopOperationalData(state)
@@ -223,6 +180,10 @@ class NewOtherMenuViewHolder(
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setFreeShippingData(state)
         }
+    }
+
+    fun swipeSecondaryInfoGently() {
+        secondaryShopInfoAnimator?.swipeRecyclerViewGently()
     }
 
     private fun initView() {
@@ -338,6 +299,49 @@ class NewOtherMenuViewHolder(
         }
     }
 
+    private fun setBalanceSaldoSuccess(saldoString: String) {
+        balanceSaldoTextView?.run {
+            text = saldoString
+            show()
+        }
+        errorLayoutSaldo?.gone()
+        shimmerSaldo?.gone()
+    }
+
+    private fun setBalanceTopadsSuccess(topadsValueString: String) {
+        balanceTopadsTopupView?.run {
+            setTopadsValue(topadsValueString)
+            show()
+            toggleTopadsTopupWithAnimation()
+        }
+        errorLayoutTopads?.gone()
+        shimmerTopads?.gone()
+    }
+
+    private fun setBalanceSaldoLoading() {
+        balanceSaldoTextView?.invisible()
+        errorLayoutSaldo?.gone()
+        shimmerSaldo?.show()
+    }
+
+    private fun setBalanceTopadsLoading() {
+        balanceTopadsTopupView?.invisible()
+        errorLayoutTopads?.gone()
+        shimmerTopads?.show()
+    }
+
+    private fun setBalanceSaldoFailed() {
+        balanceSaldoTextView?.invisible()
+        errorLayoutSaldo?.show()
+        shimmerSaldo?.gone()
+    }
+
+    private fun setBalanceTopadsFailed() {
+        balanceTopadsTopupView?.invisible()
+        errorLayoutTopads?.show()
+        shimmerTopads?.gone()
+    }
+
     private fun setShopAvatar() {
         shopAvatarImage?.urlSrc = userSession.shopAvatar
     }
@@ -349,18 +353,22 @@ class NewOtherMenuViewHolder(
     }
 
     private fun setShopStatus() {
-        val imageResource =
-            when {
-                userSession.isShopOfficialStore -> R.drawable.bg_sah_new_other_curved_header_os
-                userSession.isGoldMerchant -> R.drawable.bg_sah_new_other_curved_header_pm
-                else -> R.drawable.bg_sah_new_other_curved_header_rm
+        val imageResource: Int
+        val headerBackgroundResource: Int
+        when {
+            userSession.isShopOfficialStore -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_os
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
-        val headerBackgroundResource =
-            when {
-                userSession.isShopOfficialStore -> R.drawable.bg_sah_new_other_header_os
-                userSession.isGoldMerchant -> R.drawable.bg_sah_new_other_header_pm
-                else -> R.drawable.bg_sah_new_other_header_rm
+            userSession.isGoldMerchant -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
+            else -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
+            }
+        }
         shopStatusCurvedImage?.setImageResource(imageResource)
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
