@@ -9,9 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 /**
@@ -24,6 +27,7 @@ class PlayUpcomingFragment @Inject constructor(
 ): TkpdBaseV4Fragment() {
 
     private lateinit var ivUpcomingCover: AppCompatImageView
+    private lateinit var btnAction: UnifyButton
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -50,10 +54,12 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun initView(view: View) {
         ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
+        btnAction = view.findViewById(R.id.btn_action)
     }
 
     private fun setupView(view: View) {
         setCover(view)
+        setButtonAction(view)
     }
 
     private fun setCover(view: View) {
@@ -62,6 +68,21 @@ class PlayUpcomingFragment @Inject constructor(
             Glide.with(view)
                 .load(coverUrl)
                 .into(ivUpcomingCover)
+        }
+    }
+
+    private fun setButtonAction(view: View) {
+        val isReminderSet = playViewModel.upcomingInfo?.isReminderSet ?: false
+        if(!isReminderSet) {
+            btnAction.setText("Ingatkan Saya")
+            btnAction.show()
+        }
+        else {
+            btnAction.hide()
+        }
+
+        btnAction.setOnClickListener {
+            btnAction.isLoading = true
         }
     }
 }

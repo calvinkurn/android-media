@@ -8,20 +8,21 @@
         android:id="@+id/iv_upcoming_cover"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
+        android:scaleType="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_action"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Upcoming Page"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
