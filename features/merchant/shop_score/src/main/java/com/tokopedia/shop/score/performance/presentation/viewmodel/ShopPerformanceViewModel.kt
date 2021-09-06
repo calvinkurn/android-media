@@ -21,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,8 +30,8 @@ class ShopPerformanceViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val shopScoreMapper: ShopScoreMapper,
     val userSession: UserSessionInterface,
-    private val shopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
-    private val getShopPerformanceUseCase: GetShopPerformanceUseCase
+    private val shopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>,
+    private val getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
 ) : BaseViewModel(dispatchers.main) {
 
     val shopInfoLevel: LiveData<ShopInfoLevelUiModel>
@@ -56,9 +57,9 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoPeriod() {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.requestParams =
+                shopInfoPeriodUseCase.get().requestParams =
                     GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                shopInfoPeriodUseCase.executeOnBackground()
+                shopInfoPeriodUseCase.get().executeOnBackground()
             }
             _shopInfoPeriod.postValue(Success(dataShopInfo))
         }, onError = {
@@ -69,12 +70,12 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         launchCatchError(block = {
             val shopScoreLevelResponse = withContext(dispatchers.io) {
-                getShopPerformanceUseCase.requestParams = GetShopPerformanceUseCase.createParams(
+                getShopPerformanceUseCase.get().requestParams = GetShopPerformanceUseCase.createParams(
                     userSession.shopId.toLongOrZero(),
                     ShopScoreLevelParam(shopID = userSession.shopId),
                     ShopLevelTooltipParam(shopID = userSession.shopId)
                 )
-                getShopPerformanceUseCase.executeOnBackground()
+                getShopPerformanceUseCase.get().executeOnBackground()
             }
             val shopScoreLevelData = shopScoreMapper.mapToShopPerformanceVisitable(
                 shopScoreLevelResponse,
