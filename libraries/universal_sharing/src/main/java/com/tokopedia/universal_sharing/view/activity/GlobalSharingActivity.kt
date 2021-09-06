@@ -110,15 +110,16 @@ class GlobalSharingActivity: BaseActivity() {
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 isNeedPermission = false
                 checkSharingOptions()
-            }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(REQUEST_CODE_CHOOSER || REQUEST_CODE_INSTAGRAM) {
-            finish()
+        when(requestCode) {
+            REQUEST_CODE_CHOOSER or REQUEST_CODE_INSTAGRAM -> {
+                finish()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
