@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -41,8 +43,10 @@ class PlayUpcomingFragment @Inject constructor(
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
-    private lateinit var ivUpcomingCover: AppCompatImageView
     private val upcomingTimerViewComponent by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
+
+    private lateinit var ivUpcomingCover: AppCompatImageView
+    private lateinit var tvUpcomingTitle: AppCompatTextView
     private lateinit var btnAction: UnifyButton
 
     private lateinit var playViewModel: PlayViewModel
@@ -71,24 +75,22 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun initView(view: View) {
         ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
+        tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
         btnAction = view.findViewById(R.id.btn_action)
     }
 
     private fun setupView(view: View) {
         playViewModel.upcomingInfo?.let {
-            if(it.coverUrl.isNotEmpty()) {
-                Glide.with(view)
-                    .load(it.coverUrl)
-                    .into(ivUpcomingCover)
-            }
+            if(it.coverUrl.isNotEmpty())
+                Glide.with(view).load(it.coverUrl).into(ivUpcomingCover)
 
             if(!it.isReminderSet) {
                 btnAction.text = getString(R.string.play_remind_me)
                 btnAction.show()
             }
-            else {
-                btnAction.hide()
-            }
+            else btnAction.hide()
+
+            tvUpcomingTitle.text = it.title
 
             val targetCalendar = PlayDateTimeFormatter.convertToCalendar(it.startTime)
             targetCalendar?.let { calendar ->
