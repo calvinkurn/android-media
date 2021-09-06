@@ -59,7 +59,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun setupView(view: View) {
         setCover(view)
-        setButtonAction(view)
+        setButtonAction()
     }
 
     private fun setCover(view: View) {
@@ -71,10 +71,10 @@ class PlayUpcomingFragment @Inject constructor(
         }
     }
 
-    private fun setButtonAction(view: View) {
+    private fun setButtonAction() {
         val isReminderSet = playViewModel.upcomingInfo?.isReminderSet ?: false
         if(!isReminderSet) {
-            btnAction.setText("Ingatkan Saya")
+            btnAction.text = getString(R.string.play_remind_me)
             btnAction.show()
         }
         else {
