@@ -18,7 +18,7 @@ import com.tokopedia.imagepicker_insta.models.BundleData
 class ImagePickerFragement: BaseCreatePostFragmentNew() {
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
+        presenter.fetchContentForm(createPostModel.productIdList, createPostModel.authorType, createPostModel.postId)
     }
     companion object {
         private const val REQUEST_IMAGE_PICKER = 1234
@@ -58,7 +58,7 @@ class ImagePickerFragement: BaseCreatePostFragmentNew() {
         initVar()
     }
     private fun initVar() {
-        viewModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
+        createPostModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
 
     }
 
