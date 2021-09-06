@@ -6,7 +6,8 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class AffiliateSearchData(
         @SerializedName("status") val status : Boolean?,
-        @SerializedName("cards") val cards : Cards?
+        @SerializedName("cards") val cards : Cards?,
+        @SerializedName("error") val error : Error?
 ) {
 
     data class Cards (
@@ -69,6 +70,29 @@ data class AffiliateSearchData(
 
             data class Status (
                     @SerializedName("isLinkGenerationAllowed") val isLinkGenerationAllowed : Boolean?
+            )
+        }
+    }
+
+    data class Error (
+            @SerializedName("error_type") val error_type : Int?,
+            @SerializedName("title") val title : String?,
+            @SerializedName("message") val message : String?,
+            @SerializedName("error_cta") val error_cta : List<ErrorCta>?
+    ){
+        data class ErrorCta (
+                @SerializedName("cta_text") val cta_text : String?,
+                @SerializedName("cta_type") val cta_type : Int?,
+                @SerializedName("cta_action") val cta_action : Int?,
+                @SerializedName("cta_image") val cta_image : Cards.Items.Image?,
+                @SerializedName("cta_link") val cta_link : CtaLink?,
+        ){
+
+            data class CtaLink (
+                    @SerializedName("desktop") val desktop : String?,
+                    @SerializedName("mobile") val mobile : String?,
+                    @SerializedName("ios") val ios : String?,
+                    @SerializedName("android") val android : String?
             )
         }
     }

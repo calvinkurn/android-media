@@ -68,8 +68,12 @@ class AffiliateSearchUseCase @Inject constructor(
 
         val items = arrayListOf<AffiliateSearchData.Cards.Items>()
         items.add(getItem())
-        val card = AffiliateSearchData.Cards("1", false, "Produk ditemukan", items)
-        return AffiliateSearchData(true, card)
+        //val card = AffiliateSearchData.Cards("1", false, "Produk ditemukan", items)
+        val error = AffiliateSearchData.Error(0,"This is Error Title","This is Error Message",
+        arrayListOf(AffiliateSearchData.Error.ErrorCta("CTA Title",0,0,
+                AffiliateSearchData.Cards.Items.Image("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"),
+                AffiliateSearchData.Error.ErrorCta.CtaLink("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"))))
+        return AffiliateSearchData(true, null,error)
     }
 
 

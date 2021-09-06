@@ -91,9 +91,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         affiliatePromoViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    promo_affiliate_progress_bar?.show()
+                    promo_affiliate_progress_view?.show()
                 else
-                    promo_affiliate_progress_bar?.gone()
+                    promo_affiliate_progress_view?.gone()
             }
         })
 
@@ -108,11 +108,16 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
+
             affiliateSearchData.cards?.items?.firstOrNull()?.let {
-                showData()
+                showData(false)
                 affiliateSearchData.cards.items.forEach {
                     adapter.addElement(AffiliatePromotionCardModel(it))
-                    adapter.addElement(AffiliatePromotionErrorCardModel(AffiliateProductCommissionData.Error("")))
+                }
+            } ?: kotlin.run {
+                showData(true)
+                affiliateSearchData.error?.let {
+                    adapter.addElement(AffiliatePromotionErrorCardModel(it))
                 }
             }
         })
@@ -122,13 +127,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         })
     }
 
-    private fun showError(){
-
-    }
-
-    private fun showData(){
+    private fun showData(isErrorData : Boolean){
+        if (isErrorData) promotion_card_title.hide() else promotion_card_title.show()
         error_group.hide()
-        promotion_card_title.show()
         promotion_recycler_view.show()
     }
 

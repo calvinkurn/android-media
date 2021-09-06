@@ -89,6 +89,14 @@
         app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_bought_iv"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/promo_affiliate_progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="promo_affiliate_progress_bar,promo_affiliate_progress_title"
+        />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/promo_affiliate_progress_bar"
         android:layout_width="@dimen/dp_40"
@@ -100,17 +108,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="0dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/promo_affiliate_progress_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
+        android:text="Tunggu, ya. Produknya lagi dicari"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/promotion_recycler_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/promotion_card_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
-        android:visibility="gone"
-        />
+        android:layout_marginBottom="@dimen/unify_space_48"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/promotion_recycler_view"
+            android:visibility="visible"
+            tools:itemCount="1"
+            tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
+            tools:visibility="gone"
+            />
+    </FrameLayout>
 
     <View
         android:id="@+id/dim_layer"

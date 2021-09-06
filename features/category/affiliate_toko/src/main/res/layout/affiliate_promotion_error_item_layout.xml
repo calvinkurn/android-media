@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/error_image"
@@ -25,7 +26,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_3"
-        android:text="Oops, produk nggak ditemukan"
+        tools:text="Oops, produk nggak ditemukan"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -40,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN600"
-        android:text="Cek ulang atau coba link lain untuk temukan produk yang diinginkan."
+        tools:text="Cek ulang atau coba link lain untuk temukan produk yang diinginkan."
         />
 
     <androidx.constraintlayout.widget.Barrier
@@ -67,7 +68,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintEnd_toStartOf="@id/vertical_guideline"
-        android:text="Lihat Kategori"
+        tools:text="Lihat Kategori"
         android:textSize="@dimen/font_small"
         />
 
@@ -81,7 +82,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintStart_toEndOf="@id/vertical_guideline"
-        android:text="Granti Link"
+        tools:text="Granti Link"
         android:textSize="@dimen/font_small"
         />
 
