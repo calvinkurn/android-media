@@ -6,8 +6,6 @@ import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayTotalViewUiModel
-import com.tokopedia.play.view.uimodel.recom.totalViewFmt
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,8 +20,8 @@ class StatsInfoViewComponent(
     private val tvTotalView = findViewById<Typography>(com.tokopedia.play_common.R.id.tv_total_views)
     private val liveBadge = findViewById<View>(R.id.live_badge)
 
-    fun setTotalViews(totalView: PlayTotalViewUiModel) {
-        tvTotalView.text = totalView.totalViewFmt
+    fun setTotalViews(totalView: String) {
+        tvTotalView.text = totalView
     }
 
     fun setLiveBadgeVisibility(isLive: Boolean) {

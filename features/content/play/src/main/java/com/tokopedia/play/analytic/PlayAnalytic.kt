@@ -8,6 +8,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -57,20 +58,21 @@ class PlayAnalytic(
         )
     }
 
-    fun clickLeaveRoom(duration: Long) {
+    fun clickLeaveRoom(durationInMs: Long) {
+        val durationInSec = TimeUnit.MILLISECONDS.toSeconds(durationInMs)
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_EVENT_ACTION to "leave room",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $duration - ${mChannelType.value}",
+                KEY_EVENT_LABEL to "$mChannelId - $durationInSec - ${mChannelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userId,
                 KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                 KEY_CHANNEL to mChannelName,
-                "duration" to duration.toString()
+                "duration" to durationInSec.toString()
             )
         )
     }

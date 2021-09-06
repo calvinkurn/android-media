@@ -22,6 +22,16 @@ data class PlayViewerNewUiState(
 
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         val status: PlayStatusType,
+
+        val like: PlayLikeUiState,
+
+        val totalView: String,
+
+        val isShareable: Boolean,
+
+        val cart: PlayCartUiState,
+
+        val rtn: PlayRtnUiState,
 )
 
 sealed class PlayInteractiveUiState {
@@ -45,6 +55,30 @@ sealed class PlayInteractiveUiState {
             @StringRes val info: Int,
     ) : PlayInteractiveUiState()
 }
+
+data class PlayLikeUiState(
+        val isLiked: Boolean,
+        val shouldShow: Boolean,
+        val canLike: Boolean,
+        val animate: Boolean,
+        val totalLike: String,
+)
+
+data class PlayCartUiState(
+        val shouldShow: Boolean,
+        val count: PlayCartCount,
+)
+
+sealed class PlayCartCount {
+
+    data class Show(val countText: String) : PlayCartCount()
+    object Hide : PlayCartCount()
+}
+
+data class PlayRtnUiState(
+        val shouldShow: Boolean,
+        val lifespanInMs: Long,
+)
 
 enum class ViewVisibility {
 
