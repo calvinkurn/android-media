@@ -23,4 +23,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getPreOrderTimeUnitMonth(): String? {
         return getString(R.string.preorder_time_unit_month)
     }
+
+    fun getProductVariantNotSelected(): String {
+        return getString(R.string.error_bundle_variant_not_selected) ?: ""
+    }
 }

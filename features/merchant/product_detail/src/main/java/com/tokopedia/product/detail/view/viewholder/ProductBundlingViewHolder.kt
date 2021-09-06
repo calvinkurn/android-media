@@ -26,8 +26,6 @@ class ProductBundlingViewHolder(
         private const val BUNDLE_ITEM_MINIMUM_COUNT_MULTIPLE = 2
     }
 
-    private var componentTrackDataModel: ComponentTrackDataModel? = null
-
     private val viewBundleDelegate = lazy { ViewBundle(view) }
     private val viewBundle: ViewBundle by viewBundleDelegate
 
@@ -45,7 +43,7 @@ class ProductBundlingViewHolder(
         val bundleType = bundle.type
         if (!checkBundleItems(bundleType, bundleItems)) return hideComponent()
 
-        componentTrackDataModel = getComponentTrackData(element)
+        val componentTrackDataModel = getComponentTrackData(element)
 
         val bundleId = bundle.bundleId
         viewBundle.process(bundle) {
@@ -54,7 +52,7 @@ class ProductBundlingViewHolder(
 
         when (bundleType) {
             BUNDLE_TYPE_SINGLE -> showSingleBundle(bundleItems.first(), bundle.name)
-            BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle, bundleId)
+            BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle, bundleId, componentTrackDataModel)
         }
 
         view.addOnImpressionListener(element.impressHolder) {
@@ -67,7 +65,11 @@ class ProductBundlingViewHolder(
         singleBundle.process(item, bundleName)
     }
 
-    private fun showMultiBundle(bundle: BundleInfo, bundleId: String) {
+    private fun showMultiBundle(
+        bundle: BundleInfo,
+        bundleId: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
         if (singleBundleDelegate.isInitialized()) singleBundle.hide()
         multiBundle.process(bundle) { productId ->
             listener.onClickProductInBundling(bundleId, productId, componentTrackDataModel)

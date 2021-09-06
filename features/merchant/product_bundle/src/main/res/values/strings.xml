@@ -52,4 +52,8 @@
     <string name="dialog_error_action_change_variant">Ganti Varian</string>
     <string name="dialog_error_action_change_bundle">Lihat Paket Lain</string>
 
+    <!-- error messages -->
+    <string name="error_bundle_out_of_stock_dialog_title">Oops, Paketnya habis. Kembali ke halaman produk untuk beli secara satuan, ya.</string>
+    <string name="error_bundle_out_of_stock_dialog_description">Coba pilih paket lain atau kembali ke halaman produk, ya.</string>
+    <string name="error_bundle_variant_not_selected">Oops, pilih varian dulu, ya.</string>
 </resources>

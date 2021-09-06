@@ -16,7 +16,6 @@ data class TotalAmountUiModel (
 
 data class SingleProductBundleItem (
         var quantity: Int = 0,
-        var bundleName: String = "",
         var productName: String = "",
         var originalPrice: Double = 0F.toDouble(),
         var discountedPrice: Double = 0F.toDouble(),
@@ -34,10 +33,10 @@ data class SingleProductBundleItem (
 }
 
 data class SingleProductBundleSelectedItem (
+        val shopId: String = "",
         var bundleId: String = "",
         var productId: String = "",
-        val shopId: String = "",
-        val quantity: Int = 0,
+        var quantity: Int = 0,
         var isSelected: Boolean = false,
         var isVariantEmpty: Boolean = false
 )

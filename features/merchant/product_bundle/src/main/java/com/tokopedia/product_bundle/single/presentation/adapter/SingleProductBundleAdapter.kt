@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
@@ -70,7 +71,10 @@ class SingleProductBundleAdapter(
             if (selectedItem.isSelected) {
                 data.getOrNull(index)?.apply {
                     val variant = getVariantChildFromProductId(selectedProductId)
-                    discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
+                    val variantQuantity = variant?.stock?.minimumOrder.toIntSafely()
+                    selectedItem.quantity = variantQuantity
+                    quantity = variantQuantity
+                    discount = variant?.campaign?.discountedPercentage.toIntSafely()
                     originalPrice = variant?.finalMainPrice.orZero()
                     discountedPrice = variant?.finalPrice.orZero()
                     selectedVariantText = variantText

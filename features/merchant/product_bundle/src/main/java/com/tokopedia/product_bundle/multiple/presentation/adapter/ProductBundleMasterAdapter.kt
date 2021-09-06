@@ -33,10 +33,10 @@ class ProductBundleMasterAdapter(private val clickListener: ProductBundleMasterI
         holderBundle.bindData(productBundleMasterList[position], productBundleChipsStates[position])
     }
 
-    fun setProductBundleMasters(productBundleMasterList: List<ProductBundleMaster>) {
+    fun setProductBundleMasters(productBundleMasterList: List<ProductBundleMaster>, bundleId: Long) {
         this.productBundleMasterList = productBundleMasterList
-        this.productBundleChipsStates = ArrayList(productBundleMasterList.mapIndexed { index, _ ->
-            if (index == 0) SELECTED
+        this.productBundleChipsStates = ArrayList(productBundleMasterList.map { bundleMaster ->
+            if (bundleMaster.bundleId == bundleId) SELECTED
             else NORMAL
         })
         notifyDataSetChanged()
