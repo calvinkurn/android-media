@@ -7,3 +7,4 @@ const val DEFAULT_MAXIMUM_NO_PICK = 5
 
 const val EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder"
 const val EXTRA_IMAGE_EDITOR_BUILDER = "IMG_EDITOR_BUILDER"
+const val EXTRA_SOURCE_PAGE = "source"

@@ -21,7 +21,7 @@ object ImagePickerAddEditNavigation {
     fun getIntent(context: Context, imageUrlOrPathList: List<String>, maxImageCount: Int, isAdding: Boolean): Intent {
         val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
-        intent.putImagePickerBuilder(builder)
+        intent.putImagePickerBuilder(builder, ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
 
         setUpTrackingForImagePicker(context, isAdding)
         return intent

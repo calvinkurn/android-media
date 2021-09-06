@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.*
@@ -378,7 +379,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         title = getString(R.string.image_picker_title)
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-            intent.putImagePickerBuilder(builder)
+            intent.putImagePickerBuilder(builder, ImagePickerPageSource.REVIEW_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
