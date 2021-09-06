@@ -86,7 +86,8 @@ object PMRegistrationTermHelper {
             clickableText = null,
             appLinkOrUrl = null,
             isChecked = isChecked,
-            isFirstMondayNewSeller = isFirstMondayNewSeller
+            isFirstMondayNewSeller = isFirstMondayNewSeller,
+            isNewSeller = shopInfo.isNewSeller
         )
     }
 
@@ -175,7 +176,8 @@ object PMRegistrationTermHelper {
             clickableText = null,
             appLinkOrUrl = null,
             isChecked = isChecked,
-            isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
+            isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday,
+            isNewSeller = shopInfo.isNewSeller
         )
     }
 
@@ -297,7 +299,8 @@ object PMRegistrationTermHelper {
             clickableText = ctaText,
             appLinkOrUrl = ctaAppLink,
             isChecked = isEligibleShopScore,
-            isFirstMondayNewSeller = isFirstMondayNewSeller
+            isFirstMondayNewSeller = isFirstMondayNewSeller,
+            isNewSeller = shopInfo.isNewSeller
         )
     }
 
@@ -467,7 +470,8 @@ object PMRegistrationTermHelper {
             clickableText = ctaText,
             appLinkOrUrl = ctaAppLink,
             isChecked = isKycVerified,
-            isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
+            isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday,
+            isNewSeller = shopInfo.isNewSeller
         )
     }
 

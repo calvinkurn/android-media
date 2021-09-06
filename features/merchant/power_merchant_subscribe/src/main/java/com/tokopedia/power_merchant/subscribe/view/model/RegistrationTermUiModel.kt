@@ -11,6 +11,7 @@ sealed class RegistrationTermUiModel(
     open val isChecked: Boolean,
     open val clickableText: String? = null,
     open val appLinkOrUrl: String? = null,
+    open val isNewSeller: Boolean = false,
     open val isFirstMondayNewSeller: Boolean = false,
     val periority: Int = 0
 ) {
@@ -21,6 +22,7 @@ sealed class RegistrationTermUiModel(
         override val isChecked: Boolean,
         override val clickableText: String? = null,
         override val appLinkOrUrl: String? = null,
+        override val isNewSeller: Boolean,
         override val isFirstMondayNewSeller: Boolean
     ) : RegistrationTermUiModel(
         title,
@@ -29,6 +31,7 @@ sealed class RegistrationTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
+        isNewSeller,
         isFirstMondayNewSeller,
         1
     )
@@ -57,6 +60,7 @@ sealed class RegistrationTermUiModel(
         override val isChecked: Boolean,
         override val clickableText: String? = null,
         override val appLinkOrUrl: String? = null,
+        override val isNewSeller: Boolean,
         override val isFirstMondayNewSeller: Boolean
     ) : RegistrationTermUiModel(
         title,
@@ -65,6 +69,7 @@ sealed class RegistrationTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
+        isNewSeller,
         isFirstMondayNewSeller,
         2
     )
@@ -76,6 +81,7 @@ sealed class RegistrationTermUiModel(
         override val isChecked: Boolean,
         override val clickableText: String? = null,
         override val appLinkOrUrl: String? = null,
+        override val isNewSeller: Boolean,
         override val isFirstMondayNewSeller: Boolean
     ) : RegistrationTermUiModel(
         title,
@@ -84,6 +90,7 @@ sealed class RegistrationTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
+        isNewSeller,
         isFirstMondayNewSeller,
         3
     )
@@ -95,6 +102,7 @@ sealed class RegistrationTermUiModel(
         override val isChecked: Boolean,
         override val clickableText: String? = null,
         override val appLinkOrUrl: String? = null,
+        override val isNewSeller: Boolean,
         override val isFirstMondayNewSeller: Boolean
     ) : RegistrationTermUiModel(
         title,
@@ -103,6 +111,7 @@ sealed class RegistrationTermUiModel(
         isChecked,
         clickableText,
         appLinkOrUrl,
+        isNewSeller,
         isFirstMondayNewSeller,
         4
     )

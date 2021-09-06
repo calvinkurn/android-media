@@ -63,8 +63,13 @@ class RegistrationTermAdapter(
                     RouteManager.route(itemView.context, term.appLinkOrUrl)
                     onTermCtaClicked?.invoke(term)
                 }
-                itemView.tvPmTermItemDesc.movementMethod = LinkMovementMethod.getInstance()
-                itemView.tvPmTermItemDesc.text = termDescription
+                itemView.tvPmTermItemDesc.apply {
+                    movementMethod = LinkMovementMethod.getInstance()
+                    text = termDescription
+                    if (term.isNewSeller && !term.isFirstMondayNewSeller) {
+                        setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    }
+                }
             } else {
                 itemView.tvPmTermItemDesc.text = term.descriptionHtml.parseAsHtml()
             }

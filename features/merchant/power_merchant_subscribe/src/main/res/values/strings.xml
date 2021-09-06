@@ -215,7 +215,6 @@
     <string name="pm_title_benefit_package_pm_pro_status">Paket keuntungan Power Merchant PRO</string>
     <string name="pm_desc_benefit_package_pm_pro_status">Power Merchant PRO memiliki tingkatan paket keuntungan yang bisa diraih berdasarkan level toko. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
-    <string name="pm_new_seller">New Seller</string>
     <string name="desc_pm_pro_new_seller_header">Untuk jadi Seller terbaik, kamu bisa gabung Power Merchant dulu dan tetap perhatikan parameter di bawah ini, ya.</string>
     
     <string name="title_requirement_pm_pro_new_seller_1">Verifikasi data diri agar tokomu terbukti terpercaya</string>
@@ -226,7 +225,7 @@
     <string name="pm_desc_new_seller_before_30_days">Kamu bisa daftar PM PRO setelah 30 hari bergabung, ya. %s</string>
 
     <string name="pm_title_new_seller_eligible_after_30_days">Karena Performamu, kamu terpilih untuk bisa daftar Power Merchant PRO!</string>
-    <string name="pm_desc_new_seller_eligible_benefit_package">Dengan biaya layanan 1,5% saja, kamu bisa dapat banyak keuntungan eksklusif Power Merchant PRO!</string>
+    <string name="pm_desc_new_seller_eligible_benefit_package">Dengan biaya layanan 1,5%, kamu bisa dapat keuntungan eksklusif Power Merchant PRO</string>
     <string name="pm_title_new_seller_not_eligible_after_30_days">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
     <string name="pm_desc_new_seller_not_eligible_benefit_package">Yuk, penuhi semua syarat dan daftar PM PRO! Dengan biaya layanan 1,5% saja, kamu bisa dapat banyak keuntungan eksklusifnya!</string>
 

@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/tvTitleBenefitPmProNewSeller"
         tools:itemCount="4"
         tools:listitem="@layout/item_pm_pro_upsale_benefit" />
