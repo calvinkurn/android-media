@@ -265,7 +265,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var recomWishlistItem: RecommendationItem? = null
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
     private var alreadyPerformSellerMigrationAction = false
-    private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
     private var alreadyHitVideoTracker: Boolean = false
     private var alreadyHitQtyTracker: Boolean = false
@@ -857,7 +856,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.variantData?.let {
                     goToAtcVariant(AtcVariantHelper.generateSimpanCartRedirection(
                             productVariant = it,
-                            buttonText = context?.getString(R.string.pdp_save_btn) ?: "",
+                            buttonText = context?.getString(R.string.pdp_choose_variant) ?: "",
                             customCartType = ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON)
                     )
                 }
@@ -1568,7 +1567,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             this condition will be reproduceable when variant auto select is faster then p2 data from network
             if this happen, the update button will be run in onSuccessGetP2Data
          */
-        if (viewModel.p2Data.value != null || viewModel.p2Data.value == null && !isAutoSelectVariant) {
+        if (viewModel.p2Data.value != null || viewModel.p2Data.value == null) {
             updateButtonState()
         }
 
@@ -1630,23 +1629,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeSingleVariantData() {
         viewLifecycleOwner.observe(viewModel.singleVariantData) {
             val listOfVariantLevelOne = listOf(it)
-            if (!isAutoSelectVariant) {
-                pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
-            } else {
-                //If variant did auto select, we have to update the UI
-                updateVariantDataAndUi(listOfVariantLevelOne)
-            }
+            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
         }
     }
 
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            if (!isAutoSelectVariant) {
-                pdpUiUpdater?.updateVariantData(it)
-            } else {
-                //If variant did auto select, we have to update the UI
-                updateVariantDataAndUi(it)
-            }
+            pdpUiUpdater?.updateVariantData(it)
         }
     }
 
@@ -2134,10 +2123,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
-        if (it.tickerInfo.isEmpty() && pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.TICKER_INFO)
-        }
-
         stickyLoginView?.loadContent()
         pdpUiUpdater?.updateDataP3(it)
         updateUi()
@@ -2188,21 +2173,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return if (isPartialySelected) "" else variantStockWording
     }
 
-    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         if (pdpUiUpdater?.productSingleVariant != null) {
-            goToAtcVariant()
+            SingleClick.doSomethingBeforeTime {
+                goToAtcVariant()
+            }
         } else {
-            pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
-            val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
-                    ?: false
-
-            viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
-                    variantOptions.imageOriginal)
+            selectVariantInPdp(variantOptions, state)
         }
     }
 
-    override fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute?) {
-        goToAtcVariant()
+    private fun selectVariantInPdp(variantOptions: VariantOptionWithAttribute, state: Int) {
+        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
+        pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
+        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+                ?: false
+
+        viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
+                variantOptions.imageOriginal)
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
@@ -2268,11 +2256,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
             val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
-            val pairAutoSelectAndSelectedOptionIds = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
-            isAutoSelectVariant = pairAutoSelectAndSelectedOptionIds.first
+            val mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
 
-            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
-            pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
+            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = mapOfSelectedVariant
+            pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant = mapOfSelectedVariant
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
                 ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()

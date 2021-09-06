@@ -35,6 +35,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -47,6 +48,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -195,17 +197,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeData() {
-        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
-            val cartRedirCartType = it.variantAggregator.cardRedirection.values.toList()
-                    .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
-            shouldSetActivityResult = when (cartRedirCartType) {
-                ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
-                ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
-                else -> true
-            }
-            viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
-        })
-
+        observeParamsData()
         observeInitialVisitablesData()
         observeButtonState()
         observeCart()
@@ -214,6 +206,45 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeWishlist()
         observeRestrictionData()
         observeToggleFavorite()
+    }
+
+    private fun observeParamsData() {
+        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
+            val previousData = getDataFromPreviousPage(it)
+
+            //If complete data is coming from previous page, set params into this data (directly show without hit network)
+            //if not just use general data from aggregatorParams (data do not complete, hit network)
+            val data = if (previousData != null) {
+                sharedViewModel.setAtcBottomSheetParams(previousData)
+                previousData
+            } else {
+                it
+            }
+
+            setupButtonAbility(data)
+            viewModel.decideInitialValue(data, userSessionInterface.isLoggedIn)
+        })
+    }
+
+    private fun setupButtonAbility(data: ProductVariantBottomSheetParams) {
+        val cartRedirCartType = data.variantAggregator.cardRedirection.values.toList()
+                .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
+        shouldSetActivityResult = when (cartRedirCartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
+            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
+            else -> true
+        }
+    }
+
+    private fun getDataFromPreviousPage(productVariantBottomSheetParams: ProductVariantBottomSheetParams):ProductVariantBottomSheetParams?{
+         context?.let { ctx ->
+            val cacheManager = SaveInstanceCacheManager(ctx, productVariantBottomSheetParams.cacheId)
+            val data: ProductVariantBottomSheetParams? = cacheManager.get(AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
+
+            return data
+        }
+
+        return null
     }
 
     private fun observeToggleFavorite() {
@@ -576,13 +607,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         viewModel.deleteProductInCart(productId)
     }
 
-    override fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute?) {
-        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY || variantOptions == null) return
-
-        onVariantClicked(variantOptions)
-    }
-
-    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
+        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
                 variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.product.Cashback
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
@@ -55,6 +56,9 @@ data class ProductVariantAggregator(
 
         @SerializedName("uniqueSellingPoint")
         @Expose
-        var uniqueSellingPoint: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang()
+        var uniqueSellingPoint: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang(),
 
+        @SerializedName("isCashback")
+        @Expose
+        var isCashback: Cashback = Cashback()
 )

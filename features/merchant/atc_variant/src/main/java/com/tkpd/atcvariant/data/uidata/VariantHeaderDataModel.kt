@@ -16,6 +16,7 @@ data class VariantHeaderDataModel(
         val variantTitle: List<String> = listOf(),
         val isTokoCabang: Boolean = false,
         val uspImageUrl: String = "",
+        val cashBackPercentage: Int = 0,
         val headerData: ProductHeaderData = ProductHeaderData()
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
@@ -25,7 +26,8 @@ data class VariantHeaderDataModel(
             productImage == newData.productImage &&
                     headerData == newData.headerData &&
                     variantTitle.hashCode() == newData.variantTitle.hashCode() &&
-                    isTokoCabang == newData.isTokoCabang
+                    isTokoCabang == newData.isTokoCabang &&
+                    cashBackPercentage == newData.cashBackPercentage
         } else {
             false
         }

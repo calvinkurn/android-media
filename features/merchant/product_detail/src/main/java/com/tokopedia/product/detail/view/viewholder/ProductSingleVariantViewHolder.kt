@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -57,7 +58,8 @@ class ProductSingleVariantViewHolder(val view: View,
                 containerAdapter?.setData(it.variantOptions)
 
                 itemView.setOnClickListener {
-                    variantListener.onVariantEmptyAndSelectedClicked()
+                    //pass dummy object since we need to redirect to variant bottomsheet
+                    variantListener.onVariantClicked(VariantOptionWithAttribute())
                 }
                 hideError()
             }

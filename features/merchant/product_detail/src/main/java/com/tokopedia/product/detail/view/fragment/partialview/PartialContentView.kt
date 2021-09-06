@@ -36,7 +36,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
 
         text_cashback_green.shouldShowWithAction(data.cashbackPercentage > 0) {
-            text_cashback_green.text = context.getString(R.string.template_cashback, data.cashbackPercentage.toString())
+            text_cashback_green.text = context.getString(com.tokopedia.product.detail.common.R.string.template_cashback, data.cashbackPercentage.toString())
         }
 
         campaignRibbon = findViewById(R.id.campaign_ribbon)

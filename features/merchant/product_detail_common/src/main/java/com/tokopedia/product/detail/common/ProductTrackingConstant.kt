@@ -164,7 +164,7 @@ object ProductTrackingConstant {
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
         const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
-        const val ACTION_CLICK_VARIANT = "click - pilih variant"
+        const val ACTION_CLICK_VARIANT = "click - pilih varian"
         const val ACTION_CLICK_TOKOCABANG = "click - tokocabang hyperlink"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"

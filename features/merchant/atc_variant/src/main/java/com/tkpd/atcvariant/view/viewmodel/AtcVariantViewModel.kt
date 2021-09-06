@@ -251,7 +251,8 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     selectedQuantity = selectedQuantity,
                     shouldShowDeleteButton = shouldShowDeleteButton,
-                    uspImageUrl = aggregatorData?.uspImageUrl ?: "")
+                    uspImageUrl = aggregatorData?.uspImageUrl ?: "",
+                    cashBackPercentage = aggregatorData?.cashBackPercentage ?: 0)
 
             if (visitables != null) {
                 _initialData.postValue(visitables.asSuccess())

@@ -27,6 +27,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val QUERY = """
         query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
             pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
+                    isCashback{
+                        percentage
+                    }
                     basicInfo {
                           shopID
                           shopName
@@ -280,7 +283,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 boData = data.bebasOngkir,
                 rates = data.ratesEstimate,
                 reData = data.restrictionInfo,
-                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon
+                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
+                cashBackPercentage = data.isCashback.percentage
         )
     }
 }
