@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -16,14 +15,6 @@ class GetMilestoneDataUseCase(
 ) : BaseGqlUseCase<List<MilestoneDataUiModel>>() {
 
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
-
-        val response = Gson().fromJson(DUMMY, GetMilestoneDataResponse::class.java)
-
-        val data = mapper.mapMilestoneResponseToUiModel(
-            response.fetchMilestoneWidgetData?.data.orEmpty(),
-            false
-        )
-        return data
         val gqlRequest = GraphqlRequest(
             QUERY, GetMilestoneDataResponse::class.java,
             params.parameters

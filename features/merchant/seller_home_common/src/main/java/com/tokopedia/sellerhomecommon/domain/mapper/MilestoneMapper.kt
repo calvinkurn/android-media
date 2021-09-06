@@ -14,9 +14,6 @@ class MilestoneMapper @Inject constructor(
 ) {
 
     companion object {
-        private const val REDIRECT_URL_TYPE = 1
-        private const val SHARE_URL_TYPE = 2
-
         private const val HIDDEN_BUTTON_STATUS = 0
         private const val ENABLED_BUTTON_STATUS = 1
         private const val DISABLED_BUTTON_STATUS = 2
@@ -92,7 +89,7 @@ class MilestoneMapper @Inject constructor(
     }
 
     private fun getUrlType(urlType: Int?): BaseMilestoneMissionUiModel.UrlType {
-        return if (urlType == SHARE_URL_TYPE) {
+        return if (urlType == BaseMilestoneMissionUiModel.TYPE_URL_SHARING) {
             BaseMilestoneMissionUiModel.UrlType.SHARE
         } else {
             BaseMilestoneMissionUiModel.UrlType.REDIRECT

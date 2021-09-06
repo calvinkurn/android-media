@@ -42,10 +42,12 @@ interface BaseMilestoneMissionUiModel {
     companion object {
         const val MISSION_KEY = "mission"
         const val FINISH_MISSION_KEY = "finishMission"
+        const val TYPE_URL_REDIRECT = 1
+        const val TYPE_URL_SHARING = 3
     }
 
-    enum class UrlType {
-        REDIRECT, SHARE
+    enum class UrlType(val urlType: Int) {
+        REDIRECT(TYPE_URL_REDIRECT), SHARE(TYPE_URL_SHARING)
     }
 
     enum class ButtonStatus {

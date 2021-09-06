@@ -69,10 +69,17 @@ class MilestoneViewHolder(
                 }
             }
 
+            showMilestoneBackground(data.backgroundImageUrl)
             setupMilestoneProgress(data.milestoneProgress)
             setupMilestoneList(element)
             setupTooltip(tvTitleMilestoneWidget, element)
             setupSeeMoreCta(element)
+        }
+    }
+
+    private fun showMilestoneBackground(imageUrl: String) {
+        if (imageUrl.isNotBlank()) {
+            onSuccessView.imgShcBgMilestone.loadImage(imageUrl)
         }
     }
 
@@ -126,7 +133,11 @@ class MilestoneViewHolder(
 
     private fun setupMilestoneProgress(milestoneProgress: MilestoneProgressbarUiModel) {
         with(onSuccessView) {
-            val valuePerIndicator = PROGRESS_BAR_MAX_VALUE / milestoneProgress.totalTask
+            val valuePerIndicator = try {
+                PROGRESS_BAR_MAX_VALUE / milestoneProgress.totalTask
+            } catch (e: ArithmeticException) {
+                0
+            }
             progressBarShcMilestone.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
             progressBarShcMilestone.setValue(milestoneProgress.taskCompleted.times(valuePerIndicator))
         }

@@ -57,6 +57,7 @@ import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
+import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -73,6 +74,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -90,7 +94,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
         @JvmStatic
@@ -125,6 +129,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Inject
     lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+
+    @Inject
+    lateinit var shopShareHelper: ShopShareHelper
 
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
@@ -174,6 +181,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
     private val tickerImpressHolder = ImpressHolder()
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -609,8 +617,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgets.setLoading()
         val dataKeys: List<TableAndPostDataKey> =
             widgets.filterIsInstance<TableWidgetUiModel>().map {
-                val postFilter =
-                    it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
+                val postFilter = it.tableFilters.find { filter -> filter.isSelected }
+                    ?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
             }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
@@ -815,24 +823,58 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         element: MilestoneWidgetUiModel,
         mission: BaseMilestoneMissionUiModel
     ) {
-        when(mission) {
+        when (mission) {
             is MilestoneMissionUiModel -> {
                 when (mission.buttonMissionButton.urlType) {
                     BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
                         activity?.let {
-                            val intent = RouteManager.getIntent(it, mission.buttonMissionButton.appLink)
-                            it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
+                            RouteManager.route(it, mission.buttonMissionButton.appLink)
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
-
+                        shareMyShop()
                     }
                 }
             }
             is MilestoneFinishMissionUiModel -> {
-
+                activity?.let {
+                    it.startActivityForResult(
+                        RouteManager.getIntent(it, mission.buttonMissionButton.appLink),
+                        REQ_CODE_MILESTONE_WIDGET
+                    )
+                }
             }
         }
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val shareDataModel = ShopShareHelper.DataModel(
+            shareModel, "shopCoreUrl", "shopImageFilePath"
+        )
+        activity?.let {
+            shopShareHelper.onShareOptionClicked(it, shareDataModel, onUrlCreated = {
+                universalShareBottomSheet?.dismiss()
+            })
+        }
+    }
+
+    override fun onCloseOptionClicked() {
+
+    }
+
+    private fun shareMyShop() {
+        if (universalShareBottomSheet == null) {
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@SellerHomeFragment)
+                setMetaData(
+                    userSession.shopName,
+                    userSession.shopAvatar,
+                    ""
+                )
+                setOgImageUrl(userSession.shopAvatar)
+            }
+        }
+        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {
