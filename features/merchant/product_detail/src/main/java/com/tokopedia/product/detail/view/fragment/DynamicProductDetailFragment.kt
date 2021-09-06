@@ -100,14 +100,11 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
