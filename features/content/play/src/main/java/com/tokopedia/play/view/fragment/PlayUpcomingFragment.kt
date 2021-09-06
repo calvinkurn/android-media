@@ -25,6 +25,8 @@ import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -70,6 +72,7 @@ class PlayUpcomingFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupInsets()
         setupObserver()
     }
 
@@ -110,6 +113,28 @@ class PlayUpcomingFragment @Inject constructor(
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
                 renderToolbarView(state.followStatus, state.partnerName)
+            }
+        }
+    }
+
+    private fun setupInsets() {
+        toolbarView.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        btnAction.doOnApplyWindowInsets { view, insets, _, margin ->
+            val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                view.parent.requestLayout()
             }
         }
     }
