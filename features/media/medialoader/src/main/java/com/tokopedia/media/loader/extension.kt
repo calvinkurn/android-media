@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.media.loader.MediaLoaderApi.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -94,12 +95,10 @@ inline fun ImageView.loadIcon(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
 ) {
-    GlideApp
-        .with(context)
-        .load(url)
-        .override(300, 300)
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-        .into(this)
+    call(url, Properties()
+        .apply(properties)
+        .overrideSize(Resize(300, 300))
+    )
 }
 
 fun ImageView.loadImageTopRightCrop(source: String) {
