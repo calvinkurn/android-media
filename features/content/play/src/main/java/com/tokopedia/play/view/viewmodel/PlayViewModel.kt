@@ -32,6 +32,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
@@ -126,6 +127,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+    val observableUpcomingInfo: LiveData<PlayUpcomingUiModel>
+        get() = _observableUpcomingInfo
 
     /**
      * Interactive Remote Config defaults to true, because it should be enabled by default,
@@ -309,6 +312,7 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -663,6 +667,7 @@ class PlayViewModel @Inject constructor(
              * 1. Show Upcoming Fragment
              * 2. Start SSE
              */
+            _observableUpcomingInfo.value = channelData.upcomingInfo
         }
         else {
             focusVideoPlayer(channelData)
