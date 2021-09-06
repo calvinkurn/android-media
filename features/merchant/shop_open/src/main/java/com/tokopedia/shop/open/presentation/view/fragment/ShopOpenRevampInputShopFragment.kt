@@ -110,10 +110,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
-                if (s.toString().length < MIN_SHOP_NAME_LENGTH) {
+                if (s.toString().length < MINIMUM_SHOP_NAME_LENGTH) {
                     shopNameValue = s.toString()
                     validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
-                } else if (s.toString().length >= MIN_SHOP_NAME_LENGTH && s.isNotEmpty()) {
+                } else if (s.toString().length >= MINIMUM_SHOP_NAME_LENGTH && s.isNotEmpty()) {
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -126,10 +126,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 txtInputDomainName.setError(false)
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
-                if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
+                if (domainInputStr.length < MINIMUM_SHOP_NAME_LENGTH) {
                     domainNameValue = domainInputStr.toString()
                     validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
-                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
+                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MINIMUM_SHOP_NAME_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
@@ -236,7 +236,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         var errorMessage = it.data.validateDomainShopName.error.message
-                        if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
+                        if (shopNameValue.length < MINIMUM_SHOP_NAME_LENGTH) {
                             errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
                             validateShopName(
                                     isError = true,
