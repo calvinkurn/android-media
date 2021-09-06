@@ -312,6 +312,8 @@ public interface ApplinkConst {
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
     String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
+    String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
+    String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_EDUCATION = "tokopedia://affiliate/education";

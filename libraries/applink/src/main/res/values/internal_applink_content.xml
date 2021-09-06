@@ -7,6 +7,7 @@
     <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
     <string name="applink_cp_path_create_post" translatable="false">/create_post/.*\</string>
     <string name="applink_cp_path_draft_post" translatable="false">/draft/.*\</string>
+    <string name="applink_cp_productpickerfromshop" translatable="false">/productpickerfromshop/.*\</string>
 
     <string name="kol_applink_post_detail_path_pattern">/post-detail/.*\</string>
     <string name="path_content_report" translatable="false">/content-report/.*\</string>
