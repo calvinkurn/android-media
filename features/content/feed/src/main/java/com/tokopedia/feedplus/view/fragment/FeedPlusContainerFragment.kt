@@ -28,13 +28,13 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
+import com.tokopedia.createpost.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
@@ -60,12 +60,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
 import javax.inject.Inject
@@ -77,11 +76,13 @@ import javax.inject.Inject
 private const val FEED_PAGE = "feed"
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
 
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
+    private var postProgressUpdateView:PostProgressUpdateView? = null
+    private var mInProgress = false
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
@@ -265,10 +266,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         hideAllFab(false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        postProgressUpdateView?.registerBroadcastReceiver()
+    }
+
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
         viewModel.flush()
+        postProgressUpdateView?.unregisterBroadcastReceiver()
         super.onDestroy()
     }
 
@@ -351,6 +358,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initView() {
+        postProgressUpdateView= view?.findViewById(R.id.postUpdateView)
+        postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
+        postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
         isSeller = userSession.hasShop() || userSession.isAffiliate
         if (!userSession.isLoggedIn && !isSeller) {
@@ -381,6 +391,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             LocalBroadcastManager.getInstance(it.applicationContext)
                                 .sendBroadcast(intent)
                         }
+                        postProgressUpdateView?.hide()
+                    } else if (position == 0 && mInProgress) {
+                        postProgressUpdateView?.show()
                     }
                 }
 
@@ -513,7 +526,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         isFabExpanded = true
         when {
             isSellerMigrationEnabled(context) -> {
-                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                /*val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
                 val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
                 fab_feed.setOnClickListener {
                     val intent = SellerMigrationActivity.createIntent(
@@ -523,7 +536,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
                     toolBarAnalytics.sendClickBuatFeedPostEvent()
+                }*/
+
+                fab_feed.setOnClickListener {
+                    val intent= this?.context?.let { it1 -> CreatePostActivityNew.createIntent(it1, CreatePostViewModel(),false) }
+                    startActivity(intent)
                 }
+
             }
             else -> {
                 if (whitelistDomain.authors.size > 1) {
@@ -662,5 +681,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onNotificationClick() {
         toolBarAnalytics.eventClickNotification()
+    }
+
+    override fun swipeOnPostUpdate() {
+        swipe_refresh_layout?.isRefreshing = true
+        updateVisibility(false)
+    }
+
+    override fun updateVisibility(flag: Boolean) {
+        if (flag) {
+            postProgressUpdateView?.show()
+        } else
+            postProgressUpdateView?.hide()
     }
 }

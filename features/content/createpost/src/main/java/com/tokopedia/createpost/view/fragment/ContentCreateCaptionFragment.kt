@@ -36,7 +36,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun fetchContentForm() {
-//        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
+       presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
     }
 
     companion object {
