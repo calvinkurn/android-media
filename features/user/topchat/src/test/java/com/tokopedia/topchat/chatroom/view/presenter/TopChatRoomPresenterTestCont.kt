@@ -11,7 +11,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
-import com.tokopedia.topchat.chatroom.data.UploadImageDummy
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exImageUploadId
@@ -812,6 +812,22 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         verify {
             onError.invoke(throwable)
         }
+    }
+
+    @Test
+    fun `resend SRW from bubble attachment header`() {
+        // Given
+        val attachment = HeaderCtaButtonAttachment()
+        val stopTypingParam = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.sendSrwFrom(attachment, exOpponentId)
+
+        // Then
+        verify { RxWebSocket.send(stopTypingParam, listInterceptor) }
     }
 
     private fun mockkParseResponse(

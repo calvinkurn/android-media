@@ -759,6 +759,44 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         Assert.assertEquals(expectedUserId, viewModel.userId)
     }
 
+    @Test
+    fun `when setFilterFromHighlightedTopic should set specific topic and get data`() {
+        val productId = anyString()
+        val productQualityTopic = "Kualitas Produk"
+        val shopServiceTopic = "Pelayanan Toko"
+        val productQualityTopicKey = "kualitas"
+        val shopServiceTopicKey = "pelayanan"
+        val isProductReview = true
+        val expectedRatingAndTopicResponse = ProductRatingAndTopic(
+            ProductrevGetProductRatingAndTopic(
+                topics = listOf(
+                    ProductTopic(
+                        formatted = productQualityTopic,
+                        key = productQualityTopicKey
+                    ), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey)
+                )
+            )
+        )
+        val expectedTopicFilter = setOf(productQualityTopic)
+        val expectedResponse = ProductReviewList()
+
+        onGetProductRatingAndTopicsSuccess_thenReturn(expectedRatingAndTopicResponse)
+
+        viewModel.setProductId(productId)
+
+        verifyGetProductRatingAndTopicsUseCaseExecuted()
+        verifyRatingAndTopicSuccessEquals(Success(expectedRatingAndTopicResponse.productrevGetProductRatingAndTopics))
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilterFromHighlightedTopic(productQualityTopic, isProductReview)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter(isProductReview)
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+        Assert.assertEquals(expectedTopicFilter, actualTopicFilter)
+    }
+
     private fun onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse: ProductRatingAndTopic) {
         coEvery { getProductRatingAndTopicsUseCase.executeOnBackground() } returns expectedResponse
     }

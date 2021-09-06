@@ -31,6 +31,7 @@ android {
                     pathSources + 'createreputation',
                     pathSources + 'reading',
                     pathSources + 'gallery',
+                    pathSources + 'imagepreview',
                     pathSources + 'common'
             ]
         }
@@ -127,6 +128,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.imageGallery
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

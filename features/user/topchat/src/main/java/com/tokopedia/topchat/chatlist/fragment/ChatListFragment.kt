@@ -63,6 +63,7 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.Constant
@@ -805,6 +806,17 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             RoleType.SELLER
         } else {
             RoleType.BUYER
+        }
+    }
+
+    private fun isFromTopChatRoom(): Boolean {
+        return activity is TopChatRoomActivity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!isFromTopChatRoom()) {
+            adapter?.resetActiveChatIndicator()
         }
     }
 

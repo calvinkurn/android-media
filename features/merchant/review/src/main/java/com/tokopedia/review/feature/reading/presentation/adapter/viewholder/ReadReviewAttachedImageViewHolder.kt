@@ -23,7 +23,7 @@ class ReadReviewAttachedImageViewHolder(private val view: View) : RecyclerView.V
         attachedImage = view.findViewById(com.tokopedia.review.inbox.R.id.reviewHistoryAttachedImage)
     }
 
-    fun bind(attachedImageUrl: String, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String) {
+    fun bind(attachedImageUrl: String, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String, reviewItemPosition: Int) {
         if (attachedImageUrl.isEmpty()) {
             itemView.apply {
                 blankSpace?.show()
@@ -36,7 +36,8 @@ class ReadReviewAttachedImageViewHolder(private val view: View) : RecyclerView.V
             attachedImage?.show()
             attachedImage?.loadImage(attachedImageUrl)
             setOnClickListener {
-                listener.onAttachedImagesClicked(productReview, adapterPosition, shopId)
+                listener.
+                onAttachedImagesClicked(productReview, adapterPosition, shopId, reviewItemPosition)
             }
         }
     }

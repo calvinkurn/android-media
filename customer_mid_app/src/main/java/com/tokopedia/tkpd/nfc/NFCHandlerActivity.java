@@ -32,7 +32,7 @@ public class NFCHandlerActivity extends AppCompatActivity {
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (tag != null) {
             Intent newIntent;
-            if (CardUtils.isEmoneyCard(intent)) {
+            if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent)) {
                 newIntent = RouteManager.getIntent(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, DigitalExtraParam.EXTRA_NFC);
             } else if ((CardUtils.isBrizziCard(intent))) {
                 newIntent = RouteManager.getIntent(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, DigitalExtraParam.EXTRA_NFC);

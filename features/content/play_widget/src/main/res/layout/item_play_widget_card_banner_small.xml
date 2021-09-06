@@ -44,7 +44,7 @@
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="centerCrop"
         android:layout_margin="@dimen/play_widget_dp_3"
-        app:cornerRadius="@dimen/play_widget_small_radius"
+        app:rImg_cornerRadius="@dimen/play_widget_small_radius"
         app:layout_constraintBottom_toBottomOf="@id/fl_border"
         app:layout_constraintEnd_toEndOf="@id/fl_border"
         app:layout_constraintStart_toStartOf="@id/fl_border"

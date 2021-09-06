@@ -165,7 +165,7 @@
             tools:text="Rp 400" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/progress_status2"
+            android:id="@+id/daily_budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"

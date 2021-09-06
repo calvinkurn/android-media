@@ -11,11 +11,6 @@ public class ConditionalInfo {
     @Expose
     private Color color;
 
-    ConditionalInfo(String text, Color color) {
-        this.text = text;
-        this.color = color;
-    }
-
     public String text() {
         return text;
     }
