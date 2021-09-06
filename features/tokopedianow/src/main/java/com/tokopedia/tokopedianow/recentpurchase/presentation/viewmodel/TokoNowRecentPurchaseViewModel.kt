@@ -64,7 +64,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers,
+    dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.io) {
 
     companion object {
