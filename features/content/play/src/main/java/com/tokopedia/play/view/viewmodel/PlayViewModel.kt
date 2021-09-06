@@ -1519,11 +1519,6 @@ class PlayViewModel @Inject constructor(
         private const val MAX_CART_COUNT = 99
 
         /**
-         * Real Time Notif
-         */
-        private const val REAL_TIME_NOTIF_ANIMATION_DURATION_IN_MS = 300L
-
-        /**
          * Request Code When need login
          */
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
