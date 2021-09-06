@@ -1,43 +1,94 @@
 package com.tokopedia.review.feature.gallery.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
 
-class ReviewGalleryActivity : BaseSimpleActivity() {
+class ReviewGalleryActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     companion object {
-        const val EXTRA_CACHE_MANAGER_ID = "cacheId"
-        fun getIntent(context: Context, cacheManagerId: String): Intent {
-            return Intent(context, ReviewGalleryActivity::class.java).putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+        const val PRODUCT_ID_APPLINK_INDEX = 1
+    }
+
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startPerformanceMonitoring()
+    }
+
+    override fun getNewFragment(): Fragment {
+        return ReviewGalleryFragment.createNewInstance(getDataFromApplink())
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_PREPARE_METRICS,
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_NETWORK_METRICS,
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
+        )
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.REVIEW_GRID_GALLERY_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopMonitoring()
+        }
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startPreparePagePerformanceMonitoring()
         }
     }
 
-    private var cacheManagerId = ""
-    private var fragment: ReviewGalleryFragment? = null
-
-    override fun getNewFragment(): Fragment? {
-        fragment = ReviewGalleryFragment.newInstance(cacheManagerId)
-        return fragment
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopPreparePagePerformanceMonitoring()
+        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        cacheManagerId = intent.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
-        super.onCreate(savedInstanceState)
-        hideToolbar()
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startNetworkRequestPerformanceMonitoring()
+        }
     }
 
-    override fun onBackPressed() {
-        (fragment as? OnBackPressedListener)?.onBackPressed()
-        super.onBackPressed()
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopNetworkRequestPerformanceMonitoring()
+        }
     }
 
-    private fun hideToolbar() {
-        toolbar?.hide()
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun getDataFromApplink(): String {
+        val uri = intent.data
+        return if (uri != null) {
+            val segments = uri.pathSegments
+            return segments[PRODUCT_ID_APPLINK_INDEX] ?: ""
+        } else ""
     }
 }

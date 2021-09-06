@@ -10,8 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/review_item_timestamp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/review_item_timestamp"
         tools:srcCompat="@drawable/review_ic_rating_star_five" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        app:layout_constraintBottom_toBottomOf="@id/review_item_rating"
         app:layout_constraintStart_toEndOf="@id/review_item_rating"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
@@ -37,5 +37,20 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Karina Nana" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_item_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_item_reviewer_name"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:visibility="visible"
+        tools:text="Varian: Green" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

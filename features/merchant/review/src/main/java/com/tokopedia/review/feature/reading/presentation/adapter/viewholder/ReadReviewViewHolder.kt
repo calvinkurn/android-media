@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
@@ -39,6 +40,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
     private var reportOption: IconUnify? = null
     private var likeImage: ImageUnify? = null
     private var likeCount: Typography? = null
+    private var variantLabel: Typography? = null
     private var reviewMessage: Typography? = null
     private var attachedImages: ReadReviewAttachedImages? = null
     private var showResponseText: Typography? = null
@@ -69,6 +71,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
+            setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
             showAttachedImages(imageAttachments, this, element.shopId)
@@ -81,16 +84,19 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
     }
 
     private fun bindViews() {
-        productInfo = itemView.findViewById(R.id.read_review_product_info)
-        basicInfo = itemView.findViewById(R.id.read_review_basic_info)
-        reportOption = itemView.findViewById(R.id.read_review_item_three_dots)
-        reviewMessage = itemView.findViewById(R.id.read_review_item_review)
-        attachedImages = itemView.findViewById(R.id.read_review_attached_images)
-        likeImage = itemView.findViewById(R.id.read_review_like_button)
-        likeCount = itemView.findViewById(R.id.read_review_like_count)
-        showResponseText = itemView.findViewById(R.id.read_review_show_response)
-        showResponseChevron = itemView.findViewById(R.id.read_review_show_response_chevron)
-        sellerResponse = itemView.findViewById(R.id.read_review_seller_response)
+        with(itemView) {
+            productInfo = findViewById(R.id.read_review_product_info)
+            basicInfo = findViewById(R.id.read_review_basic_info)
+            reportOption = findViewById(R.id.read_review_item_three_dots)
+            variantLabel = findViewById(R.id.read_review_variant_name)
+            reviewMessage = findViewById(R.id.read_review_item_review)
+            attachedImages = findViewById(R.id.read_review_attached_images)
+            likeImage = findViewById(R.id.read_review_like_button)
+            likeCount = findViewById(R.id.read_review_like_count)
+            showResponseText = findViewById(R.id.read_review_show_response)
+            showResponseChevron = findViewById(R.id.read_review_show_response_chevron)
+            sellerResponse = findViewById(R.id.read_review_seller_response)
+        }
     }
 
     private fun setProductInfo(
@@ -141,6 +147,12 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
 
     private fun setReviewerName(name: String) {
         basicInfo?.setReviewerName(name)
+    }
+
+    private fun setVariantName(variantName: String) {
+        variantLabel?.shouldShowWithAction(variantName.isNotBlank()) {
+            variantLabel?.text = getString(R.string.review_gallery_variant, variantName)
+        }
     }
 
     private fun setReview(message: String, feedbackId: String, productId: String) {
@@ -273,7 +285,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             return
         }
         attachedImages?.apply {
-            setImages(imageAttachments, attachedImagesClickListener, productReview, shopId)
+            setImages(imageAttachments, attachedImagesClickListener, productReview, shopId, adapterPosition)
             show()
         }
     }

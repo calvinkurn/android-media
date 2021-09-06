@@ -390,7 +390,7 @@ object DeeplinkMapperMerchant {
         }
     }
 
-    fun goToNewReadProductReview(): Boolean {
+    private fun goToNewReadProductReview(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING

@@ -19,7 +19,7 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
         startPerformanceMonitoring()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val uriPath = intent.data?.path.orEmpty()
         return if (isProductReviewAppLink(uriPath)) {
             ReadReviewFragment.createNewInstance(productId = getDataFromApplink(), isProductReview = true)
