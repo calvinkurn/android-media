@@ -31,6 +31,7 @@ import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.common.util.ResourceProvider
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -184,14 +185,21 @@ class ProductBundleViewModel @Inject constructor(
                 addToCartBundleUseCase.setParams(atcParams)
                 addToCartBundleUseCase.executeOnBackground()
             }
-            if (result.data.isNotEmpty()) {
-                addToCartResultLiveData.value = AddToCartDataResult(
-                    requestParams = atcParams,
-                    responseResult = result
-                )
-            } else {
-                isBundleOutOfStockLiveData.value = true
-            }
+
+            result.validateResponse(
+                    onSuccess = {
+                        addToCartResultLiveData.value = AddToCartDataResult(
+                                requestParams = atcParams,
+                                responseResult = result.addToCartBundleDataModel
+                        )
+                    },
+                    onFailedWithMessages = {
+                        isBundleOutOfStockLiveData.value = true
+                    },
+                    onFailedWithException = {
+                        // Todo : show toaster error with error message from throwable
+                    }
+            )
         }, onError = {
             // TODO: log error, provide default error message
             errorMessageLiveData.value = it.localizedMessage
