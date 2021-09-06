@@ -38,7 +38,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
                     leaderboardInfo = mapLeaderboardInfo(),
-                    upcomingInfo = mapUpcoming(it.airTime)
+                    upcomingInfo = mapUpcoming(it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime)
             )
         }
     }
@@ -203,8 +203,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
 
-    private fun mapUpcoming(airTime: String) = PlayUpcomingUiModel(
-        isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON
+    private fun mapUpcoming(airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) = PlayUpcomingUiModel(
+        isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
+        isReminderSet = isReminderSet,
+        coverUrl = coverUrl,
+        startTime = startTime
     )
 
     companion object {

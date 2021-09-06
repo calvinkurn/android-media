@@ -34,6 +34,12 @@ data class ChannelDetailsWithRecomResponse(
             @SerializedName("title")
             val title: String = "",
 
+            @SerializedName("cover_url")
+            val coverUrl: String = "",
+
+            @SerializedName("start_time")
+            val startTime: String = "",
+
             @SerializedName("is_live")
             val isLive: Boolean = false,
 
@@ -152,7 +158,10 @@ data class ChannelDetailsWithRecomResponse(
             val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
 
             @SerializedName("room_background")
-            val roomBackground: RoomBackground = RoomBackground()
+            val roomBackground: RoomBackground = RoomBackground(),
+
+            @SerializedName("reminder")
+            val reminder: Reminder = Reminder()
     )
 
     data class FreezeData(
@@ -226,5 +235,10 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("is_show_button")
             val isShowButton: Boolean = false
+    )
+
+    data class Reminder(
+        @SerializedName("is_set")
+        val isSet: Boolean = false
     )
 }
