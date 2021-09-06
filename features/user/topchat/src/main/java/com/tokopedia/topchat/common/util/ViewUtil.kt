@@ -8,9 +8,11 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.provider.Settings
 import android.util.TypedValue
+import android.util.StateSet
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -22,12 +24,14 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.window.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.topchat.R
 
 object ViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
     private const val FIVE_MARGIN = 5
 
+    @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
             view: View?,
             @ColorRes backgroundColor: Int,
@@ -132,9 +136,10 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
+        val stateDrawable = StateListDrawable()
+        stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
-        return drawable
-
+        return stateDrawable
     }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {

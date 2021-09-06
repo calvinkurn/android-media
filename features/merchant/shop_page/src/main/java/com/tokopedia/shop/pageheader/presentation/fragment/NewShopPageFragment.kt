@@ -146,6 +146,7 @@ import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -319,6 +320,7 @@ class NewShopPageFragment :
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenShotDetector: ScreenshotDetector? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
@@ -365,7 +367,7 @@ class NewShopPageFragment :
 
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState()
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onStop()
     }
 
@@ -385,7 +387,7 @@ class NewShopPageFragment :
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
-        UniversalShareBottomSheet.clearScreenShotDetector()
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onDestroy()
     }
 
@@ -911,7 +913,9 @@ class NewShopPageFragment :
                 setViewState(VIEW_LOADING)
             }
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        context?.let {
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+        }
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -1142,7 +1146,7 @@ class NewShopPageFragment :
         super.onResume()
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
-        UniversalShareBottomSheet.getScreenShotDetector()?.start()
+        screenShotDetector?.start()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1570,13 +1574,13 @@ class NewShopPageFragment :
             }
         }
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                shopId,
-                shopPageHeaderDataModel?.shopName.orEmpty(),
-                shopPageHeaderDataModel?.isOfficial ?: false,
-                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                shopAttribution,
-                shopRef
+                shopId = shopId,
+                shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
+                isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
+                isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution = shopAttribution,
+                shopRef = shopRef
         )
         shopViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)
@@ -2521,7 +2525,7 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager, this)
+        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
     }
 
     override fun onRequestPermissionsResult(
@@ -2530,7 +2534,7 @@ class NewShopPageFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
+        screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
     fun setupShopPageFab(config: ShopPageFabConfig) {

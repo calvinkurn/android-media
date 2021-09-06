@@ -30,9 +30,19 @@ class ClassBuilder {
     )
 
     fun getPlayChannelDetailsRecomMapper(
-            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
+            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer(),
+            realTimeNotificationMapper: PlayRealTimeNotificationMapper = getPlayRealTimeNotificationMapper()
     ) = PlayChannelDetailsWithRecomMapper(
-            htmlTextTransformer = htmlTextTransformer
+            htmlTextTransformer = htmlTextTransformer,
+            realTimeNotificationMapper = realTimeNotificationMapper,
+    )
+
+    fun getPlayRealTimeNotificationMapper(
+            userSession: UserSessionInterface = mockk(relaxed = true),
+            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
+    ) = PlayRealTimeNotificationMapper(
+            userSession = userSession,
+            htmlTextTransformer = htmlTextTransformer,
     )
 
     fun getMapperExtraParams(

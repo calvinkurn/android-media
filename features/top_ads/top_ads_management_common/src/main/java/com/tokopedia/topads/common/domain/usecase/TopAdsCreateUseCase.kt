@@ -75,7 +75,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         if(strategy == null) {
             strategy = dataGroup[STRATEGIES] as ArrayList<String>?
         }
-        val dailyBudgetGroup = dataGroup[DAILY_BUDGET] as? Int
+        var dailyBudgetGroup = dataGroup[DAILY_BUDGET]?.toString()?.toDouble()
         val groupId = dataGroup[GROUPID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
         val isBudgetLimited = dataGroup[BUDGET_LIMITED] as? Boolean
@@ -113,7 +113,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
-            group?.dailyBudget = dailyBudgetGroup?.toDouble()
+            group?.dailyBudget = dailyBudgetGroup
         val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> = mutableListOf()
         bidtypeData?.forEach {
             val bidType = GroupEditInput.Group.TopadsGroupBidSetting()

@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="RoundedImageView">
-        <attr name="cornerRadius" format="dimension" />
+        <attr name="rImg_cornerRadius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RoundedConstraintLayout">

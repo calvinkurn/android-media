@@ -2,6 +2,7 @@ package com.tokopedia.play.data.detail.recom
 
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 
 /**
  * Created by jegul on 20/01/21
@@ -118,6 +119,12 @@ data class ChannelDetailsWithRecomResponse(
 
     data class Config(
 
+            @SerializedName("welcome_format")
+            val welcomeFormat: RealTimeNotification = RealTimeNotification(),
+
+            @SerializedName("real_time_notif")
+            val realTimeNotif: RealTimeNotificationConfig = RealTimeNotificationConfig(),
+
             @SerializedName("show_cart")
             val showCart: Boolean = false,
 
@@ -223,5 +230,10 @@ data class ChannelDetailsWithRecomResponse(
 
             @SerializedName("is_show_button")
             val isShowButton: Boolean = false
+    )
+
+    data class RealTimeNotificationConfig(
+            @SerializedName("lifespan")
+            val lifespan: Long = 0L,
     )
 }

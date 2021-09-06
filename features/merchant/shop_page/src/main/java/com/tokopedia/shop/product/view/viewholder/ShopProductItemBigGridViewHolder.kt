@@ -16,7 +16,8 @@ class ShopProductItemBigGridViewHolder(
         itemView: View,
         private val shopProductClickedListener: ShopProductClickedListener?,
         private val shopProductImpressionListener: ShopProductImpressionListener?,
-        private val shopTrackType: Int
+        private val shopTrackType: Int,
+        private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
 
     companion object {
@@ -29,7 +30,11 @@ class ShopProductItemBigGridViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCard?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, true)
+                ShopPageProductListMapper.mapToProductCardModel(
+                        shopProductUiModel = shopProductUiModel,
+                        isWideContent = true,
+                        isShowThreeDots = isShowTripleDot
+                )
         )
         productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)

@@ -6,7 +6,8 @@ import com.tokopedia.play.view.type.PlayChannelType
  * Created by jegul on 08/02/21
  */
 data class PlayChannelInfoUiModel(
-        val channelType: PlayChannelType,
-        val backgroundUrl: String,
-        val title: String
+        val id: String = "",
+        val channelType: PlayChannelType = PlayChannelType.Unknown,
+        val backgroundUrl: String = "",
+        val title: String = "",
 )
