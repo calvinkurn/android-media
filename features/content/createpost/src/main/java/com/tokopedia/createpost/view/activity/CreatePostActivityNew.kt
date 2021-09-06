@@ -2,17 +2,21 @@ package com.tokopedia.createpost.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
+import com.tokopedia.createpost.view.fragment.ImagePickerFragement
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
+import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker_insta.activity.MainActivity
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post_new.*
@@ -46,16 +50,34 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
     }
 
+    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
+        val createPostViewModel = CreatePostViewModel()
+        data?.forEach { uri ->
+            val  mediaModel  = MediaModel(path = uri.toString())
+            createPostViewModel.fileImageList.add(mediaModel)
+            createPostViewModel.urlImageList.add((mediaModel))
+        }
+        intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+        intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
+        content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
+        if (!create_post_toolbar.isVisible)
+            create_post_toolbar?.visibility = View.VISIBLE
+        inflateFragment()
+    }
+
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE= "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-        fun createIntent(context: Context, createPostViewModel: CreatePostViewModel, isCreatePostPage: Boolean): Intent {
+        const val TYPE_OPEN_IMAGE_PICKER = "open_image_picker"
+        fun createIntent(context: Context, createPostViewModel: CreatePostViewModel, isCreatePostPage: Boolean, isFirstLaunch: Boolean): Intent {
             val intent = Intent(context, CreatePostActivityNew::class.java)
-            if (isCreatePostPage)
-                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
-            else
-                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-            intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+
+                if (isCreatePostPage)
+                    intent.putExtra(PARAM_TYPE, TYPE_OPEN_IMAGE_PICKER)
+                else
+                    intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+                    intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+
             return intent
         }
     }
@@ -69,6 +91,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         }
 
         return when (intent.extras?.get(PARAM_TYPE)) {
+            TYPE_OPEN_IMAGE_PICKER -> ImagePickerFragement.createInstance(intent.extras ?: Bundle())
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras ?: Bundle())
             TYPE_CONTENT_PREVIEW_PAGE -> ContentCreateCaptionFragment.createInstance(intent.extras ?: Bundle())
             else -> {
@@ -89,15 +112,20 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_back_button.setOnClickListener {
             onBackPressed()
         }
-        content_action_post_button.setOnClickListener {
-            if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
-                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-                content_action_post_button?.text = getString(R.string.feed_content_text_post)
-                inflateFragment()
-            } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
-                postFeed()
-            }
+        if (intent.extras?.get(PARAM_TYPE) == TYPE_OPEN_IMAGE_PICKER) {
+            create_post_toolbar.visibility = View.GONE
+        } else {
+            create_post_toolbar.visibility = View.VISIBLE
         }
+//        content_action_post_button.setOnClickListener {
+//            if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
+//                intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
+//                content_action_post_button?.text = getString(R.string.feed_content_text_post)
+//                inflateFragment()
+//            } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
+//                postFeed()
+//            }
+//        }
 
 
     }
@@ -132,16 +160,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
 
     }
 
-    private fun openImagePicker(title:String, subtitle:String, iconUrl:String){
-        val intent = MainActivity.getIntent(this,
-            title = title,
-            subtitle = subtitle,
-            toolbarIconUrl = iconUrl,
-            applinkForBackNavigation = "",
-            applinkForGalleryProceed = "",
-            applinkToNavigateAfterMediaCapture = ""
-        )
-        startActivity(intent)
-    }
+
+
+
+
 
 }

@@ -28,13 +28,12 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
+import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
@@ -59,9 +58,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -511,30 +507,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (isSeller && isLoggedIn)
             fab_feed.show()
         isFabExpanded = true
-        when {
-            isSellerMigrationEnabled(context) -> {
-                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
-                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
                 fab_feed.setOnClickListener {
-                    val intent = SellerMigrationActivity.createIntent(
-                            context = requireContext(),
-                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                            screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
-                    setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
-                    toolBarAnalytics.sendClickBuatFeedPostEvent()
+                    val intent = this?.context?.let { it1 ->
+                        CreatePostActivityNew.createIntent(it1,
+                            CreatePostViewModel(),
+                            true,
+                            true)
+                    }
+                    startActivity(intent)
                 }
-            }
-            else -> {
-                if (whitelistDomain.authors.size > 1) {
-                    fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-                } else if (whitelistDomain.authors.size == 1) {
-                    val author = whitelistDomain.authors.first()
-                    fab_feed.setOnClickListener { onGoToLink(author.link) }
-                }
-                toolBarAnalytics.sendClickBuatFeedPostEvent()
-            }
-        }
     }
 
     private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {

@@ -47,7 +47,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val activityListener: CreateContentPostCOmmonLIstener? by lazy {
+    val activityListener: CreateContentPostCOmmonLIstener? by lazy {
         activity as? CreateContentPostCOmmonLIstener
     }
     companion object {
@@ -67,12 +67,9 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         presenter.attachView(this)
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            createContentViewModelPresenter = viewModelProvider.get(CreateContentPostViewModel::class.java)
-        }
         initVar(savedInstanceState)
-            fetchContentForm()
+        fetchContentForm()
+
 
     }
     protected open fun initVar(savedInstanceState: Bundle?) {
@@ -93,7 +90,11 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        createContentViewModelPresenter._createPostViewModelData.observe(this, Observer {
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            createContentViewModelPresenter = viewModelProvider.get(CreateContentPostViewModel::class.java)
+        }
+        createContentViewModelPresenter._createPostViewModelData.observe(requireActivity(), Observer {
             viewModel = it
         })
     }

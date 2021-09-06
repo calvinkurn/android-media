@@ -24,7 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -67,7 +66,7 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String, postId: String) {
-        view.showLoading()
+        view?.showLoading()
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(idList, type, postId),
                 GetContentFormSubscriber(view, type, null)

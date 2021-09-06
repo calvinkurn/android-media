@@ -2,6 +2,7 @@ package com.tokopedia.createpost.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -53,9 +54,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
-    }
-    private val resultIntent: Intent by lazy {
-        Intent()
     }
 
     private val imageList: ArrayList<String>
@@ -386,6 +384,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun updateHeader(header: HeaderViewModel) {
         TODO("Not yet implemented")
     }
+
+    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
+        TODO("Not yet implemented")
+    }
+
+
 
     private fun openProductTaggingScreen() {
         goToAttachProduct()

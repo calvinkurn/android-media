@@ -2,6 +2,7 @@ package com.tokopedia.createpost.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,8 +17,6 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
-import com.tokopedia.createpost.view.listener.CreatePostActivityListener
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -31,9 +30,6 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
         CaptionPagePreviewImageAdapter(onTagProductClick = this::openBottomSheet)
     }
 
-    private val activityListener: CreatePostActivityListener? by lazy {
-        activity as? CreatePostActivityListener
-    }
 
     override fun fetchContentForm() {
 //        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
@@ -110,6 +106,10 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun updateHeader(header: HeaderViewModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun launchProductTagFragment(data: ArrayList<Uri>?) {
         TODO("Not yet implemented")
     }
 

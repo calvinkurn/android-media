@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/toolbar"
+        android:id="@+id/create_post_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:background="@drawable/card_shadow_bottom"
