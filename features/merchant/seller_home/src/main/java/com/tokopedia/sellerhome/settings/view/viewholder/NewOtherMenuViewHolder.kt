@@ -18,14 +18,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
@@ -55,7 +52,7 @@ class NewOtherMenuViewHolder(
     }
 
     private val secondaryInfoAdapter by lazy {
-        val adapterTypeFactory = ShopSecondaryInfoAdapterTypeFactory()
+        val adapterTypeFactory = ShopSecondaryInfoAdapterTypeFactory(listener)
         ShopSecondaryInfoAdapter(adapterTypeFactory, context)
     }
 
@@ -65,9 +62,11 @@ class NewOtherMenuViewHolder(
     private var secondaryInfoRecyclerView: RecyclerView? = null
 
     private var headerShopNameTextView: Typography? = null
+    private var headerShopNextButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
+    private var shopNextButton: IconUnify? = null
     private var topadsAutoTopupIcon: IconUnify? = null
 
     private var balanceSaldoTextView: Typography? = null
@@ -84,6 +83,7 @@ class NewOtherMenuViewHolder(
     init {
         initView()
         setupView()
+        setupClickListener()
         registerLifecycleOwner()
     }
 
@@ -93,7 +93,6 @@ class NewOtherMenuViewHolder(
 
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
-            toggleTopadsTopupWithAnimation()
             setOnAnimationFinishedListener {
                 secondaryShopInfoAnimator?.swipeRecyclerViewGently()
             }
@@ -112,12 +111,17 @@ class NewOtherMenuViewHolder(
             } else {
                 com.tokopedia.unifyprinciples.R.color.Unify_NN500
             }
-        topadsAutoTopupIcon?.setImage(
-            newLightEnable = ContextCompat.getColor(
-                context,
-                color
+        topadsAutoTopupIcon?.run {
+            setImage(
+                newLightEnable = ContextCompat.getColor(
+                    context,
+                    color
+                )
             )
-        )
+            setOnClickListener {
+                listener.onTopAdsTooltipClicked(isAutoTopup)
+            }
+        }
     }
 
     fun setBalanceSaldoData(state: SettingResponseState<String>) {
@@ -161,6 +165,7 @@ class NewOtherMenuViewHolder(
         balanceTopadsTopupView?.run {
             setTopadsValue(topadsValueString)
             show()
+            toggleTopadsTopupWithAnimation()
         }
         errorLayoutTopads?.gone()
         shimmerTopads?.gone()
@@ -228,9 +233,11 @@ class NewOtherMenuViewHolder(
             secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
 
             headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
+            headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
+            shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
             topadsAutoTopupIcon = findViewById(R.id.ic_sah_new_other_balance_topads)
 
             balanceSaldoTextView = findViewById(R.id.tv_sah_new_other_saldo_value)
@@ -285,6 +292,44 @@ class NewOtherMenuViewHolder(
         }
     }
 
+    private fun setupClickListener() {
+        setupShopInfoClickListener()
+        setupBalanceClickListener()
+    }
+
+    private fun setupShopInfoClickListener() {
+        headerShopNameTextView?.setOnClickListener {
+            listener.onShopInfoClicked()
+        }
+        headerShopNextButton?.setOnClickListener {
+            listener.onShopInfoClicked()
+        }
+        shopAvatarImage?.setOnClickListener {
+            listener.onShopInfoClicked()
+        }
+        shopNameTextView?.setOnClickListener {
+            listener.onShopInfoClicked()
+        }
+        shopNextButton?.setOnClickListener {
+            listener.onShopInfoClicked()
+        }
+    }
+
+    private fun setupBalanceClickListener() {
+        balanceSaldoTextView?.setOnClickListener {
+            listener.onSaldoClicked()
+        }
+        balanceTopadsTopupView?.setOnClickListener {
+            listener.onKreditTopadsClicked()
+        }
+        errorLayoutSaldo?.setOnClickListener {
+            listener.onSaldoBalanceRefresh()
+        }
+        errorLayoutTopads?.setOnClickListener {
+            listener.onKreditTopAdsRefresh()
+        }
+    }
+
     private fun registerLifecycleOwner() {
         lifecycleOwner?.let { lifecycleOwner ->
             (lifecycleOwner as? Fragment)?.viewLifecycleOwnerLiveData?.observe(lifecycleOwner) {
@@ -310,7 +355,14 @@ class NewOtherMenuViewHolder(
                 userSession.isGoldMerchant -> R.drawable.bg_sah_new_other_curved_header_pm
                 else -> R.drawable.bg_sah_new_other_curved_header_rm
             }
+        val headerBackgroundResource =
+            when {
+                userSession.isShopOfficialStore -> R.drawable.bg_sah_new_other_header_os
+                userSession.isGoldMerchant -> R.drawable.bg_sah_new_other_header_pm
+                else -> R.drawable.bg_sah_new_other_header_rm
+            }
         shopStatusCurvedImage?.setImageResource(imageResource)
+        otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 
     private fun setInitialValues() {
@@ -330,30 +382,28 @@ class NewOtherMenuViewHolder(
         setBalanceTopadsLoading()
     }
 
-    fun dummySuccess() {
-        setShopAvatar()
-        setShopName()
-        setShopStatus()
-        setIsTopadsAutoTopup(true)
-        setBalanceSaldoSuccess("Rp100.000")
-        setBalanceTopadsSuccess("Rp0")
-        setFreeShippingData(SettingResponseState.SettingSuccess("https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BOE_Badge.png"))
-        setReputationBadgeData(SettingResponseState.SettingSuccess("https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg"))
-        setShopFollowersData(SettingResponseState.SettingSuccess("100rb"))
-        setShopStatusData(SettingResponseState.SettingSuccess(
-            ShopStatusUiModel(
-                userShopInfoWrapper = UserShopInfoWrapper(
-                    shopType = PowerMerchantProStatus.Advanced,
-                    userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(totalTransaction = 50)),
-                user = null
-            )
-        ))
-
-    }
-
     interface Listener {
+        // TODO: Add listener for status bar color
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
+        fun onShopInfoClicked()
+        fun onShopBadgeClicked()
+        fun onFollowersCountClicked()
+        fun onSaldoClicked()
+        fun onKreditTopadsClicked()
+        fun onRefreshShopInfo()
+        fun onFreeShippingClicked()
+        fun onShopOperationalClicked()
+        fun onGoToPowerMerchantSubscribe(tab: String)
+        fun onRefreshData()
+        fun onShopBadgeRefresh()
+        fun onShopTotalFollowersRefresh()
+        fun onUserInfoRefresh()
+        fun onOperationalHourRefresh()
+        fun onSaldoBalanceRefresh()
+        fun onKreditTopAdsRefresh()
+        fun onFreeShippingRefresh()
+        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
     }
 
 }

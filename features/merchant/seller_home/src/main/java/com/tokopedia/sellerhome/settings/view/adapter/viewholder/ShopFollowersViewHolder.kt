@@ -12,7 +12,9 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopFollowersWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopFollowersViewHolder(itemView: View?) :
+class ShopFollowersViewHolder(itemView: View?,
+                              private val onShopFollowersClicked: () -> Unit,
+                              private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<ShopFollowersWidgetUiModel>(itemView) {
 
     companion object {
@@ -39,7 +41,12 @@ class ShopFollowersViewHolder(itemView: View?) :
 
     private fun setSuccessFollowersLayout(totalFollowers: String) {
         successLayout?.show()
-        descTextView?.text = totalFollowers
+        descTextView?.run {
+            text = totalFollowers
+            setOnClickListener {
+                onShopFollowersClicked()
+            }
+        }
         loadingLayout?.gone()
         errorLayout?.gone()
     }
@@ -53,7 +60,12 @@ class ShopFollowersViewHolder(itemView: View?) :
     private fun setErrorFollowersLayout() {
         successLayout?.gone()
         loadingLayout?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 
 }

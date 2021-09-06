@@ -11,7 +11,9 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.FreeShippingWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
-class FreeShippingViewHolder(itemView: View?) :
+class FreeShippingViewHolder(itemView: View?,
+                             private val onFreeShippingClicked: () -> Unit,
+                             private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<FreeShippingWidgetUiModel>(itemView) {
 
     companion object {
@@ -36,13 +38,21 @@ class FreeShippingViewHolder(itemView: View?) :
         freeShippingImageView?.run {
             show()
             setImageUrl(freeShippingUrl)
+            setOnClickListener {
+                onFreeShippingClicked()
+            }
         }
         errorLayout?.gone()
     }
 
     private fun setWidgetError() {
         freeShippingImageView?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 
 }

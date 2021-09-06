@@ -23,7 +23,7 @@
                 android:layout_height="@dimen/sah_new_other_header_background_height"
                 android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
+                tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_sah_new_other_share"

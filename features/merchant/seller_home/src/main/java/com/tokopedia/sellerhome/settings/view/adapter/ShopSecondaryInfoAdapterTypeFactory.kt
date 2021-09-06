@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.settings.view.adapter.viewholder.*
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.*
+import com.tokopedia.sellerhome.settings.view.viewholder.NewOtherMenuViewHolder
 
-class ShopSecondaryInfoAdapterTypeFactory : BaseAdapterTypeFactory(),
+class ShopSecondaryInfoAdapterTypeFactory(private val listener: NewOtherMenuViewHolder.Listener) :
+    BaseAdapterTypeFactory(),
     ShopSecondaryInfoAdapterFactory {
 
     override fun type(uiModel: ShopOperationalWidgetUiModel): Int =
@@ -26,12 +28,35 @@ class ShopSecondaryInfoAdapterTypeFactory : BaseAdapterTypeFactory(),
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ShopOperationalViewHolder.LAYOUT_RES -> ShopOperationalViewHolder(parent)
-            ShopStatusViewHolder.LAYOUT_RES -> ShopStatusViewHolder(parent)
-            RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(parent)
-            ReputationBadgeViewHolder.LAYOUT_RES -> ReputationBadgeViewHolder(parent)
-            ShopFollowersViewHolder.LAYOUT_RES -> ShopFollowersViewHolder(parent)
-            FreeShippingViewHolder.LAYOUT_RES -> FreeShippingViewHolder(parent)
+            ShopOperationalViewHolder.LAYOUT_RES -> ShopOperationalViewHolder(
+                parent,
+                listener::onShopOperationalClicked,
+                listener::onOperationalHourRefresh
+            )
+            ShopStatusViewHolder.LAYOUT_RES -> ShopStatusViewHolder(
+                parent,
+                listener::onGoToPowerMerchantSubscribe,
+                listener::onRefreshShopInfo
+            )
+            RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(
+                parent,
+                listener::onRefreshShopInfo
+            )
+            ReputationBadgeViewHolder.LAYOUT_RES -> ReputationBadgeViewHolder(
+                parent,
+                listener::onShopBadgeClicked,
+                listener::onShopBadgeRefresh
+            )
+            ShopFollowersViewHolder.LAYOUT_RES -> ShopFollowersViewHolder(
+                parent,
+                listener::onFollowersCountClicked,
+                listener::onShopTotalFollowersRefresh
+            )
+            FreeShippingViewHolder.LAYOUT_RES -> FreeShippingViewHolder(
+                parent,
+                listener::onFreeShippingClicked,
+                listener::onFreeShippingRefresh
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

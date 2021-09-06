@@ -15,7 +15,11 @@ import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalDat
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopOperationalWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopOperationalViewHolder(itemView: View?) :
+class ShopOperationalViewHolder(
+    itemView: View?,
+    private val onShopOperationalClicked: () -> Unit,
+    private val onErrorClicked: () -> Unit
+) :
     AbstractViewHolder<ShopOperationalWidgetUiModel>(itemView) {
 
     companion object {
@@ -37,7 +41,7 @@ class ShopOperationalViewHolder(itemView: View?) :
         itemView?.findViewById(R.id.tv_sah_new_other_shop_hour_desc)
 
     override fun bind(element: ShopOperationalWidgetUiModel) {
-        when(val state = element.state) {
+        when (val state = element.state) {
             is SettingResponseState.SettingSuccess -> setSuccessOperationalHour(state.data)
             is SettingResponseState.SettingError -> setErrorOperationalHour()
             else -> setLoadingOperationalHour()
@@ -53,6 +57,12 @@ class ShopOperationalViewHolder(itemView: View?) :
         }
         shopOperational.timeDescription?.let { timeDesc ->
             descTextView?.text = timeDesc
+        }
+
+        if (shopOperational.shopSettingAccess) {
+            descTextView?.setOnClickListener {
+                onShopOperationalClicked()
+            }
         }
 
         successGroup?.show()
@@ -74,7 +84,10 @@ class ShopOperationalViewHolder(itemView: View?) :
         shopOperationalIcon?.run {
             setImage(
                 newIconId = shopOperational.operationalIconType,
-                newLightEnable = MethodChecker.getColor(context, shopOperational.operationalIconColorRes)
+                newLightEnable = MethodChecker.getColor(
+                    context,
+                    shopOperational.operationalIconColorRes
+                )
             )
         }
     }
@@ -88,6 +101,11 @@ class ShopOperationalViewHolder(itemView: View?) :
     private fun setErrorOperationalHour() {
         successGroup?.gone()
         loadingLayout?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 }

@@ -15,7 +15,8 @@ import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.RMTransactionWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class RMTransactionViewHolder(itemView: View?) :
+class RMTransactionViewHolder(itemView: View?,
+                              private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<RMTransactionWidgetUiModel>(itemView) {
 
     companion object {
@@ -90,7 +91,12 @@ class RMTransactionViewHolder(itemView: View?) :
     private fun setErrorTransactionInfo() {
         successGroup?.gone()
         loadingLayout?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 
 }

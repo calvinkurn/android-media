@@ -37,6 +37,7 @@ class TopadsTopupView @JvmOverloads constructor(
 
     fun setTopadsValue(value: String) {
         valueTextView?.text = value
+        isValueShowing = true
     }
 
     fun setOnAnimationFinishedListener(onAnimFinished: (Boolean) -> Unit) {

@@ -11,7 +11,9 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ReputationBadgeWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
-class ReputationBadgeViewHolder(itemView: View?) :
+class ReputationBadgeViewHolder(itemView: View?,
+                                private val onReputationBadgeClicked: () -> Unit,
+                                private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<ReputationBadgeWidgetUiModel>(itemView) {
 
     companion object {
@@ -36,12 +38,20 @@ class ReputationBadgeViewHolder(itemView: View?) :
         shopBadgeImageView?.run {
             show()
             setImageUrl(badgeUrl)
+            setOnClickListener {
+                onReputationBadgeClicked()
+            }
         }
         errorLayout?.gone()
     }
 
     private fun showError() {
         shopBadgeImageView?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 }

@@ -17,12 +17,17 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopStatusWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopStatusViewHolder(itemView: View?) :
+class ShopStatusViewHolder(itemView: View?,
+                           private val onGoToPowerMerchant: (String) -> Unit,
+                           private val onErrorClicked: () -> Unit) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_sah_new_other_shop_status
+
+        private const val TAB_PM = "pm"
+        private const val TAB_PM_PRO = "pm_pro"
     }
 
     private val successOsLayout: Group? =
@@ -68,7 +73,7 @@ class ShopStatusViewHolder(itemView: View?) :
             R.string.sah_new_other_status_upgrade,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
         ) {
-            // TODO: Go to Upgrade
+            onGoToPowerMerchant(TAB_PM)
         }
 
         pmIcon?.gone()
@@ -85,7 +90,7 @@ class ShopStatusViewHolder(itemView: View?) :
                     R.string.sah_new_other_status_upgrade,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ) {
-                    // TODO: Go to Upgrade
+                    onGoToPowerMerchant(TAB_PM_PRO)
                 }
                 warningIcon?.gone()
             }
@@ -94,7 +99,7 @@ class ShopStatusViewHolder(itemView: View?) :
                     R.string.setting_not_active,
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 ) {
-                    // TODO: Go to Not Active
+                    onGoToPowerMerchant(TAB_PM_PRO)
                 }
                 warningIcon?.show()
             }
@@ -183,7 +188,12 @@ class ShopStatusViewHolder(itemView: View?) :
         hideAllShopStatusSuccessLayouts()
         successOsLayout?.gone()
         loadingLayout?.gone()
-        errorLayout?.show()
+        errorLayout?.run {
+            show()
+            setOnClickListener {
+                onErrorClicked()
+            }
+        }
     }
 
     /**
