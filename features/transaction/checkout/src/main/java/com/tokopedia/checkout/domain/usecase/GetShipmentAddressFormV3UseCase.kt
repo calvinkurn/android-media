@@ -55,7 +55,9 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
             params[PARAM_KEY_DEVICE_ID] = deviceId ?: ""
         }
 
-        this.params = params
+        this.params = mapOf(
+                "params" to params
+        )
     }
 
 
