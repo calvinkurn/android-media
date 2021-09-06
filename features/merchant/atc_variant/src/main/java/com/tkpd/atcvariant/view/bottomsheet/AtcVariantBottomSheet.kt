@@ -631,9 +631,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
-    override fun isTokonow(): Boolean {
-        return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
-    }
+    override fun hideVariantName(): Boolean = true
 
     private fun onSaveButtonClicked() {
         shouldSetActivityResult = true
