@@ -24,6 +24,8 @@ import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -72,6 +74,20 @@ class AccountHeaderViewHolder(itemView: View,
 
     override fun bind(element: AccountHeaderDataModel) {
         initViewHolder()
+
+        val sectionShimmering: View = itemView.findViewById(R.id.section_shimmering_profile)
+        val sectionCard: View = itemView.findViewById(R.id.section_card_profile)
+
+        when(element.state) {
+            NAV_PROFILE_STATE_LOADING -> {
+                sectionShimmering.visible()
+            }
+            NAV_PROFILE_STATE_SUCCESS -> {
+                sectionShimmering.gone()
+                sectionCard.visible()
+            }
+        }
+
         when(element.loginState) {
             AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
             else -> renderNonLoginState()
@@ -95,16 +111,25 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
         val btnTryAgain: ImageView = layoutLogin.findViewById(R.id.btn_try_again)
+        val usrSaldoBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_saldo_badge)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
+        val tvSaldo: Typography = layoutLogin.findViewById(R.id.tv_saldo)
+        val usrSaldoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_saldo_badge_shimmer)
         val tvOvoShimmer: View = layoutLogin.findViewById(R.id.tv_ovo_shimmer)
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
+        val tvSaldoShimmer: View = layoutLogin.findViewById(R.id.tv_saldo_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
         val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
+        val sectionSaldo: View = layoutLogin.findViewById(R.id.section_header_saldo)
+
+        /**
+         * Button for error handling
+         */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
         btnTryAgain.setImageDrawable(
                 getIconUnifyDrawable(
@@ -123,13 +148,33 @@ class AccountHeaderViewHolder(itemView: View,
                 )
         )
 
+        /**
+         * Reset button state for error handling
+         */
         btnTryAgainShopInfo.gone()
         btnTryAgain.gone()
         shimmerShopInfo.gone()
 
+        /**
+         * Set user profile data
+         */
         userImage.setImageUrl(url = element.userImage)
         userImage.isClickable = false
         tvName.isClickable = false
+
+        /**
+         * Set saldo data
+         */
+        if (element.isGetSaldoError) {
+            sectionSaldo.gone()
+        } else {
+            usrSaldoBadgeShimmer.invisible()
+            tvSaldoShimmer.invisible()
+            usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
+            tvSaldo.text = element.saldo
+            sectionSaldo.visible()
+        }
+
         if (element.isGetUserNameError) {
             tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
         } else {
@@ -141,56 +186,93 @@ class AccountHeaderViewHolder(itemView: View,
 
         tvOvo.isClickable = false
         usrOvoBadge.visible()
+
         if (element.isCacheData) {
             tvOvoShimmer.visible()
             usrOvoBadgeShimmer.visible()
-            tvOvo.gone()
-            usrOvoBadge.gone()
+            usrSaldoBadgeShimmer.visible()
+            tvSaldoShimmer.visible()
+            tvOvo.invisible()
+            usrOvoBadge.invisible()
         } else {
-            tvOvoShimmer.gone()
-            usrOvoBadgeShimmer.gone()
+            /**
+             * Remove loading shimmering view
+             */
+            tvOvoShimmer.invisible()
+            usrOvoBadgeShimmer.invisible()
             tvOvo.visible()
             usrOvoBadge.visible()
-            if(element.isEligibleForWalletApp && element.isWalletAppLinked) {
-                tvOvo.text = String.format(
-                    itemView.context.getString(R.string.mainnav_wallet_app_format),
-                    element.gopayBalance,
-                    element.gopayPointsBalance
-                )
-                usrOvoBadge.loadImage(element.walletAppImageUrl)
-            } else if(element.isEligibleForWalletApp && !element.isWalletAppLinked) {
-                if (element.walletAppActivationCta.isNotEmpty()) {
-                    tvOvo.text = element.walletAppActivationCta
-                    usrOvoBadge.loadImage(element.walletAppImageUrl)
-                } else {
-                    tvOvo.gone()
-                    usrOvoBadge.gone()
+
+            when {
+                /**
+                 * User is eligible for wallet app, then render wallet app model
+                 */
+                element.isEligibleForWalletApp -> {
+                    when {
+                        element.isWalletAppLinked -> {
+                            tvOvo.text = String.format(
+                                itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                element.gopayBalance,
+                                element.gopayPointsBalance
+                            )
+                            usrOvoBadge.loadImage(element.walletAppImageUrl)
+                        }
+                        element.isWalletAppLinked -> {
+                            if (element.walletAppActivationCta.isNotEmpty()) {
+                                tvOvo.text = element.walletAppActivationCta
+                                usrOvoBadge.loadImage(element.walletAppImageUrl)
+                            } else {
+                                tvOvo.gone()
+                                usrOvoBadge.gone()
+                            }
+                        }
+                        element.isWalletAppFailed -> {
+                            tvOvo.gone()
+                            usrOvoBadge.gone()
+                        }
+                    }
                 }
-            } else if (element.isWalletAppFailed && element.isEligibleForWalletApp) {
-                tvOvo.gone()
-                usrOvoBadge.gone()
-            } else if (element.isTokopointExternalAmountError){
-                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
-                usrOvoBadge.clearImage()
-            } else if (element.isGetOvoError && element.isGetSaldoError) {
-                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
-                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-            } else if (element.isGetOvoError && !element.isGetSaldoError) {
-                tvOvo.text = element.saldo
-                usrOvoBadge.setImageResource(R.drawable.ic_saldo)
-            } else if(element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty()){
-                val spanText = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
-                val span = SpannableString(spanText)
-                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, element.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), element.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                tvOvo.setText(span, TextView.BufferType.SPANNABLE)
-                usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
-            } else {
-                tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
-                if (element.ovoSaldo.isNotEmpty()) {
+
+                /**
+                 * Handling when tokopoint, ovo, saldo error
+                 */
+                element.isTokopointExternalAmountError -> {
+                    tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
+                    usrOvoBadge.clearImage()
+                }
+
+                element.isGetOvoError && element.isGetSaldoError -> {
+                    tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                     usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-                } else if (element.saldo.isNotEmpty()) {
+                }
+
+                element.isGetOvoError && !element.isGetSaldoError -> {
+                    tvOvo.text = element.saldo
                     usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                }
+
+                /**
+                 * Handling tokopoint value
+                 */
+                element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty() -> {
+                    val spanText = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
+                    val span = SpannableString(spanText)
+                    span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, element.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), element.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tvOvo.setText(span, TextView.BufferType.SPANNABLE)
+                    usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
+                }
+
+                /**
+                 * Handling ovo value
+                 */
+                else -> {
+                    tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
+                    if (element.ovoSaldo.isNotEmpty()) {
+                        usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                    } else if (element.saldo.isNotEmpty()) {
+                        usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                    }
                 }
             }
         }

@@ -40,7 +40,8 @@ data class AccountHeaderDataModel(
         var isWalletAppFailed: Boolean = false,
         var isEligibleForWalletApp: Boolean = false,
         var walletAppActivationCta: String = "",
-        var isWalletAppLinked: Boolean = false
+        var isWalletAppLinked: Boolean = false,
+        var state: Int = NAV_PROFILE_STATE_LOADING
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -71,6 +72,9 @@ data class AccountHeaderDataModel(
 
         private const val WALLET_CODE_PEMUDA = "PEMUDA"
         private const val WALLET_CODE_PEMUDA_POINTS = "PEMUDAPOINTS"
+
+        const val NAV_PROFILE_STATE_LOADING = 98
+        const val NAV_PROFILE_STATE_SUCCESS = 97
     }
 
     fun copy(): AccountHeaderDataModel {

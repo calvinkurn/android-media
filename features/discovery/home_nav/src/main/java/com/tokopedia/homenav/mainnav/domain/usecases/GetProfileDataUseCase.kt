@@ -97,9 +97,9 @@ class GetProfileDataUseCase @Inject constructor(
             } else {
                 walletAppData = try {
                     ovoData = null
-                    saldoData = null
                     tokopoint = null
                     isWalletAppError = false
+                    saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
                     getWalletAppBalanceUseCase.executeOnBackground()
                 } catch (e: Exception) {
                     isWalletAppError = true

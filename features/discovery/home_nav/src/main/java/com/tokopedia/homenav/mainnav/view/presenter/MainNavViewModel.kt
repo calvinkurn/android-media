@@ -33,6 +33,8 @@ import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -158,9 +160,9 @@ class MainNavViewModel @Inject constructor(
     fun setInitialState(): MutableList<Visitable<*>> {
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
-            initialList.add(InitialShimmerProfileDataModel())
+            initialList.add(AccountHeaderDataModel(state = NAV_PROFILE_STATE_LOADING))
         } else {
-            initialList.add(AccountHeaderDataModel(loginState = getLoginState()))
+            initialList.add(AccountHeaderDataModel(loginState = getLoginState(), state = NAV_PROFILE_STATE_SUCCESS))
         }
         initialList.addTransactionMenu()
         initialList.addBUTitle()
@@ -285,6 +287,7 @@ class MainNavViewModel @Inject constructor(
     suspend fun getProfileDataCached() {
         try {
             val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
+            accountHeaderModel.state = NAV_PROFILE_STATE_SUCCESS
             updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -307,6 +310,7 @@ class MainNavViewModel @Inject constructor(
                     setAdminData(adminRole, canGoToSellerAccount)
                 }
             }.let {
+                it.state = NAV_PROFILE_STATE_SUCCESS
                 updateWidget(it, INDEX_MODEL_ACCOUNT)
             }
         } catch (e: Exception) {
@@ -323,7 +327,8 @@ class MainNavViewModel @Inject constructor(
                             isGetOvoError = !isABNewTokopoint(),
                             isGetSaldoError = !isABNewTokopoint(),
                             isGetUserMembershipError = true,
-                            isGetUserNameError = true
+                            isGetUserNameError = true,
+                            state = NAV_PROFILE_STATE_SUCCESS
                     ), INDEX_MODEL_ACCOUNT)
                 }
             }
