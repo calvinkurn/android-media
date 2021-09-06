@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.affiliate_share_item.view.*
 
 class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterface: ShareButtonInterface?)
-    : AbstractViewHolder<AffiliateShareVHViewModel>(itemView) {
+    : AbstractViewHolder<AffiliateShareModel>(itemView) {
 
     companion object {
         @JvmField
@@ -22,7 +22,7 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
         var LAYOUT = R.layout.affiliate_share_item
     }
 
-    override fun bind(element: AffiliateShareVHViewModel?) {
+    override fun bind(element: AffiliateShareModel?) {
         val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, R.color.Unify_GN500))
         itemView.share_button.run {
             setDrawable(iconCopyGreen)

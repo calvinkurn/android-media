@@ -5,11 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate.ui.custom.AffiliatePromotionProductCard
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
 import com.tokopedia.productcard.ProductCardListView
 
 class AffiliatePromotionCardItemVH(itemView: View)
-    : AbstractViewHolder<AffiliatePromotionCardVHViewModel>(itemView) {
+    : AbstractViewHolder<AffiliatePromotionCardModel>(itemView) {
 
     companion object {
         @JvmField
@@ -18,7 +18,7 @@ class AffiliatePromotionCardItemVH(itemView: View)
 
     }
 
-    override fun bind(element: AffiliatePromotionCardVHViewModel?) {
+    override fun bind(element: AffiliatePromotionCardModel?) {
         element?.promotionItem?.let {
             itemView.findViewById<ProductCardListView>(R.id.affiliate_product_card).setProductModel(
                     AffiliatePromotionProductCard.toAffiliateProductModel(it))

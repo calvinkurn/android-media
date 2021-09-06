@@ -4,16 +4,19 @@ import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
-class AffiliateAdapterFactory(var shareButtonInterface: ShareButtonInterface? = null)
+class AffiliateAdapterFactory(
+        var shareButtonInterface: ShareButtonInterface? = null
+        ,var productClickInterface : ProductClickInterface? = null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            AffiliateVerticalProductCardItemVH.LAYOUT -> AffiliateVerticalProductCardItemVH(parent)
+            AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent)
@@ -22,23 +25,23 @@ class AffiliateAdapterFactory(var shareButtonInterface: ShareButtonInterface? = 
         }
     }
 
-    override fun type(viewModel: AffiliateProductCardVHViewModel): Int {
-        return AffiliateVerticalProductCardItemVH.LAYOUT
+    override fun type(viewModelShared: AffiliateSharedProductCardsModel): Int {
+        return AffiliateSharedProductCardsItemVH.LAYOUT
     }
 
-    override fun type(viewModel: AffiliateShimmerVHViewModel): Int {
+    override fun type(viewModel: AffiliateShimmerModel): Int {
         return AffiliateProductShimmerCardItemVH.LAYOUT
     }
 
-    override fun type(viewModel: AffiliateShareVHViewModel): Int {
+    override fun type(viewModel: AffiliateShareModel): Int {
         return AffiliateShareItemViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: AffiliatePromotionCardVHViewModel): Int {
+    override fun type(viewModel: AffiliatePromotionCardModel): Int {
         return AffiliatePromotionCardItemVH.LAYOUT
     }
 
-    override fun type(viewModel: AffiliatePromotionErrorCardVHViewModel): Int {
+    override fun type(viewModel: AffiliatePromotionErrorCardModel): Int {
         return AffiliatePromotionErrorCardItemVH.LAYOUT
     }
 }

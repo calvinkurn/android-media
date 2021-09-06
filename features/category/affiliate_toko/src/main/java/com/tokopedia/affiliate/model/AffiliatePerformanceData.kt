@@ -51,7 +51,7 @@ data class AffiliatePerformanceData(
                         @SerializedName("footer")
                         var footer: List<Footer>,
                         @SerializedName("id")
-                        var id: Int?=null,
+                        var id: String,
                         @SerializedName("image")
                         var image: Image ?=null,
                         @SerializedName("performanceSummary")
@@ -59,7 +59,7 @@ data class AffiliatePerformanceData(
                         @SerializedName("status")
                         var status: Int?=null,
                         @SerializedName("title")
-                        var title: String?=null
+                        var title: String
                 ) {
                     @Keep
                     data class Footer(

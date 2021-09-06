@@ -17,8 +17,8 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.AffiliateProductCommissionData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardVHViewModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -111,8 +111,8 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
             affiliateSearchData.cards?.items?.firstOrNull()?.let {
                 showData()
                 affiliateSearchData.cards.items.forEach {
-                    adapter.addElement(AffiliatePromotionCardVHViewModel(it))
-                    adapter.addElement(AffiliatePromotionErrorCardVHViewModel(AffiliateProductCommissionData.Error("")))
+                    adapter.addElement(AffiliatePromotionCardModel(it))
+                    adapter.addElement(AffiliatePromotionErrorCardModel(AffiliateProductCommissionData.Error("")))
                 }
             }
         })

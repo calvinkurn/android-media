@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardVHViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 
 class AffiliatePromotionErrorCardItemVH(itemView: View)
-    : AbstractViewHolder<AffiliatePromotionErrorCardVHViewModel>(itemView) {
+    : AbstractViewHolder<AffiliatePromotionErrorCardModel>(itemView) {
 
     companion object {
         @JvmField
@@ -15,7 +15,7 @@ class AffiliatePromotionErrorCardItemVH(itemView: View)
         var LAYOUT = R.layout.affiliate_promotion_error_item_layout
     }
 
-    override fun bind(element: AffiliatePromotionErrorCardVHViewModel?) {
+    override fun bind(element: AffiliatePromotionErrorCardModel?) {
 
     }
 }

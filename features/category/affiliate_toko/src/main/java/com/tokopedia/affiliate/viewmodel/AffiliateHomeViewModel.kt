@@ -47,22 +47,26 @@ class AffiliateHomeViewModel @Inject constructor(
                                             arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
                                                     footerText = "VAIA Official"
                                             )),
+                                            id = "12",
                                             title = "Profuct 1",
                                             status = 1),
                                     AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
                                             arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
                                                     footerText = "VAIA Official"
                                             )),
+                                            id = "123",
                                             title = "Profuct 2"),
                                     AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
                                             arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
                                                     footerText = "VAIA Official"
                                             )),
+                                            id = "124",
                                             title = "Profuct 3"),
                                     AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item(
                                             arrayListOf(AffiliatePerformanceData.AffiliatePerformance.Data.Links.Item.Footer(
                                                     footerText = "VAIA Official"
                                             )),
+                                            id = "125",
                                             title = "Profuct 4")
                             ),
                             sectionID = 0,
