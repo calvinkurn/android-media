@@ -28,6 +28,8 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSe
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.CONTENT_DEFAULT
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.DEFAULT_VIEW_ALL_ID
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
@@ -251,7 +253,7 @@ class MixTopComponentViewHolder(
         setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
-            if(channel.channelViewAllCard.id != "0") {
+            if(channel.channelViewAllCard.id != DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CONTENT_DEFAULT) {
                 visitables.add(CarouselViewAllCardDataModel(channel.channelHeader.applink, channel.channelViewAllCard, this))
             }
             else {

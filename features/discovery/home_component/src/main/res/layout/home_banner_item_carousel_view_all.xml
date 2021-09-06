@@ -30,34 +30,47 @@
             android:src="@drawable/ic_graphic_element_green"
             android:scaleType="fitXY"/>
 
-        <androidx.cardview.widget.CardView
+        <FrameLayout
+            android:id="@+id/container_card_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_description_image_view_all"
+            >
+
+            <androidx.cardview.widget.CardView
             android:id="@+id/card_image_view_all"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             app:cardCornerRadius="@dimen/dp_8"
             android:layout_marginHorizontal="@dimen/dp_12"
             app:cardElevation="@dimen/dp_0"
-            app:layout_constraintTop_toBottomOf="@id/iv_heading_view_all">
+            android:layout_gravity="bottom"
+            >
 
             <ImageView
                 android:id="@+id/iv_gimmick_view_all"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@color/Unify_N100"
+                android:scaleType="centerCrop"
                 />
 
         </androidx.cardview.widget.CardView>
 
+        </FrameLayout>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description_image_view_all"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:typographyType="body_3"
             tools:text="Description here is mandatory"
             android:textColor="@color/Unify_N700"
-            app:layout_constraintTop_toBottomOf="@id/card_image_view_all"
+            app:layout_constraintTop_toBottomOf="@id/container_card_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_2"
             />
@@ -93,13 +106,15 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title_view_all"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:typographyType="heading_5"
             tools:text="1000+"
             android:textColor="@color/Unify_N700"
-            app:layout_constraintTop_toBottomOf="@id/iv_heading_view_all"
+            android:gravity="bottom"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_description_view_all"
             android:layout_marginStart="@dimen/dp_12"
             android:visibility="gone"
             />
@@ -107,16 +122,49 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description_view_all"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:typographyType="body_3"
             tools:text="Description here is mandatory"
             android:textColor="@color/Unify_N700"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_2"
             app:layout_constraintTop_toBottomOf="@id/tv_title_view_all"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title_number_view_all"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:typographyType="heading_3"
+            tools:text="1000+"
+            android:gravity="bottom"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_description_number_view_all"
+            android:layout_marginStart="@dimen/dp_12"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description_number_view_all"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:typographyType="body_3"
+            tools:text="Description here is mandatory"
+            android:textColor="@color/Unify_N700"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_2"
             android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_number_view_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
