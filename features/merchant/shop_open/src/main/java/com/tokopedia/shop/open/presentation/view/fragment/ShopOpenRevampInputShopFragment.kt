@@ -64,7 +64,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         UserSession(activity)
     }
 
-    private val MINIMUM_SHOP_NAME_LENGTH = 3
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
     private lateinit var txtInputShopName: TextFieldUnify
@@ -81,6 +80,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private var shopNameValue = ""
     private var domainNameValue = ""
     private var shopNameSuggestionList = ValidateShopDomainSuggestionResult()
+    private val minimumShopLength = 3
 
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
@@ -110,10 +110,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
-                if (s.toString().length < MINIMUM_SHOP_NAME_LENGTH) {
+                if (s.toString().length < minimumShopLength) {
                     shopNameValue = s.toString()
                     validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
-                } else if (s.toString().length >= MINIMUM_SHOP_NAME_LENGTH && s.isNotEmpty()) {
+                } else if (s.toString().length >= minimumShopLength && s.isNotEmpty()) {
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -126,10 +126,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 txtInputDomainName.setError(false)
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
-                if (domainInputStr.length < MINIMUM_SHOP_NAME_LENGTH) {
+                if (domainInputStr.length < minimumShopLength) {
                     domainNameValue = domainInputStr.toString()
                     validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
-                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MINIMUM_SHOP_NAME_LENGTH) {
+                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= minimumShopLength) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
@@ -236,7 +236,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         var errorMessage = it.data.validateDomainShopName.error.message
-                        if (shopNameValue.length < MINIMUM_SHOP_NAME_LENGTH) {
+                        if (shopNameValue.length < minimumShopLength) {
                             errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
                             validateShopName(
                                     isError = true,
