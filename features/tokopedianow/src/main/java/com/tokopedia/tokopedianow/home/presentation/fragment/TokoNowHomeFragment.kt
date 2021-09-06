@@ -89,6 +89,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiMo
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -118,7 +119,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeProductRecomViewHolder.HomeProductRecomListener,
         TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        HomeSharingEducationListener
 {
 
     companion object {
@@ -158,7 +160,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
-                tokoNowProductCardListener = this
+                tokoNowProductCardListener = this,
+                homeSharingEducationWidgetListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -612,7 +615,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onClickShareButton() {
-        shareIconClicked(shareHomeTokonow())
+        shareClicked(shareHomeTokonow())
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1173,7 +1176,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun shareIconClicked(shareHomeTokonow: ShareHomeTokonow?){
+    private fun shareClicked(shareHomeTokonow: ShareHomeTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
         }
@@ -1274,5 +1277,9 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onCloseOptionClicked() {
         //you will use this to implement the GA events
+    }
+
+    override fun onBtnSharingEducationClicked() {
+        shareClicked(shareHomeTokonow())
     }
 }

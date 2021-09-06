@@ -51,4 +51,6 @@
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
+    <string name="tokopedianow_home_sharing_education_title">Yay! Gimana pengalaman belanja pertamamu di tokonow? Share the experience to people around u :)</string>
+    <string name="tokopedianow_home_sharing_education_button">Share to others</string>
 </resources>
