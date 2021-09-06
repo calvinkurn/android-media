@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -20,11 +19,6 @@ import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLater
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.btnHowToUse
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.rvPaymentDesciption
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.tvSubTitlePaylaterPartner
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.tvTitlePaymentPartner
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info2.*
 
 class PayLaterPaymentOptionsFragment : Fragment() {
 
@@ -40,7 +34,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_paylater_cards_info2, container, false)
+        return inflater.inflate(R.layout.fragment_paylater_cards_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,7 +116,19 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             totalAmount.text = data.installment_per_month_ceil.toString()
             btnHowToUse.text = data.cta?.name
 
+            if (data.is_recommended == true)
+                recommendedImg.visible()
+            else
+                recommendedImg.gone()
 
+            if (data.cta?.button_color.equals("green", true)) {
+                btnHowToUse.setBackgroundColor(this.resources.getColor(R.color.Unify_G500))
+                btnHowToUse.setTextColor(this.resources.getColor(R.color.white))
+            } else {
+                btnHowToUse.setBackgroundColor(this.resources.getColor(R.color.white))
+                btnHowToUse.setTextColor(this.resources.getColor(R.color.Unify_G500))
+
+            }
 
 //            applicationStatusData?.let {
 //                setSubHeaderText(it, data.subHeader)
@@ -151,22 +157,22 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+            imageView.loadImage(imageUrl)
     }
 
-    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
-        context?.let {
-            payLaterApplicationDetail.payLaterApplicationStatusLabelStringId.also { resId ->
-                if (resId != 0) {
-                    tvPaylaterPartnerStatus.text = it.getString(resId)
-                    tvPaylaterPartnerStatus.visible()
-                    tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
-                } else {
-                    tvPaylaterPartnerStatus.gone()
-                }
-            }
-        }
-    }
+//    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
+//        context?.let {
+//            payLaterApplicationDetail.payLaterApplicationStatusLabelStringId.also { resId ->
+//                if (resId != 0) {
+//                    tvPaylaterPartnerStatus.text = it.getString(resId)
+//                    tvPaylaterPartnerStatus.visible()
+//                    tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
+//                } else {
+//                    tvPaylaterPartnerStatus.gone()
+//                }
+//            }
+//        }
+//    }
 
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"

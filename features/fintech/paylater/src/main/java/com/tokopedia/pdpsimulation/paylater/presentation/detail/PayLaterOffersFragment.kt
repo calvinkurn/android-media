@@ -58,12 +58,19 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun generateSortFilter(paylaterProduct: PayLaterGetSimulation) {
         val filterData = ArrayList<SortFilterItem>()
         paylaterProduct.productList?.let {
-            for(i in it.indices)
-            {
-                it[i].text?.let { name -> filterData.add(SortFilterItem(name)) }
+            for (i in it.indices) {
+                it[i].text?.let { name ->
+                    filterData.add(SortFilterItem(name) {
+                        selectOtherTenure(i)
+                    })
+                }
             }
         }
         sortFilter.addItem(filterData)
+    }
+
+    private fun selectOtherTenure(position: Int) {
+
     }
 
 

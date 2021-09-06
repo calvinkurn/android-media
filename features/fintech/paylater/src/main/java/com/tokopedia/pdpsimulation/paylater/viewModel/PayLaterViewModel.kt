@@ -19,6 +19,7 @@ class PayLaterViewModel @Inject constructor(
     private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
     private val payLaterApplicationStatusMapperUseCase: PayLaterApplicationStatusMapperUseCase,
     private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -49,11 +50,6 @@ class PayLaterViewModel @Inject constructor(
 
     }
 
-//    fun getMockOne(price: Long)
-//        paylaterGetSimulationV2usecase.mockData()?.let {
-//            _payLaterOptionsDetailLiveData.value = Success(it)
-//        }
-//    }
 
     private fun onAvailableDetailFail(throwable: Throwable) {
         _payLaterOptionsDetailLiveData.value = Fail(throwable)

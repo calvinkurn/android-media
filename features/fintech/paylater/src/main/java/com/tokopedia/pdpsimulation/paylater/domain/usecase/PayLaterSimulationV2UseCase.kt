@@ -1,13 +1,11 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
 import android.net.ParseException
-import com.google.gson.Gson
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pdpsimulation.common.constants.GQL_PAYLATER_SIMULATION_V2
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationBaseResponse
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationData
 import javax.inject.Inject
 

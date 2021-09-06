@@ -60,18 +60,27 @@
         app:typographyWeight="bold" />
 
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/sortShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleSimulation"
+        app:loader_type="rect" />
+
+
     <LinearLayout
         android:id="@+id/llShimmerLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_0"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_height="@dimen/dp_200"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginTop="@dimen/unify_space_12">
+        app:layout_constraintTop_toBottomOf="@id/tvAvailablePaylater">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/productOfferFullShimmer"
@@ -95,7 +104,7 @@
         android:id="@+id/payLaterOffersShimmerGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:constraint_referenced_ids=" llShimmerLayout" />
+        app:constraint_referenced_ids=" llShimmerLayout,sortShimmer" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/payLaterDataGroup"
