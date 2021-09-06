@@ -697,7 +697,8 @@ public class TopChatAnalytics {
     ) {
         String eventLabel = "buyer - " +
                 shopId + " - " + userId + " - " +
-                productIds + " - " + element.getContent();
+                productIds + " - " + element.getContent()
+                + " - " + element.getIntent();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.CHAT_DETAIL,

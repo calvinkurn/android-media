@@ -1,0 +1,59 @@
+[
+  {
+    "code": 103,
+    "data": {
+      "msg_id": 1,
+      "from": "Tumbler Starbucks 123",
+      "from_uid": 12299749,
+      "from_user_name": "Tumbler Starbucks 123",
+      "from_role": "Shop Owner",
+      "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1479278/shop_xs_thumbnail/desktop",
+      "is_opposite": true,
+      "to_uid": 12299592,
+      "message": {
+        "censored_reply": "This is normal message injection, This is message injection, This is message injection, This is message injection",
+        "original_reply": "p",
+        "timestamp": "2021-02-03T22:14:01.46598561+07:00",
+        "timestamp_fmt": "03 February 2021, 22:14 WIB",
+        "timestamp_unix": 2612443812000,
+        "timestamp_unix_nano": 2612365241465986000
+      },
+      "attachment": {
+        "attributes": {
+          "header": "Pengiriman ke Pembeli",
+          "url": "m.example/1213",
+          "text_url": "Ubah alamat",
+          "body": "Hi Ryan! Setelah Mimin cek, ini estimasi ongkir “iPhone 12 64GB Origi...” ke alamatmu: Bebas Ongkir | Rp0 Instan | Rp25.000-Rp27.000 Same Day | Rp15.000-16.000 Next Day | Rp10.000 Reguler | Rp7.000 Ekonomi | Rp5.000 Kargo | Rp5.000",
+          "type": 1,
+          "status": 1,
+          "extras": {
+            "extras_product": [
+              {
+                "product_id": 1360053646,
+                "url": "https://www.tokopedia.com/retail-mogul/matchstick-monkey-teether-orange?whid=0"
+              }
+            ],
+            "intent": "stock_availability",
+            "location_stock": {
+              "address_id": 1,
+              "district_id": 2,
+              "postal_code": "10110",
+              "latlon": "1212131,1313313"
+            }
+          }
+        },
+        "fallback_attachment": {
+          "html": "Iphine SE - Kuning<br><br>https://www.tokopedia.com/totokaku/iphine-se-kuning",
+          "message": "Iphine SE - Kuning\n\nhttps://www.tokopedia.com/totokaku/iphine-se-kuning"
+        },
+        "id": 1,
+        "type": 27
+      },
+      "start_time": "2021-02-03T15:14:00.799Z",
+      "show_rating": false,
+      "to_buyer": true,
+      "client_connect_time": "0001-01-01T10:00:00Z",
+      "source": "inbox"
+    }
+  }
+]
