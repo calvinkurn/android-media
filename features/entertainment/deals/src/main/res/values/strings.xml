@@ -58,4 +58,7 @@
     <string name="deals_category_empty_description">Jangan menyerah, lanjutkan perburuan dengan cek kategori lainnya!</string>
     <string name="deals_category_empty_title">Yaah, nggak ada isinya</string>
     <string name="deals_category_empty_desc_filter">Jangan menyerah, lanjutkan perburuan dengan reset filter kamu!</string>
+
+    <string name="deals_brand_detail">Baca Selengkapnya</string>
+    <string name="deals_brand_detail_title_bottom_sheet">Tentang %s</string>
 </resources>

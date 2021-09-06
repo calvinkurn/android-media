@@ -16,10 +16,13 @@ import com.tokopedia.deals.brand_detail.data.Brand
 import com.tokopedia.deals.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity
 import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
+import com.tokopedia.deals.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
 import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -79,6 +82,14 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
         showLayout()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId ?: "" == R.id.action_share_deals) {
+            //shareLink()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun loadData() {
         getBrandDetail()
     }
@@ -122,6 +133,16 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
         binding?.let {
             it.imgThumbnailBrandDetail.loadImage(brandDetail.featuredThumbnailImage)
             it.imgIconBrandDetail.loadImage(brandDetail.featuredImage)
+            it.tgTitleBrandDetail.text = brandDetail.title
+            it.tgDescBrandDetail.apply {
+                text = brandDetail.description
+                if (lineCount < MAX_LINE_COUNT){
+                    it.tgDescBrandDetailMore.hide()
+                }
+            }
+            it.tgDescBrandDetailMore.setOnClickListener {
+                showBottomSheetBrandDescDetail(brandDetail.title, brandDetail.description)
+            }
         }
     }
 
@@ -154,19 +175,22 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
         }
     }
 
-    fun setDrawableColorFilter(drawable: Drawable?, color: Int) {
+    private fun setDrawableColorFilter(drawable: Drawable?, color: Int) {
         drawable?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item?.itemId ?: "" == R.id.action_share_deals) {
-            //shareLink()
-            return true
+    private fun showBottomSheetBrandDescDetail(title:String, desc: String){
+        fragmentManager?.let { fragmentManager ->
+            context?.let {
+                DealsBrandDetailBottomSheet().showBottomSheet(it, getString(R.string.deals_brand_detail_title_bottom_sheet, title), desc, fragmentManager)
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {
+
+        private const val MAX_LINE_COUNT = 3
+
         fun getInstance(seoUrl: String): DealsBrandDetailFragment = DealsBrandDetailFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_SEO_URL, seoUrl)
