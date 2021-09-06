@@ -341,7 +341,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
             webView.loadAuthUrl(getUrl(), userSession);
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
