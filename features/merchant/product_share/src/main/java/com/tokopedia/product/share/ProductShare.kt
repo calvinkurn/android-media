@@ -29,6 +29,7 @@ import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidg
 import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -320,7 +321,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                                       view: View? = null,
                                       productImgList:ArrayList<String>? = null,
                                       preBuildImg: () -> Unit,
-                                      postBuildImg: () -> Unit,) {
+                                      postBuildImg: () -> Unit,
+                                      screenshotDetector : ScreenshotDetector? = null) {
         cancelShare = false
         resetLog()
         this.isLog = isLog
@@ -349,7 +351,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             "", productImgList)
         }
         onImpressShareWidget(productData.userId, productData.productId)
-        universalShareBottomSheet?.show(fragmentManager, fragment)
+        universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
     }
     //endregion
 }

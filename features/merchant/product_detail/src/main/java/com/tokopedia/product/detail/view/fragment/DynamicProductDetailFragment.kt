@@ -163,6 +163,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.usecase.coroutines.Fail
@@ -231,6 +232,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
+    private var screenshotDetector: ScreenshotDetector? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
@@ -328,7 +330,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         renderInitialAffiliate()
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        screenshotDetector = context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     override fun onSwipeRefresh() {
@@ -2443,7 +2445,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             shareProductInstance?.cancelShare(true)
                         }
                     },
-                    postBuildImg = { hideProgressDialog() }
+                    postBuildImg = { hideProgressDialog() },
+                    screenshotDetector
             )
         }
     }
