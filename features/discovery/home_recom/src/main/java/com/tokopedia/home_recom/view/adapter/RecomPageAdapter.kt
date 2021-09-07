@@ -73,6 +73,10 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
         submitList(listOf(data))
     }
 
+    fun clearAllElements() {
+        submitList(listOf())
+    }
+
     private fun isLoading(): Boolean {
         val lastIndex = if (currentList.size == 0) -1 else currentList.size - 1
         return if (lastIndex > -1) {

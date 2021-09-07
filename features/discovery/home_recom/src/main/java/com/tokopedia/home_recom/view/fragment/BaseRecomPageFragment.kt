@@ -111,12 +111,13 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     fun submitInitialList(visitables: List<HomeRecommendationDataModel>) {
         hideSwipeLoading()
-
         recyclerView?.post {
+            productAdapter?.clearAllElements()
             productAdapter?.submitList(visitables)
         }
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.resetState()
         endlessRecyclerViewScrollListener?.setHasNextPage(true)
+        scrollToTop()
     }
 
     fun submitList(visitables: List<HomeRecommendationDataModel>) {
@@ -181,6 +182,10 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     fun hideChooseAddressWidget() {
         chooseAddressWidget?.gone()
+    }
+
+    fun scrollToTop() {
+        recyclerView?.smoothScrollToPosition(0)
     }
 
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {

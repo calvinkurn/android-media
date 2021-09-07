@@ -202,7 +202,6 @@ class InfiniteTokonowRecomFragment :
             it?.let { response ->
                 recomPageUiUpdater.appendFirstData(response.toList())
                 submitInitialList(recomPageUiUpdater.dataList.toMutableList())
-
             }
         })
         viewModel.miniCartData.observe(viewLifecycleOwner, Observer {
