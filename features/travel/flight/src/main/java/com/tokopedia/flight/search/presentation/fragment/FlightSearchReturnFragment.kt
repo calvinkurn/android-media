@@ -2,9 +2,7 @@ package com.tokopedia.flight.search.presentation.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -13,7 +11,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
-import com.tokopedia.flight.databinding.FragmentFlightSearchReturnBinding
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
@@ -27,7 +24,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
 /**
  * @author by furqan on 15/04/2020
@@ -35,8 +32,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class FlightSearchReturnFragment : FlightSearchFragment() {
 
     private lateinit var flightSearchReturnViewModel: FlightSearchReturnViewModel
-
-    private var binding by autoClearedNullable<FragmentFlightSearchReturnBinding>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -62,22 +57,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFlightSearchReturnBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.clearAllElements()
         showLoading()
     }
 
-    fun getLayout(): Int = R.layout.fragment_flight_search_return
+    override fun getLayout(): Int = R.layout.fragment_flight_search_return
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
@@ -121,9 +107,9 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
-    override fun getFlightSearchTicker(): Ticker? = binding?.flightSearchTicker
+    override fun getFlightSearchTicker(): Ticker = flight_search_ticker
 
-    override fun getSearchHorizontalProgress(): HorizontalProgressBar? = binding?.horizontalProgressBar
+    override fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
 
     override fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
@@ -172,21 +158,21 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     private fun renderDepartureJourney(flightJourneyModel: FlightJourneyModel) {
         if (flightJourneyModel.airlineDataList != null &&
                 flightJourneyModel.airlineDataList.size > 1) {
-            binding?.departureTripLabel?.setAirline(getString(R.string.flight_label_multi_maskapai))
+            departureTripLabel.setAirline(getString(R.string.flight_label_multi_maskapai))
         } else if (flightJourneyModel.airlineDataList != null &&
                 flightJourneyModel.airlineDataList.size == 1) {
-            binding?.departureTripLabel?.setAirline(flightJourneyModel.airlineDataList[0].shortName)
+            departureTripLabel.setAirline(flightJourneyModel.airlineDataList[0].shortName)
         }
 
-        binding?.departureTripLabel?.setDate("${DateUtil.formatToUi(flightSearchViewModel.flightSearchPassData.departureDate)} | ")
+        departureTripLabel.setDate("${DateUtil.formatToUi(flightSearchViewModel.flightSearchPassData.departureDate)} | ")
 
         if (flightJourneyModel.addDayArrival > 0) {
-            binding?.departureTripLabel?.setTime("${flightJourneyModel.departureTime} - ${flightJourneyModel.arrivalTime} (+${flightJourneyModel.addDayArrival}h)")
+            departureTripLabel.setTime("${flightJourneyModel.departureTime} - ${flightJourneyModel.arrivalTime} (+${flightJourneyModel.addDayArrival}h)")
         } else {
-            binding?.departureTripLabel?.setTime("${flightJourneyModel.departureTime} - ${flightJourneyModel.arrivalTime}")
+            departureTripLabel.setTime("${flightJourneyModel.departureTime} - ${flightJourneyModel.arrivalTime}")
         }
 
-        binding?.departureTripLabel?.setDestination("${flightJourneyModel.departureAirport} - ${flightJourneyModel.arrivalAirport} | ")
+        departureTripLabel.setDestination("${flightJourneyModel.departureAirport} - ${flightJourneyModel.arrivalAirport} | ")
 
         resetDepartureLabelPrice()
     }
@@ -196,12 +182,12 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             if (flightSearchReturnViewModel.isBestPairing) {
                 if (flightSearchReturnViewModel.isViewOnlyBestPairing &&
                         it.adultNumericCombo > 0) {
-                    binding?.departureTripLabel?.setPrice(it.adultCombo)
+                    departureTripLabel.setPrice(it.adultCombo)
                 } else {
-                    binding?.departureTripLabel?.setPrice(it.adult)
+                    departureTripLabel.setPrice(it.adult)
                 }
             } else {
-                binding?.departureTripLabel?.setPrice(it.adult)
+                departureTripLabel.setPrice(it.adult)
             }
         }
     }
