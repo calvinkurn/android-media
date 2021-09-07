@@ -18,6 +18,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
@@ -123,12 +124,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 recommendedImg.gone()
 
             if (data.cta?.button_color.equals("green", true)) {
-                btnHowToUse.setBackgroundColor(this.resources.getColor(R.color.Unify_G500))
-                btnHowToUse.setTextColor(this.resources.getColor(R.color.white))
+                btnHowToUse.buttonVariant = UnifyButton.Variant.FILLED
             } else {
-                btnHowToUse.setBackgroundColor(this.resources.getColor(R.color.white))
-                btnHowToUse.setTextColor(this.resources.getColor(R.color.Unify_G500))
-
+                btnHowToUse.buttonVariant = UnifyButton.Variant.GHOST
             }
 
 //            applicationStatusData?.let {
