@@ -41,18 +41,6 @@ class GetChatUseCaseStub @Inject constructor(
             GetExistingChatPojo::class.java
         )
 
-    val broadcastNoCampaign: GetExistingChatPojo
-        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
-            alterAttachmentAttributesAt(
-                listPosition = 0,
-                chatsPosition = 0,
-                repliesPosition = 0,
-                responseObj = response
-            ) { attr ->
-                attr.addProperty(is_campaign, false)
-            }
-        }
-
     fun getBannerAttachmentId(response: GetExistingChatPojo): String {
         return response.chatReplies.list[0].chats[0].replies[0].attachment.id
     }

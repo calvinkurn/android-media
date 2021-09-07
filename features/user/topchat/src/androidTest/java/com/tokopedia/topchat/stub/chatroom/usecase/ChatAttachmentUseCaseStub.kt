@@ -94,6 +94,21 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         }
     }
 
+    fun createBroadcastNoCampaign(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(is_campaign, false)
+                }
+            )
+        }
+    }
+
     fun getCampaignLabel(response: ChatAttachmentResponse): String {
         val attr = response.chatAttachments.list[0].attributes
         return fromJson<ImageAnnouncementPojo>(attr).campaignLabel!!
@@ -130,5 +145,6 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val status_campaign = "status_campaign"
     private val campaign_label = "campaign_label"
     private val wording_end_state = "wording_end_state"
+    private val is_campaign = "is_campaign"
 
 }

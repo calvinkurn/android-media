@@ -117,11 +117,16 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
     @Test
     fun should_hide_campaign_label_when_broadcast_does_not_have_campaign() {
         // Given
-//        getChatUseCase.response = getChatUseCase.broadcastNoCampaign
-//        launchChatRoomActivity()
-//
-//        // Then
-//        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
-    }
+        val bannerAttachmentId = getChatUseCase.getBannerAttachmentId(
+            getChatUseCase.defaultBroadcastCampaignLabel
+        )
+        getChatUseCase.response = getChatUseCase.defaultBroadcastCampaignLabel
+        chatAttachmentUseCase.response = chatAttachmentUseCase.createBroadcastNoCampaign(
+            bannerAttachmentId
+        )
+        launchChatRoomActivity()
 
+        // Then
+        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
+    }
 }
