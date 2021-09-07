@@ -6,8 +6,12 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.VideoView
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.videoplayer.R
 import kotlinx.coroutines.*
+import java.lang.reflect.Type
+import com.tokopedia.config.GlobalConfig
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 /**
  * @author by yfsx on 20/03/19.
@@ -24,6 +28,10 @@ class VideoPlayerView @JvmOverloads constructor(
     private var shouldMeasure: Boolean = true
     private var autoSize: Boolean = false
 
+    private companion object {
+        const val TAG = "VideoPlayerView"
+    }
+
     init {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.VideoPlayerView)
@@ -39,18 +47,28 @@ class VideoPlayerView @JvmOverloads constructor(
     }
 
     override fun setVideoURI(uri: Uri?) {
-        if (autoSize) {
-            scope.launch {
-                withContext(Dispatchers.IO) {
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(uri.toString(), emptyMap())
-                    yield()
-                    mVideoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH).toInt()
-                    mVideoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT).toInt()
+        try {
+            if (autoSize) {
+                scope.launch {
+                    withContext(Dispatchers.IO) {
+                        val retriever = MediaMetadataRetriever()
+                        retriever.setDataSource(uri.toString(), emptyMap())
+                        yield()
+                        mVideoWidth =
+                            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                                .toInt()
+                        mVideoHeight =
+                            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                                .toInt()
+                    }
+                    super.setVideoURI(uri)
                 }
-                super.setVideoURI(uri)
+            } else super.setVideoURI(uri)
+        } catch (e: Exception) {
+            if (!GlobalConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
             }
-        } else super.setVideoURI(uri)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
