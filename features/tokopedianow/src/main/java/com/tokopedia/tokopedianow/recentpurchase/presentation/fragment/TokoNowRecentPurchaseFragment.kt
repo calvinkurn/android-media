@@ -49,7 +49,6 @@ import com.tokopedia.tokopedianow.recentpurchase.di.component.DaggerRecentPurcha
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapter
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.RecentPurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.recentpurchase.presentation.adapter.differ.RecentPurchaseListDiffer
-import com.tokopedia.tokopedianow.recentpurchase.presentation.bottomsheet.TokoNowRepurchaseSortFilterOnBuyingBottomSheet.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.listener.RepurchaseProductCardListener
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel.TokoNowRecentPurchaseViewModel
@@ -61,7 +60,6 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
-import com.tokopedia.tokopedianow.recentpurchase.presentation.bottomsheet.TokoNowRepurchaseSortFilterOnBuyingBottomSheet
 import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
@@ -76,7 +74,6 @@ class TokoNowRecentPurchaseFragment:
     TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
-    TokoNowRepurchaseSortFilterOnBuyingBottomSheetListener,
     SortFilterListener
 {
 
@@ -255,11 +252,6 @@ class TokoNowRecentPurchaseFragment:
         recomItem: RecommendationItem
     ) {
         // TO-DO :
-    }
-
-    override fun onApplySortFilterOnBuying(value: Int) {
-        // TO-DO : get layout
-//        viewModel.getLayoutData(1, "param", 3, 4)
     }
 
     private fun initInjector() {

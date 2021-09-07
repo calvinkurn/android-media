@@ -49,8 +49,8 @@ class TokoNowSortFilterBottomSheet :
 
     override fun onClickItem(isChecked: Boolean, position: Int, value: Int) {
         val newItemList = mutableListOf<SortFilterUiModel>()
-        listTitles.forEachIndexed { index, repurchaseSortFilterOnBuyingUiModel ->
-            newItemList.add(repurchaseSortFilterOnBuyingUiModel.copy(isChecked = index == position))
+        listTitles.forEachIndexed { index, model ->
+            newItemList.add(model.copy(isChecked = index == position))
         }
         adapter.submitList(newItemList)
         sortValue = value
@@ -63,13 +63,13 @@ class TokoNowSortFilterBottomSheet :
 
         listTitles = listOf(
             SortFilterUiModel(
-                titleRes = R.string.tokopedianow_repurchase_sort_filter_on_buying_item_most_frequently_bought_bottomsheet,
+                titleRes = R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet,
                 isChecked = sortValue == FREQUENTLY_BOUGHT,
                 isLastItem = false,
                 value = FREQUENTLY_BOUGHT
             ),
             SortFilterUiModel(
-                titleRes = R.string.tokopedianow_repurchase_sort_filter_on_buying_item_last_bought_bottomsheet,
+                titleRes = R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet,
                 isChecked = sortValue == LAST_BOUGHT,
                 isLastItem = true,
                 value = LAST_BOUGHT
@@ -90,11 +90,11 @@ class TokoNowSortFilterBottomSheet :
         isDragable = false
         isHideable = false
         setupItemView(inflater, container)
-        setTitle(getString(R.string.tokopedianow_repurchase_sort_filter_on_buying_title_bottomsheet))
+        setTitle(getString(R.string.tokopedianow_sort_filter_title_bottomsheet))
     }
 
     private fun setupItemView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_repurchase_sort_filter_on_buying, container)
+        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_sort_filter, container)
         rvSort = itemView.findViewById(R.id.rv_sort_based_on_buying)
         btnApplyFilter = itemView.findViewById(R.id.btnApplyFilter)
         setChild(itemView)

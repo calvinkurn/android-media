@@ -18,7 +18,7 @@ class SortFilterViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter_on_buying
+        val LAYOUT = R.layout.item_tokopedianow_sort_filter
     }
 
     private var tpSortTitle: Typography? = null
