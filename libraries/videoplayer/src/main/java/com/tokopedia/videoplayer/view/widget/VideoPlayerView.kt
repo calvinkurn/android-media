@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.videoplayer.R
 import kotlinx.coroutines.*
 import java.lang.reflect.Type
-import com.tokopedia.config.GlobalConfig
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 /**
@@ -65,9 +64,7 @@ class VideoPlayerView @JvmOverloads constructor(
                 }
             } else super.setVideoURI(uri)
         } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
-            }
+            FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
         }
     }
 
