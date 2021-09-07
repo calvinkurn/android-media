@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.*
@@ -14,6 +15,7 @@ import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.doSuccessOrFail
+import com.tokopedia.home_recom.util.RecomPageConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
@@ -47,7 +49,6 @@ class InfiniteTokonowRecomFragment :
     companion object {
         private const val className = "com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment"
         private const val REQUEST_FROM_PDP = 394
-        private const val REQUEST_CODE_LOGIN = 283
         private const val SPACING_30 = 30
 
         fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "", @FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = InfiniteTokonowRecomFragment().apply {
@@ -104,9 +105,11 @@ class InfiniteTokonowRecomFragment :
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             queryParam = it.getString(SAVED_QUERY_PARAM) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
+            pageName = ref
         }
         observeLiveData()
         getMiniCartData()
+        hideChooseAddressWidget()
         loadInitData(false)
     }
 
@@ -129,6 +132,12 @@ class InfiniteTokonowRecomFragment :
         getMiniCartData()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            getMiniCartData()
+        }
+    }
+
     override fun observeData() {
         observeLiveData()
     }
@@ -140,6 +149,7 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+        getMiniCartData()
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -192,6 +202,7 @@ class InfiniteTokonowRecomFragment :
             it?.let { response ->
                 recomPageUiUpdater.appendFirstData(response.toList())
                 submitInitialList(recomPageUiUpdater.dataList.toMutableList())
+
             }
         })
         viewModel.miniCartData.observe(viewLifecycleOwner, Observer {
@@ -215,6 +226,9 @@ class InfiniteTokonowRecomFragment :
                     }
                     it.isErrorFirstPage -> {
                         showErrorFullPage(it.errorThrowable)
+                    }
+                    it.isEmptyNextPage -> {
+                        disableLoadMore()
                     }
                     else -> {
                         showErrorSnackbarWithRetryLoad(it.pageNumber, it.errorThrowable)

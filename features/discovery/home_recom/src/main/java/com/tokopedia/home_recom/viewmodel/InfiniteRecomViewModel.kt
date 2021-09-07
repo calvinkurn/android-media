@@ -50,7 +50,7 @@ class InfiniteRecomViewModel @Inject constructor(
     private val _recommendationFirstLiveData = MutableLiveData<List<RecommendationItemDataModel>>()
 
     val recommendationNextLiveData: LiveData<List<RecommendationItemDataModel>> get() = _recommendationNextLiveData
-    private val _recommendationNextLiveData = MutableLiveData<List<RecommendationItemDataModel>>()
+    private val _recommendationNextLiveData = SingleLiveEvent<List<RecommendationItemDataModel>>()
 
     val recommendationWidgetData: LiveData<RecommendationWidget> get() = _recommendationWidgetData
     private val _recommendationWidgetData = MutableLiveData<RecommendationWidget>()
@@ -83,7 +83,11 @@ class InfiniteRecomViewModel @Inject constructor(
                 _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
             } else {
                 _recommendationWidgetData.postValue(result[0])
-                _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
+                if (result[0].recommendationItemList.isEmpty()) {
+                    _errorGetRecomData.postValue(RecomErrorResponse(isEmptyFirstPage = true))
+                } else {
+                    _recommendationFirstLiveData.postValue(mappingRecomDataModel(result))
+                }
             }
         }) {
             _errorGetRecomData.postValue(RecomErrorResponse(pageNumber = 1, errorThrowable = it, isErrorFirstPage = true))
@@ -94,6 +98,7 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), {
             val result = getRecommendationUseCase.get().getData(getBasicRecomParams(pageName = pageName, pageNumber = pageNumber, productId = productId, queryParam = queryParam))
             if (result.isEmpty()) {
+                _errorGetRecomData.postValue(RecomErrorResponse(isEmptyNextPage = true))
             } else {
                 _recommendationNextLiveData.postValue(mappingRecomDataModel(result))
             }
@@ -107,7 +112,7 @@ class InfiniteRecomViewModel @Inject constructor(
                 isTokonow = true,
                 pageNumber = pageNumber,
                 productIds = listOf(productId),
-                pageName = "recom_1",
+                pageName = pageName,
                 xSource = "recom_widget",
                 queryParam = queryParam)
     }

@@ -21,6 +21,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
 import com.tokopedia.home_recom.util.RecomPageUiUpdater
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -99,6 +100,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         setupSwipeLayout(view)
         setupRecyclerView(view)
         onCreateExtended(savedInstanceState)
+
         enableLoadMore()
     }
 
@@ -113,12 +115,16 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
         recyclerView?.post {
             productAdapter?.submitList(visitables)
         }
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(true)
     }
 
     fun submitList(visitables: List<HomeRecommendationDataModel>) {
         recyclerView?.post {
             productAdapter?.submitList(visitables)
         }
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(true)
     }
 
     fun showLoading() {
@@ -171,6 +177,10 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             it.setHasNextPage(false)
             recyclerView?.removeOnScrollListener(it)
         }
+    }
+
+    fun hideChooseAddressWidget() {
+        chooseAddressWidget?.gone()
     }
 
     private fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {

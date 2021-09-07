@@ -66,11 +66,11 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
                     isTokonowProductList(intent?.data?.toString() ?: "") -> {
                         toolbar.gone()
                         InfiniteTokonowRecomFragment.newInstance(
-                                getTokonowRecomProductId(),
-                                getRef(),
-                                getSource(),
-                                getInternalRef(),
-                                FragmentInflater.ACTIVITY
+                                productId = getTokonowRecomProductId(),
+                                ref = getRef(),
+                                queryParam = getSource(),
+                                internalRef = getInternalRef(),
+                                fragmentInflater = FragmentInflater.ACTIVITY
                         )
                     }
                     isSimilarProduct(intent?.data?.toString()
