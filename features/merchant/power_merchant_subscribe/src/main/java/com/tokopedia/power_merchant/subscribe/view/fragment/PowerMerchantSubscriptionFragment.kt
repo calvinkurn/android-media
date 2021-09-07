@@ -10,6 +10,7 @@ import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -769,6 +770,7 @@ open class PowerMerchantSubscriptionFragment :
         val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() ||
                 pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
         val isShowCoachmark = CoachMark2.isCoachmmarkShowAllowed
+        scrollTo<WidgetDividerUiModel>()
         if (isPmPro && isNewSeller) {
             if (isShowCoachmark && getCoachMarkItems().value.isNotEmpty()) {
                 recyclerView?.post {
@@ -847,5 +849,22 @@ open class PowerMerchantSubscriptionFragment :
         val view = position?.let { recyclerView?.layoutManager?.getChildAt(it) }
         val widgetShopGradeWidget = view?.let { recyclerView?.findContainingViewHolder(it) }
         return widgetShopGradeWidget?.itemView
+    }
+
+    private inline fun <reified T : Visitable<*>> scrollTo() {
+        val positionItem = adapter.list.indexOfFirst { it is T }
+
+        context?.let {
+            if (positionItem != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(it) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_END
+                        }
+                    }
+                smoothScroller.targetPosition = positionItem
+                recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
     }
 }
