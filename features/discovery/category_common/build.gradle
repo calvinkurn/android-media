@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 android {
     defaultConfig {
@@ -25,19 +26,21 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.networkDependencies.retrofit
 
-    implementation rootProject.ext.debugToolsDependencies.chuck
-
-    implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
