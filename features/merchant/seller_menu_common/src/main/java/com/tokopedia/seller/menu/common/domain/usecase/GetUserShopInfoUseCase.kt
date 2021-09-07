@@ -25,7 +25,7 @@ class GetUserShopInfoUseCase @Inject constructor(
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos", "shopstats-limited"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet"]
                 }
               ) {
                 result {
@@ -42,6 +42,7 @@ class GetUserShopInfoUseCase @Inject constructor(
                     value
                     startTime
                   }
+                  shopSnippetURL
                 }
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source: "goldmerchant") {

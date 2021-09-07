@@ -107,6 +107,8 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
 
     private var canShowErrorToaster = true
 
+    private var shopSnippetUrl: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
@@ -291,6 +293,8 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         viewModel.startToggleTopadsCredit()
     }
 
+    override fun getIsShopShareReady(): Boolean = shopSnippetUrl?.isNotBlank() == true
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
         (activity as? Activity)?.requestStatusBarLight()
@@ -313,6 +317,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
         observeFreeShipping()
         observeIsTopAdsAutoTopup()
         observeShopPeriod()
+        observeShopSnippet()
         observeShouldSwipeSecondaryInfo()
         observeMultipleErrorToaster()
         observeToasterAlreadyShown()
@@ -420,6 +425,15 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
             }
         }
         viewModel.getShopPeriodType()
+    }
+
+    private fun observeShopSnippet() {
+        viewModel.shopSnippetUrl.observe(viewLifecycleOwner) { url ->
+            if (url.isNotBlank()) {
+                shopSnippetUrl = url
+                viewHolder?.runShareButtonAnimation()
+            }
+        }
     }
 
     private fun observeShouldSwipeSecondaryInfo() {

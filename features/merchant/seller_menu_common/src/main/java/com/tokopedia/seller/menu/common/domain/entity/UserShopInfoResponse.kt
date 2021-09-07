@@ -39,6 +39,9 @@ data class UserShopInfoResponse(
                 @SerializedName("goldOS")
                 val goldOS: GoldOS = GoldOS(),
                 @Expose
+                @SerializedName("shopSnippetURL")
+                val shopSnippetUrl: String = "",
+                @Expose
                 @SerializedName("statsByDate")
                 val statsByDate: List<StatsByDate> = listOf()
         ) {

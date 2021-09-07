@@ -24,8 +24,10 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
         val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
         val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
         val dateCreated = userShopInfoResponse.userShopInfo.info.dateShopCreated
+        val shopSnippetUrl = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.shopSnippetUrl
         return UserShopInfoWrapper(
                 shopType = getShopType(userShopInfoResponse),
+                shopSnippetUrl = shopSnippetUrl,
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
                         isBeforeOnDate = isBeforeOnDate,
                         onDate = targetDateText,

@@ -60,6 +60,7 @@ class NewOtherMenuViewModel @Inject constructor(
 
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
+    private val _shopSnippetUrl = MutableLiveData<String>()
 
     private val _freeShippingLiveData = MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
@@ -166,6 +167,8 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _shopPeriodType
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
+    val shopSnippetUrl: LiveData<String>
+        get() = _shopSnippetUrl
 
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
@@ -339,6 +342,9 @@ class NewOtherMenuViewModel @Inject constructor(
                     getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
+                userShopInfoWrapper.shopSnippetUrl?.let {
+                    setShopSnippetUrl(it)
+                }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(ShopStatusUiModel(userShopInfoWrapper, userSession))
             },
             onError = {
@@ -444,6 +450,12 @@ class NewOtherMenuViewModel @Inject constructor(
     private fun resetTopadsToggleCount() {
         _kreditTopAdsLiveData.value = null
         _numberOfTopupToggleCounts.value = null
+    }
+
+    private fun setShopSnippetUrl(shopSnippetUrl: String) {
+        if (_shopSnippetUrl.value == null) {
+            _shopSnippetUrl.value = shopSnippetUrl
+        }
     }
 
     private suspend fun toggleTopadsTopupWithDelay() {

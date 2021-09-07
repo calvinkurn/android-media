@@ -62,6 +62,7 @@ class NewOtherMenuViewHolder(
     private var otherMenuHeader: LinearLayout? = null
     private var contentMotionLayout: MotionLayout? = null
     private var secondaryInfoRecyclerView: RecyclerView? = null
+    private var shareButtonImage: AppCompatImageView? = null
 
     private var headerShopNameTextView: Typography? = null
     private var headerShopNextButton: IconUnify? = null
@@ -82,6 +83,9 @@ class NewOtherMenuViewHolder(
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
     private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
 
+    private var hasInitialAnimationCompleted = false
+    private var hasShareButtonAnimationCompleted = false
+
     init {
         initView()
         setupView()
@@ -90,13 +94,17 @@ class NewOtherMenuViewHolder(
     }
 
     override fun onInitialAnimationCompleted() {
-        motionLayoutAnimator?.animateShareButtonSlideIn()
+        hasInitialAnimationCompleted = true
+        if (listener.getIsShopShareReady()) {
+            shareButtonImage?.show()
+            motionLayoutAnimator?.animateShareButtonSlideIn()
+        }
     }
 
     override fun onShareButtonAnimationCompleted() {
         balanceTopadsTopupView?.run {
             setOnAnimationFinishedListener {
-                // TODO: What to do
+                hasShareButtonAnimationCompleted = true
             }
         }
     }
@@ -184,6 +192,13 @@ class NewOtherMenuViewHolder(
         }
     }
 
+    fun runShareButtonAnimation() {
+        if (hasInitialAnimationCompleted && !hasShareButtonAnimationCompleted) {
+            shareButtonImage?.show()
+            motionLayoutAnimator?.animateShareButtonSlideIn()
+        }
+    }
+
     fun swipeSecondaryInfoGently() {
         secondaryShopInfoAnimator?.swipeRecyclerViewGently()
     }
@@ -203,6 +218,7 @@ class NewOtherMenuViewHolder(
             scrollView = findViewById(R.id.sv_sah_new_other)
             otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
             secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
+            shareButtonImage = findViewById(R.id.iv_sah_new_other_share)
 
             headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
@@ -432,6 +448,7 @@ class NewOtherMenuViewHolder(
         fun onFreeShippingRefresh()
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onTopadsValueSet()
+        fun getIsShopShareReady(): Boolean
     }
 
 }
