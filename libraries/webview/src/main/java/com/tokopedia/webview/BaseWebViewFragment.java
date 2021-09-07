@@ -246,7 +246,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         progressBar.setIndeterminate(true);
 
         if (needLogin && !userSession.isLoggedIn()) {
-            progressBar.setIndeterminate(false);
+            progressBar.setVisibility(View.GONE);
             startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
         } else {
             if (!TextUtils.isEmpty(url)) {
