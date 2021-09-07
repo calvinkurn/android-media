@@ -8,6 +8,7 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewHolder
 import com.tokopedia.filter.bottomsheet.filter.FilterViewListener
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
@@ -19,7 +20,8 @@ import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 internal class SortFilterBottomSheetTypeFactoryImpl(
         private val sortViewListener: SortViewListener,
         private val filterViewListener: FilterViewListener,
-        private val priceFilterViewListener: PriceFilterViewListener
+        private val priceFilterViewListener: PriceFilterViewListener,
+        private val keywordFilterListener: KeywordFilterListener,
 ): SortFilterBottomSheetTypeFactory {
 
     private val recycledViewPool = RecycledViewPool()
@@ -44,6 +46,7 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
             SortViewHolder.LAYOUT -> SortViewHolder(view, sortViewListener)
             FilterViewHolder.LAYOUT -> FilterViewHolder(view, recycledViewPool, filterViewListener)
             PriceFilterViewHolder.LAYOUT -> PriceFilterViewHolder(view, priceFilterViewListener)
+            KeywordFilterViewHolder.LAYOUT -> KeywordFilterViewHolder(view, keywordFilterListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }

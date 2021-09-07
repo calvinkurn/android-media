@@ -14,7 +14,8 @@ internal class KeywordFilterDataView(
         const val KEYWORD_FILTER_SEPARATOR = " -"
     }
 
-    override fun type(typeFactory: SortFilterBottomSheetTypeFactory?) = 0
+    override fun type(typeFactory: SortFilterBottomSheetTypeFactory?) =
+        typeFactory?.type(this) ?: 0
 
     private val mutableItemList = filter.options
         .map(Option::name)

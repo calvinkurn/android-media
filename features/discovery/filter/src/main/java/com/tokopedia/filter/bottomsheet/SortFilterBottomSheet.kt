@@ -18,6 +18,7 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
@@ -110,7 +111,12 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
-                    sortViewListener, filterViewListener, priceFilterListener
+                sortViewListener,
+                filterViewListener,
+                priceFilterListener,
+                object: KeywordFilterListener {
+
+                }
             )
     )
 
