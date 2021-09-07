@@ -22,8 +22,8 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Show ProductCountViewModel in Navigation Revamp`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
-        `Given AB Test return navigation revamp`(RollenceKey.NAVIGATION_VARIANT_REVAMP)
-        `Given AB Test return navigation revamp`(RollenceKey.NAVIGATION_VARIANT_REVAMP2)
+        `Given AB Test return navigation revamp`()
+        `Given AB Test return navigation revamp2`()
         setUp()
         `Given visitable list will be captured`()
         `When Load Data`()
@@ -36,16 +36,16 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun `Given AB Test return navigation revamp`(variant: String) {
+    private fun `Given AB Test return navigation revamp`() {
         every {
-            productListView.abTestRemoteConfig?.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                productListView.abTestRemoteConfig?.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                    RollenceKey.NAVIGATION_VARIANT_OLD
-                )
-            )
-        } returns (variant)
+            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP }
+    }
+
+    private fun `Given AB Test return navigation revamp2`() {
+        every {
+            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD)
+        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP2 }
     }
 
     private fun `Given visitable list will be captured`() {
