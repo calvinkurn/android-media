@@ -49,7 +49,7 @@ class UpcomingActionButtonViewComponent(
                 show()
             }
             Status.HIDDEN -> {
-                hide()
+                invisible()
             }
             Status.LOADING -> {
                 show()
