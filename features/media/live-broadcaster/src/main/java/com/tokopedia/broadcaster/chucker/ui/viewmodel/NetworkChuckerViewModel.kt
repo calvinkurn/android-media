@@ -1,22 +1,32 @@
 package com.tokopedia.broadcaster.chucker.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.broadcaster.chucker.data.mapper.mapToUI
 import com.tokopedia.broadcaster.chucker.data.repository.ChuckerLogRepository
 import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NetworkChuckerViewModel @Inject constructor(
-    repository: ChuckerLogRepository,
-    dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+    private val repository: ChuckerLogRepository,
+    private val dispatcher: CoroutineDispatcher
+) : BaseViewModel(dispatcher), LifecycleObserver {
 
-    var broadcasterLog: LiveData<MutableList<ChuckerLogUIModel>>
-    = Transformations.map(repository.chuckers()) {
-        it.asReversed().mapToUI()
+    private val _chuckers = MutableLiveData<MutableList<ChuckerLogUIModel>>()
+    val chuckers: LiveData<MutableList<ChuckerLogUIModel>> get() = _chuckers
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun getChuckers() {
+        launch {
+            val result = repository.chuckers()
+            withContext(Dispatchers.Main) {
+                _chuckers.value = result.reversed().mapToUI()
+            }
+        }
     }
 
 }

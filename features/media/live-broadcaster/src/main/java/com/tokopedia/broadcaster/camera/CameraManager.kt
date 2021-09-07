@@ -107,8 +107,13 @@ object CameraManager {
         return videoSize
     }
 
-    fun verifyResolution(type: String?, videoSize: Streamer.Size, defaultVideoSize: Streamer.Size): Streamer.Size {
-        val info = selectCodec(type)
+    fun verifyResolution(
+        type: String?,
+        videoSize: Streamer.Size,
+        defaultVideoSize: Streamer.Size,
+        mediaCodecList: MediaCodecList
+    ): Streamer.Size {
+        val info = selectCodec(type, mediaCodecList)
         val capabilities = info?.getCapabilitiesForType(type)
         val videoCapabilities = capabilities?.videoCapabilities
         if (videoCapabilities?.isSizeSupported(videoSize.width, videoSize.height) == true) {
@@ -117,8 +122,7 @@ object CameraManager {
         return videoSize
     }
 
-    private fun selectCodec(mimeType: String?): MediaCodecInfo? {
-        val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
+    private fun selectCodec(mimeType: String?, mediaCodecList: MediaCodecList): MediaCodecInfo? {
         for (codecInfo in mediaCodecList.codecInfos) {
             if (!codecInfo.isEncoder) {
                 continue

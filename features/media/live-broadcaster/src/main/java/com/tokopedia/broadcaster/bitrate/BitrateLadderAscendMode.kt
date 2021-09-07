@@ -5,7 +5,7 @@ import kotlin.math.roundToLong
 
 class BitrateLadderAscendMode : BitrateAdapter() {
 
-    private var mStep = 0
+    var mStep = 0
 
     override fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
@@ -68,13 +68,13 @@ class BitrateLadderAscendMode : BitrateAdapter() {
 
     companion object {
         // Ignore lost packets during this time after bitrate change
-        private const val NORMALIZATION_DELAY: Long = 2000
+        const val NORMALIZATION_DELAY: Long = 2000
 
         // Period for lost packets count
         private const val LOST_ESTIMATE_INTERVAL: Long = 10000
 
-        private const val LOST_BANDWIDTH_TOLERANCE_FRACTION: Long = 300000
-        private val BANDWIDTH_STEPS = doubleArrayOf(0.2, 0.25, 1.0 / 3.0, 0.450, 0.600, 0.780, 1.000)
+        const val LOST_BANDWIDTH_TOLERANCE_FRACTION: Long = 300000
+        val BANDWIDTH_STEPS = doubleArrayOf(0.2, 0.25, 1.0 / 3.0, 0.450, 0.600, 0.780, 1.000)
         private val RECOVERY_ATTEMPT_INTERVALS = longArrayOf(15000, 60000, (60000 * 3).toLong())
 
         // Period for bitrate drop duration

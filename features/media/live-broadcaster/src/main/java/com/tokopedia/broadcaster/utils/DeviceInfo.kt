@@ -2,21 +2,39 @@ package com.tokopedia.broadcaster.utils
 
 import android.os.Build
 
+interface BuildVersionProvider {
+    fun isLollipopOrAbove(): Boolean
+    fun supportedAbis(): String
+    fun cpuAbi(): String
+}
+
+class BuildVersionProviderImpl : BuildVersionProvider {
+
+    override fun isLollipopOrAbove() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+
+    override fun supportedAbis(): String = Build.SUPPORTED_ABIS[0]
+
+    override fun cpuAbi() = Build.CPU_ABI
+
+}
+
 object DeviceInfo {
     private const val ARMEABI_V7A = "armeabi-v7a"
     private const val ARM64_V8A = "arm64-v8a"
 
-    private val supportedAbi = arrayOf(ARMEABI_V7A, ARM64_V8A)
+    private val supportedAbi = mutableListOf(ARMEABI_V7A, ARM64_V8A)
 
-    private fun checkDeviceAbi(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            supportedAbi.contains(Build.SUPPORTED_ABIS[0])
+    private fun checkDeviceAbi(provider: BuildVersionProvider): Boolean {
+        return if (provider.isLollipopOrAbove()) {
+            supportedAbi.contains(provider.supportedAbis())
         } else {
-            supportedAbi.contains(Build.CPU_ABI)
+            supportedAbi.contains(provider.cpuAbi())
         }
     }
 
-    fun isDeviceSupported(): Boolean {
-        return checkDeviceAbi()
+    fun isDeviceSupported(
+        provider: BuildVersionProvider = BuildVersionProviderImpl()
+    ): Boolean {
+        return checkDeviceAbi(provider)
     }
 }

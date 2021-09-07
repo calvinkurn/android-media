@@ -1,6 +1,5 @@
 package com.tokopedia.broadcaster.chucker.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +10,7 @@ import com.tokopedia.broadcaster.chucker.data.entity.ChuckerLog
 interface ChuckerDao {
 
     @Query("SELECT * FROM ChuckerLog")
-    fun chuckers(): LiveData<List<ChuckerLog>>
+    fun chuckers(): List<ChuckerLog>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun logChucker(log: ChuckerLog)

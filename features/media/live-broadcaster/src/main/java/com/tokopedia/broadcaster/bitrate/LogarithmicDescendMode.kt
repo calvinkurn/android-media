@@ -6,7 +6,7 @@ import kotlin.math.min
 
 class LogarithmicDescendMode : BitrateAdapter() {
 
-    private var mMinBitrate =  0L
+    var mMinBitrate =  0L
 
     override fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
@@ -41,7 +41,7 @@ class LogarithmicDescendMode : BitrateAdapter() {
 
     companion object {
         // Ignore lost packets during this time after bitrate change
-        private const val NORMALIZATION_DELAY: Long = 1500
+        const val NORMALIZATION_DELAY: Long = 1500
 
         // Period for lost packets count
         private const val LOST_ESTIMATE_INTERVAL: Long = 10000

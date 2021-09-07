@@ -9,10 +9,11 @@ import kotlin.math.roundToLong
 
 abstract class BitrateAdapter {
 
-    protected var mFullBitrate: Long = 0
-    protected var mLossHistory: Vector<LossHistory> = Vector()
-    protected var mBitrateHistory: Vector<BitrateHistory> = Vector()
+    var mFullBitrate: Long = 0
+    var mLossHistory: Vector<LossHistory> = Vector()
+    var mBitrateHistory: Vector<BitrateHistory> = Vector()
 
+    var mConnectionId: Int? = null
     private var mMaxFps: Double = 30.0
     private var mSettingsBitrate: Long = 0
     private var mCurrentBitrate: Long = 0
@@ -20,12 +21,11 @@ abstract class BitrateAdapter {
     private var mCurrentRange: FpsRange = FpsRange(30, 30)
     private var mFpsRanges: Array<FpsRange?> = emptyArray()
     private var mStreamer: Streamer? = null
-    private var mConnectionId: Int? = null
     private var mCheckTimer: Timer? = null
     private var mListener: Listener? = null
 
-    inner class LossHistory(var ts: Long, var audio: Long, var video: Long)
-    inner class BitrateHistory(var ts: Long, var bitrate: Long)
+    data class LossHistory(var ts: Long, var audio: Long, var video: Long)
+    data class BitrateHistory(var ts: Long, var bitrate: Long)
 
     fun setListener(listener: Listener) {
         this.mListener = listener
@@ -103,7 +103,8 @@ abstract class BitrateAdapter {
 
     fun getCurrentBitrate(): Long = mCurrentBitrate
 
-    protected open fun check(audioLost: Long, videoLost: Long) {}
+    open fun check(audioLost: Long, videoLost: Long) {}
+
     protected fun countLostForInterval(interval: Long): Long {
         var lostPackets: Long = 0
         val last = mLossHistory.lastElement()
@@ -117,7 +118,7 @@ abstract class BitrateAdapter {
         return lostPackets
     }
 
-    protected fun changeBitrate(newBitrate: Long) {
+    fun changeBitrate(newBitrate: Long) {
         val curTime = System.currentTimeMillis()
         mBitrateHistory.add(BitrateHistory(curTime, newBitrate))
         updateFps(newBitrate)
@@ -126,7 +127,7 @@ abstract class BitrateAdapter {
         mListener?.onChangeBitrate(mCurrentBitrate)
     }
 
-    protected fun changeBitrateQuiet(newBitrate: Long) {
+    fun changeBitrateQuiet(newBitrate: Long) {
         mStreamer?.changeBitRate(newBitrate.toInt())
     }
 

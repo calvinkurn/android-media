@@ -42,6 +42,8 @@ class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lifecycle.addObserver(viewModel)
+
         initView()
         initObservable()
     }
@@ -51,7 +53,7 @@ class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
     }
 
     private fun initObservable() {
-        viewModel.broadcasterLog.observe(viewLifecycleOwner, {
+        viewModel.chuckers.observe(viewLifecycleOwner, {
             adapter.updateItems(it)
         })
     }

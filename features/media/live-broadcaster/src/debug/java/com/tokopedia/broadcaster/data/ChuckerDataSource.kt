@@ -26,7 +26,7 @@ class ChuckerDataSource(
         ChuckerLogRepositoryImpl(dbDao)
     }
 
-    override fun chuckers(): LiveData<List<ChuckerLog>> {
+    override fun chuckers(): List<ChuckerLog> {
         return dataSource.chuckers()
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.broadcaster.utils
 
+import android.media.MediaCodecList
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.wmspanel.libstream.AudioConfig
@@ -19,13 +20,15 @@ object BroadcasterUtil {
     // default config: h264, 2 sec. keyframe interval
     fun getVideoConfig(
         config: BroadcasterConfig,
-        cameraSize: Streamer.Size = config.getVideoSize()
+        cameraSize: Streamer.Size = config.getVideoSize(),
+        mediaCodecList: MediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
     ) = VideoConfig().apply {
         bitRate = config.videoBitrate
         videoSize = CameraManager.verifyResolution(
             type = type,
             videoSize = Streamer.Size(cameraSize.height, cameraSize.width),
-            defaultVideoSize = config.getVideoSize()
+            defaultVideoSize = config.getVideoSize(),
+            mediaCodecList = mediaCodecList
         )
         fps = config.fps
     }
