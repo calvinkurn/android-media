@@ -61,6 +61,34 @@ object PlayDateTimeFormatter {
         }
     }
 
+    fun getDiffDayHourMinute(rawDate: String, pattern: String): Triple<Long, Long, Long> {
+        return try {
+            val todayCalendar = Calendar.getInstance()
+            val targetCalendar = convertToCalendar(rawDate, pattern)
+
+            targetCalendar?.let {
+                var diff = it.timeInMillis - todayCalendar.timeInMillis
+                if(diff < 0) diff *= -1
+
+                val days = diff / (24 * 60 * 60 * 1000)
+                diff %= (24 * 60 * 60 * 1000)
+
+                val hours = diff / (60 * 60 * 1000)
+                diff %= (60 * 60 * 1000)
+
+                val minutes = diff / (60 * 1000)
+                diff %= (60 * 1000)
+
+                Triple(days, hours, minutes)
+            } ?: kotlin.run {
+                Triple(-1, -1, -1)
+            }
+        }
+        catch (e: Exception) {
+            Triple(-1, -1, -1)
+        }
+    }
+
     fun convertToCalendar(
         rawDate: String,
         pattern: String = ddMMMMyyyy_HHmm // TODO("Should be changed to yyyyMMddTHHmmss")
