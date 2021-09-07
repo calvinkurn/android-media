@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_16">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/bg_active_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignParentEnd="true"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/background_tipping_gojek"
+            android:contentDescription="null"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/driver_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_driver"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginStart="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="@id/driver_phone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/driver_name"
+                app:unify_image_type="circle" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/driver_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
+                android:ellipsize="end"
+                android:singleLine="true"
+                app:layout_constraintStart_toEndOf="@id/img_driver"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_information"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_16"
+                app:icon_name="INFORMATION"
+                app:layout_constraintBottom_toBottomOf="@id/driver_name"
+                app:layout_constraintStart_toEndOf="@id/driver_name"
+                app:layout_constraintTop_toTopOf="@id/driver_name"
+                tools:ignore="ContentDescription" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/driver_phone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:textColor="@color/Unify_N700_96"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintStart_toStartOf="@id/driver_name"
+                app:layout_constraintTop_toBottomOf="@id/driver_name"
+                app:typographyType="body_3" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/dp_14"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                android:background="@color/Unify_N75"
+                app:layout_constraintTop_toBottomOf="@id/driver_phone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_find_driver"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="@id/tipping_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tipping_text"
+            android:visibility="gone"
+            app:unify_image_type="circle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tipping_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:layout_constraintStart_toEndOf="@id/img_find_driver"
+            app:layout_constraintTop_toBottomOf="@id/driver_layout"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tipping_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintStart_toStartOf="@id/tipping_text"
+            app:layout_constraintTop_toBottomOf="@id/tipping_text"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="Beri Tip"
+            app:layout_constraintBottom_toBottomOf="@id/tipping_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tipping_text"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
