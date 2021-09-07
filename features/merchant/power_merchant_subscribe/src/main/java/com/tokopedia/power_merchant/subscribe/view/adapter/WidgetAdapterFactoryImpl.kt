@@ -35,8 +35,6 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetSingleCtaUiModel): Int = SingleCtaWidget.RES_LAYOUT
 
-    override fun type(model: WidgetNextShopGradeUiModel): Int = NextShopGradeWidget.RES_LAYOUT
-
     override fun type(model: WidgetPMDeactivateUiModel): Int = PMDeactivateWidget.RES_LAYOUT
 
     override fun type(model: WidgetTickerUiModel): Int = TickerWidget.RES_LAYOUT
@@ -60,7 +58,6 @@ class WidgetAdapterFactoryImpl(
                 parent,
                 widgetListener
             )
-            NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(

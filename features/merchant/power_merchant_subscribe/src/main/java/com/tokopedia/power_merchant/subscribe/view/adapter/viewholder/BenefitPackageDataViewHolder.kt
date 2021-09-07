@@ -4,7 +4,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.utils.BenefitPackageSectionDecoration
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageDataListener
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageGradeAdapter
@@ -38,8 +40,13 @@ class BenefitPackageDataViewHolder(
         val benefitPackageGradeAdapter = BenefitPackageGradeAdapter()
         with(itemView) {
             rvBenefitPackageList?.apply {
-                layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                if (itemDecorationCount.isZero()) {
+                    addItemDecoration(BenefitPackageSectionDecoration())
+                }
+                layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
+                    override fun canScrollVertically(): Boolean = false
+                }
+                isNestedScrollingEnabled = false
                 adapter = benefitPackageGradeAdapter
             }
         }

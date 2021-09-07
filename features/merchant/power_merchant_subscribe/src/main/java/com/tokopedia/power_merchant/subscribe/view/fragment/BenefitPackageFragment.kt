@@ -66,6 +66,7 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
         setupAdapter()
         onSwipeRefreshBenefitPackage()
         observeBenefitPackagePage()
+        loadData()
     }
 
     override fun onDestroy() {

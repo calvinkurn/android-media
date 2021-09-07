@@ -58,7 +58,7 @@ class UpgradePmProWidget(
                     if (shopInfo.isEligiblePmPro) {
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_eligible_after_30_days)
-                        tvPmUpgradePmProDesc?.show()
+                        tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_eligible_benefit_package)
                         tvSetMembershipStatus?.setTextMakeHyperlink(
@@ -69,15 +69,12 @@ class UpgradePmProWidget(
                     } else {
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
-                        tvPmUpgradePmProDesc?.show()
+                        tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
                         hidePmProUpgradeSection()
-                        tvSetMembershipStatus?.setTextMakeHyperlink(
-                            getString(R.string.pm_deactivate_pm_pro_not_eligible)
-                        ) {
-                            listener.onDeactivatePMClickListener()
-                        }
+                        dividerMembershipStatus?.hide()
+                        tvSetMembershipStatus?.hide()
                     }
                 } else {
                     tvPmUpgradePmProTitle?.text =

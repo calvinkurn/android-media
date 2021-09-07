@@ -33,10 +33,8 @@ class ExpandableWidget(
         with(itemView) {
             if (element.isPmPro()) {
                 viewPmProBenefitSection.visible()
-                viewPmBenefitSection.gone()
             } else {
                 viewPmProBenefitSection.gone()
-                viewPmBenefitSection.visible()
             }
             viewPmBenefitSection.setOnExpandedChanged(true)
 
@@ -54,9 +52,6 @@ class ExpandableWidget(
 
     private fun setupPmProSection(element: WidgetExpandableUiModel) = with(itemView) {
         viewPmProBenefitSection.show(element)
-        viewPmProBenefitSection.setOnClickListener {
-            handleExpandableView()
-        }
         viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
             listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
         }

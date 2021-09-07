@@ -1,7 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
@@ -16,9 +18,25 @@ class BenefitPackageHeaderViewHolder(view: View) :
 
     override fun bind(element: BenefitPackageHeaderUiModel?) {
         with(itemView) {
-            tvTitleHeaderBenefitPackage?.text = element?.periodDate
-            tvDescHeaderBenefitPackage?.text = element?.gradeName?.asCamelCase()
-            tvNextUpdateBenefitPackage?.text = element?.nextUpdate
+            containerHeaderBenefitPackage?.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                )
+            )
+            tvTitleHeaderBenefitPackage?.text =
+                getString(R.string.pm_date_based_on_your_sell, element?.periodDate)
+            tvDescHeaderBenefitPackage?.text = getString(
+                R.string.pm_title_profit_package_section,
+                element?.gradeName?.asCamelCase()
+            )
+            tvNextUpdateBenefitPackage?.text =
+                MethodChecker.fromHtml(
+                    getString(
+                        R.string.pm_next_update_benefit_package,
+                        element?.nextUpdate
+                    )
+                )
         }
     }
 }

@@ -11,13 +11,7 @@ data class BenefitPackageResponse(
     val shopLevel: ShopLevel = ShopLevel(),
     @Expose
     @SerializedName("goldGetPMGradeBenefitInfo")
-    val data: GoldGetPMGradeBenefitInfo? = null,
-    @Expose
-    @SerializedName("current_pm_grade")
-    val currentPMGrade: CurrentPmGradeModel? = null,
-    @Expose
-    @SerializedName("next_monthly_refresh_date")
-    val nextMonthlyRefreshDate: String? = ""
+    val data: GoldGetPMGradeBenefitInfo? = null
 ) {
     data class ShopLevel(
         @Expose
@@ -41,6 +35,12 @@ data class BenefitPackageResponse(
     }
 
     data class GoldGetPMGradeBenefitInfo(
+        @Expose
+        @SerializedName("next_monthly_refresh_date")
+        val nextMonthlyRefreshDate: String? = "",
+        @Expose
+        @SerializedName("current_pm_grade")
+        val currentPMGrade: CurrentPmGradeModel? = null,
         @Expose
         @SerializedName("next_level_benefit_package_list")
         val nextBenefitPackageList: List<NextBenefitPackageList>? = emptyList()

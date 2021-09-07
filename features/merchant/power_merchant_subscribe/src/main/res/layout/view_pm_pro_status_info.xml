@@ -8,7 +8,6 @@
         android:id="@+id/icPmProStatusInfo"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="INFORMATION"
@@ -23,9 +22,9 @@
         android:layout_marginStart="@dimen/dp_6"
         android:text="@string/pm_check_pm_pro_status_info"
         android:textColor="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/icPmProStatusInfo"
         app:layout_constraintStart_toEndOf="@+id/icPmProStatusInfo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/icPmProStatusInfo"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 

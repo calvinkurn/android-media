@@ -57,8 +57,9 @@ class GetBenefitPackageUseCase @Inject constructor(
                  source: "android-goldmerchant", 
                  lang: "id", 
                  device: "android",
-                 fields: [""]
+                 fields: ["current_pm_grade", "next_level_benefit_package_list"]
               ) {
+                  next_monthly_refresh_date
                   next_level_benefit_package_list {
                       pm_grade_name
                       image_badge_url
@@ -66,6 +67,7 @@ class GetBenefitPackageUseCase @Inject constructor(
                       pm_tier
                       benefit_list {
                         benefit_description
+                        benefit_name
                         related_link_url
                         related_link_applink
                         related_link_name

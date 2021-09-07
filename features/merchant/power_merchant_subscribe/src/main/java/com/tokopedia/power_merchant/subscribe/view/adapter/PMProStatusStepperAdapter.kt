@@ -79,6 +79,8 @@ class PMProStatusStepperAdapter :
 
                 if (data.isCurrentActive) {
                     ic_dot_stepper?.setImageResource(R.drawable.ic_current_active_pm_pro_status)
+                } else {
+                    ic_dot_stepper?.setImageResource(R.drawable.ic_current_inactive_pm_pro_status)
                 }
             }
         }

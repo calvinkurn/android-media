@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitItem
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageDataUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageGradeUiModel
 import kotlinx.android.synthetic.main.item_benefit_package_section_pm_pro.view.*
 
@@ -48,6 +47,7 @@ class BenefitPackageGradeAdapter :
 
         fun bind(data: BenefitPackageGradeUiModel) {
             with(itemView) {
+                bgBenefitPackage?.loadImage(data.backgroundUrl)
                 imgBenefitPackageSection?.loadImage(data.iconBenefitUrl)
                 tvTitleBenefitPackageSection?.text = context.getString(
                     R.string.pm_title_benefit_package_section,

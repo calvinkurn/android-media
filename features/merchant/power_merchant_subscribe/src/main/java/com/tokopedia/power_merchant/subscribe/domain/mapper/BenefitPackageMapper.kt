@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
@@ -25,8 +26,11 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
     ): BenefitPackageHeaderUiModel {
         return BenefitPackageHeaderUiModel(
             periodDate = benefitPackageResponse.shopLevel.result.period.orEmpty(),
-            gradeName = benefitPackageResponse.currentPMGrade?.gradeName.orEmpty(),
-            nextUpdate = benefitPackageResponse.nextMonthlyRefreshDate.orEmpty()
+            gradeName = benefitPackageResponse.data?.currentPMGrade?.gradeName.orEmpty(),
+            nextUpdate = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                benefitPackageResponse.data?.nextMonthlyRefreshDate.orEmpty()
+            )
         )
     }
 
@@ -35,13 +39,15 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
     ): BenefitPackageDataUiModel {
         return BenefitPackageDataUiModel(
             benefitPackageData = benefitPackageResponse.data?.nextBenefitPackageList?.map {
-                val isUpgrade = it.pmGradeName == benefitPackageResponse.currentPMGrade?.gradeName
+                val isUpgrade =
+                    it.pmGradeName == benefitPackageResponse.data.currentPMGrade?.gradeName
                 val pmStatusText =
-                    if (it.pmGradeName == benefitPackageResponse.currentPMGrade?.gradeName) {
+                    if (it.pmGradeName == benefitPackageResponse.data.currentPMGrade?.gradeName) {
                         context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
                     } else {
                         context?.getString(R.string.pm_benefit_package_downgrade).orEmpty()
                     }
+                val mapDescAndBg = getBgAndDescBenefitPackage(it, pmStatusText)
                 BenefitPackageGradeUiModel(
                     gradeName = it.pmGradeName,
                     iconBenefitUrl = if (isUpgrade) {
@@ -49,27 +55,8 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                     } else {
                         Constant.Image.IC_PM_PRO_DOWNGRADE_WARNING
                     },
-                    descBenefit = when (it.pmGradeName.asCamelCase()) {
-                        Constant.PM_PRO_ADVANCED -> {
-                            context?.getString(
-                                R.string.pm_desc_level_2_benefit_package_section,
-                                pmStatusText
-                            ).orEmpty()
-                        }
-                        Constant.PM_PRO_EXPERT -> {
-                            context?.getString(
-                                R.string.pm_desc_level_3_benefit_package_section,
-                                pmStatusText
-                            ).orEmpty()
-                        }
-                        Constant.PM_PRO_ULTIMATE -> {
-                            context?.getString(
-                                R.string.pm_desc_level_4_benefit_package_section,
-                                pmStatusText
-                            ).orEmpty()
-                        }
-                        else -> ""
-                    },
+                    descBenefit = mapDescAndBg.first,
+                    backgroundUrl = mapDescAndBg.second,
                     benefitItemList = mapToBenefitItem(it.benefitList)
                 )
             } ?: emptyList()
@@ -82,6 +69,50 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
     ): List<BenefitItem> {
         return benefitPackageResponse.map {
             BenefitItem(imageUrL = it.imageUrl, title = it.benefitName)
+        }
+    }
+
+    private fun getBgAndDescBenefitPackage(
+        item:
+        BenefitPackageResponse.NextBenefitPackageList,
+        pmStatusText: String
+    ): Pair<String, String> {
+        val blackColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96.toString()
+        return when (item.pmGradeName.asCamelCase()) {
+            Constant.PM_PRO_ADVANCED -> {
+                Pair(
+                    context?.getString(
+                        R.string.pm_desc_level_2_benefit_package_section,
+                        pmStatusText,
+                        blackColor,
+                        blackColor,
+                        blackColor
+                    ).orEmpty(), Constant.Image.BG_BENEFIT_PACKAGE_PM_PRO_ADVANCED
+                )
+            }
+            Constant.PM_PRO_EXPERT -> {
+                Pair(
+                    context?.getString(
+                        R.string.pm_desc_level_3_benefit_package_section,
+                        pmStatusText,
+                        blackColor,
+                        blackColor,
+                        blackColor
+                    ).orEmpty(), Constant.Image.BG_BENEFIT_PACKAGE_PM_PRO_EXPERT
+                )
+            }
+            Constant.PM_PRO_ULTIMATE -> {
+                Pair(
+                    context?.getString(
+                        R.string.pm_desc_level_4_benefit_package_section,
+                        pmStatusText,
+                        blackColor,
+                        blackColor,
+                        blackColor
+                    ).orEmpty(), Constant.Image.BG_BENEFIT_PACKAGE_PM_PRO_ULTIMATE
+                )
+            }
+            else -> Pair("", "")
         }
     }
 }

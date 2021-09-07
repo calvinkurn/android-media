@@ -399,15 +399,19 @@ object PMRegistrationTermHelper {
                     if (!shopInfo.is30DaysFirstMonday) {
                         context.getString(R.string.pm_description_kyc_verified_new_seller)
                     } else {
-                        context.getString(R.string.pm_description_kyc_verified_before_30_first_monday)
+                        context.getString(R.string.pm_kyc_verified)
                     }
                 } else {
                     context.getString(R.string.pm_kyc_verified)
                 }
                 description = if (shopInfo.isNewSeller) {
-                    context.getString(R.string.pm_description_kyc_verified_new_seller)
+                    if (!shopInfo.is30DaysFirstMonday) {
+                        context.getString(R.string.pm_description_kyc_verified_before_30_first_monday)
+                    } else {
+                        context.getString(R.string.pm_description_kyc_verified_new_seller)
+                    }
                 } else {
-                    context.getString(R.string.pm_description_kyc_verified)
+                    context.getString(R.string.pm_kyc_verify_ktp)
                 }
                 shopKycResIcon = R.drawable.ic_pm_checked
             }
@@ -457,8 +461,6 @@ object PMRegistrationTermHelper {
         }
         if (shopInfo.isNewSeller && isPmProSelected) {
             if (!shopInfo.is30DaysFirstMonday) {
-                description = title
-                title = context.getString(R.string.pm_kyc_verify_ktp)
                 shopKycResIcon = R.drawable.ic_not_completed_new_seller
             }
         }

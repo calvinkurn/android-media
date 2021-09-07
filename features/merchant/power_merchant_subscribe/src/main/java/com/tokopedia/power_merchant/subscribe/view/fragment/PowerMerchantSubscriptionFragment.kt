@@ -766,10 +766,14 @@ open class PowerMerchantSubscriptionFragment :
 
     private fun showCoachMark() {
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
+        val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() ||
+                pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
+        val isShowCoachmark = CoachMark2.isCoachmmarkShowAllowed
         if (isPmPro && isNewSeller) {
-            if (getCoachMarkItems().value.isNotEmpty()) {
-                coachMark?.showCoachMark(getCoachMarkItems().value)
+            if (isShowCoachmark && getCoachMarkItems().value.isNotEmpty()) {
+                recyclerView?.post {
+                    coachMark?.showCoachMark(getCoachMarkItems().value)
+                }
             }
         }
     }
@@ -778,6 +782,9 @@ open class PowerMerchantSubscriptionFragment :
         return lazy {
             val coachMark = context?.let { CoachMark2(it) }
             coachMark?.isDismissed = false
+            coachMark?.onFinishListener = {
+                CoachMark2.isCoachmmarkShowAllowed = false
+            }
             coachMark
         }
     }
