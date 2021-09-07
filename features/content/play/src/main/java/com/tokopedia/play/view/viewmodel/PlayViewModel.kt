@@ -44,6 +44,7 @@ import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.domain.PlayChannelReminderUseCase
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -79,6 +80,7 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+        private val playChannelReminderUseCase: PlayChannelReminderUseCase,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,

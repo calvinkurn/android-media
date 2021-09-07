@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on September 03, 2021
  */
-class PlayWidgetReminderUseCase @Inject constructor(
+class PlayChannelReminderUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<PlayReminder>(graphqlRepository) {
 
