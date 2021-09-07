@@ -1453,14 +1453,34 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleRemindMeUpcomingChannel() = needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
-        /**
-         * TODO("Call API Reminder Here")
-         */
+        viewModelScope.launchCatchError(block = {
+            mChannelData?.let {
+                val status: Boolean
 
-        viewModelScope.launch {
-            delay(1000)
+                withContext(dispatchers.io) {
+                    playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
+                    val response = playChannelReminderUseCase.executeOnBackground()
+                    status = response.playToggleChannelReminder.header.status == PlayChannelReminderUseCase.RESPONSE_STATUS_SUCCESS
+                }
+
+                _uiEvent.emit(
+                    ShowToasterEvent.RemindMe(
+                        message = UiString.Resource(R.string.play_remind_me_success),
+                        isSuccess = status
+                    )
+                )
+            } ?: _uiEvent.emit(
+                ShowToasterEvent.RemindMe(
+                    message = UiString.Resource(R.string.play_remind_me_success),
+                    isSuccess = false
+                )
+            )
+        }) {
             _uiEvent.emit(
-                ShowToasterEvent.RemindMe(message = UiString.Resource(R.string.play_remind_me_success))
+                ShowToasterEvent.RemindMe(
+                    message = UiString.Resource(R.string.play_remind_me_success),
+                    isSuccess = false
+                )
             )
         }
     }

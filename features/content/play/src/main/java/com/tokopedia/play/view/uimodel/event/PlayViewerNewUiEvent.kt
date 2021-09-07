@@ -15,7 +15,7 @@ sealed class ShowToasterEvent : PlayViewerNewUiEvent() {
 
     data class Info(override val message: UiString) : ShowToasterEvent()
     data class Error(override val message: UiString) : ShowToasterEvent()
-    data class RemindMe(override val message: UiString): ShowToasterEvent()
+    data class RemindMe(override val message: UiString, val isSuccess: Boolean): ShowToasterEvent()
 }
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 
