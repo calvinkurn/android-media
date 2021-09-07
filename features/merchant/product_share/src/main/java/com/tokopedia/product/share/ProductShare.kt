@@ -53,6 +53,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
     private var cancelShare: Boolean = false
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private lateinit var productData: ProductData
+    private lateinit var preBuildImage: () -> Unit
+    private lateinit var postBuildImage: () -> Unit
+    //View is the Fragment View
+    private lateinit var parentView: View
 
     fun cancelShare(cancelShare: Boolean) {
         this.cancelShare = cancelShare
