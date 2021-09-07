@@ -61,4 +61,8 @@
 
     <string name="deals_brand_detail">Baca Selengkapnya</string>
     <string name="deals_brand_detail_title_bottom_sheet">Tentang %s</string>
+    <string name="deals_brand_detail_count">Ada %s Voucher</string>
+    <string name="deals_brand_detail_item_valid_until">Berlaku Hingga</string>
+    <string name="deals_brand_detail_item_slash_price">Rp %s</string>
+
 </resources>

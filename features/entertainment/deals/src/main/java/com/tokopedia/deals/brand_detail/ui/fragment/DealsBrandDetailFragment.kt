@@ -9,13 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand_detail.data.Brand
+import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity
 import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
+import com.tokopedia.deals.brand_detail.ui.adapter.DealsBrandDetailAdapter
 import com.tokopedia.deals.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
 import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
@@ -31,7 +35,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.Math.abs
 import javax.inject.Inject
 
-class DealsBrandDetailFragment: BaseDaggerFragment() {
+class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.DealsBrandDetailCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,6 +51,8 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
     private var currentLocation: Location? = null
 
     private var seoUrl = ""
+
+    private val adapterBrandDetail = DealsBrandDetailAdapter(this)
 
     private var binding by autoClearedNullable<FragmentDealsBrandDetailBinding>()
 
@@ -88,6 +94,10 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun clickProduct(applink: String) {
+        RouteManager.route(context, applink)
     }
 
     private fun loadData() {
@@ -146,13 +156,30 @@ class DealsBrandDetailFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun setRVBrandList(listProduct: List<Product>){
+        binding?.let {
+            if(listProduct.size != 0) {
+                it.tgDescBrandDetailCount.text = getString(R.string.deals_brand_detail_count,
+                        listProduct.size.toString())
+            }
+            it.rvBrandDetail.apply {
+                adapter = adapterBrandDetail
+                layoutManager = LinearLayoutManager(context)
+            }
+        }
+        adapterBrandDetail.listProduct = listProduct
+        adapterBrandDetail.notifyDataSetChanged()
+    }
+
     private fun observeBrandDetail() {
         observe(viewModel.brandDetail) {
             when (it) {
                 is Success -> {
                     val brandDetail = it.data.data.brand
+                    val products = it.data.data.products
                     setCollapsingLayout(brandDetail.title)
                     setHeaderSection(brandDetail)
+                    setRVBrandList(products)
                 }
 
                 is Fail -> {
