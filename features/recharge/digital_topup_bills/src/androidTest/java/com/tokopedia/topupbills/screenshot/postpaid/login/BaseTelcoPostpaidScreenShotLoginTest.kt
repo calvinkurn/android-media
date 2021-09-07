@@ -15,15 +15,12 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -38,7 +35,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AllOf
@@ -95,10 +92,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
     @Test
     fun screenshot() {
-        stubSearchNumber(
-            VALID_PHONE_NUMBER,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
-        )
+        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_enquiry_phone_number()
@@ -154,7 +148,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
             CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout_enquiry")
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.telco_clear_input_number_btn)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.text_field_icon_close)).perform(ViewActions.click())
         Thread.sleep(2000)
     }
 

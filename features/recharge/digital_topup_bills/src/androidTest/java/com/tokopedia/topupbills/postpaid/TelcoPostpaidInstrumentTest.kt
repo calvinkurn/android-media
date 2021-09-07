@@ -8,7 +8,6 @@ import android.provider.ContactsContract
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -18,11 +17,8 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
@@ -35,7 +31,7 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
-import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
@@ -107,14 +103,12 @@ class TelcoPostpaidInstrumentTest {
 //        click_phonebook_and_clear()
         validate_interaction_promo()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
-            hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
+//            hasAllSuccess())
     }
 
     fun validate_pdp_client_number_widget_interaction() {
-        stubSearchNumber(
-            VALID_PHONE_NUMBER,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
+        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
@@ -154,7 +148,7 @@ class TelcoPostpaidInstrumentTest {
 
     private fun pick_phone_number_from_phonebook() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_contact_picker_btn)).perform(click())
+        onView(withId(R.id.text_field_icon_1)).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(isDisplayed()))
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
     }
