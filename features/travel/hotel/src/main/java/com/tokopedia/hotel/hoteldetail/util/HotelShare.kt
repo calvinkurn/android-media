@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference
  * @author by jessica on 20/10/20
  */
 
-class HotelShare(var activity: WeakReference<Activity>) {
+class HotelShare(val activity: WeakReference<Activity>) {
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)

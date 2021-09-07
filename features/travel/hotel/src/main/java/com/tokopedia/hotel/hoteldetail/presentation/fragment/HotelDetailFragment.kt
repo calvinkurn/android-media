@@ -438,7 +438,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
             trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
-            if(::hotelShare.isInitialized)      {
+            if(::hotelShare.isInitialized) {
                 hotelShare.shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
