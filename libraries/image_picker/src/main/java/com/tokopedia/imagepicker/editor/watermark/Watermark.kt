@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.editor.watermark
 import android.content.Context
 import android.graphics.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
@@ -230,7 +231,7 @@ data class Watermark(
 
         if (!backgroundImg!!.isDark()) {
             scaledWatermarkBitmap = scaledWatermarkBitmap!!
-                .changeColor(Color.parseColor("#4D03AC0E"))
+                .changeColor(MethodChecker.getColor(context, R.color.green_neutral_30))
         }
 
         // merge the main bitmap with scaled watermark bitmap

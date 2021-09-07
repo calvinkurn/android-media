@@ -7,14 +7,14 @@ object ImageEditorTracking {
     val tracker = TrackApp.getInstance().gtm
 
     @JvmStatic
-    fun onSaveEditImage(label: String, pageType: String) {
+    fun onSaveEditImage(label: String, pageType: String, userId: String) {
         tracker.sendGeneralEvent(createEventMap(ImageEditorTrackingConstant.EVENT,
             ImageEditorTrackingConstant.EVENT_CATEGORY, ImageEditorTrackingConstant.EVENT_ACTION,
-            label, pageType))
+            label, pageType, userId))
     }
 
     private fun createEventMap(event: String, category: String, action: String,
-                               label: String, pageType: String): HashMap<String, Any> {
+                               label: String, pageType: String, userId: String): HashMap<String, Any> {
         val eventMap = HashMap<String, Any>()
         eventMap[ImageEditorTrackingConstant.EVENT_KEY] = event
         eventMap[ImageEditorTrackingConstant.CATEGORY_KEY] = category
@@ -25,6 +25,7 @@ object ImageEditorTracking {
         eventMap[ImageEditorTrackingConstant.CURRENT_SITE_KEY] =
                 ImageEditorTrackingConstant.CURRENT_SITE
         eventMap[ImageEditorTrackingConstant.PAGE_TYPE_KEY] = pageType
+        eventMap[ImageEditorTrackingConstant.USER_ID_KEY] = userId
         return eventMap
     }
 }

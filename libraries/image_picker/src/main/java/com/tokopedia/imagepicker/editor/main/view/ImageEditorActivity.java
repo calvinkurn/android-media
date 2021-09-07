@@ -1186,7 +1186,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void trackClickSave(String label) {
-        ImageEditorTracking.onSaveEditImage(label, pageSource);
+        ImageEditorTracking.onSaveEditImage(label, pageSource, userSession.getUserId());
     }
 
     private String getLabelWatermark() {

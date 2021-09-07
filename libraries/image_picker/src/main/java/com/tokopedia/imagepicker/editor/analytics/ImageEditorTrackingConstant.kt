@@ -7,6 +7,7 @@ object ImageEditorTrackingConstant {
     const val LABEL_KEY = "eventLabel"
     const val BUSINESS_UNIT_KEY = "businessUnit"
     const val CURRENT_SITE_KEY = "currentSite"
+    const val USER_ID_KEY = "userId"
     const val PAGE_TYPE_KEY = "pageType"
     const val EVENT = "clickImageEditor"
     const val EVENT_CATEGORY = "image editor"
