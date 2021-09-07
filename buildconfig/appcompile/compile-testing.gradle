@@ -4,6 +4,7 @@ includeIfEnabled("testing:merchant:product_detail")
 includeIfEnabled("testing:transaction:cart")
 includeIfEnabled("testing:transaction:checkout")
 includeIfEnabled("testing:transaction:oneclickcheckout")
+includeIfEnabled("testing:transaction:atc_common")
 
 /********** JOINT TEST MODULES **********/
 includeIfEnabled("testing:joint:pdp_checkout")
