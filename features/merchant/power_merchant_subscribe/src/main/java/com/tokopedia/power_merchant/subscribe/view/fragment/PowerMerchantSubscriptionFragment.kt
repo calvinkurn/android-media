@@ -22,7 +22,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
@@ -45,7 +44,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.*
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
-import okhttp3.Route
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
