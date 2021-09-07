@@ -18,7 +18,12 @@ object TrackingPageQuery {
                   send_date
                   send_time
                   service_code
-        		  tracking_url
+                  tracking_url
+                  eta {
+                    eta_min
+                    eta_max
+                    is_changed
+                  }
                 }
                 track_history {
                   date_time
