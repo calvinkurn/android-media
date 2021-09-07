@@ -24,6 +24,14 @@ class Filter(@SerializedName("title")
              @Expose
              var search: Search = Search(),
 
+             @SerializedName("isNew")
+             @Expose
+             var isNew: Boolean = false,
+
+             @SerializedName("filter_attribute_detail")
+             @Expose
+             var filterAttributeDetail: String = "",
+
              @SerializedName("options")
              @Expose
              var options: List<Option> = ArrayList()) : Parcelable {
@@ -33,6 +41,8 @@ class Filter(@SerializedName("title")
             subTitle: String? = null,
             templateName: String? = null,
             search: Search? = null,
+            isNew: Boolean? = null,
+            filterAttributeDetail: String? = null,
             options: List<Option>? = null,
     ): Filter {
         return Filter(
@@ -40,6 +50,8 @@ class Filter(@SerializedName("title")
                 subTitle = subTitle ?: this.subTitle,
                 templateName = templateName ?: this.templateName,
                 search = search ?: this.search,
+                isNew = isNew ?: this.isNew,
+                filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
                 options = options ?: this.options,
         )
     }
