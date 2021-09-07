@@ -406,6 +406,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
             btn_event_checkout.isEnabled = isChecked
         }
+        btn_event_checkout.text = if(metadata.totalPrice == ZERO_PRICE) getString(R.string.ent_event_checkout_footer_button_free)
+                    else getString(R.string.ent_event_checkout_footer_button)
 
         btn_event_checkout.setOnClickListener {
 
