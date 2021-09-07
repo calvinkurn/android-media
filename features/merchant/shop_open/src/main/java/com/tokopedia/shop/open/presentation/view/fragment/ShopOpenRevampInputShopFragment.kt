@@ -80,11 +80,16 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private var shopNameValue = ""
     private var domainNameValue = ""
     private var shopNameSuggestionList = ValidateShopDomainSuggestionResult()
-    private val minimumShopLength = 3
 
     companion object {
         const val FIRST_FRAGMENT_TAG = "first"
         const val DEFAULT_SELECTED_POSITION = -1
+        const val ZERO_SPAN_SIZE = 0
+        const val TWENTY_SPAN_SIZE = 20
+        const val TWENTY_ONE_SPAN_SIZE = 21
+        const val TWENTY_FOUR_SPAN_SIZE = 24
+        const val TWENTY_FIVE_SPAN_SIZE = 25
+        const val MINIMUM_SHOP_LENGTH = 3
     }
 
     override fun onAttach(context: Context) {
@@ -110,10 +115,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
-                if (s.toString().length < minimumShopLength) {
+                if (s.toString().length < MINIMUM_SHOP_LENGTH) {
                     shopNameValue = s.toString()
                     validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
-                } else if (s.toString().length >= minimumShopLength && s.isNotEmpty()) {
+                } else if (s.toString().length >= MINIMUM_SHOP_LENGTH && s.isNotEmpty()) {
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -126,10 +131,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 txtInputDomainName.setError(false)
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
-                if (domainInputStr.length < minimumShopLength) {
+                if (domainInputStr.length < MINIMUM_SHOP_LENGTH) {
                     domainNameValue = domainInputStr.toString()
                     validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
-                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= minimumShopLength) {
+                } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MINIMUM_SHOP_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
                     reselectChipSuggestionDomainName()
@@ -236,7 +241,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         var errorMessage = it.data.validateDomainShopName.error.message
-                        if (shopNameValue.length < minimumShopLength) {
+                        if (shopNameValue.length < MINIMUM_SHOP_LENGTH) {
                             errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
                             validateShopName(
                                     isError = true,
@@ -463,23 +468,18 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title))
         val tncUnclickableAreaSpan = setupClickableSpan("", getString(R.string.open_shop_revamp_tnc_unclickable))
         val privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))
-        val spanZero = 0
-        val spanTwenty = 20
-        val TWENTY_ONE_SPAN = 21
-        val TWENTY_FOUR_SPAN = 24
-        val TWENTY_FIVE_SPAN = 25
 
-        textTnc.setSpan(tncClickableSpan, spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), spanZero, spanTwenty, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncClickableSpan, ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), ZERO_SPAN_SIZE, TWENTY_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN, TWENTY_FOUR_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(tncUnclickableAreaSpan, TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.NORMAL), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400)), TWENTY_ONE_SPAN_SIZE, TWENTY_FOUR_SPAN_SIZE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(privacyPolicyClickableSpan, TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(StyleSpan(Typeface.BOLD), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textTnc.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), TWENTY_FIVE_SPAN_SIZE, textTnc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         txtTermsAndConditions.setText(textTnc)
         txtTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance())
