@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
@@ -23,6 +24,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -40,7 +42,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     protected val imgOperator: ImageView
     protected val inputNumberField: TextFieldUnify2
     protected val layoutInputNumber: ConstraintLayout
-    protected val sortFilterChip: TopupBillsSortFilter
+    protected val sortFilterChip: SortFilter
     protected val sortFilterChipShimmer: LoaderTextView
 
     private val inputNumberResult: TextView
@@ -83,7 +85,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             inputNumberField.editText.setText("")
             inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
-            sortFilterChip.clearFilter()
             imgOperator.hide()
             listener.onClearAutoComplete()
         }
@@ -145,11 +146,19 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
+        val favnum = arrayListOf(
+            TopupBillsSeamlessFavNumberItem(clientName = "Misael", clientNumber = "081280988098"),
+            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "083845518228"),
+            TopupBillsSeamlessFavNumberItem(clientName = "Nabilla", clientNumber = "085606560656"),
+            TopupBillsSeamlessFavNumberItem(clientName = "Marcella", clientNumber = "081129375719"),
+            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "085712398598"),
+            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "087812985898")
+        )
         val sortFilter = arrayListOf<SortFilterItem>()
         for (number in favnum.take(5)) {
             val chipText = if (number.clientName.isEmpty())
                 number.clientNumber else number.clientName
-            val sortFilterItem = SortFilterItem(chipText)
+            val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
                 if (number.clientName.isEmpty()) {
                     setContactName(context.getString(R.string.digital_client_label))
@@ -160,19 +169,21 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             }
             sortFilter.add(sortFilterItem)
         }
+
         val isMoreThanFive = favnum.size > 5
 
         if (isMoreThanFive) {
             val sortFilterItem = SortFilterItem(
-                context.getString(R.string.digital_client_filter_chip_see_all),
-                type = ChipsUnify.TYPE_SELECTED
+                "",
+                type = ChipsUnify.TYPE_ALTERNATE
             )
+            sortFilterItem.initIconDrawable = getIconUnifyDrawable(context, IconUnify.CHEVRON_RIGHT)
             sortFilterItem.listener = {
                 listener.onNavigateToContact(true)
             }
             sortFilter.add(sortFilterItem)
         }
-        sortFilterChip.addItems(sortFilter, isMoreThanFive)
+        sortFilterChip.addItem(sortFilter)
     }
 
     fun clearFocusAutoComplete() {

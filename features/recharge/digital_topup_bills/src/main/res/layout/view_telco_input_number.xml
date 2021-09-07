@@ -44,7 +44,7 @@
             app:layout_constraintTop_toTopOf="@id/telco_field_input_number"
             tools:ignore="contentDescription" />
 
-        <com.tokopedia.common.topupbills.widget.TopupBillsSortFilter
+        <com.tokopedia.sortfilter.SortFilter
             android:id="@+id/telco_filter_chip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

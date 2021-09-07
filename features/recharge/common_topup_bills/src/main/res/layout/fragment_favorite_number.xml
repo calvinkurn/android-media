@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/common_topup_fav_number_clue"
-        android:layout_margin="@dimen/spacing_lvl5"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:typographyType="heading_4"
         app:layout_constraintTop_toTopOf="parent"
