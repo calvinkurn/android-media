@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import java.io.File
-import java.net.URLDecoder
 
 /**
  * Created by Yoris on 26/08/21.
