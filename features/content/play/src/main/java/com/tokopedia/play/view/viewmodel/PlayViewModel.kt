@@ -270,7 +270,8 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboardInfo.value
+                    leaderboardInfo = _leaderboardInfo.value,
+                    upcomingInfo = _observableUpcomingInfo.value ?: channelData.upcomingInfo
             )
         }
 
@@ -1462,6 +1463,8 @@ class PlayViewModel @Inject constructor(
                     val response = playChannelReminderUseCase.executeOnBackground()
                     status = response.playToggleChannelReminder.header.status == PlayChannelReminderUseCase.RESPONSE_STATUS_SUCCESS
                 }
+
+                _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
 
                 _uiEvent.emit(
                     ShowToasterEvent.RemindMe(
