@@ -9,7 +9,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductTitleViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 
-class TelcoProductAdapterFactory(val productType: Int, val listener: TelcoProductViewHolder.OnClickListener)
+class TelcoProductAdapterFactory(val productType: Int, val listener: TelcoProductViewHolder.ActionListener)
     : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
