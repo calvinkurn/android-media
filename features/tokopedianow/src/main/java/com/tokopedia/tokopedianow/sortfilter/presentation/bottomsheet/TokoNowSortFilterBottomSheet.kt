@@ -32,7 +32,7 @@ class TokoNowSortFilterBottomSheet :
 
     private var rvSort: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
-    private var listener: TokoNowRepurchaseSortFilterBottomSheetListener? = null
+    private var listener: TokoNowSortFilterBottomSheetListener? = null
     private var sortValue: Int = FREQUENTLY_BOUGHT
     private var listTitles: List<SortFilterUiModel> = listOf()
 
@@ -56,7 +56,7 @@ class TokoNowSortFilterBottomSheet :
         sortValue = value
     }
 
-    fun show(fm: FragmentManager, sortValue: Int, listener: TokoNowRepurchaseSortFilterBottomSheetListener) {
+    fun show(fm: FragmentManager, sortValue: Int, listener: TokoNowSortFilterBottomSheetListener) {
         show(fm, TAG)
         this.listener = listener
         this.sortValue = sortValue
@@ -116,7 +116,7 @@ class TokoNowSortFilterBottomSheet :
         }
     }
 
-    interface TokoNowRepurchaseSortFilterBottomSheetListener {
+    interface TokoNowSortFilterBottomSheetListener {
         fun onApplySortFilter(value: Int)
     }
 }

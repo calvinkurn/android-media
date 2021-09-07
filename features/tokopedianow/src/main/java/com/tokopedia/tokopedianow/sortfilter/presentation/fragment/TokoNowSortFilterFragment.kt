@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSor
 
 class TokoNowSortFilterFragment:
     Fragment(),
-    TokoNowRepurchaseSortFilterBottomSheetListener {
+    TokoNowSortFilterBottomSheetListener {
 
     companion object {
         fun newInstance(sortValue: String): TokoNowSortFilterFragment {
