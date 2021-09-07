@@ -69,6 +69,7 @@ class SingleProductBundleAdapter(
     fun setSelectedVariant(selectedProductId: String, variantText: String) {
         selectedData.forEachIndexed { index, selectedItem ->
             if (selectedItem.isSelected) {
+                selectedItem.productId = selectedProductId
                 data.getOrNull(index)?.apply {
                     val variant = getVariantChildFromProductId(selectedProductId)
                     val variantQuantity = variant?.stock?.minimumOrder.toIntSafely()
@@ -86,7 +87,6 @@ class SingleProductBundleAdapter(
                     )
                 }
 
-                selectedItem.productId = selectedProductId
                 notifyItemChanged(index)
                 return@forEachIndexed
             }
@@ -104,5 +104,10 @@ class SingleProductBundleAdapter(
 
     fun getSelectedBundleId(): String? {
         return selectedData.find { it.isSelected }?.bundleId
+    }
+
+    fun getSelectedProductId(): String? {
+        // should not return empty product id, empty productId will happened when variant not selected yet
+        return selectedData.find { it.isSelected && it.productId.isNotEmpty() }?.productId
     }
 }

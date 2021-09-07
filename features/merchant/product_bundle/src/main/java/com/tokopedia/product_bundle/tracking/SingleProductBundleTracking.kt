@@ -4,8 +4,14 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
 
     private const val BUNDLING_TYPE = "single"
 
-    fun trackSingleBundleOptionClick(bundleId:String?, productId: String) {
+    fun trackSingleBundleOptionClick(
+        bundleId: String?,
+        parentProductId: String,
+        selectedProductId: String?
+    ) {
         if (bundleId != null) {
+            // selectedProductId null means variant not selected yet
+            val productId = selectedProductId ?: parentProductId
             super.trackBundleOptionClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
                 productId
@@ -13,8 +19,14 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
         }
     }
 
-    fun trackSingleBuyClick(bundleId: String?, productId: String) {
+    fun trackSingleBuyClick(
+        bundleId: String?,
+        parentProductId: String,
+        selectedProductId: String?
+    ) {
         if (bundleId != null) {
+            // selectedProductId null means variant not selected yet
+            val productId = selectedProductId ?: parentProductId
             super.trackBuyClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
                 productId
@@ -22,8 +34,14 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
         }
     }
 
-    fun trackSingleBackClick(bundleId: String?, productId: String) {
+    fun trackSingleBackClick(
+        bundleId: String?,
+        parentProductId: String,
+        selectedProductId: String?
+    ) {
         if (bundleId != null) {
+            // selectedProductId null means variant not selected yet
+            val productId = selectedProductId ?: parentProductId
             super.trackBackClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
                 productId

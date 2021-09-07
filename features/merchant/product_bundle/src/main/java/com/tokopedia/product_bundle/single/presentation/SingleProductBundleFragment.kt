@@ -134,7 +134,11 @@ class SingleProductBundleFragment(
         quantity: Int,
         preorderDurationWording: String?
     ) {
-        SingleProductBundleTracking.trackSingleBundleOptionClick(adapter.getSelectedBundleId(), parentProductID)
+        SingleProductBundleTracking.trackSingleBundleOptionClick(
+            adapter.getSelectedBundleId(),
+            parentProductID,
+            adapter.getSelectedProductId()
+        )
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
     }
@@ -258,7 +262,11 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                SingleProductBundleTracking.trackSingleBuyClick(adapter.getSelectedBundleId(), parentProductID)
+                SingleProductBundleTracking.trackSingleBuyClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
                 atcProductBundle()
             }
         }
@@ -280,7 +288,11 @@ class SingleProductBundleFragment(
     private fun setupToolbarActions() {
         activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
             setNavigationOnClickListener {
-                SingleProductBundleTracking.trackSingleBackClick(adapter.getSelectedBundleId(), parentProductID)
+                SingleProductBundleTracking.trackSingleBackClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
                 activity?.finish()
             }
         }
