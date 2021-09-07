@@ -26,6 +26,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     androidExtensions {
@@ -34,12 +35,6 @@ android {
 
     buildFeatures {
         viewBinding true
-    }
-
-    buildTypes {
-        release {
-            consumerProguardFiles 'proguard-rules.pro'
-        }
     }
 }
 
