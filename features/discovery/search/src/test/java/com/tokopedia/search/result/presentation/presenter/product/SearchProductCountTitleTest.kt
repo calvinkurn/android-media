@@ -23,7 +23,7 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     fun `Show ProductCountViewModel in Navigation Revamp`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
         `Given AB Test return navigation revamp`(RollenceKey.NAVIGATION_VARIANT_REVAMP)
-        `Given AB Test return navigation revamp`(RollenceKey.NAVIGATION_VARIANT_REVAMP2)
+//        `Given AB Test return navigation revamp`(RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         setUp()
         `Given visitable list will be captured`()
         `When Load Data`()
