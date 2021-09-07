@@ -31,12 +31,26 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
         this.tvVariantEmpty = itemView.findViewById(R.id.tv_variant_empty)
         this.productPriceView = itemView.findViewById(R.id.dpv_product_price)
         this.productVariantsView = itemView.findViewById(R.id.sv_product_variants)
-        this.productVariantsView?.setOnClickListener {
-            val productVariantObj = productVariantsView?.getTag(R.id.product_variant_tag)
-            productVariantObj?.let { obj ->
-                val productVariant = obj as ProductVariant
-                clickListener.onProductVariantSpinnerClicked(productVariant)
+
+        this.productNameView?.setOnClickListener {
+            val productBundleDetailObj = productVariantsView?.getTag(R.id.product_bundle_detail_tag)
+            productBundleDetailObj?.let { obj ->
+                val productBundleDetail = obj as ProductBundleDetail
+                clickListener.onProductNameViewClicked(productBundleDetail)
             }
+        }
+
+        this.productVariantsView?.setOnClickListener {
+            val productBundleDetailObj = productVariantsView?.getTag(R.id.product_bundle_detail_tag)
+            productBundleDetailObj?.let { obj ->
+                val productBundleDetail = obj as ProductBundleDetail
+                clickListener.onProductVariantSpinnerClicked(productBundleDetail)
+            }
+//            val productVariantObj = productVariantsView?.getTag(R.id.product_variant_tag)
+//            productVariantObj?.let { obj ->
+//                val productVariant = obj as ProductVariant
+//                clickListener.onProductVariantSpinnerClicked(productVariant)
+//            }
         }
     }
 

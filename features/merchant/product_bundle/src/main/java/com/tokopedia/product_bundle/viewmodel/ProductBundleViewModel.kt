@@ -3,20 +3,16 @@ package com.tokopedia.product_bundle.viewmodel
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
-import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -106,12 +102,30 @@ class ProductBundleViewModel @Inject constructor(
         return selectedProductIdsStr.split(COMMA_DELIMITER).toList()
     }
 
+    fun getSelectedProductIds(productBundleDetails: List<ProductBundleDetail>): String {
+        return productBundleDetails.joinToString { it.productId.toString() }
+    }
+
     fun getSelectedProductBundleMaster(): ProductBundleMaster {
         return selectedProductBundleMaster.value ?: ProductBundleMaster()
     }
 
     fun getSelectedProductBundleDetails(): List<ProductBundleDetail> {
         return productBundleMap[selectedProductBundleMaster.value] ?: listOf()
+    }
+
+    fun getSelectedProductIdFromBundleDetail(productBundleDetail: ProductBundleDetail): String {
+        return productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString()
+    }
+
+    fun getVariantLevel(selectedProductVariant: ProductVariant): Int {
+        return selectedProductVariant.variants.size
+    }
+
+    fun getVariantTitle(selectedProductVariant: ProductVariant): String {
+        return selectedProductVariant.variants.joinToString { variant ->
+            variant.name?:""
+        }
     }
 
     fun isPreOrderActive(preOrderStatus: String): Boolean {
@@ -303,6 +317,10 @@ class ProductBundleViewModel @Inject constructor(
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {
         return originalPrice - bundlePrice
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSession.userId.isBlank()
     }
 
     fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {

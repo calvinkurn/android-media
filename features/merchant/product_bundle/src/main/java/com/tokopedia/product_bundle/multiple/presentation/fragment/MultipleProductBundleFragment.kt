@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,14 +18,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
@@ -43,6 +42,7 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_bundle.tracking.MultipleProductBundleTracking
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
@@ -61,6 +61,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         private const val SELECTED_BUNDLE_ID = "SELECTED_BUNDLE_ID"
         private const val SELECTED_PRODUCT_IDS = "SELECTED_PRODUCT_IDS"
         private const val PAGE_SOURCE = "PAGE_SOURCE"
+        private const val LOGIN_REQUEST_CODE = 1122
         @JvmStatic
         fun newInstance(productBundleInfo: List<BundleInfo>,
                         emptyVariantProductIds: List<String>,
@@ -91,6 +92,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private var processDayView: Typography? = null
     private var productBundleOverView: TotalAmount? = null
+    private var loaderDialog: LoaderDialog? = null
 
     // product bundle master components
     private var productBundleMasterView: RecyclerView? = null
@@ -109,6 +111,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity.setBackgroundToWhite()
+
         // get data from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
         var selectedBundleId: Long? = null
@@ -121,11 +124,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             selectedVariantIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
             viewModel.pageSource = arguments?.getString(PAGE_SOURCE) ?: ""
         }
+
         // setup multiple product bundle views
+        loaderDialog = LoaderDialog(requireContext())
         processDayView = view.findViewById(R.id.tv_po_process_day)
         setupProductBundleMasterView(view)
         setupProductBundleDetailView(view, emptyVariantProductIds)
         setupProductBundleOverView(view)
+        setupToolbarActions()
+
         // render product bundle info
         productBundleInfo?.run {
             if (this.isNotEmpty()) {
@@ -170,7 +177,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private fun observeLiveData() {
         // observe selected product bundle master
-        viewModel.selectedProductBundleMaster.observe(viewLifecycleOwner, Observer { productBundleMaster ->
+        viewModel.selectedProductBundleMaster.observe(viewLifecycleOwner, { productBundleMaster ->
             productBundleMaster?.let {
                 val productBundleDetails =  viewModel.getProductBundleDetails(productBundleMaster)
                 productBundleDetails?.run {
@@ -235,24 +242,51 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             TotalAmount.Order.SUBTITLE
         )
         productBundleOverView?.amountCtaView?.setOnClickListener {
-            // get the selected product bundle
-            val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
-            val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
-            // validate add to cart input - result = pair<isValid,errorMessage>
-            val isAddToCartInputValid = viewModel.validateAddToCartInput(selectedBundleDetails)
-            if (isAddToCartInputValid) {
-                // map product bundle details to product details
-                val userId = viewModel.getUserId()
-                val shopId = selectedProductBundleMaster.shopId
-                val productDetails = viewModel.mapBundleDetailsToProductDetails(userId, shopId, selectedBundleDetails)
-                // add product bundle to cart
-                val bundleId = selectedProductBundleMaster.bundleId
-                viewModel.addProductBundleToCart(
-                    parentProductId = viewModel.parentProductID,
-                    bundleId = bundleId,
-                    shopId = shopId.toLong(),
-                    productDetails  = productDetails
-                )
+            val isUserLoggedIn = viewModel.isUserLoggedIn()
+            if (isUserLoggedIn) {
+                // get the selected product bundle
+                val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
+                val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+                // validate add to cart input
+                val isAddToCartInputValid = viewModel.validateAddToCartInput(selectedBundleDetails)
+                if (isAddToCartInputValid) {
+                    // collect required data
+                    val bundleId = selectedProductBundleMaster.bundleId
+                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+                    val userId = viewModel.getUserId()
+                    val shopId = selectedProductBundleMaster.shopId
+                    // map product bundle details to product details
+                    val productDetails = viewModel.mapBundleDetailsToProductDetails(
+                        userId,
+                        shopId,
+                        selectedBundleDetails
+                    )
+                    // track the buy button click
+                    MultipleProductBundleTracking.trackMultipleBuyClick(
+                        bundleId = bundleId.toString(),
+                        productId = selectedProductIds
+                    )
+                    // add product bundle to cart
+                    viewModel.addProductBundleToCart(
+                        parentProductId = viewModel.parentProductID,
+                        bundleId = bundleId,
+                        shopId = shopId.toLong(),
+                        productDetails = productDetails
+                    )
+                }
+            } else goToLoginPage()
+        }
+    }
+
+    private fun setupToolbarActions() {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
+            setNavigationOnClickListener {
+                // track back button click
+                val bundleId = viewModel.getSelectedProductBundleMaster().bundleId.toString()
+                val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+                MultipleProductBundleTracking.trackMultipleBackClick(bundleId, selectedProductIds)
+                // finish the activity
+                activity?.finish()
             }
         }
     }
@@ -304,20 +338,65 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleActivity.refreshPage()
     }
 
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    private fun goToProductDetailPage(productId: String) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
     override fun onProductBundleMasterItemClicked(adapterPosition: Int, productBundleMaster: ProductBundleMaster) {
         // update selected bundle state to view model
         viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
         // deselect the rest of selection except the selected one
         productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
-        // update the process day
         with(productBundleMaster) {
+            // track product bundle master selection
+            MultipleProductBundleTracking.trackMultipleBundleOptionClick(
+                bundleId = bundleId.toString(),
+                productId = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+            )
+            // update the process day
             renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
         }
     }
 
-    override fun onProductVariantSpinnerClicked(selectedProductVariant: ProductVariant?) {
-        selectedProductVariant?.let {
-            AtcVariantNavigation.showVariantBottomSheet(this, it)
+    override fun onProductNameViewClicked(selectedProductBundleDetail: ProductBundleDetail) {
+        // track product name view click event
+        val selectedProductId = viewModel.getSelectedProductIdFromBundleDetail(selectedProductBundleDetail)
+        val bundleId = viewModel.getSelectedProductBundleMaster().bundleId.toString()
+        val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+        MultipleProductBundleTracking.trackMultiplePreviewProductClick(
+            selectedProductId = selectedProductId,
+            bundleId = bundleId,
+            productId = selectedProductIds
+        )
+        // open product detail page
+        goToProductDetailPage(selectedProductId)
+    }
+
+    override fun onProductVariantSpinnerClicked(selectedProductBundleDetail: ProductBundleDetail) {
+        val selectedProductId = selectedProductBundleDetail.productId.toString()
+        val variantProductId = selectedProductBundleDetail.selectedVariantId?: ""
+        val bundleId = viewModel.getSelectedProductBundleMaster().bundleId.toString()
+        val variantValue = selectedProductBundleDetail.selectedVariantText
+        val selectedProductVariant = selectedProductBundleDetail.productVariant
+        val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+        selectedProductVariant?.let { productVariant ->
+            // track product variant selection
+            MultipleProductBundleTracking.trackMultipleSelectVariantClick(
+                selectedProductId = selectedProductId,
+                bundleId = bundleId,
+                variantLevel = viewModel.getVariantLevel(productVariant).toString(),
+                variantTitle = viewModel.getVariantTitle(productVariant),
+                variantValue = variantValue,
+                variantProductId = variantProductId,
+                productId = selectedProductIds
+            )
+            // open variant bottom sheet
+            AtcVariantNavigation.showVariantBottomSheet(this, productVariant)
         }
     }
 
@@ -341,6 +420,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 }
             }
             Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
+        }
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            productBundleOverView?.amountCtaView?.performClick()
         }
     }
 }

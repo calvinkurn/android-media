@@ -41,6 +41,7 @@ import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundl
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
+import com.tokopedia.product_bundle.tracking.SingleProductBundleTracking
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -131,6 +132,7 @@ class SingleProductBundleFragment(
         quantity: Int,
         preorderDurationWording: String?
     ) {
+        SingleProductBundleTracking.trackSingleBundleOptionClick(selectedBundleId, selectedProductId)
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
     }
