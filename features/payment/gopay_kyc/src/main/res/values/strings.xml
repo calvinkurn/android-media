@@ -14,5 +14,28 @@
     <string name="gopay_kyc_friends_benefit_description_text">Bisa juga minta GoPay dan patungan buat jajan rame-rame.</string>
     <string name="gopay_kyc_payback_benefit_title_text">Jaminan saldo GoPay kembali</string>
     <string name="gopay_kyc_payback_benefit_description_text">Perlingungan ekstra buat saldomu</string>
+    <string name="gopay_kyc_take_ktp_text">Ambil Foto KTP</string>
+    <string name="gopay_kyc_ktp_text">KTP</string>
+    <string name="gopay_kyc_ktp_description_text">Khusus warga negara Indonesia</string>
+    <string name="gopay_kyc_ktp_change_text">Ubah</string>
+    <string name="gopay_kyc_ktp_upload_header_text">Upload foto identitas</string>
+    <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan KTP</string>
+    <string name="gopay_kyc_ktp_right_text">Benar</string>
+    <string name="gopay_kyc_ktp_wrong">Salah</string>
+    
+    <string name="gopay_ktp_instruction_1">Gunakan KTP asli bukan hasil fotokopi.</string>
+    <string name="gopay_ktp_instruction_2">Pastikan foto KTP berada dalam bingkai.</string>
+    <string name="gopay_ktp_instruction_3">Pastikan foto KTP terlihat terang dan jelas.</string>
+    <string name="gopay_selfie_ktp_instruction_1">Cari pencahayaan yang cukup</string>
+    <string name="gopay_selfie_ktp_instruction_2">Ambil selfie dengan posisikan KTP di bawah dagu. </string>
+    <string name="gopay_selfie_ktp_instruction_3">Pastikan seluruh bagian wajah &amp; KTP kamu terlihat jelas dan tidak terpotong.</string>
+    <string name="gopay_kyc_step_1">1.</string>
+
+    <string name="gopay_kyc_step_2">2.</string>
+    <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan KTP</string>
+    <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan KTP</string>
+    <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan KTP, ya</string>
+    <string name="gopay_kyc_selfie_ktp_description_text">Digunakan untuk verifikasi identitas diri</string>
+    <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang KTP</string>
 
 </resources>

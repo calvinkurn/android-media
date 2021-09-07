@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.gopay_kyc.R
 import com.tokopedia.gopay_kyc.domain.data.GoPayPlusBenefit
+import com.tokopedia.gopay_kyc.presentation.activity.GoPayKtpInstructionActivity
 import com.tokopedia.gopay_kyc.presentation.viewholder.GoPayPlusBenefitItemViewHolder
 import kotlinx.android.synthetic.main.fragment_gopay_benefits_layout.*
 
@@ -70,7 +71,9 @@ class GoPayPlusKycBenefitFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         upgradeNowButton.setOnClickListener {
-
+            context?.let {
+                it.startActivity(GoPayKtpInstructionActivity.getIntent(it))
+            }
         }
         val layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
