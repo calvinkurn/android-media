@@ -104,9 +104,8 @@ data class ShippingInfo(
         var finsurance: Int = 0,
         @SerializedName("rates_feature")
         var ratesFeature: RatesFeature = RatesFeature(),
-        @SuppressLint("Invalid Data Type")
         @SerializedName("rates_id")
-        var ratesId: Long = 0,
+        var ratesId: String = "",
         @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         var shippingId: Long = 0,
@@ -275,7 +274,7 @@ object CheckoutRequestMapper {
             this.finsurance = finsurance
             shippingId = shippingInfo?.shippingId?.toLong() ?: 0
             spId = shippingInfo?.spId?.toLong() ?: 0
-            ratesId = shippingInfo?.ratesId?.toLongOrZero() ?: 0
+            ratesId = shippingInfo?.ratesId ?: ""
             ut = shippingInfo?.ut ?: ""
             checksum = shippingInfo?.checksum ?: ""
             val tmpRatesFeature = shippingInfo?.ratesFeature
