@@ -27,7 +27,6 @@ class AffiliatePromotionErrorCardItemVH(itemView: View , private val promotionCl
         }
         itemView.findViewById<UnifyButton>(R.id.lihat_kategori).run {
             text = element.error.error_cta?.firstOrNull()?.cta_text
-            buttonType = UnifyButton.Variant.TEXT_ONLY
         }
         itemView.findViewById<UnifyButton>(R.id.ganti_link).text = "Ganti Link"
     }
