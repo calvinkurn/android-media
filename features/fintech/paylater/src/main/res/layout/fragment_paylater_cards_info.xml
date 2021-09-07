@@ -111,7 +111,6 @@
                     android:layout_width="@dimen/unify_space_0"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_96"
-
                     app:layout_constraintBottom_toBottomOf="@id/interestText"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@id/interestText"
@@ -236,9 +235,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:text="Selengkapnya"
+                    android:layout_marginBottom="@dimen/dp_50"
                     android:textColor="@color/Unify_G500"
                     app:layout_constraintLeft_toLeftOf="@id/rvPaymentDesciption"
                     app:layout_constraintTop_toBottomOf="@id/rvPaymentDesciption"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:typographyType="body_3" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

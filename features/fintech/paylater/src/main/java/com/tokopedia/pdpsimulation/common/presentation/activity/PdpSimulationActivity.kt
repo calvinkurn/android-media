@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
@@ -36,6 +37,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         intent.data?.let {
             bundle.putString(PRODUCT_PRICE, it.getQueryParameter(PRODUCT_PRICE))
             bundle.putString(PARAM_PRODUCT_URL, it.getQueryParameter(PARAM_PRODUCT_URL))
+            bundle.putString(PARAM_PRODUCT_ID, it.getQueryParameter(PARAM_PRODUCT_ID))
         }
         return PdpSimulationFragment.newInstance(bundle)
     }

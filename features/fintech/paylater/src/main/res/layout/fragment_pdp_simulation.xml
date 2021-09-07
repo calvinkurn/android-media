@@ -2,6 +2,7 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_scroll_view"
 
     android:layout_width="match_parent"
@@ -33,6 +34,7 @@
                     android:id="@+id/productInfoShimmer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    tools:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/productDetail"
                     app:layout_constraintLeft_toLeftOf="@id/productDetail"
                     app:layout_constraintRight_toRightOf="@id/productDetail"

@@ -9,13 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.onTabSelected
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
@@ -25,6 +23,7 @@ import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterPagerAdap
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
@@ -35,6 +34,7 @@ import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
+import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
 
 class PdpSimulationFragment : BaseDaggerFragment(),
@@ -67,6 +67,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
     private val productUrl: String by lazy {
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
+    }
+
+    private val productId: String by lazy {
+        arguments?.getString(PARAM_PRODUCT_ID) ?: ""
     }
 
     private val isCreditCardModeAvailable: Boolean = true
@@ -105,6 +109,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun getSimulationProductInfo() {
+        payLaterViewModel.getProductDetail(productId = productId)
         payLaterViewPager.visible()
         when (paymentMode) {
             is PayLater -> {
@@ -124,6 +129,31 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 is Fail -> onApplicationStatusLoadingFail(it.throwable)
             }
         })
+
+        payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> productDetailSuccess(it.data)
+                is Fail -> productDetailFail(it.throwable)
+            }
+        })
+    }
+
+    private fun productDetailFail(throwable: Throwable) {
+
+    }
+
+    private fun productDetailSuccess(data: GetProductV3) {
+        productInfoShimmer.gone()
+        data.pictures?.get(0)?.let { pictures ->
+            pictures.urlThumbnail?.let { urlThumbnail -> imageView.loadImage(urlThumbnail) }
+        }
+        data.productName?.let {
+            productDetail.productName.text = it
+        }
+        data.price?.let {
+            productDetail.productPrice.text = it.toString()
+        }
+
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {

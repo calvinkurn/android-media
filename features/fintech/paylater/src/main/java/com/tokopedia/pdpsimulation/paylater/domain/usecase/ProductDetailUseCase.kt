@@ -1,10 +1,14 @@
 package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.pdpsimulation.common.constants.GQL_GET_PRODUCT_DETAIL
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
+import java.text.ParseException
 import javax.inject.Inject
 
+@GqlQuery("ProductDetailQuery", GQL_GET_PRODUCT_DETAIL)
 class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<BaseProductDetailClass>(graphqlRepository) {
 
@@ -15,8 +19,8 @@ class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     ) {
         try {
             this.setTypeClass(BaseProductDetailClass::class.java)
-            //  this.setRequestParams(getRequestParams(productId))
-            this.setGraphqlQuery(PayLaterAvailableOptionData.GQL_QUERY)
+            this.setRequestParams(getRequestParams(productId))
+            this.setGraphqlQuery(ProductDetailQuery.GQL_QUERY)
             this.execute(
                 { result ->
                     onSuccess(result)
@@ -29,10 +33,16 @@ class ProductDetailUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         }
     }
 
-//    @Throws(ParseException::class)
-//    private fun getRequestParams(productId: String): MutableMap<String, Any?> {
-//
-//    }
+    @Throws(ParseException::class)
+    private fun getRequestParams(productId: String): MutableMap<String, Any?> {
+        val optionMap = mutableMapOf<String, Boolean>()
+        optionMap["basic"] = true
+        optionMap["picture"] = true
+        val requestMap = mutableMapOf<String, Any?>()
+        requestMap["productID"] = productId
+        requestMap["options"] = optionMap
+        return requestMap
+    }
 
     companion object {
         const val PARAM_PRODUCT_CODE = "productID"

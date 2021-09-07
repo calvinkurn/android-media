@@ -184,8 +184,8 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query PaylaterGetSimulationV2(${'$'}re
 }"""
 
 
-const val GQL_GETPRODUCT_DETAIL = """query{
-  getProductV3(${'$'}productID: String, ${'$'}options:BasicOptions!) {
+const val GQL_GET_PRODUCT_DETAIL = """query{
+  getProductV3(${'$'}productIdAndOptions: ProductIdOptions!) {
     productName
     url
     price

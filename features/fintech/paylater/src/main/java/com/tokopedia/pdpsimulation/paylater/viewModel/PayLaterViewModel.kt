@@ -7,6 +7,7 @@ import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
@@ -35,8 +36,8 @@ class PayLaterViewModel @Inject constructor(
         _payLaterOptionsDetailLiveData
 
 
-    private val _productDetailLiveData = MutableLiveData<Result<BaseProductDetailClass>>()
-    val productDetailLiveData: LiveData<Result<BaseProductDetailClass>> = _productDetailLiveData
+    private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
+    val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
     var isPayLaterProductActive = false
 
@@ -67,11 +68,13 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onAvailableProductDetail(baseProductDetailClass: BaseProductDetailClass) {
-
+        baseProductDetailClass.getProductV3?.let {
+            _productDetailLiveData.value = Success(it)
+        }
     }
 
     private fun onFailProductDetail(throwable: Throwable) {
-
+        _productDetailLiveData.value = Fail(throwable)
     }
 
 
