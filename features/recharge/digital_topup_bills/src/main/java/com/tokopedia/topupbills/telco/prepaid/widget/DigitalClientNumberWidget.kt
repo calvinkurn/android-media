@@ -146,14 +146,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
-        val favnum = arrayListOf(
-            TopupBillsSeamlessFavNumberItem(clientName = "Misael", clientNumber = "081280988098"),
-            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "083845518228"),
-            TopupBillsSeamlessFavNumberItem(clientName = "Nabilla", clientNumber = "085606560656"),
-            TopupBillsSeamlessFavNumberItem(clientName = "Marcella", clientNumber = "081129375719"),
-            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "085712398598"),
-            TopupBillsSeamlessFavNumberItem(clientName = "", clientNumber = "087812985898")
-        )
         val sortFilter = arrayListOf<SortFilterItem>()
         for (number in favnum.take(5)) {
             val chipText = if (number.clientName.isEmpty())
