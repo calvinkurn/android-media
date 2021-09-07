@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.tracking.order.view
+package com.tokopedia.oneclickcheckout_journey.tracking.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
