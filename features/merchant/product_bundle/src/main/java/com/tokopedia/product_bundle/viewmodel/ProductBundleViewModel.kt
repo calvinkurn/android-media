@@ -320,7 +320,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun isUserLoggedIn(): Boolean {
-        return userSession.userId.isBlank()
+        return userSession.userId.isNotBlank()
     }
 
     fun validateAddToCartInput(productBundleDetails: List<ProductBundleDetail>): Boolean {
