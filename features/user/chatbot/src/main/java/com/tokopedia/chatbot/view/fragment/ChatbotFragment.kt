@@ -314,7 +314,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         chatbot_view_help_rate.btn_inactive_5.setOnClickListener(this@ChatbotFragment)
 
         super.onViewCreated(view, savedInstanceState)
-        viewState.initView()
+        viewState?.initView()
         presenter.checkForSession(messageId)
         showTicker()
 
