@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
@@ -18,6 +17,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
@@ -66,9 +66,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 //            openActionBottomSheet()
 //        }
 //
-//        btnSeeMore.setOnClickListener {
-//           // openFaqBottomSheet()
-//        }
+        faqList.setOnClickListener {
+            openFaqBottomSheet()
+        }
     }
 
     private fun openActionBottomSheet() {
@@ -80,23 +80,31 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 //                    if (isUsageType) PAY_LATER_USAGE_ACTION else PAY_LATER_REGISTER_ACTION))
 
             it.openBottomSheet(
-                    bundle, PayLaterActionStepsBottomSheet::class.java)
+                bundle, PayLaterActionStepsBottomSheet::class.java
+            )
         }
     }
 
-//    private fun openFaqBottomSheet() {
-//        val bundle = Bundle()
-//        bundle.putString(PayLaterFaqBottomSheet.FAQ_SEE_MORE_URL, responseData?.partnerFaqUrl)
-//        bundle.putParcelableArrayList(PayLaterFaqBottomSheet.FAQ_DATA, responseData?.partnerFaqList)
-//        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+    private fun openFaqBottomSheet() {
+        val bundle = Bundle()
+        bundle.putString(
+            PayLaterFaqBottomSheet.FAQ_SEE_MORE_URL,
+            responseData?.gateway_detail?.faq_url
+        )
+        bundle.putParcelableArrayList(
+            PayLaterFaqBottomSheet.FAQ_DATA,
+            responseData?.gateway_detail?.faq as ArrayList
+        )
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
 //            it.sendAnalytics(PdpSimulationEvent.PayLater.PayLaterProductImpressionEvent(
 //                    responseData?.partnerName ?: "",
 //                    btnSeeMore.text.toString()
 //            ))
-//            it.openBottomSheet(
-//                    bundle, PayLaterFaqBottomSheet::class.java)
-//        }
-//    }
+            it.openBottomSheet(
+                bundle, PayLaterFaqBottomSheet::class.java
+            )
+        }
+    }
 
     private fun setData() {
         responseData?.let { data ->
@@ -156,7 +164,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl);
+            imageView.loadImage(imageUrl)
     }
 
 //    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {

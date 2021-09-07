@@ -72,7 +72,8 @@ data class Detail(
 data class Faq(
 
     @SerializedName("question") val question: String?,
-    @SerializedName("answer") val answer: String?
+    @SerializedName("answer") val answer: String?,
+    var expandLayout: Boolean = false
 ) : Parcelable
 
 @Parcelize

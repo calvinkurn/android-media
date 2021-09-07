@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.paylater.domain.model.Faq
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerFaq
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,7 +36,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     }
 
     private val childLayoutRes = R.layout.paylater_card_faq_bottomsheet_widget
-    private var faqData: ArrayList<PayLaterPartnerFaq>? = null
+    private var faqData: ArrayList<Faq>? = null
     private var faqUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {

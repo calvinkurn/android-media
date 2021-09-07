@@ -231,10 +231,11 @@
 
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/faqList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
-                    android:text="Selengkapnya"
+                    android:text="@string/see_more"
                     android:layout_marginBottom="@dimen/dp_50"
                     android:textColor="@color/Unify_G500"
                     app:layout_constraintLeft_toLeftOf="@id/rvPaymentDesciption"

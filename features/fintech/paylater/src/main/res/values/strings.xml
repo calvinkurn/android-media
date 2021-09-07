@@ -81,6 +81,7 @@
     <string name="pay_later_status_suspended">Akun dinonaktifkan</string>
     <string name="pay_later_status_failed">Pengajuan gagal</string>
     <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
+    <string name="see_more">Selengkapnya</string>
 
 
 </resources>
