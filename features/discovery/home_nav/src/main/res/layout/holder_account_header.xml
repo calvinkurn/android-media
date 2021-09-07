@@ -100,7 +100,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/section_card_profile"
         android:visibility="gone"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_width="match_parent"
@@ -163,8 +163,8 @@
             <include
                 android:id="@+id/section_header_profile"
                 layout="@layout/holder_account_header_user_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 app:layout_goneMarginStart="10dp"
                 app:layout_constraintStart_toEndOf="@id/img_user_login"

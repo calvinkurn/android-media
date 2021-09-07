@@ -8,7 +8,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.user.session.UserSessionInterface
@@ -71,11 +71,11 @@ class AccountHeaderMapper(
                 walletAppData?.let {
                     data.setWalletAppData(it)
                 }
-                data.isWalletAppFailed = isWalletAppError
-                data.isEligibleForWalletApp = isEligibleForWalletApp
+                data.profileWalletAppDataModel.isWalletAppFailed = isWalletAppError
+                data.profileWalletAppDataModel.isEligibleForWalletApp = isEligibleForWalletApp
                 // extra case when tokopoint null and ab is false
-                if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.isTokopointExternalAmountError){
-                    data.isTokopointExternalAmountError = false
+                if(!isABNewTokopoint() && tokopointsStatusFilteredPojo == null && data.profileMembershipDataModel.isTokopointExternalAmountError){
+                    data.profileMembershipDataModel.isTokopointExternalAmountError = false
                 }
                 data.isCacheData = isCache
                 accountModel = data

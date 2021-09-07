@@ -10,30 +10,30 @@
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
         android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_name"
+        android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:clickable="false"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_name"
         android:layout_width="0dp"
-        app:layout_goneMarginStart="@dimen/dp_10"
         android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
         android:layout_marginStart="@dimen/dp_6"
+        app:layout_goneMarginStart="@dimen/dp_10"
+        app:layout_constraintStart_toEndOf="@id/usr_badge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="heading_4"
         android:textSize="@dimen/sp_16"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:layout_marginBottom="@dimen/dp_2"
-        app:layout_constraintStart_toEndOf="@id/usr_badge"
-        app:layout_constraintTop_toTopOf="@id/usr_badge"
-        app:layout_constraintBottom_toBottomOf="@id/usr_badge"
-        app:typographyType="heading_4"
         tools:text="John Doe"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

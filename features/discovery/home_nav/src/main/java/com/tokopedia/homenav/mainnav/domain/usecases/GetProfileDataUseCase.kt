@@ -11,7 +11,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
@@ -43,6 +43,7 @@ class GetProfileDataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): AccountHeaderDataModel {
         getUserInfoUseCase.setStrategyCloudThenCache()
         getShopInfoUseCase.setStrategyCloudThenCache()
+        getUserMembershipUseCase.setStrategyCloudThenCache()
 
         return withContext(coroutineContext){
             var userInfoData: UserPojo? = null

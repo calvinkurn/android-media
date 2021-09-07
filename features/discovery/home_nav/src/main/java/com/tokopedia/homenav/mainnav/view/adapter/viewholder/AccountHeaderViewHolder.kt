@@ -23,9 +23,9 @@ import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -85,12 +85,12 @@ class AccountHeaderViewHolder(itemView: View,
             NAV_PROFILE_STATE_SUCCESS -> {
                 sectionShimmering.gone()
                 sectionCard.visible()
-            }
-        }
 
-        when(element.loginState) {
-            AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
-            else -> renderNonLoginState()
+                when(element.loginState) {
+                    AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
+                    else -> renderNonLoginState()
+                }
+            }
         }
     }
 
@@ -128,6 +128,30 @@ class AccountHeaderViewHolder(itemView: View,
         val sectionSaldo: View = layoutLogin.findViewById(R.id.section_header_saldo)
 
         /**
+         * Initial state
+         */
+        tvOvo.isClickable = false
+        usrOvoBadge.visible()
+
+        layoutLogin.setOnClickListener {
+            TrackingProfileSection.onClickProfileSection(userSession.userId)
+            mainNavListener.onProfileSectionClicked()
+        }
+
+        btnSettings.visible()
+        btnTryAgain.gone()
+        if (
+            (element.profileDataModel.isGetUserNameError
+                    ||
+                    (element.profileOvoDataModel.isGetOvoError
+                            && element.profileSaldoDataModel.isGetSaldoError
+                            && !element.isCacheData))
+            && !element.profileWalletAppDataModel.isEligibleForWalletApp) {
+            usrOvoBadge.gone()
+            btnTryAgain.visible()
+        }
+
+        /**
          * Button for error handling
          */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
@@ -158,34 +182,43 @@ class AccountHeaderViewHolder(itemView: View,
         /**
          * Set user profile data
          */
-        userImage.setImageUrl(url = element.userImage)
-        userImage.isClickable = false
-        tvName.isClickable = false
+        element.profileDataModel.let { profileData ->
+            userImage.setImageUrl(url = profileData.userImage)
+            userImage.isClickable = false
+            tvName.isClickable = false
+            if (profileData.isGetUserNameError) {
+                tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
+            } else {
+                configureNameAndBadgeSwitcher(
+                    tvName,
+                    getCurrentGreetings(),
+                    profileData.userName,
+                    usrBadge,
+                    getCurrentGreetingsIconStringUrl(),
+                    element.profileMembershipDataModel.badge
+                )
+            }
+        }
 
         /**
          * Set saldo data
          */
-        if (element.isGetSaldoError) {
-            sectionSaldo.gone()
-        } else {
-            usrSaldoBadgeShimmer.invisible()
-            tvSaldoShimmer.invisible()
-            usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
-            tvSaldo.text = element.saldo
-            sectionSaldo.visible()
+        element.profileSaldoDataModel.let { profileSaldo ->
+            if (profileSaldo.isGetSaldoError) {
+                sectionSaldo.gone()
+            } else {
+                usrSaldoBadgeShimmer.invisible()
+                tvSaldoShimmer.invisible()
+                usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
+                tvSaldo.text = profileSaldo.saldo
+                sectionSaldo.visible()
+            }
         }
 
-        if (element.isGetUserNameError) {
-            tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
-        } else {
-            configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
-        }
-        if (element.isGetUserMembershipError) {
+
+        if (element.profileMembershipDataModel.isGetUserMembershipError) {
             usrBadge.gone()
         }
-
-        tvOvo.isClickable = false
-        usrOvoBadge.visible()
 
         if (element.isCacheData) {
             tvOvoShimmer.visible()
@@ -194,6 +227,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvSaldoShimmer.visible()
             tvOvo.invisible()
             usrOvoBadge.invisible()
+            usrSaldoBadge.invisible()
         } else {
             /**
              * Remove loading shimmering view
@@ -202,33 +236,36 @@ class AccountHeaderViewHolder(itemView: View,
             usrOvoBadgeShimmer.invisible()
             tvOvo.visible()
             usrOvoBadge.visible()
+            usrSaldoBadge.visible()
 
             when {
                 /**
                  * User is eligible for wallet app, then render wallet app model
                  */
-                element.isEligibleForWalletApp -> {
-                    when {
-                        element.isWalletAppLinked -> {
-                            tvOvo.text = String.format(
-                                itemView.context.getString(R.string.mainnav_wallet_app_format),
-                                element.gopayBalance,
-                                element.gopayPointsBalance
-                            )
-                            usrOvoBadge.loadImage(element.walletAppImageUrl)
-                        }
-                        element.isWalletAppLinked -> {
-                            if (element.walletAppActivationCta.isNotEmpty()) {
-                                tvOvo.text = element.walletAppActivationCta
-                                usrOvoBadge.loadImage(element.walletAppImageUrl)
-                            } else {
+                element.profileWalletAppDataModel.isEligibleForWalletApp -> {
+                    element.profileWalletAppDataModel.let { walletAppModel ->
+                        when {
+                            walletAppModel.isWalletAppLinked -> {
+                                tvOvo.text = String.format(
+                                    itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                    walletAppModel.gopayBalance,
+                                    walletAppModel.gopayPointsBalance
+                                )
+                                usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
+                            }
+                            walletAppModel.isWalletAppLinked -> {
+                                if (walletAppModel.walletAppActivationCta.isNotEmpty()) {
+                                    tvOvo.text = walletAppModel.walletAppActivationCta
+                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
+                                } else {
+                                    tvOvo.gone()
+                                    usrOvoBadge.gone()
+                                }
+                            }
+                            walletAppModel.isWalletAppFailed -> {
                                 tvOvo.gone()
                                 usrOvoBadge.gone()
                             }
-                        }
-                        element.isWalletAppFailed -> {
-                            tvOvo.gone()
-                            usrOvoBadge.gone()
                         }
                     }
                 }
@@ -236,120 +273,115 @@ class AccountHeaderViewHolder(itemView: View,
                 /**
                  * Handling when tokopoint, ovo, saldo error
                  */
-                element.isTokopointExternalAmountError -> {
+                element.profileMembershipDataModel.isTokopointExternalAmountError -> {
                     tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_TOKOPOINTS
                     usrOvoBadge.clearImage()
                 }
 
-                element.isGetOvoError && element.isGetSaldoError -> {
+                element.profileOvoDataModel.isGetOvoError -> {
                     tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                     usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
                 }
 
-                element.isGetOvoError && !element.isGetSaldoError -> {
-                    tvOvo.text = element.saldo
-                    usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                element.profileSaldoDataModel.isGetSaldoError -> {
+                    tvSaldo.text = AccountHeaderDataModel.ERROR_TEXT_SALDO
+                    usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
                 }
 
                 /**
                  * Handling tokopoint value
                  */
-                element.tokopointExternalAmount.isNotEmpty() && element.tokopointPointAmount.isNotEmpty() -> {
-                    val spanText = "${element.tokopointExternalAmount} (${element.tokopointPointAmount})"
-                    val span = SpannableString(spanText)
-                    span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, element.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), element.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    tvOvo.setText(span, TextView.BufferType.SPANNABLE)
-                    usrOvoBadge.setImageUrl(element.tokopointBadgeUrl)
+                element.profileMembershipDataModel.tokopointExternalAmount.isNotEmpty()
+                        && element.profileMembershipDataModel.tokopointPointAmount.isNotEmpty() -> {
+                    element.profileMembershipDataModel.let { profileMembership ->
+                        val spanText = "${profileMembership.tokopointExternalAmount} (${profileMembership.tokopointPointAmount})"
+                        val span = SpannableString(spanText)
+                        span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        tvOvo.setText(span, TextView.BufferType.SPANNABLE)
+                        usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
+                    }
                 }
 
                 /**
                  * Handling ovo value
                  */
                 else -> {
-                    tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
-                    if (element.ovoSaldo.isNotEmpty()) {
-                        usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-                    } else if (element.saldo.isNotEmpty()) {
-                        usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                    element.profileOvoDataModel.let { profileOvo ->
+                        tvOvo.text = renderOvoText(profileOvo.ovoSaldo, profileOvo.ovoPoint)
+                        if (profileOvo.ovoSaldo.isNotEmpty()) {
+                            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                        }
                     }
                 }
             }
         }
 
-        //shop info error state
-        if (!element.isGetShopError) {
-            val shopTitle: String
-            val shopInfo: String
-            if (!element.hasShop){
-                shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
-                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
-            } else if (!element.adminRoleText.isNullOrEmpty()) {
-                shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
-                shopInfo = element.adminRoleText.orEmpty()
-            } else {
-                shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
-                shopInfo = MethodChecker.fromHtml(element.shopName).toString()
-            }
-            tvShopTitle.run {
-                visible()
-                text = shopTitle
-            }
-            tvShopInfo.run {
-                visible()
-                setText(shopInfo, TextView.BufferType.SPANNABLE)
-                setOnClickListener {
-                    if (element.hasShop)
-                        onShopClicked(element.canGoToSellerAccount)
-                    else {
-                        RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-                        TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+        /**
+         * Handling seller info value
+         */
+        element.profileSellerDataModel.let { profileSeller ->
+            if (!profileSeller.isGetShopError) {
+                val shopTitle: String
+                val shopInfo: String
+                if (!profileSeller.hasShop){
+                    shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
+                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName).toString()
+                } else if (!profileSeller.adminRoleText.isNullOrEmpty()) {
+                    shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
+                    shopInfo = profileSeller.adminRoleText.orEmpty()
+                } else {
+                    shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+                    shopInfo = MethodChecker.fromHtml(profileSeller.shopName).toString()
+                }
+                tvShopTitle.run {
+                    visible()
+                    text = shopTitle
+                }
+                tvShopInfo.run {
+                    visible()
+                    setText(shopInfo, TextView.BufferType.SPANNABLE)
+                    setOnClickListener {
+                        if (profileSeller.hasShop)
+                            onShopClicked(profileSeller.canGoToSellerAccount)
+                        else {
+                            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+                            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
+                        }
                     }
                 }
-            }
-            val str = tvShopInfo.text as Spannable
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (element.shopOrderCount > 0) {
-                tvShopNotif.visible()
-                tvShopNotif.setNotification(element.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
-            } else {
+                val str = tvShopInfo.text as Spannable
+                str.setSpan(ForegroundColorSpan(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                str.setSpan(StyleSpan(BOLD), 0, shopInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (profileSeller.shopOrderCount > 0) {
+                    tvShopNotif.visible()
+                    tvShopNotif.setNotification(profileSeller.shopOrderCount.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+                } else {
+                    tvShopNotif.gone()
+                }
+            } else if (profileSeller.isGetShopLoading) {
+                tvShopInfo.gone()
+                tvShopTitle.gone()
+                btnTryAgainShopInfo.gone()
                 tvShopNotif.gone()
+                shimmerShopInfo.visible()
+            } else if (profileSeller.isGetShopError) {
+                btnTryAgainShopInfo.visible()
+                tvShopInfo.visible()
+                tvShopTitle.visible()
+                shimmerShopInfo.gone()
+                tvShopNotif.gone()
+
+                tvShopInfo.text = getString(R.string.error_state_shop_info)
             }
-        } else if (element.isGetShopLoading) {
-            tvShopInfo.gone()
-            tvShopTitle.gone()
-            btnTryAgainShopInfo.gone()
-            tvShopNotif.gone()
-            shimmerShopInfo.visible()
-        } else if (element.isGetShopError) {
-            btnTryAgainShopInfo.visible()
-            tvShopInfo.visible()
-            tvShopTitle.visible()
-            shimmerShopInfo.gone()
-            tvShopNotif.gone()
-
-            tvShopInfo.text = getString(R.string.error_state_shop_info)
-        }
-
-        layoutLogin.setOnClickListener {
-            TrackingProfileSection.onClickProfileSection(userSession.userId)
-            mainNavListener.onProfileSectionClicked()
-        }
-
-        btnSettings.visible()
-        btnTryAgain.gone()
-        if ((element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) && !element.isEligibleForWalletApp) {
-            usrOvoBadge.gone()
-            btnTryAgain.visible()
         }
     }
 
-    private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
+    private fun renderOvoText(ovoString: String, pointString: String): String {
         return if (ovoString.isNotEmpty()) {
             itemView.context.getString(R.string.text_ovo_saldo, ovoString, pointString)
         } else {
-            saldoString
+            ""
         }
     }
 

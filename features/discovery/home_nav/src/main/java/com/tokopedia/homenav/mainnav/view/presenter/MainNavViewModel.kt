@@ -17,24 +17,23 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_OPEN_SHOP_TICKER
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_QR_CODE
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_RECENT_VIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_SUBSCRIPTION
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
 import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -86,6 +85,7 @@ class MainNavViewModel @Inject constructor(
 
     private var pageSource: String = ""
     private var pageSourceDefault: String = "Default"
+    private var mainNavProfileCache: MainNavProfileCache? = null
 
     private var _mainNavListVisitable = setInitialState()
 
@@ -102,6 +102,10 @@ class MainNavViewModel @Inject constructor(
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel(
             dataList = _mainNavListVisitable
     ))
+
+    val profileDataLiveData: LiveData<AccountHeaderDataModel>
+        get() = _profileDataLiveData
+    private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -141,6 +145,10 @@ class MainNavViewModel @Inject constructor(
                         removeHomeBackButtonMenu()
         }
         else { addHomeBackButtonMenu() }
+    }
+
+    fun setProfileCache(mainNavProfileCache: MainNavProfileCache?) {
+        this.mainNavProfileCache = mainNavProfileCache
     }
 
     private fun isLaunchedFromHome(): Boolean {
@@ -286,9 +294,23 @@ class MainNavViewModel @Inject constructor(
 
     suspend fun getProfileDataCached() {
         try {
-            val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
-            accountHeaderModel.state = NAV_PROFILE_STATE_SUCCESS
-            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+            mainNavProfileCache?.let {
+                val accountHeaderModel = AccountHeaderDataModel(
+                    profileDataModel = ProfileDataModel(
+                        userName = it.profileName?:"",
+                        userImage = it.profilePicUrl?:""
+                    ),
+                    profileMembershipDataModel = ProfileMembershipDataModel(
+                        badge = it.memberStatusIconUrl?:""
+                    ),
+                    isCacheData = true,
+                    state = NAV_PROFILE_STATE_SUCCESS,
+                    profileSellerDataModel = ProfileSellerDataModel(
+                        isGetShopLoading = true
+                    )
+                )
+                updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -312,6 +334,7 @@ class MainNavViewModel @Inject constructor(
             }.let {
                 it.state = NAV_PROFILE_STATE_SUCCESS
                 updateWidget(it, INDEX_MODEL_ACCOUNT)
+                _profileDataLiveData.postValue(it)
             }
         } catch (e: Exception) {
             val accountModel = _mainNavListVisitable.find {
@@ -319,17 +342,8 @@ class MainNavViewModel @Inject constructor(
             } as? AccountHeaderDataModel
 
             accountModel?.let { account ->
-                if (account.isProfileLoading) {
-                    updateWidget(account.copy(
-                            isTokopointExternalAmountError = isABNewTokopoint(),
-                            isGetShopError = true,
-                            isProfileLoading = false,
-                            isGetOvoError = !isABNewTokopoint(),
-                            isGetSaldoError = !isABNewTokopoint(),
-                            isGetUserMembershipError = true,
-                            isGetUserNameError = true,
-                            state = NAV_PROFILE_STATE_SUCCESS
-                    ), INDEX_MODEL_ACCOUNT)
+                if (account.state == NAV_PROFILE_STATE_LOADING) {
+                    updateWidget(account.copy(state = NAV_PROFILE_STATE_FAILED), INDEX_MODEL_ACCOUNT)
                 }
             }
             e.printStackTrace()
@@ -491,7 +505,9 @@ class MainNavViewModel @Inject constructor(
         } as? AccountHeaderDataModel
         newAccountData?.let { accountModel ->
             //set shimmering before getting the data
-            updateWidget(accountModel.copy(isGetShopLoading = true, isGetShopError = true), INDEX_MODEL_ACCOUNT)
+            updateWidget(accountModel.copy(
+                profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopLoading = true, isGetShopError = true)
+            ), INDEX_MODEL_ACCOUNT)
 
             launchCatchError(coroutineContext, block = {
                 val call = async {
@@ -533,12 +549,16 @@ class MainNavViewModel @Inject constructor(
 
                 val fail = (response.takeIf { it is Fail } )
                 fail?.let {
-                    updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+                    updateWidget(accountModel.copy(
+                        profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopError = true, isGetShopLoading = false)
+                    ), INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
                 }
 
             }){
-                updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+                updateWidget(accountModel.copy(
+                    profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopError = true, isGetShopLoading = false)
+                ), INDEX_MODEL_ACCOUNT)
             }
         }
     }
