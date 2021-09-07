@@ -10,23 +10,23 @@ import javax.inject.Inject
 
 @GqlQuery("PayLaterApplicationStatusQuery", GQL_PAY_LATER_APPLICATION_STATUS)
 class PayLaterApplicationStatusUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<PayLaterApplicationStatusResponse>(graphqlRepository) {
 
     fun getPayLaterApplicationStatus(
-            onSuccess: (UserCreditApplicationStatus) -> Unit,
-            onError: (Throwable) -> Unit,
+        onSuccess: (UserCreditApplicationStatus) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         try {
             this.setTypeClass(PayLaterApplicationStatusResponse::class.java)
             this.setGraphqlQuery(PayLaterApplicationStatusQuery.GQL_QUERY)
             this.execute(
-                    { result ->
-                        onSuccess(result.userCreditApplicationStatus)
+                { result ->
+                    onSuccess(result.userCreditApplicationStatus)
 
-                    }, { error ->
-                onError(error)
-            }
+                }, { error ->
+                    onError(error)
+                }
             )
         } catch (throwable: Throwable) {
             onError(throwable)

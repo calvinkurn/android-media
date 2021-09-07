@@ -68,7 +68,8 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     }
 
     private fun initInjector() {
-        component = PdpSimulationComponent::class.java.cast((activity as (HasComponent<PdpSimulationComponent>)).component)
+        component =
+            PdpSimulationComponent::class.java.cast((activity as (HasComponent<PdpSimulationComponent>)).component)
         component?.inject(this) ?: dismiss()
     }
 
@@ -77,7 +78,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         arguments?.let {
             payLaterDataList = it.getParcelableArrayList(PAY_LATER_PARTNER_DATA) ?: arrayListOf()
             payLaterApplicationStatusList = it.getParcelableArrayList(PAY_LATER_APPLICATION_DATA)
-                    ?: arrayListOf()
+                ?: arrayListOf()
         }
     }
 
@@ -94,14 +95,23 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
-                null, false)
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
         setChild(childView)
     }
 
     private fun initAdapter() {
-        baseList.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
-            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent(payLaterData.partnerName ?: ""))
+        baseList.adapter = PayLaterPaymentMethodAdapter(
+            payLaterDataList,
+            payLaterApplicationStatusList
+        ) { payLaterData, payLaterApplicationStatus ->
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.ChoosePayLaterOptionClickEvent(
+                    payLaterData.partnerName ?: ""
+                )
+            )
             openBottomSheet(payLaterData, payLaterApplicationStatus)
             dismiss()
         }
@@ -119,26 +129,29 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         payLaterViewModel.let {
-           // this.payLaterDataList = it.getPayLaterOptions()
+            // this.payLaterDataList = it.getPayLaterOptions()
             initAdapter()
         }
     }
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterViewModel.let {
-          //  this.payLaterDataList = it.getPayLaterOptions()
+            //  this.payLaterDataList = it.getPayLaterOptions()
             this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }
     }
 
     private fun openBottomSheet(
-            productItemData: PayLaterItemProductData,
-            partnerApplicationDetail: PayLaterApplicationDetail?,
+        productItemData: PayLaterItemProductData,
+        partnerApplicationDetail: PayLaterApplicationDetail?,
     ) {
         val bundle = Bundle()
         productItemData.let { data ->
-            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
+            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(
+                data,
+                partnerApplicationDetail
+            )) {
                 is ProcessingApplicationPartnerType ->
                     openVerificationBottomSheet(bundle, partnerApplicationDetail)
                 else -> openActionBottomSheet(bundle, data, partnerApplicationDetail)
@@ -146,14 +159,27 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
+    private fun openActionBottomSheet(
+        bundle: Bundle,
+        partnerData: PayLaterItemProductData,
+        partnerApplicationDetail: PayLaterApplicationDetail?
+    ) {
         bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, partnerData)
-        bundle.putParcelable(PayLaterActionStepsBottomSheet.APPLICATION_STATUS_DATA, partnerApplicationDetail)
+        bundle.putParcelable(
+            PayLaterActionStepsBottomSheet.APPLICATION_STATUS_DATA,
+            partnerApplicationDetail
+        )
         pdpSimulationCallback?.openBottomSheet(bundle, PayLaterActionStepsBottomSheet::class.java)
     }
 
-    private fun openVerificationBottomSheet(bundle: Bundle, partnerApplicationDetail: PayLaterApplicationDetail?) {
-        bundle.putParcelable(PayLaterVerificationBottomSheet.APPLICATION_STATUS, partnerApplicationDetail)
+    private fun openVerificationBottomSheet(
+        bundle: Bundle,
+        partnerApplicationDetail: PayLaterApplicationDetail?
+    ) {
+        bundle.putParcelable(
+            PayLaterVerificationBottomSheet.APPLICATION_STATUS,
+            partnerApplicationDetail
+        )
         pdpSimulationCallback?.openBottomSheet(bundle, PayLaterVerificationBottomSheet::class.java)
     }
 
@@ -163,7 +189,11 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
 
         const val TAG = "PayLaterSignupBottomSheet"
-        fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
+        fun show(
+            bundle: Bundle,
+            pdpSimulationCallback: PdpSimulationCallback,
+            childFragmentManager: FragmentManager
+        ) {
             val fragment = PayLaterSignupBottomSheet().apply {
                 arguments = bundle
                 this.pdpSimulationCallback = pdpSimulationCallback

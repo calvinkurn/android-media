@@ -15,9 +15,9 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
     private val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
 
     fun mapLabelDataToApplicationStatus(
-            userCreditApplicationStatus: UserCreditApplicationStatus,
-            onSuccess: (PayLaterAppStatus) -> Unit,
-            onError: (Throwable) -> Unit,
+        userCreditApplicationStatus: UserCreditApplicationStatus,
+        onSuccess: (PayLaterAppStatus) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         useCaseRequestParams = RequestParams().apply {
             putObject(PARAM_APP_STATUS_DATA, userCreditApplicationStatus)
@@ -31,7 +31,7 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
 
     override suspend fun executeOnBackground(): PayLaterAppStatus {
         val appStatusData = (useCaseRequestParams.getObject(PARAM_APP_STATUS_DATA)
-                ?: throw  NullPointerException(APPLICATION_STATE_DATA_FAILURE)) as UserCreditApplicationStatus
+            ?: throw  NullPointerException(APPLICATION_STATE_DATA_FAILURE)) as UserCreditApplicationStatus
         return handleResponse(appStatusData)
     }
 
@@ -45,8 +45,9 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
                     val appStatus = setLabelData(it)
                     it.payLaterStatusContent = computeSubHeaderText(it)
                     if (appStatus is PayLaterStatusActive ||
-                            appStatus is PayLaterStatusApproved ||
-                            appStatus is PayLaterStatusWaiting)
+                        appStatus is PayLaterStatusApproved ||
+                        appStatus is PayLaterStatusWaiting
+                    )
                         isPayLaterActive = true
                 }
             }
@@ -59,39 +60,56 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
      * @param payLaterApplicationDetail : ApplicationStatus Data
      */
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail): PayLaterApplicationStatus {
-        val applicationStatusType = PayLaterApplicationStatusMapper.getApplicationStatusType(payLaterApplicationDetail)
+        val applicationStatusType =
+            PayLaterApplicationStatusMapper.getApplicationStatusType(payLaterApplicationDetail)
         when (applicationStatusType) {
             is PayLaterStatusWaiting -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_waiting
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_ORANGE
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_waiting
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_ORANGE
             }
             is PayLaterStatusActive -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_active
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_active
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_BLUE
             }
             is PayLaterStatusCancelled -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_cancelled
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_cancelled
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_RED
             }
             is PayLaterStatusRejected -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_rejected
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_rejected
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_RED
             }
             is PayLaterStatusApproved -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_approved
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_GREEN
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_approved
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_GREEN
             }
             is PayLaterStatusSuspended -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_suspended
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_suspended
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_RED
             }
             is PayLaterStatusFailed -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_failed
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_failed
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_RED
             }
             is PayLaterStatusExpired -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_expired
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId =
+                    R.string.pay_later_status_expired
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType =
+                    Label.GENERAL_LIGHT_RED
             }
             else -> {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = 0
@@ -109,11 +127,11 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
                     if (isExpirationDateAvailable(it)) "<b>${it.payLaterExpirationDate ?: ""}</b>"
                     else ""
             return PayLaterStatusContent(
-                    it.payLaterStatusContent?.verificationContentEmail,
-                    subHeader,
-                    it.payLaterStatusContent?.verificationContentPhoneNumber,
-                    it.payLaterStatusContent?.verificationContentPopUpDetail,
-                    it.payLaterStatusContent?.verificationContentInfo
+                it.payLaterStatusContent?.verificationContentEmail,
+                subHeader,
+                it.payLaterStatusContent?.verificationContentPhoneNumber,
+                it.payLaterStatusContent?.verificationContentPopUpDetail,
+                it.payLaterStatusContent?.verificationContentInfo
             )
         }
     }
@@ -130,5 +148,9 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
 
 
 sealed class PayLaterAppStatus
-data class StatusAppSuccess(val userCreditApplicationStatus: UserCreditApplicationStatus, val isPayLaterActive: Boolean) : PayLaterAppStatus()
+data class StatusAppSuccess(
+    val userCreditApplicationStatus: UserCreditApplicationStatus,
+    val isPayLaterActive: Boolean
+) : PayLaterAppStatus()
+
 object StatusFail : PayLaterAppStatus()

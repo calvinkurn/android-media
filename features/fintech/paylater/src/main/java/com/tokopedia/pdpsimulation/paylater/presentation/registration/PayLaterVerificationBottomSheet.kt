@@ -59,7 +59,12 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
                     val builder = SpannableStringBuilder()
                     builder.append(it.verificationContentInfo)
                     builder.append(applicationDetail?.payLaterExpirationDate)
-                    builder.setSpan(StyleSpan(Typeface.BOLD), it.verificationContentInfo.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    builder.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        it.verificationContentInfo.length,
+                        builder.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                     tvAdditionalInfo.text = builder
                 }
             } else tvAdditionalInfo.gone()
@@ -81,8 +86,10 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
-                null, false)
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
         setChild(childView)
     }
 

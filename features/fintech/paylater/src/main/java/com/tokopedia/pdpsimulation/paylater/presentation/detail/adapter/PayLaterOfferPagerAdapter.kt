@@ -10,7 +10,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment
 
-class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentStatePagerAdapter(fm, behaviour) {
+class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) :
+    FragmentStatePagerAdapter(fm, behaviour) {
     private val paymentOptionsFragmentArray = SparseArrayCompat<Fragment>()
     private var paymentProductList: List<Detail> = ArrayList()
 

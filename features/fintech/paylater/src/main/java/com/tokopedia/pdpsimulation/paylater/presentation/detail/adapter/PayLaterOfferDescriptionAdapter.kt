@@ -22,6 +22,6 @@ class PayLaterOfferDescriptionAdapter(private val offerItemList: List<Benefit?>?
     }
 
     override fun getItemCount(): Int {
-        return offerItemList!!.size
+        return offerItemList?.size ?: 0
     }
 }

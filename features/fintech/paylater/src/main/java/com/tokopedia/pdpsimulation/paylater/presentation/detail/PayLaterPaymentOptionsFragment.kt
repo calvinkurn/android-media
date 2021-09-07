@@ -34,8 +34,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_paylater_cards_info, container, false)
     }
@@ -51,10 +51,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         rvPaymentDesciption.apply {
 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            val orderedBenefitList: MutableList<Benefit> = ArrayList()
+            val orderedBenefitList: MutableList<Benefit?> = ArrayList()
             for (i in 0 until (responseData?.gateway_detail?.benefit?.size ?: 0)) {
                 if (responseData?.gateway_detail?.benefit?.get(i)?.is_highlight == true) {
-                    orderedBenefitList.add(responseData?.gateway_detail?.benefit!![i]!!)
+                    responseData?.gateway_detail?.benefit?.let { benefitList ->
+                        orderedBenefitList.add(benefitList[i])
+                    }
                 }
             }
 
@@ -142,7 +144,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 //                setSubHeaderText(it, data.subHeader)
 //                setLabelData(it)
 //            } ?: setSubHeaderText(null, data.subHeader)
-            setPartnerImage(data.gateway_detail!!)
+            data.gateway_detail?.let { gatewayDetail ->
+                setPartnerImage(gatewayDetail)
+            }
         }
     }
 
@@ -150,10 +154,14 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     * if sub header from application state api is non empty set it otherwise
     * set pay later product detail response in sub header text
     * */
-    private fun setSubHeaderText(detail: PayLaterApplicationDetail?, productDetailSubHeader: String?) {
+    private fun setSubHeaderText(
+        detail: PayLaterApplicationDetail?,
+        productDetailSubHeader: String?
+    ) {
         tvSubTitlePaylaterPartner.visible()
         if (!detail?.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
-            tvSubTitlePaylaterPartner.text = detail?.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
+            tvSubTitlePaylaterPartner.text =
+                detail?.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
         } else if (!productDetailSubHeader.isNullOrEmpty()) {
             tvSubTitlePaylaterPartner.text = productDetailSubHeader
         } else tvSubTitlePaylaterPartner.gone()

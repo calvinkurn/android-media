@@ -80,12 +80,14 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
                 is RegisterStepsPartnerType -> {
                     if (!it.actionWebUrl.isNullOrEmpty())
                         actionUrl = "${it.actionWebUrl}?URL=$productUrl"
-                    sheetTitle = "${context?.getString(R.string.pay_later_how_to_register)} ${it.partnerName}"
+                    sheetTitle =
+                        "${context?.getString(R.string.pay_later_how_to_register)} ${it.partnerName}"
                     partnerUsageData = it.partnerApplyDetails
                     isUsageType = false
                 }
                 is UsageStepsPartnerType -> {
-                    sheetTitle = "${context?.getString(R.string.pay_later_how_to_use)} ${it.partnerName}"
+                    sheetTitle =
+                        "${context?.getString(R.string.pay_later_how_to_use)} ${it.partnerName}"
                     partnerUsageData = it.partnerUsageDetails
                     isUsageType = true
                 }
@@ -105,8 +107,10 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
-                null, false)
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
         setChild(childView)
     }
 
@@ -142,20 +146,26 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun sendAnalytics() {
         if (!isUsageType)
-            pdpSimulationCallback?.sendAnalytics(PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(partnerName
-                    ?: ""))
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.RegisterPayLaterOptionClickEvent(
+                    partnerName
+                        ?: ""
+                )
+            )
     }
 
     private fun initAdapter() {
         partnerUsageData?.partnerSteps?.let {
             rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it)
-            rvPayLaterRegisterSteps.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvPayLaterRegisterSteps.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
     }
 
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
-            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
+            val webViewAppLink =
+                ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
             RouteManager.route(context, webViewAppLink)
         }
     }
@@ -167,7 +177,11 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         const val PRODUCT_URL = "productUrl"
         const val APPLICATION_STATUS_DATA = "applicationStatusData"
 
-        fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
+        fun show(
+            bundle: Bundle,
+            pdpSimulationCallback: PdpSimulationCallback,
+            childFragmentManager: FragmentManager
+        ) {
             val actionStepsBottomSheet = PayLaterActionStepsBottomSheet().apply {
                 arguments = bundle
             }

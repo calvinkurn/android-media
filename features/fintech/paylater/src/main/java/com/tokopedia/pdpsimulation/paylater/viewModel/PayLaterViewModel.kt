@@ -89,7 +89,6 @@ class PayLaterViewModel @Inject constructor(
     }
 
 
-
     fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
         idlingResourceProvider?.increment()
         payLaterApplicationStatusUseCase.cancelJobs()
@@ -98,23 +97,35 @@ class PayLaterViewModel @Inject constructor(
                 ::onPayLaterApplicationStatusSuccess,
                 ::onPayLaterApplicationStatusError
             )
-        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
+        else onPayLaterApplicationStatusError(
+            PdpSimulationException.PayLaterNullDataException(
+                DATA_FAILURE
+            )
+        )
     }
 
 
     private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
-        payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(userCreditApplicationStatus, onSuccess = {
-            when (it) {
-                is StatusAppSuccess -> {
-                    isPayLaterProductActive = it.isPayLaterActive
-                    idlingResourceProvider?.decrement()
-                    _payLaterApplicationStatusResultLiveData.value = Success(it.userCreditApplicationStatus)
+        payLaterApplicationStatusMapperUseCase.mapLabelDataToApplicationStatus(
+            userCreditApplicationStatus,
+            onSuccess = {
+                when (it) {
+                    is StatusAppSuccess -> {
+                        isPayLaterProductActive = it.isPayLaterActive
+                        idlingResourceProvider?.decrement()
+                        _payLaterApplicationStatusResultLiveData.value =
+                            Success(it.userCreditApplicationStatus)
+                    }
+                    StatusFail -> onPayLaterApplicationStatusError(
+                        PdpSimulationException.PayLaterNullDataException(
+                            DATA_FAILURE
+                        )
+                    )
                 }
-                StatusFail -> onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
-            }
-        }, onError = {
-            onPayLaterApplicationStatusError(it)
-        })
+            },
+            onError = {
+                onPayLaterApplicationStatusError(it)
+            })
     }
 
     private fun onPayLaterApplicationStatusError(throwable: Throwable) {

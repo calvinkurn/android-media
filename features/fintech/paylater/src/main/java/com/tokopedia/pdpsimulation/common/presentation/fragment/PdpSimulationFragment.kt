@@ -38,8 +38,8 @@ import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
 
 class PdpSimulationFragment : BaseDaggerFragment(),
-        PdpSimulationCallback,
-        CompoundButton.OnCheckedChangeListener {
+    PdpSimulationCallback,
+    CompoundButton.OnCheckedChangeListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -88,8 +88,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
     }
@@ -219,8 +219,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun getFragments(): List<Fragment> {
         return when (paymentMode) {
             is CreditCard -> {
-                listOf<Fragment>(CreditCardSimulationFragment.newInstance(this),
-                        CreditCardTncFragment.newInstance(this))
+                listOf<Fragment>(
+                    CreditCardSimulationFragment.newInstance(this),
+                    CreditCardTncFragment.newInstance(this)
+                )
             }
             else -> {
                 listOf<Fragment>(PayLaterOffersFragment.newInstance(this))
@@ -246,13 +248,17 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun onRegisterWidgetClicked() {
         if (payLaterDataList.isNotEmpty()) {
-            pdpSimulationAnalytics.get().sendPdpSimulationEvent(PdpSimulationEvent.PayLater.RegisterWidgetClickEvent("click"))
+            pdpSimulationAnalytics.get()
+                .sendPdpSimulationEvent(PdpSimulationEvent.PayLater.RegisterWidgetClickEvent("click"))
             openBottomSheet(populatePayLaterBundle(), PayLaterSignupBottomSheet::class.java)
         }
     }
 
     private fun populatePayLaterBundle() = Bundle().apply {
-        putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
+        putParcelableArrayList(
+            PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA,
+            applicationStatusList
+        )
         putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
     }
 

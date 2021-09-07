@@ -49,8 +49,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getComponent(): PdpSimulationComponent {
         if (!::pdpSimulationComponent.isInitialized)
             pdpSimulationComponent = DaggerPdpSimulationComponent.builder()
-                    .baseAppComponent((applicationContext as BaseMainApplication)
-                            .baseAppComponent).build()
+                .baseAppComponent(
+                    (applicationContext as BaseMainApplication)
+                        .baseAppComponent
+                ).build()
         return pdpSimulationComponent
     }
 }

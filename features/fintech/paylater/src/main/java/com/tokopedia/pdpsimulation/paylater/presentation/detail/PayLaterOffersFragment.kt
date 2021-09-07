@@ -30,7 +30,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     lateinit var payLaterProductList: List<PayLaterAllData>
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
+        val viewModelProvider =
+            ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
@@ -73,7 +74,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun selectOtherTenure(position: Int) {
         paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList[position].detail!!)
+            payLaterProductList[position].detail?.let { detailList ->
+                pagerAdapter.setPaymentData(detailList)
+            }
         }
 
 
@@ -97,12 +100,18 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
 
-        payLaterProductList = paylaterProduct.productList!!
-        generateSortFilter(paylaterProduct)
-        payLaterOffersShimmerGroup.gone()
-        payLaterDataGroup.visible()
-        paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList[0].detail!!)
+        if (paylaterProduct.productList != null) {
+            payLaterProductList = paylaterProduct.productList
+            generateSortFilter(paylaterProduct)
+            payLaterOffersShimmerGroup.gone()
+            payLaterDataGroup.visible()
+            paymentOptionViewPager.post {
+                payLaterProductList[0].detail?.let { detailList ->
+                    pagerAdapter.setPaymentData(detailList)
+                }
+            }
+        } else {
+
         }
     }
 

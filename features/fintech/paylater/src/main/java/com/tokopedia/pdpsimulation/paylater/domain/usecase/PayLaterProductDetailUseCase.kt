@@ -10,26 +10,26 @@ import javax.inject.Inject
 
 @GqlQuery("PayLaterProductDetailQuery", GQL_PAY_LATER_PRODUCT_DETAIL)
 class PayLaterProductDetailUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository,
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<PayLaterActivityResponse>(graphqlRepository) {
     private val PAY_LATER_DATA_FAILURE = "NULL DATA"
 
     fun getPayLaterData(
-            onSuccess: (PayLaterProductData) -> Unit,
-            onError: (Throwable) -> Unit,
+        onSuccess: (PayLaterProductData) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         try {
             this.setTypeClass(PayLaterActivityResponse::class.java)
             this.setGraphqlQuery(PayLaterProductDetailQuery.GQL_QUERY)
             this.execute(
-                    { result ->
-                        if (result.productData.productList.isNullOrEmpty())
-                            onError(Throwable(NullPointerException(PAY_LATER_DATA_FAILURE)))
-                        else onSuccess(result.productData)
+                { result ->
+                    if (result.productData.productList.isNullOrEmpty())
+                        onError(Throwable(NullPointerException(PAY_LATER_DATA_FAILURE)))
+                    else onSuccess(result.productData)
 
-                    }, { error ->
-                onError(error)
-            }
+                }, { error ->
+                    onError(error)
+                }
             )
         } catch (throwable: Throwable) {
             onError(throwable)

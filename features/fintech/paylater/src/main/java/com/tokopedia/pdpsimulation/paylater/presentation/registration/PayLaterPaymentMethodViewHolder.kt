@@ -11,12 +11,23 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
-class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.ViewHolder(view) {
+class PayLaterPaymentMethodViewHolder(
+    val view: View,
+    val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit
+) : RecyclerView.ViewHolder(view) {
 
-    fun bindData(payLaterItemProductData: PayLaterItemProductData, payLaterApplicationDataForPartner: PayLaterApplicationDetail?) {
+    fun bindData(
+        payLaterItemProductData: PayLaterItemProductData,
+        payLaterApplicationDataForPartner: PayLaterApplicationDetail?
+    ) {
         val imageUrl: String?
         view.apply {
-            setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
+            setOnClickListener {
+                clickListener(
+                    payLaterItemProductData,
+                    payLaterApplicationDataForPartner
+                )
+            }
 
             ivPartnerLogo.layoutParams.height = context.dpToPx(18).toInt()
             ivPartnerLogo.layoutParams.width = context.dpToPx(48).toInt()
@@ -25,21 +36,25 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 imageUrl = payLaterItemProductData.partnerImgDarkUrl
             else imageUrl = payLaterItemProductData.partnerImgLightUrl
             if (!imageUrl.isNullOrEmpty())
-                ivPartnerLogo.loadImage(imageUrl)
+                imageView.loadImage(imageUrl)
 
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
             setSubTitleContent(payLaterApplicationDataForPartner, this)
         }
     }
 
-    private fun setSubTitleContent(payLaterApplicationDataForPartner: PayLaterApplicationDetail?, view: View) {
+    private fun setSubTitleContent(
+        payLaterApplicationDataForPartner: PayLaterApplicationDetail?,
+        view: View
+    ) {
         view.apply {
             payLaterApplicationDataForPartner?.let {
                 setLabel(it, this)
                 if (it.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
                     tvDescription.text = context.getString(R.string.pay_later_default_subtitle)
                 } else {
-                    tvDescription.text = it.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
+                    tvDescription.text =
+                        it.payLaterStatusContent?.verificationContentSubHeader?.parseAsHtml()
                             ?: context.getString(R.string.pay_later_default_subtitle)
                 }
             }
@@ -61,8 +76,12 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
     companion object {
         private val LAYOUT_ID = R.layout.base_payment_register_item
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup, clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) = PayLaterPaymentMethodViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false), clickListener
+        fun getViewHolder(
+            inflater: LayoutInflater,
+            parent: ViewGroup,
+            clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit
+        ) = PayLaterPaymentMethodViewHolder(
+            inflater.inflate(LAYOUT_ID, parent, false), clickListener
         )
     }
 }

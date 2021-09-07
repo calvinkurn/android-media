@@ -14,8 +14,9 @@ object UsageStepsPartnerType : PayLaterPartnerType(USAGE_STEPS_PARTNER)
 object PayLaterPartnerTypeMapper {
 
     fun getPayLaterPartnerType(
-            payLaterPartnerData: PayLaterItemProductData,
-            partnerApplicationDetail: PayLaterApplicationDetail?): PayLaterPartnerType {
+        payLaterPartnerData: PayLaterItemProductData,
+        partnerApplicationDetail: PayLaterApplicationDetail?
+    ): PayLaterPartnerType {
         var isApplicationActive = false
         var status = STATUS_EMPTY
         partnerApplicationDetail?.let {
@@ -33,8 +34,8 @@ object PayLaterPartnerTypeMapper {
     }
 
     fun getPayLaterApplicationDataForPartner(
-            paymentOption: PayLaterItemProductData,
-            applicationStatusList: ArrayList<PayLaterApplicationDetail>,
+        paymentOption: PayLaterItemProductData,
+        applicationStatusList: ArrayList<PayLaterApplicationDetail>,
     ): PayLaterApplicationDetail? {
         val partnerStatus = applicationStatusList.filter {
             it.payLaterGatewayCode == paymentOption.gateWayCode

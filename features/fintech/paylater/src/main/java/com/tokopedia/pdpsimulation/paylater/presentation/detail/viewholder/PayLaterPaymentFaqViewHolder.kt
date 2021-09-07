@@ -31,8 +31,9 @@ class PayLaterPaymentFaqViewHolder(val view: View) : RecyclerView.ViewHolder(vie
     companion object {
         private val LAYOUT_ID = R.layout.paylater_card_faq_item
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterPaymentFaqViewHolder(
+        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) =
+            PayLaterPaymentFaqViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false)
-        )
+            )
     }
 }
