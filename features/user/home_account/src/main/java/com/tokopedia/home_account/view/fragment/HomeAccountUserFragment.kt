@@ -1,4 +1,4 @@
-        package com.tokopedia.home_account.view.fragment
+package com.tokopedia.home_account.view.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -61,22 +61,21 @@ import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
-import com.tokopedia.home_account.view.adapter.*
+import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
-import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder
-import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.DEFAULT_TYPE
-import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.FAILED_TO_LOAD_TYPE
-import com.tokopedia.home_account.view.adapter.viewholder.BalanceAndPointItemViewHolder.Companion.NOT_LINKED_TYPE
-import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
-import com.tokopedia.home_account.view.helper.StaticMenuGenerator
-import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
-import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
+import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
+import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
+import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
+import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.mapper.UiModelMapper
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -113,26 +112,21 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, BalanceAndPointListener {
+class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener,
+    BalanceAndPointListener {
 
     @Inject
     lateinit var mapper: DataViewMapper
-
     @Inject
     lateinit var userSession: UserSessionInterface
-
     @Inject
     lateinit var accountPref: AccountPreference
-
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
-
     @Inject
     lateinit var menuGenerator: StaticMenuGenerator
-
     @Inject
     lateinit var permissionChecker: PermissionChecker
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -146,7 +140,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
-    private var isShowViewMoreWallet = false
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -163,6 +156,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     var memberCardView: CardUnify? = null
     var memberTitle: Typography? = null
     var memberIcon: ImageUnify? = null
+    var tempWallet: WalletappGetAccountBalance? = null
+    var tempAssetConfig: AssetConfig? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -188,247 +183,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         if (context is HomeAccountUserActivity) appBarCollapseListener = context
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.home_account_user_fragment, container, false)
-    }
-
-    private fun fetchRemoteConfig() {
-        context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(
-                REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
-            isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-            isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
-            isShowViewMoreWallet = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
-        }
-    }
-
-    private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessGetBuyerAccount(it.data)
-                is Fail -> onFailGetData()
-            }
-        })
-
-        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {
-                    onFailGetData()
-                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
-                }
-            }
-        })
-
-        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> addRecommendationItem(it.data)
-                is Fail -> {
-                    onFailGetData()
-                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
-                }
-            }
-        })
-
-        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    memberLocalLoad?.hide()
-                    memberCardView?.show()
-
-                    val leftMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
-                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0, 0)
-                    memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
-                    memberIcon?.show()
-                    memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
-
-                    val mappedMember = mapper.mapMemberItemDataView(it.data)
-                    memberAdapter?.addItems(mappedMember)
-                    memberAdapter?.notifyDataSetChanged()
-                    adapter?.notifyDataSetChanged()
-                }
-
-                is Fail -> {
-                    memberCardView?.hide()
-                    memberLocalLoad?.show()
-                }
-            }
-        })
-
-        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetCentralizedAssetConfig(it.data)
-                }
-                is Fail -> {
-                    onFailedGetCentralizedAssetConfig(it.throwable)
-                }
-            }
-        })
-
-        viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ResultBalanceAndPoint.Success -> {
-                    onSuccessGetBalanceAndPoint(it.data, it.walletId)
-                }
-                is ResultBalanceAndPoint.Fail -> {
-                    onFailedGetBalanceAndPoint(it.throwable, it.walletId)
-                }
-            }
-        })
-    }
-
-    private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
-        balanceAndPointCardView?.show()
-        balanceAndPointLocalLoad?.hide()
-        val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
-        centralizedUserAssetConfig.assetConfig.forEach {
-            balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
-            viewModel.getBalanceAndPoint(it.id)
-        }
-        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
-    }
-
-    private fun onFailedGetCentralizedAssetConfig(throwable: Throwable) {
-        balanceAndPointCardView?.hide()
-        balanceAndPointLocalLoad?.show()
-    }
-
-    private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance, walletId: String) {
-        balanceAndPointAdapter?.changeItemBySameId(UiModelMapper.getBalanceAndPointUiModel(balanceAndPoint))
-    }
-
-    private fun onFailedGetBalanceAndPoint(throwable: Throwable, walletId: String) {
-        balanceAndPointAdapter?.changeItemTypeById(walletId, DEFAULT_TYPE)
-    }
-
-    private fun onMemberErrorClicked() {
-        viewModel.getShortcutData()
-    }
-
-    private fun onBalanceAndPointErrorClicked() {
-        displayBalanceAndPointLocalLoad(false)
-//        balanceAndPointAdapter?.displayShimmer()
-
-        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(
-            listOf(
-                BalanceAndPointUiModel(AccountConstants.WALLET.OVO, "Rp1.000", "2.000.000 Points", AccountConstants.Url.OVO_ICON, NOT_LINKED_TYPE),
-                BalanceAndPointUiModel(AccountConstants.WALLET.SALDO, "Rp100.000.000", "Saldo Tokopedia", AccountConstants.Url.SALDO_ICON, DEFAULT_TYPE),
-                BalanceAndPointUiModel(AccountConstants.WALLET.TOKOPOINT, "Rp10.000.000", "(1.000.000 Points)", AccountConstants.Url.TOKOPOINTS_ICON, FAILED_TO_LOAD_TYPE),
-            )
-        )
-
-    }
-
-    private fun onFailGetData() {
-        memberCardView?.hide()
-        memberLocalLoad?.show()
-        balanceAndPointCardView?.hide()
-        balanceAndPointLocalLoad?.show()
-        adapter?.run {
-            if (getItem(0) is ProfileDataView) {
-                removeItemAt(0)
-            }
-            addItem(0, ProfileDataView(
-                    name = userSession.name,
-                    phone = userSession.phoneNumber,
-                    email = userSession.email,
-                    avatar = userSession.profilePicture
-            ))
-            notifyDataSetChanged()
-        }
-        hideLoading()
-        fpmBuyer?.run { stopTrace() }
-    }
-
-    private fun setStatusBarAlpha(alpha: Float) {
-        val drawable = status_bar_bg.background
-        drawable.alpha = alpha.toInt()
-        status_bar_bg.background = drawable
-    }
-
-    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
-        memberLocalLoad?.hide()
-        memberCardView?.show()
-        balanceAndPointLocalLoad?.hide()
-        balanceAndPointCardView?.show()
-        adapter?.run {
-            if (getItem(0) is ProfileDataView) {
-                removeItemAt(0)
-            }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount))
-            notifyDataSetChanged()
-        }
-        hideLoading()
-        fpmBuyer?.run { stopTrace() }
-    }
-
-    private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
-        widgetTitle = recommendation.title
-        addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
-        addTopAdsHeadLine()
-        adapter?.notifyDataSetChanged()
-        addRecommendationItem(recommendation.recommendationItemList)
-    }
-
-    private fun addTopAdsHeadLine() {
-        addItem(TopadsHeadlineUiModel(), addSeparator = false)
-    }
-
-    private fun addRecommendationItem(list: List<RecommendationItem>) {
-        for (item in list) {
-            adapter?.addItem(item)
-        }
-        adapter?.notifyDataSetChanged()
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-    }
-
-    private fun getFirstRecommendation() {
-        showLoadMoreLoading()
-        viewModel.getFirstRecommendation()
-    }
-
-    private fun showLoading() {
-        home_account_shimmer_layout?.show()
-    }
-
-    private fun hideLoading() {
-        home_account_shimmer_layout?.hide()
-    }
-
-    private fun displayBalanceAndPointLocalLoad(isShow: Boolean) {
-        if(isShow) {
-            balanceAndPointLocalLoad?.show()
-            balanceAndPointCardView?.hide()
-        } else {
-            balanceAndPointLocalLoad?.hide()
-            balanceAndPointCardView?.show()
-        }
-    }
-
-    private fun setupStatusBar() {
-        activity?.let {
-            status_bar_bg.background = ColorDrawable(
-                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            )
-        }
-        status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            status_bar_bg.visibility = View.INVISIBLE
-        } else {
-            status_bar_bg.visibility = View.VISIBLE
-        }
-        setStatusBarAlpha(0f)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         home_account_user_toolbar?.let {
             it.setIcon(IconBuilder(
-                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
             ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
             viewLifecycleOwner.lifecycle.addObserver(it)
         }
@@ -450,24 +217,24 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         getData()
 
         home_account_user_fragment_rv?.addOnScrollListener(NavRecyclerViewScrollListener(
-                navToolbar = home_account_user_toolbar,
-                startTransitionPixel = 200,
-                toolbarTransitionRangePixel = 50,
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) {
-                        setStatusBarAlpha(offsetAlpha)
-                    }
-
-                    override fun onSwitchToDarkToolbar() {
-                        home_account_user_toolbar.switchToLightToolbar()
-                    }
-
-                    override fun onSwitchToLightToolbar() {
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {
-                    }
+            navToolbar = home_account_user_toolbar,
+            startTransitionPixel = 200,
+            toolbarTransitionRangePixel = 50,
+            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                override fun onAlphaChanged(offsetAlpha: Float) {
+                    setStatusBarAlpha(offsetAlpha)
                 }
+
+                override fun onSwitchToDarkToolbar() {
+                    home_account_user_toolbar.switchToLightToolbar()
+                }
+
+                override fun onSwitchToLightToolbar() {
+                }
+
+                override fun onYposChanged(yOffset: Int) {
+                }
+            }
         ))
 
         home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
@@ -478,91 +245,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             isNeedRefreshProfileItems = true
             home_account_user_fragment_swipe_refresh?.isRefreshing = false
         }
-    }
-
-    private fun getProfileData() {
-        balanceAndPointAdapter?.displayShimmer()
-        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
-        viewModel.getShortcutData()
-    }
-
-    private fun showHomeAccountTokopoints(): Boolean {
-        return isShowHomeAccountTokopoints
-    }
-
-    private fun getData() {
-        home_account_user_fragment_rv?.scrollToPosition(0)
-        endlessRecyclerViewScrollListener?.resetState()
-        viewModel.getBuyerData()
-        setupSettingList()
-        getFirstRecommendation()
-    }
-
-    private fun onRefresh() {
-        showLoading()
-        adapter?.clearAllItems()
-    }
-
-    private fun showDialogClearCache() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.new_home_account_clear_cache_warning))
-            dialog.setDescription(getString(R.string.new_home_account_clear_cache_message))
-            dialog.setPrimaryCTAText(getString(R.string.new_home_account_label_clear_cache_ok))
-            dialog.setPrimaryCTAClickListener {
-                clearCache()
-            }
-            dialog.setSecondaryCTAText(getString(R.string.new_home_account_label_clear_cache_cancel))
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-        }
-    }
-
-    private fun clearCache() {
-        val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
-        if (activityManager is ActivityManager) {
-            activityManager.clearApplicationUserData()
-        }
-    }
-
-    private fun setupList() {
-        home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        home_account_user_fragment_rv?.adapter = adapter
-        home_account_user_fragment_rv?.isNestedScrollingEnabled = false
-    }
-
-    private fun setupSettingList() {
-        addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
-        addItem(menuGenerator.generateApplicationSettingMenu(
-                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
-                addSeparator = true)
-        addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
-        }
-        addItem(SettingDataView("", arrayListOf(
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
-        ), isExpanded = true), addSeparator = true)
-        adapter?.notifyDataSetChanged()
-    }
-
-    private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
-        if (position != -1) {
-            adapter?.removeItemAt(position)
-            adapter?.notifyItemRemoved(position)
-            adapter?.addItem(position, item)
-            if (addSeparator) {
-                adapter?.addItem(position, SeparatorView())
-            }
-        } else {
-            adapter?.addItem(item)
-            if (addSeparator) {
-                adapter?.addItem(SeparatorView())
-            }
-        }
-        adapter?.notifyDataSetChanged()
     }
 
     override fun onProfileClicked() {
@@ -576,13 +258,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
         goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
-    }
-
-    private fun goToApplink(applink: String) {
-        if (applink.isNotEmpty()) {
-            val intent = RouteManager.getIntent(context, applink)
-            startActivity(intent)
-        }
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
@@ -633,6 +308,585 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            888 -> {
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    updateLocationSwitch(true)
+                } else {
+                    goToApplicationDetailActivity()
+                }
+            }
+        }
+    }
+
+    override fun onProfileAdapterReady(memberAdapter: HomeAccountMemberAdapter) {
+        this.memberAdapter = memberAdapter
+        if (isNeedRefreshProfileItems) {
+            getProfileData()
+        }
+        isNeedRefreshProfileItems = false
+    }
+
+    override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
+        initCoachMark(position, itemView, data)
+        if (position == 0) {
+            initMemberLocalLoad(itemView)
+            initMemberTitle(itemView)
+
+            initBalanceAndPointLocalLoad(itemView)
+        }
+    }
+
+    override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {
+        trackingQueue?.let {
+            homeAccountAnalytic.eventAccountProductView(it, item, adapterPosition)
+        }
+        activity?.let {
+            if (item.isTopAds) {
+                TopAdsUrlHitter(it)
+                    .hitImpressionUrl(
+                        it::class.qualifiedName,
+                        item.trackerImageUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl,
+                        COMPONENT_NAME_TOP_ADS
+                    )
+            }
+        }
+    }
+
+    override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
+        homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
+        activity?.let {
+            if (item.isTopAds) {
+                TopAdsUrlHitter(it).hitClickUrl(
+                    it::class.qualifiedName,
+                    item.clickUrl,
+                    item.productId.toString(),
+                    item.name,
+                    item.imageUrl,
+                    COMPONENT_NAME_TOP_ADS
+                )
+            }
+        }
+
+        RouteManager.getIntent(
+            activity,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.productId.toString()
+        ).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
+    }
+
+    override fun onProductRecommendationThreeDotsClicked(
+        item: RecommendationItem,
+        adapterPosition: Int
+    ) {
+        showProductCardOptions(
+            this,
+            ProductCardOptionsModel(
+                hasWishlist = true,
+                isWishlisted = item.isWishlist,
+                productId = item.productId.toString(),
+                isTopAds = item.isTopAds,
+                topAdsWishlistUrl = item.wishlistUrl,
+                productPosition = adapterPosition
+            )
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_FROM_PDP) {
+            data?.let {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val wishlistStatusFromPdp = data.getBooleanExtra(
+                    WIHSLIST_STATUS_IS_WISHLIST,
+                    false
+                )
+                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                updateWishlist(wishlistStatusFromPdp, position)
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            gotoSettingProfile()
+        }
+
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
+        }
+
+        handleProductCardOptionsActivityResult(
+            requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            })
+    }
+
+    override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
+        if (position == 2)
+            this.commonAdapter = commonAdapter
+    }
+
+    override fun onClickBalanceAndPoint(
+        id: String,
+        applink: String?,
+        weblink: String?,
+        isFailed: Boolean
+    ) {
+        if (isFailed) {
+            viewModel.getBalanceAndPoint(id)
+        } else {
+            when {
+                !applink.isNullOrEmpty() -> {
+                    goToApplink(applink)
+                }
+                !weblink.isNullOrEmpty() -> {
+                    goToWebview(weblink)
+                }
+            }
+        }
+    }
+
+    private fun fetchRemoteConfig() {
+        context?.let {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(
+                REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false
+            )
+            isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(
+                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE,
+                false
+            )
+            isShowScreenRecorder =
+                firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+        }
+    }
+
+    private fun setupObserver() {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBuyerAccount(it.data)
+                }
+                is Fail -> {
+                    onFailGetData()
+                }
+            }
+        })
+
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
+            removeLoadMoreLoading()
+            when (it) {
+                is Success -> {
+                    onSuccessGetFirstRecommendationData(it.data)
+                }
+                is Fail -> {
+                    onFailGetData()
+                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
+                }
+            }
+        })
+
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
+            removeLoadMoreLoading()
+            when (it) {
+                is Success -> {
+                    addRecommendationItem(it.data)
+                }
+                is Fail -> {
+                    onFailGetData()
+                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
+                }
+            }
+        })
+
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShortcutGroup(it.data)
+                }
+                is Fail -> {
+                    onFailedGetShortcutGroup(it.throwable)
+                }
+            }
+        })
+
+        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetCentralizedAssetConfig(it.data)
+                }
+                is Fail -> {
+                    onFailedGetCentralizedAssetConfig()
+                }
+            }
+        })
+
+        viewModel.balanceAndPoint.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ResultBalanceAndPoint.Success -> {
+                    onSuccessGetBalanceAndPoint(it.data)
+                }
+                is ResultBalanceAndPoint.Fail -> {
+                    onFailedGetBalanceAndPoint(it.walletId)
+                }
+            }
+        })
+
+        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetWalletEligible(it.data)
+                }
+                is Fail -> {
+                    onFailedGetWalletEligible()
+                }
+            }
+        })
+    }
+
+    private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
+        displayBalanceAndPointLocalLoad(false)
+        val balanceAndPointPlaceholders = mutableListOf<BalanceAndPointUiModel>()
+        centralizedUserAssetConfig.assetConfig.forEach {
+            if (it.id == AccountConstants.WALLET.GOPAY) {
+                tempAssetConfig = it
+                viewModel.getGopayWalletEligible()
+            } else {
+                balanceAndPointPlaceholders.add(UiModelMapper.getBalanceAndPointUiModel(it))
+                viewModel.getBalanceAndPoint(it.id)
+            }
+        }
+        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(balanceAndPointPlaceholders)
+    }
+
+    private fun onFailedGetCentralizedAssetConfig() {
+        displayBalanceAndPointLocalLoad(true)
+    }
+
+    private fun onSuccessGetBalanceAndPoint(
+        balanceAndPoint: WalletappGetAccountBalance
+    ) {
+        balanceAndPointAdapter?.changeItemBySameId(
+            UiModelMapper.getBalanceAndPointUiModel(
+                balanceAndPoint
+            )
+        )
+    }
+
+    private fun onFailedGetBalanceAndPoint(walletId: String) {
+        balanceAndPointAdapter?.changeItemToFailed(walletId)
+    }
+
+    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
+        if (walletappWalletEligibility.data.isEligible) {
+            tempAssetConfig?.let {
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
+                balanceAndPointAdapter?.addItem(
+                    BALANCE_AND_POINT_LEFT_INDEX,
+                    UiModelMapper.getBalanceAndPointUiModel(it)
+                )
+                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+            }
+        }
+    }
+
+    private fun onFailedGetWalletEligible() {}
+
+    private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
+        memberLocalLoad?.hide()
+        memberCardView?.show()
+
+        val leftMargin = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            6f,
+            resources.displayMetrics
+        )
+        memberTitle?.setMargin(leftMargin.toInt(), 0, 0, 0)
+        memberTitle?.text =
+            shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
+        memberIcon?.show()
+        memberIcon?.setImageUrl(shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
+
+        val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
+        memberAdapter?.addItems(mappedMember)
+        memberAdapter?.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun onFailedGetShortcutGroup(throwable: Throwable) {
+        displayMemberLocalLoad(true)
+    }
+
+    private fun onMemberErrorClicked() {
+        viewModel.getShortcutData()
+    }
+
+    private fun onBalanceAndPointErrorClicked() {
+        displayBalanceAndPointLocalLoad(false)
+//        balanceAndPointAdapter?.displayShimmer()
+//        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
+
+
+        balanceAndPointAdapter?.showPlaceholderBalanceAndPoints(
+            listOf(
+                BalanceAndPointUiModel(
+                    AccountConstants.WALLET.OVO,
+                    "Aktifkan",
+                    "OVO",
+                    AccountConstants.Url.OVO_ICON
+                ),
+                BalanceAndPointUiModel(
+                    AccountConstants.WALLET.SALDO,
+                    "Rp100.000.000",
+                    "Saldo Tokopedia",
+                    AccountConstants.Url.SALDO_ICON
+                ),
+                BalanceAndPointUiModel(AccountConstants.WALLET.TOKOPOINT, isFailed = true),
+            )
+        )
+    }
+
+    private fun onFailGetData() {
+        displayMemberLocalLoad(true)
+        displayBalanceAndPointLocalLoad(true)
+        adapter?.run {
+            if (getItem(0) is ProfileDataView) {
+                removeItemAt(0)
+            }
+            addItem(
+                0, ProfileDataView(
+                    name = userSession.name,
+                    phone = userSession.phoneNumber,
+                    email = userSession.email,
+                    avatar = userSession.profilePicture
+                )
+            )
+            notifyDataSetChanged()
+        }
+        hideLoading()
+        fpmBuyer?.run { stopTrace() }
+    }
+
+    private fun setStatusBarAlpha(alpha: Float) {
+        val drawable = status_bar_bg.background
+        drawable.alpha = alpha.toInt()
+        status_bar_bg.background = drawable
+    }
+
+    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+        displayMemberLocalLoad(false)
+        displayBalanceAndPointLocalLoad(false)
+        adapter?.run {
+            if (getItem(0) is ProfileDataView) {
+                removeItemAt(0)
+            }
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            notifyDataSetChanged()
+        }
+        hideLoading()
+        fpmBuyer?.run { stopTrace() }
+    }
+
+    private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
+        widgetTitle = recommendation.title
+        addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
+        addTopAdsHeadLine()
+        adapter?.notifyDataSetChanged()
+        addRecommendationItem(recommendation.recommendationItemList)
+    }
+
+    private fun addTopAdsHeadLine() {
+        addItem(TopadsHeadlineUiModel(), addSeparator = false)
+    }
+
+    private fun addRecommendationItem(list: List<RecommendationItem>) {
+        for (item in list) {
+            adapter?.addItem(item)
+        }
+        adapter?.notifyDataSetChanged()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private fun getFirstRecommendation() {
+        showLoadMoreLoading()
+        viewModel.getFirstRecommendation()
+    }
+
+    private fun showLoading() {
+        home_account_shimmer_layout?.show()
+    }
+
+    private fun hideLoading() {
+        home_account_shimmer_layout?.hide()
+    }
+
+    private fun displayBalanceAndPointLocalLoad(isShow: Boolean) {
+        if (isShow) {
+            balanceAndPointLocalLoad?.show()
+            balanceAndPointCardView?.hide()
+        } else {
+            balanceAndPointLocalLoad?.hide()
+            balanceAndPointCardView?.show()
+        }
+    }
+
+    private fun displayMemberLocalLoad(isShow: Boolean) {
+        if (isShow) {
+            memberLocalLoad?.show()
+            memberCardView?.hide()
+        } else {
+            memberLocalLoad?.hide()
+            memberCardView?.show()
+        }
+    }
+
+    private fun setupStatusBar() {
+        activity?.let {
+            status_bar_bg.background = ColorDrawable(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            )
+        }
+        status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            status_bar_bg.visibility = View.INVISIBLE
+        } else {
+            status_bar_bg.visibility = View.VISIBLE
+        }
+        setStatusBarAlpha(0f)
+    }
+
+
+    private fun getProfileData() {
+        balanceAndPointAdapter?.displayShimmer()
+        viewModel.getCentralizedUserAssetConfig(USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE)
+        viewModel.getShortcutData()
+    }
+
+    private fun showHomeAccountTokopoints(): Boolean {
+        return isShowHomeAccountTokopoints
+    }
+
+    private fun getData() {
+        home_account_user_fragment_rv?.scrollToPosition(0)
+        endlessRecyclerViewScrollListener?.resetState()
+        viewModel.getBuyerData()
+        setupSettingList()
+        getFirstRecommendation()
+    }
+
+    private fun onRefresh() {
+        showLoading()
+        adapter?.clearAllItems()
+    }
+
+    private fun showDialogClearCache() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.new_home_account_clear_cache_warning))
+            dialog.setDescription(getString(R.string.new_home_account_clear_cache_message))
+            dialog.setPrimaryCTAText(getString(R.string.new_home_account_label_clear_cache_ok))
+            dialog.setPrimaryCTAClickListener {
+                clearCache()
+            }
+            dialog.setSecondaryCTAText(getString(R.string.new_home_account_label_clear_cache_cancel))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
+    }
+
+    private fun clearCache() {
+        val activityManager = context?.getSystemService(Context.ACTIVITY_SERVICE)
+        if (activityManager is ActivityManager) {
+            activityManager.clearApplicationUserData()
+        }
+    }
+
+    private fun setupList() {
+        home_account_user_fragment_rv.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        home_account_user_fragment_rv?.adapter = adapter
+        home_account_user_fragment_rv?.isNestedScrollingEnabled = false
+    }
+
+    private fun setupSettingList() {
+        addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
+        addItem(
+            menuGenerator.generateApplicationSettingMenu(
+                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder
+            ),
+            addSeparator = true
+        )
+        addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
+        }
+        addItem(
+            SettingDataView(
+                "", arrayListOf(
+                    CommonDataView(
+                        id = AccountConstants.SettingCode.SETTING_OUT_ID,
+                        title = getString(R.string.menu_account_title_sign_out),
+                        body = "",
+                        type = CommonViewHolder.TYPE_WITHOUT_BODY,
+                        icon = IconUnify.SIGN_OUT,
+                        endText = "Versi ${GlobalConfig.VERSION_NAME}"
+                    )
+                ), isExpanded = true
+            ), addSeparator = true
+        )
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
+        if (position != -1) {
+            adapter?.removeItemAt(position)
+            adapter?.notifyItemRemoved(position)
+            adapter?.addItem(position, item)
+            if (addSeparator) {
+                adapter?.addItem(position, SeparatorView())
+            }
+        } else {
+            adapter?.addItem(item)
+            if (addSeparator) {
+                adapter?.addItem(SeparatorView())
+            }
+        }
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun goToApplink(applink: String) {
+        if (applink.isNotEmpty()) {
+            val intent = RouteManager.getIntent(context, applink)
+            startActivity(intent)
+        }
+    }
+
+    private fun goToWebview(link: String) {
+        if (link.isNotEmpty()) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, link)
+            startActivity(intent)
+        }
+    }
+
     private fun setupDarkMode(isDarkMode: Boolean) {
         setAppCompatMode(isDarkMode)
         saveDarkModeToSharefPreference(isDarkMode)
@@ -641,7 +895,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun setAppCompatMode(isDarkMode: Boolean) {
-        val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        val screenMode =
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         AppCompatDelegate.setDefaultNightMode(screenMode)
     }
 
@@ -660,13 +915,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
         var dialogTitleMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_title)
         var dialogBodyMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_msg)
-        var dialogPositiveButton = getString(R.string.new_home_account_safe_mode_selected_dialog_positive_button)
+        var dialogPositiveButton =
+            getString(R.string.new_home_account_safe_mode_selected_dialog_positive_button)
         val dialogNegativeButton = getString(R.string.new_home_account_label_cancel)
 
         if (currentValue) {
             dialogTitleMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_title)
             dialogBodyMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_msg)
-            dialogPositiveButton = getString(R.string.new_home_account_safe_mode_unselected_dialog_positive_button)
+            dialogPositiveButton =
+                getString(R.string.new_home_account_safe_mode_unselected_dialog_positive_button)
         }
 
         context?.run {
@@ -746,28 +1003,39 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             AccountConstants.SettingCode.SETTING_TNC_ID -> {
                 homeAccountAnalytic.eventClickSetting(TERM_CONDITION)
                 homeAccountAnalytic.eventClickTermsAndConditionsAboutTokopedia()
-                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION)
+                RouteManager.route(
+                    activity,
+                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION
+                )
             }
 
             AccountConstants.SettingCode.SETTING_ABOUT_US -> {
                 homeAccountAnalytic.eventClickSetting(ABOUT_US)
                 homeAccountAnalytic.eventClickGetToKnowAboutTokopedia()
-                RouteManager.getIntent(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK
-                        + AccountConstants.Url.BASE_MOBILE
-                        + AccountConstants.Url.PATH_ABOUT_US).run {
+                RouteManager.getIntent(
+                    activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK
+                            + AccountConstants.Url.BASE_MOBILE
+                            + AccountConstants.Url.PATH_ABOUT_US
+                ).run {
                     startActivity(this)
                 }
             }
 
             AccountConstants.SettingCode.SETTING_IP -> {
                 homeAccountAnalytic.eventClickIpAboutTokopedia()
-                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP)
+                RouteManager.route(
+                    activity,
+                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP
+                )
             }
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
-                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY)
+                RouteManager.route(
+                    activity,
+                    AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY
+                )
             }
 
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
@@ -853,43 +1121,37 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         }
 
         context?.run {
-            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.new_home_account_title_geolocation_alertdialog))
-                setDescription(getString(R.string.new_home_account_body_geolocation_alertdialog))
-                setPrimaryCTAText(getString(R.string.new_home_account_ok_geolocation_alertdialog))
-                setPrimaryCTAClickListener {
-                    askPermissionLocation()
-                    dismiss()
+            val dialog =
+                DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                    setTitle(getString(R.string.new_home_account_title_geolocation_alertdialog))
+                    setDescription(getString(R.string.new_home_account_body_geolocation_alertdialog))
+                    setPrimaryCTAText(getString(R.string.new_home_account_ok_geolocation_alertdialog))
+                    setPrimaryCTAClickListener {
+                        askPermissionLocation()
+                        dismiss()
+                    }
+                    setSecondaryCTAText(getString(R.string.new_home_account_batal_geolocation_alertdialog))
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                    }
                 }
-                setSecondaryCTAText(getString(R.string.new_home_account_batal_geolocation_alertdialog))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
-            }
             dialog.show()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            888 -> {
-                if (grantResults.isNotEmpty() &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    updateLocationSwitch(true)
-                } else {
-                    goToApplicationDetailActivity()
-                }
-            }
-        }
-    }
-
     private fun askPermissionLocation() {
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
-                888)
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            888
+        )
     }
 
     private fun updateLocationSwitch(isEnable: Boolean) {
-        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
+            isEnable
         commonAdapter?.notifyDataSetChanged()
         adapter?.notifyDataSetChanged()
     }
@@ -922,27 +1184,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
             try {
                 it.startActivity(goToMarket)
             } catch (e: ActivityNotFoundException) {
-                it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(AccountConstants.Url.PLAYSTORE_URL + it.application.packageName)))
+                it.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(AccountConstants.Url.PLAYSTORE_URL + it.application.packageName)
+                    )
+                )
             }
-        }
-    }
-
-    override fun onProfileAdapterReady(memberAdapter: HomeAccountMemberAdapter) {
-        this.memberAdapter = memberAdapter
-        if (isNeedRefreshProfileItems) {
-            getProfileData()
-        }
-        isNeedRefreshProfileItems = false
-    }
-
-    override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
-        initCoachMark(position, itemView, data)
-        if (position == 0) {
-            initMemberLocalLoad(itemView)
-            initMemberTitle(itemView)
-
-            initBalanceAndPointLocalLoad(itemView)
         }
     }
 
@@ -952,22 +1200,22 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
                 if (coachMarkItem.count() < 3) {
                     if (position == 0 && data is ProfileDataView) {
                         coachMarkItem.add(
-                                CoachMark2Item(
-                                        itemView.findViewById(R.id.account_user_item_profile_email),
-                                        getString(R.string.coachmark_title_account_info),
-                                        getString(R.string.coachmark_desc_account_info),
-                                        CoachMark2.POSITION_BOTTOM
-                                )
+                            CoachMark2Item(
+                                itemView.findViewById(R.id.account_user_item_profile_email),
+                                getString(R.string.coachmark_title_account_info),
+                                getString(R.string.coachmark_desc_account_info),
+                                CoachMark2.POSITION_BOTTOM
+                            )
                         )
                     }
                     if (position == 1 && data is SettingDataView) {
                         coachMarkItem.add(
-                                CoachMark2Item(
-                                        itemView.findViewById(R.id.home_account_expandable_layout_title),
-                                        getString(R.string.coachmark_title_setting),
-                                        getString(R.string.coachmark_desc_setting),
-                                        CoachMark2.POSITION_TOP
-                                )
+                            CoachMark2Item(
+                                itemView.findViewById(R.id.home_account_expandable_layout_title),
+                                getString(R.string.coachmark_title_setting),
+                                getString(R.string.coachmark_desc_setting),
+                                CoachMark2.POSITION_TOP
+                            )
                         )
                         showCoachMark()
                     }
@@ -1006,7 +1254,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         itemView.findViewById<LocalLoad>(R.id.home_account_balance_and_point_local_load)?.let {
             balanceAndPointLocalLoad = it
             balanceAndPointLocalLoad?.refreshBtn?.setOnClickListener {
-                balanceAndPointLocalLoad?.progressState = !(balanceAndPointLocalLoad?.progressState ?: false)
+                balanceAndPointLocalLoad?.progressState =
+                    !(balanceAndPointLocalLoad?.progressState ?: false)
                 onBalanceAndPointErrorClicked()
             }
         }
@@ -1073,86 +1322,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
         return isLoading
     }
 
-    override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {
-        trackingQueue?.let {
-            homeAccountAnalytic.eventAccountProductView(it, item, adapterPosition)
-        }
-        activity?.let {
-            if (item.isTopAds) {
-                TopAdsUrlHitter(it)
-                        .hitImpressionUrl(it::class.qualifiedName,
-                                item.trackerImageUrl,
-                                item.productId.toString(),
-                                item.name,
-                                item.imageUrl,
-                                COMPONENT_NAME_TOP_ADS
-                        )
-            }
-        }
-    }
-
-    override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
-        homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
-        activity?.let {
-            if (item.isTopAds) {
-                TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName,
-                        item.clickUrl,
-                        item.productId.toString(),
-                        item.name,
-                        item.imageUrl,
-                        COMPONENT_NAME_TOP_ADS
-                )
-            }
-        }
-
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
-            startActivityForResult(this, REQUEST_FROM_PDP)
-        }
-    }
-
-    override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {
-        showProductCardOptions(
-                this,
-                ProductCardOptionsModel(
-                        hasWishlist = true,
-                        isWishlisted = item.isWishlist,
-                        productId = item.productId.toString(),
-                        isTopAds = item.isTopAds,
-                        topAdsWishlistUrl = item.wishlistUrl,
-                        productPosition = adapterPosition
-                )
-        )
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-                val wishlistStatusFromPdp = data.getBooleanExtra(
-                    WIHSLIST_STATUS_IS_WISHLIST,
-                        false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(wishlistStatusFromPdp, position)
-            }
-        }
-
-        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
-            gotoSettingProfile()
-        }
-
-        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
-            getData()
-        }
-
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
-            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                handleWishlistAction(productCardOptionsModel)
-            }
-        })
-    }
-
     private fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
         adapter?.let {
             if (it.getItems()[position] is RecommendationItem) {
@@ -1171,8 +1340,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter?.getItems()?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationItem
-                ?: return
+        val recommendationItem = adapter?.getItems()
+            ?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationItem
+            ?: return
         recommendationItem.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
@@ -1184,12 +1354,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private fun showSuccessAddWishlist() {
         view?.let {
             Toaster.make(
-                    it,
-                    getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.new_home_account_go_to_wishlist),
-                    setOnClickSuccessAddWishlist())
+                it,
+                getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.new_home_account_go_to_wishlist),
+                setOnClickSuccessAddWishlist()
+            )
         }
     }
 
@@ -1202,8 +1373,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private fun showBottomSheetAddName(profile: ProfileDataView) {
         activity?.let {
             val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
-            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
-            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val btnAddName: UnifyButton =
+                addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify =
+                addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
             ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
@@ -1228,22 +1401,28 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     }
 
     private fun gotoChangeName(profile: ProfileDataView) {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, profile.name, "")
+        val intent = RouteManager.getIntent(
+            requireContext(),
+            ApplinkConstInternalGlobal.CHANGE_NAME,
+            profile.name,
+            ""
+        )
         startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
     }
 
     private fun gotoSettingProfile() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+        val intent =
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 
     private fun showSuccessRemoveWishlist() {
         view?.let {
             Toaster.make(
-                    it,
-                    getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
+                it,
+                getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
             )
         }
     }
@@ -1251,66 +1430,30 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, B
     private fun handleWishlistActionError() {
         view?.let {
             Toaster.make(
-                    it,
-                    ErrorHandler.getErrorMessage(activity, null),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun showErrorNoConnection() {
-        if (view != null && userVisibleHint) {
-            view?.let {
-                Toaster.make(it, getString(R.string.new_home_account_error_no_internet_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                        getString(R.string.title_try_again), setOnClickErrorNoConnection())
-            }
-        }
-        fpmBuyer?.run { stopTrace() }
-    }
-
-    private fun setOnClickErrorNoConnection(): View.OnClickListener {
-        return View.OnClickListener { getData() }
-    }
-
-    override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
-        if (position == 2)
-            this.commonAdapter = commonAdapter
-    }
-
-    override fun onClickBalanceAndPoint(id: String) {
-        when (id) {
-            AccountConstants.WALLET.TOKOPOINT -> {
-
-            }
-            AccountConstants.WALLET.SALDO -> {
-
-            }
-            AccountConstants.WALLET.GOPAY -> {
-
-            }
+                it,
+                ErrorHandler.getErrorMessage(activity, null),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
         }
     }
 
     companion object {
         private const val BALANCE_AND_POINT_LEFT_INDEX = 0
-        private const val BALANCE_AND_POINT_CENTER_INDEX = 1
-        private const val BALANCE_AND_POINT_RIGHT_INDEX = 2
 
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
+        private const val REQUEST_FROM_PDP = 394
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
-        private const val REQUEST_FROM_PDP = 394
-        private val FPM_BUYER = "mp_account_buyer"
-        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
-
-        private const val OVO_ASSET_TYPE = "ovo"
-        private const val TOKOPOINT_ASSET_TYPE = "tokopoint"
-        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS = "android_user_home_account_tokopoints"
-
+        private const val FPM_BUYER = "mp_account_buyer"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
+            "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
+        private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS =
+            "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         fun newInstance(bundle: Bundle?): Fragment {

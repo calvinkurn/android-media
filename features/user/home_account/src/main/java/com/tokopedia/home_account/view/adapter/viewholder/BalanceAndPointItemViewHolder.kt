@@ -1,4 +1,4 @@
- package com.tokopedia.home_account.view.adapter.viewholder
+package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -9,6 +9,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.HomeAccountItemBalanceAndPointBinding
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BalanceAndPointItemViewHolder(
@@ -20,37 +21,35 @@ class BalanceAndPointItemViewHolder(
 
     fun bind(item: BalanceAndPointUiModel?) {
         setImage(item?.urlImage)
-        setTitleText(item?.type ?: DEFAULT_TYPE, item?.title)
-        setSubtitleText(item?.id, item?.type ?: DEFAULT_TYPE, item?.subtitle)
-        setClickLitener(item?.id, balanceAndPointListener)
+        setTitleText(item?.isFailed.orFalse(), item?.title)
+        setSubtitleText(item?.id, item?.isFailed.orFalse(), item?.subtitle)
+        setClickLitener(
+            item?.id,
+            item?.applink,
+            item?.weblink,
+            item?.isFailed.orFalse(),
+            balanceAndPointListener
+        )
     }
 
     private fun setImage(url: String?) {
         url?.let { binding?.homeAccountItemBalanceAndPointIcon?.setImageUrl(it) }
     }
 
-    private fun setTitleText(type: Int, text: String?) {
-        val title = when (type) {
-            DEFAULT_TYPE -> {
-                text
-            }
-            NOT_LINKED_TYPE -> {
+    private fun setTitleText(isFailed: Boolean, text: String?) {
+        val title = if (isFailed) {
+            "Muat Ulang"
+        } else {
+            text
+        }
+
+        binding?.homeAccountItemBalanceAndPointTitle?.text = title
+
+        when (text) {
+            "Aktifkan", "Tambah Points", "Muat Ulang" -> {
                 setTitleToGreen()
-                "Aktifkan"
-            }
-            ZERO_BALANCE_TYPE -> {
-                setTitleToGreen()
-                "Tambah Points"
-            }
-            FAILED_TO_LOAD_TYPE -> {
-                setTitleToGreen()
-                "Muat Ulang"
-            }
-            else -> {
-                text
             }
         }
-        binding?.homeAccountItemBalanceAndPointTitle?.text = title
     }
 
     private fun setTitleToGreen() {
@@ -62,8 +61,8 @@ class BalanceAndPointItemViewHolder(
         )
     }
 
-    private fun setSubtitleText(id: String?, type: Int, text: String?) {
-        val subtitle = if (type == FAILED_TO_LOAD_TYPE || type == NOT_LINKED_TYPE) {
+    private fun setSubtitleText(id: String?, isFailed: Boolean, text: String?) {
+        val subtitle = if (isFailed) {
             when (id) {
                 AccountConstants.WALLET.OVO -> {
                     "OVO"
@@ -87,19 +86,20 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointSubtitle?.text = subtitle
     }
 
-    private fun setClickLitener(id: String?, listener: BalanceAndPointListener) {
+    private fun setClickLitener(
+        id: String?,
+        applink: String?,
+        weblink: String?,
+        isFailed: Boolean,
+        listener: BalanceAndPointListener
+    ) {
         binding?.container?.setOnClickListener {
-            id?.let { id -> listener.onClickBalanceAndPoint(id) }
+            id?.let { id -> listener.onClickBalanceAndPoint(id, applink, weblink, isFailed) }
         }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_account_item_balance_and_point
-
-        const val DEFAULT_TYPE = 0
-        const val NOT_LINKED_TYPE = 1
-        const val ZERO_BALANCE_TYPE = 2
-        const val FAILED_TO_LOAD_TYPE = 3
     }
 }

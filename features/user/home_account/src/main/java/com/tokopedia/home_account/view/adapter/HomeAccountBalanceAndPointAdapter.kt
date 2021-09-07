@@ -45,13 +45,26 @@ class HomeAccountBalanceAndPointAdapter(
         }
     }
 
-    fun changeItemTypeById(id: String, type: Int) {
+    fun changeItemToFailed(id: String) {
         val items = getItems().toMutableList()
         items.forEach {
             if (it is BalanceAndPointUiModel) {
                 if (it.id == id) {
                     val position = items.indexOf(it)
-                    it.type = type
+                    it.isFailed = true
+                    notifyItemChanged(position)
+                }
+            }
+        }
+    }
+
+    fun removeById(id: String) {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is BalanceAndPointUiModel) {
+                if (it.id == id) {
+                    val position = items.indexOf(it)
+                    removeItemAt(position)
                     notifyItemChanged(position)
                 }
             }

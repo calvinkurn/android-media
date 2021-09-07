@@ -13,10 +13,6 @@ import com.tokopedia.navigation_common.model.WalletModel
 
 data class UserAccountDataModel(
 
-        @SerializedName("wallet")
-        @Expose
-        var wallet: WalletModel = WalletModel(),
-
         @SerializedName("profile")
         @Expose
         var profile: ProfileModel = ProfileModel(),

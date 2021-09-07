@@ -224,5 +224,6 @@ object AccountConstants {
         const val GOPAYLATER = "gopaylater"
         const val TOKOPOINT = "tokopoint"
         const val SALDO = "saldo"
+        const val CO_BRAND_CC = "co brand cc"
     }
 }

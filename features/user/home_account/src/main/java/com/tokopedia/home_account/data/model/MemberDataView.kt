@@ -7,13 +7,6 @@ import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-data class MemberDataView(
-        val title: String = "",
-        val icon: String = "",
-        val isError: Boolean = false,
-        val items: ArrayList<MemberItemDataView> = arrayListOf()
-)
-
 data class MemberItemDataView(
         val title: String = "",
         val subtitle: String = "",

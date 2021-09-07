@@ -2,11 +2,13 @@ package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.databinding.FundsAndInvestmentItemWalletBinding
+import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
@@ -47,13 +49,19 @@ class FundsAndInvestmentViewHolder(
         binding?.textAction?.gone()
         if (isButtonShown == true) {
             binding?.imageAction?.visible()
-            binding?.imageAction?.setImageResource(R.drawable.ic_reload)
+            binding?.imageAction?.context?.let {
+                val colorGreen = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                binding?.imageAction?.setImage(IconUnify.RELOAD, colorGreen, colorGreen)
+            }
         } else if (!text.isNullOrEmpty()) {
             binding?.textAction?.visible()
             binding?.textAction?.text = text
         } else {
             binding?.imageAction?.visible()
-            binding?.imageAction?.setImageResource(R.drawable.ic_chevron_right)
+            binding?.imageAction?.context?.let {
+                val colorNeutral = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700)
+                binding?.imageAction?.setImage(IconUnify.CHEVRON_RIGHT, colorNeutral, colorNeutral)
+            }
         }
     }
 

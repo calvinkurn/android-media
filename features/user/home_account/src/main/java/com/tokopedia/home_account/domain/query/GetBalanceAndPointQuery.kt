@@ -19,4 +19,28 @@ object GetBalanceAndPointQuery {
           }
         }
     """.trimIndent()
+
+    val tokopointsQuery: String = """
+        {
+          tokopointsAccountPage{
+            id
+            icon
+            title
+            subtitle
+            subtitle_color
+            applink
+            weblink
+            is_active
+            is_hidden
+          }
+        }
+    """.trimIndent()
+
+    val saldoQuery: String = """
+       
+    """.trimIndent()
+
+    val coBrandCCQuery: String = """
+       
+    """.trimIndent()
 }

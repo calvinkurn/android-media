@@ -24,6 +24,7 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
@@ -214,8 +215,7 @@ class ProfileViewHolder(
     private fun isShowViewMoreWallet(): Boolean {
         return if(itemView.context != null){
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-//            firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
-            true
+            firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_VIEW_MORE_WALLET_TOGGLE, false)
         } else {
             false
         }

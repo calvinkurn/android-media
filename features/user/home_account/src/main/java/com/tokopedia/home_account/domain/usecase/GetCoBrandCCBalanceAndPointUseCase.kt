@@ -7,13 +7,13 @@ import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.domain.query.GetBalanceAndPointQuery
 import javax.inject.Inject
 
-class GetTokopointsBalanceAndPointUseCase @Inject constructor(
+class GetCoBrandCCBalanceAndPointUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, BalanceAndPointDataModel>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return GetBalanceAndPointQuery.tokopointsQuery
+        return GetBalanceAndPointQuery.coBrandCCQuery
     }
 
     override suspend fun execute(params: Unit): BalanceAndPointDataModel {

@@ -33,15 +33,13 @@ class HomeAccountUserViewModel @Inject constructor(
         private val accountPref: AccountPreference,
         private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
         private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-        private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
         private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
-        private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
-        private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
         private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
         private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
         private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
+        private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
+        private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
         private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
         private val walletPref: WalletPref,
         private val dispatcher: CoroutineDispatchers
@@ -71,25 +69,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val firstRecommendationData: LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendationData
 
-    private val _ovoBalance = MutableLiveData<Result<WalletModel>>()
-    val ovoBalance: LiveData<Result<WalletModel>>
-        get() = _ovoBalance
-
     private val _shortcutData = MutableLiveData<Result<ShortcutResponse>>()
     val shortcutData: LiveData<Result<ShortcutResponse>>
         get() = _shortcutData
-
-    private val _userPageAssetConfig = MutableLiveData<Result<UserPageAssetConfig>>()
-    val userPageAssetConfig: LiveData<Result<UserPageAssetConfig>>
-        get() = _userPageAssetConfig
-
-    private val _saldoBalance = MutableLiveData<Result<Balance>>()
-    val saldoBalance: LiveData<Result<Balance>>
-        get() = _saldoBalance
-
-    private val _tokopointsDrawerList = MutableLiveData<Result<TokopointsDrawerList>>()
-    val tokopointsDrawerList: LiveData<Result<TokopointsDrawerList>>
-        get() = _tokopointsDrawerList
 
     private val _centralizedUserAssetConfig = MutableLiveData<Result<CentralizedUserAssetConfig>>()
     val centralizedUserAssetConfig: LiveData<Result<CentralizedUserAssetConfig>>
@@ -127,16 +109,6 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getOvoBalance() {
-        launchCatchError(block = {
-            val wallet = getBuyerOvoBalance()
-            _ovoBalance.value = Success(wallet)
-            walletPref.saveWallet(wallet)
-        }, onError = {
-            _ovoBalance.postValue(Fail(it))
-        })
-    }
-
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
@@ -148,10 +120,6 @@ class HomeAccountUserViewModel @Inject constructor(
         }, onError = {
             _buyerAccountData.postValue(Fail(it))
         })
-    }
-
-    fun getBuyerOvoBalance(): WalletModel {
-        return getHomeAccountOvoBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
     }
 
     fun getFirstRecommendation() {
@@ -186,39 +154,6 @@ class HomeAccountUserViewModel @Inject constructor(
         return getRecommendationUseCase.createObservable(params).toBlocking().first()[0]
     }
 
-    fun getUserPageAssetConfig() {
-        launchCatchError(block = {
-            val response = getUserPageAssetConfigUseCase.executeOnBackground()
-            withContext(dispatcher.main) {
-                _userPageAssetConfig.value = Success(response.data)
-            }
-        }, onError = {
-            _userPageAssetConfig.postValue(Fail(it))
-        })
-    }
-
-    fun getTokopoints() {
-        launchCatchError(block = {
-            val response = getHomeAccountTokopointsUseCase.executeOnBackground()
-            withContext(dispatcher.main) {
-                _tokopointsDrawerList.value = Success(response.data)
-            }
-        }, onError = {
-            _tokopointsDrawerList.postValue(Fail(it))
-        })
-    }
-
-    fun getSaldoBalance() {
-        launchCatchError(block = {
-            val response = getHomeAccountSaldoBalanceUseCase.executeOnBackground()
-            withContext(dispatcher.main) {
-                _saldoBalance.value = Success(response.data)
-            }
-        }, onError = {
-            _saldoBalance.postValue(Fail(it))
-        })
-    }
-
     fun getCentralizedUserAssetConfig(entryPoint: String) {
         launchCatchError(block = {
             val result = getCentralizedUserAssetConfigUseCase(entryPoint)
@@ -246,6 +181,12 @@ class HomeAccountUserViewModel @Inject constructor(
                 AccountConstants.WALLET.TOKOPOINT -> {
                     getTokopointsBalanceAndPointUseCase(Unit)
                 }
+                AccountConstants.WALLET.SALDO -> {
+                    getSaldoBalanceUseCase(Unit)
+                }
+                AccountConstants.WALLET.CO_BRAND_CC -> {
+                    getCoBrandCCBalanceAndPointUseCase(Unit)
+                }
                 else -> {
                     BalanceAndPointDataModel()
                 }
@@ -263,9 +204,9 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getWalletEligible(partnerCode: String, walletCode: String) {
+    fun getGopayWalletEligible() {
         launchCatchError(block = {
-            val params = getWalletEligibleUseCase.getParams(partnerCode, walletCode)
+            val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
             val result = getWalletEligibleUseCase(params)
 
             withContext(dispatcher.main) {
@@ -285,13 +226,13 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun saveDebitInstantData(accountDataModel: UserAccountDataModel) {
-        accountDataModel?.debitInstant?.data?.let {
+        accountDataModel.debitInstant.data?.let {
             walletPref.saveDebitInstantUrl(it.redirectUrl)
         }
     }
 
     private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        accountDataModel?.profile?.let {
+        accountDataModel.profile.let {
             userSession.setIsMSISDNVerified(it.isPhoneVerified)
         }
     }
@@ -306,6 +247,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private const val GOPAY_PARTNER_CODE = "PEMUDA"
         private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
         private const val OVO_PARTNER_CODE = "OVO"
+        private const val GOPAY_WALLET_CODE = "PEMUDAPOINTS"
     }
 
 }

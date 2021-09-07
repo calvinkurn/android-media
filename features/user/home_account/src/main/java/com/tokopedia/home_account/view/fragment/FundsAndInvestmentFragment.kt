@@ -1,19 +1,14 @@
 package com.tokopedia.home_account.view.fragment
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
@@ -29,7 +24,6 @@ import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -86,9 +80,86 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
         hideLoading()
         addTitleView()
-        addWalletView(listOf(WalletUiModel("Saldo Tokopedia", "Rp.200.000.000", AccountConstants.Url.SALDO_ICON, false, "", AccountConstants.WALLET.SALDO, false)))
+        addWalletView(
+            listOf(
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Rp.200.000.000",
+                    AccountConstants.Url.SALDO_ICON,
+                    false,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    false
+                ),
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Rp.200.000.000",
+                    AccountConstants.Url.SALDO_ICON,
+                    false,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    false
+                )
+            )
+        )
+        addWalletView(
+            listOf(
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "",
+                    AccountConstants.Url.SALDO_ICON,
+                    false,
+                    "Aktifkan",
+                    AccountConstants.WALLET.SALDO,
+                    false
+                )
+            )
+        )
         addSubtitleView()
-        addWalletView(listOf(WalletUiModel("Saldo Tokopedia", "Gagal memuat", AccountConstants.Url.SALDO_ICON, true, "", AccountConstants.WALLET.SALDO, true)))
+        addWalletView(
+            listOf(
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Gagal memuat",
+                    AccountConstants.Url.SALDO_ICON,
+                    true,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    true
+                ),
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Gagal memuat",
+                    AccountConstants.Url.SALDO_ICON,
+                    true,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    true
+                )
+            )
+        )
+        addWalletView(
+            listOf(
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Gagal memuat",
+                    AccountConstants.Url.SALDO_ICON,
+                    true,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    true
+                ),
+                WalletUiModel(
+                    "Saldo Tokopedia",
+                    "Gagal memuat",
+                    AccountConstants.Url.SALDO_ICON,
+                    true,
+                    "",
+                    AccountConstants.WALLET.SALDO,
+                    true
+                )
+            )
+        )
     }
 
 //    private fun setupStatusBar() {
@@ -113,60 +184,14 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 //    }
 
     private fun setupAdapter() {
-        context?.let { context ->
-            adapter = HomeAccountFundsAndInvestmentAdapter(this)
-            binding?.fundsAndInvestmentRv?.adapter = adapter
-            val layoutManager = LinearLayoutManager(
-                binding?.fundsAndInvestmentRv?.context,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            val verticalDivider =
-                ContextCompat.getDrawable(context, R.drawable.horizontal_devider)
-            if (context.isDarkMode()) {
-                verticalDivider?.mutate()?.setColorFilter(
-                    ContextCompat.getColor(context, R.color.vertical_divider_dms_dark),
-                    PorterDuff.Mode.SRC_IN
-                )
-            } else {
-                verticalDivider?.mutate()?.setColorFilter(
-                    ContextCompat.getColor(context, R.color.vertical_divider_dms_light),
-                    PorterDuff.Mode.SRC_IN
-                )
-            }
-            val dividerItemDecoration = object : DividerItemDecoration(
-                context,
-                layoutManager.orientation
-            ) {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val position: Int = parent.getChildAdapterPosition(view)
-                    when (adapter?.getItem(position)) {
-                        is TitleUiModel, is SubtitleUiModel -> {
-                            outRect.setEmpty()
-                        }
-                        is WalletUiModel -> {
-                            super.getItemOffsets(outRect, view, parent, state)
-                        }
-                    }
-                }
-            }
-
-            verticalDivider?.run {
-                dividerItemDecoration.setDrawable(this)
-            }
-
-            binding?.fundsAndInvestmentRv?.itemDecorationCount?.let {
-                if (it < 1) {
-                    binding?.fundsAndInvestmentRv?.addItemDecoration(dividerItemDecoration)
-                }
-            }
-            binding?.fundsAndInvestmentRv?.layoutManager = layoutManager
-        }
+        adapter = HomeAccountFundsAndInvestmentAdapter(this)
+        binding?.fundsAndInvestmentRv?.adapter = adapter
+        val layoutManager = LinearLayoutManager(
+            binding?.fundsAndInvestmentRv?.context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding?.fundsAndInvestmentRv?.layoutManager = layoutManager
     }
 
 //    private fun setupToolbarTransition() {
@@ -232,6 +257,9 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     companion object {
+
+        private const val USER_CENTRALIZED_ASSET_CONFIG_ASSET_PAGE = "asset_page"
+
         fun newInstance(bundle: Bundle?): Fragment {
             return FundsAndInvestmentFragment().apply {
                 arguments = bundle
