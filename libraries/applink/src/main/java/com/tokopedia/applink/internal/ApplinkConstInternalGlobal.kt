@@ -496,6 +496,6 @@ object ApplinkConstInternalGlobal {
 
     // GlobalSharingActivity
     // tokopedia-android-internal://global/global-sharing
-    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/global-sharing?text={text}&image={image}&type={type}"
+    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
 }

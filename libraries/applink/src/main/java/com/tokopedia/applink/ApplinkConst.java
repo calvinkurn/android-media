@@ -401,6 +401,8 @@ public interface ApplinkConst {
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
 
+    String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }

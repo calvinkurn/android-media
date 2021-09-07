@@ -21,6 +21,6 @@
 
     <string name="applink_telephony">Telephony Masking</string>
 
-    <string name="applink_global_sharing">/global-sharing</string>
+    <string name="applink_global_sharing">/sharing</string>
 
 </resources>
