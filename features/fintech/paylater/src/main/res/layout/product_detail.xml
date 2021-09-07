@@ -28,6 +28,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Product name  jkef eerfknekjrf" />
 
     <com.tokopedia.unifyprinciples.Typography

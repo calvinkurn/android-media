@@ -12,6 +12,7 @@
         android:id="@+id/sp_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
         app:elevation="@dimen/unify_space_0">
 
         <LinearLayout
