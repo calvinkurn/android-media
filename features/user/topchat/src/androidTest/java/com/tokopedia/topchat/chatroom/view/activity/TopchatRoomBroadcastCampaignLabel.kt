@@ -92,30 +92,36 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
     @Test
     fun should_show_ended_state_when_campaign_status_is_ended() {
-//        // Given
-//        val endWording = getChatUseCase.getEndWordingBannerFrom(
-//            getChatUseCase.broadcastCampaignEnded
-//        )
-//        getChatUseCase.response = getChatUseCase.broadcastCampaignEnded
-//        launchChatRoomActivity()
-//
-//        // Then
-//        assertBroadcastCampaignLabelAt(1, isDisplayed())
-//        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-//        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
-//        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
-//        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
-//        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        // Given
+        val bannerAttachmentId = getChatUseCase.getBannerAttachmentId(
+            getChatUseCase.defaultBroadcastCampaignLabel
+        )
+        getChatUseCase.response = getChatUseCase.defaultBroadcastCampaignLabel
+        chatAttachmentUseCase.response = chatAttachmentUseCase.createBroadcastCampaignEnded(
+            bannerAttachmentId
+        )
+        val endWording = chatAttachmentUseCase.getEndWordingBannerFrom(
+            chatAttachmentUseCase.response
+        )
+        launchChatRoomActivity()
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
     }
 
     @Test
     fun should_hide_campaign_label_when_broadcast_does_not_have_campaign() {
         // Given
-        getChatUseCase.response = getChatUseCase.broadcastNoCampaign
-        launchChatRoomActivity()
-
-        // Then
-        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
+//        getChatUseCase.response = getChatUseCase.broadcastNoCampaign
+//        launchChatRoomActivity()
+//
+//        // Then
+//        assertBroadcastCampaignLabelAt(1, not(isDisplayed()))
     }
 
 }

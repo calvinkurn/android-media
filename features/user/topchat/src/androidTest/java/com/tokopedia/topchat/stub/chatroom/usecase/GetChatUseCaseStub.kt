@@ -41,18 +41,6 @@ class GetChatUseCaseStub @Inject constructor(
             GetExistingChatPojo::class.java
         )
 
-    val broadcastCampaignEnded: GetExistingChatPojo
-        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
-            alterAttachmentAttributesAt(
-                listPosition = 0,
-                chatsPosition = 0,
-                repliesPosition = 0,
-                responseObj = response
-            ) { attr ->
-                attr.addProperty(status_campaign, CampaignStatus.ENDED)
-            }
-        }
-
     val broadcastNoCampaign: GetExistingChatPojo
         get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
             alterAttachmentAttributesAt(

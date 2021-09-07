@@ -78,6 +78,22 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         }
     }
 
+    fun createBroadcastCampaignEnded(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(wording_end_state, "Broadcast berakhir")
+                    attr.addProperty(status_campaign, CampaignStatus.ENDED)
+                }
+            )
+        }
+    }
+
     fun getCampaignLabel(response: ChatAttachmentResponse): String {
         val attr = response.chatAttachments.list[0].attributes
         return fromJson<ImageAnnouncementPojo>(attr).campaignLabel!!
