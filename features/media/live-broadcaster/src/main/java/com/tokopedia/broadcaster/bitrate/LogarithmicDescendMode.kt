@@ -1,5 +1,6 @@
 package com.tokopedia.broadcaster.bitrate
 
+import com.tokopedia.broadcaster.ExternalStreamerGL
 import com.wmspanel.libstream.Streamer
 import kotlin.math.max
 import kotlin.math.min
@@ -8,7 +9,7 @@ class LogarithmicDescendMode : BitrateAdapter() {
 
     var mMinBitrate =  0L
 
-    override fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
+    override fun start(streamer: ExternalStreamerGL, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
         mMinBitrate = bitrate / 4
         super.start(streamer, bitrate, connectionId)

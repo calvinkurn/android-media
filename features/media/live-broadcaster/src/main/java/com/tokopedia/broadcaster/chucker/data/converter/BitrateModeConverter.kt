@@ -6,7 +6,7 @@ import com.tokopedia.broadcaster.data.BitrateMode
 class BitrateModeConverter {
 
     @TypeConverter
-    fun toBitrateMode(status: Int): BitrateMode {
+    fun toBitrateMode(status: String): BitrateMode {
         return when(status) {
             BitrateMode.LadderAscend.status -> BitrateMode.LadderAscend
             BitrateMode.LogarithmicDescend.status -> BitrateMode.LogarithmicDescend
@@ -15,7 +15,7 @@ class BitrateModeConverter {
     }
 
     @TypeConverter
-    fun toInt(mode: BitrateMode): Int {
+    fun toInt(mode: BitrateMode): String {
         return when(mode) {
             BitrateMode.LadderAscend -> BitrateMode.LadderAscend.status
             BitrateMode.LogarithmicDescend -> BitrateMode.LogarithmicDescend.status

@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.wmspanel.libstream.Streamer
+import com.tokopedia.broadcaster.ExternalStreamerGL
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
 import kotlin.math.abs
@@ -20,7 +20,7 @@ abstract class BitrateAdapter {
     private var mCurrentFps = 0.0
     private var mCurrentRange: FpsRange = FpsRange(30, 30)
     private var mFpsRanges: Array<FpsRange?> = emptyArray()
-    private var mStreamer: Streamer? = null
+    private var mStreamer: ExternalStreamerGL? = null
     private var mCheckTimer: Timer? = null
     private var mListener: Listener? = null
 
@@ -39,11 +39,11 @@ abstract class BitrateAdapter {
         mFpsRanges = fpsRanges
     }
 
-    open fun start(streamer: Streamer, connectionId: Int) {
+    open fun start(streamer: ExternalStreamerGL, connectionId: Int) {
         start(streamer, mSettingsBitrate, connectionId)
     }
 
-    open fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
+    open fun start(streamer: ExternalStreamerGL, bitrate: Long, connectionId: Int) {
         mStreamer = streamer
         mConnectionId = connectionId
         mLossHistory.clear()

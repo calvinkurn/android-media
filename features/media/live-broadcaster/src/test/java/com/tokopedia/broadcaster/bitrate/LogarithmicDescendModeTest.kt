@@ -1,19 +1,18 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.wmspanel.libstream.Streamer
+import com.tokopedia.broadcaster.ExternalStreamerGL
+import com.tokopedia.broadcaster.bitrate.LogarithmicDescendMode.Companion.NORMALIZATION_DELAY
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.tokopedia.broadcaster.bitrate.LogarithmicDescendMode.Companion.NORMALIZATION_DELAY
-import io.mockk.every
 import kotlin.test.assertTrue
 
 class LogarithmicDescendModeTest {
 
     private val bitrate = LogarithmicDescendMode()
-    private val streamer = mockk<Streamer>(relaxed = true)
+    private val streamer = mockk<ExternalStreamerGL>(relaxed = true)
 
     @Test
     fun `start logarithmic ascend mode properly`() {

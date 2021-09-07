@@ -11,20 +11,26 @@ import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
 import com.tokopedia.broadcaster.chucker.ui.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BitrateMode
-import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
+import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
-import com.tokopedia.broadcaster.data.BroadcasterConfig
-import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
 import com.tokopedia.broadcaster.tracker.BroadcasterLoggerImpl
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.wmspanel.libstream.*
-import kotlinx.coroutines.*
+import com.wmspanel.libstream.CameraConfig
+import com.wmspanel.libstream.Streamer
+import com.wmspanel.libstream.StreamerGL
+import com.wmspanel.libstream.StreamerGLBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -35,7 +41,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
 
     private var mContext: Context? = null
 
-    private var streamer: StreamerGL? = null
+    private var streamer: ExternalStreamerGL? = null
     private var mListener: BroadcasterListener? = null
     private var mState: BroadcasterState = BroadcasterState.Idle
     private var mConfig = BroadcasterConfig()
@@ -298,7 +304,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
             ladderAscendMode(videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
         }
 
-        streamer = builder.build()
+        streamer = ExternalStreamerGLImpl(builder.build())
     }
 
     private fun safeStartPreview() {
