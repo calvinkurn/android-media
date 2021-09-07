@@ -80,6 +80,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
                 mapVariantParam(variantInputModel),
+                shipmentInputModel.shipmentServices,
                 mapSpecificationParam(detailInputModel.specifications)
         )
     }

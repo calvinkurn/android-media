@@ -98,6 +98,7 @@ object AddEditProductMapper {
             isMustInsurance = productInputModel.shipmentInputModel.isMustInsurance
             weight = productInputModel.shipmentInputModel.weight
             weightUnit = productInputModel.shipmentInputModel.weightUnit
+            shipperServices = productInputModel.shipmentInputModel.shipmentServices
         }
         return productDraft
     }
@@ -154,6 +155,7 @@ object AddEditProductMapper {
             isMustInsurance = productDraft.shipmentInputModel.isMustInsurance
             weight = productDraft.shipmentInputModel.weight
             weightUnit = productDraft.shipmentInputModel.weightUnit
+            shipmentServices = productDraft.shipmentInputModel.shipperServices
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel

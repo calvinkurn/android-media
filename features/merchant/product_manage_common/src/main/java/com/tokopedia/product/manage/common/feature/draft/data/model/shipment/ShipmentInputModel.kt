@@ -11,5 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class ShipmentInputModel (
         var weight: Int = 0,
         var weightUnit: Int = 0,
-        var isMustInsurance: Boolean = false
+        var isMustInsurance: Boolean = false,
+        var shipperServices: ArrayList<Int>? = arrayListOf()
 ) : Parcelable

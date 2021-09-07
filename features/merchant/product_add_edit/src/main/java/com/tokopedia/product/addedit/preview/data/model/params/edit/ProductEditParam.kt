@@ -75,6 +75,9 @@ data class ProductEditParam (
         @SerializedName("variant")
         @Expose
         var variant: Variant? = null,
+        @SerializedName("shipper_services")
+        @Expose
+        var shipperServices: ArrayList<Int>? = arrayListOf(),
         @SerializedName("annotations")
         @Expose
         var annotations: List<String>? = null
