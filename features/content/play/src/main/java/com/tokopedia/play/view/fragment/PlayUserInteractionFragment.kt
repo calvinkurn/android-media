@@ -45,7 +45,6 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
-import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -866,6 +865,9 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowRealTimeNotificationEvent -> {
                         rtnView?.queueNotification(event.notification)
                     }
+                    is AnimateLikeEvent -> {
+                        likeView.playLikeAnimation(event.fromIsLiked)
+                    }
                 }
             }
         }
@@ -1126,8 +1128,9 @@ class PlayUserInteractionFragment @Inject constructor(
             message: String,
     ) {
         if (toasterBottomMargin == 0) {
-            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
-            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
+//            val likeClickAreaView = likeView.getClickAreaView() ?: return
+//            val likeAreaBottomMargin = (likeClickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
+//            toasterBottomMargin = likeClickAreaView.height + likeAreaBottomMargin
         }
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
@@ -1418,8 +1421,15 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
 
+        likeView.setMode(likeState.likeMode)
+
+//        likeView.playLikeAnimation(
+//            isPrevLiked = prevState?.isLiked ?: false,
+//            shouldLike = likeState.isLiked,
+//            animate = likeState.shouldAnimate,
+//        )
         if (prevState?.isLiked != likeState.isLiked) {
-            likeView.setLike(likeState.isLiked, likeState.likeMode)
+            likeView.setIsLiked(likeState.isLiked)
         }
 
         likeView.setTotalLikes(likeState.totalLike)

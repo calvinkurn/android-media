@@ -57,17 +57,28 @@ sealed class PlayInteractiveUiState {
 }
 
 sealed class PlayLikeMode {
-    data class Single(val shouldAnimate: Boolean) : PlayLikeMode()
-    object Multiple : PlayLikeMode()
+    data class Single(val isLiked: Boolean) : PlayLikeMode()
+    data class Multiple(val type: PlayMultipleLikeType) : PlayLikeMode()
+}
+
+sealed class PlayMultipleLikeType {
+    data class NotLiked(val shouldRemind: Boolean) : PlayMultipleLikeType()
+    object Liked : PlayMultipleLikeType()
 }
 
 data class PlayLikeUiState(
-        val isLiked: Boolean,
         val shouldShow: Boolean,
         val canLike: Boolean,
         val totalLike: String,
+        val shouldAnimate: Boolean,
         val likeMode: PlayLikeMode,
-)
+) {
+    val isLiked: Boolean
+        get() = when(likeMode) {
+            is PlayLikeMode.Single -> likeMode.isLiked
+            is PlayLikeMode.Multiple -> likeMode.type == PlayMultipleLikeType.Liked
+        }
+}
 
 data class PlayCartUiState(
         val shouldShow: Boolean,

@@ -171,12 +171,19 @@ class PlayViewModel @Inject constructor(
                 showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
                 status = status,
                 like = PlayLikeUiState(
-                    isLiked = likeInfo.status == PlayLikeStatus.Liked,
                     shouldShow = !bottomInsets.isAnyShown && status.isActive,
                     canLike = likeInfo.status != PlayLikeStatus.Unknown,
                     totalLike = channelReport.totalLikeFmt,
-                    likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
-                    else PlayLikeMode.Single(likeInfo.source == LikeSource.UserAction),
+                    shouldAnimate = false,
+                    likeMode = if (channelDetail.channelInfo.channelType.isLive) {
+                        PlayLikeMode.Multiple(
+                            type = if (likeInfo.status == PlayLikeStatus.Liked) PlayMultipleLikeType.Liked
+                            else PlayMultipleLikeType.NotLiked(false)
+                        )
+                    }
+                    else PlayLikeMode.Single(
+                        isLiked = likeInfo.status == PlayLikeStatus.Liked,
+                    ),
                 ),
                 totalView = channelReport.totalViewFmt,
                 isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
@@ -1426,6 +1433,12 @@ class PlayViewModel @Inject constructor(
                 copy(status = newStatus, source = LikeSource.UserAction)
             }
 
+            if (newStatus == PlayLikeStatus.Liked) {
+                viewModelScope.launch {
+                    _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
+                }
+            }
+
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
             _channelReport.setValue {
                 copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
@@ -1439,8 +1452,16 @@ class PlayViewModel @Inject constructor(
             if (likeInfo.status == PlayLikeStatus.Unknown) return
 
             val newStatus = if (likeInfo.status == PlayLikeStatus.Liked) PlayLikeStatus.NotLiked else PlayLikeStatus.Liked
-            _likeInfo.setValue {
-                copy(status = newStatus, source = LikeSource.UserAction)
+            _likeInfo.setValue { copy(status = newStatus) }
+
+            if (newStatus == PlayLikeStatus.Liked) {
+                viewModelScope.launch {
+                    _uiEvent.emit(
+                        AnimateLikeEvent(
+                            fromIsLiked = likeInfo.status == PlayLikeStatus.Liked
+                        )
+                    )
+                }
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)

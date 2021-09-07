@@ -32,7 +32,7 @@ data class ShowRealTimeNotificationEvent(
 /**
  * Multiple Likes
  */
-object RemindLikeEvent : PlayViewerNewUiEvent()
+data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
 
 //---------------------
 
