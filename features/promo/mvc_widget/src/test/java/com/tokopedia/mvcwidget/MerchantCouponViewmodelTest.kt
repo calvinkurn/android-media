@@ -1,16 +1,13 @@
-package com.tokopedia.mvcwidget.merchantcoupon
+package com.tokopedia.mvcwidget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponData
-import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponUsecase
-import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
 import com.tokopedia.mvcwidget.multishopmvc.data.CatalogMVCWithProductsListItem
 import com.tokopedia.mvcwidget.multishopmvc.data.MerchantCouponResponse
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductCategoriesFilterItem
-import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponData
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponUsecase
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,13 +19,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.reflect.KClass
 
 class MerchantCouponViewmodelTest {
 
     lateinit var viewModel: MerchantCouponViewModel
-    var gqlRepository = mockk<GraphqlRepository>()
-    val repository = spyk(MerchantCouponUsecase(gqlRepository))
+    val merchantCouponUsecase: MerchantCouponUsecase= mockk()
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -36,7 +31,7 @@ class MerchantCouponViewmodelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = MerchantCouponViewModel(repository)
+        viewModel = MerchantCouponViewModel(merchantCouponUsecase)
     }
 
     @After
@@ -48,7 +43,7 @@ class MerchantCouponViewmodelTest {
     @Test
     fun `getMerchantCouponData for success data`() {
         runBlockingTest {
-            val couponObserver = mockk<Observer<Resources<MerchantCouponData>>>() {
+            val couponObserver = mockk<Observer<LiveDataResult<MerchantCouponData>>>() {
                 every { onChanged(any()) } just Runs
             }
             val dataCatalog = mockk<List<CatalogMVCWithProductsListItem>>()
@@ -62,41 +57,31 @@ class MerchantCouponViewmodelTest {
                     every { catalogMVCWithProductsList } returns dataCatalog
                 }
             }
-            val data = mockk<GraphqlResponse>(relaxed = true)
-            coEvery { gqlRepository.getReseponse(any()) } returns data
-            coEvery { repository.executeOnBackground() } returns mockk {
-                every { getData<MerchantCouponResponse>(MerchantCouponResponse::class.java) } returns merchantCouponResponseData
-                every { getError(MerchantCouponResponse::class.java) } returns null
-            }
+            val merchantCouponData = MerchantCouponData(merchantCouponResponseData)
+            coEvery { merchantCouponUsecase.getResponse(any()) } returns merchantCouponResponseData
 
             viewModel.couponData.observeForever(couponObserver)
-            viewModel.setCategoryRootId("1")
             viewModel.merchantCouponData(1)
             verify(ordering = Ordering.ORDERED) {
-                couponObserver.onChanged(ofType(Loading::class as KClass<Loading<MerchantCouponData>>))
-                couponObserver.onChanged(ofType(Success::class as KClass<Success<MerchantCouponData>>))
+                viewModel.couponData.postValue(LiveDataResult.loading())
+                viewModel.couponData.postValue(LiveDataResult.success(merchantCouponData))
             }
-            val result = viewModel.couponData.value as Success
-            assert(result.data.merchantCouponResponse == merchantCouponResponseData)
+            val result = viewModel.couponData.value
+            assert(result?.data?.merchantCouponResponse == merchantCouponResponseData)
         }
     }
 
     @Test
     fun `getMerchantCouponData for error data`() {
-        val couponObserver = mockk<Observer<Resources<MerchantCouponData>>>() {
+        val couponObserver = mockk<Observer<LiveDataResult<MerchantCouponData>>>() {
             every { onChanged(any()) } just Runs
         }
-        val data = mockk<GraphqlResponse>(relaxed = true)
-        coEvery { gqlRepository.getReseponse(any()) } returns data
-        coEvery { repository.executeOnBackground() } returns mockk {
-            every { getData<MerchantCouponResponse>(MerchantCouponResponse::class.java) } returns null
-            every { getError(MerchantCouponResponse::class.java) } returns null
-        }
+        coEvery { merchantCouponUsecase.getResponse(any()) } returns MerchantCouponResponse()
         viewModel.couponData.observeForever(couponObserver)
         viewModel.merchantCouponData(0)
 
         verify(ordering = Ordering.ORDERED) {
-            couponObserver.onChanged(ofType(ErrorMessage::class as KClass<ErrorMessage<MerchantCouponData>>))
+            viewModel.couponData.postValue(LiveDataResult.error(Throwable()))
         }
     }
 }
