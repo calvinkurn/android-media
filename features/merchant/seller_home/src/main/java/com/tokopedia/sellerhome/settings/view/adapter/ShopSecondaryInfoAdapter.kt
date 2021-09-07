@@ -174,20 +174,4 @@ class ShopSecondaryInfoAdapter(
         )
     }
 
-    private fun getDummyVisitableList(): List<Visitable<ShopSecondaryInfoAdapterFactory>> {
-        return listOf(
-            FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess("https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BOE_Badge.png")),
-            ReputationBadgeWidgetUiModel(SettingResponseState.SettingSuccess("https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg")),
-            RMTransactionWidgetUiModel(
-                SettingResponseState.SettingSuccess(
-                    RmTransactionData(
-                        90, "10 agustus", true
-                    )
-                )
-            ),
-            ShopFollowersWidgetUiModel(SettingResponseState.SettingSuccess("100rb")),
-            ShopStatusWidgetUiModel(SettingResponseState.SettingSuccess(PowerMerchantProStatus.Advanced))
-        )
-    }
-
 }

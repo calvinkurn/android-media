@@ -1,11 +1,11 @@
 package com.tokopedia.sellerhome.settings.view.animator
 
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 
 class OtherMenuHeaderAnimator(
     private val scrollView: NestedScrollView?,
-    private val otherMenuHeader: ConstraintLayout?,
+    private val otherMenuHeader: LinearLayout?,
     private val toolbarHeight: Int
 ) {
 

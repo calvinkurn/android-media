@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.settings.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,12 +26,14 @@ class FreeShippingViewHolder(itemView: View?,
         itemView?.findViewById(R.id.iv_sah_new_other_shop_free_shipping)
     private val errorLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_free_shipping)
+    private val shimmerLoading: LoaderTextView? =
+        itemView?.findViewById(R.id.shimmer_sah_new_other_free_shipping)
 
     override fun bind(element: FreeShippingWidgetUiModel) {
         when(val state = element.state) {
             is SettingResponseState.SettingSuccess -> setFreeShippingImage(state.data)
             is SettingResponseState.SettingError -> setWidgetError()
-            else -> setFreeShippingImage("")
+            else -> setWidgetLoading()
         }
     }
 
@@ -43,6 +46,7 @@ class FreeShippingViewHolder(itemView: View?,
             }
         }
         errorLayout?.gone()
+        shimmerLoading?.gone()
     }
 
     private fun setWidgetError() {
@@ -53,6 +57,13 @@ class FreeShippingViewHolder(itemView: View?,
                 onErrorClicked()
             }
         }
+        shimmerLoading?.gone()
+    }
+
+    private fun setWidgetLoading() {
+        freeShippingImageView?.gone()
+        errorLayout?.gone()
+        shimmerLoading?.show()
     }
 
 }

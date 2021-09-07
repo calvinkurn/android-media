@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_lvl4"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
     tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
 
     <androidx.constraintlayout.widget.Group
@@ -25,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
         tools:text="Sejak Bergabung"/>
 
@@ -39,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_sah_new_other_shop_transaction_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_5"
         tools:text="10/100 Transaksi"/>
 

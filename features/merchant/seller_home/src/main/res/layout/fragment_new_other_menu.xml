@@ -88,7 +88,7 @@
         layout="@layout/view_partial_sah_new_other_header"
         android:id="@+id/view_sah_new_other_header"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:translationY="0dp"
         app:layout_constraintBottom_toTopOf="parent"/>
 

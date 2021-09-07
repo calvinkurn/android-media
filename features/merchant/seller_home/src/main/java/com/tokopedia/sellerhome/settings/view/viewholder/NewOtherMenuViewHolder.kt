@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.settings.view.viewholder
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +59,7 @@ class NewOtherMenuViewHolder(
     }
 
     private var scrollView: NestedScrollView? = null
-    private var otherMenuHeader: ConstraintLayout? = null
+    private var otherMenuHeader: LinearLayout? = null
     private var contentMotionLayout: MotionLayout? = null
     private var secondaryInfoRecyclerView: RecyclerView? = null
 

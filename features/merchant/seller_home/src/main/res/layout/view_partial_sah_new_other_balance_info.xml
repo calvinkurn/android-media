@@ -23,7 +23,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_saldo"
                 android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_title"
@@ -36,8 +36,12 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:text="@string/setting_balance"
                 android:textColor="@color/Unify_NN600"
+                android:ellipsize="end"
+                android:lines="1"
                 app:layout_constraintStart_toEndOf="@id/iv_sah_new_other_saldo"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/guideline_sah_new_other_saldo"
+                app:layout_constraintHorizontal_bias="0"
                 app:typographyType="body_3"/>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -99,7 +103,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_topads"
                 android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_topads_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_topads_title"
@@ -112,8 +116,12 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:text="@string/setting_topads_credits"
                 android:textColor="@color/Unify_NN600"
+                android:ellipsize="end"
+                android:lines="1"
                 app:layout_constraintStart_toEndOf="@id/iv_sah_new_other_topads"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/guideline_sah_new_other_topads"
+                app:layout_constraintHorizontal_bias="0"
                 app:typographyType="body_3"/>
 
             <com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
