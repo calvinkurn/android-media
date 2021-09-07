@@ -106,10 +106,7 @@ class PlayUpcomingFragment @Inject constructor(
 
             tvUpcomingTitle.text = it.title
 
-            val targetCalendar = PlayDateTimeFormatter.convertToCalendar(it.startTime)
-            targetCalendar?.let { calendar ->
-                upcomingTimerViewComponent.setTimer(calendar)
-            } ?: upcomingTimerViewComponent.invisible()
+            upcomingTimerViewComponent.setupTimer(it.startTime)
         }
 
         toolbarView.setShareInfo(playViewModel.latestCompleteChannelData.shareInfo)

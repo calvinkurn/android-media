@@ -14,9 +14,9 @@ object PlayDateTimeFormatter {
     private const val Z = "Z"
     private const val GMT07 = "+0700"
 
-    private const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
-    private const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
-    private const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
+    const val yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss"
+    const val ddMMMMyyyy_HHmm = "dd MMMM yyyy - HH:mm"
+    const val ddMMMyyyy_HHmm = "dd MMM yyyy - HH:mm"
 
     private const val GMT_DIVIDER = 100
 
@@ -61,7 +61,10 @@ object PlayDateTimeFormatter {
         }
     }
 
-    fun getDiffDayHourMinute(rawDate: String, pattern: String): Triple<Long, Long, Long> {
+    fun getDiffDayHourMinute(
+        rawDate: String,
+        pattern: String = ddMMMMyyyy_HHmm // TODO("Should be changed to yyyyMMddTHHmmss")
+    ): Triple<Long, Long, Long> {
         return try {
             val todayCalendar = Calendar.getInstance()
             val targetCalendar = convertToCalendar(rawDate, pattern)
