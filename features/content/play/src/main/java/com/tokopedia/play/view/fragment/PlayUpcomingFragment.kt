@@ -83,6 +83,17 @@ class PlayUpcomingFragment @Inject constructor(
         setupObserver()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        playViewModel.upcomingInfo?.let {
+            actionButton.setButtonStatus(
+                if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
+                else UpcomingActionButtonViewComponent.Status.HIDDEN
+            )
+        }
+    }
+
     private fun initView(view: View) {
         ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
         tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
@@ -92,11 +103,6 @@ class PlayUpcomingFragment @Inject constructor(
         playViewModel.upcomingInfo?.let {
             if(it.coverUrl.isNotEmpty())
                 Glide.with(view).load(it.coverUrl).into(ivUpcomingCover)
-
-            actionButton.setButtonStatus(
-                if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
-                else UpcomingActionButtonViewComponent.Status.HIDDEN
-            )
 
             tvUpcomingTitle.text = it.title
 
