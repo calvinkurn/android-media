@@ -115,7 +115,9 @@ class PlayUpcomingFragment @Inject constructor(
                 val state = cachedState.value
                 renderToolbarView(state.followStatus, state.partnerName)
             }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiEvent.collect { event ->
                 when(event) {
                     is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
