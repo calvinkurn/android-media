@@ -35,6 +35,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     companion object {
         const val SECOND_FRAGMENT_TAG = "second"
+        const val DELAY_TIMER_IN_MILISECOND = 3000L
     }
 
     override fun onAttach(context: Context) {
@@ -63,7 +64,6 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         val fullName = userSession.name
         val firstName = fullName.split(" ")[0]
         val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
-        val DELAY_TIMER_IN_MILISECOND = 3000L
         txt_greeting.text = greetingText
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_HOORAY)
         handler.postDelayed({
