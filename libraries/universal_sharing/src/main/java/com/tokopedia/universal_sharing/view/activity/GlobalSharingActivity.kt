@@ -9,8 +9,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import java.io.File
+import java.net.URLDecoder
 
 /**
  * Created by Yoris on 26/08/21.
@@ -50,8 +52,8 @@ class GlobalSharingActivity: BaseActivity() {
     }
 
     private fun showAndroidChooserSharing(bundle: Bundle) {
-        val text = bundle.getString(KEY_TEXT)
-        val image = bundle.getString(KEY_IMAGE_URL)
+        val text = bundle.getString(KEY_TEXT)?.decodeToUtf8()
+        val image = bundle.getString(KEY_IMAGE_URL)?.decodeToUtf8()
 
         val share = Intent(Intent.ACTION_SEND)
         share.putExtra(Intent.EXTRA_TEXT, text)
@@ -73,7 +75,7 @@ class GlobalSharingActivity: BaseActivity() {
     }
 
     private fun shareToInstagram(bundle: Bundle) {
-        val image = bundle.getString(KEY_IMAGE_URL) ?: ""
+        val image = bundle.getString(KEY_IMAGE_URL)?.decodeToUtf8() ?: ""
         if(image.isNotEmpty()) {
             SharingUtil.saveImageFromURLToStorage(this@GlobalSharingActivity, image) {
                 val imgFile = getFileProvider(File(it))
