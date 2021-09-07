@@ -17,7 +17,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
  * @author by yfsx on 20/03/19.
  */
 class VideoPlayerView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : VideoView(context, attrs, defStyleAttr) {
 
     private val job = SupervisorJob()
@@ -56,10 +56,10 @@ class VideoPlayerView @JvmOverloads constructor(
                         yield()
                         mVideoWidth =
                             retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                                .toInt()
+                                ?.toInt() ?: 0
                         mVideoHeight =
                             retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                                .toInt()
+                                ?.toInt() ?: 0
                     }
                     super.setVideoURI(uri)
                 }
@@ -84,7 +84,7 @@ class VideoPlayerView @JvmOverloads constructor(
                 }
             }
             setMeasuredDimension(width, height)
-        }else{
+        } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
     }
