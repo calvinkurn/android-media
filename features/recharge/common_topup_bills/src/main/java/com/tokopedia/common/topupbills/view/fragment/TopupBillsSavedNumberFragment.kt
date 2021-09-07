@@ -96,10 +96,10 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         binding?.run {
             commonTopupBillsSavedNumSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
+                    commonTopupBillsSavedNumViewpager.setCurrentItem(
                         POSITION_FAVORITE_NUMBER, true)
                 } else {
-                    binding?.commonTopupBillsSavedNumViewpager?.setCurrentItem(
+                    commonTopupBillsSavedNumViewpager.setCurrentItem(
                         POSITION_CONTACT_LIST, true)
                 }
             }
