@@ -60,13 +60,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
         signature?.run {
             if(cryptographyUtils?.getPublicKey()?.isNotEmpty() == true && signature.signature.isNotEmpty()){
                 registerFingerprintUseCase.registerFingerprint(
-                    fingerprintPreference.getUniqueId(),
+                    fingerprintPreference.getOrCreateUniqueId(),
                     this,
                     cryptographyUtils.getPublicKey(),
-                    {
-                        fingerprintPreference.saveUniqueIdIfEmpty(fingerprintPreference.getUniqueId())
-                        onSuccessRegisterFP(it)
-                    },
+                    { onSuccessRegisterFP(it) },
                     onErrorRegisterFP()
                 )
             }else {
@@ -78,6 +75,7 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
     fun removeFingerprint() {
         removeFingerprintUseCase.removeFingerprint(onSuccess = {
             if(it.data.isSuccess && it.data.error.isEmpty()) {
+                fingerprintPreference.removeUniqueId()
                 mutableRemoveFingerprintResult.postValue(Success(it.data))
             }else {
                 mutableRemoveFingerprintResult.postValue(Fail(MessageErrorException(it.data.error)))

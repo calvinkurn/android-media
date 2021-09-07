@@ -24,10 +24,19 @@ class FingerprintPreferenceManager @Inject constructor(val context: Context): Fi
         }
     }
 
-    override fun getUniqueId(): String {
+    override fun getUniqueId(): String =
+        preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+
+    override fun removeUniqueId() {
+        saveUniqueId("")
+    }
+
+    override fun getOrCreateUniqueId(): String {
         val cacheUniqueId = preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
         if(cacheUniqueId.isEmpty()) {
-            return DeviceInfo.getUUID(context)
+            val uniqueId = DeviceInfo.getUUID(context)
+            saveUniqueId(uniqueId)
+            return uniqueId
         }
         return cacheUniqueId
     }

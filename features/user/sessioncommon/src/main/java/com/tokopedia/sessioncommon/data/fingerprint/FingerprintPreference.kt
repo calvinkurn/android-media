@@ -5,4 +5,6 @@ interface FingerprintPreference {
     fun saveUniqueId(id: String)
     fun getUniqueId(): String
     fun isUniqueIdEmpty(): Boolean
+    fun getOrCreateUniqueId(): String
+    fun removeUniqueId()
 }
