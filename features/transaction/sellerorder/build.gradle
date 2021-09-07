@@ -48,8 +48,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -79,8 +77,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
@@ -91,9 +87,6 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
