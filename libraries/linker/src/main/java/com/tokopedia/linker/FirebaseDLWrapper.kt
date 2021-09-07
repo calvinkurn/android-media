@@ -46,7 +46,7 @@ class FirebaseDLWrapper {
                         }
                         if (link != null && activity != null) {
                             RouteManager.route(activity, link)
-                            processUtmParams(activity, link, firebaseUrl)
+                            processUtmParams( link, firebaseUrl)
                         }
                     }
                 }
@@ -62,7 +62,7 @@ class FirebaseDLWrapper {
 
     }
 
-    private fun processUtmParams(activity: Context, link: String, firebaseUrl: Uri) {
+    private fun processUtmParams( link: String, firebaseUrl: Uri) {
         var linkUri: Uri? = null
         linkUri = Uri.parse(link)
         var utmSource: String? = null
@@ -89,7 +89,6 @@ class FirebaseDLWrapper {
         }
 
         convertToCampaign(
-            activity,
             utmSource,
             utmCampaign,
             utmMedium,
@@ -213,7 +212,6 @@ class FirebaseDLWrapper {
     }
 
     private fun convertToCampaign(
-        context: Context,
         utmSource: String?,
         utmCampaign: String?,
         utmMedium: String?,
@@ -228,7 +226,7 @@ class FirebaseDLWrapper {
             if (!TextUtils.isEmpty(utmTerm)) {
                 param[LinkerConstants.UTM_TERM] = utmTerm ?: ""
             }
-            sendCampaignToTrackApp(context, param)
+            sendCampaignToTrackApp(param)
         }
         Log.d(
             "FirebaseDLWrapper",
@@ -236,7 +234,7 @@ class FirebaseDLWrapper {
         )
     }
 
-    private fun sendCampaignToTrackApp(context: Context, param: Map<String, Any>) {
+    private fun sendCampaignToTrackApp( param: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendCampaign(param)
         Log.d("FirebaseDLWrapper", "sent")
     }
