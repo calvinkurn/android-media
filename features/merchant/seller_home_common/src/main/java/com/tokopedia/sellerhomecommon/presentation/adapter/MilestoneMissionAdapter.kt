@@ -75,7 +75,8 @@ class MilestoneMissionAdapter(
                     }
                 }
 
-                btnShcMissionCta.text = mission.buttonMissionButton.title
+                btnShcMissionCta.isLoading = mission.missionButton.isLoading
+                btnShcMissionCta.text = mission.missionButton.title
                 btnShcMissionCta.setOnClickListener {
                     onCtaClick(mission)
                 }
@@ -88,10 +89,7 @@ class MilestoneMissionAdapter(
                     btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
                     btnShcMissionCta.isEnabled = false
                 } else {
-                    btnShcMissionCta.buttonType = UnifyButton.Type.MAIN
-                    btnShcMissionCta.isEnabled = true
-
-                    when (mission.buttonMissionButton.buttonStatus) {
+                    when (mission.missionButton.buttonStatus) {
                         BaseMilestoneMissionUiModel.ButtonStatus.ENABLED -> {
                             btnShcMissionCta.buttonType = UnifyButton.Type.MAIN
                             btnShcMissionCta.isEnabled = true

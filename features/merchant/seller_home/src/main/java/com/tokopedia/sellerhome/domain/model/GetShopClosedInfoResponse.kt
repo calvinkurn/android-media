@@ -20,8 +20,17 @@ data class ShopInfoByIDResponse(
 
 data class ShopInfoResultResponse(
     @Expose
+    @SerializedName("shopCore")
+    val coreInfo: ShopCoreInfoResponse? = ShopCoreInfoResponse(),
+    @Expose
     @SerializedName("closedInfo")
     val closedInfo: ShopClosedInfoResponse
+)
+
+data class ShopCoreInfoResponse(
+    @Expose
+    @SerializedName("url")
+    val url: String? = ""
 )
 
 data class ShopClosedInfoResponse(

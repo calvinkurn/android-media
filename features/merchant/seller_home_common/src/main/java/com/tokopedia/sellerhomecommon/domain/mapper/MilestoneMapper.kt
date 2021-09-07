@@ -55,7 +55,7 @@ class MilestoneMapper @Inject constructor(
                 title = it.title.orEmpty(),
                 subTitle = it.subtitle.orEmpty(),
                 missionCompletionStatus = it.missionCompletionStatus.orFalse(),
-                buttonMissionButton = MissionButtonUiModel(
+                missionButton = MissionButtonUiModel(
                     title = buttonMissionData?.title.orEmpty(),
                     url = buttonMissionData?.url.orEmpty(),
                     urlType = getUrlType(buttonMissionData?.urlType),
@@ -77,7 +77,7 @@ class MilestoneMapper @Inject constructor(
             imageUrl = finishData.imageUrl.orEmpty(),
             title = finishData.title.orEmpty(),
             subTitle = finishData.subtitle.orEmpty(),
-            buttonMissionButton = MissionButtonUiModel(
+            missionButton = MissionButtonUiModel(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,
                 urlType = getUrlType(buttonFinishData.urlType),

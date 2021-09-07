@@ -21,6 +21,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.exception.MessageErrorException
@@ -55,6 +56,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
@@ -94,7 +96,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, CoroutineScope, SellerHomeFragmentListener, ShareBottomsheetListener {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
@@ -182,6 +184,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
     private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var shopShareData: ShopShareDataUiModel? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -239,8 +242,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
-        context?.let { UpdateShopActiveService.startService(it) }
+        observeShopShareData()
 
+        context?.let { UpdateShopActiveService.startService(it) }
         setupPMShopScoreInterrupt()
     }
 
@@ -825,10 +829,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     ) {
         when (mission) {
             is MilestoneMissionUiModel -> {
-                when (mission.buttonMissionButton.urlType) {
+                when (mission.missionButton.urlType) {
                     BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
                         activity?.let {
-                            RouteManager.route(it, mission.buttonMissionButton.appLink)
+                            RouteManager.route(it, mission.missionButton.appLink)
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
@@ -839,7 +843,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             is MilestoneFinishMissionUiModel -> {
                 activity?.let {
                     it.startActivityForResult(
-                        RouteManager.getIntent(it, mission.buttonMissionButton.appLink),
+                        RouteManager.getIntent(it, mission.missionButton.appLink),
                         REQ_CODE_MILESTONE_WIDGET
                     )
                 }
@@ -847,34 +851,47 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        val shareDataModel = ShopShareHelper.DataModel(
-            shareModel, "shopCoreUrl", "shopImageFilePath"
-        )
-        activity?.let {
-            shopShareHelper.onShareOptionClicked(it, shareDataModel, onUrlCreated = {
-                universalShareBottomSheet?.dismiss()
-            })
-        }
-    }
-
-    override fun onCloseOptionClicked() {
-
-    }
-
     private fun shareMyShop() {
-        if (universalShareBottomSheet == null) {
-            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(this@SellerHomeFragment)
-                setMetaData(
-                    userSession.shopName,
-                    userSession.shopAvatar,
-                    ""
-                )
-                setOgImageUrl(userSession.shopAvatar)
+        if (shopShareData != null) {
+            if (universalShareBottomSheet == null) {
+                val shareListener = object : ShareBottomsheetListener {
+                    override fun onShareOptionClicked(shareModel: ShareModel) {
+                        val shareDataModel = ShopShareHelper.DataModel(
+                            shareModel, shopShareData?.shopUrl.orEmpty(), "shopImageFilePath"
+                        )
+                        activity?.let {
+                            shopShareHelper.onShareOptionClicked(
+                                it,
+                                shareDataModel,
+                                callback = {
+                                    universalShareBottomSheet?.dismiss()
+                                }
+                            )
+                        }
+                    }
+
+                    override fun onCloseOptionClicked() {
+
+                    }
+                }
+
+                universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                    init(shareListener)
+                    setMetaData(
+                        userSession.shopName,
+                        userSession.shopAvatar,
+                        ""
+                    )
+                    setOgImageUrl(userSession.shopAvatar)
+                }
+            }
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        } else {
+            val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
+            milestoneWidget?.let {
+                handleShopShareMilestoneWidget(it)
             }
         }
-        universalShareBottomSheet?.show(childFragmentManager, this)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {
@@ -1023,6 +1040,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 Unit
                             }
                         }
+                        handleShopShareMilestoneWidget(newWidget)
                     }
                 }
                 newWidgets
@@ -1220,6 +1238,27 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun observeShopShareData() {
+        observe(sellerHomeViewModel.shopShareData) {
+            if (it is Success) {
+                shopShareData = it.data
+            }
+            val milestoneWidget = adapter.data.firstOrNull { widget ->
+                widget is MilestoneWidgetUiModel
+            } as? MilestoneWidgetUiModel
+            dismissMilestoneShareMissionLoading(milestoneWidget)
+        }
+    }
+
+    private fun dismissMilestoneShareMissionLoading(widget: MilestoneWidgetUiModel?) {
+        widget?.let {
+            it.data?.milestoneMissions?.forEach { btn ->
+                btn.missionButton.isLoading = false
+            }
+            notifyWidgetChanged(it)
+        }
+    }
+
     private fun setViewBackground() = view?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -1310,7 +1349,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         forEach { widgetData ->
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
-            }.takeIf { it > -1 }?.let { index ->
+            }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
                     if (shouldRemoveWidget(widget, widgetData)) {
@@ -1320,6 +1359,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache ?: false
+
+                        handleShopShareMilestoneWidget(copiedWidget)
+
                         newWidgetList[index] = copiedWidget
                     }
                 }
@@ -1330,6 +1372,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
+            }
+        }
+    }
+
+    private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
+        if (widget is MilestoneWidgetUiModel) {
+            val shareMission = widget.data?.milestoneMissions?.firstOrNull {
+                return@firstOrNull it.missionButton
+                    .urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
+            }
+            val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
+            if (isShareMissionAvailable) {
+                shareMission?.missionButton?.isLoading = true
+                sellerHomeViewModel.getShopInfoById()
             }
         }
     }

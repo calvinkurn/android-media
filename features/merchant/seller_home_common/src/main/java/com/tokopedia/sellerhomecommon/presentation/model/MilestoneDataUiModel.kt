@@ -37,7 +37,7 @@ interface BaseMilestoneMissionUiModel {
     val title: String
     val subTitle: String
     val missionCompletionStatus: Boolean
-    val buttonMissionButton: MissionButtonUiModel
+    val missionButton: MissionButtonUiModel
 
     companion object {
         const val MISSION_KEY = "mission"
@@ -60,7 +60,8 @@ data class MissionButtonUiModel(
     val urlType: BaseMilestoneMissionUiModel.UrlType = BaseMilestoneMissionUiModel.UrlType.REDIRECT,
     val url: String = "",
     val appLink: String = "",
-    val buttonStatus: BaseMilestoneMissionUiModel.ButtonStatus = BaseMilestoneMissionUiModel.ButtonStatus.ENABLED
+    val buttonStatus: BaseMilestoneMissionUiModel.ButtonStatus = BaseMilestoneMissionUiModel.ButtonStatus.ENABLED,
+    var isLoading: Boolean = false
 )
 
 data class MilestoneMissionUiModel(
@@ -69,7 +70,7 @@ data class MilestoneMissionUiModel(
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val buttonMissionButton: MissionButtonUiModel = MissionButtonUiModel()
+    override val missionButton: MissionButtonUiModel = MissionButtonUiModel()
 ) : BaseMilestoneMissionUiModel
 
 data class MilestoneFinishMissionUiModel(
@@ -78,7 +79,7 @@ data class MilestoneFinishMissionUiModel(
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
-    override val buttonMissionButton: MissionButtonUiModel = MissionButtonUiModel()
+    override val missionButton: MissionButtonUiModel = MissionButtonUiModel()
 ) : BaseMilestoneMissionUiModel
 
 data class MilestoneCtaUiModel(

@@ -2,13 +2,15 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
@@ -49,6 +51,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
+    private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -89,8 +92,8 @@ class SellerHomeViewModel @Inject constructor(
     private val _stopWidgetType = MutableLiveData<String>()
     private val _recommendationWidgetData =
         MutableLiveData<Result<List<RecommendationDataUiModel>>>()
-    private val _milestoneWidgetData =
-        MutableLiveData<Result<List<MilestoneDataUiModel>>>()
+    private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
+    private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -126,6 +129,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _recommendationWidgetData
     val milestoneWidgetData: LiveData<Result<List<MilestoneDataUiModel>>>
         get() = _milestoneWidgetData
+    val shopShareData: LiveData<Result<ShopShareDataUiModel>>
+        get() = _shopShareData
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
@@ -495,7 +500,6 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     fun getMilestoneWidgetData(dataKeys: List<String>) {
-        println("getMilestoneWidgetData")
         launchCatchError(block = {
             val result: List<MilestoneDataUiModel> = withContext(dispatcher.io) {
                 getRecommendationUseCase.get().params = GetMilestoneDataUseCase.createParams(
@@ -519,6 +523,17 @@ class SellerHomeViewModel @Inject constructor(
             _shopLocation.value = result
         }, onError = {
             _shopLocation.value = Fail(it)
+        })
+    }
+
+    fun getShopInfoById() {
+        launchCatchError(context = dispatcher.io, block = {
+            val shopId = userSession.get().shopId.toLongOrZero()
+            val result = getShopInfoByIdUseCase.get().execute(shopId)
+            val shopShareData = ShopShareDataUiModel(result.coreInfo?.url.orEmpty())
+            _shopShareData.postValue(Success(shopShareData))
+        }, onError = {
+            _shopShareData.postValue(Fail(it))
         })
     }
 
@@ -640,7 +655,6 @@ class SellerHomeViewModel @Inject constructor(
             barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
-            println("SellerHomeViewModel -> widgetsData : $widgetsData")
             widgetsData.mapToWidgetModel(widgets)
         }
     }
