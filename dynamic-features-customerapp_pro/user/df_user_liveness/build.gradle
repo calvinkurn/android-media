@@ -62,5 +62,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
+    implementation projectOrAar(rootProject.ext.features.kyccentralized)
     implementation projectOrAar(rootProject.ext.features.liveness)
 }
