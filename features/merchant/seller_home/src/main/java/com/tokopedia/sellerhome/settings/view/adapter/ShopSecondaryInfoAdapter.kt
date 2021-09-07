@@ -69,11 +69,56 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    fun setFreeShippingData(state: SettingResponseState<String>) {
+    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
+        when(state) {
+            is SettingResponseState.SettingSuccess -> setFreeShippingSuccess(state)
+            is SettingResponseState.SettingError -> setFreeShippingError(state.throwable)
+            else -> setFreeShippingLoading()
+        }
+    }
+
+    private fun setFreeShippingSuccess(successState: SettingResponseState.SettingSuccess<Pair<Boolean, String>>) {
+        val (isActive, freeShippingUrl) = successState.data
+        visitables?.run {
+            indexOfFirst { it is FreeShippingWidgetUiModel }.let { index ->
+                when {
+                    index >= 0 && isActive -> {
+                        this[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess(freeShippingUrl))
+                        notifyItemChanged(index)
+                    }
+                    index >= 0 && !isActive -> {
+                        removeAt(index)
+                        notifyItemRemoved(index)
+                    }
+                    isActive -> {
+                        addElement(FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess(freeShippingUrl)))
+                        notifyItemInserted(lastIndex)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setFreeShippingError(throwable: Throwable) {
         visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
             if (index >= 0) {
-                visitables[index] = FreeShippingWidgetUiModel(state)
+                visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable))
                 notifyItemChanged(index)
+            } else {
+                visitables?.add(FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable)))
+                notifyItemInserted(lastIndex)
+            }
+        }
+    }
+
+    private fun setFreeShippingLoading() {
+        visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
+            if (index >= 0) {
+                visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingLoading)
+                notifyItemChanged(index)
+            } else {
+                visitables?.add(FreeShippingWidgetUiModel(SettingResponseState.SettingLoading))
+                notifyItemInserted(lastIndex)
             }
         }
     }
@@ -107,6 +152,7 @@ class ShopSecondaryInfoAdapter(
             if (index >= 0) {
                 val loadingState = SettingResponseState.SettingLoading
                 visitables[index] = ShopStatusWidgetUiModel(loadingState)
+                notifyItemChanged(index)
                 setRmTranscationWidget(index, loadingState)
             }
         }
@@ -117,6 +163,7 @@ class ShopSecondaryInfoAdapter(
             if (index >= 0) {
                 val errorState = SettingResponseState.SettingError(throwable)
                 visitables[index] = ShopStatusWidgetUiModel(errorState)
+                notifyItemChanged(index)
                 setRmTranscationWidget(index, errorState)
             }
         }

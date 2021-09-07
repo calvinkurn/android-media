@@ -61,7 +61,7 @@ class NewOtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    private val _freeShippingUrlLiveData = MutableLiveData<SettingResponseState<String>>()
+    private val _freeShippingLiveData = MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
@@ -84,6 +84,8 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _kreditTopAdsFormattedLiveData
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
+    val freeShippingLiveData: LiveData<SettingResponseState<Pair<Boolean, String>>>
+        get() = _freeShippingLiveData
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
@@ -119,7 +121,7 @@ class NewOtherMenuViewModel @Inject constructor(
         addSource(_shopOperationalLiveData) {
             value = value?.getUpdatedSuccessMap(OtherMenuDataType.Operational, it)
         }
-        addSource(_freeShippingUrlLiveData) {
+        addSource(_freeShippingLiveData) {
             value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
         }
     }
@@ -164,8 +166,6 @@ class NewOtherMenuViewModel @Inject constructor(
         get() = _shopPeriodType
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
-    val freeShippingUrlLiveData: LiveData<SettingResponseState<String>>
-        get() = _freeShippingUrlLiveData
 
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
@@ -179,7 +179,6 @@ class NewOtherMenuViewModel @Inject constructor(
         getShopOperationalData()
         getBalanceInfoData()
         getKreditTopAdsData()
-        getFreeShippingStatusData()
         getIsTopAdsAutoTopup()
     }
 
@@ -227,7 +226,7 @@ class NewOtherMenuViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
-        _freeShippingUrlLiveData.value = SettingResponseState.SettingLoading
+        _freeShippingLiveData.value = SettingResponseState.SettingLoading
         getFreeShippingStatusData()
     }
 
@@ -269,19 +268,30 @@ class NewOtherMenuViewModel @Inject constructor(
 
     private fun getFreeShippingStatusData() {
 
-        // TODO: Check for remote config
         val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         val inTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         launchCatchError(block = {
-            val isFreeShippingActive = withContext(dispatcher.io) {
-                val userId = userSession.userId.toIntOrZero()
-                val shopId = userSession.shopId.toIntOrZero()
-                val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
-                getShopFreeShippingInfoUseCase.execute(params).first().freeShipping.imgUrl
+            val freeShippingPair = withContext(dispatcher.io) {
+                if (freeShippingDisabled || inTransitionPeriod) {
+                    val userId = userSession.userId.toIntOrZero()
+                    val shopId = userSession.shopId.toIntOrZero()
+                    val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
+                    getShopFreeShippingInfoUseCase.execute(params).first().let {
+                        it.freeShipping.isActive to it.freeShipping.imgUrl
+                    }
+                } else {
+                    val userId = userSession.userId.toIntOrZero()
+                    val shopId = userSession.shopId.toIntOrZero()
+                    val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
+                    getShopFreeShippingInfoUseCase.execute(params).first().let {
+                        it.freeShipping.isActive to it.freeShipping.imgUrl
+                    }
+                }
             }
-
-            _freeShippingUrlLiveData.value = SettingResponseState.SettingSuccess(isFreeShippingActive)
-        }){}
+            _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)
+        }, onError = {
+            _freeShippingLiveData.value = SettingResponseState.SettingError(it)
+        })
     }
 
     private fun getShopBadgeData() {

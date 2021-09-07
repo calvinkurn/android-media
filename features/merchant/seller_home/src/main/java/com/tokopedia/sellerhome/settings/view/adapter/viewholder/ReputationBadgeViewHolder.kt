@@ -62,7 +62,7 @@ class ReputationBadgeViewHolder(itemView: View?,
 
     private fun showLoading() {
         shopBadgeImageView?.gone()
-        errorLayout?.onFocusChangeListener
+        errorLayout?.gone()
         shimmerLoading?.show()
     }
 }

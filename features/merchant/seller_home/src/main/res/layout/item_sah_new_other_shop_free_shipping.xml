@@ -23,6 +23,7 @@
         android:id="@+id/shimmer_sah_new_other_free_shipping"
         android:layout_width="@dimen/sah_new_other_item_shop_shimmer_width"
         android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

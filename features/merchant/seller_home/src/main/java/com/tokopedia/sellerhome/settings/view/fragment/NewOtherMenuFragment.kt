@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -387,7 +386,7 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     private fun observeFreeShipping() {
-        viewModel.freeShippingUrlLiveData.observe(viewLifecycleOwner) {
+        viewModel.freeShippingLiveData.observe(viewLifecycleOwner) {
             viewHolder?.setFreeShippingData(it)
             if (it is SettingResponseState.SettingError) {
                 showErrorToaster(it.throwable) {

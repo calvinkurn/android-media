@@ -178,7 +178,7 @@ class NewOtherMenuViewHolder(
         }
     }
 
-    fun setFreeShippingData(state: SettingResponseState<String>) {
+    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setFreeShippingData(state)
         }

@@ -37,11 +37,13 @@ class TopadsTopupView @JvmOverloads constructor(
 
     fun setTopadsValue(value: String) {
         valueTextView?.run {
+            clearAnimation()
             text = value
             alpha = VISIBLE_ALPHA_FLOAT
             translationY = 0f
         }
         messageTextView?.run {
+            clearAnimation()
             alpha = HIDDEN_ALPHA_FLOAT
             translationY = ANIM_TRANSLATION_Y
         }

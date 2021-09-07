@@ -18,9 +18,10 @@
         android:id="@+id/tv_sah_new_other_shop_hour_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/sah_new_other_item_shop_info_margin"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ic_sah_new_other_shop_hour"
+        app:layout_constraintBottom_toTopOf="@id/tv_sah_new_other_shop_hour_desc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -51,8 +52,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sah_new_other_shop_hour_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_5"
         tools:text="24 Jam"/>
 
