@@ -708,13 +708,13 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
             } else if (requestCode == REQUEST_CODE_CONTACT_DATA && data != null) {
                 data.run {
-                    userData = this.getParcelableExtra(UmrahCheckoutContactDataFragment.EXTRA_CONTACT_DATA)
+                    userData = this.getParcelableExtra(UmrahCheckoutContactDataFragment.EXTRA_CONTACT_DATA) ?: ContactUser()
                     updateContactData()
                 }
             } else if (requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT && data !=null){
                 data.let {
                     if (it.hasExtra(EXTRA_PROMO_DATA)) {
-                        val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
+                        val itemPromoData = it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
                         promoCode = itemPromoData.promoCode
 
                         when (itemPromoData.state) {
@@ -727,19 +727,19 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                             TickerCheckoutView.State.FAILED -> {
                                 promoCode = ""
                                 setupPromoTicker(TickerCheckoutView.State.FAILED,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
+                                        itemPromoData.title.toEmptyStringIfNull(),
+                                        itemPromoData.description.toEmptyStringIfNull())
 
                             }
                             TickerCheckoutView.State.ACTIVE -> {
                                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
+                                        itemPromoData.title.toEmptyStringIfNull(),
+                                        itemPromoData.description.toEmptyStringIfNull())
                             }
                             TickerCheckoutView.State.INACTIVE -> {
                                 setupPromoTicker(TickerCheckoutView.State.INACTIVE,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
+                                        itemPromoData.title.toEmptyStringIfNull(),
+                                        itemPromoData.description.toEmptyStringIfNull())
                             }
                             else -> {
                                 promoCode = ""
