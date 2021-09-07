@@ -1,31 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@color/play_dms_N600">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_timer_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Akan mulai dalam"
+        android:text="@string/play_will_start_on"
         android:textColor="@color/Unify_Static_White"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
         android:id="@+id/timer_upcoming"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_timer_label"
         app:timer_unify_highlight_show_text="false"
         app:timer_unify_highlight_size="small"
-        app:timer_unify_highlight_variant="dark_red" />
+        app:timer_unify_highlight_variant="dark_red"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_upcoming_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/play_dms_Y300"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="bold"
+        tools:text="11 Desember 2020 - 19:00" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
