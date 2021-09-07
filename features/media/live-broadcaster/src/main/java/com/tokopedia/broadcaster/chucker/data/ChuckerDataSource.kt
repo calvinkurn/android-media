@@ -1,9 +1,7 @@
-package com.tokopedia.broadcaster.data
+package com.tokopedia.broadcaster.chucker.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.lifecycle.LiveData
-import com.tokopedia.broadcaster.chucker.data.BroadcasterChuckerDb
 import com.tokopedia.broadcaster.chucker.data.entity.ChuckerLog
 import com.tokopedia.broadcaster.chucker.data.repository.ChuckerLogRepository
 import com.tokopedia.broadcaster.chucker.data.repository.ChuckerLogRepositoryImpl

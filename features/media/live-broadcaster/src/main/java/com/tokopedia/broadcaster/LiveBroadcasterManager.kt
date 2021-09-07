@@ -9,14 +9,15 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
-import com.tokopedia.broadcaster.notification.ChuckerNotification
+import com.tokopedia.broadcaster.chucker.ui.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BitrateMode
-import com.tokopedia.broadcaster.data.BroadcasterLogger
+import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.tracker.BroadcasterLoggerImpl
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
@@ -41,7 +42,9 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     private var mHandler: Handler? = null
     private var mBitrateAdapter: BitrateAdapter? = null
     private val mConnection = BroadcasterConnection()
-    private val mLogger = BroadcasterLogger()
+
+    private val mLogger by lazy { BroadcasterLoggerImpl() }
+    private val mLog = BroadcasterDataLog()
 
     private var isPushStarted = false
 
@@ -173,7 +176,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
             Streamer.CONNECTION_STATE.SETUP -> {
                 broadcastState(BroadcasterState.Connecting)
             }
-            Streamer.CONNECTION_STATE.CONNECTED -> mLogger.init(streamer, connectionId)
+            Streamer.CONNECTION_STATE.CONNECTED -> mLog.init(streamer, connectionId)
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
                     lastState.isError -> broadcastState(BroadcasterState.Recovered)
@@ -382,8 +385,8 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { mLogger.update(it, mConfig) }
-                    mListener?.onUpdateLivePusherStatistic(mLogger)
+                    mContext?.let { mLog.update(it, mConfig, mLogger) }
+                    mListener?.onUpdateLivePusherStatistic(mLog)
                 }
             }
 

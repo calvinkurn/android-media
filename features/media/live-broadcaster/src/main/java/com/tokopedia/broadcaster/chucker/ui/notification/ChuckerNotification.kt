@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.notification
+package com.tokopedia.broadcaster.chucker.ui.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

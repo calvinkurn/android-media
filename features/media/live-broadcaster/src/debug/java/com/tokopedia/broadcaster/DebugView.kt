@@ -7,7 +7,7 @@ import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.broadcaster.data.BroadcasterConfig
-import com.tokopedia.broadcaster.data.BroadcasterLogger
+import com.tokopedia.broadcaster.tracker.BroadcasterDataLog
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isPushing
 import com.tokopedia.kotlin.extensions.view.hide
@@ -45,7 +45,7 @@ class DebugView : ScrollView {
         tvPushInfo.text = info.toString()
     }
 
-    fun updateStats(log: BroadcasterLogger) {
+    fun updateStats(log: BroadcasterDataLog) {
         val info = StringBuilder()
         info.append("\n\n")
         info.append("Current Bandwidth: ${log.getBandwidth()}\n")

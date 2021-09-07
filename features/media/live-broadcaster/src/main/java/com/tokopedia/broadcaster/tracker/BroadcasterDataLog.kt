@@ -1,14 +1,16 @@
-package com.tokopedia.broadcaster.data
+package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
+import com.tokopedia.broadcaster.chucker.data.ChuckerDataSource
 import com.tokopedia.broadcaster.chucker.data.mapper.mapToData
 import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
+import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.config.GlobalConfig
 import com.wmspanel.libstream.Streamer
 import java.util.*
 import kotlin.math.ceil
 
-class BroadcasterLogger {
+class BroadcasterDataLog {
 
     private var mStreamer: Streamer? = null
     private var mConnectionId: Int? = null
@@ -68,21 +70,24 @@ class BroadcasterLogger {
 
     fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    fun update(context: Context, config: BroadcasterConfig) {
+    fun update(context: Context, config: BroadcasterConfig, logger: BroadcasterLogger) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
         val currentTime = System.currentTimeMillis()
         val bytesSent = streamer.getBytesSent(connectionId)
         val timeDiff = currentTime - mPrevTime
+
         mBps = (if (timeDiff > 0) 8 * 1000 * (bytesSent - mPrevBytes) / timeDiff else 0)
         mPrevTime = currentTime
         mPrevBytes = bytesSent
         mPacketLossIncreased = false
         mFps = streamer.fps
+
         val audioPacketLost = streamer.getAudioPacketsLost(connectionId)
         val videoPacketLost = streamer.getAudioPacketsLost(connectionId)
         val udpPacketsLost = streamer.getAudioPacketsLost(connectionId)
+
         if (mAudioPacketsLost != audioPacketLost || mVideoPacketsLost != videoPacketLost || mUdpPacketsLost != udpPacketsLost) {
             mAudioPacketsLost = audioPacketLost
             mVideoPacketsLost = videoPacketLost
@@ -90,25 +95,30 @@ class BroadcasterLogger {
             mPacketLossIncreased = true
         }
 
+        val dataUIModel = ChuckerLogUIModel(
+            url = config.ingestUrl,
+            connectionId = mConnectionId?: 0,
+            startTime = mStartTime,
+            endTime = mPrevTime,
+            videoWidth = config.videoWidth,
+            videoHeight = config.videoHeight,
+            videoBitrate = config.videoBitrate,
+            audioType = config.audioType,
+            audioRate = config.audioRate,
+            bitrateMode = config.bitrateMode,
+            fps = getFps(),
+            bandwidth = getBandwidth(),
+            traffic = getTraffic(),
+        )
+
         if (GlobalConfig.DEBUG) {
             ChuckerDataSource
                 .instance(context)
-                .logChucker(ChuckerLogUIModel(
-                    url = config.ingestUrl,
-                    connectionId = mConnectionId?: 0,
-                    startTime = mStartTime,
-                    endTime = mPrevTime,
-                    videoWidth = config.videoWidth,
-                    videoHeight = config.videoHeight,
-                    videoBitrate = config.videoBitrate,
-                    audioType = config.audioType,
-                    audioRate = config.audioRate,
-                    bitrateMode = config.bitrateMode,
-                    fps = getFps(),
-                    bandwidth = getBandwidth(),
-                    traffic = getTraffic(),
-                ).mapToData())
+                .logChucker(dataUIModel.mapToData())
         }
+
+        // track data
+        logger.track(dataUIModel)
     }
 
 }
