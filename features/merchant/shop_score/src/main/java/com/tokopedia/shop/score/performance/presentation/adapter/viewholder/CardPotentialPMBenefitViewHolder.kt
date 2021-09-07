@@ -4,10 +4,11 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemNonEligibleStatusPowerMerchantBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRegularMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
-import kotlinx.android.synthetic.main.item_non_eligible_status_power_merchant.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CardPotentialPMBenefitViewHolder(
     view: View,
@@ -18,6 +19,8 @@ class CardPotentialPMBenefitViewHolder(
     companion object {
         val LAYOUT = R.layout.item_non_eligible_status_power_merchant
     }
+
+    private val binding: ItemNonEligibleStatusPowerMerchantBinding? by viewBinding()
 
     private var itemPotentialPMBenefitAdapter: ItemPotentialPMBenefitAdapter? = null
 
@@ -32,8 +35,8 @@ class CardPotentialPMBenefitViewHolder(
     }
 
     private fun setPotentialPMBenefitAdapter(element: SectionRMPotentialPMBenefitUiModel?) {
-        with(itemView) {
-            rv_shop_pm_potential_benefit?.apply {
+        binding?.apply {
+            rvShopPmPotentialBenefit.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPotentialPMBenefitAdapter
             }

@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.databinding.FragmentShopPerformanceBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -42,8 +44,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_penalty_detail.*
-import kotlinx.android.synthetic.main.fragment_shop_performance.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -79,6 +80,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             shopPerformanceAdapterTypeFactory
         )
     }
+
+    private val binding: FragmentShopPerformanceBinding? by viewBinding()
+
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
@@ -372,7 +376,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionFaqSection
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
@@ -411,11 +415,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun recyclerViewScrollListenerCoachMark() {
-        rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 val performanceLayoutManager =
-                    rvShopPerformance.layoutManager as? LinearLayoutManager
+                    binding?.rvShopPerformance?.layoutManager as? LinearLayoutManager
                 performanceLayoutManager?.let { layoutManager ->
                     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
@@ -494,7 +498,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         coachMark?.isDismissed = false
 
-        rvShopPerformance?.post {
+        binding?.rvShopPerformance?.post {
             if (getCoachMarkItems().value.isNotEmpty()) {
                 coachMark?.showCoachMark(getCoachMarkItems().value)
             }
@@ -548,7 +552,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = it
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -565,7 +569,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionItemHeader
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -582,7 +586,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionItemDetail
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -599,7 +603,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionItemDetail
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -645,12 +649,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getSectionLastItemViewCoachMark(): View? {
         return getPositionLastItemCoachMark()?.let { lastItemPosition ->
-            val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
+            val layoutManager = binding?.rvShopPerformance?.layoutManager as? LinearLayoutManager
             val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
             val view =
-                lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
+                lastItemView?.let { binding?.rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
             val viewHolder = view?.let {
-                rvShopPerformance?.findContainingViewHolder(it)
+                binding?.rvShopPerformance?.findContainingViewHolder(it)
             }
             viewHolder?.itemView
         }
@@ -661,8 +665,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
                 it != RecyclerView.NO_POSITION
             }
-        val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+        val view = itemHeaderPosition?.let { binding?.rvShopPerformance?.layoutManager?.getChildAt(it) }
+        val headerViewHolder = view?.let { binding?.rvShopPerformance?.findContainingViewHolder(it) }
         return headerViewHolder?.itemView
     }
 
@@ -672,8 +676,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 .takeIf {
                     it != RecyclerView.NO_POSITION
                 }
-        val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+        val view = itemPeriodPosition?.let { binding?.rvShopPerformance?.layoutManager?.getChildAt(it) }
+        val periodViewHolder = view?.let { binding?.rvShopPerformance?.findContainingViewHolder(it) }
         return periodViewHolder?.itemView
     }
 
@@ -690,7 +694,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun setupAdapter() {
-        rvShopPerformance?.apply {
+        binding?.rvShopPerformance?.apply {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = shopPerformanceAdapter
         }
@@ -736,7 +740,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         .firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
                     if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
-                        Handler().postDelayed({
+                        Handler(Looper.getMainLooper()).postDelayed({
                             scrollToItemParameterDetailCoachMark()
                             showCoachMark()
                         }, COACH_MARK_RENDER_SHOW)
@@ -759,7 +763,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun onSwipeRefreshShopPerformance() {
-        shopPerformanceSwipeRefresh?.setOnRefreshListener {
+        binding?.shopPerformanceSwipeRefresh?.setOnRefreshListener {
             loadData()
             showPenaltyBadge()
             coachMark?.dismissCoachMark()
@@ -774,7 +778,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         shopPerformanceAdapter.showLoading()
-        shopPerformanceSwipeRefresh?.isRefreshing = false
+        binding?.shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     private fun hideLoading() {
@@ -784,7 +788,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(shop_performance_toolbar)
+            setSupportActionBar(binding?.shopPerformanceToolbar)
             supportActionBar?.apply {
                 title = getString(R.string.title_shop_performance)
             }

@@ -6,21 +6,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.databinding.BottomsheetTooltipInformationLevelBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.adapter.CardTooltipLevelAdapter
 import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottomsheet_tooltip_information_level.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
@@ -41,6 +38,8 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private var containerCardIncomeInformation: ConstraintLayout? = null
 
     private val cardTooltipLevelAdapter by lazy { CardTooltipLevelAdapter() }
+
+    private val binding: BottomsheetTooltipInformationLevelBinding? by viewBinding()
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_information_level
 
@@ -109,7 +108,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     private fun observeShopInfoLevel() {
         observe(shopPerformanceViewModel.shopInfoLevel) {
-            loaderTooltipLevel?.hide()
+            binding?.loaderTooltipLevel?.hide()
             val shopInfoLevelUiModel = ShopInfoLevelUiModel(
                 shopIncome = shopIncome,
                 productSold = productSold,

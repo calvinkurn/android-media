@@ -10,10 +10,10 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
+import com.tokopedia.shop.score.databinding.TimerNewSellerBeforeTransitionBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSellerListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
-import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemTimerNewSellerViewHolder(
     view: View,
@@ -24,13 +24,16 @@ class ItemTimerNewSellerViewHolder(
         val LAYOUT = R.layout.timer_new_seller_before_transition
     }
 
-    override fun bind(element: ItemTimerNewSellerUiModel?) {
-        with(itemView) {
-            containerTimerNewSeller?.loadImage(
-                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
-            timerNewSeller?.targetDate = element?.effectiveDate
+    private val binding: TimerNewSellerBeforeTransitionBinding? by viewBinding()
 
-            tv_shop_performance_new_seller?.text = getString(
+    override fun bind(element: ItemTimerNewSellerUiModel?) {
+        binding?.apply {
+            containerTimerNewSeller.loadImage(
+                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER
+            )
+            timerNewSeller.targetDate = element?.effectiveDate
+
+            tvShopPerformanceNewSeller.text = getString(
                 R.string.title_shop_performance_become_existing_seller,
                 element?.effectiveDateText.orEmpty()
             )
@@ -41,8 +44,8 @@ class ItemTimerNewSellerViewHolder(
     }
 
     private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
-        with(itemView) {
-            btn_shop_performance_learn?.let { btn ->
+        binding?.apply {
+            btnShopPerformanceLearn.let { btn ->
                 itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
                     if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
@@ -58,17 +61,16 @@ class ItemTimerNewSellerViewHolder(
     }
 
     private fun setIconVideoClickListener() {
-        with(itemView) {
-            tv_watch_video?.setOnClickListener {
+        binding?.apply {
+            tvWatchVideo.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
-            ic_video_shop_performance_learn?.setOnClickListener {
+            icVideoShopPerformanceLearn.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
-            if (tv_watch_video?.isVisible == true ||
-                ic_video_shop_performance_learn?.isVisible == true) {
+            if (tvWatchVideo.isVisible || icVideoShopPerformanceLearn.isVisible) {
                 itemTimerNewSellerListener.onImpressWatchVideo()
             }
         }

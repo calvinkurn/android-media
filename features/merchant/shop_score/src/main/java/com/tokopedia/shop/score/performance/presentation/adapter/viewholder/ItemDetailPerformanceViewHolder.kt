@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.asUpperCase
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -12,13 +11,13 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
+import com.tokopedia.shop.score.databinding.ItemDetailShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
-import java.util.*
 
 class ItemDetailPerformanceViewHolder(
     view: View,
@@ -32,8 +31,10 @@ class ItemDetailPerformanceViewHolder(
         const val START_INDEX_HEX_STRING = 2
     }
 
+    private val binding: ItemDetailShopPerformanceBinding? by viewBinding()
+
     override fun bind(element: ItemDetailPerformanceUiModel?) {
-        with(itemView) {
+        binding?.apply {
             setupItemDetailPerformance(element)
 
             val titleBottomSheet =
@@ -46,7 +47,7 @@ class ItemDetailPerformanceViewHolder(
                         element?.titleDetailPerformance.orEmpty()
                     }
                 }
-            setOnClickListener {
+            root.setOnClickListener {
                 if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
@@ -56,7 +57,7 @@ class ItemDetailPerformanceViewHolder(
                     )
                 }
             }
-            ic_item_performance_right?.setOnClickListener {
+            icItemPerformanceRight.setOnClickListener {
                 if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
@@ -70,18 +71,18 @@ class ItemDetailPerformanceViewHolder(
     }
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
-        with(itemView) {
+        binding?.apply {
             setContainerBackground()
-            separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
+            separatorItemDetail.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
                 setCardItemDetailPerformanceBackground()
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
+                cardItemDetailShopPerformance.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
             } else {
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
+                cardItemDetailShopPerformance.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
             }
-            tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
-            tvPerformanceValue?.text =
+            tvTitlePerformanceProgress.text = element?.titleDetailPerformance.orEmpty()
+            tvPerformanceValue.text =
                 if (element?.valueDetailPerformance == MINUS_SIGN) {
                     element.valueDetailPerformance
                 } else {
@@ -95,7 +96,7 @@ class ItemDetailPerformanceViewHolder(
             ) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget?.text = getString(
+            tvPerformanceTarget.text = getString(
                 R.string.item_detail_performance_target,
                 element?.targetDetailPerformance.orEmpty()
             )
@@ -104,9 +105,9 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setContainerBackground() {
         try {
-            with(itemView) {
-                context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(
+            binding?.apply {
+                root.context?.let {
+                    binding?.cardItemDetailShopPerformance?.setBackgroundColor(
                         it.getResColor(R.color.shop_score_penalty_dms_container)
                     )
                 }
@@ -120,7 +121,7 @@ class ItemDetailPerformanceViewHolder(
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
+                    binding?.cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
                         context,
                         R.drawable.corner_rounded_performance_list
                     )
@@ -167,7 +168,7 @@ class ItemDetailPerformanceViewHolder(
     private fun Typography.getColorHexString(idColor: Int): String {
         return try {
             val colorHexInt = ContextCompat.getColor(context, idColor)
-            val colorToHexString = Integer.toHexString(colorHexInt).toUpperCase(Locale.getDefault())
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
                 .substring(START_INDEX_HEX_STRING)
             return "#$colorToHexString"
         } catch (e: Exception) {
