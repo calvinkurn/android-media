@@ -203,8 +203,15 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            (view.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-                    == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+            (view.abTestRemoteConfig?.getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV,
+                RollenceKey.NAVIGATION_VARIANT_OLD
+            )
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP) || (view.abTestRemoteConfig?.getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                RollenceKey.NAVIGATION_VARIANT_OLD
+            )
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false

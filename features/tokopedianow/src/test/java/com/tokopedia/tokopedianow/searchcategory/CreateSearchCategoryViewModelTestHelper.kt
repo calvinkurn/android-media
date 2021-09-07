@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -25,8 +26,11 @@ class CreateSearchCategoryViewModelTestHelper(
     private fun `Given AB Test Navigation Exp Variant`(variant: String) {
         every {
             abTestPlatformWrapper.getABTestRemoteConfig()?.getString(
-                    NAVIGATION_EXP_TOP_NAV,
+                NAVIGATION_EXP_TOP_NAV,
+                abTestPlatformWrapper.getABTestRemoteConfig()?.getString(
+                    NAVIGATION_EXP_TOP_NAV2,
                     NAVIGATION_VARIANT_OLD
+                )
             )
         } returns (variant)
     }
