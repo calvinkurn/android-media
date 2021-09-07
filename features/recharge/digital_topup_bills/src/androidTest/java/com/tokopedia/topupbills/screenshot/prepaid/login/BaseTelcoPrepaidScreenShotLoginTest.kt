@@ -96,8 +96,6 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     @Test
     fun screenshot() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        clientNumberWidget_clickClearBtn()
-        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         isCoachmarkDisabled(context, false)
         Thread.sleep(3000)
 
@@ -126,6 +124,12 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
             val test = mActivityRule.activity.findViewById<ConstraintLayout>(R.id.telco_input_number_layout)
             CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "input_number_widget")
         }
+    }
+
+    // TODO: [Misael] replace ss coachmark
+    fun NEW_take_screenshot_coachmark_and_its_placement() {
+        findViewAndScreenShot(com.tokopedia.coachmark.R.id.container, generatePrefix(), "coachmark")
+        onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close)).perform(click())
     }
 
     fun take_screenshot_coachmark_and_its_placement() {

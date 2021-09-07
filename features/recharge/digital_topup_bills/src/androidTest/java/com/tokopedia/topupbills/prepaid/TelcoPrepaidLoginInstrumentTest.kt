@@ -141,13 +141,11 @@ class TelcoPrepaidLoginInstrumentTest {
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
 
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 

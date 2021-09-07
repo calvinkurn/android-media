@@ -108,7 +108,6 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 
@@ -135,7 +134,6 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER_2)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
 
         Thread.sleep(2000)

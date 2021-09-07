@@ -34,7 +34,6 @@ import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragme
 import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
@@ -135,13 +134,11 @@ class TelcoPrepaidInstrumentTest {
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
 
         clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 

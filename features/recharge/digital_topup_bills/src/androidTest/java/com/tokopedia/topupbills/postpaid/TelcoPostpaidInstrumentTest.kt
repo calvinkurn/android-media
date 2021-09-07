@@ -29,7 +29,6 @@ import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_typeNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
@@ -110,7 +109,6 @@ class TelcoPostpaidInstrumentTest {
     fun validate_pdp_client_number_widget_interaction() {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
-        clientNumberWidget_clickTextField()
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 
