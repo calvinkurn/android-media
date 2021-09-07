@@ -20,10 +20,10 @@ class AffiliateSearchUseCase @Inject constructor(
 //                AffiliateSearchData::class.java,
 //                createRequestParams(affiliateId,filter)
 //        )
-        return getDummyData()
+        return getDummyData(filter)
     }
 
-    fun getDummyData(): AffiliateSearchData {
+    fun getDummyData(filter : ArrayList<String>): AffiliateSearchData {
 
         fun getAddtionalInfo(): ArrayList<AffiliateSearchData.Cards.Items.AdditionalInformation> {
             val additionalInformation = arrayListOf<AffiliateSearchData.Cards.Items.AdditionalInformation>()
@@ -68,15 +68,17 @@ class AffiliateSearchUseCase @Inject constructor(
 
         val items = arrayListOf<AffiliateSearchData.Cards.Items>()
         items.add(getItem())
-        //val card = AffiliateSearchData.Cards("1", false, "Produk ditemukan", items)
-        val error = AffiliateSearchData.Error(0,"This is Error Title","This is Error Message",
-        arrayListOf(AffiliateSearchData.Error.ErrorCta("CTA Title",0,0,
+        val card = AffiliateSearchData.Cards("1", false, "Produk ditemukan", items)
+        val error = AffiliateSearchData.Error(0,"Produk ini belum bisa dipromosikan",
+                "Pilih produk dari kategori yang dapat dipromosikan, ya.",
+        arrayListOf(AffiliateSearchData.Error.ErrorCta("Lihat Kategori",0,0,
                 AffiliateSearchData.Cards.Items.Image("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"),
                 AffiliateSearchData.Error.ErrorCta.CtaLink("","","","https://www.pinclipart.com/picdir/big/194-1948210_open-jpg-100x100-pixels-clipart.png"))))
-        return AffiliateSearchData(true, null,error)
+        if(filter.contains("0")){
+            return AffiliateSearchData(true, null,error)
+        }
+        return AffiliateSearchData(true, card , null)
     }
-
-
 
     companion object {
         private const val PARAM_AFFILIATE_ID = "affiliateID"

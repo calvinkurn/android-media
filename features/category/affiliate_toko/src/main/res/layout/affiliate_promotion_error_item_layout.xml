@@ -69,11 +69,11 @@
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintEnd_toStartOf="@id/vertical_guideline"
         tools:text="Lihat Kategori"
-        android:textSize="@dimen/font_small"
+        app:unifyButtonSize="small"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/granti_link"
+        android:id="@+id/ganti_link"
         android:layout_width="0dp"
         android:layout_height="@dimen/unify_space_32"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,15 +82,15 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintStart_toEndOf="@id/vertical_guideline"
-        tools:text="Granti Link"
-        android:textSize="@dimen/font_small"
+        tools:text="Ganti Link"
+        app:unifyButtonSize="small"
         />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/granti_link"
+        app:layout_constraintTop_toBottomOf="@id/ganti_link"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/Unify_N50"

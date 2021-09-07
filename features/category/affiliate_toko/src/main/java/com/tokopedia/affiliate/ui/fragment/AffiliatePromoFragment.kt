@@ -8,18 +8,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.model.AffiliateProductCommissionData
+import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
+import com.tokopedia.affiliate_toko.R
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,12 +30,12 @@ import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() {
+class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() , PromotionClickInterface{
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(null,null,this))
 
     companion object {
         fun getFragmentInstance(): Fragment {
@@ -60,7 +61,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         promotion_recycler_view.adapter = adapter
         product_link_et.run {
             setRelatedView(dim_layer)
-            setDoneAction { affiliatePromoViewModel.getSearch() }
+            setDoneAction { affiliatePromoViewModel.getSearch(editText.text.toString()) }
         }
         promo_navToolbar.setIcon(
                 IconBuilder()
@@ -102,13 +103,13 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
                 show()
                 errorTitle.text = error
                 setActionClickListener {
-                    affiliatePromoViewModel.getSearch()
+                    affiliatePromoViewModel.getSearch(product_link_et.editText.toString())
                 }
             }
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
-
+            adapter.clearAllElements()
             affiliateSearchData.cards?.items?.firstOrNull()?.let {
                 showData(false)
                 affiliateSearchData.cards.items.forEach {
@@ -120,10 +121,6 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
                     adapter.addElement(AffiliatePromotionErrorCardModel(it))
                 }
             }
-        })
-
-        affiliatePromoViewModel.getAffiliateProductCommissionData().observe(this, { affiliateCommissionData ->
-
         })
     }
 
@@ -153,5 +150,17 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
 
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
+    }
+
+    override fun onPromotionClick(productName: String, productImage: String, productUrl: String, productIdentifier: String) {
+        AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
+    }
+
+    override fun onErrorLihatClick() {
+
+    }
+
+    override fun onGantiClick() {
+
     }
 }

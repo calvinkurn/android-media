@@ -1,18 +1,18 @@
 package com.tokopedia.affiliate.adapter
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
-import com.tokopedia.affiliate.model.AffiliateSearchData
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
 class AffiliateAdapterFactory(
-        var shareButtonInterface: ShareButtonInterface? = null
-        ,var productClickInterface : ProductClickInterface? = null)
+        var shareButtonInterface: ShareButtonInterface? = null,
+        var productClickInterface : ProductClickInterface? = null,
+        var promotionClickInterface : PromotionClickInterface? = null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -20,8 +20,8 @@ class AffiliateAdapterFactory(
             AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
-            AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent)
-            AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent)
+            AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
+            AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             else -> super.createViewHolder(parent, type)
         }
     }

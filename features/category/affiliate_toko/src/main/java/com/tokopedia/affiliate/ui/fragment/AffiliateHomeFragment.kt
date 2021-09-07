@@ -182,4 +182,5 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productName: String, productImage: String, productUrl: String, productIdentifier: String) {
         AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
-    } }
+    }
+}
