@@ -40,7 +40,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private val cplItemConventionalAdapter by lazy { CPLItemAdapter(this) }
 
     private var shopId: Long = 0
-    private var productId: String = ""
+    private var productId: Long = 0
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -56,7 +56,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         super.onCreate(savedInstanceState)
         arguments?.let {
             shopId = it.getLong(EXTRA_SHOP_ID)
-            productId = it.getString(EXTRA_PRODUCT_ID) ?: ""
+            productId = it.getLong(EXTRA_PRODUCT_ID)
         }
     }
 
@@ -79,7 +79,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
 //        viewModel.getCPLList(2649340, "1685435966")
-        viewModel.getCPLList(shopId, productId)
+        viewModel.getCPLList(shopId, productId.toString())
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -166,7 +166,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             return CustomProductLogisticFragment().apply {
                 arguments = Bundle().apply {
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
-                    putString(EXTRA_PRODUCT_ID, extra.getString(EXTRA_SHOP_ID))
+                    putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
                 }
             }
         }

@@ -1,7 +1,10 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +70,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.model.Produc
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -97,6 +101,7 @@ class AddEditProductShipmentFragment:
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var selectedWeightPosition: Int = 0
+    private var shipperServices: ArrayList<Int>? = arrayListOf()
 
     private var radiosInsurance: RadioGroup? = null
     private var radioRequiredInsurance: RadioButtonUnify? = null
@@ -229,6 +234,16 @@ class AddEditProductShipmentFragment:
             }
         }
         super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1234) {
+                shipperServices = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
+                Log.d("__LIST OF SERVICES", shipperServices.toString())
+
+            }
+        }
     }
 
     override fun onResume() {
@@ -397,7 +412,7 @@ class AddEditProductShipmentFragment:
                     ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
                 ).apply {
                     putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
                 }, 1234
             )
         }
@@ -409,7 +424,7 @@ class AddEditProductShipmentFragment:
                     ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC
                 ).apply {
                     putExtra(EXTRA_SHOP_ID, shopId.toLong())
-                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId.toString())
+                    putExtra(EXTRA_PRODUCT_ID, productInputModel?.productId)
                 }, 1234
             )
         }
@@ -535,7 +550,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition
-            // shipmentServices =
+            shipmentServices = shipperServices
         }
     }
 
