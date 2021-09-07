@@ -5,6 +5,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
@@ -62,25 +63,31 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
     @Test
     fun should_show_ended_state_when_ongoing_campaign_finished_countdown() {
-//        // Given
-//        val endWording = getChatUseCase.getEndWordingBannerFrom(
-//            getChatUseCase.broadcastCampaignAboutToEnd
-//        )
-//        getChatUseCase.response = getChatUseCase.broadcastCampaignAboutToEnd
-//        launchChatRoomActivity()
-//
-//        // When
-//        // Wait for countdown to finish
-//        val waitTime = TimeUnit.SECONDS.toMillis(3)
-//        waitForIt(waitTime)
-//
-//        // Then
-//        assertBroadcastCampaignLabelAt(1, isDisplayed())
-//        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-//        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
-//        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
-//        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
-//        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
+        // Given
+        val bannerAttachmentId = getChatUseCase.getBannerAttachmentId(
+            getChatUseCase.defaultBroadcastCampaignLabel
+        )
+        getChatUseCase.response = getChatUseCase.defaultBroadcastCampaignLabel
+        chatAttachmentUseCase.response = chatAttachmentUseCase.createBroadcastCampaignAboutToEnd(
+            bannerAttachmentId
+        )
+        val endWording = chatAttachmentUseCase.getEndWordingBannerFrom(
+            chatAttachmentUseCase.response
+        )
+        launchChatRoomActivity()
+
+        // When
+        // Wait for countdown to finish
+        val waitTime = TimeUnit.SECONDS.toMillis(3)
+        waitForIt(waitTime)
+
+        // Then
+        assertBroadcastCampaignLabelAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, isDisplayed())
+        assertBroadcastCampaignLabelDescAt(1, withText(endWording))
+        assertBroadcastCampaignLabelCountdownAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
+        assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))
     }
 
     @Test

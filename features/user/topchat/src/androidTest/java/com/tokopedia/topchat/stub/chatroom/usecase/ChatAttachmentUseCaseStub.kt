@@ -8,10 +8,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
-import com.tokopedia.topchat.common.alterResponseOf
-import com.tokopedia.topchat.common.fromJson
-import com.tokopedia.topchat.common.getNext6Hours
-import com.tokopedia.topchat.common.getNextWeekTimestamp
+import com.tokopedia.topchat.common.*
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import javax.inject.Inject
 
@@ -63,6 +60,34 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         }
     }
 
+    fun createBroadcastCampaignAboutToEnd(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(end_date, getNext3Seconds())
+                    attr.addProperty(campaign_label, "Broadcast berlangsung")
+                    attr.addProperty(wording_end_state, "Broadcast berakhir")
+                    attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+                }
+            )
+        }
+    }
+
+    fun getCampaignLabel(response: ChatAttachmentResponse): String {
+        val attr = response.chatAttachments.list[0].attributes
+        return fromJson<ImageAnnouncementPojo>(attr).campaignLabel!!
+    }
+
+    fun getEndWordingBannerFrom(response: ChatAttachmentResponse): String {
+        val attr = response.chatAttachments.list[0].attributes
+        return fromJson<ImageAnnouncementPojo>(attr).endStateWording!!
+    }
+
     private fun alterAttachmentAttributesAt(
         position: Int,
         responseObj: JsonObject,
@@ -78,18 +103,16 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         attachment.addProperty(attributes, attrObj.toString())
     }
 
-    fun getCampaignLabel(response: ChatAttachmentResponse): String {
-        val attr = response.chatAttachments.list[0].attributes
-        return fromJson<ImageAnnouncementPojo>(attr).campaignLabel!!
-    }
-
     private val chatAttachments = "chatAttachments"
     private val list = "list"
     private val attributes = "attributes"
+    private val id = "id"
+
+    // broadcast attributes
     private val start_date = "start_date"
     private val end_date = "end_date"
     private val status_campaign = "status_campaign"
-    private val id = "id"
     private val campaign_label = "campaign_label"
+    private val wording_end_state = "wording_end_state"
 
 }
