@@ -119,10 +119,10 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setCardItemDetailPerformanceBackground() {
         try {
-            with(itemView) {
-                context?.let {
+            binding?.apply {
+                root.context?.let {
                     binding?.cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
-                        context,
+                        root.context,
                         R.drawable.corner_rounded_performance_list
                     )
                 }

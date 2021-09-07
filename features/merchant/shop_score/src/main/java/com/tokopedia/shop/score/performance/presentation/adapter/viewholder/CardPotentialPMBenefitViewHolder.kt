@@ -26,9 +26,9 @@ class CardPotentialPMBenefitViewHolder(
 
     override fun bind(element: SectionRMPotentialPMBenefitUiModel?) {
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter(itemRegularMerchantListener)
-        with(itemView) {
+        binding?.apply {
             setPotentialPMBenefitAdapter(element)
-            setOnClickListener {
+            root.setOnClickListener {
                 itemRegularMerchantListener.onRMSectionToPMPage()
             }
         }
