@@ -25,7 +25,8 @@ class RecentPurchaseAdapterTypeFactory(
     private val productCardListener: RepurchaseProductCardListener,
     private val emptyStateNoHistorylistener: RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener? = null,
     private val tokoNowRecommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener? = null,
-    private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
+    private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener
 ) : BaseAdapterTypeFactory(), RecentPurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -58,7 +59,7 @@ class RecentPurchaseAdapterTypeFactory(
             RepurchaseProductGridViewHolder.LAYOUT -> RepurchaseProductGridViewHolder(view, productCardListener)
             RepurchaseLoadingViewHolder.LAYOUT -> RepurchaseLoadingViewHolder(view)
             RepurchaseEmptyStateNoHistoryViewHolder.LAYOUT -> RepurchaseEmptyStateNoHistoryViewHolder(view, emptyStateNoHistorylistener)
-            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view)
+            RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
             // endregion
             else -> super.createViewHolder(view, type)
         }

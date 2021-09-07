@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.recentpurchase.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -60,6 +62,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolde
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
 import com.tokopedia.tokopedianow.recentpurchase.presentation.bottomsheet.TokoNowRepurchaseSortFilterOnBuyingBottomSheet
+import com.tokopedia.tokopedianow.recentpurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.*
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
+import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 
 import javax.inject.Inject
 
@@ -71,7 +76,8 @@ class TokoNowRecentPurchaseFragment:
     TokoNowCategoryGridListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowRecommendationCarouselListener,
-    TokoNowRepurchaseSortFilterOnBuyingBottomSheetListener
+    TokoNowRepurchaseSortFilterOnBuyingBottomSheetListener,
+    SortFilterListener
 {
 
     companion object {
@@ -102,7 +108,8 @@ class TokoNowRecentPurchaseFragment:
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
                 tokoNowEmptyStateNoResultListener = this,
-                tokoNowRecommendationCarouselListener = this
+                tokoNowRecommendationCarouselListener = this,
+                sortFilterListener = this
             ),
             RecentPurchaseListDiffer()
         )
@@ -131,6 +138,17 @@ class TokoNowRecentPurchaseFragment:
         updateCurrentPageLocalCacheModelData()
 
         viewModel.showLoading()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            REQUEST_CODE_SORT_FILTER_BOTTOMSHEET -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.getIntExtra(SORT_VALUE, 0)
+                }
+            }
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -584,5 +602,10 @@ class TokoNowRecentPurchaseFragment:
     private fun refreshLayout() {
         carouselScrollPosition.clear()
         viewModel.showLoading()
+    }
+
+    override fun onOpenSortFilterBottomSheet() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER, "1")
+        startActivityForResult(intent, REQUEST_CODE_SORT_FILTER_BOTTOMSHEET)
     }
 }

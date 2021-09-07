@@ -12,7 +12,8 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.Repurchase
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 
 class RepurchaseSortFilterViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: SortFilterListener
 ): AbstractViewHolder<RepurchaseSortFilterUiModel>(itemView) {
 
     companion object {
@@ -78,11 +79,16 @@ class RepurchaseSortFilterViewHolder(
     }
 
     private fun openSortFilterBottomSheet() {
+        listener.onOpenSortFilterBottomSheet()
     }
 
     private fun openDateFilterBottomSheet() {
     }
 
     private fun openCategoryFilterBottomSheet() {
+    }
+
+    interface SortFilterListener {
+        fun onOpenSortFilterBottomSheet()
     }
 }
