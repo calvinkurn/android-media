@@ -17,7 +17,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
             getChatUseCase.defaultBroadcastCampaignLabel
         )
         getChatUseCase.response = getChatUseCase.defaultBroadcastCampaignLabel
-        chatAttachmentUseCase.response = chatAttachmentUseCase.broadcastCampaignStarted(
+        chatAttachmentUseCase.response = chatAttachmentUseCase.createBroadcastCampaignStarted(
             bannerAttachmentId
         )
         val labelDesc = chatAttachmentUseCase.getCampaignLabel(
@@ -39,17 +39,22 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
     @Test
     fun should_show_ongoing_state_when_campaign_status_is_ongoing() {
         // Given
-        getChatUseCase.response = getChatUseCase.broadcastCampaignOnGoing
+        val bannerAttachmentId = getChatUseCase.getBannerAttachmentId(
+            getChatUseCase.defaultBroadcastCampaignLabel
+        )
+        getChatUseCase.response = getChatUseCase.defaultBroadcastCampaignLabel
+        chatAttachmentUseCase.response = chatAttachmentUseCase.createBroadcastCampaignOnGoing(
+            bannerAttachmentId
+        )
+        val labelDesc = chatAttachmentUseCase.getCampaignLabel(
+            chatAttachmentUseCase.response
+        )
         launchChatRoomActivity()
 
         // Then
         assertBroadcastCampaignLabelAt(1, isDisplayed())
         assertBroadcastCampaignLabelDescAt(1, isDisplayed())
-        assertBroadcastCampaignLabelDescAt(
-            1, withText(
-                "R.string.desc_topchat_broadcast_campaign_ongoing"
-            )
-        )
+        assertBroadcastCampaignLabelDescAt(1, withText(labelDesc))
         assertBroadcastCampaignLabelCountdownAt(1, isDisplayed())
         assertBroadcastCampaignLabelStartDateIconAt(1, not(isDisplayed()))
         assertBroadcastCampaignLabelStartDateTextAt(1, not(isDisplayed()))

@@ -41,19 +41,6 @@ class GetChatUseCaseStub @Inject constructor(
             GetExistingChatPojo::class.java
         )
 
-    val broadcastCampaignOnGoing: GetExistingChatPojo
-        get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
-            alterAttachmentAttributesAt(
-                listPosition = 0,
-                chatsPosition = 0,
-                repliesPosition = 0,
-                responseObj = response
-            ) { attr ->
-                attr.addProperty(end_date, getNext6Hours())
-                attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
-            }
-        }
-
     val broadcastCampaignEnded: GetExistingChatPojo
         get() = alterResponseOf(broadcastCampaignLabelPath) { response ->
             alterAttachmentAttributesAt(
@@ -110,6 +97,7 @@ class GetChatUseCaseStub @Inject constructor(
     private val name = "name"
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
+
     // broadcast campaign label
     private val start_date = "start_date"
     private val end_date = "end_date"

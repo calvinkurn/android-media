@@ -2,6 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -9,6 +10,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentR
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
 import com.tokopedia.topchat.common.alterResponseOf
 import com.tokopedia.topchat.common.fromJson
+import com.tokopedia.topchat.common.getNext6Hours
 import com.tokopedia.topchat.common.getNextWeekTimestamp
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import javax.inject.Inject
@@ -27,7 +29,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     private val broadcastCampaignLabelPath = "chat_attachment_banner_label.json"
 
-    fun broadcastCampaignStarted(bannerAttachmentId: String): ChatAttachmentResponse {
+    fun createBroadcastCampaignStarted(bannerAttachmentId: String): ChatAttachmentResponse {
         return alterResponseOf(broadcastCampaignLabelPath) { response ->
             alterAttachmentAttributesAt(
                 position = 0,
@@ -37,8 +39,25 @@ class ChatAttachmentUseCaseStub @Inject constructor(
                 },
                 attributesAltercation = { attr ->
                     attr.addProperty(start_date, getNextWeekTimestamp())
-                    attr.addProperty(start_date, getNextWeekTimestamp())
                     attr.addProperty(campaign_label, "Broadcast dimulai")
+                    attr.addProperty(status_campaign, CampaignStatus.STARTED)
+                }
+            )
+        }
+    }
+
+    fun createBroadcastCampaignOnGoing(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(end_date, getNext6Hours())
+                    attr.addProperty(campaign_label, "Broadcast berlangsung")
+                    attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
                 }
             )
         }
