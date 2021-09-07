@@ -18,6 +18,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -41,6 +42,7 @@ import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundl
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
+import com.tokopedia.product_bundle.tracking.SingleProductBundleTracking
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -88,6 +90,7 @@ class SingleProductBundleFragment(
         setupRecyclerViewItems(view)
         setupTotalAmount(view)
         setupGlobalError(view)
+        setupToolbarActions()
 
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
@@ -131,6 +134,11 @@ class SingleProductBundleFragment(
         quantity: Int,
         preorderDurationWording: String?
     ) {
+        SingleProductBundleTracking.trackSingleBundleOptionClick(
+            adapter.getSelectedBundleId(),
+            parentProductID,
+            adapter.getSelectedProductId()
+        )
         viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
         updateTotalPO(preorderDurationWording)
     }
@@ -254,6 +262,11 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
+                SingleProductBundleTracking.trackSingleBuyClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
                 atcProductBundle()
             }
         }
@@ -267,6 +280,19 @@ class SingleProductBundleFragment(
             errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
             errorAction.text = getString(R.string.action_back_to_pdp)
             errorAction.setOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun setupToolbarActions() {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
+            setNavigationOnClickListener {
+                SingleProductBundleTracking.trackSingleBackClick(
+                    adapter.getSelectedBundleId(),
+                    parentProductID,
+                    adapter.getSelectedProductId()
+                )
                 activity?.finish()
             }
         }
