@@ -229,7 +229,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet(currentLoc, isLandmarkPage, object : CurrentLocationCallback {
+        locationBottomSheet = SelectLocationBottomSheet("", currentLoc, isLandmarkPage, object : CurrentLocationCallback {
             override fun setCurrentLocation(location: Location) {
                 locationBottomSheet.dismiss()
                 this@DealsBaseActivity.setCurrentLocation(location)
