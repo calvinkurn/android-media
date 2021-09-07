@@ -422,11 +422,11 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         btn_switch.setOnCheckedChangeListener(this)
         if (priceDaily == 0.0F) {
             progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
-            progress_status2.visibility = View.GONE
+            daily_budget.visibility = View.GONE
             progress_bar.visibility = View.GONE
         } else {
-            progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
+            daily_budget.visibility = View.VISIBLE
+            daily_budget.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
             Utils.convertMoneyToValue(priceSpent ?: "0").let {

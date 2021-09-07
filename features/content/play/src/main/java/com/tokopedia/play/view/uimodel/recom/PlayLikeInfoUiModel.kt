@@ -3,30 +3,6 @@ package com.tokopedia.play.view.uimodel.recom
 /**
  * Created by jegul on 21/01/21
  */
-sealed class PlayLikeInfoUiModel {
-
-    abstract val param: PlayLikeParamInfoUiModel
-
-    data class Incomplete(override val param: PlayLikeParamInfoUiModel) : PlayLikeInfoUiModel()
-    data class Complete(
-            override val param: PlayLikeParamInfoUiModel,
-            val status: PlayLikeStatusInfoUiModel
-    ) : PlayLikeInfoUiModel()
-}
-
-data class PlayLikeParamInfoUiModel(
-        val contentId: String,
-        val contentType: Int,
-        val likeType: Int
-)
-
-data class PlayLikeStatusInfoUiModel(
-        val totalLike: Long,
-        val totalLikeFormatted: String,
-        val isLiked: Boolean,
-        val source: LikeSource
-)
-
 enum class LikeSource {
 
     Network,
@@ -34,4 +10,17 @@ enum class LikeSource {
     Storage
 }
 
-operator fun PlayLikeParamInfoUiModel.plus(status: PlayLikeStatusInfoUiModel) = PlayLikeInfoUiModel.Complete(param = this, status = status)
+data class PlayLikeInfoUiModel(
+        val contentId: String = "",
+        val contentType: Int = 0,
+        val likeType: Int = 0,
+        val status: PlayLikeStatus = PlayLikeStatus.Unknown,
+        val source: LikeSource = LikeSource.Storage
+)
+
+enum class PlayLikeStatus {
+
+    Unknown,
+    Liked,
+    NotLiked
+}

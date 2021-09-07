@@ -8,51 +8,100 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class TokopointsDataModel(
-        @SerializedName("tokopointsDrawerList") @Expose
-        val data: TokopointsDrawerList = TokopointsDrawerList()
+    @Expose
+    @SerializedName("tokopointsStatusFiltered")
+    var tokopointsStatusFilteredDataModel: TokopointsStatusFilteredDataModel = TokopointsStatusFilteredDataModel()
 )
 
-data class TokopointsDrawerList(
-        @SerializedName("offFlag") @Expose
-        val offFlag: Boolean = true,
-        @SerializedName("drawerList") @Expose
-        val drawerList: List<DrawerList> = arrayListOf()
+data class TokopointsStatusFilteredDataModel(
+    @Expose
+    @SerializedName("resultStatus")
+    var resultStatus: ResultStatusDataModel = ResultStatusDataModel(),
+    @Expose
+    @SerializedName("statusFilteredData")
+    var statusFilteredDataModel: StatusFilteredDataModel = StatusFilteredDataModel()
 )
 
-data class DrawerList(
-        @SerializedName("type") @Expose
-        val type: String = "",
-        @SerializedName("iconImageURL") @Expose
-        val iconImageURL: String = "",
-        @SerializedName("redirectURL") @Expose
-        val redirectURL: String = "",
-        @SerializedName("redirectAppLink") @Expose
-        val redirectAppLink: String = "",
-        @SerializedName("sectionContent") @Expose
-        val sectionContent: List<SectionContent> = arrayListOf()
+data class ResultStatusDataModel(
+    @Expose
+    @SerializedName("code")
+    var code: String = "",
+    @Expose
+    @SerializedName("status")
+    var status: String = "",
+    @Expose
+    @SerializedName("message")
+    var message: MutableList<String> = mutableListOf(),
 )
 
-data class SectionContent(
-        @SerializedName("type") @Expose
-        val type: String = "",
-        @SerializedName("textAttributes") @Expose
-        val textAttributes: TextAttributes = TextAttributes(),
-        @SerializedName("tagAttributes") @Expose
-        val tagAttributes: TagAttributes = TagAttributes()
+data class StatusFilteredDataModel(
+    @Expose
+    @SerializedName("points")
+    var pointDataModel: PointDataModel = PointDataModel(),
 )
 
-data class TextAttributes(
-        @SerializedName("text") @Expose
-        val text: String = "",
-        @SerializedName("color") @Expose
-        val color: String = "",
-        @SerializedName("isBold") @Expose
-        val isBold: Boolean = false
+data class PointDataModel(
+    @Expose
+    @SerializedName("iconImageURL")
+    var iconImageURL: String = "",
+    @Expose
+    @SerializedName("pointsAmount")
+    var pointsAmount: String = "",
+    @Expose
+    @SerializedName("pointsAmountStr")
+    var pointsAmountStr: String = "",
+    @Expose
+    @SerializedName("externalCurrencyAmount")
+    var externalCurrencyAmount: String = "",
+    @Expose
+    @SerializedName("externalCurrencyAmountStr")
+    var externalCurrencyAmountStr: String = "",
+    @Expose
+    @SerializedName("pointsSection")
+    var pointsSection: PointsSectionDataModel = PointsSectionDataModel()
 )
 
-data class TagAttributes(
-        @SerializedName("text") @Expose
-        val text: String = "",
-        @SerializedName("backgroundColor") @Expose
-        val backgroundColor: String = ""
+data class PointsSectionDataModel(
+    @Expose
+    @SerializedName("redirectURL")
+    var redirectURL: String = "",
+    @Expose
+    @SerializedName("redirectAppLink")
+    var redirectAppLink: String = "",
+    @Expose
+    @SerializedName("sectionContent")
+    var sectionContent: MutableList<SectionContentDataModel> = mutableListOf(),
+)
+
+data class SectionContentDataModel(
+    @Expose
+    @SerializedName("type")
+    var type: String = "",
+    @Expose
+    @SerializedName("textAttributes")
+    var textAttributes: TextAttributesDataModel = TextAttributesDataModel(),
+    @Expose
+    @SerializedName("tagAttributes")
+    var tagAttributes: TagAttributesDataModel = TagAttributesDataModel(),
+)
+
+data class TextAttributesDataModel(
+    @Expose
+    @SerializedName("text")
+    var text: String = "",
+    @Expose
+    @SerializedName("color")
+    var color: String = "",
+    @Expose
+    @SerializedName("isBold")
+    var isBold: Boolean = false,
+)
+
+data class TagAttributesDataModel(
+    @Expose
+    @SerializedName("text")
+    var text: String = "",
+    @Expose
+    @SerializedName("backgroundColor")
+    var backgroundColor: String = "",
 )

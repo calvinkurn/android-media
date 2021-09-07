@@ -201,10 +201,12 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     private fun isNavRevamp(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:
-            (getAbTestPlatform().getString(
+            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                    (getAbTestPlatform().getString(
+                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -232,7 +234,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
