@@ -101,4 +101,8 @@ class SingleProductBundleAdapter(
         val index = selectedData.indexOfFirst { it.isSelected }
         return data.getOrNull(index)?.productVariant
     }
+
+    fun getSelectedBundleId(): String? {
+        return selectedData.find { it.isSelected }?.bundleId
+    }
 }
