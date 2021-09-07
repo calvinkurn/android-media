@@ -22,12 +22,14 @@ import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity.Com
 import com.tokopedia.deals.brand_detail.ui.adapter.DealsBrandDetailAdapter
 import com.tokopedia.deals.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
 import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
+import com.tokopedia.deals.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,6 +55,8 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
     private var seoUrl = ""
 
     private val adapterBrandDetail = DealsBrandDetailAdapter(this)
+
+    private var brandDetail = Brand()
 
     private var binding by autoClearedNullable<FragmentDealsBrandDetailBinding>()
 
@@ -90,7 +94,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId ?: "" == R.id.action_share_deals) {
-            //shareLink()
+            share(brandDetail)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -175,7 +179,7 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
         observe(viewModel.brandDetail) {
             when (it) {
                 is Success -> {
-                    val brandDetail = it.data.data.brand
+                    brandDetail = it.data.data.brand
                     val products = it.data.data.products
                     setCollapsingLayout(brandDetail.title)
                     setHeaderSection(brandDetail)
@@ -212,6 +216,22 @@ class DealsBrandDetailFragment: BaseDaggerFragment(), DealsBrandDetailAdapter.De
                 DealsBrandDetailBottomSheet().showBottomSheet(it, getString(R.string.deals_brand_detail_title_bottom_sheet, title), desc, fragmentManager)
             }
         }
+    }
+
+    private fun share(brandDetail: Brand) {
+        activity?.let{ activity ->
+            context?.let { context ->
+                DealsBrandDetailShare(activity).shareEvent(brandDetail, brandDetail.title, { showShareLoading() }, { hideShareLoading() })
+            }
+        }
+    }
+
+    private fun hideShareLoading() {
+        binding?.loaderBrandDetail?.hide()
+    }
+
+    private fun showShareLoading() {
+        binding?.loaderBrandDetail?.show()
     }
 
     companion object {
