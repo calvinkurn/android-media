@@ -35,6 +35,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    buildTypes {
+        release {
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
