@@ -401,22 +401,6 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun renderLoginAs() {
-        layoutLoginAs.visibility = View.VISIBLE
-        val imgUserLoginAs: ImageView = layoutLoginAs.findViewById(R.id.img_user_login_as)
-        val btnLoginAs: UnifyButton = layoutLoginAs.findViewById(R.id.btn_login_as)
-        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
-        val profilePic = getSharedPreference().getString(AccountHeaderDataModel.KEY_PROFILE_PICTURE, "") ?: ""
-        imgUserLoginAs.loadImageCircle(profilePic)
-        val nameTrimmed = name.split(" ")
-        btnLoginAs.text = String.format(TEXT_LOGIN_AS, nameTrimmed[0])
-
-        btnLoginAs.setOnClickListener {
-            TrackingProfileSection.onClickLoginReminderButton("")
-            mainNavListener.onProfileLoginClicked()
-        }
-    }
-
     private fun getSharedPreference(): SharedPreferences {
         return itemView.context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
