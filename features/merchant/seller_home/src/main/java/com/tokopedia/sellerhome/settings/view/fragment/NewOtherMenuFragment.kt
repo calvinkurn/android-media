@@ -37,6 +37,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -60,7 +61,7 @@ import javax.inject.Inject
 //TODO: Preserve name OtherMenuFragment and move the older one to different path
 class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, NewOtherMenuViewHolder.Listener,
-    StatusBarCallback {
+    StatusBarCallback, SellerHomeFragmentListener {
 
     companion object {
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
@@ -294,6 +295,11 @@ class NewOtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTy
     }
 
     override fun getIsShopShareReady(): Boolean = shopSnippetUrl?.isNotBlank() == true
+
+
+    override fun onScrollToTop() {
+        viewHolder?.scrollToTop()
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {

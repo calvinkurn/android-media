@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
     tools:background="@drawable/bg_sah_new_other_header_pm">
 
     <View
@@ -21,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/sah_new_other_header_shop_name_margin_bottom"
             android:textColor="@color/Unify_N0"
             android:ellipsize="end"
             android:lines="1"
@@ -32,7 +33,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintVertical_bias="1"
             app:typographyType="heading_4"
             tools:text="Rockerpowershop"/>
 
@@ -55,6 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"
             app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_header_name"

@@ -6,7 +6,7 @@ import androidx.core.widget.NestedScrollView
 class OtherMenuHeaderAnimator(
     private val scrollView: NestedScrollView?,
     private val otherMenuHeader: LinearLayout?,
-    private val toolbarHeight: Int
+    private val headerMaxHeight: Int
 ) {
 
     companion object {
@@ -28,7 +28,7 @@ class OtherMenuHeaderAnimator(
         val translationY =
             when {
                 offset <= TRANSLATE_START_OFFSET -> 0f
-                offset >= TRANSLATE_END_OFFSET -> toolbarHeight.toFloat()
+                offset >= TRANSLATE_END_OFFSET -> headerMaxHeight.toFloat()
                 else -> calculateToolbarTranslation(offset)
             }
         otherMenuHeader?.translationY = translationY
@@ -38,7 +38,7 @@ class OtherMenuHeaderAnimator(
         return (offset - TRANSLATE_START_OFFSET)
             .toFloat()
             .div(translateDivisor)
-            .times(toolbarHeight)
+            .times(headerMaxHeight)
     }
 
 }

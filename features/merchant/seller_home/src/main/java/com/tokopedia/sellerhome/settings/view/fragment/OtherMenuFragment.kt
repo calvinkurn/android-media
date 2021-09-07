@@ -75,7 +75,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val MAXIMUM_ALPHA = 255f
         private const val ALPHA_CHANGE_THRESHOLD = 150
 
-        private const val SCROLLVIEW_INITIAL_POSITION = 0
+        const val SCROLLVIEW_INITIAL_POSITION = 0
 
         const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 

@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -37,6 +38,7 @@ import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,6 +68,7 @@ class NewOtherMenuViewHolder(
 
     private var headerShopNameTextView: Typography? = null
     private var headerShopNextButton: IconUnify? = null
+    private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
@@ -96,7 +99,7 @@ class NewOtherMenuViewHolder(
     override fun onInitialAnimationCompleted() {
         hasInitialAnimationCompleted = true
         if (listener.getIsShopShareReady()) {
-            shareButtonImage?.show()
+            showShareButtons()
             motionLayoutAnimator?.animateShareButtonSlideIn()
         }
     }
@@ -194,7 +197,7 @@ class NewOtherMenuViewHolder(
 
     fun runShareButtonAnimation() {
         if (hasInitialAnimationCompleted && !hasShareButtonAnimationCompleted) {
-            shareButtonImage?.show()
+            showShareButtons()
             motionLayoutAnimator?.animateShareButtonSlideIn()
         }
     }
@@ -212,6 +215,15 @@ class NewOtherMenuViewHolder(
         }
     }
 
+    fun scrollToTop() {
+        scrollView?.post {
+            scrollView?.smoothScrollTo(
+                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION,
+                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION
+            )
+        }
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
@@ -222,6 +234,7 @@ class NewOtherMenuViewHolder(
 
             headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
+            headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
@@ -259,8 +272,14 @@ class NewOtherMenuViewHolder(
         ) {
             val actionBarHeight =
                 TypedValue.complexToDimensionPixelSize(tv.data, context.resources?.displayMetrics)
+            val statusBarHeight =
+                context.resources?.getDimensionPixelSize(R.dimen.sah_status_bar_height).orZero()
             scrollHeaderAnimator =
-                OtherMenuHeaderAnimator(scrollView, otherMenuHeader, actionBarHeight).also {
+                OtherMenuHeaderAnimator(
+                    scrollView,
+                    otherMenuHeader,
+                    actionBarHeight + statusBarHeight
+                ).also {
                     it.init()
                 }
         }
@@ -277,12 +296,14 @@ class NewOtherMenuViewHolder(
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = secondaryInfoAdapter
             itemAnimator = null
-            val decorationDrawable = context?.resources?.getDrawable(R.drawable.divider_sah_new_other_secondary, null)
-            val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL).apply {
-                decorationDrawable?.let {
-                    setDrawable(it)
+            val decorationDrawable =
+                context?.resources?.getDrawable(R.drawable.divider_sah_new_other_secondary, null)
+            val itemDecoration =
+                DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL).apply {
+                    decorationDrawable?.let {
+                        setDrawable(it)
+                    }
                 }
-            }
             addItemDecoration(itemDecoration)
             secondaryShopInfoAnimator = SecondaryShopInfoAnimator(this)
         }
@@ -423,6 +444,11 @@ class NewOtherMenuViewHolder(
     private fun setInitialBalanceInfoLoading() {
         setBalanceSaldoLoading()
         setBalanceTopadsLoading()
+    }
+
+    private fun showShareButtons() {
+        shareButtonImage?.show()
+        headerShopShareButton?.show()
     }
 
     interface Listener {
