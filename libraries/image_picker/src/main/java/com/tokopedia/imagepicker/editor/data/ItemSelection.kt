@@ -68,14 +68,14 @@ data class ItemSelection(
             name: String,
             preview: String,
             placeholderBitmap: List<Bitmap>,
-            itemType: Int,
+            itemType: List<Int>,
         ): List<ItemSelection> {
             return placeholderBitmap.map { bitmap ->
                 ItemSelection(
                     name = name,
                     preview = preview,
                     placeholderBitmap = bitmap,
-                    itemType = itemType,
+                    itemType = itemType.get(placeholderBitmap.indexOf(bitmap)),
                     isSelected = false
                 )
             }.apply { first().isSelected = true }

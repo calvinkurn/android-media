@@ -16,6 +16,7 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleTo
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 import android.graphics.Bitmap.createBitmap as createBitmap
 
@@ -74,7 +75,7 @@ data class Watermark(
                 logoBitmap.combineBitmapTopDown(textBitmap)
             }
             else -> {
-                throw IllegalArgumentException("Invalid Watermark Type Exception")
+                logoBitmap.combineBitmapWithPadding(textBitmap, backgroundImg!!)
             }
         }
 
@@ -223,11 +224,7 @@ data class Watermark(
 
     private fun scaledWatermarkBitmap(textLength: Int): Bitmap {
         scaledWatermarkBitmap =
-                watermarkBitmap!!.downscaleToAllowedDimension(
-                    mainBitmap = backgroundImg!!,
-                    textLength = textLength,
-                    this.type
-                )
+                watermarkBitmap!!.downscaleToAllowedDimension(this.type)
 
         if (!backgroundImg!!.isDark()) {
             scaledWatermarkBitmap = scaledWatermarkBitmap!!
@@ -256,7 +253,6 @@ data class Watermark(
                 )
             })
         }
-
         return mainBitmap
     }
 
@@ -296,5 +292,4 @@ data class Watermark(
             else -> throw IllegalArgumentException()
         }
     }
-
 }

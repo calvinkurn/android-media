@@ -329,6 +329,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     isSetWatermark = false;
                     fragment.cancelWatermark();
+                    watermarkType = Constant.TYPE_WATERMARK_TOPED;
                     titleWatermarkStyle.setVisibility(View.GONE);
                     break;
                 case ACTION_BRIGHTNESS:
@@ -562,6 +563,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null && !isSetWatermark) {
                         hideAllControls();
                         setLastStateWatermarkImage();
+                        watermarkType = Constant.TYPE_WATERMARK_TOPED;
                         isSetWatermark = true;
                         if (watermarkItemSelection.hasData()) {
                             setWatermarkDataFromAdapter();
@@ -757,7 +759,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         getString(R.string.editor_watermark_item),
                         preview,
                         Arrays.asList(bitmaps), // placeholder preview
-                        Constant.TYPE_WATERMARK_TOPED
+                        Arrays.asList(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
                 ), (bitmap, type) -> {
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
                     watermarkType = type;
@@ -1209,6 +1211,4 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
         getCurrentFragment().onSuccessGetWatermarkImage(bitmapWatermark);
     }
-
-
 }

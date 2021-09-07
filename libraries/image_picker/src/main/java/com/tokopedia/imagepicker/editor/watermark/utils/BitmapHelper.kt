@@ -195,8 +195,6 @@ object BitmapHelper {
     }
 
     fun Bitmap.combineBitmapWithPadding(other: Bitmap, mainBitmap: Bitmap): Bitmap {
-        var thisPadding = 10f
-        var otherPadding = 0f
         val scaledPaddingWidth = (0.2 * mainBitmap.width).toInt()
         val otherBitmap = other.addPadding(left = scaledPaddingWidth, right = scaledPaddingWidth)
 
@@ -209,13 +207,6 @@ object BitmapHelper {
         val canvas = Canvas(resultBitmap)
 
         val topPadding = ((this.height / 2f) - (other.height / 2f)).absoluteValue
-
-        if (this.height < other.height) {
-            thisPadding = topPadding
-        }
-        else {
-            otherPadding = topPadding
-        }
         canvas.drawBitmap(this, 0f, 0f, null)
         canvas.drawBitmap(otherBitmap, this.width.toFloat(), 0f, null)
         return resultBitmap
@@ -343,8 +334,8 @@ object BitmapHelper {
      * if the text length > 13 the scaling value will be 0.12 from the mainBitmap
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
-    fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int, type: Int): Bitmap? {
-        var scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
+    fun Bitmap.downscaleToAllowedDimension(type: Int): Bitmap? {
+        val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
             1.0f
         } else {
             2.0f
