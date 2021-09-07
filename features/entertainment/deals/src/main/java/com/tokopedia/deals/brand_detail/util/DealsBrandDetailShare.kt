@@ -59,7 +59,7 @@ class DealsBrandDetailShare (private val activity: Activity) {
                 description = data.description
                 ogUrl = null
                 imgUri = data.featuredImage
-                uri = activity.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
+                uri = activity.resources.getString(R.string.deals_brand_detail_share_app_link, data.seoUrl)
                 deepLink = activity.resources.getString(R.string.deals_brand_detail_share_app_link, data.seoUrl)
             }
         }
