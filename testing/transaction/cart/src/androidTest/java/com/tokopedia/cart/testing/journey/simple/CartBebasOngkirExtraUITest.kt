@@ -1,9 +1,9 @@
-package com.tokopedia.cart.journey.simple
+package com.tokopedia.cart.testing.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.robot.cartPage
-import com.tokopedia.cart.test.R
+import com.tokopedia.cart.testing.R
+import com.tokopedia.cart.testing.robot.cartPage
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
