@@ -45,6 +45,12 @@ android {
             dimension "client"
         }
     }
+
+    buildTypes {
+        release {
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
