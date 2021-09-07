@@ -19,7 +19,9 @@ import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.view.viewmodel.MediaModel
+import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.common.model.MimeType
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -50,17 +52,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     override fun updateHeader(header: HeaderViewModel) {
         content_post_avatar.loadImageCircle(header.avatar)
         content_post_avatar.showWithCondition(header.avatar.isNotBlank())
-
         content_post_name.text = header.title
-
     }
 
     override fun launchProductTagFragment(data: ArrayList<Uri>?) {
         val createPostViewModel = CreatePostViewModel()
         data?.forEach { uri ->
-            val  mediaModel  = MediaModel(path = uri.toString())
+            val type = if (isVideoFile(uri)) MediaType.VIDEO else MediaType.IMAGE
+            val mediaModel = MediaModel(path = uri.toString(), type = type)
             createPostViewModel.fileImageList.add(mediaModel)
-            createPostViewModel.urlImageList.add((mediaModel))
         }
         intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
@@ -68,6 +68,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         if (!create_post_toolbar.isVisible)
             create_post_toolbar?.visibility = View.VISIBLE
         inflateFragment()
+    }
+
+    private fun isVideoFile(uri: Uri):Boolean{
+        val cR = contentResolver
+        return MimeType.isVideo(cR.getType(uri))
     }
 
     companion object {
@@ -168,8 +173,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             CreatePostViewModel.TAG,
             intent.extras?.get(CreatePostViewModel.TAG), TimeUnit.DAYS.toMillis(7)
         )
-        SubmitPostServiceNew.startService(this, cacheManager.id!!)
-        goToFeed()
+        SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
         finish()
     }
 
@@ -180,10 +184,4 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             startActivity(intent)
         }
     }
-
-
-
-
-
-
 }
