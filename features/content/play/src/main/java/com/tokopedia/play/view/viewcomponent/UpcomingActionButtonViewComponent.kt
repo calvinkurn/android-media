@@ -14,16 +14,13 @@ import com.tokopedia.unifycomponents.UnifyButton
 class UpcomingActionButtonViewComponent(
     container: ViewGroup,
     @IdRes idRes: Int,
-    listener: Listener
+    private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
     private val button = (rootView as UnifyButton)
 
     init {
-        button.setOnClickListener {
-            setButtonStatus(Status.LOADING)
-            listener.onClickActionButton()
-        }
+        button.setOnClickListener { onButtonClick() }
 
         button.doOnApplyWindowInsets { view, insets, _, margin ->
             val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
@@ -34,6 +31,11 @@ class UpcomingActionButtonViewComponent(
                 view.parent.requestLayout()
             }
         }
+    }
+
+    fun onButtonClick() {
+        setButtonStatus(Status.LOADING)
+        listener.onClickActionButton()
     }
 
     fun setButtonStatus(status: Status) {

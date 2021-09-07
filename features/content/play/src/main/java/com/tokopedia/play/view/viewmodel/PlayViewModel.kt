@@ -1466,25 +1466,11 @@ class PlayViewModel @Inject constructor(
 
                 _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
 
-                _uiEvent.emit(
-                    ShowToasterEvent.RemindMe(
-                        message = UiString.Resource(R.string.play_remind_me_success),
-                        isSuccess = status
-                    )
-                )
-            } ?: _uiEvent.emit(
-                ShowToasterEvent.RemindMe(
-                    message = UiString.Resource(R.string.play_remind_me_success),
-                    isSuccess = false
-                )
-            )
+                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+
+            } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }) {
-            _uiEvent.emit(
-                ShowToasterEvent.RemindMe(
-                    message = UiString.Resource(R.string.play_remind_me_success),
-                    isSuccess = false
-                )
-            )
+            _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
     }
 

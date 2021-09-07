@@ -84,4 +84,5 @@
     <string name="play_remind_me_success">Berhasil diingatkan</string>
     <string name="play_watch_now">Tonton Sekarang</string>
     <string name="play_will_start_on">Akan mulai dalam</string>
+    <string name="play_failed_remind_me">Oops, gagal tersambung</string>
 </resources>

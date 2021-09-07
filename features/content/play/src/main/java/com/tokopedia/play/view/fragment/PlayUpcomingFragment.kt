@@ -29,12 +29,10 @@ import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -59,6 +57,8 @@ class PlayUpcomingFragment @Inject constructor(
     private lateinit var tvUpcomingTitle: AppCompatTextView
 
     private lateinit var playViewModel: PlayViewModel
+
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     override fun getScreenName(): String = "Play Upcoming"
 
@@ -124,9 +124,19 @@ class PlayUpcomingFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when(event) {
                     is OpenPageEvent -> openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
-                    is ShowToasterEvent.RemindMe -> {
-                        actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
-                        handleToasterEvent(event)
+                    is RemindMeEvent -> {
+                        if(event.isSuccess) {
+                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
+                            doShowToaster(message = getTextFromUiString(event.message))
+                        }
+                        else {
+                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
+                            doShowToaster(
+                                message = getTextFromUiString(event.message),
+                                toasterType = Toaster.TYPE_ERROR,
+                                actionText = "Coba Lagi"
+                            ) { actionButton.onButtonClick() }
+                        }
                     }
                 }
             }
@@ -137,8 +147,7 @@ class PlayUpcomingFragment @Inject constructor(
         val text = getTextFromUiString(event.message)
         doShowToaster(
             toasterType = when (event) {
-                is ShowToasterEvent.Info,
-                is ShowToasterEvent.RemindMe -> Toaster.TYPE_NORMAL
+                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
                 is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
             },
             message = text
@@ -238,12 +247,15 @@ class PlayUpcomingFragment @Inject constructor(
         toasterType: Int = Toaster.TYPE_NORMAL,
         actionText: String = "",
         message: String,
+        onClick: ((View) -> Unit) = { }
     ) {
+        Toaster.toasterCustomBottomHeight = if(toasterType == Toaster.TYPE_ERROR) actionButton.rootView.height + offset8 else 0
         Toaster.build(
             requireView(),
             message,
             type = toasterType,
-            actionText = actionText
+            actionText = actionText,
+            clickListener = onClick
         ).show()
     }
 }
