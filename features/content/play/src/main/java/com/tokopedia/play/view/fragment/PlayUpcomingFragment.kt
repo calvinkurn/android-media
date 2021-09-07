@@ -134,24 +134,13 @@ class PlayUpcomingFragment @Inject constructor(
                             doShowToaster(
                                 message = getTextFromUiString(event.message),
                                 toasterType = Toaster.TYPE_ERROR,
-                                actionText = "Coba Lagi"
+                                actionText = getString(R.string.play_try_again)
                             ) { actionButton.onButtonClick() }
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun handleToasterEvent(event: ShowToasterEvent) {
-        val text = getTextFromUiString(event.message)
-        doShowToaster(
-            toasterType = when (event) {
-                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
-                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-            },
-            message = text
-        )
     }
 
     private fun getTextFromUiString(uiString: UiString): String {

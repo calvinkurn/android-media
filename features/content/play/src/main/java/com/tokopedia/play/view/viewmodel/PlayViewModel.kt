@@ -668,13 +668,14 @@ class PlayViewModel @Inject constructor(
     fun focusPage(channelData: PlayChannelData) {
         isActive.compareAndSet(false, true)
 
+        _observableUpcomingInfo.value = channelData.upcomingInfo
+
         if(channelData.upcomingInfo.isUpcoming) {
             /**
              * Handling upcoming fragment here
              * 1. Show Upcoming Fragment
              * 2. Start SSE
              */
-            _observableUpcomingInfo.value = channelData.upcomingInfo
         }
         else {
             focusVideoPlayer(channelData)
