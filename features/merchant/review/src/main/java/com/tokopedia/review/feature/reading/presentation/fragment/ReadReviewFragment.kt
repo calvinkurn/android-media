@@ -36,7 +36,9 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
+import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
+import com.tokopedia.review.feature.imagepreview.presentation.fragment.ReviewImagePreviewFragment
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.*
@@ -67,7 +69,7 @@ import javax.inject.Inject
 class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
-    ReviewReportBottomSheetListener,
+    ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
     ReadReviewAttachedImagesListener, ReviewPerformanceMonitoringContract {
 
     companion object {
@@ -116,6 +118,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var isProductReview: Boolean = false
 
     private var currentScrollPosition = 0
+    private var imageClickedPosition = 0
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -285,6 +288,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                         totalRatingTextAndImage,
                         characterCount,
                         imageCount,
+                        viewModel.getProductId(),
                         trackingQueue
                 )
             }
@@ -362,6 +366,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     ) {
         val topicFilterTitle = getString(R.string.review_reading_topic_filter_title)
         if(isProductReview) {
+
             ReadReviewTracking.trackOnFilterClicked(
                     topicFilterTitle,
                     isActive,
@@ -521,8 +526,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun onAttachedImagesClicked(
         productReview: ProductReview,
         positionClicked: Int,
-        shopId: String
+        shopId: String,
+        reviewItemPosition: Int
     ) {
+        imageClickedPosition = reviewItemPosition
         if(isProductReview)
             ReadReviewTracking.trackOnImageClicked(productReview.feedbackID, viewModel.getProductId())
         else
@@ -539,7 +546,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 cacheManager.put(IS_PRODUCT_REVIEW_KEY, isProductReview)
             }
             startActivityForResult(
-                ReviewGalleryActivity.getIntent(
+                ReviewImagePreviewActivity.getIntent(
                     it, cacheManager.id
                         ?: ""
                 ), GALLERY_ACTIVITY_CODE
@@ -645,7 +652,22 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
             requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK -> {
-                loadInitialData()
+                data?.let {
+                    val cacheId = it.getStringExtra(ReviewImagePreviewFragment.KEY_CACHE_ID)
+                    context?.let { ctxt ->
+                        val finalLikeCount: ReviewImagePreviewFinalLikeCount? =
+                            SaveInstanceCacheManager(
+                                ctxt,
+                                cacheId
+                            ).get(
+                                ReviewImagePreviewFragment.KEY_FINAL_LIKE_COUNT,
+                                ReviewImagePreviewFinalLikeCount::class.java
+                            )
+                        finalLikeCount?.let { likeCount ->
+                            updateLikeFromImagePreview(likeCount.totalLikeCount, likeCount.likeStatus)
+                        }
+                    }
+                }
             }
             requestCode == REPORT_REVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK -> {
                 showToaster(getString(R.string.review_reading_success_submit_report))
@@ -660,6 +682,18 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         adapter.clearAllElements()
         showListOnlyLoading()
         loadData(defaultInitialPage)
+    }
+
+    override fun onHighlightedTopicClicked(topicName:String, topicPosition: Int) {
+        clearAllData()
+        showListOnlyLoading()
+        ReadReviewTracking.trackOnClickTopicRating(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
+        reviewHeader?.updateFilterFromHighlightedTopic(topicName)
+        viewModel.setFilterFromHighlightedTopic(topicName, isProductReview)
+    }
+
+    override fun onHighlightedTopicImpressed(topicName: String, topicPosition: Int) {
+        ReadReviewTracking.trackOnImpressHighlightedTopic(topicName, topicPosition, viewModel.userId, viewModel.getProductId())
     }
 
     private fun getProductIdFromArguments() {
@@ -768,6 +802,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
+            setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
             show()
         }
     }
@@ -944,6 +979,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             toggleLikeUiModel.itemIndex,
             toggleLikeUiModel.totalLike,
             toggleLikeUiModel.likeStatus
+        )
+    }
+
+    private fun updateLikeFromImagePreview(totalLike: Int, likeStatus: Int) {
+        (adapter as? ReadReviewAdapter)?.updateLikeStatus(
+            imageClickedPosition,
+            totalLike,
+            likeStatus
         )
     }
 

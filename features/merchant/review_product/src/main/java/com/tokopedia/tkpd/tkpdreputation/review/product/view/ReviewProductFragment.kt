@@ -195,7 +195,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         RouteManager.route(
                 context,
                 bundle,
-                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY_OLD,
                 productId
         )
         reputationTracking.eventImageClickOnReview(

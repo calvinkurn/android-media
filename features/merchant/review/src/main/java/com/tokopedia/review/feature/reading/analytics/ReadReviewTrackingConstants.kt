@@ -13,6 +13,7 @@ object ReadReviewTrackingConstants {
     const val KEY_NAME = "name"
     const val KEY_POSITION = "position"
     const val KEY_SHOP_ID = "shopId"
+    const val KEY_PROMO_CLICK = "promoClick"
 
     const val BUSINESS_UNIT = "product detail page"
     const val PHYSICAL_GOODS = "physical goods"
@@ -38,6 +39,8 @@ object ReadReviewTrackingConstants {
     const val EVENT_ACTION_IMPRESS_ITEM = "impression - review"
     const val EVENT_ACTION_PRODUCT_CLICK = "click - product link on the review card"
     const val EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS = "click - 3 dots beside the product link on the review card"
+    const val EVENT_ACTION_CLICK_TOPIC_RATING = "click - topic rating"
+    const val EVENT_ACTION_IMPRESS_TOPIC_RATING = "impression - topic rating"
 
     const val EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE = "positive_review:%s;rating:%d;ulasan:%d;"
     const val EVENT_LABEL_CLICK_FILTER = "filter_name:%s;is_active:%s;"
