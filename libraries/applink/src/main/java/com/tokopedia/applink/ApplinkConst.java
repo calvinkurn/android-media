@@ -401,6 +401,7 @@ public interface ApplinkConst {
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
 
+    String SHARING_HOST = "sharing";
     String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
     interface Discovery {
