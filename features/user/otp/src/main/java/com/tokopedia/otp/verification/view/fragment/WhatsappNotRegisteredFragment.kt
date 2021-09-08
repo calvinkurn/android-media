@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.di.OtpComponent
@@ -41,16 +42,19 @@ open class WhatsappNotRegisteredFragment : BaseOtpToolbarFragment(), IOnBackPres
     }
 
     private fun initVar() {
-        title = arguments?.getString(OtpConstant.OTP_WA_NOT_REGISTERED_TITLE, "") ?: ""
-        subtitle = arguments?.getString(OtpConstant.OTP_WA_NOT_REGISTERED_SUBTITLE, "") ?: ""
+        title = arguments?.getString(OtpConstant.OTP_WA_NOT_REGISTERED_TITLE, "")
+            ?: getString(R.string.wa_not_registered_title)
+        subtitle = arguments?.getString(OtpConstant.OTP_WA_NOT_REGISTERED_SUBTITLE, "")
+            ?: getString(R.string.wa_not_registered_subtitle)
         imgLink = arguments?.getString(OtpConstant.OTP_WA_NOT_REGISTERED_IMG_LINK, "") ?: ""
     }
 
     private fun initView() {
-        if (title.isNotEmpty()) viewBound.title?.text = title
-        if (subtitle.isNotEmpty()) viewBound.subtitle?.text = subtitle
-        if (imgLink.isNotEmpty()) viewBound.mainImage?.setImageUrl(imgLink)
-        viewBound.btnMain?.setOnClickListener {
+        if (title.isNotEmpty()) viewBound.emptyState?.setTitle(title)
+        if (subtitle.isNotEmpty()) viewBound.emptyState?.setDescription(subtitle)
+        if (imgLink.isNotEmpty()) viewBound.emptyState?.setImageUrl(imgLink)
+        viewBound.emptyState?.setPrimaryCTAText(getString(R.string.wa_not_registered_button_text))
+        viewBound.emptyState?.setPrimaryCTAClickListener {
             goToVerificationMethodPage()
         }
     }
