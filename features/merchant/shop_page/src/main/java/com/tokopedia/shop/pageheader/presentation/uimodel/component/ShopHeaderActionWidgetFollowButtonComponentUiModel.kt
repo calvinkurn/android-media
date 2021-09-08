@@ -4,5 +4,4 @@ class ShopHeaderActionWidgetFollowButtonComponentUiModel : ShopHeaderButtonCompo
     var isButtonLoading = false
     var leftDrawableUrl = ""
     var isFollowing = false
-    var buttonAbTestVariantType: String = ""
 }

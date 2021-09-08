@@ -68,8 +68,7 @@ class ShopPageHeaderAdapter(
     fun setFollowButtonData(
             label: String? = null,
             leftDrawableUrl: String? = null,
-            isFollowing: Boolean? = null,
-            buttonVarianType: String? = ""
+            isFollowing: Boolean? = null
     ) {
         getWidgetUiModel(SHOP_ACTION)?.getComponentUiModel<ShopHeaderActionWidgetFollowButtonComponentUiModel>(BUTTON_FOLLOW)?.apply {
             label?.let {
@@ -80,9 +79,6 @@ class ShopPageHeaderAdapter(
             }
             isFollowing?.let {
                 this.isFollowing = it
-            }
-            buttonVarianType?.let {
-                this.buttonAbTestVariantType = it
             }
             adapterActionButtonWidget?.notifyButtonWidgetAdapter()
         }

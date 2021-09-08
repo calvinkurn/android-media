@@ -103,13 +103,11 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setFollowStatus(followStatus: FollowStatus?) {
         isShopFavorite = followStatus?.status?.userIsFollowing == true
-        val shopFollowButtonVarianType = ShopUtil.getShopFollowButtonAbTestVariant()
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
                     it.followButton?.buttonLabel.orEmpty(),
                     it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite,
-                    shopFollowButtonVarianType
+                    isShopFavorite
             )
         }
     }
