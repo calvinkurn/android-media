@@ -1,13 +1,10 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.authentication.HEADER_RELEASE_TRACK
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,7 +17,7 @@ import com.tokopedia.play.data.sse.PlayChannelSSE
 import com.tokopedia.play.data.sse.PlayChannelSSEPageSource
 import com.tokopedia.play.data.ssemapper.PlaySSEMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.UpcomingChannelUpdateActive
+import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
@@ -67,12 +64,9 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import okhttp3.Request
-import okhttp3.Response
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -1310,15 +1304,14 @@ class PlayViewModel @Inject constructor(
         }
 
         when(result) {
-            is UpcomingChannelUpdateLive -> {
-                if(result.channelId.toString() == channelId)
-                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
-            }
-            is UpcomingChannelUpdateActive -> {
-                if(result.channelId.toString() == channelId)
-                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
-            }
+            is UpcomingChannelUpdateLive -> handleUpdateChannelStatus(result.channelId, channelId)
+            is UpcomingChannelUpdateActive -> handleUpdateChannelStatus(result.channelId, channelId)
         }
+    }
+
+    private fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
+        if(changedChannelId == currentChannelId)
+            _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
     }
 
     /**

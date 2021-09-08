@@ -4,7 +4,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.UpcomingChannelUpdateLive
-import com.tokopedia.play.data.websocket.UpcomingChannelUpdateActive
+import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play_common.sse.SSEResponse
 
 /**
