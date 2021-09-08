@@ -51,8 +51,10 @@ class ItemVariantImageViewHolder(val view: View,
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
-                overlayVariantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_overlay)
-                overlayVariantImgContainer.show()
+                overlayVariantImgContainer?.apply {
+                    background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_overlay)
+                    show()
+                }
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
             }
             VariantConstant.STATE_SELECTED -> {
@@ -61,8 +63,10 @@ class ItemVariantImageViewHolder(val view: View,
                 setViewListener(element, element.currentState)
             }
             VariantConstant.STATE_SELECTED_EMPTY -> {
-                overlayVariantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_empty_overlay)
-                overlayVariantImgContainer.show()
+                overlayVariantImgContainer?.apply {
+                    background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_empty_overlay)
+                    show()
+                }
                 imgContainerVariant.background = null
                 setViewListener(element, element.currentState)
             }

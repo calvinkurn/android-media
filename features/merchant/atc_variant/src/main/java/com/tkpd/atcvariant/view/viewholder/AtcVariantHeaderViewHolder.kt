@@ -44,7 +44,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
     override fun bind(element: VariantHeaderDataModel) {
         loadImage(element.productImage)
         loadDescription(element.headerData)
-        renderVariantName(element.variantTitle)
+        renderVariantName(element.listOfVariantTitle)
         renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
         renderCashback(element.cashBackPercentage)
     }
@@ -61,7 +61,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
             return
         }
 
-        renderVariantName(element.variantTitle)
+        renderVariantName(element.listOfVariantTitle)
         renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
         when (payloads[0] as Int) {
             PAYLOAD_UPDATE_IMAGE_ONLY -> {

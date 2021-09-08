@@ -177,10 +177,12 @@ class PartialButtonActionView private constructor(val view: View,
                 ?: DEFAULT_TOTAL_STOCK)
     }
 
-    private fun renderTopChat(unavailableButton: List<String>) = with(view) {
-        btnChat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
-        btnChat.setOnClickListener {
-            buttonListener.topChatButtonClicked()
+    private fun renderTopChat(unavailableButton: List<String>) {
+        btnChat.apply {
+            showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+            setOnClickListener {
+                buttonListener.topChatButtonClicked()
+            }
         }
     }
 
@@ -190,11 +192,7 @@ class PartialButtonActionView private constructor(val view: View,
         renderNormalButtonCartRedirection()
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
-        btnChat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
-        btnChat.setOnClickListener {
-            buttonListener.topChatButtonClicked()
-        }
-
+        renderTopChat(unavailableButton)
     }
 
     private fun renderNormalButtonCartRedirection() = with(view) {
@@ -284,7 +282,7 @@ class PartialButtonActionView private constructor(val view: View,
                     }
 
                     override fun onNext(quantity: Int) {
-                        onNextValueQuantity(quantity, minQuantity , maxQuantity, selectedMiniCart)
+                        onNextValueQuantity(quantity, minQuantity, maxQuantity, selectedMiniCart)
                     }
                 })
 
@@ -351,34 +349,43 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             qtyButtonPdp.hide()
             hideButtonEmptyAndTopAds()
-            btnChat.visibility = View.VISIBLE
-            btn_buy_now.text = context.getString(
-                    if (preOrder?.isPreOrderActive() == true) {
-                        R.string.action_preorder
-                    } else {
-                        if (isExpressCheckout) {
-                            com.tokopedia.product.detail.common.R.string.buy_now
+
+            btn_buy_now.apply {
+                text = context.getString(
+                        if (preOrder?.isPreOrderActive() == true) {
+                            R.string.action_preorder
                         } else {
-                            R.string.buy
-                        }
-                    })
-            btn_add_to_cart.text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
-            btn_buy_now.visible()
-            btn_add_to_cart.visible()
+                            if (isExpressCheckout) {
+                                com.tokopedia.product.detail.common.R.string.buy_now
+                            } else {
+                                R.string.buy
+                            }
+                        })
 
-            btn_buy_now.setOnClickListener {
-                if (hasComponentLoading) return@setOnClickListener
-                buttonListener.buyNowClick(btn_buy_now.text.toString())
-            }
-            btn_add_to_cart.setOnClickListener {
-                if (hasComponentLoading) return@setOnClickListener
-                buttonListener.addToCartClick(btn_add_to_cart.text.toString())
+                setOnClickListener {
+                    if (hasComponentLoading) return@setOnClickListener
+                    buttonListener.buyNowClick(btn_buy_now.text.toString())
+                }
+
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
+                show()
             }
 
-            btn_buy_now.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
-            btn_add_to_cart.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
-            btnChat.setOnClickListener {
-                buttonListener.topChatButtonClicked()
+            btn_add_to_cart.apply {
+                text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+                setOnClickListener {
+                    if (hasComponentLoading) return@setOnClickListener
+                    buttonListener.addToCartClick(btn_add_to_cart.text.toString())
+                }
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
+                show()
+            }
+
+            btnChat.apply {
+                setOnClickListener {
+                    buttonListener.topChatButtonClicked()
+                }
+                show()
             }
         }
     }
@@ -416,8 +423,10 @@ class PartialButtonActionView private constructor(val view: View,
             containerTokonowVar.hide()
             btn_empty_stock.show()
             qtyButtonPdp.hide()
-            btnChat.showWithCondition(!isShopOwner)
-            btnChat.setOnClickListener { buttonListener.topChatButtonClicked() }
+            btnChat.apply {
+                showWithCondition(!isShopOwner)
+                setOnClickListener { buttonListener.topChatButtonClicked() }
+            }
         }
     }
 

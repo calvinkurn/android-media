@@ -44,8 +44,8 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     }
 
     private fun renderStockWording(element: VariantComponentDataModel) = with(view) {
-        txtEmptyStock?.text = HtmlLinkHelper(context, element.emptyOrInnactiveCopy).spannedString
-        txtEmptyStock?.showWithCondition(element.emptyOrInnactiveCopy.isNotEmpty())
+        txtEmptyStock?.text = HtmlLinkHelper(context, element.emptyOrInactiveCopy).spannedString
+        txtEmptyStock?.showWithCondition(element.emptyOrInactiveCopy.isNotEmpty())
     }
 
     private fun getHexColor(resColor: Int): String {

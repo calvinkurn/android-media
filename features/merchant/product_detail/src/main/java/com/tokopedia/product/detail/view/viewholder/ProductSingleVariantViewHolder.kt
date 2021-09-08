@@ -30,7 +30,7 @@ class ProductSingleVariantViewHolder(val view: View,
     private val txtVariantIdentifierStatic = view.findViewById<Typography>(R.id.txt_choose_variant_label)
     private val variantLocalLoad = view.findViewById<LocalLoad>(R.id.variant_local_load)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-
+    private val emptyVariantData = VariantOptionWithAttribute()
 
     companion object {
         val LAYOUT = R.layout.item_single_variant_view_holder
@@ -59,7 +59,7 @@ class ProductSingleVariantViewHolder(val view: View,
 
                 itemView.setOnClickListener {
                     //pass dummy object since we need to redirect to variant bottomsheet
-                    variantListener.onVariantClicked(VariantOptionWithAttribute())
+                    variantListener.onVariantClicked(emptyVariantData)
                 }
                 hideError()
             }

@@ -13,7 +13,7 @@ data class VariantHeaderDataModel(
         val position: Long = 0,
         val productImage: String = "",
         val productId: String = "",
-        val variantTitle: List<String> = listOf(),
+        val listOfVariantTitle: List<String> = listOf(),
         val isTokoCabang: Boolean = false,
         val uspImageUrl: String = "",
         val cashBackPercentage: Int = 0,
@@ -25,7 +25,7 @@ data class VariantHeaderDataModel(
         return if (newData is VariantHeaderDataModel) {
             productImage == newData.productImage &&
                     headerData == newData.headerData &&
-                    variantTitle.hashCode() == newData.variantTitle.hashCode() &&
+                    listOfVariantTitle.hashCode() == newData.listOfVariantTitle.hashCode() &&
                     isTokoCabang == newData.isTokoCabang &&
                     cashBackPercentage == newData.cashBackPercentage
         } else {

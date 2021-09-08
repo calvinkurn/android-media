@@ -507,7 +507,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
         val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
                 ?: ""
-        val variantTitle = adapter.getHeaderDataModel()?.variantTitle?.joinToString(separator = ", ")
+        val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
                 ?: ""
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,

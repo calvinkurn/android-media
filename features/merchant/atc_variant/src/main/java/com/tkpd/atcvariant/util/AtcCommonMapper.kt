@@ -196,7 +196,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
-                        variantTitle = selectedChild?.optionName ?: listOf(),
+                        listOfVariantTitle = selectedChild?.optionName ?: listOf(),
                         isTokoCabang = selectedProductFulfillment,
                         uspImageUrl = uspImageUrl,
                         cashBackPercentage = cashBackPercentage,
@@ -210,7 +210,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        emptyOrInnactiveCopy = selectedChild?.stock?.stockCopy ?: "")
+                        emptyOrInactiveCopy = selectedChild?.stock?.stockCopy ?: "")
         ).also {
             idCounter += 1
         }
@@ -260,7 +260,7 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            emptyOrInnactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
+                            emptyOrInactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
@@ -281,7 +281,7 @@ object AtcCommonMapper {
                                 productId = selectedVariantChild?.productId ?: "",
                                 headerData = headerData.second,
                                 isTokoCabang = selectedProductFulfillment,
-                                variantTitle = selectedVariantChild?.optionName ?: listOf())
+                                listOfVariantTitle = selectedVariantChild?.optionName ?: listOf())
                     }
                 }
                 else -> {

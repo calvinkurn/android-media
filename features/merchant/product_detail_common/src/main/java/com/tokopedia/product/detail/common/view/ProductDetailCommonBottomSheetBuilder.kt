@@ -33,12 +33,14 @@ object ProductDetailCommonBottomSheetBuilder {
             val textHome = view.findViewById<Typography>(R.id.text_home)
 
             imgError.loadImage(data.iconURL)
-            btnError.text = data.buttonCopy
             txtError.text = HtmlLinkHelper(context, data.subtitle).spannedString
 
-            btnError.setOnClickListener {
-                dismiss()
-                onButtonClicked.invoke(errorCode)
+            btnError.apply {
+                text = data.buttonCopy
+                setOnClickListener {
+                    dismiss()
+                    onButtonClicked.invoke(errorCode)
+                }
             }
 
             textHome.setOnClickListener {

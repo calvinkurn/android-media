@@ -10,6 +10,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
+        const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
     }
 
     object Tracking {
