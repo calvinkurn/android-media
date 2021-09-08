@@ -245,7 +245,7 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
-                quantity = productBundleDetail.productQuantity,
+                quantity = ATC_BUNDLE_QUANTITY,
                 shopId = shopId.toString(),
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId
