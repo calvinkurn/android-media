@@ -13,9 +13,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
-import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants
 import com.tokopedia.totalamount.TotalAmount
 
 class EntrypointFragment : TkpdBaseV4Fragment() {
@@ -72,7 +72,7 @@ class EntrypointFragment : TkpdBaseV4Fragment() {
         } else {
             setType(GlobalError.PAGE_FULL)
         }
-        errorIllustration.loadImageWithoutPlaceholder(SingleBundleInfoConstants.BUNDLE_EMPTY_IMAGE_URL)
+        errorIllustration.loadImageWithoutPlaceholder(BUNDLE_EMPTY_IMAGE_URL)
         errorTitle.text = getString(R.string.single_bundle_error_bundle)
         errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
         errorAction.text = getString(R.string.action_back_to_pdp)

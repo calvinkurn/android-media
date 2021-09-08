@@ -15,7 +15,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.*
-import com.tokopedia.product_bundle.single.presentation.model.SingleBundleInfoConstants.BUNDLE_QTY
+import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.BUNDLE_QTY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
