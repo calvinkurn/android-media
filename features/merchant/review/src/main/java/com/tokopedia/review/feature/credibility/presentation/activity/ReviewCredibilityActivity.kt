@@ -1,0 +1,155 @@
+package com.tokopedia.review.feature.credibility.presentation.activity
+
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
+import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.credibility.presentation.fragment.ReviewCredibilityBottomSheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import timber.log.Timber
+
+class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>,
+    ReviewPerformanceMonitoringListener {
+
+    companion object {
+        fun getIntent(context: Context, userId: String, source: String): Intent {
+            return Intent(context, ReviewCredibilityActivity::class.java).apply {
+                putExtra("userId", userId)
+                putExtra("source", source)
+            }
+        }
+        const val REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG = "ReviewCredibilityBottomSheetTag"
+    }
+
+    private var userId = ""
+    private var source = ""
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var reviewCredibilityBottomSheet: BottomSheetUnify? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getDataFromApplinkOrIntent()
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+        adjustOrientation()
+        handleDimming()
+        hideToolbar()
+        showReviewCredibilityBottomSheet()
+    }
+
+
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+            ReviewConstants.REVIEW_CREDIBILITY_PLT_PREPARE_METRICS,
+            ReviewConstants.REVIEW_CREDIBILITY_PLT_NETWORK_METRICS,
+            ReviewConstants.REVIEW_CREDIBILITY_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
+        )
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.REVIEW_CREDIBILITY_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopMonitoring()
+        }
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun getDataFromApplinkOrIntent() {
+        val uri = intent.data
+        if (uri != null && uri.pathSegments.size > 0) {
+            val uriSegment = uri.pathSegments
+            userId = uriSegment.getOrNull(uriSegment.size - 2) ?: ""
+            source = uriSegment.getOrNull(uriSegment.size - 1) ?: ""
+        } else {
+            userId = intent.getStringExtra("userId") ?: ""
+            source = intent.getStringExtra("source") ?: ""
+        }
+    }
+
+    private fun handleDimming() {
+        try {
+            window.setDimAmount(0f)
+        } catch (th: Throwable) {
+            Timber.e(th)
+        }
+    }
+
+    private fun hideToolbar() {
+        findViewById<Toolbar>(com.tokopedia.abstraction.R.id.toolbar)?.hide()
+    }
+
+    private fun showReviewCredibilityBottomSheet() {
+        reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source)
+        reviewCredibilityBottomSheet?.apply {
+            clearContentPadding = true
+            show(supportFragmentManager, REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG)
+        }
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+}

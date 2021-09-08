@@ -398,4 +398,7 @@
     <string name="review_gallery_variant">Varian: %s</string>
     <string name="review_gallery_title">Foto Pembeli</string>
 
+    <!-- Credibility   -->
+    <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
+
 </resources>
