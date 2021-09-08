@@ -1438,10 +1438,9 @@ class PlayViewModel @Inject constructor(
                 copy(status = newStatus, source = LikeSource.UserAction)
             }
 
-            if (newStatus == PlayLikeStatus.Liked) {
-                viewModelScope.launch {
-                    _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
-                }
+            viewModelScope.launch {
+                _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
+                _uiEvent.emit(ShowLikeBubbleEvent)
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)

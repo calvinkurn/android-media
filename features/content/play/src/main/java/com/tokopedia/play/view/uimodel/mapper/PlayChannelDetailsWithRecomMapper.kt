@@ -39,9 +39,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                             it.config.realTimeNotif
                         ),
                         videoInfo = mapVideoInfo(it.video),
-                        multipleLikeConfigInfo = mapMultipleLikeConfig(
-                            it.config.multipleLikeConfig
-                        )
+                        multipleLikeConfigInfo = mapMultipleLikeConfig(it.config.multipleLikeConfig)
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
