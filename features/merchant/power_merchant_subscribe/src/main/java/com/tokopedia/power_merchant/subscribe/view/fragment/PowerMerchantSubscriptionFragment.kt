@@ -31,6 +31,7 @@ import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceM
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantPrefManager
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
@@ -82,6 +83,12 @@ open class PowerMerchantSubscriptionFragment :
             requireActivity(),
             viewModelFactory
         ).get(PowerMerchantSharedViewModel::class.java)
+    }
+
+    private val powerMerchantPrefManager: PowerMerchantPrefManager? by lazy {
+        context?.let { context ->
+            PowerMerchantPrefManager(context)
+        }
     }
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_SUBSCRIBE
@@ -767,9 +774,9 @@ open class PowerMerchantSubscriptionFragment :
     private fun showCoachMark() {
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse()
-        val isShowCoachmark = coachMark?.isCoachmmarkShowAllowed
+        val isShowCoachmark = powerMerchantPrefManager?.getFinishCoachMark()
         if (isPmPro && isNewSeller) {
-            if (isShowCoachmark && getCoachMarkItems().value.isNotEmpty()) {
+            if (isShowCoachmark == false && getCoachMarkItems().value.isNotEmpty()) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     scrollTo<WidgetDividerUiModel>()
                     recyclerView?.post {
@@ -785,7 +792,7 @@ open class PowerMerchantSubscriptionFragment :
             val coachMark = context?.let { CoachMark2(it) }
             coachMark?.isDismissed = false
             coachMark?.onFinishListener = {
-                coachMark?.isCoachmmarkShowAllowed = false
+                powerMerchantPrefManager?.setIsShowCoachMarkPM(true)
             }
             coachMark
         }
