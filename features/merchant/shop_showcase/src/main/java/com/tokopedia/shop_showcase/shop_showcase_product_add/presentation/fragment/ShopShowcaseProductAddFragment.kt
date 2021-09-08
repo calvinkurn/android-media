@@ -27,9 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.ImageAssets
-import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
-import com.tokopedia.shop_showcase.common.ShopShowcaseTracking
+import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
@@ -66,8 +64,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
         const val SHOWCASE_DELETED_LIST = "deleted_list"
-        private const val CARD_ELEVATION = 16.0f
-        private const val CARD_NO_ELEVATION = 0f
         private const val SLIDE_UP_COUNTER_ANIMATION_DELAY_MILLIS = 1800L
         private const val SLIDE_DOWN_COUNTER_TRANSLATE_Y = 250f
     }
@@ -148,11 +144,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 super.onScrolled(view, dx, dy)
                 if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
-                    headerLayout?.cardElevation = CARD_NO_ELEVATION
+                    headerLayout?.cardElevation = CARD_HEADER_NO_ELEVATION
                 }
                 else {
                     buttonBackToTop?.show()
-                    headerLayout?.cardElevation = CARD_ELEVATION
+                    headerLayout?.cardElevation = CARD_HEADER_ELEVATION
                 }
             }
 

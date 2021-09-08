@@ -52,9 +52,6 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
             }
             return fragment
         }
-
-        private const val CARD_ELEVATION = 16.0f
-        private const val CARD_NO_ELEVATION = 0f
     }
 
     @Inject
@@ -209,9 +206,9 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout.cardElevation = CARD_NO_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout.cardElevation = CARD_ELEVATION
+                        headerLayout.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }
