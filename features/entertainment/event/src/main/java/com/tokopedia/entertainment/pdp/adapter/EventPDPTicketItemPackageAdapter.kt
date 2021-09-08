@@ -194,13 +194,6 @@ class EventPDPTicketItemPackageAdapter(
                 }
             }
         }
-
-        fun resetQuantities() {
-            itemView.txtPilih_ticket.visibility = View.VISIBLE
-            itemView.greenDivider.visibility = View.GONE
-            itemView.quantityEditor.visibility = View.GONE
-            itemView.bgTicket.background = ContextCompat.getDrawable(itemView.context, R.drawable.ent_pdp_ticket_normal_bg)
-        }
     }
 
     override fun getItemCount(): Int = listItemPackage.size
