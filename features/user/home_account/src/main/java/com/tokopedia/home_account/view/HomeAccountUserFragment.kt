@@ -1168,7 +1168,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
             putExtra(ApplinkConstInternalGlobal.PARAM_LD, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
         }
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
@@ -1206,22 +1206,23 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+        when (requestCode) {
+            REQUEST_FROM_PDP -> {
+                data?.let {
+                    val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(wishlistStatusFromPdp, position)
+                    val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                    updateWishlist(wishlistStatusFromPdp, position)
+                }
             }
-        }
-
-        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
-            gotoSettingProfile()
-        }
-
-        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
-            getData()
+            REQUEST_CODE_CHANGE_NAME -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    gotoSettingProfile()
+                }
+            }
+            REQUEST_CODE_PROFILE_SETTING, REQUEST_CODE_LINK_ACCOUNT -> {
+                getData()
+            }
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -1371,6 +1372,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     companion object {
         private const val REQUEST_CODE_CHANGE_NAME = 300
         private const val REQUEST_CODE_PROFILE_SETTING = 301
+        private const val REQUEST_CODE_LINK_ACCOUNT = 302
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
