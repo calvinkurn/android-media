@@ -148,7 +148,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun productDetailSuccess(data: GetProductV3) {
         productInfoShimmer.gone()
         data.pictures?.get(0)?.let { pictures ->
-            pictures.urlThumbnail?.let { urlThumbnail -> imageView.loadImage(urlThumbnail) }
+            pictures.urlThumbnail?.let { urlThumbnail -> productDetail.productImage.loadImage(urlThumbnail) }
         }
         data.productName?.let {
             productDetail.productName.text = it
@@ -297,12 +297,12 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun showNoNetworkView() {
         hideDataGroup()
-        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
-        payLaterParentGlobalError.show()
-        payLaterParentGlobalError.setActionClickListener {
-            payLaterParentGlobalError.gone()
-            getSimulationProductInfo()
-        }
+//        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
+//        payLaterParentGlobalError.show()
+//        payLaterParentGlobalError.setActionClickListener {
+//            payLaterParentGlobalError.gone()
+//            getSimulationProductInfo()
+//        }
     }
 
     companion object {

@@ -60,8 +60,10 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
-                null, false)
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
         setChild(childView)
         setTitle(getString(R.string.pay_later_find_out_more_heading))
     }
@@ -80,7 +82,8 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     private fun initAdapter() {
         faqData?.let {
             rvPaylaterFaq.adapter = PayLaterPaymentFaqAdapter(it)
-            rvPaylaterFaq.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvPaylaterFaq.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         }
     }
@@ -94,8 +97,13 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     private fun populateFaqData(): ArrayList<PayLaterPartnerFaq> {
         val faqList = ArrayList<PayLaterPartnerFaq>()
         for (i in 1..5)
-            faqList.add(PayLaterPartnerFaq("Berapa lama proses persetujuan aplikasi kredit online Kredivo?",
-                    "Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya", false))
+            faqList.add(
+                PayLaterPartnerFaq(
+                    "Berapa lama proses persetujuan aplikasi kredit online Kredivo?",
+                    "Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya",
+                    false
+                )
+            )
         return faqList
     }
 

@@ -36,7 +36,7 @@ class PayLaterPaymentMethodViewHolder(
                 imageUrl = payLaterItemProductData.partnerImgDarkUrl
             else imageUrl = payLaterItemProductData.partnerImgLightUrl
             if (!imageUrl.isNullOrEmpty())
-                imageView.loadImage(imageUrl)
+                ivPartnerLogo.loadImage(imageUrl)
 
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
             setSubTitleContent(payLaterApplicationDataForPartner, this)
