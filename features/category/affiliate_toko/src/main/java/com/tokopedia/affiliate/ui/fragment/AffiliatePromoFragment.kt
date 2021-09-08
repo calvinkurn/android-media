@@ -156,11 +156,11 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>() 
         AffiliatePromotionBottomSheet.newInstance(productName,productImage,productUrl,productIdentifier).show(childFragmentManager, "")
     }
 
-    override fun onErrorLihatClick() {
+    override fun onViewMoreClick() {
 
     }
 
-    override fun onGantiClick() {
+    override fun onChangeLinkClick() {
 
     }
 }

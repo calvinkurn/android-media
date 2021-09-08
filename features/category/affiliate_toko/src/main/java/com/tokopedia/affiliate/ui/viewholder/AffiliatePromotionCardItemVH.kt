@@ -26,11 +26,13 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                     AffiliatePromotionProductCard.toAffiliateProductModel(it))
         }
 
-        itemView.findViewById<ProductCardListView>(R.id.affiliate_product_card)?.findViewById<UnifyButton>(R.id.buttonNotify)?.run {
+        itemView.findViewById<UnifyButton>(R.id.buttonNotify)?.run {
             visibility = View.VISIBLE
-            text = "Promosikan"
+            text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
-                promotionClickInterface?.onPromotionClick("","","","")
+                promotionClickInterface?.onPromotionClick(element?.promotionItem?.title ?: "",
+                        element?.promotionItem?.image?.android ?:"","",
+                        "")
             }
         }
     }
