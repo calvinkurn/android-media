@@ -137,6 +137,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
@@ -176,7 +177,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
-        ProductCampaignInfoListener {
+        ProductCampaignInfoListener, SellerHomeFragmentListener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -943,7 +944,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (shouldScrollToTop) {
             shouldScrollToTop = false
             recycler_view?.addOneTimeGlobalLayoutListener {
-                recycler_view?.smoothScrollToPosition(0)
+                recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
             }
         }
         renderCheckedView()
@@ -1919,6 +1920,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
+    override fun onScrollToTop() {
+        recycler_view?.post {
+            recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
+        }
+    }
+
     @Suppress("NAME_SHADOWING")
     private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
         val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
@@ -2466,6 +2473,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
 
         private const val START_SPAN_INDEX = 5
+
+        private const val RV_TOP_POSITION = 0
     }
 
 }

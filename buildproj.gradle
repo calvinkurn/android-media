@@ -23,18 +23,6 @@ allprojects {
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
-    //handle new relic keep in JDK 8
-    afterEvaluate { Project p ->
-        List<String> newRelicPlugins = ["com.newrelic", "com.newrelic.agent.android"]
-
-        for(String s: newRelicPlugins) {
-            if (p.plugins.findPlugin(s)) {
-                p.tasks.withType(JavaCompile).all {
-                    it.options.compilerArgs += ['--release', '8']
-                }
-            }
-        }
-    }
 }
 
 task clean(type: Delete) {
@@ -126,9 +114,12 @@ subprojects {
                 rootProject.tasks.runUnitTest.dependsOn(task)
             }
         }
+        try {
+            if (isLibrary) {
+                project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
+            }
+        }catch(Exception ignored) {
 
-        if (isLibrary) {
-            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
     }
 }

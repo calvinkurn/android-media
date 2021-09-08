@@ -1,8 +1,10 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class Shop(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         val shopId: Long = 0,
         @SerializedName("shop_name")
@@ -37,6 +39,8 @@ data class Shop(
         val shopAlertMessage: String = "",
         @SerializedName("shop_type_info")
         val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+        @SerializedName("is_tokonow")
+        val isTokoNow: Boolean = false,
 
         // Temporary field to determine value of shop type to be sent as dimension81
         // Need to remove in the future when implementing tracking for PM Pro

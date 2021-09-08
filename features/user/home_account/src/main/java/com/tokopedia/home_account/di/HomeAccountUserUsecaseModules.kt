@@ -2,12 +2,14 @@ package com.tokopedia.home_account.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountTokopointsUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -55,5 +57,10 @@ class HomeAccountUserUsecaseModules {
     fun provideSafeSettingUseCase(@HomeAccountUserContext context: Context,
                                   graphqlRepository: GraphqlRepository): SafeSettingProfileUseCase {
         return SafeSettingProfileUseCase(context, graphqlRepository)
+    }
+
+    @Provides
+    fun provideTokopointUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): HomeAccountTokopointsUseCase {
+        return HomeAccountTokopointsUseCase(graphqlRepository, dispatchers)
     }
 }

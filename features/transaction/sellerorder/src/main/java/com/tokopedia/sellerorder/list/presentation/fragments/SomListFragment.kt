@@ -45,6 +45,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -124,7 +125,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
     SomFilterBottomSheet.SomFilterFinishListener,
     SomListOrderEmptyViewHolder.SomListEmptyStateListener,
-    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener {
+    SomListBulkPrintDialog.SomListBulkPrintDialogClickListener, Toolbar.OnMenuItemClickListener,
+    SellerHomeFragmentListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -138,6 +140,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val COACHMARK_ITEM_COUNT_SELLERAPP = 4
         private const val COACHMARK_ITEM_COUNT_MAINAPP = 3
         private const val RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD = 100
+        private const val RV_TOP_POSITION = 0
         private const val KEY_LAST_ACTIVE_FILTER = "lastActiveFilter"
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
@@ -835,6 +838,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             true
         } else {
             false
+        }
+    }
+
+    override fun onScrollToTop() {
+        rvSomList?.post {
+            rvSomList?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 

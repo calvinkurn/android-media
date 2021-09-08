@@ -442,8 +442,14 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                    delay(DEBOUNCE_TIME)
                     val newValue = s.toString().replace(".", "").toIntOrZero()
+                    val minOrder = cartItemHolderData?.cartItemData?.originData?.minOrder ?: 0
+                    if (newValue >= minOrder) {
+                        delay(DEBOUNCE_TIME)
+                    } else {
+                        // Use longer delay for reset qty, to support automation
+                        delay(RESET_QTY_DEBOUNCE_TIME)
+                    }
                     if (data.cartItemData.updatedData.quantity != newValue) {
                         validateQty(newValue, data)
                         if (newValue != 0) {
@@ -574,5 +580,6 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         private const val QUANTITY_REGEX = "[^0-9]"
 
         private const val DEBOUNCE_TIME = 500L
+        private const val RESET_QTY_DEBOUNCE_TIME = 1000L
     }
 }

@@ -602,7 +602,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                     }
                                 })
                         promoNotEligibleBottomSheet.dismissListener = {
-                            refresh()
+                            if (view != null) {
+                                refresh()
+                            }
                         }
                         promoNotEligibleBottomSheet.show(requireContext(), parentFragmentManager)
                         orderSummaryAnalytics.eventViewBottomSheetPromoError()

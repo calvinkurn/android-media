@@ -48,7 +48,7 @@ class HotelCancellationConfirmationActivity : HotelBaseActivity(), HasComponent<
                     cancellationSubmitParam ?: HotelCancellationSubmitParam())
 
         } else {
-            HotelCancellationConfirmationFragment.getInstance(intent.getParcelableExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA),
+            HotelCancellationConfirmationFragment.getInstance(intent.getParcelableExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA) ?: HotelCancellationSubmitModel(),
             intent.getBooleanExtra(EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND, false))
         }
     }

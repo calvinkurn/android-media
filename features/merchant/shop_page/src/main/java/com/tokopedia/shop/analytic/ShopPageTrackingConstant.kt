@@ -28,6 +28,7 @@ object ShopPageTrackingConstant {
     const val SHOP_PAGE_BUYER = "shop page - buyer"
     const val SHOP_PAGE = "shop page"
     const val TOP_NAV = "top nav - %s"
+    const val CATEGORY_TOP_NAV = "top nav"
     const val MEMBERSHIP_SHOP_PAGE = "membership - shop page"
     const val SETTING_PAGE_SELLER = "setting page - seller"
     const val SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer"
@@ -116,6 +117,7 @@ object ShopPageTrackingConstant {
     const val CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION = "click - channel share bottom sheet - screenshot"
     const val VIEW_SHARE_BOTTOM_SHEET = "view on sharing channel"
     const val VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET = "view - screenshot share bottom sheet"
+    const val ACTION_GENERAL_SEARCH = "general search"
 
 
     //label
@@ -149,6 +151,7 @@ object ShopPageTrackingConstant {
     const val HOME_AND_BROWSE = "home & browse"
     const val SHARING_EXPERIENCE = "sharingexperience"
     const val CURRENT_SITE = "currentSite"
+    const val COMPONENT = "component"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val SEE_ALL = "see all"
     const val MVC_DETAIL = "mvc detail"
@@ -170,6 +173,9 @@ object ShopPageTrackingConstant {
     const val MEMBERSHIP_COUPON_CLAIM = "click klaim kupon"
     const val MEMBERSHIP_COUPON_CHECK = "click cek kupon saya"
     const val ETALASE_X = "etalase %1s"
+    const val ETALASE_NAVIGATION_BANNER = "etalase navigation banner"
+    const val CLICK_ETALASE_NAVIGATION_BANNER = "click $ETALASE_NAVIGATION_BANNER"
+    const val IMPRESSION_ETALASE_NAVIGATION_BANNER = "impression $ETALASE_NAVIGATION_BANNER"
     const val CLICK_PRODUCT = "click product"
     const val PRODUCT_RECOMMENDATION = "product recommendation"
     const val CLICK_PRODUCT_RECOMMENDATION = "click - " + PRODUCT_RECOMMENDATION
@@ -217,6 +223,7 @@ object ShopPageTrackingConstant {
     const val PAGE_TYPE = "pageType"
     const val PRODUCT_ID = "productId"
     const val PAGE_SOURCE = "pageSource"
+    const val RELATED_KEYWORD = "relatedKeyword"
     const val ECOMMERCE = "ecommerce"
     const val ACTION_FIELD = "actionField"
     const val SHOPPAGE = "/shoppage"
@@ -255,7 +262,7 @@ object ShopPageTrackingConstant {
     const val IS_OFFICIAL_STORE = "is_official_store"
     const val DIMENSION_81 = "dimension81"
     const val DIMENSION_79 = "dimension79"
-    const val SHOP_REF = "dimension90"
+    const val DIMENSION_90 = "dimension90"
     const val QUANTITY = "quantity"
     const val DIMENSION_80 = "dimension80"
     const val DIMENSION_82 = "dimension82"
@@ -287,6 +294,7 @@ object ShopPageTrackingConstant {
     const val SHOP_HEADER_PERFORMANCE_TRACKER_TYPE = "performance"
     const val SHOP_HEADER_ACTION_TRACKER_TYPE = "action"
     const val SHOP_HEADER_PLAY_TRACKER_TYPE = "play"
+    const val LOCAL_SEARCH = "local_search"
 
     //dimension83
     const val BOE = "BoE"
