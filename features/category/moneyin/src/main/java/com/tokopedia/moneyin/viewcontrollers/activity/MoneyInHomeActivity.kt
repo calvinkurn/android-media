@@ -140,7 +140,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
 
     private fun setTradeInParams() {
         if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            moneyInHomeViewModel.tradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName)
+            moneyInHomeViewModel.tradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName) ?: TradeInParams()
         }
     }
 

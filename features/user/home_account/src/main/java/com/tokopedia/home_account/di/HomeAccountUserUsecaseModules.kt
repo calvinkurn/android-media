@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase

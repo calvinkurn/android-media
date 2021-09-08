@@ -58,13 +58,13 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
             else -> "1"
         }
 
-        if (TYPE_LAYANAN == type.toInt()) {
+        if (TYPE_LAYANAN == type?.toInt()) {
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 val tab = when {
-                    intent.getStringExtra(EXTRA_TAB).isNotEmpty() -> intent.getStringExtra(EXTRA_TAB)
-                    else -> "1"
+                    (intent.getStringExtra(EXTRA_TAB)?.isNotEmpty() == true) -> intent.getStringExtra(EXTRA_TAB)?.toInt() ?: 1
+                    else -> 1
                 }
-                ECServiceFragment.getFragmentInstance(tab.toInt())
+                ECServiceFragment.getFragmentInstance(tab)
             } else {
                 ECServiceFragment.fragmentInstance
             }
@@ -85,7 +85,7 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
     }
 
     override fun getScreenName(): String =
-            if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE) != null && (intent.getStringExtra(EXTRA_TYPE)).toInt() == TYPE_LAYANAN) {
+            if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE) != null && (intent.getStringExtra(EXTRA_TYPE)?: "1").toInt() == TYPE_LAYANAN) {
                 LAYANAN_SCREEN
             } else {
                 DEFAULT_SCREEN

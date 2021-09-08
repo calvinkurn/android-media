@@ -12,7 +12,8 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -168,14 +169,15 @@ class HomeAccountUserViewModel @Inject constructor(
 
     }
 
-    private fun getRecommendationList(page: Int): RecommendationWidget {
-        val params = getRecommendationUseCase.getRecomParams(
-                page,
-                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
-                AKUN_PAGE,
-                emptyList()
+    private suspend fun getRecommendationList(page: Int): RecommendationWidget {
+        val recommendationParams = GetRecommendationRequestParam(
+            pageNumber = page,
+            xSource = DEFAULT_VALUE_X_SOURCE,
+            pageName = AKUN_PAGE,
+            productIds = emptyList(),
+            xDevice = DEFAULT_VALUE_X_DEVICE
         )
-        return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
+        return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
     fun getUserPageAssetConfig() {
@@ -250,6 +252,9 @@ class HomeAccountUserViewModel @Inject constructor(
 
         private const val SUCCESS_CODE = "200"
         private const val SUCCESS_STAT = "OK"
+
+        private const val DEFAULT_VALUE_X_SOURCE = "recom_widget"
+        private const val DEFAULT_VALUE_X_DEVICE = "android"
     }
 
 }
