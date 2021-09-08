@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.RecomPageConstant
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -70,6 +71,10 @@ class RecomPageAdapter(asyncDifferConfig: AsyncDifferConfig<HomeRecommendationDa
 //    }
 
     fun showError(data: RecommendationErrorDataModel) {
+        submitList(listOf(data))
+    }
+
+    fun showEmpty(data: RecommendationEmptyDataModel) {
         submitList(listOf(data))
     }
 

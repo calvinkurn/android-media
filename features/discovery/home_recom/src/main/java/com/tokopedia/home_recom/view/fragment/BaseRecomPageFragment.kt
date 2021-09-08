@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
 import com.tokopedia.home_recom.util.RecomPageUiUpdater
@@ -132,9 +133,18 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 //        productAdapter?.showLoading()
     }
 
-    fun renderPageError(errorModel: RecommendationErrorDataModel) {
+    fun renderPageError(throwable: Throwable) {
         context?.let { ctx ->
-            productAdapter?.showError(errorModel)
+            productAdapter?.showError(RecommendationErrorDataModel(throwable))
+            swipeToRefresh?.let {
+                it.isEnabled = false
+            }
+        }
+    }
+
+    fun renderEmptyPage() {
+        context?.let { ctx ->
+            productAdapter?.showEmpty(RecommendationEmptyDataModel())
             swipeToRefresh?.let {
                 it.isEnabled = false
             }

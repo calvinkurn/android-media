@@ -108,9 +108,13 @@ class InfiniteTokonowRecomFragment :
             pageName = ref
         }
         observeLiveData()
-        getMiniCartData()
         hideChooseAddressWidget()
-        loadInitData(false)
+        if (isWarehouseIdEmpty()) {
+            showErrorFullPage(Throwable())
+        } else {
+            getMiniCartData()
+            loadInitData(false)
+        }
     }
 
     override fun createAdapterInstance(): RecomPageAdapter = adapter
@@ -272,12 +276,21 @@ class InfiniteTokonowRecomFragment :
         viewModel.getMiniCart(localAddress?.shop_id ?: "")
     }
 
+    private fun isWarehouseIdEmpty(): Boolean {
+        val localAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        localAddress?.let {
+            if (it.warehouse_id.isNullOrEmpty()) return true
+            if (it.warehouse_id == "0") return true
+        }
+        return false
+    }
+
     private fun showEmptyPage() {
-        showEmptyPage()
+        renderEmptyPage()
     }
 
     private fun showErrorFullPage(throwable: Throwable) {
-        showErrorFullPage(throwable)
+        renderPageError(throwable)
     }
 
     private fun showErrorSnackbarWithRetryLoad(pageNumber: Int, throwable: Throwable) {
