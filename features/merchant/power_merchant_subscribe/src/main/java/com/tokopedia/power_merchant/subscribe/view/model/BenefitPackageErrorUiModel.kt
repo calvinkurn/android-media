@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
+package com.tokopedia.power_merchant.subscribe.view.model
 
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageAdapterFactory
 import com.tokopedia.power_merchant.subscribe.view.model.BaseBenefitPackageUiModel

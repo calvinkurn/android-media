@@ -382,14 +382,20 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         val shopInfo = data.shopInfo
 
-        val isRMNewSeller = data.shopInfo.isNewSeller &&
-                data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
+        val isRegularMerchant = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                 data.pmStatus.status == PMStatusConst.INACTIVE
+        val isRMNewSeller = data.shopInfo.isNewSeller &&
+                isRegularMerchant
 
         val registrationTerms = if (isPmProSelected) {
             PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo, isPmProSelected)
         } else {
-            PMRegistrationTermHelper.getPmRegistrationTerms(this, shopInfo, isPmProSelected)
+            PMRegistrationTermHelper.getPmRegistrationTerms(
+                this,
+                shopInfo,
+                isPmProSelected,
+                isRegularMerchant
+            )
         }
 
         val isEligiblePm =

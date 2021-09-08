@@ -22,14 +22,15 @@ object PMRegistrationTermHelper {
     fun getPmRegistrationTerms(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean
+        isPmProSelected: Boolean,
+        isRegularMerchant: Boolean
     ): List<RegistrationTermUiModel> {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)
         } else {
             getShopScoreTerm(context, shopInfo, isPmProSelected)
         }
-        return listOf(firstTerm, getKycTerm(context, shopInfo, isPmProSelected))
+        return listOf(firstTerm, getKycTerm(context, shopInfo, isPmProSelected, isRegularMerchant))
     }
 
     fun getPmProRegistrationTerms(
@@ -252,8 +253,13 @@ object PMRegistrationTermHelper {
                         com.tokopedia.unifyprinciples.R.color.Unify_R600
                     )
                 }
-                title = context.getString(R.string.pm_title_shop_score_term_new_seller_after_30_days, textColor, shopScoreFmt)
-                description = context.getString(R.string.pm_desc_shop_score_term_new_seller_after_30_days)
+                title = context.getString(
+                    R.string.pm_title_shop_score_term_new_seller_after_30_days,
+                    textColor,
+                    shopScoreFmt
+                )
+                description =
+                    context.getString(R.string.pm_desc_shop_score_term_new_seller_after_30_days)
             } else {
                 title =
                     context.getString(R.string.pm_title_shop_score_term_new_seller_before_30_days)
@@ -373,11 +379,11 @@ object PMRegistrationTermHelper {
     private fun getKycTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean
+        isPmProSelected: Boolean,
+        isRegularMerchant: Boolean = false
     ): RegistrationTermUiModel {
         val isEligibleShopScore = (!isPmProSelected && !shopInfo.isEligibleShopScore()) ||
                 (isPmProSelected && !shopInfo.isEligibleShopScorePmPro())
-
         val kycAppLink = if (isPmProSelected) {
             PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
         } else {
@@ -385,8 +391,8 @@ object PMRegistrationTermHelper {
         }
 
         var shopKycResIcon: Int
-        var title: String
-        var description: String
+        val title: String
+        val description: String
         var ctaText: String? = null
         var ctaAppLink: String? = null
         val isKycVerified =
@@ -395,24 +401,34 @@ object PMRegistrationTermHelper {
             shopInfo.kycStatusId == KYCStatusId.NOT_VERIFIED || shopInfo.kycStatusId == KYCStatusId.BLACKLIST
         when {
             isKycVerified -> {
-                title = if (shopInfo.isNewSeller) {
-                    if (!shopInfo.is30DaysFirstMonday) {
-                        context.getString(R.string.pm_description_kyc_verified_new_seller)
+                title = if (isRegularMerchant) {
+                    context.getString(R.string.pm_kyc_verified)
+                } else {
+                    if (shopInfo.isNewSeller) {
+                        if (shopInfo.is30DaysFirstMonday) {
+                            context.getString(R.string.pm_kyc_verified)
+                        } else {
+                            context.getString(R.string.pm_description_kyc_verified_new_seller)
+                        }
                     } else {
                         context.getString(R.string.pm_kyc_verified)
                     }
-                } else {
-                    context.getString(R.string.pm_kyc_verified)
                 }
-                description = if (shopInfo.isNewSeller) {
-                    if (!shopInfo.is30DaysFirstMonday) {
-                        context.getString(R.string.pm_description_kyc_verified_before_30_first_monday)
+                description =
+                    if (isRegularMerchant) {
+                        context.getString(R.string.pm_kyc_verify_ktp)
                     } else {
-                        context.getString(R.string.pm_description_kyc_verified_new_seller)
+                        if (shopInfo.isNewSeller) {
+                            if (shopInfo.is30DaysFirstMonday) {
+                                context.getString(R.string.pm_description_kyc_verified_new_seller)
+                            } else {
+                                context.getString(R.string.pm_description_kyc_verified_before_30_first_monday)
+                            }
+                        } else {
+                            context.getString(R.string.pm_kyc_verify_ktp)
+                        }
                     }
-                } else {
-                    context.getString(R.string.pm_kyc_verify_ktp)
-                }
+
                 shopKycResIcon = R.drawable.ic_pm_checked
             }
             isKycNotVerified -> {

@@ -129,7 +129,9 @@ class ShopGradeWidget(
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmProActive = isPmPro && isPmActive
         val isPmProIdle = isPmPro && element.pmStatus == PMStatusConst.IDLE
+        val is30FirstMondayNewSeller = element.isNewSeller && element.is30FirstMonday
         val labelStringId = if (element.isNewSeller) {
             R.string.pm_shop_performance_sum_new_seller
         } else {
@@ -142,8 +144,12 @@ class ShopGradeWidget(
                 .parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
 
-        if (isPmActive && isPmPro) {
-            tvPmShopGradeThreshold.gone()
+        val shopGradeInfo = getPmShopGradeInfo(element)
+        if (isPmProActive) {
+            if (is30FirstMondayNewSeller) {
+                tvPmShopGradeThreshold.show()
+                tvPmShopGradeThreshold.text = shopGradeInfo
+            }
             pmProStatusInfoView.visible()
             pmProStatusInfoView.setOnClickListener {
                 listener.showPmProStatusInfo(getPmProStatusInfo(element))
@@ -151,7 +157,6 @@ class ShopGradeWidget(
         } else {
             pmProStatusInfoView.gone()
             tvPmShopGradeThreshold.visible()
-            val shopGradeInfo = getPmShopGradeInfo(element)
             tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
         }
 

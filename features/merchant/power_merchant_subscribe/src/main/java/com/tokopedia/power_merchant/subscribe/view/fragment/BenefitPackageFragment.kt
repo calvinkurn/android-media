@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
@@ -20,7 +18,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageDataListener
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageErrorListener
-import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.BenefitPackageErrorUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageErrorUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.BenefitPackageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

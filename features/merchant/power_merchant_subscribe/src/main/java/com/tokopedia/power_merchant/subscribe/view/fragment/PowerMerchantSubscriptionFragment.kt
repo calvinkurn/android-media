@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,12 +56,6 @@ import javax.inject.Inject
 open class PowerMerchantSubscriptionFragment :
     BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(),
     PMWidgetListener {
-
-    companion object {
-        fun createInstance(): PowerMerchantSubscriptionFragment {
-            return PowerMerchantSubscriptionFragment()
-        }
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -173,6 +168,10 @@ open class PowerMerchantSubscriptionFragment :
 
     override fun onMembershipStatusClickListener() {
         showRegularPmDeactivationBottomSheet()
+    }
+
+    override fun onMembershipStatusPmProClickListener() {
+        showPmProDeactivationBottomSheet()
     }
 
     override fun onDeactivatePMClickListener() {
@@ -603,15 +602,16 @@ open class PowerMerchantSubscriptionFragment :
     private fun renderPmActiveState(data: PMGradeBenefitInfoUiModel) {
         showUpgradePmProStickyView()
         val isAutoExtendEnabled = getAutoExtendEnabled()
-        val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
+        val isActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPm = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
         val widgets = mutableListOf<BaseWidgetUiModel>()
         val tickerList = pmBasicInfo?.tickers
         val isRegularMerchant =
             pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT &&
                     pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE
-        val isNewSellerBefore30FirstMonday = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() &&
-                pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
+        val isPmActive = isPm && isActive
+
         if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
         }
@@ -638,7 +638,7 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
-        if (isAutoExtendEnabled && isNewSellerBefore30FirstMonday) {
+        if (isAutoExtendEnabled && isPmActive) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
         }
@@ -707,6 +707,7 @@ open class PowerMerchantSubscriptionFragment :
         val newFormat = "dd MMMM yyyy"
         return WidgetShopGradeUiModel(
             isNewSeller = shopInfo?.isNewSeller.orTrue(),
+            is30FirstMonday = shopInfo?.is30DaysFirstMonday.orFalse(),
             pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
             shopScore = shopInfo?.shopScore.orZero(),
             shopScoreThreshold = shopInfo?.shopScoreThreshold.orZero(),
@@ -767,13 +768,15 @@ open class PowerMerchantSubscriptionFragment :
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orFalse() ||
                 pmBasicInfo?.shopInfo?.is30DaysFirstMonday.orFalse()
-        val isShowCoachmark = CoachMark2.isCoachmmarkShowAllowed
-        scrollTo<WidgetDividerUiModel>()
+        val isShowCoachmark = coachMark?.isCoachmmarkShowAllowed
         if (isPmPro && isNewSeller) {
             if (isShowCoachmark && getCoachMarkItems().value.isNotEmpty()) {
-                recyclerView?.post {
-                    coachMark?.showCoachMark(getCoachMarkItems().value)
-                }
+                Handler(Looper.getMainLooper()).postDelayed({
+                    scrollTo<WidgetDividerUiModel>()
+                    recyclerView?.post {
+                        coachMark?.showCoachMark(getCoachMarkItems().value)
+                    }
+                }, COACH_MARK_RENDER_SHOW)
             }
         }
     }
@@ -783,7 +786,7 @@ open class PowerMerchantSubscriptionFragment :
             val coachMark = context?.let { CoachMark2(it) }
             coachMark?.isDismissed = false
             coachMark?.onFinishListener = {
-                CoachMark2.isCoachmmarkShowAllowed = false
+                coachMark?.isCoachmmarkShowAllowed = false
             }
             coachMark
         }
@@ -863,6 +866,13 @@ open class PowerMerchantSubscriptionFragment :
                 smoothScroller.targetPosition = positionItem
                 recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
             }
+        }
+    }
+
+    companion object {
+        private const val COACH_MARK_RENDER_SHOW = 500L
+        fun createInstance(): PowerMerchantSubscriptionFragment {
+            return PowerMerchantSubscriptionFragment()
         }
     }
 }

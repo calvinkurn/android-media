@@ -17,7 +17,7 @@
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Kirim Jawaban</string>
 
-    <string name="power_merchant_register_now">Saya Tertarik Untuk Daftar</string>
+    <string name="power_merchant_register_now">Daftar Sekarang</string>
     <string name="power_merchant_learn_more">Pelajari Selengkapnya</string>
     <string name="power_merchant_performance_tips">Tips Tingkatkan Performa</string>
     <string name="power_merchant_max_score">/100</string>
@@ -86,7 +86,6 @@
     <string name="pm_desc_min_product_sold_term_new_seller_before_30_days">Pendapatan bersihmu Rp%s</string>
 
     <string name="pm_set_membership_status">Atur status keanggotaanmu &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="pm_deactivate_pm_pro_not_eligible">Berhenti dari Power Merchant? &lt;a href="#"&gt;Klik di sini&lt;/a&gt;</string>
 
     <string name="pm_kyc_verify_ktp">Verifikasi data diri dengan KTP</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
@@ -177,6 +176,10 @@
     <string name="pm_option_become_power_merchant_description"><![CDATA[Jadi Seller tepercaya dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_options_tnc_text">Dengan melanjutkan, saya setuju dengan S&amp;K yang berlaku</string>
 
+    <string name="pm_pro_upgrade_30_first_monday_false_description"><![CDATA[Dengan <b>biaya layanan 1,5%</b>, kamu bisa dapat banyak keuntungan eksklusif Power Merchant PRO!]]></string>
+    <string name="pm_pro_upgrade_eligible_true_description"><![CDATA[Dengan <b>biaya layanan 1,5% saja</b>, kamu bisa dapat banyak keuntungan eksklusif Power Merchant PRO!]]></string>
+    <string name="pm_pro_upgrade_eligible_false_description"><![CDATA[Yuk, penuhi semua syarat dan daftar PM PRO! Dengan <b>biaya layanan 1,5%</b> saja, kamu bisa dapat banyak keuntungan eksklusifnya!]]></string>
+
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Oops, pendaftaran Power \nMerchant tidak bisa dilanjutkan</string>
@@ -233,8 +236,8 @@
     <string name="pm_pro_new_seller_desc_coachmark_1">Sebagai Seller baru, kamu bisa lihat status toko dan proyeksi Performa Tokomu di sini, ya.</string>
     <string name="pm_pro_new_seller_title_coachmark_2">Cek keuntungan eksklusif Power Merchant PRO-mu, yuk!</string>
     <string name="pm_pro_new_seller_desc_coachmark_2">Kamu bisa lihat paket keuntungan yang kamu dapatkan di sini, ya.</string>
-    <string name="pm_pro_new_seller_title_coachmark_3">Cek keuntungan eksklusif Power Merchant PRO-mu, yuk!</string>
-    <string name="pm_pro_new_seller_desc_coachmark_3">Kamu bisa lihat paket keuntungan yang kamu dapatkan di sini, ya.</string>
+    <string name="pm_pro_new_seller_title_coachmark_3">Pelajari waktu pengecekan Power Merchant PRO di sini</string>
+    <string name="pm_pro_new_seller_desc_coachmark_3">Pengecekan status Power Merchant PRO akan dilakukan setiap Senin dan setiap 30 hari sekali.</string>
 
     <string name="pm_benefit_package_upgrade">Raih</string>
     <string name="pm_benefit_package_downgrade">Pertahankan</string>

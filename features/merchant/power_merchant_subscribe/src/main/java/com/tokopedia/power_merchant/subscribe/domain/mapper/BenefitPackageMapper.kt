@@ -37,15 +37,16 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapToBenefitPackageGrade(
         benefitPackageResponse: BenefitPackageResponse
     ): BenefitPackageDataUiModel {
+        val currentGrade = benefitPackageResponse.data?.currentPMGrade?.gradeName
         return BenefitPackageDataUiModel(
             benefitPackageData = benefitPackageResponse.data?.nextBenefitPackageList?.map {
                 val isUpgrade =
-                    it.pmGradeName == benefitPackageResponse.data.currentPMGrade?.gradeName
+                    it.pmGradeName == currentGrade
                 val pmStatusText =
-                    if (it.pmGradeName == benefitPackageResponse.data.currentPMGrade?.gradeName) {
-                        context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
-                    } else {
+                    if (it.pmGradeName == currentGrade) {
                         context?.getString(R.string.pm_benefit_package_downgrade).orEmpty()
+                    } else {
+                        context?.getString(R.string.pm_benefit_package_upgrade).orEmpty()
                     }
                 val mapDescAndBg = getBgAndDescBenefitPackage(it, pmStatusText)
                 BenefitPackageGradeUiModel(

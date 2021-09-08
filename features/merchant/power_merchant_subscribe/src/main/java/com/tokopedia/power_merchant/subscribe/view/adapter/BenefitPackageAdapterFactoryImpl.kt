@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.*
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageDataUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageGradeUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageErrorUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
 
 class BenefitPackageAdapterFactoryImpl(

@@ -1,7 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.BenefitPackageErrorUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageErrorUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.BaseBenefitPackageUiModel
 
 class BenefitPackageAdapter(

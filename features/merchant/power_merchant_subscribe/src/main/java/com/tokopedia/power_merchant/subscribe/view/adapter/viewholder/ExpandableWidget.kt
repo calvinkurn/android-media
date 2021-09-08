@@ -5,11 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactory
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
@@ -20,9 +19,9 @@ import kotlinx.android.synthetic.main.widget_pm_expandable.view.*
  */
 
 class ExpandableWidget(
-        itemView: View,
-        private val listener: Listener,
-        private val powerMerchantTracking: PowerMerchantTracking
+    itemView: View,
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetExpandableUiModel>(itemView) {
 
     companion object {
@@ -41,6 +40,21 @@ class ExpandableWidget(
             setupExpandableItem(element)
             setupPmSection()
             setupPmProSection(element)
+            setupMembershipStatus(element)
+        }
+    }
+
+    private fun setupMembershipStatus(element: WidgetExpandableUiModel) {
+        with(itemView) {
+            dividerPmPro?.showWithCondition(element.isPmPro())
+            tvSetMembershipStatus?.showWithCondition(element.isPmPro())
+            if (element.isPmPro()) {
+                tvSetMembershipStatus?.setTextMakeHyperlink(
+                    getString(R.string.pm_set_membership_status)
+                ) {
+                    listener.onMembershipStatusPmProClickListener()
+                }
+            }
         }
     }
 
@@ -70,7 +84,10 @@ class ExpandableWidget(
     }
 
     private fun setupExpandableItem(element: WidgetExpandableUiModel) {
-        val expandableAdapter = BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(ExpandableAdapterFactoryImpl(powerMerchantTracking))
+        val expandableAdapter =
+            BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(
+                ExpandableAdapterFactoryImpl(powerMerchantTracking)
+            )
 
         with(itemView.rvPmExpandableItem) {
             isVisible = element.items.isNotEmpty()
@@ -88,5 +105,6 @@ class ExpandableWidget(
 
     interface Listener {
         fun showUpdateInfoBottomSheet(gradeName: String)
+        fun onMembershipStatusPmProClickListener()
     }
 }

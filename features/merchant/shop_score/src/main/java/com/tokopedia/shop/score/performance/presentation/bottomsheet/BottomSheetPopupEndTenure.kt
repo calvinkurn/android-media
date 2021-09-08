@@ -90,13 +90,35 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore() {
                     ShopScoreConstant.SHOP_AGE_SIXTY
                 ) {
                     tvTipsIncreasePerformance?.hide()
+                    setDescTicker(popupEndTenureUiModel.shopType)
                     tickerTipsIncreasePerformance?.show()
                 } else {
                     tvTipsIncreasePerformance?.show()
                     tickerTipsIncreasePerformance?.hide()
                 }
             }
-            else -> { }
+            else -> {
+            }
+        }
+    }
+
+    private fun setDescTicker(shopType: ShopType) {
+        when (shopType) {
+            ShopType.POWER_MERCHANT -> {
+                tickerTipsIncreasePerformance?.tickerTitle =
+                    getString(R.string.title_warning_new_seller_shop_score_pm)
+                tickerTipsIncreasePerformance?.setTextDescription(
+                    getString(R.string.desc_warning_new_seller_shop_score_pm)
+                )
+            }
+            ShopType.POWER_MERCHANT_PRO -> {
+                tickerTipsIncreasePerformance?.tickerTitle =
+                    getString(R.string.title_warning_new_seller_shop_score_pm_pro)
+                tickerTipsIncreasePerformance?.setTextDescription(
+                    getString(R.string.desc_warning_new_seller_shop_score_pm_pro)
+                )
+            }
+            else -> {}
         }
     }
 

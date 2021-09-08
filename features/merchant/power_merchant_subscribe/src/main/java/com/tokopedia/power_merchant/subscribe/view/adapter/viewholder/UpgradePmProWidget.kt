@@ -54,19 +54,21 @@ class UpgradePmProWidget(
         with(itemView) {
             if (shopInfo.isNewSeller) {
                 if (shopInfo.is30DaysFirstMonday) {
-                    viewPmUpgradeTermSection?.tvTermStatus?.show()
                     if (shopInfo.isEligiblePmPro) {
+                        viewPmUpgradeTermSection?.tvTermStatus?.show()
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
                         tvPmUpgradeBenefitDescription?.text =
                             getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                        tvSetMembershipStatus?.show()
                         tvSetMembershipStatus?.setTextMakeHyperlink(
                             getString(R.string.pm_set_membership_status)
                         ) {
                             listener.onMembershipStatusClickListener()
                         }
                     } else {
+                        viewPmUpgradeTermSection?.tvTermStatus?.hide()
                         tvPmUpgradePmProTitle?.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
                         tvPmUpgradePmProDesc?.hide()
@@ -93,12 +95,13 @@ class UpgradePmProWidget(
                     hidePmProUpgradeSection()
                 }
             } else {
+                tvSetMembershipStatus?.show()
                 tvSetMembershipStatus?.setTextMakeHyperlink(
                     getString(R.string.pm_set_membership_status)
                 ) {
                     listener.onMembershipStatusClickListener()
                 }
-                viewPmUpgradeTermSection?.tvTermStatus?.show()
+                viewPmUpgradeTermSection?.tvTermStatus?.hide()
                 tvPmUpgradePmProDesc?.hide()
             }
         }
@@ -159,25 +162,53 @@ class UpgradePmProWidget(
         icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
         viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
 
-        if (element.shopInfo.isEligiblePmPro) {
-            tvPmUpgradeBenefitDescription.text = getString(
-                R.string.pm_pro_upgrade_eligible_description,
-                Constant.POWER_MERCHANT_PRO_CHARGING
-            ).parseAsHtml()
-            tvPmProTncDescription.visible()
-            btnPmProUpgrade.visible()
-            showTncMessage()
-            setExpandedChanged(false)
+        if (element.shopInfo.isNewSeller) {
+            if (element.shopInfo.is30DaysFirstMonday) {
+                if (element.shopInfo.isEligiblePmPro) {
+                    tvPmUpgradeBenefitDescription.text = getString(
+                        R.string.pm_pro_upgrade_eligible_true_description
+                    ).parseAsHtml()
+                    tvPmProTncDescription.visible()
+                    btnPmProUpgrade.visible()
+                    showTncMessage()
+                    setExpandedChanged(false)
+                } else {
+                    tvPmUpgradeBenefitDescription.text = getString(
+                        R.string.pm_pro_upgrade_eligible_false_description
+                    ).parseAsHtml()
+                    tvPmProTncDescription.gone()
+                    btnPmProUpgrade.gone()
+                    setExpandedChanged(true)
+                }
+            } else {
+                tvPmUpgradeBenefitDescription.text = getString(
+                    R.string.pm_pro_upgrade_30_first_monday_false_description
+                ).parseAsHtml()
+                tvPmProTncDescription.gone()
+                btnPmProUpgrade.gone()
+                setExpandedChanged(true)
+            }
         } else {
-            val threshold = element.shopInfo.shopScorePmProThreshold
-            tvPmUpgradeBenefitDescription.text = context.resources.getString(
-                R.string.pm_pro_upgrade_not_eligible_description,
-                threshold,
-                Constant.POWER_MERCHANT_PRO_CHARGING
-            ).parseAsHtml()
-            tvPmProTncDescription.gone()
-            btnPmProUpgrade.gone()
-            setExpandedChanged(true)
+            if (element.shopInfo.isEligiblePmPro) {
+                tvPmUpgradeBenefitDescription.text = getString(
+                    R.string.pm_pro_upgrade_eligible_description,
+                    Constant.POWER_MERCHANT_PRO_CHARGING
+                ).parseAsHtml()
+                tvPmProTncDescription.visible()
+                btnPmProUpgrade.visible()
+                showTncMessage()
+                setExpandedChanged(false)
+            } else {
+                val threshold = element.shopInfo.shopScorePmProThreshold
+                tvPmUpgradeBenefitDescription.text = context.resources.getString(
+                    R.string.pm_pro_upgrade_not_eligible_description,
+                    threshold,
+                    Constant.POWER_MERCHANT_PRO_CHARGING
+                ).parseAsHtml()
+                tvPmProTncDescription.gone()
+                btnPmProUpgrade.gone()
+                setExpandedChanged(true)
+            }
         }
 
         viewPmUpgradeTermSection.setOnSectionHeaderClickListener {

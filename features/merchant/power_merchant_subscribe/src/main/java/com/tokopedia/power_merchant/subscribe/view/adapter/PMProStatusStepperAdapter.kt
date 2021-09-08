@@ -73,14 +73,16 @@ class PMProStatusStepperAdapter :
                     divider_stepper_pm_pro_status?.hide()
                 }
 
-                if (data.isPassedActive) {
-                    ic_dot_stepper?.setImageResource(R.drawable.ic_pass_active_pm_pro_status)
-                }
-
-                if (data.isCurrentActive) {
-                    ic_dot_stepper?.setImageResource(R.drawable.ic_current_active_pm_pro_status)
-                } else {
-                    ic_dot_stepper?.setImageResource(R.drawable.ic_current_inactive_pm_pro_status)
+                when {
+                    data.isCurrentActive -> {
+                        ic_dot_stepper?.setImageResource(R.drawable.ic_current_active_pm_pro_status)
+                    }
+                    data.isPassedActive -> {
+                        ic_dot_stepper?.setImageResource(R.drawable.ic_pass_active_pm_pro_status)
+                    }
+                    else -> {
+                        ic_dot_stepper?.setImageResource(R.drawable.ic_current_inactive_pm_pro_status)
+                    }
                 }
             }
         }
