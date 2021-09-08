@@ -195,7 +195,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private fun initClientNumberAutoComplete(context: Context) {
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
-            R.layout.item_topup_bills_autocomplete_number,
+            com.tokopedia.common.topupbills.R.layout.item_topup_bills_autocomplete_number,
             mutableListOf(),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
