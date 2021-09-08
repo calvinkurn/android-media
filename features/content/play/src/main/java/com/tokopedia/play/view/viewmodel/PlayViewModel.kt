@@ -1310,8 +1310,10 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
-        if(changedChannelId == currentChannelId)
+        if(changedChannelId == currentChannelId) {
             _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
+            stopSSE()
+        }
     }
 
     /**

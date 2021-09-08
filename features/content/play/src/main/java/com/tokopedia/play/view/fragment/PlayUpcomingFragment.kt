@@ -115,7 +115,7 @@ class PlayUpcomingFragment @Inject constructor(
     private fun setupObserver() {
         playViewModel.observableUpcomingInfo.observe(viewLifecycleOwner) {
             if(it.isAlreadyLive) {
-                upcomingTimer.hide()
+                upcomingTimer.invisible()
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
             }
         }
